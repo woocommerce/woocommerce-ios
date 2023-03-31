@@ -78,7 +78,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .jetpackSetupWithApplicationPassword:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dashboardOnboarding:
-            return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+            return true
         case .addCouponToOrder:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         case .productBundles:

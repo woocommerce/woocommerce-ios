@@ -62,7 +62,7 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
         let viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
                                                          urlToTriggerExit: urlToTriggerExit,
                                                          exitTrigger: exitTrigger)
-        return AuthenticatedWebViewController(viewModel: viewModel, wporgCredentials: nil)
+        return AuthenticatedWebViewController(viewModel: viewModel)
     }
 
     func updateUIViewController(_ uiViewController: AuthenticatedWebViewController, context: Context) {

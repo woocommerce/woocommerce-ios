@@ -15,8 +15,8 @@ final class PaymentsTests: XCTestCase {
     func test_load_chipper_card_reader_manual() throws {
         try TabNavComponent().goToMenuScreen()
             .goToPaymentsScreen()
-            .selectCardReaderManuals()
-            .selectChipperManual()
+            .tapCardReaderManuals()
+            .tapChipperManual()
             .verifyChipperManualLoadedOnWebView()
     }
 }

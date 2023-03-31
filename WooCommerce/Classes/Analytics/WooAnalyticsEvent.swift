@@ -427,6 +427,13 @@ extension WooAnalyticsEvent {
             case list
         }
 
+        /// Possible item types to add to an Order
+        ///
+        enum ProductType: String {
+            case product
+            case variation
+        }
+
         enum GlobalKeys {
             static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
         }
@@ -446,6 +453,7 @@ extension WooAnalyticsEvent {
             static let orderID = "id"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
+            static let itemType = "item_type"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -467,8 +475,11 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderProductAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderProductAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderProductAdd(flow: Flow, productCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductAdd, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.productCount: Int64(productCount)
+            ])
         }
 
         static func orderProductQuantityChange(flow: Flow) -> WooAnalyticsEvent {
@@ -563,6 +574,24 @@ extension WooAnalyticsEvent {
                 Keys.flow: flow.rawValue,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
+            ])
+        }
+
+        static func orderCreationProductSelectorItemSelected(productType: ProductType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductSelectorItemSelected, properties: [
+                Keys.itemType: productType.rawValue
+            ])
+        }
+
+        static func orderCreationProductSelectorItemUnselected(productType: ProductType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductSelectorItemUnselected, properties: [
+                Keys.itemType: productType.rawValue
+            ])
+        }
+
+        static func orderCreationProductSelectorConfirmButtonTapped(productCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductSelectorConfirmButtonTapped, properties: [
+                Keys.productCount: Int64(productCount)
             ])
         }
 
@@ -897,6 +926,11 @@ extension WooAnalyticsEvent {
             case tapToPayTryAPayment = "tap_to_pay_try_a_payment"
         }
 
+        enum CardReaderType: String {
+            case external
+            case builtIn = "built_in"
+        }
+
         /// Common event keys
         ///
         private enum Keys {
@@ -905,12 +939,22 @@ extension WooAnalyticsEvent {
             static let paymentMethod = "payment_method"
             static let source = "source"
             static let flow = "flow"
+            static let cardReaderType = "card_reader_type"
         }
 
-        static func paymentsFlowCompleted(flow: Flow, amount: String, method: PaymentMethod) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .paymentsFlowCompleted, properties: [Keys.flow: flow.rawValue,
-                                                                             Keys.amount: amount,
-                                                                             Keys.paymentMethod: method.rawValue])
+        static func paymentsFlowCompleted(flow: Flow,
+                                          amount: String,
+                                          method: PaymentMethod,
+                                          cardReaderType: CardReaderType?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
+                                                                       Keys.amount: amount,
+                                                                       Keys.paymentMethod: method.rawValue]
+
+            if let cardReaderType = cardReaderType {
+                properties[Keys.cardReaderType] = cardReaderType.rawValue
+            }
+
+            return WooAnalyticsEvent(statName: .paymentsFlowCompleted, properties: properties)
         }
 
         static func paymentsFlowCanceled(flow: Flow) -> WooAnalyticsEvent {
@@ -922,9 +966,16 @@ extension WooAnalyticsEvent {
                                                                           Keys.source: source.rawValue])
         }
 
-        static func paymentsFlowCollect(flow: Flow, method: PaymentMethod, millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
+        static func paymentsFlowCollect(flow: Flow,
+                                        method: PaymentMethod,
+                                        cardReaderType: CardReaderType?,
+                                        millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                               Keys.paymentMethod: method.rawValue]
+
+            if let cardReaderType = cardReaderType {
+                properties[Keys.cardReaderType] = cardReaderType.rawValue
+            }
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceOrderAddNew {
                 properties[Orders.GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew

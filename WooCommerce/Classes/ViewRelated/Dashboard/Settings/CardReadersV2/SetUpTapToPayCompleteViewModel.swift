@@ -14,6 +14,8 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     private let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
     private let stores: StoresManager
 
+    private let analytics: Analytics = ServiceLocator.analytics
+
     private var subscriptions = Set<AnyCancellable>()
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
@@ -62,6 +64,7 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     }
 
     func doneTapped() {
+        analytics.track(.tapToPaySetupSuccessDoneTapped)
         doneWasTapped = true
         reevaluateShouldShow()
     }

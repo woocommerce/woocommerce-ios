@@ -60,6 +60,10 @@ final class GenerateVariationUseCase {
     ///
     private func createVariationParameter() -> CreateProductVariation {
         let attributes = product.attributesForVariations.map { ProductVariationAttribute(id: $0.attributeID, name: $0.name, option: "") }
-        return CreateProductVariation(regularPrice: "", attributes: attributes)
+        return CreateProductVariation(regularPrice: "",
+                                      salePrice: "",
+                                      attributes: attributes,
+                                      description: "",
+                                      image: nil)
     }
 }

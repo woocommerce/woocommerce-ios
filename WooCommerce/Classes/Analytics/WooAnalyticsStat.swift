@@ -284,6 +284,14 @@ public enum WooAnalyticsStat: String {
     case cardPresentOnboardingStepSkipped = "card_present_onboarding_step_skipped"
     case cardPresentOnboardingCtaTapped = "card_present_onboarding_cta_tapped"
 
+    // MARK: Tap to Pay
+    case tapToPaySummaryTryPaymentTapped = "tap_to_pay_summary_try_payment_tapped"
+    case tapToPaySummaryTryPaymentSkipTapped = "tap_to_pay_summary_try_payment_skip_tapped"
+    case tapToPaySetupInformationSetUpTapped = "tap_to_pay_set_up_information_set_up_tapped"
+    case tapToPaySetupInformationCancelTapped = "tap_to_pay_set_up_information_cancel_tapped"
+    case tapToPaySetupSuccessDoneTapped = "tap_to_pay_set_up_success_done_tapped"
+    case tapToPaySummaryShown = "tap_to_pay_summary_shown"
+
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
     case enableCashOnDeliveryFailed = "enable_cash_on_delivery_failed"
@@ -343,6 +351,9 @@ public enum WooAnalyticsStat: String {
     case orderCreationFailed = "order_creation_failed"
     case orderCreationCustomerAdded = "order_creation_customer_added"
     case orderCreationCustomerSearch = "order_creation_customer_search"
+    case orderCreationProductSelectorItemSelected = "order_creation_product_selector_item_selected"
+    case orderCreationProductSelectorItemUnselected = "order_creation_product_selector_item_unselected"
+    case orderCreationProductSelectorConfirmButtonTapped = "order_creation_product_selector_confirm_button_tapped"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -821,7 +832,7 @@ public enum WooAnalyticsStat: String {
     case paymentsMenuManageCardReadersTapped = "payments_hub_manage_card_readers_tapped"
     case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
-    case setUpTapToPayOnIPhoneTapped = "set_up_tap_to_pay_on_iphone_tapped"
+    case setUpTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

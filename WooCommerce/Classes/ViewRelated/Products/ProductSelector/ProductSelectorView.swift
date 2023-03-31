@@ -125,6 +125,9 @@ struct ProductSelectorView: View {
                 if let cancelButtonTitle = configuration.cancelButtonTitle {
                     Button(cancelButtonTitle) {
                         isPresented.toggle()
+                        if !isPresented {
+                            viewModel.clearSelection()
+                        }
                     }
                 }
             }
@@ -142,6 +145,7 @@ struct ProductSelectorView: View {
                 // no-op
             }
         }
+        .interactiveDismissDisabled()
     }
 
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.

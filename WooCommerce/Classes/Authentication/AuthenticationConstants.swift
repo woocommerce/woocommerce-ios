@@ -68,7 +68,7 @@ struct AuthenticationConstants {
     /// Title of "Enter your store address" button in Login Prologue
     //
     static let enterYourSiteAddressButtonTitle = NSLocalizedString(
-        "Enter Your Store Address",
+        "Log In",
         comment: "Button title. Takes the user to the login by store address flow."
     )
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-15 13:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-22 10:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -175,6 +175,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
 "%@ via %@" = "%1$@ بواسطة %2$@";
 
+/* Message of the free trial banner when there is more than 1 day left */
+"%d days left in your trial." = "يتبقى %d من الأيام في الإصدار التجريبي لديك.";
+
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d العنصر";
 
@@ -248,6 +251,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product selected" = "تم تحديد منتج واحد";
+
+/* Message of the free trial banner when there is 1 day left */
+"1 day left in your trial." = "يتبقى يوم واحد في الإصدار التجريبي لديك.";
 
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "تم تحديد عنصر واحد";
@@ -393,6 +399,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "إضافة فئة";
+
+/* Title text of the button that adds a fee when creating a new coupon */
+"Add Coupon" = "إضافة قسيمة";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "إضافة تفاصيل العميل";
@@ -679,6 +688,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "يسمح بالشحن المجاني";
 
+/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
+"Almost there! Please enter the verification code from your Authentication app" = "تقريبًا هناك! يرجى إدخال رمز التحقق من تطبيق المصادقة";
+
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "تقريبًا هناك! يرجى إدخال رمز التحقق من تطبيق الموثق الخاص بك.";
 
@@ -960,6 +972,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility announcement message when device goes back online */
 "Back online" = "الاتصال بالإنترنت مرة أخرى";
+
+/* Title of the secondary button on the store onboarding launched store screen. */
+"Back to My Store" = "العودة إلى متجري";
 
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "Back to Order" = "الرجوع إلى الطلب";
@@ -1808,6 +1823,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem subscribing to a site or feed. */
 "Could not follow the site at the address specified." = "تعذرت متابعة الموقع على العنوان المحدد.";
 
+/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Could not launch your store" = "يتعذر بدء متجرك";
+
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "تعذر إلغاء متابعة الموقع في العنوان المحدد.";
 
@@ -1851,6 +1869,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Coupon screen during order creation */
 "Coupon" = "قسيمة";
 
+/* The singular coupon summary. Reads like: Coupon (code1) */
+"Coupon (%1$@)" = "القسيمة (%1$@)";
+
 /* Text field coupon code in the view for adding or editing a coupon code. */
 "Coupon Code" = "رمز القسيمة";
 
@@ -1881,6 +1902,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "القسائم";
+
+/* The plural coupon summary. Reads like: Coupon (code1, code2) */
+"Coupons (%1$@)" = "القسائم (%1$@)";
 
 /* Industry option in the store creation category question. */
 "Courier Services" = "خدمات نقل الرسائل";
@@ -1941,6 +1965,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate just one variation */
 "Create one new variation. Manually set which attributes belong to the variable product." = "أنشئ تباينًا واحدًا جديدًا. قم بتعيين السمات التي تنتمي إلى المنتج المتغير يدويًا.";
+
+/* Title for the Create Order iOS Shortcut */
+"Create order" = "إنشاء طلب";
 
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "إنشاء طلبات!";
@@ -2485,6 +2512,9 @@ which should be translated separately and considered part of this sentence. */
    Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "البريد الإلكتروني";
 
+/* Label for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Email Address or Username" = "عنوان البريد الإلكتروني أو اسم المستخدم";
+
 /* Accessibility label for the email address text field.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
@@ -2609,6 +2639,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "إدخال وصف";
+
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Enter email or username" = "إدخال البريد الإلكتروني أو اسم المستخدم";
 
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "إدخال عنوان URL للملف";
@@ -4593,6 +4626,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "يمكن لمالك الموقع فقط إدارة طرق دفع ملصقات الشحن. يرجى الاتصال بـ %1$@ (%2$@) لإدارة طرق الدفع.";
 
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Oops, some unexpected errors happened." = "عذرًا، حدثت بعض الأخطاء غير المتوقعة.";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "فتح إعدادات الجهاز";
 
@@ -5362,6 +5398,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "رابط المنتج";
 
+/* Cell title on beta features screen to enable Product Multi-Selection */
+"Product Multi-Selection" = "التحديد المتعدد للمنتجات";
+
 /* Title of the view containing a single Product Review */
 "Product Review" = "مراجعة المنتج";
 
@@ -5441,6 +5480,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action for creating a new product remotely with a published status */
 "Publish" = "نشر";
+
+/* Title of the primary button on the store onboarding > launch store screen to publish a store. */
+"Publish My Store" = "نشر متجري";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "إعدادات النشر";
@@ -5654,6 +5696,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "إزالة البطاقة";
+
+/* Text for the button to remove a Coupon from the order during order creation */
+"Remove Coupon from Order" = "إزالة قسيمة من طلب";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
 "Remove Expiry Date" = "إزالة تاريخ انتهاء الصلاحية";
@@ -6162,6 +6207,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "مشاركة رابط الدفع";
 
+/* Title of the primary button on the store onboarding launched store screen. */
+"Share URL" = "مشاركة عنوان URL";
+
 /* Title of the feedback action button on the In-Person Payments feedback banner
    Title of the feedback button in the action sheet. */
 "Share feedback" = "مشاركة الملاحظات.";
@@ -6495,6 +6543,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "عذرًا، تعذر علينا إنشاء طلب الدعم الخاص بك، ترجى المحاولة مجددًا في وقت لاحق.";
+
+/* Error message when the built-in reader connection experiences an unexpected internal service error. */
+"Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "عذرًا، يتعذر علينا بدء ميزة \"الضغط للدفع\" على iPhone. يرجى التحقّق من اتصالك والمحاولة لاحقًا.";
 
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "عذرًا، لا يمكنك استخدام عنوان الموقع هذا.";
@@ -6897,6 +6948,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "شروط الخدمة";
+
+/* Cell description on beta features screen to enable Product Multi-Selection */
+"Test out Product Multi-Selection as we get ready to launch" = "اختبار ميزة \"التحديد المتعدد للمنتجات\" عندما نصبح جاهزين للبدء";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "اختبر عملية الشراء داخل التطبيق بينما نستعد للتشغيل";
@@ -7700,6 +7754,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "يتعذر تحميل الضرائب الخاصة بالطلب";
 
+/* Error message explaining login failure due to blocked WP Admin page */
+"Unable to login because we cannot identify your store's admin URL." = "يتعذر تسجيل لدخول نظرًا إلى عدم تمكنا من التعرف على عنوان URL لمسؤول متجرك.";
+
+/* Error message explaining login failure due to blocked wp-login.php */
+"Unable to login because we cannot identify your store's login URL." = "يتعذر تسجيل لدخول نظرًا إلى عدم تمكنا من التعرف على عنوان URL لتسجيل الدخول إلى متجرك.";
+
+/* Error message explaining login failure due to unexpected response. */
+"Unable to login due to an unexpected response from your site. We are working on fixing this issue." = "يتعذر تسجيل الدخول بسبب استجابة غير متوقعة من موقعك. إننا نعمل على إصلاح هذه المشكلة.";
+
+/* Error message explaining login failure due to unacceptable status code. */
+"Unable to login with response status code %1$d." = "قم بالتمكين لتسجيل الدخول باستخدام رمز حالة الاستجابة ⁦%1$d⁩.";
+
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
 
@@ -7919,6 +7985,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "جارٍ تحديث منتجاتك...";
+
+/* Title for the WebView when upgrading a free trial plan
+   Title on the button to upgrade a free trial plan. */
+"Upgrade Now" = "قم بالترقية الآن";
+
+/* Title of one of the hub menu options */
+"Upgrades" = "ترقيات";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8196,6 +8269,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "واجهنا مشكلة في أثناء تحميل التحليلات";
+
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"We found that the store has already launched." = "تبين لنا أن متجرك بدأ بالفعل.";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "لقد أجرينا تعديلاً طفيفًا على العنوان الذي تم إدخاله. إذا كان صحيحًا، فيرجى استخدام العنوان المقترح لضمان التوصيل الدقيق.";
@@ -8537,11 +8613,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "تم إنشاء متجرك!";
 
+/* Title of the store onboarding launched store screen. */
+"Your store is live!" = "أصبح متجرك نشطًا!";
+
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "سيتم إنشاء متجرك استنادًا إلى الخيارات التي تحددها!";
 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "وصل طلب الدعم الخاص بك بأمان إلى علبة الوارد لديك. سنرد عبر رسالة على البريد الإلكتروني بأسرع ما يمكننا.";
+
+/* Message of the free trial banner when there are no days left */
+"Your trial has ended." = "انتهى الإصدار التجريبي الخاص بك.";
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "سيتعيَّن عليك تثبيت إضافة مدفوعات WooCommerce المجانية على مخزنك لقبول المدفوعات الشخصية.";
@@ -8632,6 +8714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "المدفوعات، النقر للدفع، woocommerce، woo، المدفوعات الشخصية، الدفعات الشخصية، تحصيل الدفع، المدفوعات، القارئ، قارئ البطاقات، قارئ بطاقة الطلبات ";
+
+/* Label shown on the launch store task. */
+"private" = "خاص";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "تقييم %ld من المرات";

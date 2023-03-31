@@ -33,6 +33,11 @@ final class SetUpTapToPayTryPaymentPromptViewController: UIHostingController<Set
         fatalError("Not implemented")
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.onAppear()
+        super.viewDidAppear(animated)
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         viewModel.didUpdate = nil
         super.viewWillDisappear(animated)
@@ -102,7 +107,10 @@ struct SetUpTapToPayPaymentPromptView: View {
     ///
     private func paymentFlow() -> some View {
         WooNavigationSheet(viewModel: WooNavigationSheetViewModel(navigationTitle: Localization.setUpTryPaymentPromptTitle,
-                                                                  done: viewModel.dismiss ?? {})) {
+                                                                  done: {
+            paymentFlowDismissed()
+            viewModel.dismiss?()
+        })) {
             if let summaryViewModel = viewModel.summaryViewModel {
                 SimplePaymentsSummary(
                     dismiss: {
@@ -113,6 +121,10 @@ struct SetUpTapToPayPaymentPromptView: View {
             }
             EmptyView()
         }
+    }
+
+    private func paymentFlowDismissed() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: .tapToPayTryAPayment))
     }
 
     private func showOrder(orderID: Int64, siteID: Int64) {

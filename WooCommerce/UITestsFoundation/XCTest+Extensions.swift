@@ -123,9 +123,8 @@ extension XCUIElement {
         return staticTexts.containing(predicate).count
     }
 
-    public func assertTextVisibilityCount(textToFind: String, expectedCount: Int = 1) {
-        let count = try! getStaticTextVisibilityCount(textToFind: textToFind)
-        XCTAssertTrue(count == expectedCount, "Expected '\(textToFind)' to appear \(expectedCount) times, but it appeared '\(count)' times!")
+    public func assertTextVisibilityCount(textToFind: String, expectedCount: Int) {
+        XCTAssertEqual(try! getStaticTextVisibilityCount(textToFind: textToFind), expectedCount)
     }
 
     // Parent element is accessibilityIdentifier, child element is staticText

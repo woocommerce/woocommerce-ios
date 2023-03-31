@@ -53,7 +53,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -78,7 +78,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -98,7 +98,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -118,7 +118,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -139,7 +139,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))

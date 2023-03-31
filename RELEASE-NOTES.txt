@@ -1,12 +1,20 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.0
+-----
+- [*] Adds a banner in "Launch store" task screen to upgrade from free trial plan. [https://github.com/woocommerce/woocommerce-ios/pull/9323]
+- [*] Fix: Description, sale price, and image will be copied over to the new product variations when duplicating a variable product. [https://github.com/woocommerce/woocommerce-ios/pull/9322]
+
+
 12.9
 -----
+- [**] Dashboard: an onboarding card is shown for sites with the following tasks if any is incomplete: "tell us more about your store" (store location) that opens a webview, "add your first product" that starts the product creation flow, "launch your store" that publishes the store, "customize your domain" that starts the domain purchase flow, and "get paid" that opens a webview. A subset of the tasks may be shown to self-hosted sites and WPCOM sites on a free trial. [https://github.com/woocommerce/woocommerce-ios/pull/9285]
 - [*] Jetpack benefit banner and modal is now available on the dashboard screen after logging in with site credentials. [https://github.com/woocommerce/woocommerce-ios/pull/9232]
 - [*] Payments: Local search is added to the products selection screen in the order creation flow to speed the process. [https://github.com/woocommerce/woocommerce-ios/pull/9178]
 - [*] Fix: Prevent product variations not loading due to an encoding error for `permalink`, which was altered by a plugin. [https://github.com/woocommerce/woocommerce-ios/pull/9233]
 - [*] Login: Users can now log in to self-hosted sites without Jetpack by approving application password authorization to their sites. [https://github.com/woocommerce/woocommerce-ios/pull/9260]
 - [*] Payments: Tap to Pay on iPhone can now be selected from the Payment Methods screen [https://github.com/woocommerce/woocommerce-ios/pull/9242]
+- [**] Payments: Set up Tap to Pay on iPhone flow added to the Payments Menu. Use it to configure the reader, and try a payment, before collecting a card payment with a customer. [https://github.com/woocommerce/woocommerce-ios/pull/9280]
 
 12.8
 -----

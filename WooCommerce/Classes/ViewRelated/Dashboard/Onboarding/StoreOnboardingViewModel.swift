@@ -15,7 +15,7 @@ class StoreOnboardingViewModel: ObservableObject {
         case failed
     }
 
-    @Published private(set) var isRedacted: Bool = false
+    @Published private(set) var isRedacted: Bool = true
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
 
     /// Used to determine whether the task list should be displayed in dashboard
@@ -36,17 +36,16 @@ class StoreOnboardingViewModel: ObservableObject {
             return placeholderTasks
         }
 
-        if isExpanded || !shouldShowViewAllButton {
+        if isExpanded {
             return taskViewModels
         }
 
-        let maxNumberOfTasksToDisplayInCollapsedMode = 3
-        let incompleteTasks = taskViewModels.filter({ !$0.isComplete })
-        return isExpanded ? taskViewModels : Array(incompleteTasks.prefix(maxNumberOfTasksToDisplayInCollapsedMode))
+        let incompleteTasks = Array(taskViewModels.filter({ !$0.isComplete }).prefix(Constants.maxNumberOfTasksToDisplayInCollapsedMode))
+        return incompleteTasks
     }
 
     var shouldShowViewAllButton: Bool {
-        !isExpanded && !isRedacted && !(taskViewModels.count < 3)
+        !isExpanded && !isRedacted && (taskViewModels.count > tasksForDisplay.count)
     }
 
     let isExpanded: Bool
@@ -107,18 +106,17 @@ class StoreOnboardingViewModel: ObservableObject {
 
 private extension StoreOnboardingViewModel {
     @MainActor
-    private func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
-                continuation.resume(with: result
-                    .map { $0.filter({ task in
-                        if case .unsupported = task.type {
-                            return false
-                        } else {
-                            return true
-                        }
-                    }).map { .init(task: $0) }})
-            })
+    func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
+        async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan
+        let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
+
+        if await shouldManuallyAppendLaunchStoreTask {
+            return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
+                .sorted()
+                .map { .init(task: $0) }
+        } else {
+            return tasksFromServer
+                .map { .init(task: $0) }
         }
     }
 
@@ -162,8 +160,57 @@ private extension StoreOnboardingViewModel {
         defaults[.completedAllStoreOnboardingTasks] = true
     }
 
+    @MainActor
+    func fetchTasks() async throws -> [StoreOnboardingTask] {
+        try await withCheckedThrowingContinuation({ continuation in
+            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
+                switch result {
+                case .success(let tasks):
+                    return continuation.resume(returning: tasks.filter({ task in
+                        if case .unsupported = task.type {
+                            return false
+                        } else {
+                            return true
+                        }
+                    }))
+                case .failure(let error):
+                    return continuation.resume(throwing: error)
+                }
+            })
+        })
+    }
+
+    @MainActor
+    var isFreeTrialPlan: Bool {
+        get async {
+            // Only fetch free trial information if the site is a WPCom site.
+            guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
+                return false
+            }
+
+            return await withCheckedContinuation({ continuation in
+                let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+                    switch result {
+                    case .success(let plan):
+                        return continuation.resume(returning: plan.isFreeTrial)
+                    case .failure(let error):
+                        DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
+                        return continuation.resume(returning: false)
+                    }
+                }
+                stores.dispatch(action)
+            })
+        }
+    }
+
     func hasPendingTasks(_ tasks: [StoreOnboardingTaskViewModel]) -> Bool {
         tasks.contains(where: { $0.isComplete == false })
+    }
+}
+
+private extension StoreOnboardingViewModel {
+    enum Constants {
+        static let maxNumberOfTasksToDisplayInCollapsedMode = 3
     }
 }
 

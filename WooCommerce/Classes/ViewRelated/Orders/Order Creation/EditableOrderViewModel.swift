@@ -62,6 +62,12 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
+    /// Indicates whether Product Multi-Selection is enabled
+    ///
+    var shouldUseProductMultiSelection: Bool {
+        featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)
+    }
+
     var title: String {
         switch flow {
         case .creation:
@@ -70,10 +76,6 @@ final class EditableOrderViewModel: ObservableObject {
             return String.localizedStringWithFormat(Localization.titleWithOrderNumber, order.number)
         }
     }
-
-    /// Latest state for Product Multi-Selection experimental feature
-    ///
-    @Published var isProductMultiSelectionBetaFeatureEnabled: Bool = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection)
 
     /// Active navigation bar trailing item.
     /// Defaults to create button.
@@ -178,8 +180,8 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
-            isClearSelectionEnabled: isProductMultiSelectionBetaFeatureEnabled,
+            supportsMultipleSelection: shouldUseProductMultiSelection,
+            isClearSelectionEnabled: shouldUseProductMultiSelection,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
@@ -331,8 +333,6 @@ final class EditableOrderViewModel: ObservableObject {
         // Needs to be reset before the view model is used.
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
-        configureProductMultiSelectionIfNeeded()
-
         configureDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
@@ -345,20 +345,6 @@ final class EditableOrderViewModel: ObservableObject {
         configureMultipleLinesMessage()
         resetAddressForm()
         syncInitialSelectedState()
-    }
-
-    /// Checks the current state of the Product Multi Selection feature toggle
-    ///
-    private func configureProductMultiSelectionIfNeeded() {
-        let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { result in
-            switch result {
-            case .success(let isEnabled):
-                self.isProductMultiSelectionBetaFeatureEnabled = isEnabled
-            case .failure(let error):
-                DDLogError("Unable to load MultiSelection feature switch state. \(error)")
-            }
-        })
-        stores.dispatch(action)
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -416,7 +402,7 @@ final class EditableOrderViewModel: ObservableObject {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
-        if isProductMultiSelectionBetaFeatureEnabled {
+        if shouldUseProductMultiSelection {
             // Updates selected products and selected variations for all items that have been removed directly from the Order
             // when using multi-selection, for example by tapping the `-` button within the Order view
             if item.productID != 0 {
@@ -895,7 +881,7 @@ private extension EditableOrderViewModel {
             allProducts.append(product)
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+        if shouldUseProductMultiSelection {
             // Multi-selection
             if !selectedProducts.contains(where: { $0.productID == product.productID }) {
                 selectedProducts.append(product)
@@ -927,7 +913,7 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+        if shouldUseProductMultiSelection {
             // Multi-Selection
             if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
                 selectedProductVariations.append(variation)

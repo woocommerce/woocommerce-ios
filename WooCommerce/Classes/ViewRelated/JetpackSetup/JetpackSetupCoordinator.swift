@@ -209,6 +209,8 @@ private extension JetpackSetupCoordinator {
     }
 
     func showSetupSteps(username: String, authToken: String) {
+        analytics.track(.jetpackSetupLoginCompleted)
+
         /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
         let credentials: Credentials = .wpcom(username: username, authToken: authToken, siteAddress: site.url)
         guard jetpackConnectedEmail == nil else {
@@ -239,6 +241,7 @@ private extension JetpackSetupCoordinator {
     }
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
+        analytics.track(.jetpackSetupCompleted)
         stores.sessionManager.deleteApplicationPassword()
         stores.authenticate(credentials: credentials)
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
@@ -252,6 +255,7 @@ private extension JetpackSetupCoordinator {
                 self.stores.synchronizeEntities { [weak self] in
                     self?.stores.updateDefaultStore(site)
                     self?.rootViewController.dismiss(animated: true, completion: {
+                        self?.analytics.track(.jetpackSetupSynchronizationCompleted)
                         self?.registerForPushNotifications()
                     })
                 }

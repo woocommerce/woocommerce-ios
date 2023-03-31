@@ -154,9 +154,9 @@ private extension JetpackSetupCoordinator {
     }
 
     func startAuthentication(with email: String?) {
-        analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
         if let email {
             Task { @MainActor in
+                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
                 await emailLoginViewModel.checkWordPressComAccount(email: email)
             }
         } else {
@@ -311,6 +311,7 @@ private extension JetpackSetupCoordinator {
     }
 
     func showWPComEmailLogin() {
+        analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
         let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
         let loginNavigationController = LoginNavigationController(rootViewController: emailLoginController)
         rootViewController.dismiss(animated: true) {

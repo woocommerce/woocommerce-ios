@@ -162,11 +162,7 @@ final class AztecEditorViewController: UIViewController, Editor {
                                                  placeholderView: placeholderLabel)
         disableLinkTapRecognizer(from: editorView.richTextView)
 
-        setHTML(content)
-
-        // getHTML() from the Rich Text View removes the HTML tags
-        // so we align the original content to the value of the Rich Text View
-        content = getHTML()
+        updateContent()
 
         refreshPlaceholderVisibility()
         handleSwipeBackGesture()
@@ -363,7 +359,12 @@ extension AztecEditorViewController: UITextViewDelegate {
 
 private extension AztecEditorViewController {
     func showProductGeneratorBottomSheet() {
-        let controller = ProductDescriptionGenerationHostingController(viewModel: .init(product: product))
+        let controller = ProductDescriptionGenerationHostingController(viewModel: .init(product: product)) { [weak self] updatedDescription in
+            guard let self else { return }
+            self.content = updatedDescription
+            self.updateContent()
+            self.dismissProductGeneratorBottomSheetIfNeeded()
+        }
         generatorController = controller
         configureBottomSheetPresentation(for: controller)
         view.endEditing(true)
@@ -383,5 +384,13 @@ private extension AztecEditorViewController {
         generatorController?.dismiss(animated: false) { [weak self] in
             self?.generatorController = nil
         }
+    }
+
+    func updateContent() {
+        setHTML(content)
+
+        // getHTML() from the Rich Text View removes the HTML tags
+        // so we align the original content to the value of the Rich Text View
+        content = getHTML()
     }
 }

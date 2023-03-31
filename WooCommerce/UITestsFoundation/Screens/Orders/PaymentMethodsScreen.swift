@@ -27,7 +27,7 @@ public final class PaymentMethodsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectCardPresentPayment() throws -> CardPresentPaymentsModalScreen {
+    public func tapCardPresentPayment() throws -> CardPresentPaymentsModalScreen {
         cardMethodButton.tap()
         return try CardPresentPaymentsModalScreen()
     }

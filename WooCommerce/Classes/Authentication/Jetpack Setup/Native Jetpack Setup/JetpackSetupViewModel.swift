@@ -7,11 +7,12 @@ import enum Alamofire.AFError
 final class JetpackSetupViewModel: ObservableObject {
     let siteURL: String
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
-    let connectionOnly: Bool
+    @Published private(set) var connectionOnly: Bool
+
     private let stores: StoresManager
     private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
 
-    let setupSteps: [JetpackInstallStep]
+    @Published private(set) var setupSteps: [JetpackInstallStep]
 
     /// Title to be displayed on the Jetpack setup view
     var title: String {
@@ -39,9 +40,11 @@ final class JetpackSetupViewModel: ObservableObject {
         return step.tryAgainButtonTitle ?? ""
     }
 
+    private(set) var jetpackConnectionURL: URL?
+    private let siteConnectionURL: URL?
+
     @Published private(set) var currentSetupStep: JetpackInstallStep?
     @Published private(set) var currentConnectionStep: ConnectionStep?
-    @Published private(set) var jetpackConnectionURL: URL?
     @Published var shouldPresentWebView = false
     @Published var jetpackConnectionInterrupted = false
 
@@ -94,9 +97,9 @@ final class JetpackSetupViewModel: ObservableObject {
         self.connectionOnly = connectionOnly
         self.stores = stores
         self.analytics = analytics
-        let setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
-        self.setupSteps = setupSteps
+        self.setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.storeNavigationHandler = onStoreNavigation
+        self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL, Constants.mobileRedirectURL))
     }
 
     func isSetupStepFailed(_ step: JetpackInstallStep) -> Bool {
@@ -149,6 +152,7 @@ final class JetpackSetupViewModel: ObservableObject {
     func didTapContinueConnectionButton() {
         analytics.track(.loginJetpackSetupScreenTryAgainButtonTapped,
                         withProperties: currentSetupStep?.analyticsDescription)
+        fetchJetpackConnectionURL()
     }
 }
 
@@ -168,9 +172,14 @@ private extension JetpackSetupViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
                 self.setupError = error
-                if self.hasEncounteredPermissionError == false,
-                    self.setupSteps.contains(.installation) {
-                    // plugin is likely to not have been installed, so proceed to install it.
+                if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) = error as? AFError {
+                    if self.connectionOnly {
+                        /// If site has WCPay installed and activated but not connected,
+                        /// plugins need to be installed even though we detected a connection before
+                        self.setupSteps = JetpackInstallStep.allCases
+                        self.connectionOnly = false
+                    }
+                    /// plugin is likely to not have been installed, so proceed to install it.
                     self.installJetpack()
                 } else {
                     self.setupFailed = true
@@ -223,7 +232,14 @@ private extension JetpackSetupViewModel {
             switch result {
             case .success(let url):
                 self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLSuccessful)
-                self.jetpackConnectionURL = url
+                /// Checks if the fetch URL is for account connection;
+                /// if not, use the web view solution to avoid the need for cookie-nonce.
+                /// Reference: pe5sF9-1le-p2#comment-1942.
+                if url.absoluteString.hasPrefix(Constants.accountConnectionURL) {
+                    self.jetpackConnectionURL = url
+                } else {
+                    self.jetpackConnectionURL = self.siteConnectionURL
+                }
                 self.shouldPresentWebView = true
             case .failure(let error):
                 self.analytics.track(.loginJetpackSetupFetchJetpackConnectionURLFailed, withError: error)
@@ -388,5 +404,8 @@ extension JetpackSetupViewModel {
         static let errorCodeNoWPComUser = 99
         static let errorUserInfoReason = "reason"
         static let errorUserInfoNoWPComUser = "No connected WP.com user found"
+        static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
+        static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }
 }

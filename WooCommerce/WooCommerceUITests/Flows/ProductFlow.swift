@@ -8,7 +8,7 @@ class ProductFlow {
 
         try TabNavComponent().goToProductsScreen()
             .tapAddProduct()
-            .selectProductType(productType: productType)
+            .tapProductType(productType: productType)
             .verifyProductTypeScreenLoaded(productType: productType)
             .addProductTitle(productTitle: product.name)
             .publishProduct()

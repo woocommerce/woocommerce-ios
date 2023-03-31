@@ -201,7 +201,10 @@ extension Networking.CreateProductVariation {
     public static func fake() -> Networking.CreateProductVariation {
         .init(
             regularPrice: .fake(),
-            attributes: .fake()
+            salePrice: .fake(),
+            attributes: .fake(),
+            description: .fake(),
+            image: .fake()
         )
     }
 }

@@ -650,7 +650,15 @@ private extension StoreCreationCoordinator {
                     }
                     return
                 }
-                self.showSuccessView(from: navigationController, site: site)
+
+                /// Free trial stores should land directly on the dashboard and not show any success view.
+                ///
+                if isFreeTrialEnabled {
+                    self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .native))
+                    self.continueWithSelectedSite(site: site)
+                } else {
+                    self.showSuccessView(from: navigationController, site: site)
+                }
             }
     }
 

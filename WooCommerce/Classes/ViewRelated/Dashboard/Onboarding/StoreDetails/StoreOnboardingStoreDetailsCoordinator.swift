@@ -8,10 +8,14 @@ final class StoreOnboardingStoreDetailsCoordinator: Coordinator {
     let navigationController: UINavigationController
 
     private let site: Site
+    private let onDismiss: (() -> Void)?
 
-    init(site: Site, navigationController: UINavigationController) {
+    init(site: Site,
+         navigationController: UINavigationController,
+         onDismiss: (() -> Void)? = nil) {
         self.site = site
         self.navigationController = navigationController
+        self.onDismiss = onDismiss
     }
 
     func start() {
@@ -36,6 +40,7 @@ private extension StoreOnboardingStoreDetailsCoordinator {
     }
 
     @objc func dismissWebview() {
+        onDismiss?()
         navigationController.dismiss(animated: true)
     }
 }

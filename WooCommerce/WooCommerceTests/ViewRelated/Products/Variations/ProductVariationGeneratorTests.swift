@@ -17,46 +17,78 @@ final class ProductVariationGeneratorTests: XCTestCase {
 
         // Then
         XCTAssertEqual(variations, [
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "S"),
-                .init(id: 2, name: "Color", option: "Red"),
-                .init(id: 3, name: "Fabric", option: "Cotton")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "S"),
-                .init(id: 2, name: "Color", option: "Red"),
-                .init(id: 3, name: "Fabric", option: "Nylon")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "S"),
-                .init(id: 2, name: "Color", option: "Green"),
-                .init(id: 3, name: "Fabric", option: "Cotton")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "S"),
-                .init(id: 2, name: "Color", option: "Green"),
-                .init(id: 3, name: "Fabric", option: "Nylon")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "M"),
-                .init(id: 2, name: "Color", option: "Red"),
-                .init(id: 3, name: "Fabric", option: "Cotton")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "M"),
-                .init(id: 2, name: "Color", option: "Red"),
-                .init(id: 3, name: "Fabric", option: "Nylon")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "M"),
-                .init(id: 2, name: "Color", option: "Green"),
-                .init(id: 3, name: "Fabric", option: "Cotton")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "M"),
-                .init(id: 2, name: "Color", option: "Green"),
-                .init(id: 3, name: "Fabric", option: "Nylon")
-            ]),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil),
         ])
     }
 
@@ -86,36 +118,60 @@ final class ProductVariationGeneratorTests: XCTestCase {
 
         // Then
         XCTAssertEqual(variations, [
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "S"),
-                .init(id: 2, name: "Color", option: "Red"),
-                .init(id: 3, name: "Fabric", option: "Cotton")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "S"),
-                .init(id: 2, name: "Color", option: "Green"),
-                .init(id: 3, name: "Fabric", option: "Cotton")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "S"),
-                .init(id: 2, name: "Color", option: "Green"),
-                .init(id: 3, name: "Fabric", option: "Nylon")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "M"),
-                .init(id: 2, name: "Color", option: "Red"),
-                .init(id: 3, name: "Fabric", option: "Cotton")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "M"),
-                .init(id: 2, name: "Color", option: "Red"),
-                .init(id: 3, name: "Fabric", option: "Nylon")
-            ]),
-            CreateProductVariation(regularPrice: "", attributes: [
-                .init(id: 1, name: "Size", option: "M"),
-                .init(id: 2, name: "Color", option: "Green"),
-                .init(id: 3, name: "Fabric", option: "Nylon")
-            ]),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil),
         ])
     }
 }

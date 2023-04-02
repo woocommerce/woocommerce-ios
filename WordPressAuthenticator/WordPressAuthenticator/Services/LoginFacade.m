@@ -3,10 +3,7 @@
 #import "WordPressComOAuthClientFacade.h"
 #import "WordPressXMLRPCAPIFacade.h"
 #import "WPAuthenticator-Swift.h"
-
 @import WordPressKit;
-
-
 
 @implementation LoginFacade
 

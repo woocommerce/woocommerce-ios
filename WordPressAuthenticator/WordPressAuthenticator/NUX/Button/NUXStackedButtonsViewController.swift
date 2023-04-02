@@ -1,5 +1,4 @@
 import UIKit
-import WordPressKit
 
 struct StackedButton {
     enum StackView {

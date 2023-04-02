@@ -422,24 +422,6 @@ extension LoginViewController {
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.apple.rawValue)
     }
 
-    /// Updates the LoginFields structure, with the specified Google User + Token + Email.
-    ///
-    func updateLoginFields(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {
-        updateLoginFields(
-            email: googleEmail,
-            username: googleEmail,
-            fullName: googleUser.profile?.name ?? "",
-            googleToken: googleToken
-        )
-    }
-
-    func updateLoginFields(email: String, username: String, fullName: String, googleToken: String) {
-        loginFields.emailAddress = email
-        loginFields.username = email
-        loginFields.meta.socialServiceIDToken = googleToken
-        loginFields.meta.googleUser = SocialService.User(email: email, fullName: fullName)
-    }
-
     // Used by SIWA when logging with with a passwordless, 2FA account.
     //
     func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {

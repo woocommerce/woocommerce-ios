@@ -21,12 +21,7 @@ class LoginViewControllerTests: XCTestCase {
         // navigationController property to not be nil.
         _ = UINavigationController(rootViewController: sut)
 
-        sut.updateLoginFields(
-            email: "test@email.com",
-            username: "username",
-            fullName: "Full Name",
-            googleToken: "abcd"
-        )
+        sut.loginFields.meta.googleUser = SocialService.User(email: "test@email.com", fullName: "Full Name")
 
         sut.showSignupEpilogue(for: AuthenticatorCredentials())
 

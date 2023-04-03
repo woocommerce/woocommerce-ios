@@ -46,8 +46,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrieveMostPopularProductsInCache(let siteID, let onCompletion):
-            retrieveMostPopularProductsInCache(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveProductsInCacheSortedByDescendingPopularity(let siteID, let onCompletion):
+            retrieveProductsInCacheSortedByDescendingPopularity(siteID: siteID, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -321,7 +321,7 @@ private extension ProductStore {
         }
     }
 
-    func retrieveMostPopularProductsInCache(siteID: Int64, onCompletion: @escaping ([Product]) -> Void) {
+    func retrieveProductsInCacheSortedByDescendingPopularity(siteID: Int64, onCompletion: @escaping ([Product]) -> Void) {
         // Get completed orders
         let completedOrderPredicate = NSPredicate(format: "statusKey ==[c] %@", OrderStatusEnum.completed.rawValue)
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)

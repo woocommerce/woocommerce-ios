@@ -64,9 +64,9 @@ public enum ProductAction: Action {
         onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
     /// Retrieve cached products sorted by popularity, that is, those that were included
-    /// in a completed order most often.
+    /// in a completed order most often, in descending order.
     ///
-    case retrieveMostPopularProductsInCache(siteID: Int64,
+    case retrieveProductsInCacheSortedByDescendingPopularity(siteID: Int64,
                                             onCompletion: ([Product]) -> Void)
 
     /// Deletes all of the cached products.

@@ -787,7 +787,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveMostPopularProductsInCache(siteID: self.sampleSiteID, onCompletion: { result in
+            let action = ProductAction.retrieveProductsInCacheSortedByDescendingPopularity(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             })
 
@@ -827,7 +827,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveMostPopularProductsInCache(siteID: self.sampleSiteID, onCompletion: { result in
+            let action = ProductAction.retrieveProductsInCacheSortedByDescendingPopularity(siteID: self.sampleSiteID, onCompletion: { result in
                 promise(result)
             })
 
@@ -865,7 +865,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveMostPopularProductsInCache(siteID: 555, onCompletion: { result in
+            let action = ProductAction.retrieveProductsInCacheSortedByDescendingPopularity(siteID: 555, onCompletion: { result in
                 promise(result)
             })
 

@@ -1,3 +1,4 @@
+import Networking
 import Yosemite
 
 /// Generates mock `ShippingLabelAccountSettings`

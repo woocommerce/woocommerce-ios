@@ -49,6 +49,8 @@ struct FreeTrialSummaryView: View {
                             Text(feature)
                         }
                     }
+
+                    // TODO: Add WordPress Indicator
                 }
             }
 

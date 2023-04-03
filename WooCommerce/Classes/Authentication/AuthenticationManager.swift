@@ -25,6 +25,9 @@ class AuthenticationManager: Authentication {
     /// Store creation coordinator in the logged-out state.
     private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
 
+    /// Store creation coordinator in the logged-in state.
+    private var storeCreationCoordinator: StoreCreationCoordinator?
+
     /// Keychain access for SIWA auth token
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -581,6 +584,18 @@ private extension AuthenticationManager {
                           source: SignInSource? = nil,
                           in navigationController: UINavigationController,
                           onDismiss: @escaping () -> Void = {}) {
+        // Start the store creation process if the user
+        // logged in from the store creation flow.
+        if case .custom(let source) = source,
+           let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
+           storeCreationSource == .prologue {
+            let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
+                                                       navigationController: navigationController)
+            self.storeCreationCoordinator = coordinator
+            return coordinator.start()
+        }
+
+        // Start the store picker
         let config: StorePickerConfiguration = {
             switch source {
             case .custom(let source):

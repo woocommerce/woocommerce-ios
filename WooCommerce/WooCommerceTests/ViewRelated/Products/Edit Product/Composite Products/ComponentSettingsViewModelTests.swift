@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+@testable import Yosemite
 
 final class ComponentSettingsViewModelTests: XCTestCase {
 
@@ -25,5 +26,26 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.shouldShowDescription)
         XCTAssertFalse(viewModel.shouldShowImage)
+    }
+
+    func test_view_model_prefills_expected_data_from_component_list() {
+        // Given
+        let component = ComponentsListViewModel.Component(id: "1",
+                                                          title: "Camera Body",
+                                                          imageURL: URL(string: "https://woocommerce.com/woo.jpg"),
+                                                          description: "Choose between the Nikon D600 or the powerful Canon EOS 5D Mark IV.",
+                                                          optionType: .productIDs)
+
+        // When
+        let viewModel = ComponentSettingsViewModel(component: component)
+
+        // Then
+        XCTAssertEqual(viewModel.componentTitle, component.title)
+        XCTAssertEqual(viewModel.description, component.description)
+        XCTAssertEqual(viewModel.imageURL, component.imageURL)
+        XCTAssertEqual(viewModel.optionsType, component.optionType.description)
+        XCTAssertEqual(viewModel.options, [])
+        XCTAssertEqual(viewModel.defaultOptionTitle,
+                       NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product"))
     }
 }

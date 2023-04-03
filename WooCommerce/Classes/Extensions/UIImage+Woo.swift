@@ -1250,6 +1250,12 @@ extension UIImage {
     static var iconBolt: UIImage {
         UIImage(imageLiteralResourceName: "icon-bolt")
     }
+
+    /// Illustration for the free trial summary screen.
+    ///
+    static var freeTrialIllustration: UIImage {
+        UIImage(imageLiteralResourceName: "free-trial-ilustration")
+    }
 }
 
 private extension UIImage {

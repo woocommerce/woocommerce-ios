@@ -26,10 +26,10 @@ struct FreeTrialSummaryView: View {
             ScrollView {
                 VStack(alignment: .leading) {
 
+                    /// Align image to the right
                     HStack {
                         Spacer()
-                        Rectangle()
-                            .frame(width: 187, height: 158, alignment: .trailing)
+                        Image(uiImage: .freeTrialIllustration)
                     }
 
                     Text("Launch in days, grow for years")

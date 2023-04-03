@@ -61,9 +61,13 @@ struct ComponentsList: View {
                         }
                     }
                     Divider()
+                        .padding(.leading)
+                        .padding(.trailing, insets: -safeAreaInsets)
+                        .renderedIf(component != viewModel.components.last)
                 }
-                .padding(.leading, insets: safeAreaInsets)
             }
+            .padding(.horizontal, insets: safeAreaInsets)
+            .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
 
             FooterNotice(infoText: viewModel.infoNotice)

@@ -7,7 +7,7 @@ final class ComponentsListViewModel: ObservableObject {
 
     /// Represents a component
     ///
-    struct Component: Identifiable {
+    struct Component: Identifiable, Equatable {
         /// Component ID
         let id: String
 

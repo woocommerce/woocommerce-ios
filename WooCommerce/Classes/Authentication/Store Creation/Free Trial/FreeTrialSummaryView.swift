@@ -80,6 +80,7 @@ struct FreeTrialSummaryView: View {
                 }
                 .padding()
             }
+            .background(Color(.listBackground))
 
             // Continue Footer
             VStack() {

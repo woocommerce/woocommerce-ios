@@ -14,7 +14,7 @@ class LoginFlow {
 
     @discardableResult
     static func logInWithWPcom() throws -> MyStoreScreen {
-        try PrologueScreen().selectContinueWithWordPress()
+        try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
 
@@ -26,7 +26,7 @@ class LoginFlow {
     @discardableResult
     static func logInWithSiteAddress() throws -> MyStoreScreen {
         try PrologueScreen()
-            .selectSiteAddress()
+            .tapSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)

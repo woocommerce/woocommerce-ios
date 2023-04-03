@@ -444,7 +444,11 @@ final class ProductVariationStoreTests: XCTestCase {
                                             thenReturn: .success(expectedProductVariation))
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
-        let createdProductVariation = CreateProductVariation(regularPrice: "10", attributes: sampleProductVariationAttributes())
+        let createdProductVariation = CreateProductVariation(regularPrice: "10",
+                                                             salePrice: "8",
+                                                             attributes: sampleProductVariationAttributes(),
+                                                             description: "Sample description",
+                                                             image: .fake())
 
         // When
         let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
@@ -477,7 +481,11 @@ final class ProductVariationStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-create")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
-        let createdProductVariation = CreateProductVariation(regularPrice: "", attributes: sampleProductVariationAttributes())
+        let createdProductVariation = CreateProductVariation(regularPrice: "",
+                                                             salePrice: "",
+                                                             attributes: sampleProductVariationAttributes(),
+                                                             description: "",
+                                                             image: .fake())
 
         // When
         let result = waitFor { promise in
@@ -507,7 +515,11 @@ final class ProductVariationStoreTests: XCTestCase {
                                             thenReturn: .failure(NSError(domain: "", code: 400, userInfo: nil)))
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
-        let createdProductVariation = CreateProductVariation(regularPrice: "10", attributes: sampleProductVariationAttributes())
+        let createdProductVariation = CreateProductVariation(regularPrice: "10",
+                                                             salePrice: "8",
+                                                             attributes: sampleProductVariationAttributes(),
+                                                             description: "",
+                                                             image: .fake())
 
         // When
         let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in

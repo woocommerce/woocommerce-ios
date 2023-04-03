@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-16 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-29 09:54:20+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -169,11 +169,17 @@ which should be translated separately and considered part of this sentence. */
 /* For example, '5 Items' */
 "%@ Items" = "%@個のアイテム";
 
+/* Reads like: eCommerce ended */
+"%@ ended" = "%@が終了しました";
+
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "%@ ラベルの返金がリクエストされました";
 
 /* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
 "%@ via %@" = "%2$@ 経由 %1$@";
+
+/* Message of the free trial banner when there is more than 1 day left */
+"%d days left in your trial." = "お試し期間はあと%d日です。";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d アイテム";
@@ -189,6 +195,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld 選択済みの商品";
+
+/* Format of the number of components in singular form */
+"%ld component" = "%ldつのコンポーネント";
+
+/* Format of the number of components in plural form */
+"%ld components" = "%ldつのコンポーネント";
 
 /* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
 "%ld cross-sell product" = "%ldクロスセル商品";
@@ -249,6 +261,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product selected" = "1件の商品を選択済み";
 
+/* Message of the free trial banner when there is 1 day left */
+"1 day left in your trial." = "お試し期間はあと1日です。";
+
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1個のアイテムを選択済み";
 
@@ -293,8 +308,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "ネットワークエラーが発生しました。 接続を確認して、もう一度お試しください。";
 
-/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
-"A phone number is required because this shipment requires a customs form" = "この配送にはカスタムフォームが必要なため、電話番号が必須です";
+/* Error shown in Shipping Label Origin Address validation for phone number field */
+"A phone number is required" = "電話番号は必須項目です";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "色やサイズのバリエーションがある商品";
@@ -393,6 +408,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "カテゴリーを追加";
+
+/* Title text of the button that adds a fee when creating a new coupon */
+"Add Coupon" = "クーポンを追加";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "お客様の詳細を追加";
@@ -679,6 +697,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "無料配送を許可";
 
+/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
+"Almost there! Please enter the verification code from your Authentication app" = "もう少しです ! 認証アプリから認証コードを入力してください";
+
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "もう少しで完了です。認証アプリから認証コードを入力してください。";
 
@@ -961,6 +982,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility announcement message when device goes back online */
 "Back online" = "再びオンラインになる";
 
+/* Title of the secondary button on the store onboarding launched store screen. */
+"Back to My Store" = "ストアに戻る";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "Back to Order" = "注文に戻る";
 
@@ -1164,6 +1188,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "「Jetpack をインストール」ボタンをタップすると、当社の%1$@および WordPress.com に%2$@ことに同意したものとみなされます。";
 
+/* Details on the store onboarding WCPay setup screen. */
+"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooCommerce Payments を使用することで、お客様は弊社の [利用規約](https:\/\/wordpress.com\/tos) に拘束されることに同意し、弊社 [プライバシーポリシー](https:\/\/automattic.com\/privacy\/) を読んだものとみなされます。";
+
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "国";
 
@@ -1232,6 +1259,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the new product form
    Button to dismiss the site credential login screen
+   Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
@@ -1258,6 +1286,8 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
+   Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1268,8 +1298,13 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen
    Title of an option to dismiss the bulk edit action sheet
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Title of dismiss button presented when site credential login fails
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
+   Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "キャンセル";
+
+/* Title for the button to cancel a free trial */
+"Cancel Free Trial" = "無料お試しをキャンセル";
 
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "インストールをキャンセル";
@@ -1331,8 +1366,8 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Car Washes" = "洗車場";
 
-/* Card method title on the select payment method screen */
-"Card" = "カード";
+/* (External) card reader payment method title on the select payment method screen */
+"Card Reader" = "カードリーダー";
 
 /* Title of the card reader support area option */
 "Card Reader \/ In-Person Payments" = "カードリーダー \/ 対面決済";
@@ -1586,8 +1621,15 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for completed order status. */
 "Completed" = "完了";
 
+/* Title for Components row in the product form screen.
+   Title for the list of components in a composite product */
+"Components" = "コンポーネント";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "新しい注文メモを作成します。";
+
+/* Display label for composite product type. */
+"Composite" = "混合商品";
 
 /* Industry option in the store creation category question. */
 "Computer Repair" = "コンピューター修理";
@@ -1748,6 +1790,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to continue with a selected domain. */
 "Continue" = "次へ";
 
+/* Title of the primary button on the store onboarding payments setup screen. */
+"Continue Setup" = "セットアップを続行";
+
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "WordPress.com で続ける";
 
@@ -1808,6 +1853,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem subscribing to a site or feed. */
 "Could not follow the site at the address specified." = "指定されたアドレスのサイトをフォローできませんでした。";
 
+/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Could not launch your store" = "ストアを公開できません";
+
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "指定されたアドレスのサイトをフォロー解除できませんでした。";
 
@@ -1851,6 +1899,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Coupon screen during order creation */
 "Coupon" = "クーポン";
 
+/* The singular coupon summary. Reads like: Coupon (code1) */
+"Coupon (%1$@)" = "クーポン (%1$@)";
+
 /* Text field coupon code in the view for adding or editing a coupon code. */
 "Coupon Code" = "クーポンコード";
 
@@ -1881,6 +1932,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "クーポン";
+
+/* The plural coupon summary. Reads like: Coupon (code1, code2) */
+"Coupons (%1$@)" = "クーポン (%1$@)";
 
 /* Industry option in the store creation category question. */
 "Courier Services" = "クーリエサービス";
@@ -1941,6 +1995,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate just one variation */
 "Create one new variation. Manually set which attributes belong to the variable product." = "新しいバリエーションを1つ作成します。 バリエーションのある商品の属性を手動で設定します。";
+
+/* Title for the Create Order iOS Shortcut */
+"Create order" = "注文を作成";
 
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "注文を作成 !";
@@ -2014,6 +2071,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the footer of bulk price setting screen, when products have different price values.
    Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "現在、さまざまな価格が混在しています。";
+
+/* Reads like: Current: Free Trial */
+"Current: %@" = "現在: %@";
 
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "現在、作成がサポートされているのは、最大100件のバリエーションです。 この商品のバリエーションを生成すると、%d件のバリエーションが作成されます。";
@@ -2210,12 +2270,16 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "割引価格";
 
+/* Details on the store onboarding payments setup screen. */
+"Discover other payment providers and choose a payment provider." = "他の決済サービス業者を探し、決済サービス業者を1社選択します。";
+
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
+   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
@@ -2297,6 +2361,8 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
+   Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
@@ -2485,6 +2551,9 @@ which should be translated separately and considered part of this sentence. */
    Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "メール";
 
+/* Label for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Email Address or Username" = "メールアドレスまたはユーザー名";
+
 /* Accessibility label for the email address text field.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
@@ -2609,6 +2678,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "説明を入力";
+
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Enter email or username" = "メールアドレスまたはユーザー名を入力";
 
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "ファイル URL を入力";
@@ -2835,6 +2907,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "直接支払いを有効化できませんでした。 後でやり直してください。";
 
+/* Error message displayed when failed to fetch application password authorization URL during login */
+"Failed to fetch the authorization URL for application passwords. Please try again." = "アプリケーションパスワードの認証URLの取得に失敗しました。 もう一度お試しください。";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "料金の詳細を取得できませんでした。 もう一度お試しください。";
 
@@ -2985,6 +3060,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "France" = "フランス";
+
+/* Plan name for an active free trial */
+"Free Trial" = "無料お試し";
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "1年目は無料";
@@ -3769,6 +3847,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Lead Generation" = "リードジェネレーション";
 
+/* Title of the secondary button on the store onboarding payments setup screen. */
+"Learn More" = "さらに詳しく";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
@@ -3903,6 +3984,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label.
+   Title for the application password authorization web view
    View title during the log in process. */
 "Log In" = "ログイン";
 
@@ -4593,6 +4675,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "配送ラベルのお支払い方法を管理できるのは、サイトの所有者のみです。 お支払い方法を管理するには、%1$@ (%2$@) にお問い合わせください。";
 
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Oops, some unexpected errors happened." = "予期しないエラーが発生しました。";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "デバイス設定を開く";
 
@@ -4615,6 +4700,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
 "Open the flow for installing the WCShip extension." = "WCShip 拡張機能をインストールしましょう。";
+
+/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
+"Open wp-admin" = "WP 管理画面を開く";
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "利用可能なステータスのリストを開きます。";
@@ -4890,6 +4978,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "お支払い方法が選択されました";
 
+/* Highlighted header text on the store onboarding payments setup screen. */
+"Payment Methods" = "お支払い方法";
+
 /* Navigates to Payment Gateway management screen */
 "Payment Provider" = "決済サービス業者";
 
@@ -4920,7 +5011,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
-   Title of the hub menu payments button */
+   Title of the hub menu payments button
+   Title of the webview for payments setup from onboarding. */
 "Payments" = "支払い";
 
 /* Display label for pending order status.
@@ -5362,6 +5454,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "商品へのリンク";
 
+/* Cell title on beta features screen to enable Product Multi-Selection */
+"Product Multi-Selection" = "商品の複数選択";
+
 /* Title of the view containing a single Product Review */
 "Product Review" = "製品のレビュー";
 
@@ -5441,6 +5536,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action for creating a new product remotely with a published status */
 "Publish" = "公開";
+
+/* Title of the primary button on the store onboarding > launch store screen to publish a store. */
+"Publish My Store" = "ストアを公開";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "公開設定";
@@ -5655,6 +5753,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "カードを取り外してください";
 
+/* Text for the button to remove a Coupon from the order during order creation */
+"Remove Coupon from Order" = "注文からクーポンを削除";
+
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
 "Remove Expiry Date" = "有効期限を削除";
 
@@ -5709,6 +5810,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "クラッシュをレポート";
 
+/* Title for the button to contact support on the Subscriptions view */
+"Report Subscription Issue" = "サブスクリプションの問題を報告";
+
 /* Title for the alert after the support request is created. */
 "Request Sent!" = "リクエストを送信しました。";
 
@@ -5760,12 +5864,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
+   Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
    Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
+   Retry button on the error notice for the upgrade view
    Retry the last action */
 "Retry" = "再度試す";
 
@@ -5842,6 +5948,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 送信完了";
+
+/* Title for the plan section on the subscriptions view. Uppercased */
+"SUBSCRIPTION STATUS" = "サブスクリプションのステータス";
 
 /* Header label of the domain suggestions on the domain selector. */
 "SUGGESTIONS" = "提案";
@@ -6126,6 +6235,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "任意の割引率を設定します。";
 
+/* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
+"Set up %1$@" = "%1$@を設定";
+
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Jetpack のセットアップ";
 
@@ -6141,6 +6253,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "設定";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
+"Setup complete" = "セットアップの完了";
 
 /* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
 "Setup failed" = "設定できませんでした";
@@ -6161,6 +6276,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "支払いリンクを共有する";
+
+/* Title of the primary button on the store onboarding launched store screen. */
+"Share URL" = "共有 URL";
 
 /* Title of the feedback action button on the In-Person Payments feedback banner
    Title of the feedback button in the action sheet. */
@@ -6367,7 +6485,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "サイトアドレスは4文字以上にしてください。";
 
-/* The button title on the login onboarding screen to skip to the prologue screen.
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
+   The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "スキップ";
@@ -6496,6 +6615,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "申し訳ありません。サポートリクエストを作成できませんでした。しばらくしてからもう一度お試しください。";
 
+/* Error message when the built-in reader connection experiences an unexpected internal service error. */
+"Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "iPhone で Tap to Pay を開始できません。 接続を確認して、もう一度お試しください。";
+
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "ご指定のサイトアドレスはご利用いただけません。";
 
@@ -6596,6 +6718,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "ストアの作成はまだ進行中です";
 
+/* Title of the webview for Store details task from onboarding. */
+"Store details" = "ストアの詳細";
+
 /* Text field prompt on the store name form in the store creation flow. */
 "Store name" = "ストア名";
 
@@ -6625,6 +6750,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for subscription product type. */
 "Subscription" = "定期購入";
+
+/* Title for the Subscriptions / Upgrades view */
+"Subscriptions" = "サブスクリプション";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "サブスクリプション & ギフトカード";
@@ -6720,6 +6848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "サントメ・プリンシペ";
 
+/* Title for the section to contact support on the subscriptions view. Uppercased */
+"TROUBLESHOOTING" = "トラブルシューティング";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
@@ -6762,7 +6893,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "カードをタップまたは挿入して返金";
 
-/* The button title on the reader type alert, for the user to choose the built-in reader. */
+/* Tap to Pay on iPhone method title on the select payment method screen
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "iPhone でタップして支払う";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
@@ -6892,11 +7024,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
 
+/* Title of the Store details task to add details about the store. */
+"Tell us more about your store" = "ストアについて教えてください";
+
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "利用規約";
+
+/* Cell description on beta features screen to enable Product Multi-Selection */
+"Test out Product Multi-Selection as we get ready to launch" = "リリースの準備ができ次第、商品の複数選択をテストしてください";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "リリースに向けてアプリ内購入をテストする";
@@ -7187,6 +7325,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when the presented card postal code doesn't match the order postal code. */
 "The transaction postal code and card postal code do not match. Try another means of payment" = "取引の郵便番号とカードの郵便番号が一致しません。 別の支払方法をお試しください";
 
+/* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
+"The trial payment could not be started, please try again, or contact support if this problem persists." = "お試しの支払いを開始できませんでした。もう一度お試しいただくか、この問題が解決しない場合はサポートにご連絡ください。";
+
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "バリエーションを生成できませんでした。";
 
@@ -7219,6 +7360,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "注文の作成中にエラーが発生しました";
+
+/* Error shown when failing to fetch the plan details in the upgrades view. */
+"There was an error fetching your plan details, please try again later." = "プランの詳細を取得する際にエラーが発生しました。後でもう一度お試しください。";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "返金の実行中にエラーが発生しました";
@@ -7496,6 +7640,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry group option in the store creation category question. */
 "Travel And Lodging" = "旅行、宿泊";
 
+/* Plan name for an expired free trial */
+"Trial ended" = "お試し期間が終了しました";
+
 /* Country option for a site address. */
 "Trinidad and Tobago" = "トリニダード・トバゴ";
 
@@ -7540,13 +7687,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "インストールを再試行";
 
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
+"Try a Payment" = "支払いを試す";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"Try a payment" = "支払いを試す";
+
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "ご自身のカードで支払いをお試しください (完了したら返金してください)。";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
+   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "もう一度お試しください";
+
+/* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
+"Try again with WP-Admin page" = "WP 管理画面ページで再試行";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "別の支払方法をお試しください";
@@ -7556,6 +7713,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "今すぐお試しください";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
+"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Tap to Pay on iPhone の仕組みを理解するために、0.50ドルの支払いを受けてみましょう。 デビットカードまたはクレジットカードを使用します。完了後に、受け取った支払いを返金できます。";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "別のメールで試す";
@@ -7699,6 +7859,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "注文の税額を読み込めません";
+
+/* Error message displayed when application password authorization fails during login due to the feature being disabled on the input site. */
+"Unable to log in because application passwords are disabled on your site." = "あなたのサイトでアプリケーションパスワードが無効になっているため、ログインできませんでした。";
+
+/* Error message displayed when the user rejects application password authorization request during login */
+"Unable to log in because the request to use application passwords to your site has been rejected." = "あなたのサイトへのアプリケーションパスワードの使用リクエストが拒否されたため、ログインできませんでした。";
+
+/* Error message explaining login failure due to blocked WP Admin page */
+"Unable to login because we cannot identify your store's admin URL." = "ストアの管理 URL を識別できないためログインできません。";
+
+/* Error message explaining login failure due to blocked wp-login.php */
+"Unable to login because we cannot identify your store's login URL." = "ストアのログイン URL を識別できないためログインできません。";
+
+/* Error message explaining login failure due to unexpected response. */
+"Unable to login due to an unexpected response from your site. We are working on fixing this issue." = "サイトからの予期しない応答のためログインできません。 この問題を修復中です。";
+
+/* Error message explaining login failure due to unacceptable status code. */
+"Unable to login with response status code %1$d." = "レスポンスステータスコード%1$dのためログインできません。";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "レビューを%@に変更できませんでした";
@@ -7919,6 +8097,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "商品を更新中...";
+
+/* Title for the button to upgrade from a free trial
+   Title for the WebView when upgrading a free trial plan
+   Title on the button to upgrade a free trial plan. */
+"Upgrade Now" = "今すぐアップグレード";
+
+/* Title of one of the hub menu options */
+"Upgrades" = "アップグレード";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8197,6 +8383,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "分析の読み込み中に問題が発生しました";
 
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"We found that the store has already launched." = "このストアはすでに公開済みです。";
+
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "入力された住所が一部修正されました。 正しい場合は、正確に配送できるように提案された住所を使用してください。";
 
@@ -8290,6 +8479,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Western Sahara" = "西サハラ";
 
+/* Subtitle of the Store details task to add details about the store. */
+"We’ll use the info to get a head start on your shipping, tax, and payments settings." = "この情報を使用して、配送、税金、支払いの設定を一足先に開始します。";
+
 /* Subtitle of the store creation profiler question about the store country. */
 "We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "この情報を使用して、支払い、配送、税金の設定を一足先に開始します。";
 
@@ -8364,7 +8556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce モバイルアプリで、どこからでもストアを運営";
 
-/* Title of the WooCommerce Payments support area option */
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding.
+   Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Payments";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -8417,11 +8611,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Yesterday Section Header */
 "Yesterday" = "昨日";
 
+/* Reads like: You are in the 14-day free trial. The free trial will end in 5 days. Upgrade to unlock new features and keep your store running. */
+"You are in the %1$d-day free trial. The free trial will end in %2$d days. Upgrade to unlock new features and keep your store running." = "%1$d日間の無料お試しが開始しました。 お試し期間は%2$d日後に終了します。 アップグレードして新しい機能を利用し、ストアの運営を継続しましょう。";
+
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "このストアにアクセスする権限がありません。";
 
 /* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
 "You are not authorized to install Jetpack" = "Jetpack をインストールする権限がありません";
+
+/* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
+"You are subscribed to the %1@ plan! You have access to all our features until %2@." = "%1$@プランにサブスクリプション登録しました。 %2$@まですべての機能にアクセスできます。";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "複数選択できます。";
@@ -8429,8 +8629,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "ウェブダッシュボードでパッケージ同梱商品を編集できます。";
 
+/* Info notice at the bottom of the components screen */
+"You can edit components in the web dashboard." = "ウェブダッシュボードでコンポーネントを編集できます。";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "ウェブダッシュボードで製品アドオンを編集できます。";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
+"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "Tap to Pay on iPhone は「メニュー → 支払い → 支払いを受け取る」または注文詳細からアクセスできます。 支払い方法として Tap to Pay on iPhone を選択します。";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "「メニュー」>「設定」にドメイン設定があります。";
@@ -8501,6 +8707,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "無料ストアのアドレス";
 
+/* Info details for an expired free trial */
+"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "お試し期間が終了したため、ご利用いただける機能に制限がかかります。 今すぐeコマースにサブスクリプション登録しましょう。";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone をカードリーダーとして使用するか、Bluetooth 経由で外付けリーダーに接続できます。";
 
@@ -8512,6 +8721,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "お使いの支払いアカウントに保留中の要件があります";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Description */
+"Your phone is ready for Tap to Pay on iPhone. Your customers can tap their card or device on your phone to pay." = "お使いのスマートフォンで Tap to Pay on iPhone を使用できるようになりました。 あなたのスマホに顧客のカードや端末をタップして支払うことができます。";
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "まもなくお使いのスマートフォンで支払いを受け取ることができるようになります...";
@@ -8529,7 +8741,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Safari でサイトにアクセスすると、画面の上部にあるバーにサイトアドレスが表示されます。";
 
 /* Subtitle of the domain purchase success screen. */
-"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "サイトアドレスをセットアップしています。 ドメインが使用可能になるまでに最大で30分かかる場合があります。";
+"Your site address is being set up. It may take up to 30 minutes for your domain to start working." = "サイトアドレスをセットアップしています。 ドメインが使用可能になるまでに最大で30分かかる場合があります。";
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "あなたのサイトドメイン";
@@ -8537,11 +8749,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "ストアが作成されました。";
 
+/* Title of the store onboarding launched store screen. */
+"Your store is live!" = "あなたのストアが公開されました。";
+
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "選択したオプションに基づいてストアが作成されます。";
 
+/* Info details for an expired free trial */
+"Your subscription has ended and you have limited access to all the features." = "サブスクリプションが終了したため、ご利用いただける機能に制限がかかります。";
+
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "サポートリクエストを受信しました。 できるだけ早くメールで返信いたします。";
+
+/* Message of the free trial banner when there are no days left */
+"Your trial has ended." = "お試し期間が終了しました。";
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "オフラインでの支払いを受け取るには、無料の WooCommerce Payments 拡張機能をストアにインストールする必要があります。";
@@ -8632,6 +8853,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "支払い, tap to pay, woocommerce, woo, オフラインでの支払い, オフラインでの支払い, 支払いを受け取る, 支払い, リーダー, カードリーダー, カードリーダーを注文";
+
+/* Label shown on the launch store task. */
+"private" = "非公開";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "評価回数%ld回";

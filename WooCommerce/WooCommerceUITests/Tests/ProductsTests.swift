@@ -18,7 +18,7 @@ final class ProductsTests: XCTestCase {
         try TabNavComponent().goToProductsScreen()
             .verifyProductsScreenLoaded()
             .verifyProductList(products: products)
-            .selectProduct(byName: products[0].name)
+            .tapProduct(byName: products[0].name)
             .verifyProduct(product: products[0])
             .goBackToProductList()
             .verifyProductsScreenLoaded()
@@ -34,5 +34,24 @@ final class ProductsTests: XCTestCase {
 
     func test_add_variable_product() throws {
         try ProductFlow.addAndVerifyNewProduct(productType: "variable")
+    }
+
+    func test_search_product() throws {
+        let products = try GetMocks.readProductsData()
+
+        try TabNavComponent().goToProductsScreen()
+            .tapSearchButton()
+            .verifyNumberOfProductsInSearchResults(equals: products.count)
+            .enterSearchCriteria(text: products[0].name)
+            .verifyProductSearchResults(expectedProduct: products[0])
+    }
+
+    func test_filter_product() throws {
+        let products = try GetMocks.readProductsData()
+
+        try TabNavComponent().goToProductsScreen()
+            .tapFilterButton()
+            .setStockStatusFilterAs("Out of stock")
+            .verifyProductFilterResults(products: products, filter: "Out of stock" )
     }
 }

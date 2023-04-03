@@ -503,6 +503,89 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(containsJCPSites)
     }
 
+    // MARK: - AccountAction.synchronizeSitesAndReturnSelectedSiteInfo
+
+    func test_synchronizeSitesAndReturnSelectedSiteInfo_effectively_persists_retrieved_sites_and_returns_the_matching_site() throws {
+        // Given
+        let expectedSiteURL = "https://example.com"
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
+            Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: false, isJetpackConnected: true),
+            Site.fake().copy(siteID: 3, url: expectedSiteURL, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        ])
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        // When
+        let result: Result<Yosemite.Site, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: expectedSiteURL) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadSites])
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 3)
+        let site = try result.get()
+        XCTAssertEqual(site.url, expectedSiteURL)
+    }
+
+    func test_synchronizeSitesAndReturnSelectedSiteInfo_throws_not_found_error_if_no_matching_site_is_found() {
+        // Given
+        let expectedSiteURL = "https://example.com"
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 1, isJetpackThePluginInstalled: true, isJetpackConnected: true),
+            Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        ])
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        // When
+        let result: Result<Yosemite.Site, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: expectedSiteURL) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadSites])
+
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+        XCTAssertEqual(result.failure as? NetworkError, NetworkError.notFound)
+    }
+
+    func test_synchronizeSitesAndReturnSelectedSiteInfo_relays_error_when_loadSites_fails() {
+        // Given
+        let expectedSiteURL = "https://example.com"
+        let expectedError = NetworkError.timeout
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .failure(expectedError)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        // When
+        let result: Result<Yosemite.Site, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: expectedSiteURL) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadSites])
+
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
     // MARK: - AccountAction.loadAccount
 
     func test_loadAccount_returns_expected_account() {

@@ -96,6 +96,8 @@ struct AccountCreationForm: View {
                                                                   isSecure: false,
                                                                   errorMessage: viewModel.emailErrorMessage,
                                                                   isFocused: focusedField == .email))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
                     .focused($focusedField, equals: .email)
                     .disabled(isPerformingTask)
 
@@ -107,6 +109,8 @@ struct AccountCreationForm: View {
                                                                   isSecure: true,
                                                                   errorMessage: viewModel.passwordErrorMessage,
                                                                   isFocused: focusedField == .password))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
                     .focused($focusedField, equals: .password)
                     .disabled(isPerformingTask)
 

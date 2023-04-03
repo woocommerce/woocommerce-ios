@@ -139,8 +139,8 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d Products";
 
-/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
-"%1$d Products selected" = "%1$d Products selected";
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
+"%1$d Products Selected" = "%1$d Products Selected";
 
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d rates selected";
@@ -161,6 +161,9 @@ which should be translated separately and considered part of this sentence. */
 /* Format for the variations detail row in plural form. Reads, `2 variations`
    Label about number of variations shown on Products tab. Reads, `2 variations` */
 "%1$ld variations" = "%1$ld variations";
+
+/* Reads like: eCommerce ended */
+"%@ ended" = "%@ ended";
 
 /* 1 Item */
 "%@ Item" = "%@ Item";
@@ -188,6 +191,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Refund item price and quantity format. EG: 2 x $10.00 each */
 "%d x %@ each" = "%1$d x %2$@ each";
+
+/* Format of the number of components in singular form */
+"%ld component" = "%ld component";
+
+/* Format of the number of components in plural form */
+"%ld components" = "%ld components";
 
 /* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
 "%ld cross-sell product" = "%ld cross-sell product";
@@ -251,11 +260,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 item selected";
 
-/* Navigation bar title for selecting multiple products when one product has been selected. */
+/* Navigation bar title for selecting multiple products when one product has been selected.
+   Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1 Product Selected";
-
-/* Title of the action button at the bottom of the Select Products screen when one product is selected */
-"1 Product selected" = "1 Product selected";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
@@ -298,8 +305,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "A network error occurred. Please check your connection and try again.";
 
-/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
-"A phone number is required because this shipment requires a customs form" = "A phone number is required because this shipment requires a customs form";
+/* Error shown in Shipping Label Origin Address validation for phone number field */
+"A phone number is required" = "A phone number is required";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "A product with variations like color or size";
@@ -1190,6 +1197,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com.";
 
+/* Details on the store onboarding WCPay setup screen. */
+"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https://wordpress.com/tos) and acknowledge that you have read our [Privacy Policy](https://automattic.com/privacy/)." = "By using WooCommerce Payments you agree to be bound by our [Terms of Service](https://wordpress.com/tos) and acknowledge that you have read our [Privacy Policy](https://automattic.com/privacy/).";
+
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "Calculated amount";
 
@@ -1249,6 +1259,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the new product form
    Button to dismiss the site credential login screen
+   Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
@@ -1275,6 +1286,8 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
+   Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1285,8 +1298,13 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen
    Title of an option to dismiss the bulk edit action sheet
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Title of dismiss button presented when site credential login fails
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
+   Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "Cancel";
+
+/* Title for the button to cancel a free trial */
+"Cancel Free Trial" = "Cancel Free Trial";
 
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "Cancel Installation";
@@ -1348,8 +1366,8 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Car Washes" = "Car Washes";
 
-/* Card method title on the select payment method screen */
-"Card" = "Card";
+/* (External) card reader payment method title on the select payment method screen */
+"Card Reader" = "Card Reader";
 
 /* Title of the card reader support area option */
 "Card Reader / In-Person Payments" = "Card Reader / In-Person Payments";
@@ -1632,8 +1650,15 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for completed order status. */
 "Completed" = "Completed";
 
+/* Title for Components row in the product form screen.
+   Title for the list of components in a composite product */
+"Components" = "Components";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Composes a new order note.";
+
+/* Display label for composite product type. */
+"Composite" = "Composite";
 
 /* Industry option in the store creation category question. */
 "Computer Repair" = "Computer Repair";
@@ -1799,6 +1824,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Call to Action to finish the setup of In-Person Payments in the Menu */
 "Continue setup" = "Continue setup";
+
+/* Title of the primary button on the store onboarding payments setup screen. */
+"Continue Setup" = "Continue Setup";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "Continue to Payment";
@@ -2079,6 +2107,9 @@ which should be translated separately and considered part of this sentence. */
    Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "Current prices are mixed.";
 
+/* Reads like: Current: Free Trial */
+"Current: %@" = "Current: %@";
+
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations.";
 
@@ -2277,12 +2308,16 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "Discounted rates";
 
+/* Details on the store onboarding payments setup screen. */
+"Discover other payment providers and choose a payment provider." = "Discover other payment providers and choose a payment provider.";
+
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
+   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
@@ -2364,6 +2399,8 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
+   Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
@@ -2741,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
    Title of a button.  */
 "Enter your password instead." = "Enter your password instead.";
 
-/* Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Enter Your Store Address";
-
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "Enter your store credentials for %@.";
 
@@ -2915,6 +2949,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "Failed to enable Pay in Person. Please try again later.";
 
+/* Error message displayed when failed to fetch application password authorization URL during login */
+"Failed to fetch the authorization URL for application passwords. Please try again." = "Failed to fetch the authorization URL for application passwords. Please try again.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "Failed to fetch your charge details. Please try again.";
 
@@ -3069,6 +3106,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "Free for the first year";
 
+/* Plan name for an active free trial */
+"Free Trial" = "Free Trial";
+
 /* Industry option in the store creation category question. */
 "Freight Forwarders" = "Freight Forwarders";
 
@@ -3092,6 +3132,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "From WordPress Media Library";
+
+/* Subtitle displayed in the simplified prologue screen */
+"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores.";
 
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "Fuel Dispensers";
@@ -3855,6 +3898,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Lead Generation" = "Lead Generation";
 
+/* Title of the secondary button on the store onboarding payments setup screen. */
+"Learn More" = "Learn More";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
@@ -3991,7 +4037,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Log files by created date" = "Log files by created date";
 
 /* Button title.  Tapping takes the user to the login form.
+   Button title. Takes the user to the login by store address flow.
    Log In button label.
+   Title for the application password authorization web view
    View title during the log in process. */
 "Log In" = "Log In";
 
@@ -4705,6 +4753,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
 "Open the flow for installing the WCShip extension." = "Open the flow for installing the WCShip extension.";
 
+/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
+"Open wp-admin" = "Open wp-admin";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Opens a list of available statuses.";
 
@@ -4998,6 +5049,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "Payment Method Selected";
 
+/* Highlighted header text on the store onboarding payments setup screen. */
+"Payment Methods" = "Payment Methods";
+
 /* Title for the section related to payments inside In-Person Payments settings */
 "Payment options" = "Payment options";
 
@@ -5015,7 +5069,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
-   Title of the hub menu payments button */
+   Title of the hub menu payments button
+   Title of the webview for payments setup from onboarding. */
 "Payments" = "Payments";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
@@ -5825,6 +5880,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Report Crashes";
 
+/* Title for the button to contact support on the Subscriptions view */
+"Report Subscription Issue" = "Report Subscription Issue";
+
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Request a Refund";
@@ -5876,12 +5934,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
+   Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
    Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
+   Retry button on the error notice for the upgrade view
    Retry the last action */
 "Retry" = "Retry";
 
@@ -6186,6 +6246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Select your shipping carrier and rates";
 
+/* Caption displayed in the simplified prologue screen */
+"Sell anything, anywhere." = "Sell anything, anywhere.";
+
 /* Text for the send button in the product review reply screen */
 "Send" = "Send";
 
@@ -6222,6 +6285,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Set the percentage of the discount you want to offer.";
 
+/* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
+"Set up %1$@" = "Set up %1$@";
+
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Set up Jetpack";
 
@@ -6237,6 +6303,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Settings";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
+"Setup complete" = "Setup complete";
 
 /* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
 "Setup failed" = "Setup failed";
@@ -6473,7 +6542,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a site redirect domain */
 "Site Redirect" = "Site Redirect";
 
-/* The button title on the login onboarding screen to skip to the prologue screen.
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
+   The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "Skip";
@@ -6719,6 +6789,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "Store creation still in progress";
 
+/* Title of the webview for Store details task from onboarding. */
+"Store details" = "Store details";
+
 /* Text field prompt on the store name form in the store creation flow. */
 "Store name" = "Store name";
 
@@ -6806,6 +6879,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for subscription product type. */
 "Subscription" = "Subscription";
 
+/* Title for the plan section on the subscriptions view. Uppercased */
+"SUBSCRIPTION STATUS" = "SUBSCRIPTION STATUS";
+
+/* Title for the Subscriptions / Upgrades view */
+"Subscriptions" = "Subscriptions";
+
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "Subscriptions & giftcards";
 
@@ -6887,6 +6966,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Switzerland" = "Switzerland";
 
+/* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
+"Syncing data" = "Syncing data";
+
 /* Country option for a site address. */
 "Syria" = "Syria";
 
@@ -6954,7 +7036,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
 
-/* The button title on the reader type alert, for the user to choose the built-in reader. */
+/* Tap to Pay on iPhone method title on the select payment method screen
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "Tap to Pay on iPhone";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
@@ -7071,6 +7154,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Tell us more about %1$@...";
+
+/* Title of the Store details task to add details about the store. */
+"Tell us more about your store" = "Tell us more about your store";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -7367,6 +7453,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when the presented card postal code doesn't match the order postal code. */
 "The transaction postal code and card postal code do not match. Try another means of payment" = "The transaction postal code and card postal code do not match. Try another means of payment";
 
+/* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
+"The trial payment could not be started, please try again, or contact support if this problem persists." = "The trial payment could not be started, please try again, or contact support if this problem persists.";
+
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "The URL is missing a valid host.";
 
@@ -7402,6 +7491,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "There was an error creating the order";
+
+/* Error shown when failing to fetch the plan details in the upgrades view. */
+"There was an error fetching your plan details, please try again later." = "There was an error fetching your plan details, please try again later.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "There was an error issuing the refund";
@@ -7570,6 +7662,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.";
 
+/* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
+"To launch your store, you need to upgrade to our plan. %1$@" = "To launch your store, you need to upgrade to our plan. %1$@";
+
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once.";
 
@@ -7679,17 +7774,29 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry group option in the store creation category question. */
 "Travel And Lodging" = "Travel And Lodging";
 
+/* Plan name for an expired free trial */
+"Trial ended" = "Trial ended";
+
 /* Country option for a site address. */
 "Trinidad and Tobago" = "Trinidad and Tobago";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Troubleshoot";
 
+/* Title for the section to contact support on the subscriptions view. Uppercased */
+"TROUBLESHOOTING" = "TROUBLESHOOTING";
+
 /* Industry option in the store creation category question. */
 "Truck Stop" = "Truck Stop";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Trust";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
+"Try a Payment" = "Try a Payment";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"Try a payment" = "Try a payment";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Try a payment using your own card (and refund it when you're done.)";
@@ -7710,8 +7817,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
+   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "Try again";
+
+/* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
+"Try again with WP-Admin page" = "Try again with WP-Admin page";
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Try Another Address" = "Try Another Address";
@@ -7739,6 +7850,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Try it now";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
+"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Try with another email";
@@ -7843,6 +7957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "Unable to fetch country information, please try again later.";
 
+/* Error message when failing to fetch the WPCom account after logging in with magic link. */
+"Unable to fetch the logged in WordPress.com account. Please try again." = "Unable to fetch the logged in WordPress.com account. Please try again.";
+
 /* Error title for when we can't fetch existing variations. */
 "Unable to fetch variations" = "Unable to fetch variations";
 
@@ -7878,6 +7995,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "Unable to load taxes for order";
+
+/* Error message displayed when application password authorization fails during login due to the feature being disabled on the input site. */
+"Unable to log in because application passwords are disabled on your site." = "Unable to log in because application passwords are disabled on your site.";
+
+/* Error message displayed when the user rejects application password authorization request during login */
+"Unable to log in because the request to use application passwords to your site has been rejected." = "Unable to log in because the request to use application passwords to your site has been rejected.";
 
 /* Error message explaining login failure due to blocked WP Admin page */
 "Unable to login because we cannot identify your store's admin URL." = "Unable to login because we cannot identify your store's admin URL.";
@@ -7920,6 +8043,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ.";
+
+/* Error message displayed when failing to fetch the current site info. */
+"Unable to refresh current site info" = "Unable to refresh current site info";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Unable to refresh list";
@@ -8117,7 +8243,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Updating your products...";
 
-/* Title for the WebView when upgrading a free trial plan
+/* Title on the button to upgrade a free trial plan. */
+"Upgrade" = "Upgrade";
+
+/* Title for the button to upgrade from a free trial
+   Title for the WebView when upgrading a free trial plan
    Title on the button to upgrade a free trial plan. */
 "Upgrade Now" = "Upgrade Now";
 
@@ -8501,6 +8631,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Western Sahara" = "Western Sahara";
 
+/* Subtitle of the Store details task to add details about the store. */
+"We’ll use the info to get a head start on your shipping, tax, and payments settings." = "We’ll use the info to get a head start on your shipping, tax, and payments settings.";
+
 /* Subtitle of the store creation profiler question about the store country. */
 "We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "We’ll use this information to get a head start on setting up payments, shipping, and taxes.";
 
@@ -8572,13 +8705,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce Discount";
 
-/* Caption displayed in the simplified prologue screen */
-"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce is a customizable, open-source eCommerce platform built on WordPress.";
-
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce Mobile App - Run your store from anywhere";
 
-/* Title of the WooCommerce Payments support area option */
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding.
+   Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Payments";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -8640,11 +8772,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Yesterday Section Header */
 "Yesterday" = "Yesterday";
 
+/* Reads like: You are in the 14-day free trial. The free trial will end in 5 days. Upgrade to unlock new features and keep your store running. */
+"You are in the %1$d-day free trial. The free trial will end in %2$d days. Upgrade to unlock new features and keep your store running." = "You are in the %1$d-day free trial. The free trial will end in %2$d days. Upgrade to unlock new features and keep your store running.";
+
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "You are not authorized to access this store.";
 
 /* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
 "You are not authorized to install Jetpack" = "You are not authorized to install Jetpack";
+
+/* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
+"You are subscribed to the %1@ plan! You have access to all our features until %2@." = "You are subscribed to the %1$@ plan! You have access to all our features until %2$@.";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "You can choose multiple ones.";
@@ -8652,8 +8790,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "You can edit bundled products in the web dashboard.";
 
+/* Info notice at the bottom of the components screen */
+"You can edit components in the web dashboard." = "You can edit components in the web dashboard.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
+"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method.";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "You can find the domain settings in menu > settings";
@@ -8724,6 +8868,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "Your free store address";
 
+/* Info details for an expired free trial */
+"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now.";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth.";
 
@@ -8735,6 +8882,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Your payments account has pending requirements";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Description */
+"Your phone is ready for Tap to Pay on iPhone. Your customers can tap their card or device on your phone to pay." = "Your phone is ready for Tap to Pay on iPhone. Your customers can tap their card or device on your phone to pay.";
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Your phone will be ready to collect payments in a moment...";
@@ -8756,7 +8906,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
 
 /* Subtitle of the domain purchase success screen. */
-"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "Your site address is being set up. It may take up 30 minutes for your domain to start working.";
+"Your site address is being set up. It may take up to 30 minutes for your domain to start working." = "Your site address is being set up. It may take up to 30 minutes for your domain to start working.";
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Your site domains";
@@ -8769,6 +8919,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Your store will be created based on the options of your choice!";
+
+/* Info details for an expired free trial */
+"Your subscription has ended and you have limited access to all the features." = "Your subscription has ended and you have limited access to all the features.";
 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.";

@@ -61,6 +61,23 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(item.quantity, input.quantity)
     }
 
+    func test_sending_new_productID_input_adds_product_to_local_order() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let input = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
+        synchronizer.setProduct.send(input)
+
+        // Then
+        let item = try XCTUnwrap(synchronizer.order.items.first)
+        XCTAssertEqual(item.itemID, input.id)
+        XCTAssertEqual(item.productID, sampleProductID)
+        XCTAssertEqual(item.variationID, 0)
+        XCTAssertEqual(item.quantity, input.quantity)
+    }
+
     func test_setProducts_sends_single_product_input_then_updates_order_successfully() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -84,6 +101,32 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let item = try XCTUnwrap(synchronizer.order.items.first)
         XCTAssertEqual(item.itemID, productInput.id)
         XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.quantity, productInput.quantity)
+    }
+
+    func test_setProducts_sends_single_productID_input_then_updates_order_successfully() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let productInput = OrderSyncProductInput(
+            id: sampleInputID,
+            product: .productID(sampleProductID),
+            quantity: 1)
+
+        // Confidence check
+        XCTAssertEqual(synchronizer.order.items.count, 0)
+
+        // When
+        let inputs: [OrderSyncProductInput] = [productInput]
+        synchronizer.setProducts.send(inputs)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.items.count, 1)
+
+        let item = try XCTUnwrap(synchronizer.order.items.first)
+        XCTAssertEqual(item.itemID, productInput.id)
+        XCTAssertEqual(item.productID, sampleProductID)
+        XCTAssertEqual(item.variationID, 0)
         XCTAssertEqual(item.quantity, productInput.quantity)
     }
 
@@ -123,23 +166,78 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(anotherItem.quantity, anotherProductInput.quantity)
     }
 
+    func test_setProducts_sends_multiple_productID_input_then_updates_order_successfully() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let productInput = OrderSyncProductInput(
+            id: sampleInputID,
+            product: .productID(12345),
+            quantity: 1)
+        let anotherProductInput = OrderSyncProductInput(
+            id: anotherSampleInputID,
+            product: .productID(67890),
+            quantity: 1)
+
+        // Confidence check
+        XCTAssertEqual(synchronizer.order.items.count, 0)
+
+        // When
+        let inputs: [OrderSyncProductInput] = [productInput, anotherProductInput]
+        synchronizer.setProducts.send(inputs)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.items.count, 2)
+        let item = try XCTUnwrap(synchronizer.order.items[0])
+        let anotherItem = try XCTUnwrap(synchronizer.order.items[1])
+
+        XCTAssertEqual(item.itemID, productInput.id)
+        XCTAssertEqual(item.productID, 12345)
+        XCTAssertEqual(item.variationID, 0)
+        XCTAssertEqual(item.quantity, productInput.quantity)
+
+        XCTAssertEqual(anotherItem.itemID, anotherProductInput.id)
+        XCTAssertEqual(anotherItem.productID, 67890)
+        XCTAssertEqual(item.variationID, 0)
+        XCTAssertEqual(anotherItem.quantity, anotherProductInput.quantity)
+    }
+
     func test_sending_update_product_input_updates_local_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        synchronizer.setProduct.send(initialInput)
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
-        synchronizer.setProduct.send(input)
-        synchronizer.setProduct.send(input2)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
+        synchronizer.setProduct.send(updatedInput)
 
         // Then
         let item = try XCTUnwrap(synchronizer.order.items.first)
-        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.itemID, updatedInput.id)
         XCTAssertEqual(item.productID, product.productID)
-        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.quantity, updatedInput.quantity)
+    }
+
+    func test_sending_update_productID_input_updates_local_order() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
+        synchronizer.setProduct.send(initialInput)
+
+        // When
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 2)
+        synchronizer.setProduct.send(updatedInput)
+
+        // Then
+        let item = try XCTUnwrap(synchronizer.order.items.first)
+        XCTAssertEqual(item.itemID, updatedInput.id)
+        XCTAssertEqual(item.productID, sampleProductID)
+        XCTAssertEqual(item.variationID, 0)
+        XCTAssertEqual(item.quantity, updatedInput.quantity)
     }
 
     func test_sending_delete_product_input_updates_local_order() throws {
@@ -147,12 +245,28 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        synchronizer.setProduct.send(initialInput)
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 0)
-        synchronizer.setProduct.send(input)
-        synchronizer.setProduct.send(input2)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 0)
+        synchronizer.setProduct.send(updatedInput)
+
+        // Then
+        XCTAssertEqual(synchronizer.order.items.count, 1)
+        XCTAssertEqual(synchronizer.order.items[0].quantity, .zero)
+    }
+
+    func test_sending_delete_productID_input_updates_local_order() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
+        synchronizer.setProduct.send(initialInput)
+
+        // When
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 0)
+        synchronizer.setProduct.send(updatedInput)
 
         // Then
         XCTAssertEqual(synchronizer.order.items.count, 1)
@@ -244,6 +358,30 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderCreationInvoked)
     }
 
+    func test_sending_productID_input_triggers_order_creation() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let orderCreationInvoked: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder:
+                    promise(true)
+                default:
+                    promise(false)
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(orderCreationInvoked)
+    }
+
     func test_sending_new_product_input_sends_order_without_totals() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
@@ -273,6 +411,34 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
     }
 
+    func test_sending_new_productID_input_sends_order_without_totals() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertTrue(item.total.isEmpty)
+            XCTAssertTrue(item.subtotal.isEmpty)
+        }
+    }
+
     func test_sending_new_product_input_sends_order_with_zero_ids() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
@@ -291,6 +457,33 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             }
 
             let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertEqual(item.itemID, .zero)
+        }
+    }
+
+    func test_sending_new_productID_input_sends_order_with_zero_ids() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
             synchronizer.setProduct.send(input)
         }
 
@@ -332,6 +525,76 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         for item in submittedItems {
             XCTAssertTrue(item.total.isNotEmpty)
             XCTAssertTrue(item.subtotal.isNotEmpty)
+        }
+    }
+
+    func test_sending_existing_productID_input_sends_order_with_totals() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, let completion):
+                    completion(.success(order.copy(orderID: self.sampleOrderID)))
+                case .updateOrder(_, let order, _, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 1)
+            self.createOrder(on: synchronizer, input: initialInput)
+
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertEqual(item.total, "0")
+            XCTAssertEqual(item.subtotal, "0")
+        }
+    }
+
+    func test_sending_existing_productID_input_sends_order_with_totals_given_price_is_different_than_zero() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let submittedItems: [OrderItem] = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, let completion):
+                    completion(.success(order.copy(orderID: self.sampleOrderID)))
+                case .updateOrder(_, let order, _, _):
+                    promise(order.items)
+                default:
+                    XCTFail("Unexpected Action received: \(action)")
+                }
+            }
+
+            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            self.createOrder(on: synchronizer, input: initialInput)
+
+            // Update the same input, using productID ProductType
+            let updatedInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2)
+            synchronizer.setProduct.send(updatedInput)
+        }
+
+        // Then
+        XCTAssertTrue(submittedItems.isNotEmpty)
+        for item in submittedItems {
+            XCTAssertEqual(item.price, 20.0)
+            XCTAssertEqual(item.quantity, 2)
+            XCTAssertEqual(item.subtotal, "40")
+            XCTAssertEqual(item.total, "40")
         }
     }
 
@@ -650,6 +913,37 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: true), .synced])
     }
 
+    func test_states_are_properly_set_upon_success_order_creation_via_productID_input() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let states: [OrderSyncState] = waitFor { promise in
+            synchronizer.statePublisher
+                .dropFirst() // Initialized with .synced state, so we drop the first value
+                .collect(2) // Collect the following sync states when an Order is created
+                .sink { states in
+                    promise(states)
+                }
+                .store(in: &self.subscriptions)
+
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        assertEqual([.syncing(blocking: true), .synced], states)
+    }
+
     func test_states_are_properly_set_upon_success_order_update_with_new_items() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -682,6 +976,43 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             // Trigger order update
             let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
             synchronizer.setProduct.send(input2)
+        }
+
+        // Then
+        XCTAssertEqual(states, [.syncing(blocking: true), .synced])
+    }
+
+    func test_states_are_properly_set_upon_success_order_update_via_productID_input_with_new_items() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let completion):
+                completion(.success(.fake().copy(orderID: self.sampleOrderID)))
+            case .updateOrder(_, let order, _, let completion):
+                completion(.success(order))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // Wait for order creation
+        let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+        createOrder(on: synchronizer, input: input)
+
+        let states: [OrderSyncState] = waitFor { promise in
+            synchronizer.statePublisher
+                .dropFirst()
+                .collect(2)
+                .sink { states in
+                    promise(states)
+                }
+                .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let updatedInput = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 2)
+            synchronizer.setProduct.send(updatedInput)
         }
 
         // Then
@@ -721,6 +1052,44 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             // Trigger order update
             let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2)
             synchronizer.setProduct.send(input2)
+        }
+
+        // Then
+        XCTAssertEqual(states, [.syncing(blocking: false), .synced])
+    }
+
+    func test_states_are_properly_set_upon_success_order_update_via_productID_input_with_no_new_items() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let completion):
+                completion(.success(.fake().copy(orderID: self.sampleOrderID)))
+            case .updateOrder(_, let order, _, let completion):
+                completion(.success(order))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // Wait for order creation
+        let input = OrderSyncProductInput(id: sampleInputID, product: .productID(self.sampleProductID), quantity: 1)
+        createOrder(on: synchronizer, input: input)
+
+        let states: [OrderSyncState] = waitFor { promise in
+            synchronizer.statePublisher
+                .dropFirst()
+                .collect(2)
+                .sink { states in
+                    promise(states)
+                }
+                .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let updatedInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2)
+            synchronizer.setProduct.send(updatedInput)
         }
 
         // Then
@@ -769,6 +1138,47 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(receivedCreationRequest)
     }
 
+    func test_order_creation_via_productID_input_can_resume_after_receiving_errors() {
+        // Given
+        let error = NSError(domain: "", code: 0, userInfo: nil)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        let receivedError: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, _, let completion):
+                    completion(.failure(error))
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+        XCTAssertTrue(receivedError)
+
+        let receivedCreationRequest: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder:
+                    promise(true)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertTrue(receivedCreationRequest)
+    }
+
     func test_states_are_properly_set_upon_failing_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -795,6 +1205,38 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 .store(in: &self.subscriptions)
 
             let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        assertEqual(states, [.syncing(blocking: true), .error(error)])
+    }
+
+    func test_states_are_properly_set_upon_failing_order_creation_via_productID_input() {
+        // Given
+        let error = NSError(domain: "", code: 0, userInfo: nil)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let completion):
+                completion(.failure(error))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        let states: [OrderSyncState] = waitFor { promise in
+            synchronizer.statePublisher
+                .dropFirst()
+                .collect(2)
+                .sink { states in
+                    promise(states)
+                }
+                .store(in: &self.subscriptions)
+
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
             synchronizer.setProduct.send(input)
         }
 
@@ -835,6 +1277,44 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             // Trigger order update
             let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
             synchronizer.setProduct.send(input2)
+        }
+
+        // Then
+        XCTAssertEqual(states, [.syncing(blocking: true), .error(error)])
+    }
+
+    func test_states_are_properly_set_upon_failing_order_update_via_productID_input() {
+        // Given
+        let error = NSError(domain: "", code: 0, userInfo: nil)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, let completion):
+                completion(.success(.fake().copy(orderID: self.sampleOrderID)))
+            case .updateOrder(_, _, _, let completion):
+                completion(.failure(error))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // Wait for order creation
+        let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+        createOrder(on: synchronizer, input: input)
+
+        let states: [OrderSyncState] = waitFor { promise in
+            synchronizer.statePublisher
+                .dropFirst()
+                .collect(2)
+                .sink { states in
+                    promise(states)
+                }
+                .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let updatedInput = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 2)
+            synchronizer.setProduct.send(updatedInput)
         }
 
         // Then

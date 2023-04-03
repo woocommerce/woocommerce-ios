@@ -179,7 +179,6 @@ final class EditableOrderViewModel: ObservableObject {
             storageManager: storageManager,
             stores: stores,
             supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
-            isClearSelectionEnabled: false,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
@@ -191,6 +190,13 @@ final class EditableOrderViewModel: ObservableObject {
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+            }, onAllSelectionsCleared: { [weak self] in
+                guard let self = self else { return }
+                self.clearAllSelectedItems()
+                self.syncInitialSelectedState()
+            }, onSelectedVariationsCleared: { [weak self] in
+                guard let self = self else { return }
+                self.clearSelectedVariations()
             })
     }
 
@@ -205,15 +211,15 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of selected/unselected Products, if any
     ///
-    @Published var selectedProducts: [Product] = []
+    @Published private var selectedProducts: [Product] = []
 
     /// Keeps track of selected/unselected Product Variations, if any
     ///
-    @Published var selectedProductVariations: [ProductVariation] = []
+    @Published private var selectedProductVariations: [ProductVariation] = []
 
     /// Keeps track of all selected Products and Product Variations IDs
     ///
-    var selectedProductsAndVariationsIDs: [Int64] {
+    private var selectedProductsAndVariationsIDs: [Int64] {
         let selectedProductsCount = selectedProducts.compactMap { $0.productID }
         let selectedProductVariationsCount = selectedProductVariations.compactMap { $0.productVariationID }
         return selectedProductsCount + selectedProductVariationsCount
@@ -370,6 +376,29 @@ final class EditableOrderViewModel: ObservableObject {
             }
         }
         return itemsInOrder
+    }
+
+    /// Clears selected products and variations
+    ///
+    private func clearAllSelectedItems() {
+        selectedProducts.forEach { _ in
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
+        }
+        selectedProducts.removeAll()
+
+        selectedProductVariations.forEach { _ in
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
+        }
+        selectedProductVariations.removeAll()
+    }
+
+    /// Clears selected variations
+    /// 
+    private func clearSelectedVariations() {
+        selectedProductVariations.forEach { _ in
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
+        }
+        selectedProductVariations.removeAll()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -843,8 +872,10 @@ private extension EditableOrderViewModel {
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
         orderSynchronizer.setProducts.send(addedItemsToSync + removedItemsToSync)
 
+        let productCount = addedItemsToSync.count - removedItemsToSync.count
+
         if addedItemsToSync.isNotEmpty {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: productCount))
         }
 
         if removedItemsToSync.isNotEmpty {
@@ -867,14 +898,16 @@ private extension EditableOrderViewModel {
             // Multi-selection
             if !selectedProducts.contains(where: { $0.productID == product.productID }) {
                 selectedProducts.append(product)
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .product))
             } else {
                 selectedProducts.removeAll(where: { $0.productID == product.productID })
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
             }
         } else {
             // Single-selection
             let input = OrderSyncProductInput(product: .product(product), quantity: 1)
             orderSynchronizer.setProduct.send(input)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1))
         }
     }
 
@@ -897,14 +930,16 @@ private extension EditableOrderViewModel {
             // Multi-Selection
             if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
                 selectedProductVariations.append(variation)
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .variation))
             } else {
                 selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
             }
         } else {
             // Single-Selection
             let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
             orderSynchronizer.setProduct.send(input)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1))
         }
     }
 

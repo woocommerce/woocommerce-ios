@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-15 17:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-29 09:54:21+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -169,11 +169,17 @@ which should be translated separately and considered part of this sentence. */
 /* For example, '5 Items' */
 "%@ Items" = "%@ Ürün";
 
+/* Reads like: eCommerce ended */
+"%@ ended" = "%@ sona erdi";
+
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "%@ etiket geri ödemesi istendi";
 
 /* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
 "%@ via %@" = "%2$@ üzerinden %1$@";
+
+/* Message of the free trial banner when there is more than 1 day left */
+"%d days left in your trial." = "Deneme sürenizin %d günü kaldı.";
 
 /* For example: `1 item` in Aggregated Product List */
 "%d item" = "%d ürün";
@@ -189,6 +195,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld Ürünler Seçildi";
+
+/* Format of the number of components in singular form */
+"%ld component" = "%ld bileşen";
+
+/* Format of the number of components in plural form */
+"%ld components" = "%ld bileşen";
 
 /* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
 "%ld cross-sell product" = "%ld çapraz satış ürünü";
@@ -249,6 +261,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product selected" = "1 Ürün seçildi";
 
+/* Message of the free trial banner when there is 1 day left */
+"1 day left in your trial." = "Deneme sürenizin 1 günü kaldı.";
+
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 öğe seçildi";
 
@@ -293,8 +308,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "Bir ağ sorunu meydana geldi. Lütfen bağlantınızı kontrol edip tekrar deneyin.";
 
-/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
-"A phone number is required because this shipment requires a customs form" = "Bu gönderi bir gümrük formu gerektirdiğinden telefon numarası gerekir";
+/* Error shown in Shipping Label Origin Address validation for phone number field */
+"A phone number is required" = "Telefon numarası gerekli";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "Renk veya beden gibi çeşitleri olan bir ürün";
@@ -393,6 +408,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Kategori Ekle";
+
+/* Title text of the button that adds a fee when creating a new coupon */
+"Add Coupon" = "Kupon Ekle";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "Müşteri Bilgilerini Ekle";
@@ -679,6 +697,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "Ücretsiz gönderime izin verir";
 
+/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
+"Almost there! Please enter the verification code from your Authentication app" = "Çok az kaldı! Lütfen Kimlik Doğrulayıcı uygulamanızdaki doğrulama kodunu girin";
+
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Neredeyse bitiyor! Lütfen doğrulama uygulamanızdan edindiğiniz doğrulama kodunu girin.";
 
@@ -961,6 +982,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility announcement message when device goes back online */
 "Back online" = "Yeniden çevrimiçi";
 
+/* Title of the secondary button on the store onboarding launched store screen. */
+"Back to My Store" = "Mağazama Dön";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "Back to Order" = "Siparişe Geri Dön";
 
@@ -1164,6 +1188,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Jetpack'i Yükle düğmesine dokunarak, %1$@ ve WordPress.com ile %2$@ kabul etmiş olursunuz.";
 
+/* Details on the store onboarding WCPay setup screen. */
+"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooCommerce Payments'ı kullanarak [Hizmet Koşullarımıza](https:\/\/wordpress.com\/tos) bağlı kalmayı ve [Gizlilik Politikamızı](https:\/\/automattic.com\/privacy\/) okuduğunuzu kabul etmiş olursunuz.";
+
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "ÜLKELER";
 
@@ -1232,6 +1259,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the new product form
    Button to dismiss the site credential login screen
+   Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
@@ -1258,6 +1286,8 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
+   Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1268,8 +1298,13 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen
    Title of an option to dismiss the bulk edit action sheet
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Title of dismiss button presented when site credential login fails
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
+   Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "İptal";
+
+/* Title for the button to cancel a free trial */
+"Cancel Free Trial" = "Ücretsiz Deneme Süresini İptal Et";
 
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "Kurulumu İptal Edin";
@@ -1331,8 +1366,8 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Car Washes" = "Oto Yıkama Yerleri";
 
-/* Card method title on the select payment method screen */
-"Card" = "Kart";
+/* (External) card reader payment method title on the select payment method screen */
+"Card Reader" = "Kart Okuyucu";
 
 /* Title of the card reader support area option */
 "Card Reader \/ In-Person Payments" = "Kart Okuyucu \/ Şahsen Ödemeler";
@@ -1586,8 +1621,15 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for completed order status. */
 "Completed" = "Tamamlandı";
 
+/* Title for Components row in the product form screen.
+   Title for the list of components in a composite product */
+"Components" = "Bileşenler";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Yeni bir sipariş notu oluşturur.";
+
+/* Display label for composite product type. */
+"Composite" = "Birleşik";
 
 /* Industry option in the store creation category question. */
 "Computer Repair" = "Bilgisayar Tamiri";
@@ -1748,6 +1790,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to continue with a selected domain. */
 "Continue" = "Devam et";
 
+/* Title of the primary button on the store onboarding payments setup screen. */
+"Continue Setup" = "Kuruluma Devam Et";
+
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "WordPress.com ile devam et";
 
@@ -1808,6 +1853,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem subscribing to a site or feed. */
 "Could not follow the site at the address specified." = "Belirtilen adresteki site takip edilemedi.";
 
+/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Could not launch your store" = "Mağazanız yayınlanamadı";
+
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "Belirtilen adresteki site takipten çıkarılamadı.";
 
@@ -1851,6 +1899,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Coupon screen during order creation */
 "Coupon" = "Kupon";
 
+/* The singular coupon summary. Reads like: Coupon (code1) */
+"Coupon (%1$@)" = "Kupon (%1$@)";
+
 /* Text field coupon code in the view for adding or editing a coupon code. */
 "Coupon Code" = "Kupon kodu";
 
@@ -1881,6 +1932,9 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "Kuponlar";
+
+/* The plural coupon summary. Reads like: Coupon (code1, code2) */
+"Coupons (%1$@)" = "Kuponlar (%1$@)";
 
 /* Industry option in the store creation category question. */
 "Courier Services" = "Kurye Hizmetleri";
@@ -1941,6 +1995,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate just one variation */
 "Create one new variation. Manually set which attributes belong to the variable product." = "Yeni bir varyasyon oluşturun. Hangi niteliklerin değişken ürüne ait olduğunu manuel olarak ayarlayın.";
+
+/* Title for the Create Order iOS Shortcut */
+"Create order" = "Sipariş oluştur";
 
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "Sipariş oluşturun!";
@@ -2014,6 +2071,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the footer of bulk price setting screen, when products have different price values.
    Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "Geçerli fiyatlar karışık.";
+
+/* Reads like: Current: Free Trial */
+"Current: %@" = "Şu anda: %@";
 
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Şu anda oluşturma en fazla 100 varyasyon için desteklenmektedir. Bu ürün için varyasyon oluşturmak %d varyasyon oluşturur.";
@@ -2210,12 +2270,16 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "İndirimli fiyatlar";
 
+/* Details on the store onboarding payments setup screen. */
+"Discover other payment providers and choose a payment provider." = "Diğer ödeme sağlayıcılarını keşfedin ve bir ödeme sağlayıcısı seçin.";
+
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
+   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
@@ -2297,6 +2361,8 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
+   Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
@@ -2485,6 +2551,9 @@ which should be translated separately and considered part of this sentence. */
    Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "E-posta";
 
+/* Label for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Email Address or Username" = "E-posta Adresi veya Kullanıcı Adı";
+
 /* Accessibility label for the email address text field.
    Placeholder for a textfield. The user may enter their email address.
    Placeholder for the email address textfield.
@@ -2609,6 +2678,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "Açıklama gir";
+
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"Enter email or username" = "E-posta adresi veya kullanıcı adı girin";
 
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Dosya URL'si girin";
@@ -2835,6 +2907,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "Şahsen Ödeme etkinleştirilemedi Lütfen daha sonra tekrar deneyin.";
 
+/* Error message displayed when failed to fetch application password authorization URL during login */
+"Failed to fetch the authorization URL for application passwords. Please try again." = "Uygulama şifreleri için yetkilendirme URL'si alınamadı. Lütfen tekrar deneyin.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "Ödeme ayrıntılarınız getirilemedi. Lütfen tekrar deneyin.";
 
@@ -2985,6 +3060,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "France" = "Fransa";
+
+/* Plan name for an active free trial */
+"Free Trial" = "Ücretsiz Deneme Süresi";
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "İlk yıl ücretsiz";
@@ -3769,6 +3847,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Lead Generation" = "Potansiyel Müşteri Oluşturma";
 
+/* Title of the secondary button on the store onboarding payments setup screen. */
+"Learn More" = "Daha fazla öğren";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
@@ -3903,6 +3984,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label.
+   Title for the application password authorization web view
    View title during the log in process. */
 "Log In" = "Giriş yap";
 
@@ -4593,6 +4675,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Gönderim etiketi ödeme yöntemlerini yalnızca site sahibi yönetebilir. Ödeme yöntemlerini yönetmek için lütfen %1$@ (%2$@) ile iletişime geçin. ";
 
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Oops, some unexpected errors happened." = "Hay aksi, beklenmeyen bazı hatalar oluştu.";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Cihaz ayarlarını aç";
 
@@ -4615,6 +4700,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
 "Open the flow for installing the WCShip extension." = "WCShip uzantısını yüklemek için akışı açın.";
+
+/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
+"Open wp-admin" = "Panoyu aç";
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Kullanılabilir durumların bir listesini açar.";
@@ -4890,6 +4978,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "Ödeme Yöntemi Seçildi";
 
+/* Highlighted header text on the store onboarding payments setup screen. */
+"Payment Methods" = "Ödeme Yöntemleri";
+
 /* Navigates to Payment Gateway management screen */
 "Payment Provider" = "Ödeme Sağlayıcısı";
 
@@ -4920,7 +5011,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
-   Title of the hub menu payments button */
+   Title of the hub menu payments button
+   Title of the webview for payments setup from onboarding. */
 "Payments" = "Ödemeler";
 
 /* Display label for pending order status.
@@ -5362,6 +5454,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "Ürün Bağlantısı";
 
+/* Cell title on beta features screen to enable Product Multi-Selection */
+"Product Multi-Selection" = "Product Multi-Selection";
+
 /* Title of the view containing a single Product Review */
 "Product Review" = "Ürün İncelemesi";
 
@@ -5441,6 +5536,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action for creating a new product remotely with a published status */
 "Publish" = "Yayınla";
+
+/* Title of the primary button on the store onboarding > launch store screen to publish a store. */
+"Publish My Store" = "Mağazamı Yayınla";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Yayımlama ayarları";
@@ -5655,6 +5753,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message from the in-person payment card reader prompting user to remove their card */
 "Remove Card" = "Kartı Kaldır";
 
+/* Text for the button to remove a Coupon from the order during order creation */
+"Remove Coupon from Order" = "Kuponu Siparişten Çıkar";
+
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
 "Remove Expiry Date" = "Son Kullanma Tarihini Kaldır";
 
@@ -5709,6 +5810,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Çökmeleri bildirin";
 
+/* Title for the button to contact support on the Subscriptions view */
+"Report Subscription Issue" = "Abonelik Sorunu Bildir";
+
 /* Title for the alert after the support request is created. */
 "Request Sent!" = "Talep gönderildi!";
 
@@ -5760,12 +5864,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
+   Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
    Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
+   Retry button on the error notice for the upgrade view
    Retry the last action */
 "Retry" = "Tekrar";
 
@@ -5842,6 +5948,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Gönderildi";
+
+/* Title for the plan section on the subscriptions view. Uppercased */
+"SUBSCRIPTION STATUS" = "ABONELİK DURUMU";
 
 /* Header label of the domain suggestions on the domain selector. */
 "SUGGESTIONS" = "ÖNERİLER";
@@ -6126,6 +6235,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Sunmak istediğiniz indirimin yüzdesini ayarlayın.";
 
+/* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
+"Set up %1$@" = "%1$@ kur";
+
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Jetpack'i yapılandır";
 
@@ -6141,6 +6253,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "Ayarlar";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
+"Setup complete" = "Kurulum tamamlandı";
 
 /* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
 "Setup failed" = "Kurulum başarısız oldu";
@@ -6161,6 +6276,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Ödeme Bağlantısını Paylaş";
+
+/* Title of the primary button on the store onboarding launched store screen. */
+"Share URL" = "URL paylaş";
 
 /* Title of the feedback action button on the In-Person Payments feedback banner
    Title of the feedback button in the action sheet. */
@@ -6367,7 +6485,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Site adresiniz en az dört karakter olmalı.";
 
-/* The button title on the login onboarding screen to skip to the prologue screen.
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
+   The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "Atla";
@@ -6496,6 +6615,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "Üzgünüz, destek talebinizi oluşturamadık, lütfen daha sonra tekrar deneyin.";
 
+/* Error message when the built-in reader connection experiences an unexpected internal service error. */
+"Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "Üzgünüz, Tap to Pay on iPhone'u başlatamadık. Lütfen bağlantınızı kontrol edip tekrar deneyin.";
+
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Üzgünüz, bu site adresini kullanamazsınız.";
 
@@ -6596,6 +6718,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "Mağaza oluşturma devam ediyor.";
 
+/* Title of the webview for Store details task from onboarding. */
+"Store details" = "Mağaza detayları";
+
 /* Text field prompt on the store name form in the store creation flow. */
 "Store name" = "Mağaza adı";
 
@@ -6625,6 +6750,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for subscription product type. */
 "Subscription" = "Abonelik";
+
+/* Title for the Subscriptions / Upgrades view */
+"Subscriptions" = "Abonelikler";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "Abonelikler ve hediye kartları ";
@@ -6720,6 +6848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "São Tomé ve Príncipe";
 
+/* Title for the section to contact support on the subscriptions view. Uppercased */
+"TROUBLESHOOTING" = "SORUN GİDERME";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
@@ -6762,7 +6893,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Geri ödeme almak için karta dokunun veya kartı yerleştirin";
 
-/* The button title on the reader type alert, for the user to choose the built-in reader. */
+/* Tap to Pay on iPhone method title on the select payment method screen
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "iPhone'da Öde'ye için Dokun";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
@@ -6892,11 +7024,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
 
+/* Title of the Store details task to add details about the store. */
+"Tell us more about your store" = "Bize mağazanızdan biraz daha bahsedin";
+
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Hizmet Koşulları";
+
+/* Cell description on beta features screen to enable Product Multi-Selection */
+"Test out Product Multi-Selection as we get ready to launch" = "Yayınlamaya hazırlanırken Product Multi-Selection'ı deneyin";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Lansmana hazırlanırken uygulama içi satın alma işlemini test edin";
@@ -7187,6 +7325,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when the presented card postal code doesn't match the order postal code. */
 "The transaction postal code and card postal code do not match. Try another means of payment" = "İşlem posta kodu ile kart posta kodu eşleşmiyor Başka bir ödeme yöntemi deneyin";
 
+/* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
+"The trial payment could not be started, please try again, or contact support if this problem persists." = "Deneme ödemesi başlatılamadı, lütfen tekrar deneyin veya bu sorun devam ederse destekle iletişime geçin.";
+
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Varyasyon oluşturulamadı.";
 
@@ -7219,6 +7360,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "Sipariş oluşturulurken bir hata oluştu";
+
+/* Error shown when failing to fetch the plan details in the upgrades view. */
+"There was an error fetching your plan details, please try again later." = "Paket ayrıntılarınız alınırken bir hata oluştu, lütfen daha sonra tekrar deneyin.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Geri ödeme yapılırken bir hata oluştu";
@@ -7496,6 +7640,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry group option in the store creation category question. */
 "Travel And Lodging" = "Seyahat ve Konaklama";
 
+/* Plan name for an expired free trial */
+"Trial ended" = "Deneme süresi sonu";
+
 /* Country option for a site address. */
 "Trinidad and Tobago" = "Trinidad ve Tobago";
 
@@ -7540,13 +7687,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Tekrar Kurmayı Deneyin";
 
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
+"Try a Payment" = "Ödeme Yapmayı Deneyin";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"Try a payment" = "Ödeme yapmayı deneyin";
+
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Kendi kartınızı kullanarak ödeme yapmayı deneyin (ve işiniz bittiğinde iade edin.)";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
+   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "Tekrar deneyin";
+
+/* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
+"Try again with WP-Admin page" = "Pano sayfasıyla tekrar deneyin";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "Başka bir ödeme yöntemi deneyin";
@@ -7556,6 +7713,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Şimdi Deneyin";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
+"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Tap to Pay on iPhone'un nasıl çalıştığını görmek için 0,50 dolar tutarında bir ödeme almayı deneyin. Banka veya kredi kartınızı kullanın: işiniz bittiğinde iade edebilirsiniz.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Başka bir e-posta ile deneyin";
@@ -7699,6 +7859,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "Siparişle ilgili vergiler yüklenemiyor";
+
+/* Error message displayed when application password authorization fails during login due to the feature being disabled on the input site. */
+"Unable to log in because application passwords are disabled on your site." = "Sitenizde uygulama şifreleri devre dışı bırakıldığı için giriş yapılamıyor.";
+
+/* Error message displayed when the user rejects application password authorization request during login */
+"Unable to log in because the request to use application passwords to your site has been rejected." = "Sitenizde uygulama şifrelerini kullanma talebi reddedildiği için giriş yapılamıyor.";
+
+/* Error message explaining login failure due to blocked WP Admin page */
+"Unable to login because we cannot identify your store's admin URL." = "Mağazanızın yönetici URL'sini belirleyemediğimiz için giriş yapılamıyor.";
+
+/* Error message explaining login failure due to blocked wp-login.php */
+"Unable to login because we cannot identify your store's login URL." = "Mağazanızın giriş URL'sini belirleyemediğimiz için giriş yapılamıyor.";
+
+/* Error message explaining login failure due to unexpected response. */
+"Unable to login due to an unexpected response from your site. We are working on fixing this issue." = "Sitenizden beklenmeyen bir yanıt nedeniyle giriş yapılamıyor. Bu sorunu düzeltmek için çalışıyoruz.";
+
+/* Error message explaining login failure due to unacceptable status code. */
+"Unable to login with response status code %1$d." = "Yanıt durum kodu %1$d nedeniyle giriş yapılamıyor.";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "%@ olarak işaretlenemedi";
@@ -7919,6 +8097,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Ürünleriniz güncelleniyor...";
+
+/* Title for the button to upgrade from a free trial
+   Title for the WebView when upgrading a free trial plan
+   Title on the button to upgrade a free trial plan. */
+"Upgrade Now" = "Hemen Yükseltin";
+
+/* Title of one of the hub menu options */
+"Upgrades" = "Yükseltmeler";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8197,6 +8383,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "Analytics yüklenirken bir sorunla karşılaşıldı";
 
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"We found that the store has already launched." = "Mağazanızın zaten yayınlanmış olduğunu fark ettik.";
+
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Girilen adresi biraz değiştirdik. Doğruysa, teslimatın doğru yapılması için lütfen önerilen adresi kullanın.";
 
@@ -8290,6 +8479,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Western Sahara" = "Batı Sahra";
 
+/* Subtitle of the Store details task to add details about the store. */
+"We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Gönderim, vergi ve ödeme ayarlarınıza bir adım önde başlamak için bu bilgileri kullanacağız.";
+
 /* Subtitle of the store creation profiler question about the store country. */
 "We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "Ödemeleri, teslimatı ve vergileri ayarlamaya bir adım önde başlamak için bu bilgileri kullanacağız.";
 
@@ -8364,7 +8556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce Mobil Uygulaması - Mağazanızı her yerden işletin";
 
-/* Title of the WooCommerce Payments support area option */
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding.
+   Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Ödemeler";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -8417,11 +8611,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Yesterday Section Header */
 "Yesterday" = "Dün";
 
+/* Reads like: You are in the 14-day free trial. The free trial will end in 5 days. Upgrade to unlock new features and keep your store running. */
+"You are in the %1$d-day free trial. The free trial will end in %2$d days. Upgrade to unlock new features and keep your store running." = "%1$d günlük ücretsiz deneme süresindesiniz. Ücretsiz deneme süresi %2$d gün sonra sona erecek. Yeni özelliklerin kilidini açmak ve mağazanızın çalışmaya devam etmesini sağlamak için yükseltin.";
+
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "Bu mağazaya erişme yetkiniz yok.";
 
 /* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
 "You are not authorized to install Jetpack" = "Jetpack'i yükleme yetkiniz yok";
+
+/* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
+"You are subscribed to the %1@ plan! You have access to all our features until %2@." = "%1$@ paketine abonesiniz! %2$@ tarihine kadar tüm özelliklerimize erişebilirsiniz.";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Birden çok seçebilirsiniz.";
@@ -8429,8 +8629,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "Paketli ürünleri web panosunda düzenleyebilirsiniz.";
 
+/* Info notice at the bottom of the components screen */
+"You can edit components in the web dashboard." = "Bileşenleri web panosunda düzenleyebilirsiniz.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Ürün eklentilerini web panosunda düzenleyebilirsiniz.";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
+"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "Tap to Pay on iPhone'u Menü > Ödemeler > Ödeme Al'da veya Sipariş Ayrıntıları'nda bulabilirsiniz. Ödeme yöntemi olarak Tap to Pay on iPhone'u seçin.";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Alan adı ayarlarını menü > ayarlar'da bulabilirsiniz.";
@@ -8501,6 +8707,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "Ücretsiz mağaza adresiniz";
 
+/* Info details for an expired free trial */
+"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "Ücretsiz deneme süreniz sona erdi ve tüm özelliklere erişiminiz sınırlandırıldı. e-Ticaret'e şimdi üye olun.";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone'unuz kart okuyucu olarak kullanılabilir veya Bluetooth üzerinden harici bir okuyucuya bağlanabilirsiniz.";
 
@@ -8512,6 +8721,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "Ödeme hesabınızda bekleyen gereksinimler var";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Description */
+"Your phone is ready for Tap to Pay on iPhone. Your customers can tap their card or device on your phone to pay." = "Telefonunuz Tap to Pay on iPhone için hazır. Müşterileriniz, ödeme yapmak için kartlarını veya cihazlarını telefonunuza dokundurabilir.";
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Telefonunuz ödemeleri almak için birazdan hazır olacaktır...";
@@ -8529,7 +8741,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Sitenizin adresi, Safari ile sitenizi ziyaret ettiğinizde en üstte görüntülenir.";
 
 /* Subtitle of the domain purchase success screen. */
-"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "Site adresiniz oluşturuluyor. Alan adınızın çalışmaya başlaması 30 dakika kadar sürebilir.";
+"Your site address is being set up. It may take up to 30 minutes for your domain to start working." = "Site adresiniz oluşturuluyor. Alan adınızın çalışmaya başlaması 30 dakika kadar sürebilir.";
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Sitenizin alan adları";
@@ -8537,11 +8749,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "Mağazanız oluşturuldu!";
 
+/* Title of the store onboarding launched store screen. */
+"Your store is live!" = "Mağazanız yayında!";
+
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Mağazanız tercih ettiğiniz seçeneklere göre oluşturulacaktır!";
 
+/* Info details for an expired free trial */
+"Your subscription has ended and you have limited access to all the features." = "Aboneliğiniz sona erdi ve tüm özelliklere erişiminiz sınırlandırıldı.";
+
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Destek talebiniz güvenli bir şekilde gelen kutumuza ulaştı. Mümkün olan en kısa sürede e-posta yoluyla yanıt vereceğiz.";
+
+/* Message of the free trial banner when there are no days left */
+"Your trial has ended." = "Deneme süreniz sona erdi.";
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Şahsen Ödemeleri kabul etmek için mağazanıza ücretsiz WooCommerce Payments uzantısını yüklemeniz gerekir.";
@@ -8632,6 +8853,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "ödemeler, tap to pay, woocommerce, woo, şahsi ödemeler, şahsen ödemeler, ödeme alma, ödemeler, okuyucu, kart okuyucu, kart okuyucu sipariş etme";
+
+/* Label shown on the launch store task. */
+"private" = "gizli";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld kez derecelendirildi";

@@ -35,9 +35,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "pending")
         XCTAssertEqual(viewModel.productRows.count, 0)
-        XCTAssertEqual(viewModel.selectedProducts.count, 0)
-        XCTAssertEqual(viewModel.selectedProductVariations.count, 0)
-        XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 0)
     }
 
     func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_disabled() {
@@ -46,7 +43,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.productSelectorViewModel.supportsMultipleSelection)
-        XCTAssertFalse(viewModel.productSelectorViewModel.isClearSelectionEnabled)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 
@@ -60,7 +56,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
-        XCTAssertFalse(viewModel.productSelectorViewModel.isClearSelectionEnabled)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 
@@ -375,45 +370,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))
         XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
-    }
-
-    func test_selectedProducts_are_added_when_product_is_added_to_order_called_then_selectProducts_has_one_product() {
-
-        // Given
-        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        storageManager.insertProducts([product])
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
-
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
-        viewModel.productSelectorViewModel.completeMultipleSelection()
-
-        // Then
-        XCTAssertEqual(viewModel.selectedProducts.count, 1)
-    }
-
-    func test_selectedProductsAndVariationsIDs_keeps_track_of_products_and_variations_added_to_the_order() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productTypeKey: "variable", purchasable: true, variations: [20])
-        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
-                                                            productID: sampleProductID,
-                                                            productVariationID: 20,
-                                                            sku: "product-variation", purchasable: true)
-        storageManager.insertSampleProduct(readOnlyProduct: product)
-        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
-
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
-        viewModel.selectedProductVariations.append(productVariation)
-        viewModel.productSelectorViewModel.completeMultipleSelection()
-
-        // Then
-        XCTAssertEqual(viewModel.selectedProductsAndVariationsIDs.count, 2)
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {
@@ -1024,10 +980,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.productSelectorViewModel.completeMultipleSelection()
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderProductAdd.rawValue])
+        XCTAssertTrue(analytics.receivedEvents.contains(where: { $0.description == WooAnalyticsStat.orderProductAdd.rawValue}))
 
-        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
-        XCTAssertEqual(properties, "creation")
+        guard let eventIndex = analytics.receivedEvents.firstIndex(where: { $0.description == WooAnalyticsStat.orderProductAdd.rawValue}) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analytics.receivedProperties[eventIndex]
+        guard let event = eventProperties.first(where: { $0.key as? String == "flow"}) else {
+            return XCTFail("No property received")
+        }
+
+        XCTAssertEqual(event.value as? String, "creation")
     }
 
     func test_product_is_tracked_when_quantity_changes_given_ProductMultiSelection_is_disabled() throws {

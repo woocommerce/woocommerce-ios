@@ -1,0 +1,1 @@
+Bu sürümde, sipariş oluşturma ve ürün güncelleme sırasındaki deneyiminizi daha sorunsuz hale getirmeye odaklandık. Jetpack olmadan oturum açma deneyiminde de iyileştirmeler yaptık. Ek olarak, anlık bildirimler ve ziyaretçi istatistikleri gibi ek işlevler istiyorsanız Jetpack'i uygulamadan yüklemek artık mümkün. Görüşlerinizi bildirmeye devam edin!

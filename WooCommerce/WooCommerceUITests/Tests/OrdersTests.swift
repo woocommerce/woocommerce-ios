@@ -19,14 +19,13 @@ final class OrdersTests: XCTestCase {
         try TabNavComponent().goToOrdersScreen()
             .verifyOrdersScreenLoaded()
             .verifyOrdersList(orders: orders)
-            .selectOrder(byOrderNumber: orders[0].number)
+            .tapOrder(byOrderNumber: orders[0].number)
             .verifySingleOrder(order: orders[0])
             .goBackToOrdersScreen()
             .verifyOrdersScreenLoaded()
     }
 
     func test_create_new_order() throws {
-        let products = try GetMocks.readProductsData()
         let order = try GetMocks.readNewOrderData()
 
         try TabNavComponent().goToOrdersScreen()
@@ -47,7 +46,7 @@ final class OrdersTests: XCTestCase {
         let orders = try GetMocks.readOrdersData()
 
         try TabNavComponent().goToOrdersScreen()
-            .selectOrder(byOrderNumber: orders[0].number)
+            .tapOrder(byOrderNumber: orders[0].number)
             .tapEditOrderButton()
             .checkForExistingOrderTitle(byOrderNumber: orders[0].number)
             .checkForExistingProducts(byName: orders[0].line_items.map { $0.name })

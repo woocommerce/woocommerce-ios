@@ -32,7 +32,11 @@ final class GenerateVariationUseCaseTests: XCTestCase {
             ProductVariationAttribute(id: 0, name: "attr", option: ""),
             ProductVariationAttribute(id: 1, name: "attr-2", option: ""),
         ]
-        let expectedVariation = CreateProductVariation(regularPrice: "", attributes: expectedAttributes)
+        let expectedVariation = CreateProductVariation(regularPrice: "",
+                                                       salePrice: "",
+                                                       attributes: expectedAttributes,
+                                                       description: "",
+                                                       image: nil)
         XCTAssertEqual(expectedVariation, variationSubmitted)
     }
 

@@ -32,7 +32,9 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         guard isCompleted == false else {
             return
         }
-        analytics.track(.loginJetpackConnectDismissed)
+        if ServiceLocator.stores.isAuthenticated == false {
+            analytics.track(.loginJetpackConnectDismissed)
+        }
         dismissalHandler()
     }
 
@@ -53,7 +55,9 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 
     private func handleSetupCompletion() {
         isCompleted = true
-        analytics.track(.loginJetpackConnectCompleted)
+        if ServiceLocator.stores.isAuthenticated == false {
+            analytics.track(.loginJetpackConnectCompleted)
+        }
         completionHandler()
     }
 

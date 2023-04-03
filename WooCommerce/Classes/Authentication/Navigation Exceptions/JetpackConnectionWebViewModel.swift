@@ -1,5 +1,6 @@
 import Foundation
 import WebKit
+import Yosemite
 
 /// View model used for the web view controller to setup Jetpack connection during the login flow.
 ///
@@ -11,16 +12,19 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     let completionHandler: () -> Void
     let dismissalHandler: () -> Void
 
+    private let stores: StoresManager
     private let analytics: Analytics
     private var isCompleted = false
 
     init(initialURL: URL,
          siteURL: String,
          title: String = Localization.title,
+         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void,
          onDismissal: @escaping () -> Void = {}) {
         self.title = title
+        self.stores = stores
         self.analytics = analytics
         self.initialURL = initialURL
         self.siteURL = siteURL
@@ -32,7 +36,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         guard isCompleted == false else {
             return
         }
-        if ServiceLocator.stores.isAuthenticated == false {
+        if stores.isAuthenticated == false {
             analytics.track(.loginJetpackConnectDismissed)
         }
         dismissalHandler()
@@ -55,7 +59,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 
     private func handleSetupCompletion() {
         isCompleted = true
-        if ServiceLocator.stores.isAuthenticated == false {
+        if stores.isAuthenticated == false {
             analytics.track(.loginJetpackConnectCompleted)
         }
         completionHandler()

@@ -127,7 +127,7 @@ final class RefundMapperTests: XCTestCase {
                 "\(refund.items[0].itemID)": [
                     "qty": refund.items[0].quantity,
                     "refund_total": refund.items[0].total,
-                    "refund_tax": [:]
+                    "refund_tax": [String: Any]()
                 ] as [String: Any]
             ]
         ]

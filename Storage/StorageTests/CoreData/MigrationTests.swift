@@ -1969,7 +1969,7 @@ private extension MigrationTests {
             "shippingRequired": false,
             "shippingTaxable": false,
             "reviewsAllowed": true,
-            "groupedProducts": [],
+            "groupedProducts": [Int64](),
             "virtual": true,
             "stockStatusKey": "",
             "statusKey": "",
@@ -2155,7 +2155,7 @@ private extension MigrationTests {
             "title": "WooCommerce Payments",
             "gatewayDescription": "WooCommerce Payments - easy payments by Woo",
             "enabled": true,
-            "features": []
+            "features": [String]()
         ])
     }
 

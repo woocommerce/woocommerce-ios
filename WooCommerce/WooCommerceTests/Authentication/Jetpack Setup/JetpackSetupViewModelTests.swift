@@ -733,9 +733,10 @@ final class JetpackSetupViewModelTests: XCTestCase {
     // MARK: - Analytics
     func test_it_tracks_login_jetpack_setup_go_to_store_button_tapped_when_tapping_go_to_store_button() {
         // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, analytics: analytics)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
 
         // When
         // Tapping "Go to Store" button
@@ -743,11 +744,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_go_to_store_button_tapped" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_jetpack_installation_is_successful() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -769,11 +771,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_install_successful" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_jetpack_installation_fails() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -795,11 +798,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_install_failed" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_jetpack_activation_is_successful() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -823,11 +827,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_activation_successful" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_jetpack_activation_fails() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -850,11 +855,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_activation_failed" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_is_successful() throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -881,11 +887,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_fetch_jetpack_connection_url_successful" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_fails() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -911,11 +918,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_fetch_jetpack_connection_url_failed" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful() throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -935,11 +943,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_all_steps_marked_done" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful_but_no_wpCom_user_present() throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -959,11 +968,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_cannot_find_WPCOM_user" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
     func test_it_tracks_correct_event_when_checking_jetpack_connection_fails() throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
@@ -987,18 +997,21 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_error_checking_jetpack_connection" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 
-    func test_it_tracks_correct_event_when_retying_setup() {
+    func test_it_tracks_correct_event_when_retrying_setup() {
         // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, analytics: analytics)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics)
 
         // When
         viewModel.retryAllSteps()
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_try_again_button_tapped" }))
+        XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
     }
 }

@@ -251,6 +251,9 @@ private extension JetpackSetupCoordinator {
                     self?.rootViewController.dismiss(animated: true, completion: {
                         self?.analytics.track(.jetpackSetupSynchronizationCompleted)
                         self?.registerForPushNotifications()
+                        if site.isJetpackCPConnected {
+                            self?.presentJCPJetpackInstallFlow()
+                        }
                     })
                 }
 

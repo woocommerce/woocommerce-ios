@@ -1,4 +1,18 @@
 import SwiftUI
+import UIKit
+
+/// Hosting controller to interact with UIKit.
+///
+final class FreeTrialSummaryHostingController: UIHostingController<FreeTrialSummaryView> {
+    init() {
+        super.init(rootView: FreeTrialSummaryView())
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 
 /// View to inform the benefits of a free trial
 ///

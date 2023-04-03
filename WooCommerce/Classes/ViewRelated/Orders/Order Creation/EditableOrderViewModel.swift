@@ -64,7 +64,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Indicates whether Product Multi-Selection is enabled
     ///
-    var shouldUseProductMultiSelection: Bool {
+    var isProductMultiSelectionEnabled: Bool {
         featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)
     }
 
@@ -180,7 +180,7 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: shouldUseProductMultiSelection,
+            supportsMultipleSelection: isProductMultiSelectionEnabled,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
@@ -401,7 +401,7 @@ final class EditableOrderViewModel: ObservableObject {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
-        if shouldUseProductMultiSelection {
+        if isProductMultiSelectionEnabled {
             // Updates selected products and selected variations for all items that have been removed directly from the Order
             // when using multi-selection, for example by tapping the `-` button within the Order view
             if item.productID != 0 {
@@ -880,7 +880,7 @@ private extension EditableOrderViewModel {
             allProducts.append(product)
         }
 
-        if shouldUseProductMultiSelection {
+        if isProductMultiSelectionEnabled {
             // Multi-selection
             if !selectedProducts.contains(where: { $0.productID == product.productID }) {
                 selectedProducts.append(product)
@@ -912,7 +912,7 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        if shouldUseProductMultiSelection {
+        if isProductMultiSelectionEnabled {
             // Multi-Selection
             if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
                 selectedProductVariations.append(variation)

@@ -19,7 +19,8 @@
     "environmentVariableEntries" : [
 
     ],
-    "testRepetitionMode" : "retryOnFailure"
+    "maximumTestRepetitions" : 5,
+    "testRepetitionMode" : "fixedIterations"
   },
   "testTargets" : [
     {

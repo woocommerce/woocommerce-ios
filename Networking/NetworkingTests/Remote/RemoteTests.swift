@@ -188,7 +188,7 @@ final class RemoteTests: XCTestCase {
             XCTAssertEqual(error, .requestFailed)
         }
 
-        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+        await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a

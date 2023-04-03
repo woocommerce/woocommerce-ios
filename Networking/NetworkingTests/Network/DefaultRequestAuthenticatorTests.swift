@@ -130,7 +130,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
                 exp.fulfill()
             }
         }
-        await waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        await fulfillment(of: [exp], timeout: Constants.expectationTimeout)
     }
 
     func test_shouldRetry_returns_true_for_REST_request() throws {

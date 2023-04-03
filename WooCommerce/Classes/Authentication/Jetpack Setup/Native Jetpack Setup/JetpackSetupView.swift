@@ -80,6 +80,8 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
             self.viewModel.shouldPresentWebView = false
             self.viewModel.didAuthorizeJetpackConnection()
             self.dismissView()
+        }, onFailure: { [weak self] in
+            // TODO: 
         }, onDismissal: { [weak self] in
             guard let self else { return }
             self.viewModel.jetpackConnectionInterrupted = true

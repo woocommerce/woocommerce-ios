@@ -193,6 +193,7 @@ public typealias StorageInboxNote = Storage.InboxNote
 public typealias StorageInboxAction = Storage.InboxAction
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
+public typealias StorageOrderItem = Storage.OrderItem
 public typealias StorageOrderItemAttribute = Storage.OrderItemAttribute
 public typealias StorageOrderItemRefund = Storage.OrderItemRefund
 public typealias StorageOrderNote = Storage.OrderNote

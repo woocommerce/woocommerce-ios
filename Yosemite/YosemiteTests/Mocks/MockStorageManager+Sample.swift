@@ -141,6 +141,14 @@ extension MockStorageManager {
         return newOrder
     }
 
+    @discardableResult
+    func insertSampleOrderItem(readOnlyOrderItem: OrderItem) -> StorageOrderItem {
+        let newOrderItem = viewStorage.insertNewObject(ofType: StorageOrderItem.self)
+        newOrderItem.update(with: readOnlyOrderItem)
+
+        return newOrderItem
+    }
+
     /// Inserts a new (Sample) Coupon into the specified context.
     ///
     @discardableResult

@@ -757,6 +757,123 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
+    // MARK: - ProductAction.retrieveMostPopularProductsInCache
+
+    func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_returns_them_sorted() {
+        let firstProductID: Int64 = 1
+        let secondProductID: Int64 = 2
+        let thirdProductID: Int64 = 3
+
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: firstProductID))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: secondProductID))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: thirdProductID))
+
+        let firstOrderItem = OrderItem.fake().copy(productID: firstProductID)
+        let secondOrderItem = OrderItem.fake().copy(productID: secondProductID)
+        let thirdOrderItem = OrderItem.fake().copy(productID: thirdProductID)
+
+        let firstOrder = Order.fake().copy(siteID: sampleSiteID, status: .completed)
+        let secondOrder = Order.fake().copy(siteID: sampleSiteID, status: .completed)
+        let thirdOrder = Order.fake().copy(siteID: sampleSiteID, status: .completed)
+
+        storageManager.insertSampleOrder(readOnlyOrder: firstOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem)]
+        storageManager.insertSampleOrder(readOnlyOrder: secondOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
+                                                                              storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem)]
+        storageManager.insertSampleOrder(readOnlyOrder: thirdOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
+                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem),
+                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: thirdOrderItem)]
+
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
+            let action = ProductAction.retrieveMostPopularProductsInCache(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            })
+
+            store.onAction(action)
+        }
+
+        XCTAssertEqual(cachedPopularProducts.first?.productID, firstProductID)
+        XCTAssertEqual(cachedPopularProducts[1].productID, secondProductID)
+        XCTAssertEqual(cachedPopularProducts.last?.productID, thirdProductID)
+    }
+
+    func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_orders_are_not_completed_returns_empty_array() {
+        let firstProductID: Int64 = 1
+        let secondProductID: Int64 = 2
+        let thirdProductID: Int64 = 3
+
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: firstProductID))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: secondProductID))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: thirdProductID))
+
+        let firstOrderItem = OrderItem.fake().copy(productID: firstProductID)
+        let secondOrderItem = OrderItem.fake().copy(productID: secondProductID)
+        let thirdOrderItem = OrderItem.fake().copy(productID: thirdProductID)
+
+        let firstOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
+        let secondOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
+        let thirdOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
+
+        storageManager.insertSampleOrder(readOnlyOrder: firstOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem)]
+        storageManager.insertSampleOrder(readOnlyOrder: secondOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
+                                                                              storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem)]
+        storageManager.insertSampleOrder(readOnlyOrder: thirdOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
+                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem),
+                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: thirdOrderItem)]
+
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
+            let action = ProductAction.retrieveMostPopularProductsInCache(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            })
+
+            store.onAction(action)
+        }
+
+        XCTAssertTrue(cachedPopularProducts.isEmpty)
+    }
+
+    func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_siteID_is_different_returns_empty_array() {
+        let firstProductID: Int64 = 1
+        let secondProductID: Int64 = 2
+        let thirdProductID: Int64 = 3
+
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: firstProductID))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: secondProductID))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: thirdProductID))
+
+        let firstOrderItem = OrderItem.fake().copy(productID: firstProductID)
+        let secondOrderItem = OrderItem.fake().copy(productID: secondProductID)
+        let thirdOrderItem = OrderItem.fake().copy(productID: thirdProductID)
+
+        let firstOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
+        let secondOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
+        let thirdOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
+
+        storageManager.insertSampleOrder(readOnlyOrder: firstOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem)]
+        storageManager.insertSampleOrder(readOnlyOrder: secondOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
+                                                                              storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem)]
+        storageManager.insertSampleOrder(readOnlyOrder: thirdOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
+                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem),
+                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: thirdOrderItem)]
+
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
+            let action = ProductAction.retrieveMostPopularProductsInCache(siteID: 555, onCompletion: { result in
+                promise(result)
+            })
+
+            store.onAction(action)
+        }
+
+        XCTAssertTrue(cachedPopularProducts.isEmpty)
+    }
 
     // MARK: - ProductAction.resetStoredProducts
 

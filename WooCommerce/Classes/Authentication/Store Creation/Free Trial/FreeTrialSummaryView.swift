@@ -13,18 +13,18 @@ struct FreeTrialSummaryView: View {
     /// Free Trial Features
     ///
     static let features: [Feature] = [
-        .init(title: "Premium themes", icon: .starOutlineImage()),
-        .init(title: "Unlimited products", icon: .productImage),
-        .init(title: "Shipping labels", icon: .shippingOutlineIcon),
-        .init(title: "Ecommerce reports", icon: .ecommerceIcon),
-        .init(title: "Multiple payment options", icon: .getPaidImage),
-        .init(title: "Subscriptions & product kits", icon: .giftIcon),
-        .init(title: "Social advertising", icon: .megaphoneIcon),
-        .init(title: "Email marketing", icon: .emailOutlineIcon),
-        .init(title: "24/7 support", icon: .supportIcon),
-        .init(title: "Auto updates & backups", icon: .backupsIcon),
-        .init(title: "Site security", icon: .cloudOutlineImage),
-        .init(title: "Fast to launch", icon: .customizeDomainsImage)
+        .init(title: Localization.Feature.premiumThemes, icon: .starOutlineImage()),
+        .init(title: Localization.Feature.unlimitedProducts, icon: .productImage),
+        .init(title: Localization.Feature.shippingLabels, icon: .shippingOutlineIcon),
+        .init(title: Localization.Feature.ecommerceReports, icon: .ecommerceIcon),
+        .init(title: Localization.Feature.paymentOptions, icon: .getPaidImage),
+        .init(title: Localization.Feature.subscriptions, icon: .giftIcon),
+        .init(title: Localization.Feature.advertising, icon: .megaphoneIcon),
+        .init(title: Localization.Feature.marketing, icon: .emailOutlineIcon),
+        .init(title: Localization.Feature.support, icon: .supportIcon),
+        .init(title: Localization.Feature.backups, icon: .backupsIcon),
+        .init(title: Localization.Feature.security, icon: .cloudOutlineImage),
+        .init(title: Localization.Feature.launch, icon: .customizeDomainsImage)
     ]
 
     var body: some View {
@@ -41,17 +41,17 @@ struct FreeTrialSummaryView: View {
                     .padding(.trailing, -38)
                     .padding(.bottom, -38)
 
-                    Text("Launch in days,\ngrow for years")
+                    Text(Localization.launchInDays)
                         .bold()
                         .titleStyle()
                         .padding(.bottom, 16)
 
-                    Text("We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com.")
+                    Text(Localization.weOfferEverything)
                         .secondaryBodyStyle()
                         .padding(.trailing, 8)
                         .padding(.bottom, 32)
 
-                    Text("Try it free for 14 days.")
+                    Text(Localization.tryItForDays)
                         .bold()
                         .secondaryTitleStyle()
                         .padding(.bottom, 16)
@@ -70,7 +70,7 @@ struct FreeTrialSummaryView: View {
 
                     // WPCom logo
                     HStack {
-                        Text("Powered by")
+                        Text(Localization.poweredBy)
                             .foregroundColor(Color(uiColor: .textSubtle))
                             .captionStyle()
 
@@ -89,17 +89,48 @@ struct FreeTrialSummaryView: View {
                 Button {
                     print("Continue Pressed")
                 } label: {
-                    Text("Try For Free")
+                    Text(Localization.tryItForFree)
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding()
 
-                Text("No credit card required.")
+                Text(Localization.noCardRequired)
                     .subheadlineStyle()
                     .scenePadding(.bottom)
             }
             .background(Color(.listForeground(modal: false)))
         }
+    }
+}
+
+private extension FreeTrialSummaryView {
+    enum Localization {
+        enum Feature {
+            static let premiumThemes = NSLocalizedString("Premium Themes", comment: "Premium Themes title feature on the Free Trial Summary Screen")
+            static let unlimitedProducts = NSLocalizedString("Unlimited products", comment: "Unlimited products title feature on the Free Trial Summary Screen")
+            static let shippingLabels = NSLocalizedString("Shipping labels", comment: "Shipping labels title feature on the Free Trial Summary Screen")
+            static let ecommerceReports = NSLocalizedString("Ecommerce reports", comment: "Ecommerce reports title feature on the Free Trial Summary Screen")
+            static let paymentOptions = NSLocalizedString("Multiple payment options",
+                                                          comment: "Multiple payment options title feature on the Free Trial Summary Screen")
+            static let subscriptions = NSLocalizedString("Subscriptions & product kits",
+                                                         comment: "Subscriptions & product kits title feature on the Free Trial Summary Screen")
+            static let advertising = NSLocalizedString("Social advertising", comment: "Social advertising title feature on the Free Trial Summary Screen")
+            static let marketing = NSLocalizedString("Email marketing", comment: "Email marketing title feature on the Free Trial Summary Screen")
+            static let support = NSLocalizedString("24/7 support", comment: "24/7 support title feature on the Free Trial Summary Screen")
+            static let backups = NSLocalizedString("Auto updates & backups", comment: "Auto updates & backups title feature on the Free Trial Summary Screen")
+            static let security = NSLocalizedString("Site security", comment: "Site security title feature on the Free Trial Summary Screen")
+            static let launch = NSLocalizedString("Fast to launch", comment: "Fast to launch title feature on the Free Trial Summary Screen")
+        }
+
+        static let launchInDays = NSLocalizedString("Launch in days,\ngrow for years",
+                                                    comment: "Main title for the free trial summary screen. Be aware of the break line")
+        static let weOfferEverything = NSLocalizedString("We offer everything you need to build and grow an online store, " +
+                                                         "powered by WooCommerce and hosted on WordPress.com.",
+                                                         comment: "Main description for the free trial summary screen")
+        static let tryItForDays = NSLocalizedString("Try it free for 14 days.", comment: "Title for the features list in the free trial Summary Screen")
+        static let poweredBy = NSLocalizedString("Powered by", comment: "Text next to the WPCom logo in the free trial summary screen")
+        static let tryItForFree = NSLocalizedString("Try For Free", comment: "Text in the button to continue with the free trial plan")
+        static let noCardRequired = NSLocalizedString("No credit card required.", comment: "Text indicated that no card is needed for a free trial")
     }
 }
 

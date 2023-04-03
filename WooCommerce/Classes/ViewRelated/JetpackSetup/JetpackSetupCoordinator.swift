@@ -17,7 +17,6 @@ final class JetpackSetupCoordinator {
     private let analytics: Analytics
     private let dotcomAuthScheme: String
 
-    private var benefitsController: JetpackBenefitsHostingController?
     private var loginNavigationController: LoginNavigationController?
     private var setupStepsNavigationController: UINavigationController?
 
@@ -55,7 +54,6 @@ final class JetpackSetupCoordinator {
             self?.rootViewController.dismiss(animated: true, completion: nil)
         })
         rootViewController.present(benefitsController, animated: true, completion: nil)
-        self.benefitsController = benefitsController
     }
 
     func handleAuthenticationUrl(_ url: URL) -> Bool {
@@ -164,12 +162,11 @@ private extension JetpackSetupCoordinator {
         let viewController = AdminRoleRequiredHostingController(siteID: site.siteID, onClose: { [weak self] in
             self?.rootViewController.dismiss(animated: true)
         }, onSuccess: { [weak self] in
-            guard let self else { return }
-            self.benefitsController?.dismiss(animated: true) {
-                self.showWPComEmailLogin()
+            self?.rootViewController.dismiss(animated: true) {
+                self?.showWPComEmailLogin()
             }
         })
-        benefitsController?.present(UINavigationController(rootViewController: viewController), animated: true)
+        rootViewController.topmostPresentedViewController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
     /// After magic link login, fetch username and

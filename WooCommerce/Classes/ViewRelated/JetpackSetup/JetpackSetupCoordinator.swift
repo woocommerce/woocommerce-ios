@@ -408,8 +408,8 @@ private extension JetpackSetupCoordinator {
 
 // MARK: - Subtypes
 private extension JetpackSetupCoordinator {
-    enum JetpackCheckError: Error {
-        case missingPermission
+    enum JetpackCheckError: Int, Error {
+        case missingPermission = 403
     }
 
     enum Constants {

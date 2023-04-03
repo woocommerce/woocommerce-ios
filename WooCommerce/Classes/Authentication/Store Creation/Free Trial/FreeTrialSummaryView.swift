@@ -38,23 +38,22 @@ struct FreeTrialSummaryView: View {
                         Spacer()
                         Image(uiImage: .freeTrialIllustration)
                     }
-                    .padding(.trailing, -38)
-                    .padding(.bottom, -38)
+                    .padding([.trailing, .bottom], Layout.illustrationInset)
 
                     Text(Localization.launchInDays)
                         .bold()
                         .titleStyle()
-                        .padding(.bottom, 16)
+                        .padding(.bottom, Layout.titleSpacing)
 
                     Text(Localization.weOfferEverything)
                         .secondaryBodyStyle()
-                        .padding(.trailing, 8)
-                        .padding(.bottom, 32)
+                        .padding(.trailing, Layout.infoTrailingMargin)
+                        .padding(.bottom, Layout.sectionsSpacing)
 
                     Text(Localization.tryItForDays)
                         .bold()
                         .secondaryTitleStyle()
-                        .padding(.bottom, 16)
+                        .padding(.bottom, Layout.titleSpacing)
 
                     ForEach(Self.features, id: \.title) { feature in
                         HStack {
@@ -65,7 +64,7 @@ struct FreeTrialSummaryView: View {
                                 .foregroundColor(Color(.text))
                                 .calloutStyle()
                         }
-                        .padding(.bottom, 18)
+                        .padding(.bottom, Layout.featureSpacing)
                     }
 
                     // WPCom logo
@@ -122,7 +121,7 @@ private extension FreeTrialSummaryView {
             static let launch = NSLocalizedString("Fast to launch", comment: "Fast to launch title feature on the Free Trial Summary Screen")
         }
 
-        static let launchInDays = NSLocalizedString("Launch in days,\ngrow for years",
+        static let launchInDays = NSLocalizedString("Launch in days, \ngrow for years",
                                                     comment: "Main title for the free trial summary screen. Be aware of the break line")
         static let weOfferEverything = NSLocalizedString("We offer everything you need to build and grow an online store, " +
                                                          "powered by WooCommerce and hosted on WordPress.com.",
@@ -131,6 +130,14 @@ private extension FreeTrialSummaryView {
         static let poweredBy = NSLocalizedString("Powered by", comment: "Text next to the WPCom logo in the free trial summary screen")
         static let tryItForFree = NSLocalizedString("Try For Free", comment: "Text in the button to continue with the free trial plan")
         static let noCardRequired = NSLocalizedString("No credit card required.", comment: "Text indicated that no card is needed for a free trial")
+    }
+
+    enum Layout {
+        static let featureSpacing = 18.0
+        static let titleSpacing = 16.0
+        static let sectionsSpacing = 32.0
+        static let infoTrailingMargin = 8.0
+        static let illustrationInset = -32.0
     }
 }
 

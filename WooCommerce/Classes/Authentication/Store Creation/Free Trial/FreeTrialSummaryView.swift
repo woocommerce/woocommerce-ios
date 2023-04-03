@@ -37,7 +37,9 @@ struct FreeTrialSummaryView: View {
                     HStack {
                         Spacer()
                         Image(uiImage: .freeTrialIllustration)
-                    } // TODO: Align it to the left
+                    }
+                    .padding(.trailing, -38)
+                    .padding(.bottom, -38)
 
                     Text("Launch in days,\ngrow for years")
                         .bold()

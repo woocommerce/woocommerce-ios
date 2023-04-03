@@ -46,6 +46,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveMostPopularProductsInCache(let siteID, let onCompletion):
+            retrieveMostPopularProductsInCache(siteID: siteID, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -318,6 +320,37 @@ private extension ProductStore {
 
         }
     }
+
+    func retrieveMostPopularProductsInCache(siteID: Int64, onCompletion: @escaping ([Product]) -> Void) {
+        // Get completed orders
+        let completedOrderPredicate = NSPredicate(format: "statusKey ==[c] %@", OrderStatusEnum.completed.rawValue)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [completedOrderPredicate, sitePredicate])
+        let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
+                                                      matching: predicate,
+                                                      sortedBy: nil)
+
+        let completedOrders = completedStorageOrders.map { $0.toReadOnly() }
+
+        // Get product ids sorted by occurence
+        let completedOrdersItems = completedOrders.flatMap { $0.items }
+        let productIDCountDictionary = completedOrdersItems.reduce(into: [:]) { counts, orderItem in counts[orderItem.productID, default: 0] += 1 }
+        let sortedByOccurenceProductIDs = productIDCountDictionary.sorted { $0.value > $1.value }.map { $0.key }
+
+        // Retrieve products from product ids and finish
+        let products = sortedByOccurenceProductIDs
+            .compactMap {
+            let predicate = NSPredicate(format: "productID == %lld", $0)
+            let product = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
+                                                          matching: predicate,
+                                                          sortedBy: nil).first
+            return product
+            }.map { $0.toReadOnly() }
+
+        onCompletion(products)
+    }
+
+
 
     /// Adds a product.
     ///

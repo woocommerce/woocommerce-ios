@@ -584,17 +584,6 @@ private extension AuthenticationManager {
                           source: SignInSource? = nil,
                           in navigationController: UINavigationController,
                           onDismiss: @escaping () -> Void = {}) {
-        // Start the store creation process if the user
-        // logged in from the store creation flow.
-        if case .custom(let source) = source,
-           let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
-           storeCreationSource == .prologue {
-            let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
-                                                       navigationController: navigationController)
-            self.storeCreationCoordinator = coordinator
-            return coordinator.start()
-        }
-
         // Start the store picker
         let config: StorePickerConfiguration = {
             switch source {
@@ -614,6 +603,17 @@ private extension AuthenticationManager {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
+        }
+
+        // Start the store creation process if the user
+        // logged in from the store creation flow.
+        if case .custom(let source) = source,
+           let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
+           storeCreationSource == .prologue {
+            let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
+                                                       navigationController: navigationController)
+            self.storeCreationCoordinator = coordinator
+            coordinator.start()
         }
     }
 

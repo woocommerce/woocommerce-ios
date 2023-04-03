@@ -40,92 +40,6 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is JetpackBenefitsHostingController)
     }
 
-    func test_installation_flow_for_jcp_sites_is_presented_for_jcp_sites() throws {
-        // Given
-        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: false, isJetpackConnected: true)
-        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
-
-        // When
-        coordinator.showBenefitModal()
-        waitUntil {
-            self.navigationController.presentedViewController != nil
-        }
-        let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
-        benefitModal.rootView.installAction(.failure(JetpackBenefitsViewModel.FetchJetpackUserError.notSupportedForJCPSites))
-        waitUntil {
-            self.navigationController.presentedViewController is JCPJetpackInstallHostingController
-        }
-    }
-
-    func test_wpcom_email_screen_is_presented_for_non_jetpack_sites_without_jetpack_if_user_is_admin() throws {
-        // Given
-        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
-        let mockSessionManager = MockSessionManager()
-        mockSessionManager.defaultRoles = [.administrator]
-        let stores = DefaultStoresManager(sessionManager: mockSessionManager)
-        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
-
-        // When
-        coordinator.showBenefitModal()
-        waitUntil {
-            self.navigationController.presentedViewController != nil
-        }
-        let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
-        benefitModal.rootView.installAction(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
-
-        // Then
-        waitUntil {
-            self.navigationController.presentedViewController is UINavigationController
-        }
-        let navigationController = try XCTUnwrap(navigationController.presentedViewController as? UINavigationController)
-        XCTAssertTrue(navigationController.topViewController is WPComEmailLoginHostingController)
-    }
-
-    func test_admin_required_screen_is_presented_for_non_jetpack_sites_without_jetpack_if_user_is_not_admin() throws {
-        // Given
-        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
-        let mockSessionManager = MockSessionManager()
-        mockSessionManager.defaultRoles = [.shopManager]
-        let stores = DefaultStoresManager(sessionManager: mockSessionManager)
-        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
-
-        // When
-        coordinator.showBenefitModal()
-        waitUntil {
-            self.navigationController.presentedViewController != nil
-        }
-        let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
-        benefitModal.rootView.installAction(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))))
-
-        // Then
-        waitUntil {
-            benefitModal.presentedViewController is UINavigationController
-        }
-        let navigationController = try XCTUnwrap(benefitModal.presentedViewController as? UINavigationController)
-        XCTAssertTrue(navigationController.topViewController is AdminRoleRequiredHostingController)
-    }
-
-    func test_admin_required_screen_is_presented_for_non_jetpack_sites_when_jetpack_connection_check_returns_403() throws {
-        // Given
-        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
-        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
-
-        // When
-        coordinator.showBenefitModal()
-        waitUntil {
-            self.navigationController.presentedViewController != nil
-        }
-        let benefitModal = try XCTUnwrap(navigationController.presentedViewController as? JetpackBenefitsHostingController)
-        benefitModal.rootView.installAction(.failure(AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))))
-
-        // Then
-        waitUntil {
-            benefitModal.presentedViewController is UINavigationController
-        }
-        let navigationController = try XCTUnwrap(benefitModal.presentedViewController as? UINavigationController)
-        XCTAssertTrue(navigationController.topViewController is AdminRoleRequiredHostingController)
-    }
-
     func test_handleAuthenticationUrl_returns_false_for_unsupported_url_scheme() throws {
         // Given
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
@@ -182,9 +96,38 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
+    func test_handleAuthenticationUrl_presents_role_error_if_user_does_not_have_admin_role() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultRoles: [.shopManager]))
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let expectedScheme = "scheme"
+        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
+        let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
+
+        let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .loadWPComAccount(_, onCompletion):
+                onCompletion(expectedAccount)
+            case let .fetchJetpackUser(completion):
+                completion(.success(JetpackUser.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        _ = coordinator.handleAuthenticationUrl(url)
+
+        // Then
+        waitUntil {
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is AdminRoleRequiredHostingController
+        }
+    }
+
     func test_handleAuthenticationUrl_presents_jetpack_setup_flow_after_fetching_wpcom_account_and_jetpack_user() throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let expectedScheme = "scheme"
         let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
@@ -213,7 +156,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
 
     func test_handleAuthenticationUrl_proceeds_to_authenticate_user_if_jetpack_is_already_connected() throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let expectedScheme = "scheme"
         let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)

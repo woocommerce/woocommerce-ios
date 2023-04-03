@@ -19,6 +19,13 @@ final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswo
         super.viewDidLoad()
         configureTransparentNavigationBar()
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isMovingFromParent {
+            ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
+        }
+    }
 }
 
 /// Screen for entering the password for a WPCom account during the Jetpack setup flow
@@ -92,6 +99,7 @@ struct WPComPasswordLoginView: View {
                 // Primary CTA
                 Button(Localization.primaryAction) {
                     viewModel.handleLogin()
+                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .password, tap: .submit))
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
                 .disabled(viewModel.password.isEmpty)

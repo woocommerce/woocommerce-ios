@@ -1256,6 +1256,30 @@ extension UIImage {
     static var freeTrialIllustration: UIImage {
         UIImage(imageLiteralResourceName: "free-trial-ilustration")
     }
+
+    static var ecommerceIcon: UIImage {
+        UIImage(imageLiteralResourceName: "ecommerce-icon")
+    }
+
+    static var supportIcon: UIImage {
+        UIImage(imageLiteralResourceName: "support-icon")
+    }
+
+    static var backupsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "backups-icon")
+    }
+
+    static var giftIcon: UIImage {
+        UIImage.gridicon(.gift)
+    }
+
+    static var emailOutlineIcon: UIImage {
+        UIImage(imageLiteralResourceName: "email-outline-icon")
+    }
+
+    static var shippingOutlineIcon: UIImage {
+        UIImage(imageLiteralResourceName: "shipping-outline-icon")
+    }
 }
 
 private extension UIImage {

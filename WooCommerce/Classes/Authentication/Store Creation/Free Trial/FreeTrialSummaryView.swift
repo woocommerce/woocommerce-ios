@@ -3,55 +3,71 @@ import SwiftUI
 /// View to inform the benefits of a free trial
 ///
 struct FreeTrialSummaryView: View {
+    /// Free Trial feature representation
+    ///
+    struct Feature {
+        let title: String
+        let icon: UIImage
+    }
 
-    static let features: [String] = [
-        "Premium themes",
-        "Unlimited products",
-        "Shipping labels",
-        "Ecommerce reports",
-        "Multiple payment options",
-        "Subscriptions & product kits",
-        "Social advertising",
-        "Email marketing",
-        "24/7 support",
-        "Auto updates & backups",
-        "Site security",
-        "Fast to launch"
+    /// Free Trial Features
+    ///
+    static let features: [Feature] = [
+        .init(title: "Premium themes", icon: .starOutlineImage()),
+        .init(title: "Unlimited products", icon: .productImage),
+        .init(title: "Shipping labels", icon: .shippingImage),
+        .init(title: "Ecommerce reports", icon: .ecommerceIcon),
+        .init(title: "Multiple payment options", icon: .getPaidImage),
+        .init(title: "Subscriptions & product kits", icon: .giftIcon),
+        .init(title: "Social advertising", icon: .megaphoneIcon),
+        .init(title: "Email marketing", icon: .mailImage),
+        .init(title: "24/7 support", icon: .supportIcon),
+        .init(title: "Auto updates & backups", icon: .backupsIcon),
+        .init(title: "Site security", icon: .cloudOutlineImage),
+        .init(title: "Fast to launch", icon: .customizeDomainsImage)
     ]
-
 
     var body: some View {
         VStack(spacing: .zero) {
             // Main Content
             ScrollView {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: .zero) {
 
                     /// Align image to the right
                     HStack {
                         Spacer()
                         Image(uiImage: .freeTrialIllustration)
-                    }
+                    } // TODO: Align it to the left
 
-                    Text("Launch in days, grow for years")
+                    Text("Launch in days,\ngrow for years")
+                        .bold()
                         .titleStyle()
+                        .padding(.bottom, 16)
 
                     Text("We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com.")
-                        .calloutStyle()
+                        .secondaryBodyStyle()
+                        .padding(.trailing, 8)
+                        .padding(.bottom, 32)
 
                     Text("Try it free for 14 days.")
+                        .bold()
                         .secondaryTitleStyle()
+                        .padding(.bottom, 16)
 
-                    ForEach(Self.features, id: \.self) { feature in
+                    ForEach(Self.features, id: \.title) { feature in
                         HStack {
-                            Rectangle()
-                                .frame(width: 16, height: 16)
+                            Image(uiImage: feature.icon)
+                                .foregroundColor(Color(uiColor: .accent))
 
-                            Text(feature)
+                            Text(feature.title)
+                                .foregroundColor(Color(.text))
+                                .calloutStyle()
                         }
+                        .padding(.bottom, 18)
                     }
-
-                    // TODO: Add WordPress Indicator
+                    // TODO: Add WordPress Indicator // my-sites
                 }
+                .padding()
             }
 
             // Continue Footer

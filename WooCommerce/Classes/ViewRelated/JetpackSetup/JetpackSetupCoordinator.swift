@@ -49,36 +49,9 @@ final class JetpackSetupCoordinator {
     }
 
     func showBenefitModal() {
-        let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected)
-        benefitsController.setActions (installAction: { [weak self] result in
-            guard let self else { return }
-
-            if self.site.isNonJetpackSite {
-                self.analytics.track(.jetpackSetupLoginButtonTapped)
-                do {
-                    try self.saveJetpackConnectionStateIfPossible(result)
-                    self.analytics.track(event: .JetpackSetup.connectionCheckCompleted(
-                        isAlreadyConnected: self.jetpackConnectedEmail != nil,
-                        requiresConnectionOnly: self.requiresConnectionOnly
-                    ))
-                    if let connectedEmail = self.jetpackConnectedEmail {
-                        self.startAuthentication(with: connectedEmail)
-                    } else {
-                        self.showWPComEmailLogin()
-                    }
-                } catch JetpackCheckError.missingPermission {
-                    self.displayAdminRoleRequiredError()
-                    self.analytics.track(.jetpackSetupConnectionCheckFailed, withError: JetpackCheckError.missingPermission)
-                } catch {
-                    DDLogError("⛔️ Jetpack status fetched error: \(error)")
-                    self.analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
-                    self.showAlert(message: Localization.errorCheckingJetpack)
-                }
-            } else {
-                self.analytics.track(event: .jetpackInstallButtonTapped(source: .benefitsModal))
-                self.presentJCPJetpackInstallFlow()
-            }
-        }, dismissAction: { [weak self] in
+        let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
+            await self?.handleBenefitModalCTA()
+        }, onDismiss: { [weak self] in
             self?.rootViewController.dismiss(animated: true, completion: nil)
         })
         rootViewController.present(benefitsController, animated: true, completion: nil)
@@ -109,6 +82,33 @@ final class JetpackSetupCoordinator {
 // MARK: - Private helpers
 //
 private extension JetpackSetupCoordinator {
+    @MainActor
+    func handleBenefitModalCTA() async {
+        guard site.isNonJetpackSite else {
+            return presentJCPJetpackInstallFlow()
+        }
+        do {
+            let result = await fetchJetpackUser()
+            try saveJetpackConnectionStateIfPossible(result)
+            analytics.track(event: .JetpackSetup.connectionCheckCompleted(
+                isAlreadyConnected: jetpackConnectedEmail != nil,
+                requiresConnectionOnly: requiresConnectionOnly
+            ))
+            if let connectedEmail = jetpackConnectedEmail {
+                startAuthentication(with: connectedEmail)
+            } else {
+                showWPComEmailLogin()
+            }
+        } catch JetpackCheckError.missingPermission {
+            displayAdminRoleRequiredError()
+            analytics.track(.jetpackSetupConnectionCheckFailed, withError: JetpackCheckError.missingPermission)
+        } catch {
+            DDLogError("⛔️ Jetpack status fetched error: \(error)")
+            analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
+            showAlert(message: Localization.errorCheckingJetpack)
+        }
+    }
+
     /// Navigates to the Jetpack installation flow for JCP sites.
     func presentJCPJetpackInstallFlow() {
         rootViewController.dismiss(animated: true, completion: { [weak self] in
@@ -134,16 +134,11 @@ private extension JetpackSetupCoordinator {
             jetpackConnectedEmail = user.wpcomUser?.email
 
         case .failure(let error):
-            requiresConnectionOnly = false
             switch error {
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
                 /// 404 error means Jetpack is not installed or activated yet.
-                let roles = stores.sessionManager.defaultRoles
-                if roles.contains(.administrator) {
-                    jetpackConnectedEmail = nil
-                } else {
-                    throw JetpackCheckError.missingPermission
-                }
+                requiresConnectionOnly = false
+                jetpackConnectedEmail = nil
             case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
                 /// 403 means the site Jetpack connection is not established yet
                 /// and the user has no permission to handle this.
@@ -303,7 +298,12 @@ private extension JetpackSetupCoordinator {
 
     @MainActor
     func fetchJetpackUser() async -> Result<JetpackUser, Error> {
-        await withCheckedContinuation { continuation in
+        /// Jetpack setup will fail anyway without admin role, so check that first.
+        let roles = stores.sessionManager.defaultRoles
+        guard roles.contains(.administrator) else {
+            return .failure(JetpackCheckError.missingPermission)
+        }
+        return await withCheckedContinuation { continuation in
             let action = JetpackConnectionAction.fetchJetpackUser { result in
                 continuation.resume(returning: result)
             }

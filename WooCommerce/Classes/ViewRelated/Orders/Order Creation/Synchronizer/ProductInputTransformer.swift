@@ -124,6 +124,9 @@ private extension ProductInputTransformer {
             case .product(let product):
                 let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: product.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity, price: price, productID: product.productID, variationID: nil)
+            case .productID(let productID):
+                let price: Decimal = existingItem?.price.decimalValue ?? .zero
+                return OrderItemParameters(quantity: input.quantity, price: price, productID: productID, variationID: nil)
             case .variation(let variation):
                 let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: variation.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity, price: price, productID: variation.productID, variationID: variation.productVariationID)

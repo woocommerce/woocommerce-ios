@@ -5,8 +5,9 @@ import Networking
 ///
 public final class JetpackConnectionStore: DeauthenticatedStore {
 
-    // Keep a strong reference to remote to keep requests alive
-    private var remote: JetpackConnectionRemote?
+    // Keep strong references to remotes to keep requests alive
+    private var jetpackConnectionRemote: JetpackConnectionRemote?
+    private var accountRemote: AccountRemote?
 
     public override init(dispatcher: Dispatcher) {
         super.init(dispatcher: dispatcher)
@@ -41,21 +42,23 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             fetchJetpackConnectionURL(completion: completion)
         case .fetchJetpackUser(let completion):
             fetchJetpackUser(completion: completion)
+        case .loadWPComAccount(let network, let onCompletion):
+            loadWPComAccount(network: network, onCompletion: onCompletion)
         }
     }
 }
 
 private extension JetpackConnectionStore {
     func updateRemote(with siteURL: String, network: Network) {
-        self.remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        self.jetpackConnectionRemote = JetpackConnectionRemote(siteURL: siteURL, network: network)
     }
 
     func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
-        remote?.retrieveJetpackPluginDetails(completion: completion)
+        jetpackConnectionRemote?.retrieveJetpackPluginDetails(completion: completion)
     }
 
     func installJetpackPlugin(completion: @escaping (Result<Void, Error>) -> Void) {
-        remote?.installJetpackPlugin(completion: { result in
+        jetpackConnectionRemote?.installJetpackPlugin(completion: { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -66,7 +69,7 @@ private extension JetpackConnectionStore {
     }
 
     func activateJetpackPlugin(completion: @escaping (Result<Void, Error>) -> Void) {
-        remote?.activateJetpackPlugin(completion: { result in
+        jetpackConnectionRemote?.activateJetpackPlugin(completion: { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -77,31 +80,23 @@ private extension JetpackConnectionStore {
     }
 
     func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
-        remote?.fetchJetpackConnectionURL { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let url):
-                // If we get the account connection URL, return it immediately.
-                if url.absoluteString.hasPrefix(Constants.jetpackAccountConnectionURL) {
-                    return completion(.success(url))
-                }
-                // Otherwise, request the url with redirection disabled and retrieve the URL in LOCATION header
-                self.remote?.registerJetpackSiteConnection(with: url, completion: completion)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        jetpackConnectionRemote?.fetchJetpackConnectionURL(completion: completion)
     }
 
     func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
-        remote?.fetchJetpackUser(completion: completion)
+        jetpackConnectionRemote?.fetchJetpackUser(completion: completion)
     }
-}
 
-// MARK: - Enums
-//
-private extension JetpackConnectionStore {
-    enum Constants {
-        static let jetpackAccountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
+    func loadWPComAccount(network: Network, onCompletion: @escaping (Account?) -> Void) {
+        let remote = AccountRemote(network: network)
+        remote.loadAccount { result in
+            switch result {
+            case .success(let account):
+                onCompletion(account)
+            case .failure:
+                onCompletion(nil)
+            }
+        }
+        self.accountRemote = remote
     }
 }

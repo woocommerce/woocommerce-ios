@@ -106,18 +106,17 @@ class StoreOnboardingViewModel: ObservableObject {
 
 private extension StoreOnboardingViewModel {
     @MainActor
-    private func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
-                continuation.resume(with: result
-                    .map { $0.filter({ task in
-                        if case .unsupported = task.type {
-                            return false
-                        } else {
-                            return true
-                        }
-                    }).map { .init(task: $0) }})
-            })
+    func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
+        async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan
+        let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
+
+        if await shouldManuallyAppendLaunchStoreTask {
+            return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
+                .sorted()
+                .map { .init(task: $0) }
+        } else {
+            return tasksFromServer
+                .map { .init(task: $0) }
         }
     }
 
@@ -159,6 +158,49 @@ private extension StoreOnboardingViewModel {
 
         // This will be reset to `nil` when session resets
         defaults[.completedAllStoreOnboardingTasks] = true
+    }
+
+    @MainActor
+    func fetchTasks() async throws -> [StoreOnboardingTask] {
+        try await withCheckedThrowingContinuation({ continuation in
+            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
+                switch result {
+                case .success(let tasks):
+                    return continuation.resume(returning: tasks.filter({ task in
+                        if case .unsupported = task.type {
+                            return false
+                        } else {
+                            return true
+                        }
+                    }))
+                case .failure(let error):
+                    return continuation.resume(throwing: error)
+                }
+            })
+        })
+    }
+
+    @MainActor
+    var isFreeTrialPlan: Bool {
+        get async {
+            // Only fetch free trial information if the site is a WPCom site.
+            guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
+                return false
+            }
+
+            return await withCheckedContinuation({ continuation in
+                let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+                    switch result {
+                    case .success(let plan):
+                        return continuation.resume(returning: plan.isFreeTrial)
+                    case .failure(let error):
+                        DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
+                        return continuation.resume(returning: false)
+                    }
+                }
+                stores.dispatch(action)
+            })
+        }
     }
 
     func hasPendingTasks(_ tasks: [StoreOnboardingTaskViewModel]) -> Bool {

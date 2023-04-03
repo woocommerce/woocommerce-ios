@@ -640,6 +640,10 @@ private extension DashboardViewController {
         let hostingController = StoreOnboardingViewHostingController(viewModel: viewModel.storeOnboardingViewModel,
                                                                      navigationController: navigationController,
                                                                      site: site,
+                                                                     onUpgradePlan: { [weak self] in
+            guard let self else { return }
+            self.viewModel.syncFreeTrialBanner(siteID: self.siteID)
+        },
                                                                      shareFeedbackAction: { [weak self] in
             // Present survey
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)

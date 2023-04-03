@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-03-28 09:54:20+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -169,6 +169,9 @@ which should be translated separately and considered part of this sentence. */
 /* For example, '5 Items' */
 "%@ Items" = "%@ 个项目";
 
+/* Reads like: eCommerce ended */
+"%@ ended" = "%@ 已结束";
+
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "已申请 %@ 标签退款";
 
@@ -192,6 +195,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld 已选择的产品";
+
+/* Format of the number of components in singular form */
+"%ld component" = "%ld 个组件";
+
+/* Format of the number of components in plural form */
+"%ld components" = "%ld 个组件";
 
 /* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
 "%ld cross-sell product" = "%ld 个交叉销售产品";
@@ -299,8 +308,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "发生网络错误。 请检查您的连接，然后重试。";
 
-/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
-"A phone number is required because this shipment requires a customs form" = "需要提供电话号码，因为此配送需要报关单";
+/* Error shown in Shipping Label Origin Address validation for phone number field */
+"A phone number is required" = "必须提供电话号码";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "包含颜色或尺寸等参数的变体";
@@ -399,6 +408,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "添加类别";
+
+/* Title text of the button that adds a fee when creating a new coupon */
+"Add Coupon" = "添加优惠券";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "添加客户详情";
@@ -1176,6 +1188,9 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "轻点“安装 Jetpack”按钮，即表示您同意我们的%1$@并同意与 WordPress.com %2$@。";
 
+/* Details on the store onboarding WCPay setup screen. */
+"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "使用 WooCommerce Payments 即表示，您同意遵守我们的[服务条款](https:\/\/wordpress.com\/tos)，并确认您已阅读我们的[隐私政策](https:\/\/automattic.com\/privacy\/)。";
+
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "国家\/地区";
 
@@ -1244,6 +1259,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the new product form
    Button to dismiss the site credential login screen
+   Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
@@ -1270,6 +1286,8 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
+   Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1280,8 +1298,13 @@ which should be translated separately and considered part of this sentence. */
    Title for the button to cancel the payment methods screen
    Title for the button to cancel the simple payments screen
    Title of an option to dismiss the bulk edit action sheet
-   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
+   Title of dismiss button presented when site credential login fails
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
+   Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "取消";
+
+/* Title for the button to cancel a free trial */
+"Cancel Free Trial" = "取消免费试用";
 
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "取消安装";
@@ -1343,8 +1366,8 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Car Washes" = "洗车";
 
-/* Card method title on the select payment method screen */
-"Card" = "卡片";
+/* (External) card reader payment method title on the select payment method screen */
+"Card Reader" = "读卡器";
 
 /* Title of the card reader support area option */
 "Card Reader \/ In-Person Payments" = "读卡器\/现场付款";
@@ -1598,8 +1621,15 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for completed order status. */
 "Completed" = "已完成";
 
+/* Title for Components row in the product form screen.
+   Title for the list of components in a composite product */
+"Components" = "组件";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "撰写新的订单备注。";
+
+/* Display label for composite product type. */
+"Composite" = "组合";
 
 /* Industry option in the store creation category question. */
 "Computer Repair" = "电脑维修";
@@ -1759,6 +1789,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the button to continue with a profiler question.
    Title of the button to continue with a selected domain. */
 "Continue" = "继续";
+
+/* Title of the primary button on the store onboarding payments setup screen. */
+"Continue Setup" = "继续设置";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "继续使用 WordPress.com";
@@ -2039,6 +2072,9 @@ which should be translated separately and considered part of this sentence. */
    Message in the footer of bulk price setting screen, when variations have different price values. */
 "Current prices are mixed." = "当前价格参差不齐。";
 
+/* Reads like: Current: Free Trial */
+"Current: %@" = "当前：%@";
+
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "目前最多支持创建 100 个变体。 为此产品生成变体会创建 %d 个变体。";
 
@@ -2234,12 +2270,16 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "折扣率";
 
+/* Details on the store onboarding payments setup screen. */
+"Discover other payment providers and choose a payment provider." = "探索其他付款服务提供商，并选择一个付款服务提供商。";
+
 /* Accessibility label for button to dismiss a bottom sheet
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.
    Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
+   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
@@ -2321,6 +2361,8 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
+   Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
@@ -2865,6 +2907,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
 "Failed to enable Pay in Person. Please try again later." = "无法启用现场付款功能。 请稍后重试。";
 
+/* Error message displayed when failed to fetch application password authorization URL during login */
+"Failed to fetch the authorization URL for application passwords. Please try again." = "未能获取应用密码的授权 URL。 请重试。";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "获取扣费详细信息失败。 请重试。";
 
@@ -3015,6 +3060,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "France" = "法国";
+
+/* Plan name for an active free trial */
+"Free Trial" = "免费试用版";
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "第一年免费";
@@ -3799,6 +3847,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Lead Generation" = "潜在客户开发";
 
+/* Title of the secondary button on the store onboarding payments setup screen. */
+"Learn More" = "了解更多";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
@@ -3933,6 +3984,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label.
+   Title for the application password authorization web view
    View title during the log in process. */
 "Log In" = "登录";
 
@@ -4649,6 +4701,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
 "Open the flow for installing the WCShip extension." = "打开安装 WCShip 扩展的流程。";
 
+/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
+"Open wp-admin" = "打开 wp-admin";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "打开可用状态列表。";
 
@@ -4923,6 +4978,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "所选付款方式";
 
+/* Highlighted header text on the store onboarding payments setup screen. */
+"Payment Methods" = "付款方式";
+
 /* Navigates to Payment Gateway management screen */
 "Payment Provider" = "付款提供商";
 
@@ -4953,7 +5011,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
-   Title of the hub menu payments button */
+   Title of the hub menu payments button
+   Title of the webview for payments setup from onboarding. */
 "Payments" = "付款";
 
 /* Display label for pending order status.
@@ -5751,6 +5810,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "报告崩溃问题";
 
+/* Title for the button to contact support on the Subscriptions view */
+"Report Subscription Issue" = "报告订阅问题";
+
 /* Title for the alert after the support request is created. */
 "Request Sent!" = "请求已发送！";
 
@@ -5802,12 +5864,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
+   Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
    Retry Action
    Retry action for an error notice
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
    Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
+   Retry button on the error notice for the upgrade view
    Retry the last action */
 "Retry" = "重试";
 
@@ -5884,6 +5948,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "短信已发送";
+
+/* Title for the plan section on the subscriptions view. Uppercased */
+"SUBSCRIPTION STATUS" = "订阅状态";
 
 /* Header label of the domain suggestions on the domain selector. */
 "SUGGESTIONS" = "建议";
@@ -6168,6 +6235,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "设置您要提供的折扣百分比。";
 
+/* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
+"Set up %1$@" = "设置 %1$@";
+
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "设置 Jetpack";
 
@@ -6183,6 +6253,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings button in the hub menu
    Settings navigation title */
 "Settings" = "设置";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
+"Setup complete" = "设置完成";
 
 /* Title of the alert presented when the user tries to start Tap to Pay on iPhone and it fails */
 "Setup failed" = "设置失败";
@@ -6412,7 +6485,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "站点地址至少要包含 4 个字符。";
 
-/* The button title on the login onboarding screen to skip to the prologue screen.
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
+   The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "跳过";
@@ -6644,6 +6718,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "商店创建仍在进行中";
 
+/* Title of the webview for Store details task from onboarding. */
+"Store details" = "商店详细信息";
+
 /* Text field prompt on the store name form in the store creation flow. */
 "Store name" = "商店名称";
 
@@ -6673,6 +6750,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for subscription product type. */
 "Subscription" = "订阅";
+
+/* Title for the Subscriptions / Upgrades view */
+"Subscriptions" = "订阅";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "订阅和礼品卡";
@@ -6768,6 +6848,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "圣多美和普林西比";
 
+/* Title for the section to contact support on the subscriptions view. Uppercased */
+"TROUBLESHOOTING" = "故障排除";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
@@ -6810,7 +6893,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "点击或插卡以退款";
 
-/* The button title on the reader type alert, for the user to choose the built-in reader. */
+/* Tap to Pay on iPhone method title on the select payment method screen
+   The button title on the reader type alert, for the user to choose the built-in reader. */
 "Tap to Pay on iPhone" = "点击以在 iPhone 上付款";
 
 /* Error message shown when the built-in reader cannot be used because there is a call in progress */
@@ -6939,6 +7023,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The placeholder text for the of the Aztec editor screen. */
 "Tell us more about %1$@..." = "告知我们更多有关 %1$@ 的信息…";
+
+/* Title of the Store details task to add details about the store. */
+"Tell us more about your store" = "向我们详细介绍您的商店";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -7238,6 +7325,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message when the presented card postal code doesn't match the order postal code. */
 "The transaction postal code and card postal code do not match. Try another means of payment" = "交易邮政编码与卡片邮政编码不匹配。 请尝试其他付款方式";
 
+/* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
+"The trial payment could not be started, please try again, or contact support if this problem persists." = "无法开始试用付款，请重试，如果此问题仍然存在，请联系支持部门。";
+
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "无法生成变量。";
 
@@ -7270,6 +7360,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "创建订单时出错";
+
+/* Error shown when failing to fetch the plan details in the upgrades view. */
+"There was an error fetching your plan details, please try again later." = "获取您的套餐详细信息时出错，请稍后重试。";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "发放退款时出现错误";
@@ -7547,6 +7640,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Industry group option in the store creation category question. */
 "Travel And Lodging" = "旅行和住宿";
 
+/* Plan name for an expired free trial */
+"Trial ended" = "试用已结束";
+
 /* Country option for a site address. */
 "Trinidad and Tobago" = "特里尼达和多巴哥";
 
@@ -7591,13 +7687,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "再次尝试安装";
 
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
+"Try a Payment" = "尝试付款";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"Try a payment" = "尝试付款";
+
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "尝试使用您自己的银行卡付款（并在完成之后进行退款）。";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
+   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "请重试";
+
+/* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
+"Try again with WP-Admin page" = "使用 WP-Admin 页面重试";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
 "Try another means of payment" = "请尝试其他付款方式";
@@ -7607,6 +7713,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "立即试用";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
+"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "尝试收取 0.50 美元的款项，了解“轻点以在 iPhone 上付款”的工作方式。 使用您的借记卡或信用卡：您可以在完成后退款。";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "试试其他电子邮件地址";
@@ -7750,6 +7859,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice displayed when data cannot be synced for new order */
 "Unable to load taxes for order" = "无法加载订单税费";
+
+/* Error message displayed when application password authorization fails during login due to the feature being disabled on the input site. */
+"Unable to log in because application passwords are disabled on your site." = "无法登录，因为您的站点上已禁用应用密码。";
+
+/* Error message displayed when the user rejects application password authorization request during login */
+"Unable to log in because the request to use application passwords to your site has been rejected." = "无法登录，因为使用应用密码访问您的站点的请求已被拒绝。";
 
 /* Error message explaining login failure due to blocked WP Admin page */
 "Unable to login because we cannot identify your store's admin URL." = "由于我们无法识别您商店的管理员 URL，无法登录。";
@@ -7983,7 +8098,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "导入您的产品......";
 
-/* Title for the WebView when upgrading a free trial plan
+/* Title for the button to upgrade from a free trial
+   Title for the WebView when upgrading a free trial plan
    Title on the button to upgrade a free trial plan. */
 "Upgrade Now" = "立即升级";
 
@@ -8363,6 +8479,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Western Sahara" = "西撒哈拉";
 
+/* Subtitle of the Store details task to add details about the store. */
+"We’ll use the info to get a head start on your shipping, tax, and payments settings." = "我们将使用此信息抢先开始设置运费、税费和付款。";
+
 /* Subtitle of the store creation profiler question about the store country. */
 "We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "我们将使用此信息抢先开始设置付款、运费和税费。";
 
@@ -8437,7 +8556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce 移动应用程序，随时随地经营商店";
 
-/* Title of the WooCommerce Payments support area option */
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding.
+   Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Payments";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -8490,11 +8611,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Yesterday Section Header */
 "Yesterday" = "昨天";
 
+/* Reads like: You are in the 14-day free trial. The free trial will end in 5 days. Upgrade to unlock new features and keep your store running. */
+"You are in the %1$d-day free trial. The free trial will end in %2$d days. Upgrade to unlock new features and keep your store running." = "您正处于 %1$d 天免费试用期间。 免费试用版将于 %2$d 天后到期。 升级以解锁新功能并持续运营商店。";
+
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "您无权访问此商店。";
 
 /* An error message shown after the user retried checking their roles but they still don't have enough permission to install Jetpack */
 "You are not authorized to install Jetpack" = "您未获得安装 Jetpack 的授权";
+
+/* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
+"You are subscribed to the %1@ plan! You have access to all our features until %2@." = "您可以订阅%1$@套餐！ %2$@之前，您可以访问我们的所有功能。";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "您可以选择多个答案。";
@@ -8502,8 +8629,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "您可以在 Web 仪表盘中编辑捆绑产品。";
 
+/* Info notice at the bottom of the components screen */
+"You can edit components in the web dashboard." = "您可以在 Web 仪表盘中编辑组件。";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "您可以在 Web 仪表盘中编辑产品加载项。";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
+"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "您可以依次点击“菜单”>“付款”>“收款”，或通过“订单详情”找到“轻点以在 iPhone 上付款”。 选择“轻点以在 iPhone 上付款”作为付款方式。";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "您可以在“菜单”>“设置”中查找域名设置";
@@ -8574,6 +8707,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "您的免费商店地址";
 
+/* Info details for an expired free trial */
+"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "您的免费试用已结束，并且您对所有功能的访问将受到限制。 立即订阅电子商务版";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "您的 iPhone 可以作为读卡器使用，您也可以通过蓝牙连接到外部读卡器。";
 
@@ -8585,6 +8721,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the error screen when the merchant's In-Person Payments account has pending requirements which will result in their account being restricted if not resolved by a deadline */
 "Your payments account has pending requirements" = "您的付款账户中存在待处理的要求";
+
+/* Settings > Set up Tap to Pay on iPhone > Complete > Description */
+"Your phone is ready for Tap to Pay on iPhone. Your customers can tap their card or device on your phone to pay." = "您的手机已准备好使用“轻点以在 iPhone 上付款”功能。 您的客户可以在您的手机上点击他们的卡或设备进行支付。";
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "您的手机很快就可以收款了...";
@@ -8602,7 +8741,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "在您使用 Safari 访问自己的站点时，站点地址显示在屏幕顶部的地址栏中。";
 
 /* Subtitle of the domain purchase success screen. */
-"Your site address is being set up. It may take up 30 minutes for your domain to start working." = "正在设置您的站点地址。 最多可能需花费 30 分钟时间，您的域名才能开始运行。";
+"Your site address is being set up. It may take up to 30 minutes for your domain to start working." = "正在设置您的站点地址。 最多可能需花费 30 分钟时间，您的域名才能开始运行。";
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "您的站点域名";
@@ -8615,6 +8754,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "您的商店根据您选择的选项创建！";
+
+/* Info details for an expired free trial */
+"Your subscription has ended and you have limited access to all the features." = "您的订阅已结束，并且您对所有功能的访问将受到限制。";
 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "您的支持请求已安全送达我们的收件箱。 我们将尽快通过电子邮件回复您。";

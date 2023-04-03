@@ -273,7 +273,11 @@ private extension ProductFormRemoteActionUseCase {
                         guard let variation = await self.retrieveProductVariation(variationID: id, siteID: newProduct.siteID, productID: oldProductID) else {
                             return
                         }
-                        let newVariation = CreateProductVariation(regularPrice: variation.regularPrice ?? "", attributes: variation.attributes)
+                        let newVariation = CreateProductVariation(regularPrice: variation.regularPrice ?? "",
+                                                                  salePrice: variation.salePrice ?? "",
+                                                                  attributes: variation.attributes,
+                                                                  description: variation.description ?? "",
+                                                                  image: variation.image)
                         await self.duplicateProductVariation(newVariation, parent: newProduct)
                     }
                 }

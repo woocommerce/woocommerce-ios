@@ -19,13 +19,13 @@ public final class ReviewsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectReview(atIndex index: Int) throws -> SingleReviewScreen {
+    public func tapReview(atIndex index: Int) throws -> SingleReviewScreen {
         app.tables.cells.element(boundBy: index).tap()
         return try SingleReviewScreen()
     }
 
     @discardableResult
-    public func selectReview(byReviewer reviewer: String) throws -> SingleReviewScreen {
+    public func tapReview(byReviewer reviewer: String) throws -> SingleReviewScreen {
         let reviewerPredicate = NSPredicate(format: "label CONTAINS[c] %@", reviewer)
         app.staticTexts.containing(reviewerPredicate).firstMatch.tap()
 

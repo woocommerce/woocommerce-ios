@@ -50,7 +50,8 @@ struct ProductSelectorView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .renderedIf(configuration.clearSelectionEnabled && viewModel.totalSelectedItemsCount > 0 && viewModel.syncStatus == .results)
+                .renderedIf(viewModel.supportsMultipleSelection)
+                .disabled(viewModel.totalSelectedItemsCount == 0 || viewModel.syncStatus != .results)
                 Spacer()
 
                 Button(viewModel.filterButtonTitle) {
@@ -125,6 +126,9 @@ struct ProductSelectorView: View {
                 if let cancelButtonTitle = configuration.cancelButtonTitle {
                     Button(cancelButtonTitle) {
                         isPresented.toggle()
+                        if !isPresented {
+                            viewModel.clearSelection()
+                        }
                     }
                 }
             }
@@ -142,6 +146,7 @@ struct ProductSelectorView: View {
                 // no-op
             }
         }
+        .interactiveDismissDisabled()
     }
 
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.
@@ -186,7 +191,6 @@ extension ProductSelectorView {
     struct Configuration {
         var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
-        var clearSelectionEnabled: Bool = true
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""

@@ -370,6 +370,7 @@ private extension FilterListViewController {
 
         func configureCell(cell: BasicTableViewCell, model: FilterType) {
             cell.textLabel?.text = model.description
+            cell.accessibilityIdentifier = model.description
         }
     }
 }

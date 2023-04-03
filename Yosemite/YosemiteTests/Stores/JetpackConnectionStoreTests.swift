@@ -250,4 +250,39 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
+
+    func test_loadWPComAccount_returns_parsed_account() {
+        // Given
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+        network.simulateResponse(requestUrlSuffix: "me", filename: "me")
+
+        // When
+        let result: Account? = waitFor { promise in
+            let setupAction = JetpackConnectionAction.loadWPComAccount(network: self.network) { account in
+                promise(account)
+            }
+            store.onAction(setupAction)
+        }
+
+        // Then
+        assertEqual("apiexamples", result?.username)
+        assertEqual("example@example.blog", result?.email)
+    }
+
+    func test_loadWPComAccount_returns_nil_upon_error() {
+        // Given
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+        network.simulateError(requestUrlSuffix: "me", error: NetworkError.notFound)
+
+        // When
+        let result: Account? = waitFor { promise in
+            let setupAction = JetpackConnectionAction.loadWPComAccount(network: self.network) { account in
+                promise(account)
+            }
+            store.onAction(setupAction)
+        }
+
+        // Then
+        XCTAssertNil(result)
+    }
 }

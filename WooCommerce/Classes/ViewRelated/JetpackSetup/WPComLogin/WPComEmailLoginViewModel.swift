@@ -21,6 +21,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     let termsAttributedString: NSAttributedString
 
     private let accountService: WordPressComAccountServiceProtocol
+    private let analytics: Analytics
     private let onPasswordUIRequest: (String) -> Void
     private let onMagicLinkUIRequest: (String) -> Void
     private let onError: (String) -> Void
@@ -31,9 +32,11 @@ final class WPComEmailLoginViewModel: ObservableObject {
          requiresConnectionOnly: Bool,
          debounceDuration: Double = Constants.fieldDebounceDuration,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
+         analytics: Analytics = ServiceLocator.analytics,
          onPasswordUIRequest: @escaping (String) -> Void,
          onMagicLinkUIRequest: @escaping (String) -> Void,
          onError: @escaping (String) -> Void) {
+        self.analytics = analytics
         self.accountService = accountService
         self.onPasswordUIRequest = onPasswordUIRequest
         self.onMagicLinkUIRequest = onMagicLinkUIRequest
@@ -74,6 +77,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
             }
             await startAuthentication(email: email, isPasswordlessAccount: passwordless)
         } catch {
+            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
             onError(error.localizedDescription)
         }
     }
@@ -100,6 +104,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
             onMagicLinkUIRequest(email)
         } catch {
             onError(error.localizedDescription)
+            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
         }
     }
 }

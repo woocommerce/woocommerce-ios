@@ -17,6 +17,10 @@ struct ComponentSettings: View {
     ///
     @ScaledMetric private var optionImageWidth = Layout.optionImageWidth
 
+    /// Environment safe areas
+    ///
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
@@ -39,16 +43,20 @@ struct ComponentSettings: View {
                     .padding()
 
                 Group {
-                    Divider().padding(.leading)
+                    Divider()
+                        .padding(.leading)
+                        .padding(.trailing, insets: -safeAreaInsets)
 
                     TitleAndSubtitleRow(title: Localization.description, subtitle: viewModel.description)
                 }
                 .renderedIf(viewModel.shouldShowDescription)
             }
+            .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
 
             ListHeaderView(text: Localization.componentOptions.uppercased(), alignment: .left)
+                .padding(.horizontal, insets: safeAreaInsets)
             LazyVStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                 Text(viewModel.optionsType)
                     .headlineStyle()
@@ -56,16 +64,20 @@ struct ComponentSettings: View {
 
                 optionsList
             }
+            .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
 
             TitleAndValueRow(title: Localization.defaultOption, value: .placeholder(viewModel.defaultOptionTitle))
+                .padding(.horizontal, insets: safeAreaInsets)
                 .addingTopAndBottomDividers()
                 .background(Color(.listForeground(modal: false)))
 
             FooterNotice(infoText: viewModel.infoNotice)
+                .padding(.horizontal, insets: safeAreaInsets)
         }
         .navigationTitle(viewModel.viewTitle)
+        .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
         )
@@ -91,7 +103,9 @@ struct ComponentSettings: View {
                     Text(option.title)
                         .bodyStyle()
                 }
-                Divider().padding(.leading)
+                Divider()
+                    .padding(.leading)
+                    .padding(.trailing, insets: -safeAreaInsets)
                     .renderedIf(option != viewModel.options.last)
             }
         } else {

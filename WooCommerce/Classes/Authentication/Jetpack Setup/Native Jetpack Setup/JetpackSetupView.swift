@@ -1,5 +1,5 @@
 import SwiftUI
-import enum Yosemite.Credentials
+import Yosemite
 
 /// Hosting controller for `JetpackSetupView`.
 ///
@@ -11,11 +11,13 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
     init(siteURL: String,
          connectionOnly: Bool,
          connectionWebViewCredentials: Credentials? = nil,
+         stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
         self.viewModel = JetpackSetupViewModel(siteURL: siteURL,
                                                connectionOnly: connectionOnly,
+                                               stores: stores,
                                                analytics: analytics,
                                                onStoreNavigation: onStoreNavigation)
         self.authentication = authentication

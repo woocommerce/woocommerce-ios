@@ -1196,8 +1196,12 @@ extension UIImage {
 
     /// WordPress.com logo image.
     ///
-    static var wpcomLogoImage: UIImage {
-        UIImage(named: "wpcom-logo")!
+    static func wpcomLogoImage(tintColor: UIColor? = nil) -> UIImage {
+        if let tintColor {
+            return UIImage(named: "wpcom-logo")!.imageWithTintColor(tintColor)!
+        } else {
+            return UIImage(named: "wpcom-logo")!
+        }
     }
 
     /// Image on the Jetpack setup interrupted screen

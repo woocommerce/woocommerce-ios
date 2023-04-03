@@ -15,12 +15,12 @@ struct FreeTrialSummaryView: View {
     static let features: [Feature] = [
         .init(title: "Premium themes", icon: .starOutlineImage()),
         .init(title: "Unlimited products", icon: .productImage),
-        .init(title: "Shipping labels", icon: .shippingImage),
+        .init(title: "Shipping labels", icon: .shippingOutlineIcon),
         .init(title: "Ecommerce reports", icon: .ecommerceIcon),
         .init(title: "Multiple payment options", icon: .getPaidImage),
         .init(title: "Subscriptions & product kits", icon: .giftIcon),
         .init(title: "Social advertising", icon: .megaphoneIcon),
-        .init(title: "Email marketing", icon: .mailImage),
+        .init(title: "Email marketing", icon: .emailOutlineIcon),
         .init(title: "24/7 support", icon: .supportIcon),
         .init(title: "Auto updates & backups", icon: .backupsIcon),
         .init(title: "Site security", icon: .cloudOutlineImage),
@@ -65,7 +65,16 @@ struct FreeTrialSummaryView: View {
                         }
                         .padding(.bottom, 18)
                     }
-                    // TODO: Add WordPress Indicator // my-sites
+
+                    // WPCom logo
+                    HStack {
+                        Text("Powered by")
+                            .foregroundColor(Color(uiColor: .textSubtle))
+                            .captionStyle()
+
+                        Image(uiImage: .wpcomLogoImage(tintColor: .textSubtle))
+
+                    }
                 }
                 .padding()
             }
@@ -83,7 +92,7 @@ struct FreeTrialSummaryView: View {
                 .padding()
 
                 Text("No credit card required.")
-                    .calloutStyle()
+                    .subheadlineStyle()
                     .scenePadding(.bottom)
             }
             .background(Color(.listForeground(modal: false)))

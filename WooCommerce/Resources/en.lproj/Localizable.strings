@@ -139,8 +139,8 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d Products";
 
-/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
-"%1$d Products selected" = "%1$d Products selected";
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
+"%1$d Products Selected" = "%1$d Products Selected";
 
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
 "%1$d rates selected" = "%1$d rates selected";
@@ -260,11 +260,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 item selected";
 
-/* Navigation bar title for selecting multiple products when one product has been selected. */
+/* Navigation bar title for selecting multiple products when one product has been selected.
+   Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1 Product Selected";
-
-/* Title of the action button at the bottom of the Select Products screen when one product is selected */
-"1 Product selected" = "1 Product selected";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
@@ -2780,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
    Title of a button.  */
 "Enter your password instead." = "Enter your password instead.";
 
-/* Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Enter Your Store Address";
-
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "Enter your store credentials for %@.";
 
@@ -3137,6 +3132,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "From WordPress Media Library";
+
+/* Subtitle displayed in the simplified prologue screen */
+"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores.";
 
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "Fuel Dispensers";
@@ -4039,6 +4037,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Log files by created date" = "Log files by created date";
 
 /* Button title.  Tapping takes the user to the login form.
+   Button title. Takes the user to the login by store address flow.
    Log In button label.
    Title for the application password authorization web view
    View title during the log in process. */
@@ -6247,6 +6246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Select your shipping carrier and rates";
 
+/* Caption displayed in the simplified prologue screen */
+"Sell anything, anywhere." = "Sell anything, anywhere.";
+
 /* Text for the send button in the product review reply screen */
 "Send" = "Send";
 
@@ -6964,6 +6966,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Switzerland" = "Switzerland";
 
+/* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
+"Syncing data" = "Syncing data";
+
 /* Country option for a site address. */
 "Syria" = "Syria";
 
@@ -7657,6 +7662,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.";
 
+/* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
+"To launch your store, you need to upgrade to our plan. %1$@" = "To launch your store, you need to upgrade to our plan. %1$@";
+
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once.";
 
@@ -7949,6 +7957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "Unable to fetch country information, please try again later.";
 
+/* Error message when failing to fetch the WPCom account after logging in with magic link. */
+"Unable to fetch the logged in WordPress.com account. Please try again." = "Unable to fetch the logged in WordPress.com account. Please try again.";
+
 /* Error title for when we can't fetch existing variations. */
 "Unable to fetch variations" = "Unable to fetch variations";
 
@@ -8032,6 +8043,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ.";
+
+/* Error message displayed when failing to fetch the current site info. */
+"Unable to refresh current site info" = "Unable to refresh current site info";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Unable to refresh list";
@@ -8228,6 +8242,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Updating your products...";
+
+/* Title on the button to upgrade a free trial plan. */
+"Upgrade" = "Upgrade";
 
 /* Title for the button to upgrade from a free trial
    Title for the WebView when upgrading a free trial plan
@@ -8688,9 +8705,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> WooCommerce Discount label */
 "WooCommerce Discount" = "WooCommerce Discount";
 
-/* Caption displayed in the simplified prologue screen */
-"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce is a customizable, open-source eCommerce platform built on WordPress.";
-
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce Mobile App - Run your store from anywhere";
 
@@ -8855,7 +8869,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your free store address" = "Your free store address";
 
 /* Info details for an expired free trial */
-"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now.";
+"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now.";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth.";

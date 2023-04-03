@@ -52,7 +52,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.supportsMultipleSelection)
-        XCTAssertTrue(viewModel.isClearSelectionEnabled)
         XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
         XCTAssertEqual(viewModel.filterButtonTitle, "Filter")
         XCTAssertNil(viewModel.notice)

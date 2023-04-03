@@ -39,7 +39,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_disabled() {
         XCTAssertFalse(viewModel.productSelectorViewModel.supportsMultipleSelection)
-        XCTAssertFalse(viewModel.productSelectorViewModel.isClearSelectionEnabled)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 
@@ -50,7 +49,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
-        XCTAssertTrue(viewModel.productSelectorViewModel.isClearSelectionEnabled)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 

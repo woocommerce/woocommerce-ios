@@ -269,7 +269,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func syncSites(forSiteThatMatchesPossibleURLs possibleURLs: Set<String>) async throws -> Site {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
+            self?.storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
                 guard let self else {
                     return continuation.resume(throwing: StoreCreationCoordinatorError.selfDeallocated)
                 }
@@ -683,7 +683,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func syncSites(forSiteThatMatchesSiteID siteID: Int64, expectedStoreName: String) async throws -> Site {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
+            self?.storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
                 guard let self else {
                     return continuation.resume(throwing: StoreCreationCoordinatorError.selfDeallocated)
                 }

@@ -66,7 +66,6 @@ def networking_pods
 
   # Used for storing application password
   keychain
-
 end
 
 # Main Target!
@@ -84,9 +83,9 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-#  pod 'WordPressAuthenticator', '~> 5.5'
-#   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
-   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'trunk'
+  # pod 'WordPressAuthenticator', '~> 5.5'
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
+  pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: 'trunk'
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   wordpress_shared
@@ -327,16 +326,10 @@ end
 post_install do |installer|
   installer.configure_catalyst
   # Workaround: Drop 32 Bit Architectures
-  # =====================================
-  #
   installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
     configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD_64_BIT)'
   end
 
-  # Let Pods targets inherit deployment target from the app
-  # This solution is suggested here: https://github.com/CocoaPods/CocoaPods/issues/4859
-  # =====================================
-  #
   installer.pods_project.targets.each do |target|
     # Fix bundle targets' 'Signing Certificate' to 'Sign to Run Locally'
     if target.respond_to?(:product_type) && (target.product_type == 'com.apple.product-type.bundle')
@@ -344,18 +337,24 @@ post_install do |installer|
         config.build_settings['CODE_SIGN_IDENTITY[sdk=macosx*]'] = '-'
       end
     end
+
+    # Let Pods targets inherit deployment target from the app
+    # This solution is suggested here: https://github.com/CocoaPods/CocoaPods/issues/4859
     target.build_configurations.each do |configuration|
       pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
       if pod_ios_deployment_target <= app_ios_deployment_target
         configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
       end
     end
-  end
 
-  # Flag Alpha builds for Tracks
-  # ============================
-  # rubocop:disable Style/CombinableLoops
-  installer.pods_project.targets.each do |target|
+    # Fix a code signing issue in Xcode 14 beta.
+    # This solution is suggested here: https://github.com/CocoaPods/CocoaPods/issues/11402#issuecomment-1189861270
+    # rubocop:disable Style/CombinableLoops
+    target.build_configurations.each do |config|
+      config.build_settings['CODE_SIGN_IDENTITY'] = ''
+    end
+
+    # Flag Alpha builds for Tracks
     next unless target.name == 'Automattic-Tracks-iOS'
 
     target.build_configurations.each do |config|
@@ -363,15 +362,6 @@ post_install do |installer|
 
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'ALPHA=1']
     end
+    # rubocop:enable Style/CombinableLoops
   end
-
-  # Fix a code signing issue in Xcode 14 beta.
-  # This solution is suggested here: https://github.com/CocoaPods/CocoaPods/issues/11402#issuecomment-1189861270
-  # ====================================
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['CODE_SIGN_IDENTITY'] = ''
-    end
-  end
-  # rubocop:enable Style/CombinableLoops
 end

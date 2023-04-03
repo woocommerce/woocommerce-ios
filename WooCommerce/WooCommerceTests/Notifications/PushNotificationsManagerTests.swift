@@ -607,7 +607,7 @@ private extension PushNotificationsManagerTests {
                     "subtitle": subtitle,
                     "body": message
                 ]
-            ],
+            ] as [String: Any],
             "note_id": noteID,
             "type": type.rawValue,
             "blog": siteID

@@ -350,8 +350,6 @@ private extension ProductStore {
         onCompletion(products)
     }
 
-
-
     /// Adds a product.
     ///
     func addProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {

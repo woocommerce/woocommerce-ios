@@ -228,4 +228,15 @@ public enum AppSettingsAction: Action {
     /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
     ///
     case getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void)
+
+    /// Loads the date of the first In Person Payments transaction made on this device using a particular card reader type. This is site-specific.
+    /// N.B. this was added in 2023-04, so the date will not be the "first" for any stores using In Person Payments prior to that date.
+    ///
+    case loadFirstInPersonPaymentsTransactionDate(siteID: Int64, cardReaderType: CardReaderType, onCompletion: (Date?) -> Void)
+
+    /// Stores the current date as the first In Person Payments transaction made on this device using a particular card reader type. This is site-specific.
+    /// Existing values are preserved, this will not overwrite previously stored dates.
+    ///
+    case storeInPersonPaymentsTransactionIfFirst(siteID: Int64, cardReaderType: CardReaderType)
+
 }

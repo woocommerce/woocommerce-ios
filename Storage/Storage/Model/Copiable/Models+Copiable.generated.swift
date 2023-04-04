@@ -2,6 +2,7 @@
 // DO NOT EDIT
 import Codegen
 import Foundation
+import Hardware
 
 
 extension Storage.FeatureAnnouncementCampaignSettings {
@@ -74,7 +75,8 @@ extension Storage.GeneralStoreSettings {
         areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy,
         preferredInPersonPaymentGateway: NullableCopiableProp<String> = .copy,
         skippedCashOnDeliveryOnboardingStep: CopiableProp<Bool> = .copy,
-        lastSelectedStatsTimeRange: CopiableProp<String> = .copy
+        lastSelectedStatsTimeRange: CopiableProp<String> = .copy,
+        firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy
     ) -> Storage.GeneralStoreSettings {
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
@@ -82,6 +84,7 @@ extension Storage.GeneralStoreSettings {
         let preferredInPersonPaymentGateway = preferredInPersonPaymentGateway ?? self.preferredInPersonPaymentGateway
         let skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep ?? self.skippedCashOnDeliveryOnboardingStep
         let lastSelectedStatsTimeRange = lastSelectedStatsTimeRange ?? self.lastSelectedStatsTimeRange
+        let firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType ?? self.firstInPersonPaymentsTransactionsByReaderType
 
         return Storage.GeneralStoreSettings(
             isTelemetryAvailable: isTelemetryAvailable,
@@ -89,7 +92,8 @@ extension Storage.GeneralStoreSettings {
             areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled,
             preferredInPersonPaymentGateway: preferredInPersonPaymentGateway,
             skippedCashOnDeliveryOnboardingStep: skippedCashOnDeliveryOnboardingStep,
-            lastSelectedStatsTimeRange: lastSelectedStatsTimeRange
+            lastSelectedStatsTimeRange: lastSelectedStatsTimeRange,
+            firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType
         )
     }
 }

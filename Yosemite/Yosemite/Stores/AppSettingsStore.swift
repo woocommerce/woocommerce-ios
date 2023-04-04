@@ -198,7 +198,10 @@ public class AppSettingsStore: Store {
             loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID, onCompletion: onCompletion)
         case .markSiteHasAtLeastOneIPPTransactionFinished(let siteID):
             markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
-
+        case .loadFirstInPersonPaymentsTransactionDate(siteID: let siteID, cardReaderType: let cardReaderType, onCompletion: let completion):
+            loadFirstInPersonPaymentsTransactionDate(siteID: siteID, using: cardReaderType, onCompletion: completion)
+        case .storeInPersonPaymentsTransactionIfFirst(siteID: let siteID, cardReaderType: let cardReaderType):
+            storeInPersonPaymentsTransactionIfFirst(siteID: siteID, using: cardReaderType)
         }
     }
 }
@@ -466,6 +469,23 @@ private extension AppSettingsStore {
     func getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
         onCompletion(storeSettings.skippedCashOnDeliveryOnboardingStep)
+    }
+
+    func loadFirstInPersonPaymentsTransactionDate(siteID: Int64, using cardReaderType: CardReaderType, onCompletion: (Date?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.firstInPersonPaymentsTransactionsByReaderType[cardReaderType])
+    }
+
+    func storeInPersonPaymentsTransactionIfFirst(siteID: Int64, using cardReaderType: CardReaderType) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedDictionary = storeSettings.firstInPersonPaymentsTransactionsByReaderType
+            .merging([cardReaderType: Date()]) { (current, _) in
+                // We never want to update stored value, because we keep the first transaction date for each site/reader pair.
+                return current
+            }
+
+        let updatedSettings = storeSettings.copy(firstInPersonPaymentsTransactionsByReaderType: updatedDictionary)
+        setStoreSettings(settings: updatedSettings, for: siteID)
     }
 }
 

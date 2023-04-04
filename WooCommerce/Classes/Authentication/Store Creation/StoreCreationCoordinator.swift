@@ -17,6 +17,8 @@ final class StoreCreationCoordinator: Coordinator {
 
     let navigationController: UINavigationController
 
+    let isFreeTrialCreation: Bool
+
     // MARK: - Store creation M1
 
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
@@ -63,6 +65,7 @@ final class StoreCreationCoordinator: Coordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
 
         Task { @MainActor in
             if let purchasesManager {
@@ -140,6 +143,10 @@ private extension StoreCreationCoordinator {
         let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
             if isProfilerEnabled {
+                /// `storeCreationM3Profiler` is currently disabled.
+                /// Before enabling it again, make sure the onboarding questions are properly sent on the trial flow around line `343`.
+                /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/9326#issuecomment-1490012032
+                ///
                 self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
             } else {
                 if isFreeTrialEnabled {
@@ -238,7 +245,7 @@ private extension StoreCreationCoordinator {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self, let site else { return }
-                self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .web))
+                self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .web, isFreeTrial: false))
                 self.continueWithSelectedSite(site: site)
             }
     }
@@ -254,7 +261,7 @@ private extension StoreCreationCoordinator {
             // of them matches the final site URL from WPCOM `/me/sites` endpoint.
             possibleSiteURLsFromStoreCreation.insert(siteURL)
         case .failure(let error):
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .web))
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .web, isFreeTrial: false))
             DDLogError("Store creation error: \(error)")
         }
     }
@@ -299,7 +306,8 @@ private extension StoreCreationCoordinator {
 
         alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
             guard let self else { return }
-            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow))
+            let isFreeTrialCreation = self.isFreeTrialCreation && flow == .native
+            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow, isFreeTrial: isFreeTrialCreation))
             self.navigationController.dismiss(animated: true)
         }
 
@@ -367,15 +375,22 @@ private extension StoreCreationCoordinator {
                                   category: StoreCreationCategoryAnswer?,
                                   sellingStatus: StoreCreationSellingStatusAnswer?,
                                   planToPurchase: WPComPlanProduct) {
+        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
                     guard let self else { return }
-                    self.showDomainSelector(from: navigationController,
-                                            storeName: storeName,
-                                            category: category,
-                                            sellingStatus: sellingStatus,
-                                            countryCode: countryCode,
-                                            planToPurchase: planToPurchase)
+                    if isFreeTrialEnabled {
+                        Task {
+                            await self.createFreeTrialStore(from: navigationController, storeName: storeName)
+                        }
+                    } else {
+                        self.showDomainSelector(from: navigationController,
+                                                storeName: storeName,
+                                                category: category,
+                                                sellingStatus: sellingStatus,
+                                                countryCode: countryCode,
+                                                planToPurchase: planToPurchase)
+                    }
                 } onSupport: { [weak self] in
                     self?.showSupport(from: navigationController)
                 })
@@ -406,7 +421,7 @@ private extension StoreCreationCoordinator {
             case .success:
                 // Wait for jetpack to be installed
                 DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
-                waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID)
+                waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)
                 analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
 
             case .failure(let error):
@@ -414,13 +429,19 @@ private extension StoreCreationCoordinator {
                 showStoreCreationErrorAlert(from: navigationController, error: SiteCreationError(remoteError: error))
 
                 // TODO: Confirm if we should track a different error here.
-                analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
+                analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
+                                                                         error: error,
+                                                                         flow: .native,
+                                                                         isFreeTrial: true))
             }
 
         case .failure(let error):
             navigationController.popViewController(animated: true)
             showStoreCreationErrorAlert(from: navigationController, error: error)
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
+                                                                     error: error,
+                                                                     flow: .native,
+                                                                     isFreeTrial: true))
         }
     }
 
@@ -472,7 +493,10 @@ private extension StoreCreationCoordinator {
                              countryCode: countryCode,
                              planToPurchase: planToPurchase)
         case .failure(let error):
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .native))
+            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
+                                                                     error: error,
+                                                                     flow: .native,
+                                                                     isFreeTrial: false))
             showStoreCreationErrorAlert(from: navigationController, error: error)
         }
     }
@@ -512,7 +536,8 @@ private extension StoreCreationCoordinator {
             self.showWPCOMPlan(from: navigationController,
                                planToPurchase: planToPurchase,
                                siteID: result.siteID,
-                               siteSlug: result.siteSlug)
+                               siteSlug: result.siteSlug,
+                               siteName: result.name)
         } onSupport: { [weak self] in
             self?.showSupport(from: navigationController)
         }
@@ -524,10 +549,11 @@ private extension StoreCreationCoordinator {
     func showWPCOMPlan(from navigationController: UINavigationController,
                        planToPurchase: WPComPlanProduct,
                        siteID: Int64,
-                       siteSlug: String) {
+                       siteSlug: String,
+                       siteName: String) {
         let storePlan = StoreCreationPlanHostingController(viewModel: .init(plan: planToPurchase)) { [weak self] in
             guard let self else { return }
-            await self.purchasePlan(from: navigationController, siteID: siteID, siteSlug: siteSlug, planToPurchase: planToPurchase)
+            await self.purchasePlan(from: navigationController, siteID: siteID, siteSlug: siteSlug, siteName: siteName, planToPurchase: planToPurchase)
         } onClose: { [weak self] in
             guard let self else { return }
             self.showDiscardChangesAlert(flow: .native)
@@ -540,6 +566,7 @@ private extension StoreCreationCoordinator {
     func purchasePlan(from navigationController: UINavigationController,
                       siteID: Int64,
                       siteSlug: String,
+                      siteName: String,
                       planToPurchase: WPComPlanProduct) async {
         do {
             let result = try await purchasesManager.purchaseProduct(with: planToPurchase.id, for: siteID)
@@ -547,14 +574,14 @@ private extension StoreCreationCoordinator {
             if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
                 switch result {
                 case .success:
-                    showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
+                    showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: siteName)
                 default:
                     return
                 }
             } else {
                 switch result {
                 case .pending:
-                    showWebCheckout(from: navigationController, siteID: siteID, siteSlug: siteSlug)
+                    showWebCheckout(from: navigationController, siteID: siteID, siteSlug: siteSlug, siteName: siteName)
                 default:
                     return
                 }
@@ -565,9 +592,9 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func showWebCheckout(from navigationController: UINavigationController, siteID: Int64, siteSlug: String) {
+    func showWebCheckout(from navigationController: UINavigationController, siteID: Int64, siteSlug: String, siteName: String) {
         let checkoutViewModel = WebCheckoutViewModel(siteSlug: siteSlug) { [weak self] in
-            self?.showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID)
+            self?.showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: siteName)
         }
         let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
         navigationController.pushViewController(checkoutController, animated: true)
@@ -576,8 +603,9 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showInProgressViewWhileWaitingForJetpackSite(from navigationController: UINavigationController,
-                                                      siteID: Int64) {
-        waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteID)
+                                                      siteID: Int64,
+                                                      expectedStoreName: String) {
+        waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: expectedStoreName)
         showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
     }
@@ -609,11 +637,10 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64) {
+    func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64, expectedStoreName: String) {
         /// Free trial sites need more waiting time that regular sites.
         ///
-        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
-        let retryInterval: UInt64 = isFreeTrialEnabled ? 10_000_000_000 : 5_000_000_000
+        let retryInterval: UInt64 = isFreeTrialCreation ? 10_000_000_000 : 5_000_000_000
         siteIDFromStoreCreation = siteID
 
         jetpackSiteSubscription = $siteIDFromStoreCreation
@@ -622,7 +649,7 @@ private extension StoreCreationCoordinator {
             .asyncMap { [weak self] siteID -> Site? in
                 // Waits some seconds before syncing sites every time.
                 try await Task.sleep(nanoseconds: retryInterval)
-                return try await self?.syncSites(forSiteThatMatchesSiteID: siteID)
+                return try await self?.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
             }
             // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.
@@ -641,8 +668,11 @@ private extension StoreCreationCoordinator {
 
                 /// Free trial stores should land directly on the dashboard and not show any success view.
                 ///
-                if isFreeTrialEnabled {
-                    self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .native))
+                if self.isFreeTrialCreation {
+                    self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue,
+                                                                           siteURL: site.url,
+                                                                           flow: .native,
+                                                                           isFreeTrial: true))
                     self.continueWithSelectedSite(site: site)
                 } else {
                     self.showSuccessView(from: navigationController, site: site)
@@ -651,7 +681,7 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func syncSites(forSiteThatMatchesSiteID siteID: Int64) async throws -> Site {
+    func syncSites(forSiteThatMatchesSiteID siteID: Int64, expectedStoreName: String) async throws -> Site {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
                 guard let self else {
@@ -669,6 +699,14 @@ private extension StoreCreationCoordinator {
                     DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet...")
                     return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
                 }
+
+                // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
+                // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
+                guard site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName else {
+                    DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
+                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
+                }
+
                 continuation.resume(returning: site)
             }
         }
@@ -688,7 +726,7 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showSuccessView(from navigationController: UINavigationController, site: Site) {
-        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native))
+        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native, isFreeTrial: false))
         guard let url = URL(string: site.url) else {
             return continueWithSelectedSite(site: site)
         }

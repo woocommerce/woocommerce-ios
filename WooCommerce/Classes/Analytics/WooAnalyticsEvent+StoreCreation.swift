@@ -14,6 +14,7 @@ extension WooAnalyticsEvent {
             static let sellingStatus = "user_commerce_journey"
             static let sellingPlatforms = "ecommerce_platforms"
             static let countryCode = "country_code"
+            static let isFreeTrial = "is_free_trial"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -23,24 +24,25 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when a site is created from the store creation flow.
-        static func siteCreated(source: Source, siteURL: String, flow: Flow) -> WooAnalyticsEvent {
+        static func siteCreated(source: Source, siteURL: String, flow: Flow, isFreeTrial: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreated,
                               properties: [Key.source: source.rawValue,
                                            Key.url: siteURL,
-                                           Key.flow: flow.rawValue])
+                                           Key.flow: flow.rawValue,
+                                           Key.isFreeTrial: isFreeTrial])
         }
 
         /// Tracked when site creation fails.
-        static func siteCreationFailed(source: Source, error: Error, flow: Flow) -> WooAnalyticsEvent {
+        static func siteCreationFailed(source: Source, error: Error, flow: Flow, isFreeTrial: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationFailed,
-                              properties: [Key.source: source.rawValue, Key.flow: flow.rawValue],
+                              properties: [Key.source: source.rawValue, Key.flow: flow.rawValue, Key.isFreeTrial: isFreeTrial],
                               error: error)
         }
 
         /// Tracked when the user dismisses the store creation flow before the flow is complete.
-        static func siteCreationDismissed(source: Source, flow: Flow) -> WooAnalyticsEvent {
+        static func siteCreationDismissed(source: Source, flow: Flow, isFreeTrial: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationDismissed,
-                              properties: [Key.source: source.rawValue, Key.flow: flow.rawValue])
+                              properties: [Key.source: source.rawValue, Key.flow: flow.rawValue, Key.isFreeTrial: isFreeTrial])
         }
 
         /// Tracked when the user reaches each step of the store creation flow.
@@ -74,9 +76,9 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the user taps on the CTA in login prologue (logged out) to create a store.
-        static func loginPrologueCreateSiteTapped() -> WooAnalyticsEvent {
+        static func loginPrologueCreateSiteTapped(isFreeTrial: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginPrologueCreateSiteTapped,
-                              properties: [:])
+                              properties: [Key.isFreeTrial: isFreeTrial])
         }
 
         /// Tracked when the user taps on the CTA in the account creation form to log in instead.

@@ -876,7 +876,7 @@ public enum WooAnalyticsStat: String {
     case applicationPasswordAuthorizationURLFetchFailed = "application_password_authorization_url_fetch_failed"
 
     // MARK: Jetpack setup for non-Jetpack sites
-    case jetpackSetupLoginButtonTapped = "jetpack_benfits_login_button_tapped"
+    case jetpackSetupLoginButtonTapped = "jetpack_benefits_login_button_tapped"
     case jetpackSetupConnectionCheckCompleted = "jetpack_setup_connection_check_completed"
     case jetpackSetupConnectionCheckFailed = "jetpack_setup_connection_check_failed"
     case jetpackSetupLoginFlow = "jetpack_setup_login_flow"

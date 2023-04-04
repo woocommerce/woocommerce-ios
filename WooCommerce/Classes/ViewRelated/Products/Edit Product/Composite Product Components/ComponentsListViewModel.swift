@@ -7,7 +7,7 @@ final class ComponentsListViewModel: ObservableObject {
 
     /// Represents a component
     ///
-    struct Component: Identifiable {
+    struct Component: Identifiable, Equatable {
         /// Component ID
         let id: String
 
@@ -16,6 +16,12 @@ final class ComponentsListViewModel: ObservableObject {
 
         /// Default image for the component
         let imageURL: URL?
+
+        /// Description of the component
+        let description: String
+
+        /// Type of component options (e.g. products or categories)
+        let optionType: CompositeComponentOptionType
     }
 
     /// View title
@@ -39,9 +45,22 @@ final class ComponentsListViewModel: ObservableObject {
 extension ComponentsListViewModel {
     convenience init(components: [ProductCompositeComponent]) {
         let viewModels = components.map { component in
-            Component(id: component.componentID, title: component.title, imageURL: URL(string: component.imageURL))
+            return Component(id: component.componentID,
+                             title: component.title,
+                             imageURL: URL(string: component.imageURL),
+                             description: component.description,
+                             optionType: component.optionType)
         }
         self.init(components: viewModels)
+    }
+}
+
+// MARK: Helpers
+extension ComponentsListViewModel {
+    /// Returns a `ComponentSettingsViewModel` for the provided component.
+    ///
+    func getSettingsViewModel(for component: Component) -> ComponentSettingsViewModel {
+        ComponentSettingsViewModel(component: component)
     }
 }
 

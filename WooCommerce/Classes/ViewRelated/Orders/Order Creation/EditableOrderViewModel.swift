@@ -179,7 +179,6 @@ final class EditableOrderViewModel: ObservableObject {
             storageManager: storageManager,
             stores: stores,
             supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
-            isClearSelectionEnabled: isProductMultiSelectionBetaFeatureEnabled,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }

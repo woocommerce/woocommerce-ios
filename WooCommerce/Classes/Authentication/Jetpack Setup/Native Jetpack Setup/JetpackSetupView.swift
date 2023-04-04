@@ -1,22 +1,25 @@
 import SwiftUI
-import enum Yosemite.Credentials
+import Yosemite
 
 /// Hosting controller for `JetpackSetupView`.
 ///
 final class JetpackSetupHostingController: UIHostingController<JetpackSetupView> {
     private let viewModel: JetpackSetupViewModel
-    private let analytics: Analytics
     private let authentication: Authentication
     private let connectionWebViewCredentials: Credentials?
 
     init(siteURL: String,
          connectionOnly: Bool,
          connectionWebViewCredentials: Credentials? = nil,
+         stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
-        self.analytics = analytics
-        self.viewModel = JetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
+        self.viewModel = JetpackSetupViewModel(siteURL: siteURL,
+                                               connectionOnly: connectionOnly,
+                                               stores: stores,
+                                               analytics: analytics,
+                                               onStoreNavigation: onStoreNavigation)
         self.authentication = authentication
         self.connectionWebViewCredentials = connectionWebViewCredentials
         super.init(rootView: JetpackSetupView(viewModel: viewModel))
@@ -28,7 +31,8 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
         rootView.supportHandler = { [weak self] in
             guard let self else { return }
 
-            self.analytics.track(.loginJetpackSetupScreenGetSupportTapped, withProperties: self.viewModel.currentSetupStep?.analyticsDescription)
+            self.viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenGetSupportTapped, properties: self.viewModel.currentSetupStep?.analyticsDescription)
+            self.viewModel.trackSetupAfterLogin(tap: .support)
             self.presentSupport()
         }
 
@@ -43,7 +47,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        analytics.track(.loginJetpackSetupScreenViewed)
+        viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenViewed)
         configureNavigationBarAppearance()
     }
 
@@ -56,8 +60,8 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
     @objc
     private func dismissView() {
-        analytics.track(.loginJetpackSetupScreenDismissed,
-                        withProperties: viewModel.currentSetupStep?.analyticsDescription)
+        viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenDismissed, properties: viewModel.currentSetupStep?.analyticsDescription)
+        viewModel.trackSetupAfterLogin(tap: .dismiss)
         dismiss(animated: true)
     }
 

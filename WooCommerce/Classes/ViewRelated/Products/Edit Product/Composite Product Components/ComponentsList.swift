@@ -39,26 +39,35 @@ struct ComponentsList: View {
         ScrollView {
             LazyVStack(spacing: Layout.sectionSpacing) {
                 ForEach(viewModel.components) { component in
-                    HStack {
-                        KFImage(component.imageURL)
-                            .placeholder {
-                                Image(uiImage: .productPlaceholderImage)
-                                    .foregroundColor(Color(.listIcon))
-                            }
-                            .resizable()
-                            .frame(width: imageWidth, height: imageWidth)
-                            .cornerRadius(Layout.imageCornerRadius)
-                            .accessibilityHidden(true)
-                            .padding()
+                    LazyNavigationLink(destination: ComponentSettings(viewModel: viewModel.getSettingsViewModel(for: component))) {
+                        HStack {
+                            KFImage(component.imageURL)
+                                .placeholder {
+                                    Image(uiImage: .productPlaceholderImage)
+                                        .foregroundColor(Color(.listIcon))
+                                }
+                                .resizable()
+                                .frame(width: imageWidth, height: imageWidth)
+                                .cornerRadius(Layout.imageCornerRadius)
+                                .accessibilityHidden(true)
+                                .padding()
 
-                        Text(component.title)
-                            .bodyStyle()
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            Text(component.title)
+                                .bodyStyle()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            DisclosureIndicator()
+                                .padding([.leading, .trailing])
+                        }
                     }
                     Divider()
+                        .padding(.leading)
+                        .padding(.trailing, insets: -safeAreaInsets)
+                        .renderedIf(component != viewModel.components.last)
                 }
-                .padding(.leading, insets: safeAreaInsets)
             }
+            .padding(.horizontal, insets: safeAreaInsets)
+            .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
 
             FooterNotice(infoText: viewModel.infoNotice)
@@ -82,9 +91,9 @@ private enum Layout {
 struct ComponentsList_Previews: PreviewProvider {
 
     static let viewModel = ComponentsListViewModel(components: [
-        .init(id: "1", title: "Camera Body", imageURL: nil),
-        .init(id: "2", title: "Lens", imageURL: nil),
-        .init(id: "3", title: "Memory Card", imageURL: nil)
+        .init(id: "1", title: "Camera Body", imageURL: nil, description: "", optionType: .productIDs),
+        .init(id: "2", title: "Lens", imageURL: nil, description: "", optionType: .categoryIDs),
+        .init(id: "3", title: "Memory Card", imageURL: nil, description: "", optionType: .categoryIDs)
     ])
 
     static var previews: some View {

@@ -14,6 +14,7 @@ public typealias Announcement = Networking.Announcement
 public typealias APNSDevice = Networking.APNSDevice
 public typealias FallibleCancelable = Hardware.FallibleCancelable
 public typealias CommentStatus = Networking.CommentStatus
+public typealias CompositeComponentOptionType = Networking.CompositeComponentOptionType
 public typealias Coupon = Networking.Coupon
 public typealias CouponReport = Networking.CouponReport
 public typealias Country = Networking.Country

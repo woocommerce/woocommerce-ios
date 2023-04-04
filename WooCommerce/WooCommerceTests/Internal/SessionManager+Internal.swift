@@ -17,7 +17,7 @@ extension SessionManager {
 
     /// Create an instance of unit testing.
     ///
-    static func makeForTesting(authenticated: Bool = false, isWPCom: Bool = true) -> SessionManager {
+    static func makeForTesting(authenticated: Bool = false, isWPCom: Bool = true, defaultRoles: [User.Role] = [.administrator]) -> SessionManager {
         let manager = SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
         // Force setting to `nil` if `authenticated` is `false` so that any auto-loaded credentials
         // will be removed.
@@ -26,6 +26,7 @@ extension SessionManager {
         }()
         manager.defaultCredentials = authenticated ? credentials : nil
         manager.setStoreId(nil)
+        manager.defaultRoles = defaultRoles
         return manager
     }
 }

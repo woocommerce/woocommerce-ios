@@ -361,7 +361,6 @@ private extension ProductSelectorView.Configuration {
     static func addProductToOrder() -> ProductSelectorView.Configuration {
         ProductSelectorView.Configuration(
             multipleSelectionsEnabled: ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection),
-            clearSelectionEnabled: ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection),
             searchHeaderBackgroundColor: .listBackground,
             prefersLargeTitle: false,
             doneButtonTitleSingularFormat: Localization.doneButtonSingular,

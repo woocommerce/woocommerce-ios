@@ -6,7 +6,11 @@ final class ComponentsListViewModelTests: XCTestCase {
 
     func test_view_model_prefills_component_data_correctly() throws {
         // Given
-        let compositeComponent = ProductCompositeComponent.fake().copy(componentID: "1", title: "Camera Body", imageURL: "https://woocommerce.com/woo.jpg")
+        let compositeComponent = ProductCompositeComponent.fake().copy(componentID: "1",
+                                                                       title: "Camera Body",
+                                                                       description: "Choose between the Nikon D600 or the powerful Canon EOS 5D Mark IV.",
+                                                                       imageURL: "https://woocommerce.com/woo.jpg",
+                                                                       optionType: .productIDs)
 
         // When
         let viewModel = ComponentsListViewModel(components: [compositeComponent])
@@ -15,6 +19,8 @@ final class ComponentsListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(component.id, compositeComponent.componentID)
         XCTAssertEqual(component.title, compositeComponent.title)
+        XCTAssertEqual(component.description, compositeComponent.description)
         XCTAssertEqual(component.imageURL?.absoluteString, compositeComponent.imageURL)
+        XCTAssertEqual(component.optionType, compositeComponent.optionType)
     }
 }

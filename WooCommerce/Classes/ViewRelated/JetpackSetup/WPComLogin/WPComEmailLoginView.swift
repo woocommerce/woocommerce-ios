@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Hosting controller for `WPComEmailLoginView`
 final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLoginView> {
@@ -20,12 +21,22 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTransparentNavigationBar()
+        navigationController?.presentationController?.delegate = self
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
     }
 
     @objc
     private func dismissView() {
         dismiss(animated: true)
+        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .dismiss))
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension WPComEmailLoginHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        return false // disable swipe to dismiss
     }
 }
 
@@ -80,6 +91,7 @@ struct WPComEmailLoginView: View {
             VStack {
                 // Primary CTA
                 Button(viewModel.titleString) {
+                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .submit))
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
                         await viewModel.checkWordPressComAccount(email: viewModel.emailAddress)

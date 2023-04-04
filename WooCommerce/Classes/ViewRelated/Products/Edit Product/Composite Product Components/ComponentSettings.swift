@@ -7,7 +7,7 @@ struct ComponentSettings: View {
 
     /// View model that directs the view content.
     ///
-    @ObservedObject var viewModel: ComponentSettingsViewModel
+    @StateObject var viewModel: ComponentSettingsViewModel
 
     /// Dynamic image width for the component image, also used for its height.
     ///

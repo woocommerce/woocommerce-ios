@@ -138,7 +138,7 @@ struct FreeTrialSummaryView: View {
 private extension FreeTrialSummaryView {
     enum Localization {
         enum Feature {
-            static let premiumThemes = NSLocalizedString("Premium Themes", comment: "Premium Themes title feature on the Free Trial Summary Screen")
+            static let premiumThemes = NSLocalizedString("Premium themes", comment: "Premium Themes title feature on the Free Trial Summary Screen")
             static let unlimitedProducts = NSLocalizedString("Unlimited products", comment: "Unlimited products title feature on the Free Trial Summary Screen")
             static let shippingLabels = NSLocalizedString("Shipping labels", comment: "Shipping labels title feature on the Free Trial Summary Screen")
             static let ecommerceReports = NSLocalizedString("Ecommerce reports", comment: "Ecommerce reports title feature on the Free Trial Summary Screen")

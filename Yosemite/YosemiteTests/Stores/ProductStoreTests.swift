@@ -2289,7 +2289,7 @@ private extension ProductStoreTests {
         productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: $0))}
 
         let orderItems = productIDs.map { OrderItem.fake().copy(productID: $0) }
-        let orders = (0 ..< 3).map { index in Order.fake().copy(siteID: sampleSiteID, status: orderStatus,datePaid: Date().addingDays(-index)) }
+        let orders = (0 ..< 3).map { index in Order.fake().copy(siteID: sampleSiteID, status: orderStatus, datePaid: Date().addingDays(-index)) }
 
         storageManager.insertSampleOrder(readOnlyOrder: orders[0]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[0])]
         storageManager.insertSampleOrder(readOnlyOrder: orders[1]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[1])]

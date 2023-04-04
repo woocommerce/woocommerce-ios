@@ -1,10 +1,27 @@
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+@testable import Storage
 
 final class ComponentSettingsViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 12345
+    private var storageManager: MockStorageManager!
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+    private let stores = MockStoresManager(sessionManager: .testingInstance)
+
+    override func setUp() {
+        super.setUp()
+        storageManager = MockStorageManager()
+        stores.reset()
+    }
+
+    override func tearDown() {
+        storageManager = nil
+        super.tearDown()
+    }
 
     func test_component_image_and_description_visible_when_set() throws {
         // Given
@@ -32,13 +49,13 @@ final class ComponentSettingsViewModelTests: XCTestCase {
 
     func test_view_model_prefills_expected_data_from_component_list() {
         // Given
-        let component = ComponentsListViewModel.Component(id: "1",
-                                                          title: "Camera Body",
-                                                          imageURL: URL(string: "https://woocommerce.com/woo.jpg"),
-                                                          description: "Choose between the Nikon D600 or the powerful Canon EOS 5D Mark IV.",
-                                                          optionType: .productIDs,
-                                                          optionIDs: [],
-                                                          defaultOptionID: "")
+        let component = sampleComponent(id: "1",
+                                        title: "Camera Body",
+                                        imageURL: URL(string: "https://woocommerce.com/woo.jpg"),
+                                        description: "Choose between the Nikon D600 or the powerful Canon EOS 5D Mark IV.",
+                                        optionType: .productIDs,
+                                        optionIDs: [],
+                                        defaultOptionID: "")
 
         // When
         let viewModel = ComponentSettingsViewModel(siteID: sampleSiteID, component: component)
@@ -51,5 +68,105 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.options, [])
         XCTAssertEqual(viewModel.defaultOptionTitle,
                        NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product"))
+    }
+
+    func test_view_model_loads_category_component_options() {
+        // Given
+        let component = sampleComponent(optionType: .categoryIDs,
+                                        optionIDs: [1],
+                                        defaultOptionID: "10")
+        let defaultProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, name: "Canon EF 70-200MM F:2.8 L USM")
+        let expectedCategory = ProductCategory(categoryID: 1, siteID: sampleSiteID, parentID: 0, name: "Camera Lenses", slug: "camera-lenses")
+        storageManager.insertSampleProductCategory(readOnlyProductCategory: expectedCategory)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                let products = [defaultProduct]
+                onCompletion(.success((products: products, hasNextPage: false)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = ComponentSettingsViewModel(siteID: self.sampleSiteID, component: component, stores: self.stores, storageManager: self.storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.options.count, 1)
+        XCTAssertEqual(viewModel.options.first?.id, expectedCategory.categoryID)
+        XCTAssertEqual(viewModel.options.first?.title, expectedCategory.name)
+        XCTAssertEqual(viewModel.options.first?.imageURL, nil)
+        XCTAssertEqual(viewModel.defaultOptionTitle, defaultProduct.name)
+    }
+
+    func test_view_model_loads_product_component_options() {
+        // Given
+        let component = sampleComponent(optionType: .productIDs,
+                                        optionIDs: [11],
+                                        defaultOptionID: "11")
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                  productID: 11,
+                                                  name: "Nikon D600 Digital SLR Camera Body",
+                                                  images: [.fake().copy(src: "https://woocommerce.com/woo.jpg")])
+        self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                let products = [expectedProduct]
+                onCompletion(.success((products: products, hasNextPage: false)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = ComponentSettingsViewModel(siteID: self.sampleSiteID, component: component, stores: self.stores)
+
+        // Then
+        XCTAssertEqual(viewModel.options.count, 1)
+        XCTAssertEqual(viewModel.options.first?.id, expectedProduct.productID)
+        XCTAssertEqual(viewModel.options.first?.title, expectedProduct.name)
+        XCTAssertEqual(viewModel.options.first?.imageURL, expectedProduct.imageURL)
+        XCTAssertEqual(viewModel.defaultOptionTitle, expectedProduct.name)
+    }
+
+    func test_view_model_has_expected_values_after_loading_error() {
+        // Given
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                let error = NSError(domain: "", code: 0)
+                onCompletion(.failure(error))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = ComponentSettingsViewModel(siteID: self.sampleSiteID, component: self.sampleComponent(), stores: self.stores)
+
+        // Then
+        XCTAssertEqual(viewModel.options.count, 0, "Loading placeholder was not removed after loading error.")
+        XCTAssertEqual(viewModel.defaultOptionTitle,
+                       NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product"))
+        XCTAssertFalse(viewModel.showOptionLoadingIndicator)
+        XCTAssertFalse(viewModel.showDefaultOptionLoadingIndicator)
+    }
+}
+
+private extension ComponentSettingsViewModelTests {
+    func sampleComponent(id: String = "",
+                         title: String = "",
+                         imageURL: URL? = nil,
+                         description: String = "",
+                         optionType: CompositeComponentOptionType = .productIDs,
+                         optionIDs: [Int64] = [],
+                         defaultOptionID: String = "") -> ComponentsListViewModel.Component {
+        ComponentsListViewModel.Component(id: id,
+                                          title: title,
+                                          imageURL: imageURL,
+                                          description: description,
+                                          optionType: optionType,
+                                          optionIDs: optionIDs,
+                                          defaultOptionID: defaultOptionID)
     }
 }

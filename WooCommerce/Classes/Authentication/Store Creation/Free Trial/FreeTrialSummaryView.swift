@@ -4,8 +4,8 @@ import UIKit
 /// Hosting controller to interact with UIKit.
 ///
 final class FreeTrialSummaryHostingController: UIHostingController<FreeTrialSummaryView> {
-    init() {
-        super.init(rootView: FreeTrialSummaryView())
+    init(onClose: (() -> ())? = nil, onContinue: (() -> ())? = nil) {
+        super.init(rootView: FreeTrialSummaryView(onClose: onClose, onContinue: onContinue))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -41,29 +41,49 @@ struct FreeTrialSummaryView: View {
         .init(title: Localization.Feature.launch, icon: .customizeDomainsImage)
     ]
 
+    /// Closure invoked when the close button is pressed
+    ///
+    let onClose: (() -> ())?
+
+    /// Closure invoked when the "Try For Free"  button is pressed
+    ///
+    let onContinue: (() -> ())?
+
     var body: some View {
         VStack(spacing: .zero) {
             // Main Content
             ScrollView {
                 VStack(alignment: .leading, spacing: .zero) {
 
-                    /// Align image to the right
-                    HStack {
+                    // Illustration header & Close Button
+                    HStack(alignment: .top) {
+                        Button {
+                            onClose?()
+                        } label: {
+                            Image(uiImage: .closeButton)
+                                .foregroundColor(Color(.textSubtle))
+                        }
+
                         Spacer()
+
                         Image(uiImage: .freeTrialIllustration)
                     }
                     .padding([.trailing, .bottom], Layout.illustrationInset)
 
+                    // Title
                     Text(Localization.launchInDays)
                         .bold()
                         .titleStyle()
                         .padding(.bottom, Layout.titleSpacing)
+                        .padding(.trailing, Layout.estimatedIllustrationWidth)
 
+                    // Description
                     Text(Localization.weOfferEverything)
                         .secondaryBodyStyle()
                         .padding(.trailing, Layout.infoTrailingMargin)
                         .padding(.bottom, Layout.sectionsSpacing)
 
+                    // Features
                     Text(Localization.tryItForDays)
                         .bold()
                         .secondaryTitleStyle()
@@ -100,7 +120,7 @@ struct FreeTrialSummaryView: View {
                 Divider()
 
                 Button {
-                    print("Continue Pressed")
+                    onContinue?()
                 } label: {
                     Text(Localization.tryItForFree)
                 }
@@ -109,7 +129,6 @@ struct FreeTrialSummaryView: View {
 
                 Text(Localization.noCardRequired)
                     .subheadlineStyle()
-                    .scenePadding(.bottom)
             }
             .background(Color(.listForeground(modal: false)))
         }
@@ -135,8 +154,7 @@ private extension FreeTrialSummaryView {
             static let launch = NSLocalizedString("Fast to launch", comment: "Fast to launch title feature on the Free Trial Summary Screen")
         }
 
-        static let launchInDays = NSLocalizedString("Launch in days, \ngrow for years",
-                                                    comment: "Main title for the free trial summary screen. Be aware of the break line")
+        static let launchInDays = NSLocalizedString("Launch in days, grow for years", comment: "Main title for the free trial summary screen.")
         static let weOfferEverything = NSLocalizedString("We offer everything you need to build and grow an online store, " +
                                                          "powered by WooCommerce and hosted on WordPress.com.",
                                                          comment: "Main description for the free trial summary screen")
@@ -152,12 +170,13 @@ private extension FreeTrialSummaryView {
         static let sectionsSpacing = 32.0
         static let infoTrailingMargin = 8.0
         static let illustrationInset = -32.0
+        static let estimatedIllustrationWidth = 150.0
     }
 }
 
 
 struct FreeTrialSummaryView_Preview: PreviewProvider {
     static var previews: some View {
-        FreeTrialSummaryView()
+        FreeTrialSummaryView(onClose: nil, onContinue: nil)
     }
 }

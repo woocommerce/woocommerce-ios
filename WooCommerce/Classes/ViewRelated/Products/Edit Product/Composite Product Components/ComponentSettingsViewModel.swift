@@ -89,6 +89,8 @@ final class ComponentSettingsViewModel: ObservableObject {
 
     /// Current component options dependency state.
     ///
+    /// This state reflects either the `productsState` or `categoriesState`, depending on the component option type.
+    ///
     private var componentOptionsState: LoadState {
         optionsType == CompositeComponentOptionType.productIDs.description ? productsState : categoriesState
     }
@@ -122,6 +124,9 @@ final class ComponentSettingsViewModel: ObservableObject {
 
 // MARK: Initializers
 extension ComponentSettingsViewModel {
+    /// Initializes the view model using a `Component` from the `ComponentsListViewModel`.
+    /// Used when navigating to `ComponentSettings` from `ComponentsList`.
+    ///
     convenience init(siteID: Int64,
                      component: ComponentsListViewModel.Component,
                      stores: StoresManager = ServiceLocator.stores,
@@ -187,7 +192,6 @@ private extension ComponentSettingsViewModel {
             }
         }
 
-        options = [ComponentOption(id: 1, title: "Component Option", imageURL: nil)]
         productsState = .loading
         stores.dispatch(productAction)
     }
@@ -206,12 +210,15 @@ private extension ComponentSettingsViewModel {
         do {
             try resultsController.performFetch()
             self.options = resultsController.fetchedObjects.map { category in
+                // TODO-8965: Either add support for category images or hide the placeholder in the UI
+                // We currently don't parse category images from the API response
                 ComponentOption(id: category.categoryID, title: category.name, imageURL: nil)
             }
             self.categoriesState = .loaded
         } catch {
             self.categoriesState = .notLoaded
-            DDLogError("⛔️ Unable to fetch the composite component's category options: \(error)")
+            DDLogError("⛔️ Unable to fetch categories for the composite component settings: \(error)")
+            // TODO-8956: Display notice about loading error
         }
     }
 }

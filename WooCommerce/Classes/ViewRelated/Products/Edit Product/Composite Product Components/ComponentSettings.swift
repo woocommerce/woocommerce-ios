@@ -24,6 +24,7 @@ struct ComponentSettings: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+                // Component image
                 KFImage(viewModel.imageURL)
                     .placeholder {
                         Image(uiImage: .productPlaceholderImage)
@@ -37,6 +38,7 @@ struct ComponentSettings: View {
                     .padding()
                     .renderedIf(viewModel.shouldShowImage)
 
+                // Component title
                 Text(viewModel.componentTitle)
                     .headlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -47,6 +49,7 @@ struct ComponentSettings: View {
                         .padding(.leading)
                         .padding(.trailing, insets: -safeAreaInsets)
 
+                    // Component description
                     TitleAndSubtitleRow(title: Localization.description, subtitle: viewModel.description)
                 }
                 .renderedIf(viewModel.shouldShowDescription)
@@ -55,6 +58,7 @@ struct ComponentSettings: View {
             .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
 
+            // Component options
             ListHeaderView(text: Localization.componentOptions.uppercased(), alignment: .left)
                 .padding(.horizontal, insets: safeAreaInsets)
             LazyVStack(alignment: .leading, spacing: Layout.sectionSpacing) {
@@ -70,6 +74,7 @@ struct ComponentSettings: View {
             .shimmering(active: viewModel.showOptionLoadingIndicator)
             .background(Color(.listForeground(modal: false)))
 
+            // Default component option
             TitleAndValueRow(title: Localization.defaultOption, value: .placeholder(viewModel.defaultOptionTitle))
                 .padding(.horizontal, insets: safeAreaInsets)
                 .addingTopAndBottomDividers()

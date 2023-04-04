@@ -6,6 +6,7 @@ import UIKit
 final class FreeTrialSummaryHostingController: UIHostingController<FreeTrialSummaryView> {
     init(onClose: (() -> ())? = nil, onContinue: (() -> ())? = nil) {
         super.init(rootView: FreeTrialSummaryView(onClose: onClose, onContinue: onContinue))
+        modalPresentationStyle = .fullScreen
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

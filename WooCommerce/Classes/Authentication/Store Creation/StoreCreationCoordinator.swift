@@ -150,9 +150,7 @@ private extension StoreCreationCoordinator {
                 self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
             } else {
                 if isFreeTrialEnabled {
-                    Task {
-                        await self?.createFreeTrialStore(from: navigationController, storeName: storeName)
-                    }
+                    self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName)
                 } else {
                     self?.showDomainSelector(from: navigationController,
                                              storeName: storeName,
@@ -380,9 +378,7 @@ private extension StoreCreationCoordinator {
                 .init(storeName: storeName) { [weak self] countryCode in
                     guard let self else { return }
                     if isFreeTrialEnabled {
-                        Task {
-                            await self.createFreeTrialStore(from: navigationController, storeName: storeName)
-                        }
+                        self.showFreeTrialSummaryView(from: navigationController, storeName: storeName)
                     } else {
                         self.showDomainSelector(from: navigationController,
                                                 storeName: storeName,
@@ -396,6 +392,21 @@ private extension StoreCreationCoordinator {
                 })
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
+    }
+
+    @MainActor
+    /// Presents the free trial summary view.
+    /// After user confirmation proceeds to create a store with a free trial plan.
+    ///
+    func showFreeTrialSummaryView(from navigationController: UINavigationController, storeName: String) {
+        let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
+            self?.showDiscardChangesAlert(flow: .native)
+        }, onContinue: { [weak self] in
+            Task {
+                await self?.createFreeTrialStore(from: navigationController, storeName: storeName)
+            }
+        })
+        navigationController.present(summaryViewController, animated: true)
     }
 
     /// This method shows a progress view and proceeds to:

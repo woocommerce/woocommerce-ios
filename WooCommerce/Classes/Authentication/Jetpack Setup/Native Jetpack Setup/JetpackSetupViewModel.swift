@@ -426,11 +426,11 @@ extension JetpackSetupViewModel {
         )
         static let communicationErrorMessage = NSLocalizedString(
             "There was an error communicating with your site.",
-            comment: "Message to be displayed when there's an communicating with the remote site during Jetpack setup"
+            comment: "Message to be displayed when there's an error communicating with the remote site during Jetpack setup"
         )
         static let communicationErrorSuggestion = NSLocalizedString(
             "Please try again or contact support if this error continues.",
-            comment: "Suggestion to be displayed when there's an communicating with the remote site during Jetpack setup"
+            comment: "Suggestion to be displayed when there's an error communicating with the remote site during Jetpack setup"
         )
         static let genericErrorMessage = NSLocalizedString(
             "There was an error completing your request.",

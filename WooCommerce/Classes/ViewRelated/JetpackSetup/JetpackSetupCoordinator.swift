@@ -169,7 +169,7 @@ private extension JetpackSetupCoordinator {
         rootViewController.topmostPresentedViewController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
-    /// After magic link login, fetch username and
+    /// After magic link login, fetch username and Jetpack connection details.
     func startJetpackSetupFlow(authToken: String) {
         /// Dismiss any existing login flow if possible.
         if rootViewController.presentedViewController != nil {

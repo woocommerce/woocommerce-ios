@@ -82,10 +82,10 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
             self.viewModel.shouldPresentWebView = false
             self.viewModel.didAuthorizeJetpackConnection()
             self.dismissView()
-        }, onFailure: { [weak self] in
+        }, onFailure: { [weak self] errorCode in
             guard let self else { return }
             self.viewModel.shouldPresentWebView = false
-            self.viewModel.didEncounterErrorCode404DuringConnection()
+            self.viewModel.didEncounterErrorDuringConnection(code: errorCode)
             self.dismissWebView()
         }, onDismissal: { [weak self] in
             guard let self else { return }

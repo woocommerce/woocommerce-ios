@@ -10,7 +10,8 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     let initialURL: URL?
     let siteURL: String
     let completionHandler: () -> Void
-    let failureHandler: () -> Void
+    /// Failure handler with an optional error code if available
+    let failureHandler: (Int?) -> Void
     let dismissalHandler: () -> Void
 
     private let stores: StoresManager
@@ -24,7 +25,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void,
-         onFailure: @escaping () -> Void = {},
+         onFailure: @escaping (Int?) -> Void = { _ in },
          onDismissal: @escaping () -> Void = {}) {
         self.title = title
         self.stores = stores
@@ -62,13 +63,14 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     }
 
     func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy {
-        guard let urlResponse = response as? HTTPURLResponse, urlResponse.statusCode != 404 else {
+        guard let urlResponse = response as? HTTPURLResponse,
+                urlResponse.statusCode != 404 else {
             return .allow
         }
         await MainActor.run { [weak self] in
             guard let self else { return }
             self.isFailure = true
-            self.failureHandler()
+            self.failureHandler(urlResponse.statusCode)
         }
         return .cancel
     }

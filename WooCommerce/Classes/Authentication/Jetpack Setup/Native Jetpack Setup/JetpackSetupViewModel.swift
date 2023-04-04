@@ -131,11 +131,11 @@ final class JetpackSetupViewModel: ObservableObject {
         checkJetpackConnection()
     }
 
-    func didEncounterErrorCode404DuringConnection() {
+    func didEncounterErrorDuringConnection(code: Int?) {
         setupFailed = true
         setupErrorDetail = .init(setupErrorMessage: Localization.connectionErrorMessage,
                                  setupErrorSuggestion: Localization.connectionErrorSuggestion,
-                                 errorCode: 404)
+                                 errorCode: code)
     }
 
     func navigateToStore() {

@@ -27,18 +27,18 @@ struct FreeTrialSummaryView: View {
     /// Free Trial Features
     ///
     static let features: [Feature] = [
-        .init(title: Localization.Feature.premiumThemes, icon: .starOutlineImage()),
-        .init(title: Localization.Feature.unlimitedProducts, icon: .productImage),
+        .init(title: Localization.Feature.premiumThemes, icon: .premiumThemesIcon),
+        .init(title: Localization.Feature.unlimitedProducts, icon: .unlimitedProductsIcon),
         .init(title: Localization.Feature.shippingLabels, icon: .shippingOutlineIcon),
         .init(title: Localization.Feature.ecommerceReports, icon: .ecommerceIcon),
-        .init(title: Localization.Feature.paymentOptions, icon: .getPaidImage),
+        .init(title: Localization.Feature.paymentOptions, icon: .paymentOptionsIcon),
         .init(title: Localization.Feature.subscriptions, icon: .giftIcon),
-        .init(title: Localization.Feature.advertising, icon: .megaphoneIcon),
+        .init(title: Localization.Feature.advertising, icon: .advertisingIcon),
         .init(title: Localization.Feature.marketing, icon: .emailOutlineIcon),
         .init(title: Localization.Feature.support, icon: .supportIcon),
         .init(title: Localization.Feature.backups, icon: .backupsIcon),
-        .init(title: Localization.Feature.security, icon: .cloudOutlineImage),
-        .init(title: Localization.Feature.launch, icon: .customizeDomainsImage)
+        .init(title: Localization.Feature.security, icon: .siteSecurityIcon),
+        .init(title: Localization.Feature.launch, icon: .launchIcon)
     ]
 
     /// Closure invoked when the close button is pressed

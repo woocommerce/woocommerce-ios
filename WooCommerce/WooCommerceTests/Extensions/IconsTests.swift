@@ -808,4 +808,28 @@ final class IconsTests: XCTestCase {
     func test_shippingOutline_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.shippingOutlineIcon)
     }
+
+    func test_advertising_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.advertisingIcon)
+    }
+
+    func test_launch_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.launchIcon)
+    }
+
+    func test_paymentsOption_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.paymentOptionsIcon)
+    }
+
+    func test_premiumThemes_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.premiumThemesIcon)
+    }
+
+    func test_siteSecurity_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.siteSecurityIcon)
+    }
+
+    func test_unlimitedProducts_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.unlimitedProductsIcon)
+    }
 }

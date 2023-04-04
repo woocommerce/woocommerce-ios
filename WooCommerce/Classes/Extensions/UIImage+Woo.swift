@@ -1274,7 +1274,7 @@ extension UIImage {
     }
 
     static var giftIcon: UIImage {
-        UIImage.gridicon(.gift)
+        UIImage(imageLiteralResourceName: "gifts-icon")
     }
 
     static var emailOutlineIcon: UIImage {
@@ -1283,6 +1283,30 @@ extension UIImage {
 
     static var shippingOutlineIcon: UIImage {
         UIImage(imageLiteralResourceName: "shipping-outline-icon")
+    }
+
+    static var advertisingIcon: UIImage {
+        UIImage(imageLiteralResourceName: "advertising-icon")
+    }
+
+    static var launchIcon: UIImage {
+        UIImage(imageLiteralResourceName: "launch-icon")
+    }
+
+    static var paymentOptionsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "payment-options-icon")
+    }
+
+    static var premiumThemesIcon: UIImage {
+        UIImage(imageLiteralResourceName: "premium-themes-icon")
+    }
+
+    static var siteSecurityIcon: UIImage {
+        UIImage(imageLiteralResourceName: "site-security-icon")
+    }
+
+    static var unlimitedProductsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "unlimited-products-icon")
     }
 }
 

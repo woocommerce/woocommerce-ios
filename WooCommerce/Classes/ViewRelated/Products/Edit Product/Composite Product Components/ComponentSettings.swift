@@ -67,11 +67,11 @@ struct ComponentSettings: View {
                     .padding()
 
                 optionsList
+                    .redacted(reason: viewModel.showOptionsLoadingIndicator ? .placeholder : [])
+                    .shimmering(active: viewModel.showOptionsLoadingIndicator)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
-            .redacted(reason: viewModel.showOptionLoadingIndicator ? .placeholder : [])
-            .shimmering(active: viewModel.showOptionLoadingIndicator)
             .background(Color(.listForeground(modal: false)))
 
             // Default component option

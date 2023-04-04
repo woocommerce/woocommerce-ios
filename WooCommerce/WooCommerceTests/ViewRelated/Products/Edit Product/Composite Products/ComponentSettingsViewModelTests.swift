@@ -148,7 +148,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.options.count, 0, "Loading placeholder was not removed after loading error.")
         XCTAssertEqual(viewModel.defaultOptionTitle,
                        NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product"))
-        XCTAssertFalse(viewModel.showOptionLoadingIndicator)
+        XCTAssertFalse(viewModel.showOptionsLoadingIndicator)
         XCTAssertFalse(viewModel.showDefaultOptionLoadingIndicator)
     }
 }

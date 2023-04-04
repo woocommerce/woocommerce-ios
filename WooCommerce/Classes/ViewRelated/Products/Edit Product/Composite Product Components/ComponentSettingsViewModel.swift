@@ -97,7 +97,7 @@ final class ComponentSettingsViewModel: ObservableObject {
 
     /// Indicates if the Component Options section should should show a redacted state.
     ///
-    var showOptionLoadingIndicator: Bool {
+    var showOptionsLoadingIndicator: Bool {
         componentOptionsState == .loading
     }
 

@@ -1040,6 +1040,37 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(properties, "creation")
     }
 
+    func test_product_selector_source_is_tracked_when_product_selector_clear_selection_button_is_tapped() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics),
+                                               featureFlagService: featureFlagService)
+
+        // When
+        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
+        viewModel.productSelectorViewModel.clearSelection()
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.contains(where: {
+            $0.description == WooAnalyticsStat.orderCreationProductSelectorClearSelectionButtonTapped.rawValue })
+        )
+
+        guard let eventIndex = analytics.receivedEvents.firstIndex(where: {
+            $0.description == WooAnalyticsStat.orderCreationProductSelectorClearSelectionButtonTapped.rawValue }) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analytics.receivedProperties[eventIndex]
+        guard let event = eventProperties.first(where: { $0.key as? String == "source"}) else {
+            return XCTFail("No property received")
+        }
+
+        XCTAssertEqual(event.value as? String, "product_selector")
+    }
+
     func test_shipping_method_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()

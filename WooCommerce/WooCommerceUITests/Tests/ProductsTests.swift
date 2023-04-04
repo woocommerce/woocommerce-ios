@@ -2,7 +2,7 @@ import UITestsFoundation
 import XCTest
 
 final class ProductsTests: XCTestCase {
-    // to remove later
+
     override func setUpWithError() throws {
         continueAfterFailure = false
 

@@ -216,6 +216,7 @@ private extension ComponentSettingsViewModel {
             }
             self.categoriesState = .loaded
         } catch {
+            self.options = []
             self.categoriesState = .notLoaded
             DDLogError("⛔️ Unable to fetch categories for the composite component settings: \(error)")
             // TODO-8956: Display notice about loading error

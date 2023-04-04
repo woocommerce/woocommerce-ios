@@ -186,11 +186,22 @@ private extension InPersonPaymentsMenuViewController {
         navigationItem.title = InPersonPaymentsView.Localization.title
     }
 
-    func configureSections() {
+
+    /// Sets up the sections for the table view. As the sections/rows are dynamically built and change over time, this will be called repeatedly
+    /// - Parameters:
+    ///   - isEligibleForTapToPayOnIPhone: Used to determine whether the `Set up Tap to Pay on iPhone` row is shown.
+    ///     If not set, this function will fetch the value from the viewModel, however, when called in response to a @Published update,
+    ///     the viewModel value may not yet be up to date.
+    ///   - shouldShowTapToPayOnIPhoneFeedback: Used to determine whether the `Share Tap to Pay on iPhone Feedback` row is shown.
+    ///     If not set, this function will fetch the value from the viewModel, however, when called in response to a @Published update,
+    ///     the viewModel value may not yet be up to date.
+    func configureSections(isEligibleForTapToPayOnIPhone: Bool? = nil,
+                           shouldShowTapToPayOnIPhoneFeedback: Bool? = nil) {
         var composingSections: [Section?] = [actionsSection]
 
-        if viewModel.isEligibleForTapToPayOnIPhone {
-            composingSections.append(tapToPayOnIPhoneSection)
+        if isEligibleForTapToPayOnIPhone ?? viewModel.isEligibleForTapToPayOnIPhone {
+            composingSections.append(tapToPayOnIPhoneSection(
+                shouldShowFeedbackRow: shouldShowTapToPayOnIPhoneFeedback ?? viewModel.shouldShowTapToPayOnIPhoneFeedbackRow))
         }
 
         if viewModel.isEligibleForCardPresentPayments {
@@ -204,13 +215,13 @@ private extension InPersonPaymentsMenuViewController {
         return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment, .toggleEnableCashOnDelivery])
     }
 
-    var tapToPayOnIPhoneSection: Section? {
+    func tapToPayOnIPhoneSection(shouldShowFeedbackRow: Bool) -> Section? {
         guard featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone) else {
             return nil
         }
         var rows: [Row] = [.setUpTapToPayOnIPhone]
 
-        if viewModel.shouldShowTapToPayOnIPhoneFeedbackRow {
+        if shouldShowFeedbackRow {
             rows.append(.tapToPayOnIPhoneFeedback)
         }
 
@@ -379,10 +390,17 @@ private extension InPersonPaymentsMenuViewController {
 
     func configureTableReload() {
         cashOnDeliveryToggleRowViewModel.$cashOnDeliveryEnabledState.sink { [weak self] _ in
+            self?.configureSections()
             self?.tableView.reloadData()
         }.store(in: &cancellables)
 
-        viewModel.$isEligibleForTapToPayOnIPhone.sink { [weak self] _ in
+        viewModel.$isEligibleForTapToPayOnIPhone.sink { [weak self] eligibleForTapToPay in
+            self?.configureSections(isEligibleForTapToPayOnIPhone: eligibleForTapToPay)
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
+
+        viewModel.$shouldShowTapToPayOnIPhoneFeedbackRow.sink { [weak self] shouldShowFeedbackRow in
+            self?.configureSections(shouldShowTapToPayOnIPhoneFeedback: shouldShowFeedbackRow)
             self?.tableView.reloadData()
         }.store(in: &cancellables)
     }

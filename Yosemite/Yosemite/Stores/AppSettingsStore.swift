@@ -484,9 +484,19 @@ private extension AppSettingsStore {
                 return current
             }
 
+        guard updatedDictionary != storeSettings.firstInPersonPaymentsTransactionsByReaderType else {
+            return
+        }
+
         let updatedSettings = storeSettings.copy(firstInPersonPaymentsTransactionsByReaderType: updatedDictionary)
         setStoreSettings(settings: updatedSettings, for: siteID)
+        NotificationCenter.default.post(name: .firstInPersonPaymentsTransactionsWereUpdated, object: nil)
     }
+}
+
+extension Notification.Name {
+    public static let firstInPersonPaymentsTransactionsWereUpdated = Notification.Name(
+        rawValue: "com.woocommerce.ios.firstInPersonPaymentsTransactionsWereUpdated")
 }
 
 // MARK: - Shipment tracking providers!

@@ -55,13 +55,7 @@ final class InPersonPaymentsMenuViewModel {
         synchronizePaymentGateways(siteID: siteID)
         checkTapToPaySupport(siteID: siteID)
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
-    }
-
-    func refreshTapToPayFeedbackVisibility() {
-        guard let siteID = siteID else {
-            return
-        }
-        checkShouldShowTapToPayFeedbackRow(siteID: siteID)
+        registerForNotifications()
     }
 
     private func synchronizePaymentGateways(siteID: Int64) {
@@ -98,6 +92,20 @@ final class InPersonPaymentsMenuViewModel {
         stores.dispatch(action)
     }
 
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshTapToPayFeedbackVisibility),
+                                               name: .firstInPersonPaymentsTransactionsWereUpdated,
+                                               object: nil)
+    }
+
+    @objc func refreshTapToPayFeedbackVisibility() {
+        guard let siteID = siteID else {
+            return
+        }
+        checkShouldShowTapToPayFeedbackRow(siteID: siteID)
+    }
+
     func orderCardReaderPressed() {
         analytics.track(.paymentsMenuOrderCardReaderTapped)
         showWebView = PurchaseCardReaderWebViewViewModel(configuration: cardPresentPaymentsConfiguration,
@@ -109,6 +117,12 @@ final class InPersonPaymentsMenuViewModel {
                                                          onDismiss: { [weak self] in
             self?.showWebView = nil
         })
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: .firstInPersonPaymentsTransactionsWereUpdated,
+                                                  object: nil)
     }
 }
 

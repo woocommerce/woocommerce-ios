@@ -63,10 +63,10 @@ public enum ProductAction: Action {
         pageSize: Int = ProductsRemote.Default.pageSize,
         onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
-    /// Retrieve cached products sorted by popularity, that is, those that were included
+    /// Retrieve cached popular products, that is, those that were included
     /// in a completed order most often, in descending order.
     ///
-    case retrieveProductsInCacheSortedByDescendingPopularity(siteID: Int64, onCompletion: ([Product]) -> Void)
+    case retrievePopularCachedProducts(siteID: Int64, onCompletion: ([Product]) -> Void)
 
     /// Deletes all of the cached products.
     ///

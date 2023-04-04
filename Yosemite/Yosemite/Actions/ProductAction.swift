@@ -68,6 +68,10 @@ public enum ProductAction: Action {
     ///
     case retrievePopularCachedProducts(siteID: Int64, onCompletion: ([Product]) -> Void)
 
+    /// Retrieve the recently sold products in cache sorted by paid date
+    /// 
+    case retrieveRecentlySoldCachedProducts(siteID: Int64, onCompletion: ([Product]) -> Void)
+
     /// Deletes all of the cached products.
     ///
     case resetStoredProducts(onCompletion: () -> Void)

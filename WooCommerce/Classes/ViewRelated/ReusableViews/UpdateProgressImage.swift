@@ -63,9 +63,7 @@ struct UpdateProgressImage_Previews: PreviewProvider {
 
         var body: some View {
             VStack {
-                if let image = UIImage.softwareUpdateProgress(progress: complete) {
-                    Image(uiImage: image)
-                }
+                Image(uiImage: UIImage.softwareUpdateProgress(progress: complete))
                 Slider(value: $complete, in: 0...1)
             }
         }

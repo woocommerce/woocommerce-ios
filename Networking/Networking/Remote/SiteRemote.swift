@@ -59,7 +59,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                 "theme": flow.theme,
                 "use_theme_annotation": false,
                 "wpcom_public_coming_soon": 1
-            ]
+            ] as [String: Any]
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
 

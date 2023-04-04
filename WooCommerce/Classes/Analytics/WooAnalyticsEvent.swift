@@ -1369,15 +1369,15 @@ extension WooAnalyticsEvent {
                 }
                 switch paymentMethod {
                 case let .cardPresent(details):
-                    return [
+                    return ([
                         "underlyingError": underlyingError,
                         "cardBrand": details.brand
-                    ].description
+                    ] as [String: Any]).description
                 case let .interacPresent(details):
-                    return [
+                    return ([
                         "underlyingError": underlyingError,
                         "cardBrand": details.brand
-                    ].description
+                    ] as [String: Any]).description
                 default:
                     return underlyingError.localizedDescription
                 }

@@ -16,6 +16,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     private let stores: StoresManager
     private let analytics: Analytics
     private var isCompleted = false
+    private var isFailure = false
 
     init(initialURL: URL,
          siteURL: String,
@@ -36,7 +37,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     }
 
     func handleDismissal() {
-        guard isCompleted == false else {
+        guard isCompleted == false, isFailure == false else {
             return
         }
         if stores.isAuthenticated == false {
@@ -65,7 +66,9 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
             return .allow
         }
         await MainActor.run { [weak self] in
-            self?.failureHandler()
+            guard let self else { return }
+            self.isFailure = true
+            self.failureHandler()
         }
         return .cancel
     }

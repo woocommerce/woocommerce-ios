@@ -760,28 +760,8 @@ final class ProductStoreTests: XCTestCase {
     // MARK: - ProductAction.retrieveMostPopularProductsInCache
 
     func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_returns_them_sorted() {
-        let firstProductID: Int64 = 1
-        let secondProductID: Int64 = 2
-        let thirdProductID: Int64 = 3
-
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: firstProductID))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: secondProductID))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: thirdProductID))
-
-        let firstOrderItem = OrderItem.fake().copy(productID: firstProductID)
-        let secondOrderItem = OrderItem.fake().copy(productID: secondProductID)
-        let thirdOrderItem = OrderItem.fake().copy(productID: thirdProductID)
-
-        let firstOrder = Order.fake().copy(siteID: sampleSiteID, status: .completed)
-        let secondOrder = Order.fake().copy(siteID: sampleSiteID, status: .completed)
-        let thirdOrder = Order.fake().copy(siteID: sampleSiteID, status: .completed)
-
-        storageManager.insertSampleOrder(readOnlyOrder: firstOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem)]
-        storageManager.insertSampleOrder(readOnlyOrder: secondOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
-                                                                              storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem)]
-        storageManager.insertSampleOrder(readOnlyOrder: thirdOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
-                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem),
-                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: thirdOrderItem)]
+        let productIDs: [Int64] = [1, 2, 3]
+        preparePopularProductsSamples(with: productIDs)
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -794,34 +774,13 @@ final class ProductStoreTests: XCTestCase {
             store.onAction(action)
         }
 
-        XCTAssertEqual(cachedPopularProducts.first?.productID, firstProductID)
-        XCTAssertEqual(cachedPopularProducts[1].productID, secondProductID)
-        XCTAssertEqual(cachedPopularProducts.last?.productID, thirdProductID)
+        XCTAssertEqual(cachedPopularProducts.first?.productID, productIDs.first)
+        XCTAssertEqual(cachedPopularProducts[1].productID, productIDs[1])
+        XCTAssertEqual(cachedPopularProducts.last?.productID, productIDs.last)
     }
 
     func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_orders_are_not_completed_returns_empty_array() {
-        let firstProductID: Int64 = 1
-        let secondProductID: Int64 = 2
-        let thirdProductID: Int64 = 3
-
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: firstProductID))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: secondProductID))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: thirdProductID))
-
-        let firstOrderItem = OrderItem.fake().copy(productID: firstProductID)
-        let secondOrderItem = OrderItem.fake().copy(productID: secondProductID)
-        let thirdOrderItem = OrderItem.fake().copy(productID: thirdProductID)
-
-        let firstOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
-        let secondOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
-        let thirdOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
-
-        storageManager.insertSampleOrder(readOnlyOrder: firstOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem)]
-        storageManager.insertSampleOrder(readOnlyOrder: secondOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
-                                                                              storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem)]
-        storageManager.insertSampleOrder(readOnlyOrder: thirdOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
-                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem),
-                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: thirdOrderItem)]
+        preparePopularProductsSamples(with: [1, 2, 3], orderStatus: .pending)
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -838,28 +797,7 @@ final class ProductStoreTests: XCTestCase {
     }
 
     func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_siteID_is_different_returns_empty_array() {
-        let firstProductID: Int64 = 1
-        let secondProductID: Int64 = 2
-        let thirdProductID: Int64 = 3
-
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: firstProductID))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: secondProductID))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: thirdProductID))
-
-        let firstOrderItem = OrderItem.fake().copy(productID: firstProductID)
-        let secondOrderItem = OrderItem.fake().copy(productID: secondProductID)
-        let thirdOrderItem = OrderItem.fake().copy(productID: thirdProductID)
-
-        let firstOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
-        let secondOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
-        let thirdOrder = Order.fake().copy(siteID: sampleSiteID, status: .pending)
-
-        storageManager.insertSampleOrder(readOnlyOrder: firstOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem)]
-        storageManager.insertSampleOrder(readOnlyOrder: secondOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
-                                                                              storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem)]
-        storageManager.insertSampleOrder(readOnlyOrder: thirdOrder).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: firstOrderItem),
-                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: secondOrderItem),
-                                                                             storageManager.insertSampleOrderItem(readOnlyOrderItem: thirdOrderItem)]
+        preparePopularProductsSamples(with: [1, 2, 3])
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -2275,5 +2213,19 @@ private extension ProductStoreTests {
                                                             Networking.ProductAddOnOption.fake().copy(label: "No", price: "", priceType: .flatFee)
                                                            ])
         return [topping, soda, delivery]
+    }
+
+    func preparePopularProductsSamples(with productIDs: [Int64], orderStatus: OrderStatusEnum = .completed) {
+        productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: $0))}
+
+        let orderItems = productIDs.map { OrderItem.fake().copy(productID: $0) }
+        let orders = (0 ..< 3).map { _ in Order.fake().copy(siteID: sampleSiteID, status: orderStatus) }
+
+        storageManager.insertSampleOrder(readOnlyOrder: orders[0]).items = NSOrderedSet(array: (0 ..< 1)
+            .map { index in storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index]) })
+        storageManager.insertSampleOrder(readOnlyOrder: orders[1]).items = NSOrderedSet(array: (0 ..< 2)
+            .map { index in storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index]) })
+        storageManager.insertSampleOrder(readOnlyOrder: orders[2]).items = NSOrderedSet(array: (0 ..< 3)
+            .map { index in storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index]) })
     }
 }

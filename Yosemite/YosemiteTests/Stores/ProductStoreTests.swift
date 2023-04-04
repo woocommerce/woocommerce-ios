@@ -813,6 +813,62 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(cachedPopularProducts.isEmpty)
     }
 
+    // MARK: - ProductAction.retrieveRecentlySoldCachedProducts
+
+    func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_returns_them_sorted() {
+        let productIDs: [Int64] = [1, 2, 3]
+        prepareRecentlySoldProductSamples(with: productIDs)
+
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
+            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            })
+
+            store.onAction(action)
+        }
+
+        XCTAssertEqual(cachedPopularProducts.first?.productID, productIDs.first)
+        XCTAssertEqual(cachedPopularProducts[1].productID, productIDs[1])
+        XCTAssertEqual(cachedPopularProducts.last?.productID, productIDs.last)
+    }
+
+    func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_but_orders_are_not_completed_returns_empty_array() {
+        prepareRecentlySoldProductSamples(with: [1, 2, 3], orderStatus: .pending)
+
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
+            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            })
+
+            store.onAction(action)
+        }
+
+        XCTAssertTrue(cachedPopularProducts.isEmpty)
+    }
+
+    func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_but_siteID_is_different_returns_empty_array() {
+        prepareRecentlySoldProductSamples(with: [1, 2, 3])
+
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
+            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: 555, onCompletion: { result in
+                promise(result)
+            })
+
+            store.onAction(action)
+        }
+
+        XCTAssertTrue(cachedPopularProducts.isEmpty)
+    }
+
     // MARK: - ProductAction.resetStoredProducts
 
     /// Verifies that `ProductAction.resetStoredProducts` deletes the Products from Storage
@@ -2227,5 +2283,16 @@ private extension ProductStoreTests {
             .map { index in storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index]) })
         storageManager.insertSampleOrder(readOnlyOrder: orders[2]).items = NSOrderedSet(array: (0 ..< 3)
             .map { index in storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index]) })
+    }
+
+    func prepareRecentlySoldProductSamples(with productIDs: [Int64], orderStatus: OrderStatusEnum = .completed) {
+        productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: $0))}
+
+        let orderItems = productIDs.map { OrderItem.fake().copy(productID: $0) }
+        let orders = (0 ..< 3).map { index in Order.fake().copy(siteID: sampleSiteID, status: orderStatus,datePaid: Date().addingDays(-index)) }
+
+        storageManager.insertSampleOrder(readOnlyOrder: orders[0]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[0])]
+        storageManager.insertSampleOrder(readOnlyOrder: orders[1]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[1])]
+        storageManager.insertSampleOrder(readOnlyOrder: orders[2]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[2])]
     }
 }

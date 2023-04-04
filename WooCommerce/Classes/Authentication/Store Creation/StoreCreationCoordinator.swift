@@ -417,6 +417,9 @@ private extension StoreCreationCoordinator {
     @MainActor
     func createFreeTrialStore(from navigationController: UINavigationController, storeName: String) async {
 
+        // Make sure that nothing is presented on the view controller before showing the loading screen
+        navigationController.presentedViewController?.dismiss(animated: true)
+
         // Show a progress view while the free trial store is created.
         showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
 

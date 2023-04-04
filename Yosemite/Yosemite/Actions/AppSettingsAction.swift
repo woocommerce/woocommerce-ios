@@ -171,37 +171,9 @@ public enum AppSettingsAction: Action {
     ///
     case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
 
-    /// Sets the last state of the simple payments taxes toggle for a provided store.
-    ///
-    case setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
-    /// Get the last state of the simple payments taxes toggle for a provided store.
-    ///
-    case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
-
-    /// Sets the preferred payment gateway for In-Person Payments
-    ///
-    case setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String)
-
-    /// Gets the preferred payment gateway for In-Person Payments
-    ///
-    case getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void)
-
-    /// Forgets the preferred payment gateway for In-Person Payments
-    ///
-    case forgetPreferredInPersonPaymentGateway(siteID: Int64)
-
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings
-
-    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
-    ///
-    case setSkippedCashOnDeliveryOnboardingStep(siteID: Int64)
-
-    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
-    ///
-    case getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void)
 
     // MARK: - Feature Announcement Card Visibility
 
@@ -226,4 +198,34 @@ public enum AppSettingsAction: Action {
     /// Stores that the user finished an IPP transaction for the given siteID
     ///
     case markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64)
+
+    // MARK: - In Person Payments
+
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the preferred payment gateway for In-Person Payments
+    ///
+    case setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String)
+
+    /// Gets the preferred payment gateway for In-Person Payments
+    ///
+    case getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void)
+
+    /// Forgets the preferred payment gateway for In-Person Payments
+    ///
+    case forgetPreferredInPersonPaymentGateway(siteID: Int64)
+
+    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
+    ///
+    case setSkippedCashOnDeliveryOnboardingStep(siteID: Int64)
+
+    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
+    ///
+    case getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void)
 }

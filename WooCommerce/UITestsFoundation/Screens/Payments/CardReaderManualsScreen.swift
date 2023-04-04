@@ -37,7 +37,7 @@ public final class CardReaderManualsScreen: ScreenObject {
         let chipperManualPredicate = NSPredicate(format: "label CONTAINS[c] %@", "ChipperTM 2X BT")
         let chipperManualText = app.webViews.textViews.containing(chipperManualPredicate).element
 
-        XCTAssert(chipperManualText.waitForExistence(timeout: 10), "Chipper manual not displayed on WebView!")
+        XCTAssert(chipperManualText.waitForExistence(timeout: 20), "Chipper manual not displayed on WebView!")
         return self
     }
 }

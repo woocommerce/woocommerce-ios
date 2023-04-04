@@ -312,7 +312,7 @@ private extension StoreCreationCoordinator {
         alert.addCancelActionWithTitle(Localization.DiscardChangesAlert.cancelActionTitle) { _ in }
 
         // Presents the alert with the presented webview.
-        navigationController.presentedViewController?.present(alert, animated: true)
+        navigationController.topmostPresentedViewController.present(alert, animated: true)
     }
 
     func showSupport(from navigationController: UINavigationController) {

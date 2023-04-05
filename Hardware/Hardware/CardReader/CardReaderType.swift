@@ -35,5 +35,3 @@ extension CardReaderType {
         }
     }
 }
-
-extension CardReaderType: Codable { }

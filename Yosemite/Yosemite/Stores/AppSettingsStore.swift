@@ -473,13 +473,13 @@ private extension AppSettingsStore {
 
     func loadFirstInPersonPaymentsTransactionDate(siteID: Int64, using cardReaderType: CardReaderType, onCompletion: (Date?) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
-        onCompletion(storeSettings.firstInPersonPaymentsTransactionsByReaderType[cardReaderType])
+        onCompletion(storeSettings.firstInPersonPaymentsTransactionsByReaderType[StorageCardReaderType(from: cardReaderType)])
     }
 
     func storeInPersonPaymentsTransactionIfFirst(siteID: Int64, using cardReaderType: CardReaderType) {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedDictionary = storeSettings.firstInPersonPaymentsTransactionsByReaderType
-            .merging([cardReaderType: Date()]) { (current, _) in
+            .merging([StorageCardReaderType(from: cardReaderType): Date()]) { (current, _) in
                 // We never want to update stored value, because we keep the first transaction date for each site/reader pair.
                 return current
             }

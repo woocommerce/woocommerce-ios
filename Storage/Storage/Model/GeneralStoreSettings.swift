@@ -1,6 +1,5 @@
 import Foundation
 import Codegen
-import Hardware
 
 /// Models a wrapper of a dictionary from site ID to store settings.
 /// These entities will be serialised to a plist file

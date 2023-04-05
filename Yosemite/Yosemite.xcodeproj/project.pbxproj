@@ -109,6 +109,7 @@
 		02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */; };
 		030C94A62971C73700F7F65D /* MockCommonReaderConfigProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030C94A52971C73700F7F65D /* MockCommonReaderConfigProviding.swift */; };
 		030C94A82971C96F00F7F65D /* CommonReaderConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030C94A72971C96F00F7F65D /* CommonReaderConfigProvider.swift */; };
+		03101F0129DD7D9D00769CF3 /* CardReaderType+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03101F0029DD7D9D00769CF3 /* CardReaderType+ReadOnlyConvertible.swift */; };
 		031C1EAA27B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EA927B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift */; };
 		031C1EAC27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAB27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift */; };
 		031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */; };
@@ -549,6 +550,7 @@
 		02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaExportService.swift; sourceTree = "<group>"; };
 		030C94A52971C73700F7F65D /* MockCommonReaderConfigProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCommonReaderConfigProviding.swift; sourceTree = "<group>"; };
 		030C94A72971C96F00F7F65D /* CommonReaderConfigProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonReaderConfigProvider.swift; sourceTree = "<group>"; };
+		03101F0029DD7D9D00769CF3 /* CardReaderType+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReaderType+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031C1EA927B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCharge+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031C1EAB27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1274,6 +1276,7 @@
 				93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */,
 				03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */,
 				2685C10C263C900500D9EE97 /* AddOnGroup+ReadOnlyConvertible.swift */,
+				03101F0029DD7D9D00769CF3 /* CardReaderType+ReadOnlyConvertible.swift */,
 				45E4620D2684C45500011BF2 /* Country+ReadOnlyConvertible.swift */,
 				45182D1E27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift */,
 				45182D2027B5533400B4C05C /* InboxAction+ReadOnlyConvertible.swift */,
@@ -2114,6 +2117,7 @@
 				D831E2E4230E3524000037D0 /* ProductReviewAction.swift in Sources */,
 				02393065291A018600B2632F /* DomainAction.swift in Sources */,
 				D831E2E6230E7149000037D0 /* ProductReview+ReadOnlyConvertible.swift in Sources */,
+				03101F0129DD7D9D00769CF3 /* CardReaderType+ReadOnlyConvertible.swift in Sources */,
 				CE4FD4502350F27C00A16B31 /* OrderItemTax+ReadOnlyConvertible.swift in Sources */,
 				02FF055123D983F30058E6E7 /* MediaAssetExporter.swift in Sources */,
 				073AF84427DB10270074EDF0 /* CardPresentPaymentGatewayExtension.swift in Sources */,

@@ -181,6 +181,7 @@ public typealias StoreOnboardingTask = Networking.StoreOnboardingTask
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
+public typealias StorageCardReaderType = Storage.CardReaderType
 public typealias StorageCoupon = Storage.Coupon
 public typealias StorageCustomer = Storage.Customer
 public typealias StorageCustomerSearchResult = Storage.CustomerSearchResult

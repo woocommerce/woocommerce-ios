@@ -107,6 +107,10 @@ final class ComponentSettingsViewModel: ObservableObject {
         productsState == .loading
     }
 
+    /// Indicates if the view should show an error notice.
+    ///
+    var errorNotice: Notice? = nil
+
     init(title: String,
          description: String,
          imageURL: URL?,
@@ -177,6 +181,7 @@ private extension ComponentSettingsViewModel {
 
             switch result {
             case .success((let products, _)):
+                self.errorNotice = nil
                 self.defaultOptionTitle = products.first(where: { $0.productID == defaultOptionID })?.name ?? Localization.noDefaultOption
                 if type == .productIDs {
                     self.options = products.map { product in
@@ -190,7 +195,9 @@ private extension ComponentSettingsViewModel {
                 }
                 self.productsState = .notLoaded
                 DDLogError("⛔️ Unable to fetch products for composite component settings: \(error)")
-                // TODO-8956: Display notice about loading error
+                self.errorNotice = self.createErrorNotice() { [weak self] in
+                    self?.syncProducts(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
+                }
             }
         }
 
@@ -211,6 +218,7 @@ private extension ComponentSettingsViewModel {
 
         do {
             try resultsController.performFetch()
+            self.errorNotice = nil
             self.options = resultsController.fetchedObjects.map { category in
                 // TODO-8965: Either add support for category images or hide the placeholder in the UI
                 // We currently don't parse category images from the API response
@@ -221,8 +229,16 @@ private extension ComponentSettingsViewModel {
             self.options = []
             self.categoriesState = .notLoaded
             DDLogError("⛔️ Unable to fetch categories for the composite component settings: \(error)")
-            // TODO-8956: Display notice about loading error
+            self.errorNotice = createErrorNotice() { [weak self] in
+                self?.fetchCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, type: type, storageManager: storageManager)
+            }
         }
+    }
+
+    /// Creates an error notice with the provided retry action
+    ///
+    func createErrorNotice(retryAction: @escaping (() -> Void)) -> Notice {
+        .init(title: Localization.optionsLoadingError, feedbackType: .error, actionTitle: Localization.retry, actionHandler: retryAction)
     }
 }
 
@@ -233,6 +249,9 @@ private extension ComponentSettingsViewModel {
         static let infoNotice = NSLocalizedString("You can edit component settings in the web dashboard.",
                                                   comment: "Info notice at the bottom of the component settings screen")
         static let noDefaultOption = NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product")
+        static let optionsLoadingError = NSLocalizedString("Unable to load all component options",
+                                                            comment: "Error message when component options are not loaded on the component settings screen")
+        static let retry = NSLocalizedString("Retry", comment: "Retry action title")
     }
 
     /// Placeholder for the list of component options.

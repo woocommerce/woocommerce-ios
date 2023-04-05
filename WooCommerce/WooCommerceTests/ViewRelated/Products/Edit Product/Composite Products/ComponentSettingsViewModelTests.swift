@@ -150,6 +150,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
                        NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product"))
         XCTAssertFalse(viewModel.showOptionsLoadingIndicator)
         XCTAssertFalse(viewModel.showDefaultOptionLoadingIndicator)
+        XCTAssertNotNil(viewModel.errorNotice)
     }
 }
 

@@ -3,6 +3,7 @@ import Yosemite
 
 final class CollectOrderPaymentAnalytics {
 
+    private let siteID: Int64
     private let analytics: Analytics
     private let configuration: CardPresentPaymentsConfiguration
     private let orderDurationRecorder: OrderDurationRecorderProtocol
@@ -13,11 +14,13 @@ final class CollectOrderPaymentAnalytics {
         connectedReader?.readerType.model
     }
 
-    init(analytics: Analytics = ServiceLocator.analytics,
+    init(siteID: Int64,
+         analytics: Analytics = ServiceLocator.analytics,
          configuration: CardPresentPaymentsConfiguration,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          connectedReader: CardReader? = nil,
          paymentGatewayAccount: PaymentGatewayAccount? = nil) {
+        self.siteID = siteID
         self.analytics = analytics
         self.configuration = configuration
         self.orderDurationRecorder = orderDurationRecorder
@@ -47,7 +50,8 @@ final class CollectOrderPaymentAnalytics {
             analytics.track(event: .InPersonPayments
                 .collectInteracPaymentSuccess(gatewayID: paymentGatewayAccount?.gatewayID,
                                               countryCode: configuration.countryCode,
-                                              cardReaderModel: connectedReaderModel))
+                                              cardReaderModel: connectedReaderModel,
+                                              siteID: siteID))
         default:
             return
         }
@@ -60,7 +64,8 @@ final class CollectOrderPaymentAnalytics {
                                    paymentMethod: capturedPaymentData.paymentMethod,
                                    cardReaderModel: connectedReaderModel,
                                    millisecondsSinceOrderAddNew: try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
-                                   millisecondsSinceCardPaymentStarted: try? orderDurationRecorder.millisecondsSinceCardPaymentStarted()))
+                                   millisecondsSinceCardPaymentStarted: try? orderDurationRecorder.millisecondsSinceCardPaymentStarted(),
+                                   siteID: siteID))
         orderDurationRecorder.reset()
     }
 
@@ -68,14 +73,16 @@ final class CollectOrderPaymentAnalytics {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount?.gatewayID,
                                                                                        error: error,
                                                                                        countryCode: configuration.countryCode,
-                                                                                       cardReaderModel: connectedReader?.readerType.model))
+                                                                                       cardReaderModel: connectedReader?.readerType.model,
+                                                                                       siteID: siteID))
     }
 
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount?.gatewayID,
                                                                                          countryCode: configuration.countryCode,
                                                                                          cardReaderModel: connectedReaderModel,
-                                                                                         cancellationSource: cancelationSource))
+                                                                                         cancellationSource: cancelationSource,
+                                                                                         siteID: siteID))
     }
 
     func trackEmailTapped() {

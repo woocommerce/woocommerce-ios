@@ -61,6 +61,56 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         XCTAssertEqual(completionPolicy, .cancel)
     }
 
+    func test_onFailure_is_triggered_when_web_view_receives_404_code() async throws {
+        // Given
+        let siteURL = "https://test.com"
+        var failureTriggered = false
+        var failureErrorCode: Int?
+        let failureHandler: (Int?) -> Void = { code in
+            failureTriggered = true
+            failureErrorCode = code
+        }
+        let initialURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize/1/"))
+        let viewModel = JetpackConnectionWebViewModel(initialURL: initialURL, siteURL: siteURL, completion: {}, onFailure: failureHandler)
+
+        // When
+        let response = try XCTUnwrap(HTTPURLResponse(url: try XCTUnwrap(URL(string: siteURL)),
+                                                     statusCode: 404,
+                                                     httpVersion: nil,
+                                                     headerFields: nil))
+        let policy = await viewModel.decidePolicy(for: response)
+
+        // Then
+        XCTAssertEqual(policy, .cancel)
+        XCTAssertTrue(failureTriggered)
+        XCTAssertEqual(failureErrorCode, 404)
+    }
+
+    func test_onFailure_is_not_triggered_when_web_view_receives_200_code() async throws {
+        // Given
+        let siteURL = "https://test.com"
+        var failureTriggered = false
+        var failureErrorCode: Int?
+        let failureHandler: (Int?) -> Void = { code in
+            failureTriggered = true
+            failureErrorCode = code
+        }
+        let initialURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize/1/"))
+        let viewModel = JetpackConnectionWebViewModel(initialURL: initialURL, siteURL: siteURL, completion: {}, onFailure: failureHandler)
+
+        // When
+        let response = try XCTUnwrap(HTTPURLResponse(url: try XCTUnwrap(URL(string: siteURL)),
+                                                     statusCode: 200,
+                                                     httpVersion: nil,
+                                                     headerFields: nil))
+        let policy = await viewModel.decidePolicy(for: response)
+
+        // Then
+        XCTAssertEqual(policy, .allow)
+        XCTAssertFalse(failureTriggered)
+        XCTAssertNil(failureErrorCode)
+    }
+
     func test_dismissal_is_tracked_when_not_authenticated() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))

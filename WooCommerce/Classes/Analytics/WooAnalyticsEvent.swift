@@ -396,6 +396,12 @@ extension WooAnalyticsEvent {
         static func bundledProductsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewBundledProductsTapped, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Components row (applicable for composite-type products only).
+        ///
+        static func componentsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailViewComponentsTapped, properties: [:])
+        }
     }
 }
 

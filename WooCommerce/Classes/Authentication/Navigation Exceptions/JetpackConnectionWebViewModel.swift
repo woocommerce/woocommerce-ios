@@ -10,11 +10,13 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     let initialURL: URL?
     let siteURL: String
     let completionHandler: () -> Void
+    /// Failure handler with an optional error code if available
+    let failureHandler: (Int?) -> Void
     let dismissalHandler: () -> Void
 
     private let stores: StoresManager
     private let analytics: Analytics
-    private var isCompleted = false
+    private var shouldIgnoreDismissalHandling = false
 
     init(initialURL: URL,
          siteURL: String,
@@ -22,6 +24,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void,
+         onFailure: @escaping (Int?) -> Void = { _ in },
          onDismissal: @escaping () -> Void = {}) {
         self.title = title
         self.stores = stores
@@ -29,11 +32,12 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         self.initialURL = initialURL
         self.siteURL = siteURL
         self.completionHandler = completion
+        self.failureHandler = onFailure
         self.dismissalHandler = onDismissal
     }
 
     func handleDismissal() {
-        guard isCompleted == false else {
+        guard shouldIgnoreDismissalHandling == false else {
             return
         }
         if stores.isAuthenticated == false {
@@ -57,8 +61,21 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         return .allow
     }
 
+    func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy {
+        guard let urlResponse = response as? HTTPURLResponse,
+                urlResponse.statusCode == 404 else {
+            return .allow
+        }
+        await MainActor.run { [weak self] in
+            guard let self else { return }
+            self.shouldIgnoreDismissalHandling = true
+            self.failureHandler(urlResponse.statusCode)
+        }
+        return .cancel
+    }
+
     private func handleSetupCompletion() {
-        isCompleted = true
+        shouldIgnoreDismissalHandling = true
         if stores.isAuthenticated == false {
             analytics.track(.loginJetpackConnectCompleted)
         }

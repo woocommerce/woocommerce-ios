@@ -150,9 +150,7 @@ private extension StoreCreationCoordinator {
                 self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
             } else {
                 if isFreeTrialEnabled {
-                    Task {
-                        await self?.createFreeTrialStore(from: navigationController, storeName: storeName)
-                    }
+                    self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName)
                 } else {
                     self?.showDomainSelector(from: navigationController,
                                              storeName: storeName,
@@ -314,7 +312,7 @@ private extension StoreCreationCoordinator {
         alert.addCancelActionWithTitle(Localization.DiscardChangesAlert.cancelActionTitle) { _ in }
 
         // Presents the alert with the presented webview.
-        navigationController.presentedViewController?.present(alert, animated: true)
+        navigationController.topmostPresentedViewController.present(alert, animated: true)
     }
 
     func showSupport(from navigationController: UINavigationController) {
@@ -380,9 +378,7 @@ private extension StoreCreationCoordinator {
                 .init(storeName: storeName) { [weak self] countryCode in
                     guard let self else { return }
                     if isFreeTrialEnabled {
-                        Task {
-                            await self.createFreeTrialStore(from: navigationController, storeName: storeName)
-                        }
+                        self.showFreeTrialSummaryView(from: navigationController, storeName: storeName)
                     } else {
                         self.showDomainSelector(from: navigationController,
                                                 storeName: storeName,
@@ -398,6 +394,21 @@ private extension StoreCreationCoordinator {
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
 
+    @MainActor
+    /// Presents the free trial summary view.
+    /// After user confirmation proceeds to create a store with a free trial plan.
+    ///
+    func showFreeTrialSummaryView(from navigationController: UINavigationController, storeName: String) {
+        let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
+            self?.showDiscardChangesAlert(flow: .native)
+        }, onContinue: { [weak self] in
+            Task {
+                await self?.createFreeTrialStore(from: navigationController, storeName: storeName)
+            }
+        })
+        navigationController.present(summaryViewController, animated: true)
+    }
+
     /// This method shows a progress view and proceeds to:
     /// - Create a simple site
     /// - Enable Free Trial on the site
@@ -405,6 +416,9 @@ private extension StoreCreationCoordinator {
     ///
     @MainActor
     func createFreeTrialStore(from navigationController: UINavigationController, storeName: String) async {
+
+        // Make sure that nothing is presented on the view controller before showing the loading screen
+        navigationController.presentedViewController?.dismiss(animated: true)
 
         // Show a progress view while the free trial store is created.
         showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))

@@ -3,6 +3,7 @@
 13.1
 -----
 - [**] Users can now install Jetpack for their non-Jetpack sites after logging in with application passwords. [https://github.com/woocommerce/woocommerce-ios/pull/9354]
+- [Internal] Added SiteID to some IPP tracks events [https://github.com/woocommerce/woocommerce-ios/pull/9371]
 
 
 13.0

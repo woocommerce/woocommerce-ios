@@ -178,8 +178,9 @@ private extension StorePickerConfiguration {
             return .fullscreen
         case .switchingStores:
             return .modally
-        case .storeCreationFromLogin:
-            return .navigationStack(animated: true)
+        case .storeCreationFromLogin(let source):
+            let willPresentStoreCreationScreenAfterNavigation = source == .prologue
+            return .navigationStack(animated: willPresentStoreCreationScreenAfterNavigation ? false : true)
         default:
             return .navigationStack(animated: true)
         }

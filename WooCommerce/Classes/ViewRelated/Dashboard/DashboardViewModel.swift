@@ -219,8 +219,8 @@ final class DashboardViewModel {
                 }
             }
 
-            Task { @MainActor in
-                stores.dispatch(action)
+            Task { @MainActor [weak self] in
+                self?.stores.dispatch(action)
             }
         }
     }

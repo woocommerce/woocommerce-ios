@@ -81,11 +81,11 @@ final class ComponentSettingsViewModel: ObservableObject {
 
     /// Current product dependency state.
     ///
-    private var productsState: LoadState = .notLoaded
+    @Published private var productsState: LoadState = .notLoaded
 
     /// Current category dependency state.
     ///
-    private var categoriesState: LoadState = .notLoaded
+    @Published private var categoriesState: LoadState = .notLoaded
 
     /// Current component options dependency state.
     ///

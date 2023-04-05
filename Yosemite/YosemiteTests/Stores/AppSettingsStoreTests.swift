@@ -1078,6 +1078,79 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertTrue(result)
     }
+
+    func test_given_no_data_has_been_stored_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let actualValue = waitFor { promise in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 1, cardReaderType: .appleBuiltIn) { maybeDate in
+                promise(maybeDate)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(actualValue)
+    }
+
+    func test_given_a_date_was_previously_stored_for_the_site_and_reader_loadFirstInPersonPaymentsTransactionDate_returns_that_date() throws {
+        // Given
+        let siteID: Int64 = 1
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .appleBuiltIn)
+        subject?.onAction(updateAction)
+
+        // When
+        let actualValue = waitFor { promise in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .appleBuiltIn) { maybeDate in
+                promise(maybeDate)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let storedDate = try XCTUnwrap(actualValue)
+        XCTAssertTrue(storedDate.timeIntervalSinceNow < 60)
+    }
+
+    func test_given_a_date_was_only_previously_stored_for_another_site_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: 1, cardReaderType: .appleBuiltIn)
+        subject?.onAction(updateAction)
+
+        // When
+        let actualValue = waitFor { promise in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 100, cardReaderType: .appleBuiltIn) { maybeDate in
+                promise(maybeDate)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(actualValue)
+    }
+
+    func test_given_a_date_was_only_previously_stored_for_another_reader_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
+        // Given
+        let siteID: Int64 = 1
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .stripeM2)
+        subject?.onAction(updateAction)
+
+        // When
+        let actualValue = waitFor { promise in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .appleBuiltIn) { maybeDate in
+                promise(maybeDate)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(actualValue)
+    }
 }
 
 // MARK: - Utils

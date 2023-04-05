@@ -157,6 +157,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         return onFailure(error)
                     case .success(let paymentData):
                         // Handle payment receipt
+                        self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
                         self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
                                                  alertProvider: paymentAlertProvider,
                                                  onCompleted: onCompleted)
@@ -466,6 +467,11 @@ private extension CollectOrderPaymentUseCase {
 
     func markSiteHasAtLeastOneIPPTransactionFinished() {
         stores.dispatch(AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: order.siteID))
+    }
+
+    func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {
+        stores.dispatch(AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: order.siteID,
+                                                                                  cardReaderType: cardReaderType))
     }
 }
 

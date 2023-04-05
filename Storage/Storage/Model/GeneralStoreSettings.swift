@@ -40,18 +40,23 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in store stats.
     public var lastSelectedStatsTimeRange: String
 
+    /// We keep the dates of the first In Person Payments transactions using this phone/store/reader combination for
+    public let firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date]
+
     public init(isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
                 areSimplePaymentTaxesEnabled: Bool = false,
                 preferredInPersonPaymentGateway: String? = nil,
                 skippedCashOnDeliveryOnboardingStep: Bool = false,
-                lastSelectedStatsTimeRange: String = "") {
+                lastSelectedStatsTimeRange: String = "",
+                firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date] = [:]) {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
         self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled
         self.preferredInPersonPaymentGateway = preferredInPersonPaymentGateway
         self.skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep
         self.lastSelectedStatsTimeRange = lastSelectedStatsTimeRange
+        self.firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType
     }
 }
 
@@ -68,6 +73,8 @@ extension GeneralStoreSettings {
         self.preferredInPersonPaymentGateway = try container.decodeIfPresent(String.self, forKey: .preferredInPersonPaymentGateway)
         self.skippedCashOnDeliveryOnboardingStep = try container.decodeIfPresent(Bool.self, forKey: .skippedCashOnDeliveryOnboardingStep) ?? false
         self.lastSelectedStatsTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedStatsTimeRange) ?? ""
+        self.firstInPersonPaymentsTransactionsByReaderType = try container.decodeIfPresent([CardReaderType: Date].self,
+                                                                                           forKey: .firstInPersonPaymentsTransactionsByReaderType) ?? [:]
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

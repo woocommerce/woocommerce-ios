@@ -185,7 +185,9 @@ private extension ComponentSettingsViewModel {
                 }
                 self.productsState = .loaded
             case .failure(let error):
-                self.options = []
+                if type == .productIDs {
+                    self.options = []
+                }
                 self.productsState = .notLoaded
                 DDLogError("⛔️ Unable to fetch products for composite component settings: \(error)")
                 // TODO-8956: Display notice about loading error

@@ -448,6 +448,10 @@ extension MainTabBarController {
             viewController?.openSimplePaymentsAmountFlow()
         }
     }
+
+    func forwardPaymentsDeeplink(subPath: String) {
+        hubMenuTabCoordinator?.handleUniversalLink(subPath: subPath)
+    }
 }
 
 // MARK: - Site ID observation for updating tab view controllers

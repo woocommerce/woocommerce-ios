@@ -17,17 +17,16 @@ struct UniversalLinkRouter {
         self.bouncingURLOpener = bouncingURLOpener
     }
 
-    static func defaultUniversalLinkRouter() -> UniversalLinkRouter {
-        UniversalLinkRouter(routes: UniversalLinkRouter.defaultRoutes)
+    static func defaultUniversalLinkRouter(tabBarController: MainTabBarController) -> UniversalLinkRouter {
+        UniversalLinkRouter(routes: UniversalLinkRouter.defaultRoutes(tabBarController: tabBarController))
     }
 
     /// Add your route here if you want it to be considered when matching for an incoming universal link.
     /// As we only perform one action to avoid conflicts, order matters (only the first matched route will be called to perform its action)
     ///
-    private static let defaultRoutes: [Route] = [
-        OrderDetailsRoute(),
-        PaymentsRoute()
-    ]
+    private static func defaultRoutes(tabBarController: MainTabBarController) -> [Route] {
+        return [OrderDetailsRoute(), PaymentsRoute(tabBarController: tabBarController)]
+    }
 
     func handle(url: URL) {
         guard let matchedRoute = matcher.firstRouteMatching(url),
@@ -36,6 +35,6 @@ struct UniversalLinkRouter {
             return bouncingURLOpener.open(url)
         }
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.universalLinkOpened(with: matchedRoute.route.subPath))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.universalLinkOpened(with: matchedRoute.subPath))
     }
 }

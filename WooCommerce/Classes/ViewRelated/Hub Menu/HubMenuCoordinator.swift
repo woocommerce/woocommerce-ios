@@ -115,6 +115,10 @@ final class HubMenuCoordinator: Coordinator {
     private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
         hubMenuController?.pushReviewDetailsViewController(using: parcel)
     }
+
+    func handleUniversalLink(subPath: String) {
+        print("⛓️ handling link \(subPath)")
+    }
 }
 
 // MARK: - Public Utils

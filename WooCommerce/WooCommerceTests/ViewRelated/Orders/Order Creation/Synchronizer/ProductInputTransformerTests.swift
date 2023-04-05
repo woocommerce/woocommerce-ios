@@ -232,7 +232,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(update2.items.count, 0)
     }
 
-    func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_shouldUpdateOrDeleteZeroQuantities_is_false_then_deletes_item_on_order() throws {
+    func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_deletes_zero_quantities_then_deletes_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
@@ -264,7 +264,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.quantity, input2.quantity)
     }
 
-    func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_shouldUpdateOrDeleteZeroQuantities_then_does_not_delete_item_on_order() throws {
+    func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_updates_zero_quantities_then_updates_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)

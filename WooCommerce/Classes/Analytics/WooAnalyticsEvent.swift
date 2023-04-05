@@ -83,6 +83,8 @@ extension WooAnalyticsEvent {
         case inPersonPaymentsPowerUsersBanner
         /// Shown in store setup task list
         case storeSetup = "store_setup"
+        /// Tap to Pay on iPhone feedback button shown in the Payments menu after the first payment with TTP
+        case tapToPayFirstPaymentPaymentsMenu
     }
 
     /// The action performed on the survey screen.

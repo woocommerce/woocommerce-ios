@@ -3,6 +3,8 @@
 13.1
 -----
 - [**] Adds support for Product Multi-selection when creating and/or editing Orders. [https://github.com/woocommerce/woocommerce-ios/issues/8888]
+- [**] Users can now install Jetpack for their non-Jetpack sites after logging in with application passwords. [https://github.com/woocommerce/woocommerce-ios/pull/9354]
+
 
 13.0
 -----

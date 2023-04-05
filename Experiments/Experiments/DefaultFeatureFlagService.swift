@@ -76,7 +76,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // Disabled for the control group and UI testing
             return ABTest.simplifiedProductEditing.variation == .treatment && !isUITesting
         case .jetpackSetupWithApplicationPassword:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .dashboardOnboarding:
             return true
         case .addCouponToOrder:

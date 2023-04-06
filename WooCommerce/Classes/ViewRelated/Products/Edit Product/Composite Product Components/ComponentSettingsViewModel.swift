@@ -160,7 +160,7 @@ private extension ComponentSettingsViewModel {
                               type: CompositeComponentOptionType,
                               stores: StoresManager) {
         syncProducts(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
-        syncCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, type: type, stores: stores)
+        syncCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
     }
 
     /// Syncs products and sets the default option and (if the component options are products) the options list.
@@ -176,7 +176,6 @@ private extension ComponentSettingsViewModel {
 
             switch result {
             case .success((let products, _)):
-                self.errorNotice = nil
                 self.defaultOptionTitle = products.first(where: { $0.productID == defaultOptionID })?.name ?? Localization.noDefaultOption
                 if type == .productIDs {
                     self.options = products.map { product in
@@ -191,7 +190,8 @@ private extension ComponentSettingsViewModel {
                 self.productsState = .notLoaded
                 DDLogError("⛔️ Unable to fetch products for composite component settings: \(error)")
                 self.errorNotice = self.createErrorNotice() { [weak self] in
-                    self?.syncProducts(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
+                    self?.errorNotice = nil
+                    self?.loadComponentOptions(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
                 }
             }
         }
@@ -202,7 +202,7 @@ private extension ComponentSettingsViewModel {
 
     /// Syncs the provided categories if the component options are categories.
     ///
-    func syncCategoriesIfNeeded(siteID: Int64, optionIDs: [Int64], type: CompositeComponentOptionType, stores: StoresManager) {
+    func syncCategoriesIfNeeded(siteID: Int64, optionIDs: [Int64], defaultOptionID: Int64?, type: CompositeComponentOptionType, stores: StoresManager) {
         guard type == .categoryIDs && categoriesState == .notLoaded else { return }
 
         categoriesState = .loading
@@ -228,7 +228,8 @@ private extension ComponentSettingsViewModel {
                     self?.options = []
                     self?.categoriesState = .notLoaded
                     self?.errorNotice = self?.createErrorNotice() { [weak self] in
-                        self?.syncCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, type: type, stores: stores)
+                        self?.errorNotice = nil
+                        self?.loadComponentOptions(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
                     }
                     DDLogError("⛔️ Unable to fetch category \(categoryID) for the composite component settings: \(error)")
                     break

@@ -379,7 +379,8 @@ private extension CardReaderConnectionController {
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(forGatewayID: self.gatewayID,
                                                                                         error: error,
-                                                                                        countryCode: self.configuration.countryCode)
+                                                                                        countryCode: self.configuration.countryCode,
+                                                                                        siteID: self.siteID)
                 )
                 self.state = .discoveryFailed(error)
             })
@@ -579,7 +580,8 @@ private extension CardReaderConnectionController {
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
                                                                                          error: error,
                                                                                          countryCode: self.configuration.countryCode,
-                                                                                         cardReaderModel: candidateReader.readerType.model)
+                                                                                         cardReaderModel: candidateReader.readerType.model,
+                                                                                         siteID: self.siteID)
                 )
                 self.state = .connectingFailed(error)
             }

@@ -102,7 +102,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
-        self.analyticsTracker = CollectOrderPaymentAnalytics(analytics: analytics,
+        self.analyticsTracker = CollectOrderPaymentAnalytics(siteID: siteID,
+                                                             analytics: analytics,
                                                              configuration: configuration,
                                                              orderDurationRecorder: orderDurationRecorder)
     }

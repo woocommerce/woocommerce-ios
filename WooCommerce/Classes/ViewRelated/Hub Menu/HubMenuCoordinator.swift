@@ -133,7 +133,9 @@ extension HubMenuCoordinator {
             }
         case .tapToPayOnIPhone:
             let viewController = hubMenuController.showPaymentsMenu()
-            viewController.presentSetUpTapToPayOnIPhoneViewController()
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                viewController.presentSetUpTapToPayOnIPhoneViewController()
+            }
         }
     }
 

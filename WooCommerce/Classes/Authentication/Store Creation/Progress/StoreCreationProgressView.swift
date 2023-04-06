@@ -4,8 +4,8 @@ import SwiftUI
 final class StoreCreationProgressHostingViewController: UIHostingController<StoreCreationProgressView> {
     let viewModel: StoreCreationProgressViewModel
 
-    init() {
-        self.viewModel = StoreCreationProgressViewModel()
+    init(viewModel: StoreCreationProgressViewModel) {
+        self.viewModel = viewModel
         super.init(rootView: StoreCreationProgressView(viewModel: viewModel))
     }
 
@@ -99,6 +99,6 @@ private extension StoreCreationProgressView {
 
 struct StoreCreationProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel())
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(retryInterval: 1))
     }
 }

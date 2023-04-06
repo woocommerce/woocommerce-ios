@@ -137,8 +137,7 @@ extension ComponentSettingsViewModel {
     ///
     convenience init(siteID: Int64,
                      component: ComponentsListViewModel.Component,
-                     stores: StoresManager = ServiceLocator.stores,
-                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
+                     stores: StoresManager = ServiceLocator.stores) {
         // Initialize the view model with the available component settings and placeholders for the component options.
         self.init(title: component.title,
                   description: component.description.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -152,8 +151,7 @@ extension ComponentSettingsViewModel {
                              optionIDs: component.optionIDs,
                              defaultOptionID: Int64(component.defaultOptionID),
                              type: component.optionType,
-                             stores: stores,
-                             storageManager: storageManager)
+                             stores: stores)
     }
 }
 
@@ -161,16 +159,13 @@ extension ComponentSettingsViewModel {
 private extension ComponentSettingsViewModel {
     /// Load the component options (products or categories) if needed.
     ///
-    /// Products are synced from remote, while categories are fetched from storage because they are already fully synced.
-    ///
     func loadComponentOptions(siteID: Int64,
                               optionIDs: [Int64],
                               defaultOptionID: Int64?,
                               type: CompositeComponentOptionType,
-                              stores: StoresManager,
-                              storageManager: StorageManagerType) {
+                              stores: StoresManager) {
         syncProducts(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
-        fetchCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, type: type, storageManager: storageManager)
+        syncCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, type: type, stores: stores)
     }
 
     /// Syncs products and sets the default option and (if the component options are products) the options list.
@@ -207,29 +202,37 @@ private extension ComponentSettingsViewModel {
         stores.dispatch(productAction)
     }
 
-    /// Fetches the categories from storage if the component options are categories.
+    /// Syncs the provided categories if the component options are categories.
     ///
-    func fetchCategoriesIfNeeded(siteID: Int64, optionIDs: [Int64], type: CompositeComponentOptionType, storageManager: StorageManagerType) {
+    func syncCategoriesIfNeeded(siteID: Int64, optionIDs: [Int64], type: CompositeComponentOptionType, stores: StoresManager) {
         guard type == .categoryIDs && categoriesState == .notLoaded else { return }
 
         categoriesState = .loading
 
-        let predicate = NSPredicate(format: "siteID = %lld AND categoryID IN %@", siteID, optionIDs)
-        let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
-        let resultsController = ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-
-        do {
-            try resultsController.performFetch()
-            self.options = resultsController.fetchedObjects.map { category in
-                // We don't show images for categories in the app, so the image URL is always nil.
-                ComponentOption(id: category.categoryID, title: category.name, imageURL: nil)
+        // Sync each category individually because we only need the provided categories, which we expect is a small list.
+        // Our other option is a full category sync each time this view loads, which could be very large.
+        var categoryOptions: [ComponentOption] = []
+        for categoryID in optionIDs {
+            let categoryAction = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: categoryID) { [weak self] result in
+                switch result {
+                case .success(let category):
+                    // We don't show images for categories in the app, so the image URL is always nil.
+                    let option = ComponentOption(id: category.categoryID, title: category.name, imageURL: nil)
+                    categoryOptions.append(option)
+                    if categoryID == optionIDs.last { // Replace loading placeholder with synced category options.
+                        self?.options = categoryOptions
+                        self?.categoriesState = .loaded
+                    }
+                case .failure(let error):
+                    // If syncing any of the categories fails, bail and display an error instead of an incomplete list.
+                    self?.options = []
+                    self?.categoriesState = .notLoaded
+                    // TODO-8956: Display notice about loading error
+                    DDLogError("⛔️ Unable to fetch category \(categoryID) for the composite component settings: \(error)")
+                    break
+                }
             }
-            self.categoriesState = .loaded
-        } catch {
-            self.options = []
-            self.categoriesState = .notLoaded
-            DDLogError("⛔️ Unable to fetch categories for the composite component settings: \(error)")
-            // TODO-8956: Display notice about loading error
+            stores.dispatch(categoryAction)
         }
     }
 }

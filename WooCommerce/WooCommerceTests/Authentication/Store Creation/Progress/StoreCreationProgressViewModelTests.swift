@@ -44,6 +44,8 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         let incrementInterval = 1.0
         let sut = StoreCreationProgressViewModel(incrementInterval: incrementInterval,
                                                  progressViewAnimationTimerInterval: timeInterval)
+        let gapBetweenProgress = StoreCreationProgressViewModel.Progress.allCases[1].rawValue - StoreCreationProgressViewModel.Progress.allCases[0].rawValue
+        let expectedIncrement = (gapBetweenProgress / Float(incrementInterval / timeInterval))
 
         // When
         sut.onAppear()
@@ -51,7 +53,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         // Then
         // Wait a tiny bit longer than `timeInterval`
         DispatchQueue.main.asyncAfter(deadline: .now() + (timeInterval + (timeInterval * 0.1))) {
-            XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.creatingStore.rawValue + Float(incrementInterval / timeInterval))
+            XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.creatingStore.rawValue + expectedIncrement)
         }
     }
 

@@ -46,7 +46,8 @@ final class StoreCreationProgressViewModel: ObservableObject {
          progressViewAnimationTimerInterval: TimeInterval = 0.1) {
         self.progressViewAnimationTimerInterval = progressViewAnimationTimerInterval
         // Increment the progress value until next progress increment
-        self.incrementProgressValueBy = Float(incrementInterval / progressViewAnimationTimerInterval)
+        let gapBetweenProgress = Progress.allCases[1].rawValue - Progress.allCases[0].rawValue
+        self.incrementProgressValueBy = (gapBetweenProgress / Float(incrementInterval / progressViewAnimationTimerInterval))
     }
 
     // MARK: Public methods

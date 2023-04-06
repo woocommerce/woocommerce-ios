@@ -22,13 +22,13 @@ public final class ExternalAppScreen {
         // Add universal link as reminder
         let remindersTable = reminders.otherElements["RemindersList.ID.RemindersTable"]
         remindersTable.tap()
-        reminders.typeText("\(link)")
+        reminders.textFields["Title"].typeText("\(link)")
         remindersTable.tap()
 
         // Mark reminder as done to remove from list on next visit
         reminders.buttons["CompleteOff"].tap()
 
         // Tap first reminder on list
-        reminders.cells.firstMatch.tap()
+        reminders.cells.links.firstMatch.tap()
     }
 }

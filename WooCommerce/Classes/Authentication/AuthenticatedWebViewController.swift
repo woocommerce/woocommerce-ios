@@ -186,6 +186,11 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
         return await viewModel.decidePolicy(for: navigationURL)
     }
 
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy {
+        let response = navigationResponse.response
+        return await viewModel.decidePolicy(for: response)
+    }
+
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         progressBar.setProgress(0, animated: false)
     }

@@ -5,7 +5,6 @@ enum BetaFeature: String, CaseIterable {
     case productSKUScanner
     case couponManagement
     case inAppPurchases
-    case productMultiSelection
 }
 
 extension BetaFeature {
@@ -19,8 +18,6 @@ extension BetaFeature {
             return Localization.couponManagementTitle
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementTitle
-        case .productMultiSelection:
-            return Localization.productMultiSelectionTitle
         }
     }
 
@@ -34,8 +31,6 @@ extension BetaFeature {
             return Localization.couponManagementDescription
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
-        case .productMultiSelection:
-            return Localization.productMultiSelectionDescription
         }
     }
 
@@ -49,8 +44,6 @@ extension BetaFeature {
             return \.isCouponManagementSwitchEnabled
         case .inAppPurchases:
             return \.isInAppPurchasesSwitchEnabled
-        case .productMultiSelection:
-            return \.isProductMultiSelectionSwitchEnabled
         }
     }
 
@@ -69,8 +62,6 @@ extension BetaFeature {
         switch self {
         case .inAppPurchases:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases)
-        case .productMultiSelection:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)
         default:
             return true
         }
@@ -148,12 +139,5 @@ private extension BetaFeature {
         static let inAppPurchasesManagementDescription = NSLocalizedString(
             "Test out in-app purchases as we get ready to launch",
             comment: "Cell description on beta features screen to enable in-app purchases")
-
-        static let productMultiSelectionTitle = NSLocalizedString(
-            "Product Multi-Selection",
-            comment: "Cell title on beta features screen to enable Product Multi-Selection")
-        static let productMultiSelectionDescription = NSLocalizedString(
-            "Test out Product Multi-Selection as we get ready to launch",
-            comment: "Cell description on beta features screen to enable Product Multi-Selection")
     }
 }

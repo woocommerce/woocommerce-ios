@@ -112,14 +112,6 @@ public enum AppSettingsAction: Action {
     ///
     case loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Loads the most recent state for the Product Multi-Selection beta feature switch
-    ///
-    case loadProductMultiSelectionFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
-
-    /// Sets the state for the Product Multi-Selection beta feature switch
-    ///
-    case setProductMultiSelectionFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///
@@ -171,37 +163,9 @@ public enum AppSettingsAction: Action {
     ///
     case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
 
-    /// Sets the last state of the simple payments taxes toggle for a provided store.
-    ///
-    case setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
-    /// Get the last state of the simple payments taxes toggle for a provided store.
-    ///
-    case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
-
-    /// Sets the preferred payment gateway for In-Person Payments
-    ///
-    case setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String)
-
-    /// Gets the preferred payment gateway for In-Person Payments
-    ///
-    case getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void)
-
-    /// Forgets the preferred payment gateway for In-Person Payments
-    ///
-    case forgetPreferredInPersonPaymentGateway(siteID: Int64)
-
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings
-
-    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
-    ///
-    case setSkippedCashOnDeliveryOnboardingStep(siteID: Int64)
-
-    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
-    ///
-    case getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void)
 
     // MARK: - Feature Announcement Card Visibility
 
@@ -226,4 +190,45 @@ public enum AppSettingsAction: Action {
     /// Stores that the user finished an IPP transaction for the given siteID
     ///
     case markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64)
+
+    // MARK: - In Person Payments
+
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    case getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the preferred payment gateway for In-Person Payments
+    ///
+    case setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String)
+
+    /// Gets the preferred payment gateway for In-Person Payments
+    ///
+    case getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void)
+
+    /// Forgets the preferred payment gateway for In-Person Payments
+    ///
+    case forgetPreferredInPersonPaymentGateway(siteID: Int64)
+
+    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
+    ///
+    case setSkippedCashOnDeliveryOnboardingStep(siteID: Int64)
+
+    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
+    ///
+    case getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void)
+
+    /// Loads the date of the first In Person Payments transaction made on this device using a particular card reader type. This is site-specific.
+    /// N.B. this was added in 2023-04, so the date will not be the "first" for any stores using In Person Payments prior to that date.
+    ///
+    case loadFirstInPersonPaymentsTransactionDate(siteID: Int64, cardReaderType: CardReaderType, onCompletion: (Date?) -> Void)
+
+    /// Stores the current date as the first In Person Payments transaction made on this device using a particular card reader type. This is site-specific.
+    /// Existing values are preserved, this will not overwrite previously stored dates.
+    ///
+    case storeInPersonPaymentsTransactionIfFirst(siteID: Int64, cardReaderType: CardReaderType)
+
 }

@@ -42,6 +42,31 @@ public struct ProductCompositeComponent: Codable, Equatable, GeneratedCopiable, 
         self.optionIDs = optionIDs
         self.defaultOptionID = defaultOptionID
     }
+
+    /// The public initializer for ProductCompositeComponent.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let componentID = try container.decode(String.self, forKey: .componentID)
+        let title = try container.decode(String.self, forKey: .title)
+        let description = try container.decode(String.self, forKey: .description)
+        let imageURL = try container.decode(String.self, forKey: .imageURL)
+        let optionType = try container.decode(CompositeComponentOptionType.self, forKey: .optionType)
+        let optionIDs = try container.decode([Int64].self, forKey: .optionIDs)
+
+        // Default option ID can be Int or String.
+        // The field value is an empty string if no default option is set.
+        let defaultOptionID = container.failsafeDecodeIfPresent(stringForKey: .defaultOptionID) ?? ""
+
+        self.init(componentID: componentID,
+                  title: title,
+                  description: description,
+                  imageURL: imageURL,
+                  optionType: optionType,
+                  optionIDs: optionIDs,
+                  defaultOptionID: defaultOptionID)
+    }
 }
 
 /// Defines all of the ProductCompositeComponent CodingKeys

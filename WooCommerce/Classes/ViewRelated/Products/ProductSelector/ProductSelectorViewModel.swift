@@ -56,6 +56,58 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
+    /// Retrieves lazily and asynchronously the popular products
+    ///
+    var _popularProducts: [Product]?
+    var popularProducts: [Product] {
+        get async {
+            if let popularProducts = _popularProducts {
+                return popularProducts
+            }
+
+            return await withCheckedContinuation { [weak self]
+                continuation in
+
+                guard let self = self else { return }
+
+                let action = ProductAction.retrievePopularCachedProducts(siteID: self.siteID, onCompletion: { products in
+                    self._popularProducts = self.refineTopProducts(products)
+                    continuation.resume(returning: self._popularProducts!)
+                })
+
+                Task { @MainActor in
+                    self.stores.dispatch(action)
+                }
+            }
+        }
+    }
+
+    /// Retrieves lazily and asynchronously the most recently sold products
+    ///
+    var _mostRecentlySoldProducts: [Product]?
+    var mostRecentlySoldProducts: [Product] {
+        get async {
+            if let mostRecentlySoldProducts = _mostRecentlySoldProducts {
+                return mostRecentlySoldProducts
+            }
+
+            return await withCheckedContinuation { [weak self]
+                continuation in
+
+                guard let self = self else { return }
+
+                let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.siteID, onCompletion: { products in
+                    self._mostRecentlySoldProducts = self.refineTopProducts(products)
+                    continuation.resume(returning: self._mostRecentlySoldProducts!)
+                })
+
+                Task { @MainActor in
+                    self.stores.dispatch(action)
+                }
+            }
+        }
+    }
+
     /// Determines if multiple item selection is supported.
     ///
     let supportsMultipleSelection: Bool
@@ -460,17 +512,47 @@ private extension ProductSelectorViewModel {
     /// Fetches products from storage.
     ///
     func updateProductsResultsController() {
-        do {
-            try productsResultsController.performFetch()
-            if purchasableItemsOnly {
-                products = productsResultsController.fetchedObjects.filter { $0.purchasable }
-            } else {
-                products = productsResultsController.fetchedObjects
+            do {
+                try productsResultsController.performFetch()
+                if purchasableItemsOnly {
+                    products = productsResultsController.fetchedObjects.filter { $0.purchasable }
+                } else {
+                    products = productsResultsController.fetchedObjects
+                }
+
+                updateProductsWithMostPopularAndRecentlySold()
+                updateSelectionsFromInitialSelectedItems()
+                observeSelections()
+            } catch {
+                DDLogError("⛔️ Error fetching products for new order: \(error)")
             }
-            updateSelectionsFromInitialSelectedItems()
-            observeSelections()
-        } catch {
-            DDLogError("⛔️ Error fetching products for new order: \(error)")
+    }
+
+    func updateProductsWithMostPopularAndRecentlySold() {
+        /// Skip if we are searching
+        guard searchTerm.isEmpty else {
+            return
+        }
+
+        Task { @MainActor in
+            products = (await retrievePopularAndRecentlySoldProducts() + products).uniqued()
+        }
+    }
+
+    func retrievePopularAndRecentlySoldProducts() async -> [Product] {
+        await withTaskGroup(of: [Product].self) { [weak self] group -> [Product] in
+            guard let self = self else { return [] }
+
+            group.addTask { await self.popularProducts }
+            group.addTask { await self.mostRecentlySoldProducts }
+
+            var collected = [Product]()
+
+            for await value in group {
+                collected.append(contentsOf: value)
+            }
+
+            return collected
         }
     }
 
@@ -533,6 +615,18 @@ private extension ProductSelectorViewModel {
         } else {
             filterButtonTitle = String.localizedStringWithFormat(Localization.filterButtonWithActiveFilters, activeFiltersCount)
         }
+    }
+
+    /// Refines the top showing products (popular and recently sold) by slicing and removing the non purchasable (if required)
+    ///
+    func refineTopProducts(_ products: [Product]) -> [Product] {
+        var returningProducts = products
+
+        if purchasableItemsOnly {
+            returningProducts = returningProducts.filter { $0.purchasable }
+        }
+
+        return Array(returningProducts.prefix(5))
     }
 }
 

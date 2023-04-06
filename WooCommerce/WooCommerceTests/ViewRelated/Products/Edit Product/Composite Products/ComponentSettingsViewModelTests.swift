@@ -77,7 +77,6 @@ final class ComponentSettingsViewModelTests: XCTestCase {
                                         defaultOptionID: "10")
         let defaultProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, name: "Canon EF 70-200MM F:2.8 L USM")
         let expectedCategory = ProductCategory(categoryID: 1, siteID: sampleSiteID, parentID: 0, name: "Camera Lenses", slug: "camera-lenses")
-        storageManager.insertSampleProductCategory(readOnlyProductCategory: expectedCategory)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .retrieveProducts(_, _, _, _, onCompletion):
@@ -87,9 +86,17 @@ final class ComponentSettingsViewModelTests: XCTestCase {
                 XCTFail("Received unsupported action: \(action)")
             }
         }
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategory(_, _, onCompletion):
+                onCompletion(.success(expectedCategory))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
 
         // When
-        let viewModel = ComponentSettingsViewModel(siteID: self.sampleSiteID, component: component, stores: self.stores, storageManager: self.storageManager)
+        let viewModel = ComponentSettingsViewModel(siteID: self.sampleSiteID, component: component, stores: self.stores)
 
         // Then
         XCTAssertEqual(viewModel.options.count, 1)
@@ -129,7 +136,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.defaultOptionTitle, expectedProduct.name)
     }
 
-    func test_view_model_has_expected_values_after_loading_error() {
+    func test_view_model_has_expected_values_after_loading_error_for_product_options() {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -142,7 +149,43 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = ComponentSettingsViewModel(siteID: self.sampleSiteID, component: self.sampleComponent(), stores: self.stores)
+        let viewModel = ComponentSettingsViewModel(siteID: self.sampleSiteID,
+                                                   component: self.sampleComponent(optionIDs: [1], defaultOptionID: "1"),
+                                                   stores: self.stores)
+
+        // Then
+        XCTAssertEqual(viewModel.options.count, 0, "Loading placeholder was not removed after loading error.")
+        XCTAssertEqual(viewModel.defaultOptionTitle,
+                       NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product"))
+        XCTAssertFalse(viewModel.showOptionsLoadingIndicator)
+        XCTAssertFalse(viewModel.showDefaultOptionLoadingIndicator)
+    }
+
+    func test_view_model_has_expected_values_after_loading_errors_for_category_options() {
+        // Given
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                let error = NSError(domain: "", code: 0)
+                onCompletion(.failure(error))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategory(_, _, onCompletion):
+                let error = NSError(domain: "", code: 0)
+                onCompletion(.failure(error))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        let viewModel = ComponentSettingsViewModel(siteID: self.sampleSiteID,
+                                                   component: self.sampleComponent(optionType: .categoryIDs, optionIDs: [1], defaultOptionID: "1"),
+                                                   stores: self.stores)
 
         // Then
         XCTAssertEqual(viewModel.options.count, 0, "Loading placeholder was not removed after loading error.")

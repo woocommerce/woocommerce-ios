@@ -449,12 +449,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
-        ///`ProductCompositeComponent.defaultOptionID` is being returned as an `Int` instead of as a `String` in some test store.
-        /// Since this feature is still in development I'm defaulting to evict any composite component when a parsing error occurs.
-        /// We should identify why that field can be of multiple types before releasing the feature to the public.
-        ///
         // Composite Product properties
-        let compositeComponents = (try? container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents)) ?? []
+        let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
 
 
         self.init(siteID: siteID,

@@ -1208,8 +1208,12 @@ extension UIImage {
 
     /// WordPress.com logo image.
     ///
-    static var wpcomLogoImage: UIImage {
-        UIImage(named: "wpcom-logo")!
+    static func wpcomLogoImage(tintColor: UIColor? = nil) -> UIImage {
+        if let tintColor {
+            return UIImage(named: "wpcom-logo")!.imageWithTintColor(tintColor)!
+        } else {
+            return UIImage(named: "wpcom-logo")!
+        }
     }
 
     /// Image on the Jetpack setup interrupted screen
@@ -1261,6 +1265,60 @@ extension UIImage {
 
     static var iconBolt: UIImage {
         UIImage(imageLiteralResourceName: "icon-bolt")
+    }
+
+    /// Illustration for the free trial summary screen.
+    ///
+    static var freeTrialIllustration: UIImage {
+        UIImage(imageLiteralResourceName: "free-trial-ilustration")
+    }
+
+    static var ecommerceIcon: UIImage {
+        UIImage(imageLiteralResourceName: "ecommerce-icon")
+    }
+
+    static var supportIcon: UIImage {
+        UIImage(imageLiteralResourceName: "support-icon")
+    }
+
+    static var backupsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "backups-icon")
+    }
+
+    static var giftIcon: UIImage {
+        UIImage(imageLiteralResourceName: "gifts-icon")
+    }
+
+    static var emailOutlineIcon: UIImage {
+        UIImage(imageLiteralResourceName: "email-outline-icon")
+    }
+
+    static var shippingOutlineIcon: UIImage {
+        UIImage(imageLiteralResourceName: "shipping-outline-icon")
+    }
+
+    static var advertisingIcon: UIImage {
+        UIImage(imageLiteralResourceName: "advertising-icon")
+    }
+
+    static var launchIcon: UIImage {
+        UIImage(imageLiteralResourceName: "launch-icon")
+    }
+
+    static var paymentOptionsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "payment-options-icon")
+    }
+
+    static var premiumThemesIcon: UIImage {
+        UIImage(imageLiteralResourceName: "premium-themes-icon")
+    }
+
+    static var siteSecurityIcon: UIImage {
+        UIImage(imageLiteralResourceName: "site-security-icon")
+    }
+
+    static var unlimitedProductsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "unlimited-products-icon")
     }
 }
 

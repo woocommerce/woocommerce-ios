@@ -83,6 +83,8 @@ extension WooAnalyticsEvent {
         case inPersonPaymentsPowerUsersBanner
         /// Shown in store setup task list
         case storeSetup = "store_setup"
+        /// Tap to Pay on iPhone feedback button shown in the Payments menu after the first payment with TTP
+        case tapToPayFirstPaymentPaymentsMenu
     }
 
     /// The action performed on the survey screen.
@@ -454,6 +456,7 @@ extension WooAnalyticsEvent {
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
+            static let source = "source"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -592,6 +595,12 @@ extension WooAnalyticsEvent {
         static func orderCreationProductSelectorConfirmButtonTapped(productCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationProductSelectorConfirmButtonTapped, properties: [
                 Keys.productCount: Int64(productCount)
+            ])
+        }
+
+        static func orderCreationProductSelectorClearSelectionButtonTapped(productType: ProductType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductSelectorClearSelectionButtonTapped, properties: [
+                Keys.source: productType.rawValue + "_selector"
             ])
         }
 

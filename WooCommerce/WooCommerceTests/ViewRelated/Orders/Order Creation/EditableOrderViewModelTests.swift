@@ -38,10 +38,6 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_disabled() {
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = false
-
-        // Then
         XCTAssertFalse(viewModel.productSelectorViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
@@ -50,9 +46,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
-
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
 
         // Then
         XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
@@ -309,7 +302,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
@@ -953,7 +945,6 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = false
         viewModel.productSelectorViewModel.selectProduct(product.productID)
 
         // Then
@@ -975,7 +966,6 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.selectProduct(product.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
 
@@ -1038,6 +1028,36 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let properties = try XCTUnwrap(analytics.receivedProperties.last?["flow"] as? String)
         XCTAssertEqual(properties, "creation")
+    }
+
+    func test_product_selector_source_is_tracked_when_product_selector_clear_selection_button_is_tapped() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics),
+                                               featureFlagService: featureFlagService)
+
+        // When
+        viewModel.productSelectorViewModel.clearSelection()
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.contains(where: {
+            $0.description == WooAnalyticsStat.orderCreationProductSelectorClearSelectionButtonTapped.rawValue })
+        )
+
+        guard let eventIndex = analytics.receivedEvents.firstIndex(where: {
+            $0.description == WooAnalyticsStat.orderCreationProductSelectorClearSelectionButtonTapped.rawValue }) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analytics.receivedProperties[eventIndex]
+        guard let event = eventProperties.first(where: { $0.key as? String == "source"}) else {
+            return XCTFail("No property received")
+        }
+
+        XCTAssertEqual(event.value as? String, "product_selector")
     }
 
     func test_shipping_method_tracked_when_added() throws {

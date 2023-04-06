@@ -2,7 +2,8 @@
 
 13.1
 -----
-
+- [**] Users can now install Jetpack for their non-Jetpack sites after logging in with application passwords. [https://github.com/woocommerce/woocommerce-ios/pull/9354]
+- [*] Payments: We show a Tap to Pay on iPhone feedback survey button in the Payments menu after the first Tap to Pay on iPhone payment is taken [https://github.com/woocommerce/woocommerce-ios/pull/9366]
 
 13.0
 -----

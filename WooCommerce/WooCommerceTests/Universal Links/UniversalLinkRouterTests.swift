@@ -15,7 +15,7 @@ final class UniversalLinkRouterTests: XCTestCase {
             ]
 
         var retrievedParameters: [String: String]?
-        let route = MockRoute(subPath: subPath, performAction: { parameters in
+        let route = MockRoute(handledSubpaths: [subPath], performAction: { _, parameters in
             retrievedParameters = parameters
 
             return true
@@ -34,6 +34,34 @@ final class UniversalLinkRouterTests: XCTestCase {
         XCTAssertEqual(retrievedParameters?[queryItem.name], queryItem.value)
     }
 
+    func test_handle_when_there_is_a_route_matching_then_calls_to_perform_action_with_subpath() {
+        // Given
+        let subPath = "/test/path/more/parts"
+        var components = URLComponents()
+            components.scheme = "https"
+            components.host = "woocommerce.com"
+            components.path = "/mobile" + subPath
+
+        var retrievedSubPath: String?
+        let route = MockRoute(handledSubpaths: [subPath], performAction: { subPath, _ in
+            retrievedSubPath = subPath
+
+            return true
+        })
+        let sut = UniversalLinkRouter(routes: [route])
+
+        guard let url = components.url else {
+            XCTFail()
+            return
+        }
+
+        // When
+        sut.handle(url: url)
+
+        // Then
+        XCTAssertEqual(retrievedSubPath, subPath)
+    }
+
     func test_handle_when_there_are_routes_matching_then_calls_to_perform_action_to_the_first_one() {
         // Given
         let subPath = "/test/path"
@@ -43,14 +71,14 @@ final class UniversalLinkRouterTests: XCTestCase {
             components.path = "/mobile" + subPath
 
         var routeOneWasCalled = false
-        let routeOne = MockRoute(subPath: subPath, performAction: { _ in
+        let routeOne = MockRoute(handledSubpaths: [subPath], performAction: { _, _ in
             routeOneWasCalled = true
 
             return true
         })
 
         var routeTwoWasCalled = false
-        let routeTwo = MockRoute(subPath: subPath, performAction: { _ in
+        let routeTwo = MockRoute(handledSubpaths: [subPath], performAction: { _, _ in
             routeTwoWasCalled = true
 
             return true
@@ -77,7 +105,7 @@ final class UniversalLinkRouterTests: XCTestCase {
         let url = URL(string: "woocommerce.com/mobile/a/nice/path")!
 
         var routeOneWasCalled = false
-        let routeOne = MockRoute(subPath: "a/different/path", performAction: { _ in
+        let routeOne = MockRoute(handledSubpaths: ["a/different/path"], performAction: { _, _ in
             routeOneWasCalled = true
 
             return true
@@ -109,7 +137,7 @@ final class UniversalLinkRouterTests: XCTestCase {
                 queryItem
             ]
 
-        let route = MockRoute(subPath: subPath, performAction: { parameters in
+        let route = MockRoute(handledSubpaths: [subPath], performAction: { _, parameters in
             return true
         })
 
@@ -143,7 +171,7 @@ final class UniversalLinkRouterTests: XCTestCase {
                 queryItem
             ]
 
-        let route = MockRoute(subPath: subPath, performAction: { _ in
+        let route = MockRoute(handledSubpaths: [subPath], performAction: { _, _ in
             return false
         })
 

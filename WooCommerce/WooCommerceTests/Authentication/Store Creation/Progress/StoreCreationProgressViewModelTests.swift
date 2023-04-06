@@ -51,8 +51,8 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         sut.onAppear()
 
         // Then
-        // Wait a tiny bit longer than `timeInterval`
-        DispatchQueue.main.asyncAfter(deadline: .now() + (timeInterval + (timeInterval * 0.1))) {
+        // Giving enough time to process all enum cases. (The logic should only process upto the next case)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeInterval * Double(StoreCreationProgressViewModel.Progress.allCases.count)) {
             XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.creatingStore.rawValue + expectedIncrement)
         }
     }

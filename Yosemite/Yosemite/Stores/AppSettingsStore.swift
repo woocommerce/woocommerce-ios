@@ -194,7 +194,10 @@ public class AppSettingsStore: Store {
             loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID, onCompletion: onCompletion)
         case .markSiteHasAtLeastOneIPPTransactionFinished(let siteID):
             markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
-
+        case .loadFirstInPersonPaymentsTransactionDate(siteID: let siteID, cardReaderType: let cardReaderType, onCompletion: let completion):
+            loadFirstInPersonPaymentsTransactionDate(siteID: siteID, using: cardReaderType, onCompletion: completion)
+        case .storeInPersonPaymentsTransactionIfFirst(siteID: let siteID, cardReaderType: let cardReaderType):
+            storeInPersonPaymentsTransactionIfFirst(siteID: siteID, using: cardReaderType)
         }
     }
 }
@@ -342,7 +345,7 @@ private extension AppSettingsStore {
     }
 }
 
-// MARK: - Card Reader Actions
+// MARK: - In Person Payments Actions
 //
 private extension AppSettingsStore {
     /// Remember the given card reader (to support automatic reconnection)
@@ -393,6 +396,86 @@ private extension AppSettingsStore {
 
         onCompletion(.success(knownReader))
     }
+
+    /// Sets the last state of the simple payments taxes toggle for a provided store.
+    ///
+    func setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(areSimplePaymentTaxesEnabled: isOn)
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    /// Get the last state of the simple payments taxes toggle for a provided store.
+    ///
+    func getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(.success(storeSettings.areSimplePaymentTaxesEnabled))
+    }
+
+    /// Sets the preferred payment gateway for In-Person Payments
+    ///
+    func setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: gateway)
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+    /// Gets the preferred payment gateway for In-Person Payments
+    ///
+    func getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.preferredInPersonPaymentGateway)
+    }
+
+    /// Forgets the preferred payment gateway for In-Person Payments
+    ///
+    func forgetPreferredInPersonPaymentGateway(siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
+        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
+    }
+
+    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
+    ///
+    func setSkippedCashOnDeliveryOnboardingStep(siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let newSettings = storeSettings.copy(skippedCashOnDeliveryOnboardingStep: true)
+        setStoreSettings(settings: newSettings, for: siteID)
+    }
+
+    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
+    ///
+    func getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.skippedCashOnDeliveryOnboardingStep)
+    }
+
+    func loadFirstInPersonPaymentsTransactionDate(siteID: Int64, using cardReaderType: CardReaderType, onCompletion: (Date?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.firstInPersonPaymentsTransactionsByReaderType[StorageCardReaderType(from: cardReaderType)])
+    }
+
+    func storeInPersonPaymentsTransactionIfFirst(siteID: Int64, using cardReaderType: CardReaderType) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedDictionary = storeSettings.firstInPersonPaymentsTransactionsByReaderType
+            .merging([StorageCardReaderType(from: cardReaderType): Date()]) { (current, _) in
+                // We never want to update stored value, because we keep the first transaction date for each site/reader pair.
+                return current
+            }
+
+        guard updatedDictionary != storeSettings.firstInPersonPaymentsTransactionsByReaderType else {
+            return
+        }
+
+        let updatedSettings = storeSettings.copy(firstInPersonPaymentsTransactionsByReaderType: updatedDictionary)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+        NotificationCenter.default.post(name: .firstInPersonPaymentsTransactionsWereUpdated, object: nil)
+    }
+}
+
+extension Notification.Name {
+    public static let firstInPersonPaymentsTransactionsWereUpdated = Notification.Name(
+        rawValue: "com.woocommerce.ios.firstInPersonPaymentsTransactionsWereUpdated")
 }
 
 // MARK: - Shipment tracking providers!
@@ -700,62 +783,6 @@ private extension AppSettingsStore {
             DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
         }
     }
-
-    // Simple Payments data
-
-    /// Sets the last state of the simple payments taxes toggle for a provided store.
-    ///
-    func setSimplePaymentsTaxesToggleState(siteID: Int64, isOn: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let storeSettings = getStoreSettings(for: siteID)
-        let newSettings = storeSettings.copy(areSimplePaymentTaxesEnabled: isOn)
-        setStoreSettings(settings: newSettings, for: siteID, onCompletion: onCompletion)
-    }
-
-    /// Get the last state of the simple payments taxes toggle for a provided store.
-    ///
-    func getSimplePaymentsTaxesToggleState(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        let storeSettings = getStoreSettings(for: siteID)
-        onCompletion(.success(storeSettings.areSimplePaymentTaxesEnabled))
-    }
-
-    /// Sets the preferred payment gateway for In-Person Payments
-    ///
-    func setPreferredInPersonPaymentGateway(siteID: Int64, gateway: String) {
-        let storeSettings = getStoreSettings(for: siteID)
-        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: gateway)
-        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
-    }
-
-    /// Gets the preferred payment gateway for In-Person Payments
-    ///
-    func getPreferredInPersonPaymentGateway(siteID: Int64, onCompletion: (String?) -> Void) {
-        let storeSettings = getStoreSettings(for: siteID)
-        onCompletion(storeSettings.preferredInPersonPaymentGateway)
-    }
-
-    /// Forgets the preferred payment gateway for In-Person Payments
-    ///
-    func forgetPreferredInPersonPaymentGateway(siteID: Int64) {
-        let storeSettings = getStoreSettings(for: siteID)
-        let newSettings = storeSettings.copy(preferredInPersonPaymentGateway: .some(nil))
-        setStoreSettings(settings: newSettings, for: siteID, onCompletion: nil)
-    }
-
-    /// Marks the Enable Cash on Delivery In-Person Payments Onboarding step as skipped
-    ///
-    func setSkippedCashOnDeliveryOnboardingStep(siteID: Int64) {
-        let storeSettings = getStoreSettings(for: siteID)
-        let newSettings = storeSettings.copy(skippedCashOnDeliveryOnboardingStep: true)
-        setStoreSettings(settings: newSettings, for: siteID)
-    }
-
-    /// Gets whether the Enable Cash on Delivery In-Person Payments Onboarding step has been skipped
-    ///
-    func getSkippedCashOnDeliveryOnboardingStep(siteID: Int64, onCompletion: (Bool) -> Void) {
-        let storeSettings = getStoreSettings(for: siteID)
-        onCompletion(storeSettings.skippedCashOnDeliveryOnboardingStep)
-    }
-
 }
 
 

@@ -1040,7 +1040,6 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
         viewModel.productSelectorViewModel.clearSelection()
 
         // Then

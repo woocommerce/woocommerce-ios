@@ -31,6 +31,7 @@
 		02D200D8253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 02D200D7253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel */; };
 		02D45649231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */; };
 		02DA64192313C2AA00284168 /* StatsVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DA64182313C2AA00284168 /* StatsVersion.swift */; };
+		03101EFF29DD7D1300769CF3 /* CardReaderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03101EFE29DD7D1300769CF3 /* CardReaderType.swift */; };
 		031C1EA127AD3AFE00298699 /* WCPayCharge+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1E9927AD3AFE00298699 /* WCPayCharge+CoreDataClass.swift */; };
 		031C1EA227AD3AFE00298699 /* WCPayCharge+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1E9A27AD3AFE00298699 /* WCPayCharge+CoreDataProperties.swift */; };
 		031C1EA327AD3AFE00298699 /* WCPayCardPresentPaymentDetails+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1E9B27AD3AFE00298699 /* WCPayCardPresentPaymentDetails+CoreDataClass.swift */; };
@@ -273,6 +274,7 @@
 		02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionBannerVisibility.swift; sourceTree = "<group>"; };
 		02DA64182313C2AA00284168 /* StatsVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersion.swift; sourceTree = "<group>"; };
 		0306C18227BAB09D0070B617 /* Model 65.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 65.xcdatamodel"; sourceTree = "<group>"; };
+		03101EFE29DD7D1300769CF3 /* CardReaderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderType.swift; sourceTree = "<group>"; };
 		031C1E9927AD3AFE00298699 /* WCPayCharge+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCharge+CoreDataClass.swift"; sourceTree = "<group>"; };
 		031C1E9A27AD3AFE00298699 /* WCPayCharge+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCharge+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		031C1E9B27AD3AFE00298699 /* WCPayCardPresentPaymentDetails+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentPaymentDetails+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -995,6 +997,7 @@
 				031C1E9E27AD3AFE00298699 /* WCPayCardPaymentDetails+CoreDataProperties.swift */,
 				031C1E9F27AD3AFE00298699 /* WCPayCardPresentReceiptDetails+CoreDataClass.swift */,
 				031C1EA027AD3AFE00298699 /* WCPayCardPresentReceiptDetails+CoreDataProperties.swift */,
+				03101EFE29DD7D1300769CF3 /* CardReaderType.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1234,6 +1237,7 @@
 				688908AA28FD00320081A07E /* WooCommerceModelV74toV75.xcmappingmodel in Sources */,
 				D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */,
 				D88E233B25AE08C90023F3B1 /* OrderFeeLine+CoreDataClass.swift in Sources */,
+				03101EFF29DD7D1300769CF3 /* CardReaderType.swift in Sources */,
 				0371C38128781E2900277E2C /* FeatureAnnouncementCampaignSettings.swift in Sources */,
 				7471A514216CF0FE00219F7E /* SiteVisitStats+CoreDataClass.swift in Sources */,
 				D8FBFF5722D66A06006E3336 /* OrderStatsV4Totals+CoreDataClass.swift in Sources */,

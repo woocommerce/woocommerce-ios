@@ -449,8 +449,9 @@ extension MainTabBarController {
         }
     }
 
-    func forwardPaymentsDeeplink(subPath: String) {
-        hubMenuTabCoordinator?.handleUniversalLink(subPath: subPath)
+    func forwardHubMenuDeeplink(to destination: HubMenuCoordinator.DeepLinkDestination) {
+        Self.switchToHubMenuTab()
+        hubMenuTabCoordinator?.navigate(to: destination)
     }
 }
 

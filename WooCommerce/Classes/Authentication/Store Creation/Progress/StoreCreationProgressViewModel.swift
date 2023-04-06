@@ -36,19 +36,23 @@ final class StoreCreationProgressViewModel: ObservableObject {
     }
 
     private var animationTimer: Timer?
-    private let timeInterval: TimeInterval
+    private let progressViewAnimationTimerInterval: TimeInterval
     private let incrementProgressValueBy: Float
 
-    init(timeInterval: TimeInterval = 0.1,
-         incrementProgressValueBy: Float = 0.01) {
-        self.timeInterval = timeInterval
-        self.incrementProgressValueBy = incrementProgressValueBy
+    /// - Parameters:
+    ///   - incrementInterval: Interval at which progress will be incremented to next case
+    ///   - progressViewAnimationTimerInterval: Animation timer interval DI for unit test purposes.
+    init(incrementInterval: TimeInterval,
+         progressViewAnimationTimerInterval: TimeInterval = 0.1) {
+        self.progressViewAnimationTimerInterval = progressViewAnimationTimerInterval
+        // Increment the progress value until next progress increment
+        self.incrementProgressValueBy = Float(incrementInterval / progressViewAnimationTimerInterval)
     }
 
     // MARK: Public methods
     //
     func onAppear() {
-        animationTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: true) { [weak self] _ in
+        animationTimer = Timer.scheduledTimer(withTimeInterval: progressViewAnimationTimerInterval, repeats: true) { [weak self] _ in
             self?.animateProgressView()
         }
     }

@@ -917,6 +917,35 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(selectedProduct, products[0].productID)
     }
+
+    func test_productRows_when_we_have_popular_and_most_recently_sold_products_then_it_includes_them() {
+        let mostPopularProducts = [1,2,3,4,5,6].map { index in Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "popular product \(index)") }
+        let mostRecentlySoldProducts = [1,2,3,4,5,6].map { index in
+            Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "recently sold product \(index)")
+        }
+
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.simple.rawValue, purchasable: true)
+
+        insert(simpleProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        let expectation = expectation(description: "Receive top products")
+        waitFor { [weak self] promise in
+            self?.stores.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case .retrievePopularCachedProducts(_, let onCompletion):
+                    onCompletion(mostPopularProducts)
+                case .retrieveRecentlySoldCachedProducts(_, let onCompletion):
+                    onCompletion(mostRecentlySoldProducts)
+                    promise(())
+                default:
+                    break
+                }
+            }
+        }
+
+        XCTAssertEqual(viewModel.productRows.count, 5+5+1)
+    }
 }
 
 // MARK: - Utils

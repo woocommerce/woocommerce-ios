@@ -672,8 +672,13 @@ private extension StoreCreationCoordinator {
                     return nil
                 }
                 // Waits some seconds before syncing sites every time.
-                try await Task.sleep(nanoseconds: UInt64(self.jetpackCheckRetryInterval * 1_000_000_000))
-                return try await self.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
+                do {
+                    try await Task.sleep(nanoseconds: UInt64(self.jetpackCheckRetryInterval * 1_000_000_000))
+                    return try await self.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
+                } catch {
+                    self.storeCreationProgressHostingViewController?.viewModel.incrementProgress()
+                    throw error
+                }
             }
             // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.

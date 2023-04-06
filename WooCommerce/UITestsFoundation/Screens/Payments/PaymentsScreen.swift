@@ -19,10 +19,6 @@ public final class PaymentsScreen: ScreenObject {
             app: app
         )
     }
-    
-    static var isVisible: Bool {
-        (try? ProductsScreen().isLoaded) ?? false
-    }
 
     @discardableResult
     public func tapCardReaderManuals() throws -> CardReaderManualsScreen {

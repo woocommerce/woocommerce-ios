@@ -37,7 +37,15 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Selected filter for the product list
     ///
-    @Published var filters = FilterProductListViewModel.Filters()
+    var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+        didSet {
+            productsResultsController.updatePredicate(siteID: siteID,
+                                                      stockStatus: filters.stockStatus,
+                                                      productStatus: filters.productStatus,
+                                                      productType: filters.productType)
+            syncingCoordinator.resynchronize()
+        }
+    }
 
     /// Title of the filter button, should be updated with number of active filters.
     ///
@@ -516,14 +524,13 @@ private extension ProductSelectorViewModel {
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
 
-        searchTermPublisher.combineLatest($filters.removeDuplicates())
-            .sink { [weak self] searchTerm, filters in
-                guard let self = self else { return }
-                self.updateFilterButtonTitle(with: filters)
-                self.updatePredicate(searchTerm: searchTerm, filters: filters)
-                self.updateProductsResultsController()
-                self.syncingCoordinator.resynchronize()
-            }.store(in: &subscriptions)
+        searchTermPublisher.sink { [weak self] searchTerm in
+            guard let self = self else { return }
+            self.updateFilterButtonTitle(with: self.filters)
+            self.updatePredicate(searchTerm: searchTerm, filters: self.filters)
+            self.updateProductsResultsController()
+            self.syncingCoordinator.resynchronize()
+        }.store(in: &subscriptions)
     }
 
     func updateFilterButtonTitle(with filters: FilterProductListViewModel.Filters) {

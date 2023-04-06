@@ -23,7 +23,7 @@ struct StoreCreationProgressView: View {
     }
 
     var body: some View {
-        VStack {
+        ZStack {
             topRightBackgroundImage
 
             GeometryReader { geometry in
@@ -48,7 +48,6 @@ struct StoreCreationProgressView: View {
 
             bottomLeftBackgroundImage
         }
-        .edgesIgnoringSafeArea(.all)
         .onAppear() {
             viewModel.onAppear()
         }
@@ -57,11 +56,16 @@ struct StoreCreationProgressView: View {
 
 private extension StoreCreationProgressView {
     var topRightBackgroundImage: some View {
-        HStack {
-            Spacer()
+        VStack {
+            HStack {
+                Spacer()
 
-            Image(uiImage: .storeCreationProgressViewBackgroundGiftImage)
+                Image(uiImage: .storeCreationProgressViewBackgroundGiftImage)
+            }
+
+            Spacer()
         }
+        .edgesIgnoringSafeArea(.all)
     }
 
     var title: some View {
@@ -80,11 +84,16 @@ private extension StoreCreationProgressView {
     }
 
     var bottomLeftBackgroundImage: some View {
-        HStack {
-            Image(uiImage: .storeCreationProgressViewBackgroundWoman)
-
+        VStack {
             Spacer()
+
+            HStack {
+                Image(uiImage: .storeCreationProgressViewBackgroundWoman)
+
+                Spacer()
+            }
         }
+        .edgesIgnoringSafeArea(.all)
     }
 
     enum Layout {

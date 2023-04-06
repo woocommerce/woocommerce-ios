@@ -19,4 +19,11 @@ final class PaymentsTests: XCTestCase {
             .tapChipperManual()
             .verifyChipperManualLoadedOnWebView()
     }
+
+    func test_load_payments_universal_link() throws {
+        let paymentsLink = "https://woocommerce.com/mobile/payments"
+
+        ExternalAppScreen().openUniversalLinkFromRemindersApp(link: paymentsLink)
+        try PaymentsScreen().verifyPaymentsScreenLoaded()
+    }
 }

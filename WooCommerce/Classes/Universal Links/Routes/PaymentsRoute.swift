@@ -36,6 +36,16 @@ private extension HubMenuCoordinator.DeepLinkDestination {
             .removingPrefix(Constants.paymentsRoot)
             .removingPrefix("/")
 
+        /// Before Tap to Pay Milestone 2, we only support deeplinks directly to the Payments menu root
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2) else {
+            if destinationSubPath == "" {
+                self = .paymentsMenu
+                return
+            } else {
+                return nil
+            }
+        }
+
         switch destinationSubPath {
         case "":
             self = .paymentsMenu

@@ -84,7 +84,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productBundles:
             return true
         case .freeTrial:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:

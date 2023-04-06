@@ -50,6 +50,8 @@ final class StoreCreationCoordinator: Coordinator {
         isFreeTrialCreation ? 10 : 5
     }
 
+    private weak var storeCreationProgressHostingViewController: StoreCreationProgressHostingViewController?
+
     init(source: Source,
          navigationController: UINavigationController,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -630,9 +632,12 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
-        let inProgressView = InProgressViewController(viewProperties: viewProperties)
+        let approxSecondsToWaitForNetworkRequest = 5.0
+        let viewModel = StoreCreationProgressViewModel(incrementInterval: jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
+        let storeCreationProgressView = StoreCreationProgressHostingViewController(viewModel: viewModel)
         navigationController.isNavigationBarHidden = true
-        navigationController.pushViewController(inProgressView, animated: true)
+        self.storeCreationProgressHostingViewController = storeCreationProgressView
+        navigationController.pushViewController(storeCreationProgressView, animated: true)
     }
 
     @MainActor

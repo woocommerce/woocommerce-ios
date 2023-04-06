@@ -695,6 +695,8 @@ private extension StoreCreationCoordinator {
                     return
                 }
 
+                self.storeCreationProgressHostingViewController?.viewModel.markAsComplete()
+
                 /// Free trial stores should land directly on the dashboard and not show any success view.
                 ///
                 if self.isFreeTrialCreation {

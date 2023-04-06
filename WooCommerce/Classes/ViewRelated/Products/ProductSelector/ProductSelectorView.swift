@@ -189,7 +189,7 @@ struct ProductSelectorView: View {
 
 extension ProductSelectorView {
     struct Configuration {
-        var showsFilters: Bool = false
+        var showsFilters: Bool = true
         var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true

@@ -1,3 +1,13 @@
+struct ClipDropMediaMapper: Mapper {
+    /// (Attempts) to convert data into a UIImage.
+    func map(response: Data) throws -> UIImage {
+        guard let image = UIImage(data: response) else {
+            throw NSError(domain: "", code: 1)
+        }
+        return image
+    }
+}
+
 /// Mapper: WordPressMedia
 ///
 struct WordPressMediaMapper: Mapper {

@@ -146,6 +146,8 @@
 		023078FE25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023078FD25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift */; };
 		02307924258731B2008EADEE /* PrintShippingLabelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02307923258731B2008EADEE /* PrintShippingLabelViewModel.swift */; };
 		02312797277D4F650060E180 /* StoreStatsPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */; };
+		0231872529DD5BB8003C3224 /* ProductImageBackgroundFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231872429DD5BB8003C3224 /* ProductImageBackgroundFormView.swift */; };
+		0231872729DD5BEF003C3224 /* ProductImageBackgroundFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0231872629DD5BEF003C3224 /* ProductImageBackgroundFormViewModel.swift */; };
 		023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023453F12579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift */; };
 		0234680A282CEA5F00CFC503 /* ReceiptViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02346809282CEA5F00CFC503 /* ReceiptViewModelTests.swift */; };
 		0235354E2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */; };
@@ -2352,6 +2354,8 @@
 		023078FD25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintShippingLabelViewModelTests.swift; sourceTree = "<group>"; };
 		02307923258731B2008EADEE /* PrintShippingLabelViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrintShippingLabelViewModel.swift; sourceTree = "<group>"; };
 		02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsPeriodViewModel.swift; sourceTree = "<group>"; };
+		0231872429DD5BB8003C3224 /* ProductImageBackgroundFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageBackgroundFormView.swift; sourceTree = "<group>"; };
+		0231872629DD5BEF003C3224 /* ProductImageBackgroundFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageBackgroundFormViewModel.swift; sourceTree = "<group>"; };
 		023453F12579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingInstructionsViewController.swift; sourceTree = "<group>"; };
 		02346809282CEA5F00CFC503 /* ReceiptViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewModelTests.swift; sourceTree = "<group>"; };
 		0235354D2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSettingsViewModelTests.swift; sourceTree = "<group>"; };
@@ -5254,6 +5258,8 @@
 				02521E10243DC3C400DC7810 /* CancellableMedia.swift */,
 				02490D19284DE664002096EF /* ProductImagesSaver.swift */,
 				EECB7EE52864647F0028C888 /* ProductImagesProductIDUpdater.swift */,
+				0231872429DD5BB8003C3224 /* ProductImageBackgroundFormView.swift */,
+				0231872629DD5BEF003C3224 /* ProductImageBackgroundFormViewModel.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -11082,6 +11088,7 @@
 				02645D7E27BA027B0065DC68 /* InboxViewModel.swift in Sources */,
 				B58B4AB32108F01700076FDD /* DefaultNoticePresenter.swift in Sources */,
 				4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */,
+				0231872729DD5BEF003C3224 /* ProductImageBackgroundFormViewModel.swift in Sources */,
 				57448D28242E775000A56A74 /* EmptyStateViewController.swift in Sources */,
 				CE21B3D720FE669A00A259D5 /* BasicTableViewCell.swift in Sources */,
 				451A04EA2386D28300E368C9 /* ProductImagesHeaderViewModel.swift in Sources */,
@@ -11710,6 +11717,7 @@
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
 				CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */,
 				CC04918D292BB74500F719D8 /* StatsDataTextFormatter.swift in Sources */,
+				0231872529DD5BB8003C3224 /* ProductImageBackgroundFormView.swift in Sources */,
 				2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */,
 				DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */,
 				B6C78B90293BAF37008934A1 /* AnalyticsHubLastYearRangeData.swift in Sources */,

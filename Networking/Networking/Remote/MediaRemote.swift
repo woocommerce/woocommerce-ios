@@ -1,4 +1,6 @@
+import Alamofire
 import Foundation
+public typealias Result = Swift.Result
 
 /// Protocol for `MediaRemote` mainly used for mocking.
 public protocol MediaRemoteProtocol {
@@ -28,6 +30,8 @@ public protocol MediaRemoteProtocol {
                                         productID: Int64,
                                         mediaID: Int64,
                                         completion: @escaping (Result<WordPressMedia, Error>) -> Void)
+
+    func replaceBackground(image: Data, prompt: String) async throws -> UIImage
 }
 
 /// Media: Remote Endpoints
@@ -234,6 +238,50 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
+        }
+    }
+
+    public func replaceBackground(image: Data, prompt: String) async throws -> UIImage {
+        let url = "https://apis.clipdrop.co/replace-background/v1"
+        let headers = [
+            "x-api-key": ""
+        ]
+        let promptData = prompt.data(using: .utf8)!
+        return try await withCheckedThrowingContinuation { continuation in
+            let request = ExternalRequest(method: .post, url: url, headers: headers)
+            let mapper = ClipDropMediaMapper()
+
+            // TODO-JC: use existing network instead of AF directly
+            Alamofire.upload(multipartFormData: { multipartFormData in
+                multipartFormData.append(
+                    image,
+                    withName: "image_file",
+                    fileName: "object.jpg",
+                    mimeType: "image/jpeg"
+                )
+                multipartFormData.append(promptData, withName: "prompt")
+            }, to: url, headers: headers) { encodingResult in
+                switch encodingResult {
+                case .success(let upload, _, _):
+                    upload.responseData { response in
+                        switch response.result {
+                        case .success:
+                            if let dataSafe = response.data, let imageReceived = UIImage.init(data: dataSafe) {
+                                continuation.resume(returning: imageReceived)
+                            } else {
+                                continuation.resume(throwing: NSError(domain: "111", code: 111))
+                            }
+                        case .failure(let error):
+                            continuation.resume(throwing: error)
+                        }
+                    }
+                    upload.uploadProgress { progress in
+                        // Progress callback if needed.
+                    }
+                case .failure(let encodingError):
+                    continuation.resume(throwing: encodingError)
+                }
+            }
         }
     }
 }

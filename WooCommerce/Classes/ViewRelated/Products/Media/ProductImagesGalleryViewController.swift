@@ -26,6 +26,7 @@ final class ProductImagesGalleryViewController: UIViewController {
         return collectionView.indexPathsForVisibleItems.first?.item
     }
 
+    private var productBackgroundFormController: UIViewController?
 
     init(images: [ProductImage],
          selectedIndex: Int? = nil,
@@ -63,6 +64,7 @@ final class ProductImagesGalleryViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.navigationBar.barTintColor = previousBarTintColor
+        dismissProductGeneratorBottomSheetIfNeeded()
         super.viewWillDisappear(animated)
     }
 
@@ -87,10 +89,16 @@ private extension ProductImagesGalleryViewController {
         guard isDeletionEnabled else {
             return
         }
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .trashImage,
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(deleteProductImage))
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(image: .trashImage,
+                            style: .plain,
+                            target: self,
+                            action: #selector(deleteProductImage)),
+            UIBarButtonItem(title: "🪄",
+                            style: .plain,
+                            target: self,
+                            action: #selector(replaceImageBackground))
+            ]
     }
 
     func configureCollectionView() {
@@ -152,6 +160,41 @@ private extension ProductImagesGalleryViewController {
         ServiceLocator.analytics.track(.productImageSettingsDeleteImageButtonTapped)
 
         present(alert, animated: true, completion: nil)
+    }
+
+    @objc func replaceImageBackground() {
+        guard let index = currentImageIndex, let image = productImages[safe: index] else {
+            return
+        }
+
+        showProductBackgroundFormBottomSheet(productImage: image, prompt: "")
+    }
+
+    func showProductBackgroundFormBottomSheet(productImage: ProductImage, prompt: String) {
+        let controller = ProductImageBackgroundFormHostingController(viewModel: .init(prompt: prompt,
+                                                                                      productImage: productImage,
+                                                                                      productUIImageLoader: productUIImageLoader))
+        productBackgroundFormController = controller
+        // Disables interactive dismissal of the bottom sheet.
+        controller.isModalInPresentation = true
+        configureBottomSheetPresentation(for: controller)
+        view.endEditing(true)
+        present(controller, animated: true)
+    }
+
+    func configureBottomSheetPresentation(for viewController: UIViewController) {
+        if let sheet = viewController.sheetPresentationController {
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .large
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        }
+    }
+
+    func dismissProductGeneratorBottomSheetIfNeeded() {
+        productBackgroundFormController?.dismiss(animated: false) { [weak self] in
+            self?.productBackgroundFormController = nil
+        }
     }
 }
 

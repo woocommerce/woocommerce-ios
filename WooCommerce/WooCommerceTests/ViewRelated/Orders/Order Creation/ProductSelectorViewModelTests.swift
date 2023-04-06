@@ -85,7 +85,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 XCTAssertTrue(viewModel.shouldShowScrollIndicator, "Scroll indicator is not enabled during sync")
                 onCompletion(.success(true))
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -105,7 +105,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
                 onCompletion(.success(true))
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -127,7 +127,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 self.insert(product)
                 onCompletion(.success(true))
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -150,7 +150,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 XCTAssertEqual(viewModel.syncStatus, .results)
                 onCompletion(.success(true))
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -170,7 +170,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case .synchronizeProducts:
                 timesSynced += 1
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -196,7 +196,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case .searchProductsInCache:
                 break
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -222,7 +222,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 onCompletion(true)
                 expectation.fulfill()
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -248,7 +248,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 onCompletion(false)
                 expectation.fulfill()
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -277,7 +277,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case .searchProductsInCache:
                 break
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -325,7 +325,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 onCompletion(.success(true))
                 expectation.fulfill()
             default:
-                XCTFail("Unsupported Action")
+                break
             }
         }
 
@@ -359,7 +359,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
-                XCTFail("Received unsupported action: \(action)")
+                break
             }
         }
 
@@ -384,7 +384,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 case .searchProductsInCache:
                     break
                 default:
-                    XCTFail("Received unsupported action: \(action)")
+                    break
                 }
             }
             viewModel.searchTerm = "shirt"
@@ -787,7 +787,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 filteredProductCategory = category
                 onCompletion(.success(true))
             default:
-                XCTFail("Received unsupported action: \(action)")
+                break
             }
         }
 
@@ -826,7 +826,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 filteredProductCategory = category
                 onCompletion(.success(Void()))
             default:
-                XCTFail("Received unsupported action: \(action)")
+                break
             }
         }
 

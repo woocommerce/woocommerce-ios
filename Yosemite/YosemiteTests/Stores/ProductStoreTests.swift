@@ -2291,8 +2291,8 @@ private extension ProductStoreTests {
         let orderItems = productIDs.map { OrderItem.fake().copy(productID: $0) }
         let orders = (0 ..< 3).map { index in Order.fake().copy(siteID: sampleSiteID, status: orderStatus, datePaid: Date().addingDays(-index)) }
 
-        storageManager.insertSampleOrder(readOnlyOrder: orders[0]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[0])]
-        storageManager.insertSampleOrder(readOnlyOrder: orders[1]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[1])]
-        storageManager.insertSampleOrder(readOnlyOrder: orders[2]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[2])]
+        for (index, _) in orders.enumerated() {
+          storageManager.insertSampleOrder(readOnlyOrder: orders[index]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index])]
+        }
     }
 }

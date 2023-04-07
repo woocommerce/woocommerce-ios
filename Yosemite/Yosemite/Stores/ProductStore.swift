@@ -340,7 +340,7 @@ private extension ProductStore {
             .uniqued()
 
         // Retrieve products from product ids and finish
-        let products = products(from: sortedByOccurenceProductIDs)
+        let products = retrieveProducts(from: sortedByOccurenceProductIDs)
         onCompletion(products)
     }
 
@@ -356,7 +356,7 @@ private extension ProductStore {
             .map { $0.productID }
             .uniqued()
 
-        let products = products(from: productIDs)
+        let products = retrieveProducts(from: productIDs)
         onCompletion(products)
     }
 
@@ -367,7 +367,7 @@ private extension ProductStore {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [completedOrderPredicate, sitePredicate])
     }
 
-    func products(from productIDs: [Int64]) -> [Product] {
+    func retrieveProducts(from productIDs: [Int64]) -> [Product] {
         productIDs
             .compactMap {
                 let predicate = NSPredicate(format: "productID == %lld", $0)

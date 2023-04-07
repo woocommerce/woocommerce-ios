@@ -45,6 +45,8 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 
     private let viewModel: ApplicationPasswordAuthorizationViewModel
     private var subscriptions: Set<AnyCancellable> = []
+    private var webViewInitialLoad = true
+    private var authorizationURL: String?
 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
          analytics: Analytics = ServiceLocator.analytics,
@@ -98,7 +100,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
 
         webView.publisher(for: \.url)
             .sink { [weak self] url in
-                self?.handleAuthorizationResponse(with: url)
+                self?.handleWebViewURL(url)
             }
             .store(in: &subscriptions)
     }
@@ -159,12 +161,23 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             return
         }
         let request = URLRequest(url: urlWithQueries)
+        self.authorizationURL = request.url?.absoluteString
         webView.load(request)
-        analytics.track(.applicationPasswordAuthorizationWebViewShown)
     }
 
-    func handleAuthorizationResponse(with url: URL?) {
-        guard let url, url.absoluteString.hasPrefix(Constants.successURL) else {
+    func handleWebViewURL(_ url: URL?) {
+        guard let url else {
+            return
+        }
+        if url.absoluteString == authorizationURL {
+            analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: webViewInitialLoad ? .initial : .authorization))
+            webViewInitialLoad = false
+        } else if url.absoluteString.contains("redirect_to") {
+            analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: .login))
+        }
+
+        /// Callback handling
+        guard url.absoluteString.hasPrefix(Constants.successURL) else {
             return
         }
         let components = URLComponents(url: url, resolvingAgainstBaseURL: true)

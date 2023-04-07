@@ -172,7 +172,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         if url.absoluteString == authorizationURL {
             analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: webViewInitialLoad ? .initial : .authorization))
             webViewInitialLoad = false
-        } else if url.absoluteString.contains("redirect_to") {
+        } else if url.absoluteString.contains(Constants.Query.redirect) {
             analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: .login))
         }
 
@@ -225,6 +225,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             static let appName = "app_name"
             static let appID = "app_id"
             static let successURL = "success_url"
+            static let redirect = "redirect_to"
         }
     }
     enum Localization {

@@ -872,11 +872,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
             numberOfActiveFilters: 1
         )
         viewModel.filters = updatedFilters
-
-        // Then
-        XCTAssertEqual(viewModel.productRows.count, 0) // no product matches the filter and search term
-
-        // When
         viewModel.searchTerm = ""
         waitUntil {
             viewModel.productRows.isNotEmpty

@@ -35,7 +35,7 @@ final class ProductSelectorViewModel: ObservableObject {
         FilterProductListViewModel(filters: filters, siteID: siteID)
     }
 
-    /// Selected filter for the product list
+    /// Selected filters for the product list
     ///
     var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
@@ -43,7 +43,11 @@ final class ProductSelectorViewModel: ObservableObject {
                                                       stockStatus: filters.stockStatus,
                                                       productStatus: filters.productStatus,
                                                       productType: filters.productType)
-            syncingCoordinator.resynchronize()
+            updateFilterButtonTitle(with: filters)
+            // Running the sync on the main thread is necessary as the Dispatcher should only be called from it
+            DispatchQueue.main.async { [weak self] in
+                self?.syncingCoordinator.resynchronize()
+            }
         }
     }
 
@@ -526,7 +530,6 @@ private extension ProductSelectorViewModel {
 
         searchTermPublisher.sink { [weak self] searchTerm in
             guard let self = self else { return }
-            self.updateFilterButtonTitle(with: self.filters)
             self.updatePredicate(searchTerm: searchTerm, filters: self.filters)
             self.updateProductsResultsController()
             self.syncingCoordinator.resynchronize()

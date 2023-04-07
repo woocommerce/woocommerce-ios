@@ -167,7 +167,8 @@ private extension InPersonPaymentsMenuViewController {
         // That way we avoid triggering the onboarding check again that comes with the presenter.
         let onboardingViewModel = InPersonPaymentsViewModel(useCase: cardPresentPaymentsOnboardingUseCase)
 
-        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel)
+        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel,
+                                                                      onWillDisappear: nil)
         show(onboardingViewController, sender: self)
     }
 
@@ -476,6 +477,7 @@ extension InPersonPaymentsMenuViewController {
 
         let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
                                                                     configuration: viewModel.cardPresentPaymentsConfiguration,
+                                                                    onboardingUseCase: cardPresentPaymentsOnboardingUseCase,
                                                                     activePaymentGateway: activePaymentGateway)
         let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
         let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
@@ -493,6 +495,7 @@ extension InPersonPaymentsMenuViewController {
 
         let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
                                                                     configuration: viewModel.cardPresentPaymentsConfiguration,
+                                                                    onboardingUseCase: cardPresentPaymentsOnboardingUseCase,
                                                                     activePaymentGateway: activePaymentGateway)
         let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
         let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)

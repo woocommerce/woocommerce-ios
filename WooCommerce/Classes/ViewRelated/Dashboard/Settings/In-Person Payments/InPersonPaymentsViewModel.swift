@@ -2,7 +2,7 @@ import Combine
 import Yosemite
 import Experiments
 
-final class InPersonPaymentsViewModel: ObservableObject {
+final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
@@ -13,9 +13,11 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()) {
+         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase(),
+         didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)? = nil) {
         self.stores = stores
         self.useCase = useCase
+        self.didChangeShouldShow = didChangeShouldShow
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
 
@@ -26,6 +28,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
             .removeDuplicates()
             .handleEvents(receiveOutput: { [weak self] result in
                 self?.updateLearnMoreURL(state: result)
+                self?.reevaluateShouldShow(onboardingState: result)
             })
             .handleEvents(receiveOutput: trackState(_:))
             .assign(to: &$state)
@@ -94,6 +97,35 @@ final class InPersonPaymentsViewModel: ObservableObject {
             }
         }()
     }
+
+    var shouldShow: CardReaderSettingsTriState = .isUnknown
+
+    /// Updates whether the view this viewModel is associated with should be shown or not
+    /// Notifies the viewModel owner if a change occurs via didChangeShouldShow
+    ///
+    private func reevaluateShouldShow(onboardingState: CardPresentPaymentOnboardingState) {
+        let newShouldShow: CardReaderSettingsTriState = shouldShow(for: onboardingState)
+
+        let didChange = newShouldShow != shouldShow
+
+        shouldShow = newShouldShow
+
+        if didChange {
+            didChangeShouldShow?(shouldShow)
+        }
+    }
+
+    private func shouldShow(for onboardingState: CardPresentPaymentOnboardingState) -> CardReaderSettingsTriState {
+        switch onboardingState {
+        case .completed(_):
+            return .isFalse
+        default:
+            return.isTrue
+        }
+    }
+
+    var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
+    var didUpdate: (() -> Void)? = nil
 }
 
 private extension InPersonPaymentsViewModel {

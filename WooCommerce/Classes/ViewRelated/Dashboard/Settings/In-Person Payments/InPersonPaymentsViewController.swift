@@ -1,11 +1,12 @@
 import SwiftUI
 import Yosemite
 
-final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
+final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView>, PaymentSettingsFlowViewModelPresenter {
+
     private let onWillDisappear: (() -> ())?
 
     init(viewModel: InPersonPaymentsViewModel,
-         onWillDisappear: (() -> ())? = nil) {
+         onWillDisappear: (() -> ())?) {
         self.onWillDisappear = onWillDisappear
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
         rootView.showSupport = { [weak self] in
@@ -17,6 +18,13 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
             guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
+    }
+
+    convenience init?(viewModel: PaymentSettingsFlowPresentedViewModel) {
+        guard let viewModel = viewModel as? InPersonPaymentsViewModel else {
+            return nil
+        }
+        self.init(viewModel: viewModel, onWillDisappear: nil)
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

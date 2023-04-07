@@ -22,6 +22,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
+         onboardingUseCase: CardPresentPaymentsOnboardingUseCase,
          activePaymentGateway: CardPresentPaymentsPlugin) {
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
@@ -34,6 +35,15 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         /// priority, so viewmodels related to starting set up should come before viewmodels
         /// that expect set up to be completed, etc.
         ///
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2) {
+            viewModelsAndViews.append(PaymentSettingsFlowViewModelAndView(
+                viewModel: InPersonPaymentsViewModel(useCase: onboardingUseCase,
+                                                     didChangeShouldShow: { [weak self] state in
+                                                         self?.onDidChangeShouldShow(state)
+                                                     }),
+                viewPresenter: InPersonPaymentsViewController.self))
+        }
+
         viewModelsAndViews.append(contentsOf: [
             PaymentSettingsFlowViewModelAndView(
                 viewModel: SetUpTapToPayInformationViewModel(
@@ -42,7 +52,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
-                    activePaymentGateway: activePaymentGateway,
+                    onboardingStatePublisher: onboardingUseCase.statePublisher,
                     connectionAnalyticsTracker: cardReaderConnectionAnalyticsTracker
                 ),
                 viewPresenter: SetUpTapToPayInformationViewController.self

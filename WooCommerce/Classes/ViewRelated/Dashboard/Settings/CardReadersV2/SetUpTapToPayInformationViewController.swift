@@ -202,14 +202,19 @@ private enum Localization {
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Cancel button")
 }
 
+
+import Combine
+import Yosemite
 struct SetUpTapToPayInformationView_Previews: PreviewProvider {
     static var previews: some View {
         let config = CardPresentConfigurationLoader().configuration
+        let publisher = CardPresentPaymentsOnboardingUseCase().statePublisher
+
         let viewModel = SetUpTapToPayInformationViewModel(
             siteID: 0,
             configuration: config,
             didChangeShouldShow: nil,
-            activePaymentGateway: .wcPay,
+            onboardingStatePublisher: publisher,
             connectionAnalyticsTracker: .init(configuration: config))
         SetUpTapToPayInformationView(viewModel: viewModel)
     }

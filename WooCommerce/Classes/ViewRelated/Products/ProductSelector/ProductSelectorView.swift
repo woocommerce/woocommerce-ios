@@ -68,12 +68,17 @@ struct ProductSelectorView: View {
                 VStack(spacing: 0) {
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
-                        ForEach(viewModel.productRows) { rowViewModel in
-                            createProductRow(rowViewModel: rowViewModel)
-                                .padding(Constants.defaultPadding)
-                                .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
-                            Divider().frame(height: Constants.dividerHeight)
-                                .padding(.leading, Constants.defaultPadding)
+                        ForEach(viewModel.productSections) {
+                            section in
+                            Section(header: Text(section.title)) {
+                                ForEach(section.productRows) { rowViewModel in
+                                    createProductRow(rowViewModel: rowViewModel)
+                                        .padding(Constants.defaultPadding)
+                                        .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
+                                    Divider().frame(height: Constants.dividerHeight)
+                                        .padding(.leading, Constants.defaultPadding)
+                                }
+                            }
                         }
                     }
                     if configuration.multipleSelectionsEnabled {

@@ -4,6 +4,18 @@ import Combine
 import Foundation
 import WooFoundation
 
+struct ProductSectionViewModel: Identifiable {
+    let id = UUID()
+
+    let title: String
+    let productRows: [ProductRowViewModel]
+}
+
+private struct ProductSectionRange {
+    let title: String
+    let indexesRange: ClosedRange<Int>
+}
+
 /// View model for `ProductSelectorView`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
@@ -63,6 +75,12 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Most recently sold products
     ///
     var mostRecentlySoldProducts: [Product] = []
+
+    private var sectionRanges: [ProductSectionRange] = []
+
+    var productSections: [ProductSectionViewModel] {
+        sectionRanges.map { ProductSectionViewModel(title: $0.title, productRows: Array(productRows[$0.indexesRange]))}
+    }
 
     /// Determines if multiple item selection is supported.
     ///
@@ -496,7 +514,25 @@ private extension ProductSelectorViewModel {
 
     func addTopProductsIfRequired(to products: [Product]) -> [Product] {
         guard searchTerm.isEmpty else {
+            sectionRanges = [ProductSectionRange(title: "", indexesRange: 0...products.count-1)]
             return products
+        }
+
+        let topProducts = (popularProducts + mostRecentlySoldProducts).uniqued()
+        let allProducts = (popularProducts + mostRecentlySoldProducts + products).uniqued()
+
+        if topProducts.count > 0 {
+            sectionRanges = [ProductSectionRange(title: "Most Sold", indexesRange: 0...popularProducts.count-1)]
+
+            let mostRecentlySoldProductsDisplayedCount = topProducts.count - popularProducts.count
+
+            if topProducts.count > popularProducts.count {
+                sectionRanges.append(ProductSectionRange(title: "Recent", indexesRange: popularProducts.count...topProducts.count-1))
+            }
+
+            sectionRanges.append(ProductSectionRange(title: "Products", indexesRange: topProducts.count...allProducts.count-1))
+        } else {
+            sectionRanges.append(ProductSectionRange(title: "", indexesRange: 0...allProducts.count-1))
         }
 
         return (popularProducts + mostRecentlySoldProducts + products).uniqued()

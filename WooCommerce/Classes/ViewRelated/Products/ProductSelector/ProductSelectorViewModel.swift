@@ -499,7 +499,6 @@ private extension ProductSelectorViewModel {
             return products
         }
 
-        debugPrint("popular \(popularProducts.map { $0.name }) recent \(mostRecentlySoldProducts.map { $0.name })")
         return (popularProducts + mostRecentlySoldProducts + products).uniqued()
     }
 

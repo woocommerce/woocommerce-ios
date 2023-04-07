@@ -17,6 +17,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isDashboardStoreOnboardingEnabled: Bool
     private let isFreeTrial: Bool
     private let jetpackSetupWithApplicationPassword: Bool
+    private let isTapToPayOnIPhoneMilestone2On: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -32,7 +33,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isAddCouponToOrderEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
          isFreeTrial: Bool = false,
-         jetpackSetupWithApplicationPassword: Bool = false) {
+         jetpackSetupWithApplicationPassword: Bool = false,
+         isTapToPayOnIPhoneMilestone2On: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -48,6 +50,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.isFreeTrial = isFreeTrial
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
+        self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -82,6 +85,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isFreeTrial
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
+        case .tapToPayOnIPhoneMilestone2:
+            return isTapToPayOnIPhoneMilestone2On
         default:
             return false
         }

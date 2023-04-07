@@ -335,7 +335,15 @@ private extension ProductStore {
         let completedOrdersItems = completedOrders.flatMap { $0.items }
         let productIDCountDictionary = completedOrdersItems.reduce(into: [:]) { counts, orderItem in counts[orderItem.productID, default: 0] += 1 }
         let sortedByOccurenceProductIDs = productIDCountDictionary
-            .sorted { $0.value > $1.value }
+            .sorted {
+                // if the count is the same let's sort it by product id just to avoid randomly sorted sequences
+                if $0.value == $1.value {
+                    return $0.key > $1.key
+                }
+
+                return $0.value > $1.value
+
+            }
             .map { $0.key }
             .uniqued()
 

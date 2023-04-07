@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-28 09:54:20+0000 */
+/* Translation-Revision-Date: 2023-04-04 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -122,8 +122,8 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d 个产品";
 
-/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
-"%1$d Products selected" = "已选择 %1$d 个产品";
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
+"%1$d Products Selected" = "已选择 %1$d 个产品";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d 个工作日";
@@ -255,11 +255,9 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
 "1" = "1";
 
-/* Navigation bar title for selecting multiple products when one product has been selected. */
+/* Navigation bar title for selecting multiple products when one product has been selected.
+   Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "已选择 1 个产品";
-
-/* Title of the action button at the bottom of the Select Products screen when one product is selected */
-"1 Product selected" = "已选择 1 个产品";
 
 /* Message of the free trial banner when there is 1 day left */
 "1 day left in your trial." = "免费试用还剩 1 天。";
@@ -2667,9 +2665,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "输入 URL";
 
-/* Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "输入您的商店地址";
-
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "输入优惠券";
 
@@ -3090,6 +3085,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "从购买到履行 – 通过此应用程序管理整个订单流程。";
+
+/* Subtitle displayed in the simplified prologue screen */
+"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "从您的第一笔交易到赚得数百万收入，Woo 都与您同在。 看看为什么商家信任我们为 340 万家在线商店提供帮助。";
 
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "燃油分配器";
@@ -3983,6 +3981,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Loans Or Lending" = "贷款或借贷";
 
 /* Button title.  Tapping takes the user to the login form.
+   Button title. Takes the user to the login by store address flow.
    Log In button label.
    Title for the application password authorization web view
    View title during the log in process. */
@@ -6202,6 +6201,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "选择您的承运商和收费标准";
 
+/* Caption displayed in the simplified prologue screen */
+"Sell anything, anywhere." = "随时随地销售各类货品。";
+
 /* Text for the send button in the product review reply screen */
 "Send" = "发送";
 
@@ -6831,6 +6833,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Switzerland" = "瑞士";
+
+/* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
+"Syncing data" = "正在同步数据";
 
 /* Country option for a site address. */
 "Syria" = "叙利亚";
@@ -7531,6 +7536,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "为帮助我们提升应用程序的性能并修复偶发性错误，请启用自动发送崩溃报告功能。";
 
+/* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
+"To launch your store, you need to upgrade to our plan. %1$@" = "要发布您的商店，您需要升级到我们的套餐。%1$@";
+
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "要继续使用此 Apple ID，请先使用您的 WordPress.com 密码登录。 此要求只会出现一次。";
 
@@ -7824,6 +7832,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "无法获取国家\/地区信息，请稍后重试。";
 
+/* Error message when failing to fetch the WPCom account after logging in with magic link. */
+"Unable to fetch the logged in WordPress.com account. Please try again." = "无法获取已登录的 WordPress.com 账户。 请重试。";
+
 /* Error title for when we can't fetch existing variations. */
 "Unable to fetch variations" = "无法获取变体";
 
@@ -7907,6 +7918,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "无法通过该 URL 读取 WordPress 站点。 轻点“需要更多帮助？”可查看常见问题解答。";
+
+/* Error message displayed when failing to fetch the current site info. */
+"Unable to refresh current site info" = "无法刷新当前站点信息";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "无法刷新列表";
@@ -8097,6 +8111,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "导入您的产品......";
+
+/* Title on the button to upgrade a free trial plan. */
+"Upgrade" = "升级";
 
 /* Title for the button to upgrade from a free trial
    Title for the WebView when upgrading a free trial plan
@@ -8573,9 +8590,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
-/* Caption displayed in the simplified prologue screen */
-"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce 是一个依托 WordPress 打造的可定制开源电子商务平台。";
-
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
 
@@ -8708,7 +8722,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your free store address" = "您的免费商店地址";
 
 /* Info details for an expired free trial */
-"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "您的免费试用已结束，并且您对所有功能的访问将受到限制。 立即订阅电子商务版";
+"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "您的免费试用已结束，并且您对所有功能的访问将受到限制。 立即订阅 Woo Express Performance 套餐。";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "您的 iPhone 可以作为读卡器使用，您也可以通过蓝牙连接到外部读卡器。";

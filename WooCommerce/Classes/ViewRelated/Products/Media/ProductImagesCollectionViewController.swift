@@ -12,17 +12,20 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
+    private let productImageActionHandler: ProductImageActionHandler
     private let onDeletion: ProductImagesGalleryViewController.Deletion
     private let onReordering: ReorderingHandler
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
+         productImageActionHandler: ProductImageActionHandler,
          onDeletion: @escaping ProductImagesGalleryViewController.Deletion,
          onReordering: @escaping ReorderingHandler) {
         self.productImageStatuses = imageStatuses
         self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
+        self.productImageActionHandler = productImageActionHandler
         self.onDeletion = onDeletion
         self.onReordering = onReordering
         let columnLayout = ColumnFlowLayout(
@@ -80,6 +83,8 @@ private extension ProductImagesCollectionViewController {
             configureRemoteImageCell(cell, productImage: image)
         case .uploading(let asset):
             configureUploadingImageCell(cell, asset: asset)
+        case .uploadingImage(let image):
+            configureUploadingImageCell(cell, image: image)
         }
     }
 
@@ -111,6 +116,16 @@ private extension ProductImagesCollectionViewController {
             cell?.imageView.image = image
         }
     }
+
+    func configureUploadingImageCell(_ cell: UICollectionViewCell, image: UIImage) {
+        guard let cell = cell as? InProgressProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = image
+        cell.imageView.contentMode = .scaleAspectFit
+    }
 }
 
 // MARK: UICollectionViewDelegate
@@ -134,7 +149,8 @@ extension ProductImagesCollectionViewController {
         let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImageStatuses.images,
                                                                                     selectedIndex: selectedImageIndex,
                                                                                     isDeletionEnabled: isDeletionEnabled,
-                                                                                    productUIImageLoader: productUIImageLoader) { [weak self] (productImage) in
+                                                                                    productUIImageLoader: productUIImageLoader,
+                                                                                    productImageActionHandler: productImageActionHandler) { [weak self] (productImage) in
                                                                                         self?.onDeletion(productImage)
         }
         navigationController?.show(productImagesGalleryViewController, sender: self)

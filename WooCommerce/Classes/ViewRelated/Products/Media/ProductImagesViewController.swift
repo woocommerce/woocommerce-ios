@@ -46,6 +46,7 @@ final class ProductImagesViewController: UIViewController {
             imageStatuses: productImageStatuses,
             isDeletionEnabled: isDeletionEnabled,
             productUIImageLoader: productUIImageLoader,
+            productImageActionHandler: productImageActionHandler,
             onDeletion: { [weak self] productImage in
                 self?.onDeletion(productImage: productImage)
             },

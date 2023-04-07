@@ -172,6 +172,55 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         }
     }
 
+    func uploadImageToSiteMediaLibrary(image: UIImage) {
+        // TODO-jc: explore queue.async alternative with async/await
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let imageStatuses = [.uploadingImage(image: image)] + self.allStatuses.productImageStatuses
+            self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
+
+            Task {
+                let result = await self.uploadImageToSiteMediaLibrary(image: image)
+                self.queue.async { [weak self] in
+                    guard let self else {
+                        return
+                    }
+
+                    guard let index = self.index(of: image) else {
+                        return
+                    }
+
+                    switch result {
+                    case .success(let media):
+                        let productImage = ProductImage(imageID: media.mediaID,
+                                                        dateCreated: media.date,
+                                                        dateModified: media.date,
+                                                        src: media.src,
+                                                        name: media.name,
+                                                        alt: media.alt)
+                        self.updateProductImageStatus(at: index, productImage: productImage)
+                    case .failure(let error):
+                        ServiceLocator.analytics.track(.productImageUploadFailed, withError: error)
+                        self.updateProductImageStatus(at: index, error: error)
+                    }
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func uploadImageToSiteMediaLibrary(image: UIImage) async -> Result<Media, Error> {
+        await withCheckedContinuation { continuation in
+            let action = MediaAction.uploadImage(siteID: siteID, productID: productOrVariationID.id, image: image) { result in
+                continuation.resume(returning: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
         queue.async { [weak self] in
             guard let self = self else {
@@ -273,6 +322,17 @@ private extension ProductImageActionHandler {
             switch status {
             case .uploading(let uploadingAsset):
                 return uploadingAsset == asset
+            default:
+                return false
+            }
+        })
+    }
+
+    func index(of image: UIImage) -> Int? {
+        return allStatuses.productImageStatuses.firstIndex(where: { status -> Bool in
+            switch status {
+            case .uploadingImage(let uploadingImage):
+                return uploadingImage == image
             default:
                 return false
             }

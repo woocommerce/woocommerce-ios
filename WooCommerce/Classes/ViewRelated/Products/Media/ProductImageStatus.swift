@@ -8,6 +8,10 @@ enum ProductImageStatus: Equatable {
     ///
     case uploading(asset: PHAsset)
 
+    /// A `UIImage` is being uploaded.
+    ///
+    case uploadingImage(image: UIImage)
+
     /// The Product image exists remotely.
     ///
     case remote(image: ProductImage)
@@ -46,7 +50,7 @@ extension ProductImageStatus {
 
     private var cellClass: UICollectionViewCell.Type {
         switch self {
-        case .uploading:
+        case .uploading, .uploadingImage:
             return InProgressProductImageCollectionViewCell.self
         case .remote:
             return ProductImageCollectionViewCell.self
@@ -60,6 +64,9 @@ extension ProductImageStatus {
         switch self {
         case .uploading(let asset):
             return asset.identifier()
+        case .uploadingImage(let image):
+            // TODO-jc
+            return image.description
         case .remote(let image):
             return "\(image.imageID)"
         }

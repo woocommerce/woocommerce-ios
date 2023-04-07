@@ -17,6 +17,7 @@ final class ProductImagesGalleryViewController: UIViewController {
     // If present, the collection view will initially show the image at the selected index
     private var selectedIndex: Int?
     private let productUIImageLoader: ProductUIImageLoader
+    private let productImageActionHandler: ProductImageActionHandler
     private let onDeletion: Deletion
 
     private var previousBarTintColor: UIColor?
@@ -32,11 +33,13 @@ final class ProductImagesGalleryViewController: UIViewController {
          selectedIndex: Int? = nil,
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
+         productImageActionHandler: ProductImageActionHandler,
          onDeletion: @escaping Deletion) {
         self.productImages = images
         self.selectedIndex = selectedIndex
         self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
+        self.productImageActionHandler = productImageActionHandler
         self.onDeletion = onDeletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -173,7 +176,11 @@ private extension ProductImagesGalleryViewController {
     func showProductBackgroundFormBottomSheet(productImage: ProductImage, prompt: String) {
         let controller = ProductImageBackgroundFormHostingController(viewModel: .init(prompt: prompt,
                                                                                       productImage: productImage,
-                                                                                      productUIImageLoader: productUIImageLoader))
+                                                                                      productUIImageLoader: productUIImageLoader)) { [weak self] image in
+            guard let self else { return }
+            self.replaceImage(productImage: productImage, with: image)
+            self.dismiss(animated: true)
+        }
         productBackgroundFormController = controller
         // Disables interactive dismissal of the bottom sheet.
         controller.isModalInPresentation = true
@@ -182,12 +189,22 @@ private extension ProductImagesGalleryViewController {
         present(controller, animated: true)
     }
 
+    func replaceImage(productImage: ProductImage, with newImage: UIImage) {
+        productImageActionHandler.uploadImageToSiteMediaLibrary(image: newImage)
+    }
+
     func configureBottomSheetPresentation(for viewController: UIViewController) {
         if let sheet = viewController.sheetPresentationController {
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .large
             sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium(), .large()]
+            if #available(iOS 16.0, *) {
+                sheet.detents = [.custom(resolver: { context in
+                    context.maximumDetentValue * 0.2
+                }), .medium(), .large()]
+            } else {
+                sheet.detents = [.medium(), .large()]
+            }
         }
     }
 

@@ -55,6 +55,8 @@ public final class MediaStore: Store {
             retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .uploadMedia(let siteID, let productID, let mediaAsset, let onCompletion):
             uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, onCompletion: onCompletion)
+        case .uploadImage(let siteID, let productID, let image, let onCompletion):
+            uploadImage(siteID: siteID, productID: productID, image: image, completion: onCompletion)
         case .updateProductID(let siteID,
                             let productID,
                              let mediaID,
@@ -155,6 +157,60 @@ private extension MediaStore {
         }
     }
 
+    func uploadImage(siteID: Int64,
+                     productID: Int64,
+                     image: UIImage,
+                     completion: @escaping (Result<Media, Error>) -> Void) {
+        Task { @MainActor in
+            let media = try await export(image: image)
+            // TODO-jc: refactor uploadMediaToWordPressSite to be async to reuse the result for both paths
+            if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
+                remote.uploadMediaToWordPressSite(siteID: siteID,
+                                                  productID: productID,
+                                                  mediaItems: [media]) { result in
+                    // Removes local media after the upload API request.
+                    do {
+                        try MediaFileManager().removeLocalMedia(at: media.localURL)
+                    } catch {
+                        completion(.failure(error))
+                        return
+                    }
+
+                    switch result {
+                    case .success(let uploadedMedia):
+                        completion(.success(uploadedMedia.toMedia()))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            } else {
+                remote.uploadMedia(for: siteID,
+                                   productID: productID,
+                                   context: nil,
+                                   mediaItems: [media]) { result in
+                    // Removes local media after the upload API request.
+                    do {
+                        try MediaFileManager().removeLocalMedia(at: media.localURL)
+                    } catch {
+                        completion(.failure(error))
+                        return
+                    }
+
+                    switch result {
+                    case .success(let uploadedMediaItems):
+                        guard let uploadedMedia = uploadedMediaItems.first, uploadedMediaItems.count == 1 else {
+                            completion(.failure(MediaActionError.unexpectedMediaCount(count: uploadedMediaItems.count)))
+                            return
+                        }
+                        completion(.success(uploadedMedia))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            }
+        }
+    }
+
     func updateProductID(siteID: Int64,
                          productID: Int64,
                          mediaID: Int64,
@@ -182,6 +238,32 @@ private extension MediaStore {
             return false
         }
         return site.isJetpackCPConnected
+    }
+
+    @MainActor
+    func export(image: UIImage) async throws -> UploadableMedia {
+        try await withCheckedThrowingContinuation { continuation in
+            guard let imageData = image.jpegData(compressionQuality: 1.0) else {
+                continuation.resume(throwing: MediaActionError.unknown)
+                return
+            }
+
+            // Hands off the image export to a shared image writer.
+            let exporter = MediaImageExporter(data: imageData,
+                                              filename: nil,
+                                              typeHint: nil,
+                                              options: MediaImageExportOptions(maximumImageSize: 3000,
+                                                                               imageCompressionQuality: 0.85,
+                                                                               stripsGeoLocationIfNeeded: true),
+                                              mediaDirectoryType: .uploads)
+            exporter.export { uploadableMedia, error in
+                guard let uploadableMedia, error == nil else {
+                    continuation.resume(throwing: MediaActionError.unknown)
+                    return
+                }
+                continuation.resume(returning: uploadableMedia)
+            }
+        }
     }
 }
 

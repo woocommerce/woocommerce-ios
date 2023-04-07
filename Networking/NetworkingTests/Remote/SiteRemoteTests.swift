@@ -124,7 +124,7 @@ final class SiteRemoteTests: XCTestCase {
                                                                           countryCode: "US"))
     }
 
-    func test_enableFreeTrial_with_full_profiler_data_sets_parameters() async throws {
+    func test_enableFreeTrial_with_full_profiler_data_sets_all_parameters() async throws {
         // When
         try? await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
                                                                            category: "auto_services",
@@ -144,6 +144,40 @@ final class SiteRemoteTests: XCTestCase {
         XCTAssertEqual(profilerDictionary["other_platform"] as? String, "wordPress")
         let profilerIndustryDictionary = try XCTUnwrap(profilerDictionary["industry"] as? [[String: String]])
         XCTAssertEqual(profilerIndustryDictionary, [["slug": "other", "detail": "auto_services"]])
+    }
+
+    func test_enableFreeTrial_with_partial_profiler_industry_data_sets_one_industry_parameter() async throws {
+        // When
+        try? await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
+                                                                           category: nil, // Category is `nil`.
+                                                                           categoryGroup: "other",
+                                                                           sellingStatus: .alreadySellingOnline,
+                                                                           sellingPlatforms: "wordPress",
+                                                                           countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let onboardingDictionary = try XCTUnwrap(parameterDictionary["wpcom_woocommerce_onboarding"] as? [String: Any])
+        let profilerDictionary = try XCTUnwrap(onboardingDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        let profilerIndustryDictionary = try XCTUnwrap(profilerDictionary["industry"] as? [[String: String]])
+        XCTAssertEqual(profilerIndustryDictionary, [["slug": "other"]])
+    }
+
+    func test_enableFreeTrial_with_nil_selling_status_does_not_contain_selling_status_parameters() async throws {
+        // When
+        try? await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
+                                                                           category: nil, // Category is `nil`.
+                                                                           categoryGroup: "other",
+                                                                           sellingStatus: nil,
+                                                                           sellingPlatforms: nil,
+                                                                           countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let onboardingDictionary = try XCTUnwrap(parameterDictionary["wpcom_woocommerce_onboarding"] as? [String: Any])
+        let profilerDictionary = try XCTUnwrap(onboardingDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertFalse(profilerDictionary.keys.contains("selling_venues"))
+        XCTAssertFalse(profilerDictionary.keys.contains("other_platform"))
     }
 
     func test_enableFreeTrial_returns_DotcomError_failure_on_already_upgraded_error() async throws {

@@ -24,7 +24,7 @@ final class MockSiteRemote {
     }
 
     /// Returns the value when `enableFreeTrial` is called.
-    func whenEnablingFreeTrialResult(thenReturn result: Result<Void, Error>) {
+    func whenEnablingFreeTrial(thenReturn result: Result<Void, Error>) {
         enableFreeTrialResult = result
     }
 }

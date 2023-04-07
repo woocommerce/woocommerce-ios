@@ -15,7 +15,7 @@ public final class PaymentsScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ collectPaymentButtonGetter ],
+            expectedElementGetters: [ collectPaymentButtonGetter, cardReaderManualsButtonGetter ],
             app: app
         )
     }

@@ -8,6 +8,7 @@ public final class ExternalAppScreen {
         app = XCUIApplication()
     }
 
+    // To open universal links without depending on mocks
     public func openUniversalLinkFromRemindersApp(link: String) {
 
         let reminders = XCUIApplication(bundleIdentifier: "com.apple.reminders")
@@ -30,5 +31,21 @@ public final class ExternalAppScreen {
 
         // Tap first reminder on list
         reminders.cells.links.firstMatch.tap()
+    }
+
+    // To open universal links using mocks
+    public func openUniversalLinkFromSafariApp(link: String) {
+
+        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+        safari.launch()
+
+        // Go to Wiremock's HTML file with universal links
+        safari.textFields["TabBarItemTitle"].tap()
+        // 
+        safari.typeText("http://localhost:8282/links.html")
+        safari.buttons["Go"].tap()
+
+        // Tap on the Payments link
+        if safari.staticTexts["TESTING LINKS"].exists { safari.links[link].tap() }
     }
 }

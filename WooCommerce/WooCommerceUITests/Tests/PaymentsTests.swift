@@ -21,9 +21,7 @@ final class PaymentsTests: XCTestCase {
     }
 
     func test_load_payments_universal_link() throws {
-        let paymentsLink = "https://woocommerce.com/mobile/payments"
-
-        ExternalAppScreen().openUniversalLinkFromRemindersApp(link: paymentsLink)
+        ExternalAppScreen().openUniversalLinkFromSafariApp(link: "Payments")
         try PaymentsScreen().verifyPaymentsScreenLoaded()
     }
 }

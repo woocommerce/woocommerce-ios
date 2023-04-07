@@ -56,11 +56,11 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
-    /// Retrieves lazily and asynchronously the popular products
+    /// Popular products, that is, most sold products in cache
     ///
     var popularProducts: [Product] = []
 
-    /// Retrieves lazily and asynchronously the most recently sold products
+    /// Most recently sold products
     ///
     var mostRecentlySoldProducts: [Product] = []
 

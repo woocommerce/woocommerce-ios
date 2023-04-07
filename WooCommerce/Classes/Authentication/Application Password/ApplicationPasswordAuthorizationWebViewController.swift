@@ -169,6 +169,11 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         guard let url else {
             return
         }
+        /// We need to track the web view steps based on these assumptions:
+        /// - First, the web view is loaded with the authorization URL that we built from the previous steps.
+        /// - Since the web view is not authenticated initially, the page will redirect to the login page, hence the `redirect-to` query.
+        /// We based on this query to detect the login page. The value of this query should be same as the initial URL.
+        /// - After login completes, the page will redirect to the initial URL.
         if url.absoluteString == authorizationURL {
             analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: webViewInitialLoad ? .initial : .authorization))
             webViewInitialLoad = false

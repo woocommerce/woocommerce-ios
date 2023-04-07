@@ -41,11 +41,10 @@ public final class ExternalAppScreen {
 
         // Go to Wiremock's HTML file with universal links
         safari.textFields["TabBarItemTitle"].tap()
-        // 
         safari.typeText("http://localhost:8282/links.html")
         safari.buttons["Go"].tap()
 
-        // Tap on the Payments link
+        // Tap on the universal link
         if safari.staticTexts["TESTING LINKS"].exists { safari.links[link].tap() }
     }
 }

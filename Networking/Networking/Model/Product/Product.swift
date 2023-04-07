@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Product Entity.
 ///
-public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable {
+public struct Product: Codable, GeneratedCopiable, GeneratedFakeable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String
@@ -737,5 +737,15 @@ extension Product: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(siteID)
         hasher.combine(productID)
+    }
+}
+
+// MARK: - Equatable Conformance
+//
+extension Product: Equatable {
+    public static func == (lhs: Product, rhs: Product) -> Bool {
+        // Product ID is unique, which means that if they have the same the product is the same
+        return lhs.siteID == rhs.siteID &&
+        lhs.productID == rhs.productID
     }
 }

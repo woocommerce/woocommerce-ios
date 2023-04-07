@@ -21,7 +21,10 @@ public final class ExternalAppScreen {
 
         // Add universal link as reminder
         let remindersTable = reminders.otherElements["RemindersList.ID.RemindersTable"]
-        if !reminders.textFields["Title"].exists { remindersTable.tap() }
+        if !reminders.textFields["Title"].exists {
+            remindersTable.tap()
+        }
+
         reminders.textFields["Title"].typeText("\(link)")
         remindersTable.tap()
 

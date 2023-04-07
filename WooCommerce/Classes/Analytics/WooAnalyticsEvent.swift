@@ -2210,8 +2210,8 @@ extension WooAnalyticsEvent {
     }
 }
 
-/// Mark: - Application password authorization in web view
-///
+// MARK: - Application password authorization in web view
+//
 extension WooAnalyticsEvent {
     enum ApplicationPasswordAuthorization {
         enum Key: String {

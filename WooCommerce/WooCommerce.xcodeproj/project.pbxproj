@@ -554,6 +554,9 @@
 		0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */; };
 		037D270D28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */; };
 		0386CFEB2852108B00134466 /* PaymentMethodsHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */; };
+		0388E1A629E04433007DF84D /* PaymentsRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */; };
+		0388E1A829E04687007DF84D /* DeepLinkForwarder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A729E04687007DF84D /* DeepLinkForwarder.swift */; };
+		0388E1AA29E04715007DF84D /* MockDeepLinkForwarder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */; };
 		038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */; };
 		038BC37F29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */; };
 		038BC38129C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */; };
@@ -2763,6 +2766,9 @@
 		0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationCardDetailsCell.swift; sourceTree = "<group>"; };
 		037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderModalFlowViewControllerProtocol.swift; sourceTree = "<group>"; };
 		0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsHostingController.swift; sourceTree = "<group>"; };
+		0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRouteTests.swift; sourceTree = "<group>"; };
+		0388E1A729E04687007DF84D /* DeepLinkForwarder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkForwarder.swift; sourceTree = "<group>"; };
+		0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDeepLinkForwarder.swift; sourceTree = "<group>"; };
 		038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayCompleteViewModel.swift; sourceTree = "<group>"; };
 		038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayCompleteViewController.swift; sourceTree = "<group>"; };
 		038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayTryPaymentPromptViewModel.swift; sourceTree = "<group>"; };
@@ -5674,6 +5680,14 @@
 			path = "Payment Methods";
 			sourceTree = "<group>";
 		};
+		0388E1A429E0441F007DF84D /* Routes */ = {
+			isa = PBXGroup;
+			children = (
+				0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */,
+			);
+			path = Routes;
+			sourceTree = "<group>";
+		};
 		039F373B2860DC12009A2B4C /* Payment Methods */ = {
 			isa = PBXGroup;
 			children = (
@@ -7183,6 +7197,7 @@
 				02660503293D8D24004084EA /* PaymentCaptureCelebration.swift */,
 				EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */,
 				DE4D23B329B58C5A003A4B5D /* MockWordPressComAccountService.swift */,
+				0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -8167,6 +8182,7 @@
 				B958A7CE28B50FAE00823EEF /* Routes */,
 				B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */,
 				B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */,
+				0388E1A729E04687007DF84D /* DeepLinkForwarder.swift */,
 			);
 			path = "Universal Links";
 			sourceTree = "<group>";
@@ -8184,6 +8200,7 @@
 		B958A7CF28B527FB00823EEF /* Universal Links */ = {
 			isa = PBXGroup;
 			children = (
+				0388E1A429E0441F007DF84D /* Routes */,
 				B958A7D028B5281800823EEF /* UniversalLinkRouterTests.swift */,
 			);
 			path = "Universal Links";
@@ -11882,6 +11899,7 @@
 				31E6F21F26B3577800227E6F /* LegacyCardReaderConnectionController.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
+				0388E1A829E04687007DF84D /* DeepLinkForwarder.swift in Sources */,
 				B6A10E9C292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift in Sources */,
 				26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */,
 				0229ED00258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift in Sources */,
@@ -12266,6 +12284,7 @@
 				D83F5939225B424B00626E75 /* AddManualTrackingViewModelTests.swift in Sources */,
 				0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */,
 				FEED57FA2686544D00E47FD9 /* RoleErrorViewModelTests.swift in Sources */,
+				0388E1AA29E04715007DF84D /* MockDeepLinkForwarder.swift in Sources */,
 				022C7D7729793ABE0036568D /* PaidDomainSelectorDataProviderTests.swift in Sources */,
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
 				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,
@@ -12461,6 +12480,7 @@
 				DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */,
 				02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */,
 				CC923A1D2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift in Sources */,
+				0388E1A629E04433007DF84D /* PaymentsRouteTests.swift in Sources */,
 				D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */,
 				CC04918F292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift in Sources */,
 				02BC5AA524D27F8900C43326 /* ProductVariationFormViewModel+UpdatesTests.swift in Sources */,

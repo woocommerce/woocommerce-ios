@@ -4,12 +4,12 @@ import XCTest
 final class UniversalLinkRouterTests: XCTestCase {
     func test_handle_when_there_is_a_route_matching_then_calls_to_perform_action_with_right_actions() {
         // Given
-        let subPath = "/test/path"
+        let subPath = "test/path"
         let queryItem = URLQueryItem(name: "name", value: "value")
         var components = URLComponents()
             components.scheme = "https"
             components.host = "woocommerce.com"
-            components.path = "/mobile" + subPath
+            components.path = "/mobile/" + subPath
             components.queryItems = [
                 queryItem
             ]
@@ -36,11 +36,11 @@ final class UniversalLinkRouterTests: XCTestCase {
 
     func test_handle_when_there_is_a_route_matching_then_calls_to_perform_action_with_subpath() {
         // Given
-        let subPath = "/test/path/more/parts"
+        let subPath = "test/path/more/parts"
         var components = URLComponents()
             components.scheme = "https"
             components.host = "woocommerce.com"
-            components.path = "/mobile" + subPath
+            components.path = "/mobile/" + subPath
 
         var retrievedSubPath: String?
         let route = MockRoute(handledSubpaths: [subPath], performAction: { subPath, _ in
@@ -64,11 +64,11 @@ final class UniversalLinkRouterTests: XCTestCase {
 
     func test_handle_when_there_are_routes_matching_then_calls_to_perform_action_to_the_first_one() {
         // Given
-        let subPath = "/test/path"
+        let subPath = "test/path"
         var components = URLComponents()
             components.scheme = "https"
             components.host = "woocommerce.com"
-            components.path = "/mobile" + subPath
+            components.path = "/mobile/" + subPath
 
         var routeOneWasCalled = false
         let routeOne = MockRoute(handledSubpaths: [subPath], performAction: { _, _ in

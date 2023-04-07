@@ -25,7 +25,7 @@ struct UniversalLinkRouter {
     /// As we only perform one action to avoid conflicts, order matters (only the first matched route will be called to perform its action)
     ///
     private static func defaultRoutes(tabBarController: MainTabBarController) -> [Route] {
-        return [OrderDetailsRoute(), PaymentsRoute(tabBarController: tabBarController)]
+        return [OrderDetailsRoute(), PaymentsRoute(deepLinkForwarder: tabBarController)]
     }
 
     func handle(url: URL) {

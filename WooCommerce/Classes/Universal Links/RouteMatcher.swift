@@ -38,7 +38,9 @@ class RouteMatcher {
             return nil
         }
 
-        let routeSubPath = String(components.path.dropFirst(mobilePathSegment.count))
+        let routeSubPath = components.path.removingPrefix(mobilePathSegment)
+            .removingPrefix("/")
+            .removingSuffix("/")
 
         guard let firstRoute = routes.first(where: { $0.canHandle(subPath: routeSubPath) }) else {
             return nil

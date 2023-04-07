@@ -4,7 +4,7 @@ import Yosemite
 /// Shows order details from a given universal link that matches the right path
 ///
 struct OrderDetailsRoute: Route {
-    private let subPath: String = "/orders/details"
+    private let subPath: String = "orders/details"
 
     func canHandle(subPath: String) -> Bool {
         return subPath == self.subPath

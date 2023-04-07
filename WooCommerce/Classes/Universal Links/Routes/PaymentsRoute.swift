@@ -1,12 +1,12 @@
 import Foundation
 
-/// Links an URL with a /payments path to the Payments Hub Menu
+/// Links supported URLs with a /payments root path to various destinations in the Payments Hub Menu
 /// 
 struct PaymentsRoute: Route {
-    private let tabBarController: MainTabBarController
+    private let deepLinkForwarder: DeepLinkForwarder
 
-    init(tabBarController: MainTabBarController) {
-        self.tabBarController = tabBarController
+    init(deepLinkForwarder: DeepLinkForwarder) {
+        self.deepLinkForwarder = deepLinkForwarder
     }
 
     func canHandle(subPath: String) -> Bool {
@@ -18,7 +18,7 @@ struct PaymentsRoute: Route {
             return false
         }
 
-        tabBarController.forwardHubMenuDeeplink(to: destination)
+        deepLinkForwarder.forwardHubMenuDeepLink(to: destination)
 
         return true
     }
@@ -30,8 +30,6 @@ private extension HubMenuCoordinator.DeepLinkDestination {
             return nil
         }
 
-        /// We do this in two steps because we want to handle `/payments` as well as `/payments/`,
-        /// and avoid leading `/` for other routes
         let destinationSubPath = paymentsDeepLinkSubPath
             .removingPrefix(Constants.paymentsRoot)
             .removingPrefix("/")
@@ -59,6 +57,6 @@ private extension HubMenuCoordinator.DeepLinkDestination {
     }
 
     enum Constants {
-        static let paymentsRoot = "/payments"
+        static let paymentsRoot = "payments"
     }
 }

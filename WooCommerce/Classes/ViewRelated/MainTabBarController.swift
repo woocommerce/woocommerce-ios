@@ -448,8 +448,12 @@ extension MainTabBarController {
             viewController?.openSimplePaymentsAmountFlow()
         }
     }
+}
 
-    func forwardHubMenuDeeplink(to destination: HubMenuCoordinator.DeepLinkDestination) {
+// MARK: - DeeplinkForwarder
+//
+extension MainTabBarController: DeepLinkForwarder {
+    func forwardHubMenuDeepLink(to destination: HubMenuCoordinator.DeepLinkDestination) {
         Self.switchToHubMenuTab()
         hubMenuTabCoordinator?.navigate(to: destination)
     }

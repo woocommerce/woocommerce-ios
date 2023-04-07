@@ -1,4 +1,5 @@
 import enum Yosemite.CreateAccountError
+import struct Yosemite.SiteProfilerData
 
 extension WooAnalyticsEvent {
     enum StoreCreation {
@@ -68,7 +69,7 @@ extension WooAnalyticsEvent {
             let properties = [
                 Key.category: category?.value,
                 Key.categoryGroup: category?.groupValue,
-                Key.sellingStatus: sellingStatus?.sellingStatus.rawValue,
+                Key.sellingStatus: sellingStatus?.sellingStatus.analyticsValue,
                 Key.sellingPlatforms: sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ","),
                 Key.countryCode: countryCode?.rawValue
             ].compactMapValues({ $0 })
@@ -157,6 +158,19 @@ private extension CreateAccountError {
             return "PASSWORD_INVALID"
         default:
             return "\(self)"
+        }
+    }
+}
+
+private extension SiteProfilerData.SellingStatus {
+    var analyticsValue: String {
+        switch self {
+        case .justStarting:
+            return "im_just_starting_my_business"
+        case .alreadySellingButNotOnline:
+            return "im_already_selling_but_not_online"
+        case .alreadySellingOnline:
+            return "im_already_selling_online"
         }
     }
 }

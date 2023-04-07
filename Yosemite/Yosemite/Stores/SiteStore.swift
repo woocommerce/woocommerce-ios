@@ -44,8 +44,8 @@ public final class SiteStore: Store {
             createSite(name: name, flow: flow, completion: completion)
         case let .launchSite(siteID, completion):
             launchSite(siteID: siteID, completion: completion)
-        case let .enableFreeTrial(siteID, completion):
-            enableFreeTrial(siteID: siteID, completion: completion)
+        case let .enableFreeTrial(siteID, profilerData, completion):
+            enableFreeTrial(siteID: siteID, profilerData: profilerData, completion: completion)
         }
     }
 }
@@ -85,10 +85,10 @@ private extension SiteStore {
         }
     }
 
-    func enableFreeTrial(siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
+    func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?, completion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
-                try await remote.enableFreeTrial(siteID: siteID)
+                try await remote.enableFreeTrial(siteID: siteID, profilerData: profilerData)
                 completion(.success(()))
             } catch {
                 completion(.failure(error))

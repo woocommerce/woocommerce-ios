@@ -1,1 +1,6 @@
-This release includes several bug fixes and improvements to make your experience smoother and more enjoyable. It's possible to duplicate a variable product and this includes the product description, sale price, and image. We have some exciting updates coming in the next few weeks. Stay tuned for more information!
+- [internal] Users can now create a Free Trial store from the app from the Get Started section of the app prologue. [https://github.com/woocommerce/woocommerce-ios/pull/9396]
+- [**] Adds support for Product Multi-selection when creating and/or editing Orders. [https://github.com/woocommerce/woocommerce-ios/issues/8888]
+- [**] Users can now install Jetpack for their non-Jetpack sites after logging in with application passwords. [https://github.com/woocommerce/woocommerce-ios/pull/9354]
+- [*] Payments: We show a Tap to Pay on iPhone feedback survey button in the Payments menu after the first Tap to Pay on iPhone payment is taken [https://github.com/woocommerce/woocommerce-ios/pull/9366]
+- [Internal] Added SiteID to some IPP tracks events [https://github.com/woocommerce/woocommerce-ios/pull/9371]
+

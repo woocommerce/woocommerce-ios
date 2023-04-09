@@ -178,7 +178,7 @@ final class ProductSelectorViewModel: ObservableObject {
         configureSyncingCoordinator()
         configureProductsResultsController()
         configureFirstPageLoad()
-        configureProductSearch()
+        synchronizedProductFilterSearch()
     }
 
     /// Initializer for multiple selections
@@ -211,7 +211,7 @@ final class ProductSelectorViewModel: ObservableObject {
         configureSyncingCoordinator()
         configureProductsResultsController()
         configureFirstPageLoad()
-        configureProductSearch()
+        synchronizedProductFilterSearch()
     }
 
     /// Select a product to add to the order
@@ -510,7 +510,7 @@ private extension ProductSelectorViewModel {
 
     /// Updates the product results predicate & triggers a new sync when search term changes
     ///
-    func configureProductSearch() {
+    func synchronizedProductFilterSearch() {
         let searchTermPublisher = $searchTerm
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)

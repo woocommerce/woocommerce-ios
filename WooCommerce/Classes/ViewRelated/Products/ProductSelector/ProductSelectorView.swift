@@ -139,7 +139,7 @@ struct ProductSelectorView: View {
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
-                viewModel.filters = filters
+                viewModel.filters.send(filters)
             } onClearAction: {
                 // no-op
             } onDismissAction: {

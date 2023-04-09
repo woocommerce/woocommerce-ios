@@ -512,6 +512,7 @@ private extension ProductSelectorViewModel {
     ///
     func synchronizedProductFilterSearch() {
         let searchTermPublisher = $searchTerm
+            .dropFirst()
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
 

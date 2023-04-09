@@ -298,7 +298,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = "shirt"
-        viewModel.filters = .init(stockStatus: .outOfStock,
+        viewModel.filters.value = .init(stockStatus: .outOfStock,
                                   productStatus: .draft,
                                   productType: .simple,
                                   productCategory: nil,
@@ -307,7 +307,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.searchTerm, "")
-        XCTAssertEqual(viewModel.filters, FilterProductListViewModel.Filters())
+        XCTAssertEqual(viewModel.filters.value, FilterProductListViewModel.Filters())
     }
 
     func test_clearing_search_returns_full_product_list() {
@@ -344,11 +344,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.searchTerm, "")
-        XCTAssertNil(viewModel.filters.stockStatus)
-        XCTAssertNil(viewModel.filters.productCategory)
-        XCTAssertNil(viewModel.filters.productType)
-        XCTAssertNil(viewModel.filters.productCategory)
-        XCTAssertEqual(viewModel.filters.numberOfActiveFilters, 0)
+        XCTAssertNil(viewModel.filters.value.stockStatus)
+        XCTAssertNil(viewModel.filters.value.productCategory)
+        XCTAssertNil(viewModel.filters.value.productType)
+        XCTAssertNil(viewModel.filters.value.productCategory)
+        XCTAssertEqual(viewModel.filters.value.numberOfActiveFilters, 0)
     }
 
     func test_view_model_fires_error_notice_when_product_sync_fails() {
@@ -673,7 +673,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = ""
-        viewModel.filters = FilterProductListViewModel.Filters(
+        viewModel.filters.value = FilterProductListViewModel.Filters(
             stockStatus: ProductStockStatus.outOfStock,
             productStatus: ProductStatus.draft,
             productType: ProductType.simple,
@@ -695,7 +695,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.filters = FilterProductListViewModel.Filters(
+        viewModel.filters.value = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
             productType: ProductType.simple,
@@ -792,7 +792,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.filters = filters
+        viewModel.filters.value = filters
         viewModel.searchTerm = ""
         try await Task.sleep(nanoseconds: searchDebounceTime)
 
@@ -831,7 +831,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.filters = filters
+        viewModel.filters.value = filters
         viewModel.searchTerm = "hiii"
         try await Task.sleep(nanoseconds: searchDebounceTime)
 
@@ -871,7 +871,12 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productCategory: nil,
             numberOfActiveFilters: 1
         )
-        viewModel.filters = updatedFilters
+        viewModel.filters.value = updatedFilters
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 0) // no product matches the filter and search term
+        // When
+
         viewModel.searchTerm = ""
         waitUntil {
             viewModel.productRows.isNotEmpty

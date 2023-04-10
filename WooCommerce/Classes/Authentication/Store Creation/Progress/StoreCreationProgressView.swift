@@ -2,10 +2,8 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreCreationProgressView`.
 final class StoreCreationProgressHostingViewController: UIHostingController<StoreCreationProgressView> {
-    let viewModel: StoreCreationProgressViewModel
 
     init(viewModel: StoreCreationProgressViewModel) {
-        self.viewModel = viewModel
         super.init(rootView: StoreCreationProgressView(viewModel: viewModel))
     }
 

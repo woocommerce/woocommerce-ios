@@ -50,7 +50,7 @@ final class StoreCreationCoordinator: Coordinator {
         isFreeTrialCreation ? 10 : 5
     }
 
-    private weak var storeCreationProgressHostingViewController: StoreCreationProgressHostingViewController?
+    private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
 
     init(source: Source,
          navigationController: UINavigationController,
@@ -636,7 +636,7 @@ private extension StoreCreationCoordinator {
         let viewModel = StoreCreationProgressViewModel(incrementInterval: jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
         let storeCreationProgressView = StoreCreationProgressHostingViewController(viewModel: viewModel)
         navigationController.isNavigationBarHidden = true
-        self.storeCreationProgressHostingViewController = storeCreationProgressView
+        self.storeCreationProgressViewModel = viewModel
         navigationController.pushViewController(storeCreationProgressView, animated: true)
     }
 
@@ -677,7 +677,7 @@ private extension StoreCreationCoordinator {
             }
             .receive(on: DispatchQueue.main)
             .handleEvents(receiveCompletion: { [weak self] output in
-                self?.storeCreationProgressHostingViewController?.viewModel.incrementProgress()
+                self?.storeCreationProgressViewModel?.incrementProgress()
             })
             // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.
@@ -693,7 +693,7 @@ private extension StoreCreationCoordinator {
                     return
                 }
 
-                self.storeCreationProgressHostingViewController?.viewModel.markAsComplete()
+                self.storeCreationProgressViewModel?.markAsComplete()
 
                 /// Free trial stores should land directly on the dashboard and not show any success view.
                 ///

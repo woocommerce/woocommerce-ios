@@ -148,7 +148,7 @@ private extension StoreCreationProgressViewModel.Progress {
 
         enum Subtitle {
             static let stores = NSLocalizedString(
-                "There are more than 150 WooCommerce meetups held all over the world! A great way to meet fellow store owners.",
+                "Did you know that Woo powers more than 3.5 million stores worldwide? You’re in good company.",
                 comment: "Subtitle text in the store creation loading screen")
 
             static let founded = NSLocalizedString(

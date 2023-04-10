@@ -36,17 +36,15 @@ final class StoreCreationProgressViewModel: ObservableObject {
 
     private var animationTimer: Timer?
     private let progressViewAnimationTimerInterval: TimeInterval
-    private let incrementProgressValueBy: Double
+    private let incrementInterval: Double
 
     /// - Parameters:
     ///   - incrementInterval: Interval at which progress will be incremented to next case
     ///   - progressViewAnimationTimerInterval: Animation timer interval DI for unit test purposes.
     init(incrementInterval: TimeInterval,
          progressViewAnimationTimerInterval: TimeInterval = 0.1) {
+        self.incrementInterval = incrementInterval
         self.progressViewAnimationTimerInterval = progressViewAnimationTimerInterval
-        // Increment the progress value until next progress increment
-        let gapBetweenProgress = Progress.allCases[1].rawValue - Progress.allCases[0].rawValue
-        self.incrementProgressValueBy = (gapBetweenProgress / (incrementInterval / progressViewAnimationTimerInterval))
         $progress
             .map { $0.rawValue }
             .assign(to: &$progressValue)
@@ -78,6 +76,10 @@ private extension StoreCreationProgressViewModel {
               progressValue < next.rawValue else {
             return
         }
+
+        // Increment the progress value until next progress increment
+        let gapBetweenProgress = next.rawValue - progress.rawValue
+        let incrementProgressValueBy = (gapBetweenProgress / (incrementInterval / progressViewAnimationTimerInterval))
         progressValue = min(progressValue + incrementProgressValueBy, next.rawValue)
     }
 

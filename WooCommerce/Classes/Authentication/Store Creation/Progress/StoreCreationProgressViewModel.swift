@@ -39,9 +39,12 @@ final class StoreCreationProgressViewModel: ObservableObject {
     private let progressViewAnimationTimerInterval: TimeInterval
 
     /// - Parameters:
-    ///   - expectNextIncrementToOccurAfter: Approx interval at which progress will be incremented to next case.
+    ///   - expectNextIncrementToOccurAfter:
+    ///     Approx interval at which progress will be incremented to next case.
     ///     This value is used to animate the progress view until next increment happens.
+    ///
     ///   - progressViewAnimationTimerInterval: Animation timer interval DI for unit test purposes.
+    ///
     init(expectNextIncrementToOccurAfter: TimeInterval,
          progressViewAnimationTimerInterval: TimeInterval = 0.1) {
         self.expectNextIncrementToOccurAfter = expectNextIncrementToOccurAfter

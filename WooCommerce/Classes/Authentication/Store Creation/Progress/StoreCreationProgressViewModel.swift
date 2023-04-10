@@ -34,7 +34,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
         return prefix + " " + attributedText
     }
 
-    private var animationTimer: Timer?
+    private var incrementProgressValueTimer: Timer?
     private let expectNextIncrementToOccurAfter: Double
     private let progressViewAnimationTimerInterval: TimeInterval
 
@@ -57,8 +57,8 @@ final class StoreCreationProgressViewModel: ObservableObject {
     // MARK: Public methods
     //
     func onAppear() {
-        animationTimer = Timer.scheduledTimer(withTimeInterval: progressViewAnimationTimerInterval, repeats: true) { [weak self] _ in
-            self?.animateProgressView()
+        incrementProgressValueTimer = Timer.scheduledTimer(withTimeInterval: progressViewAnimationTimerInterval, repeats: true) { [weak self] _ in
+            self?.incrementProgressValue()
         }
     }
 
@@ -75,7 +75,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
 }
 
 private extension StoreCreationProgressViewModel {
-    func animateProgressView() {
+    func incrementProgressValue() {
         guard let next = progress.next(),
               progressValue < next.rawValue else {
             return

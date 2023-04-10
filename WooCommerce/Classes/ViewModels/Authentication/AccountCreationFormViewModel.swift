@@ -7,6 +7,7 @@ import enum Yosemite.AccountCreationAction
 import enum Yosemite.CreateAccountError
 import protocol Yosemite.StoresManager
 import class WordPressShared.EmailFormatValidator
+import class WordPressAuthenticator.WordPressComAccountService
 
 /// View model for `AccountCreationForm` view.
 final class AccountCreationFormViewModel: ObservableObject {
@@ -27,15 +28,25 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// Whether the password field should be present.
     @Published private(set) var shouldShowPasswordField: Bool = false
 
+    var submitButtonEnabled: Bool {
+        guard shouldShowPasswordField else {
+            return isEmailValid
+        }
+        return isEmailValid && isPasswordValid
+    }
+
     private let stores: StoresManager
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
+    private let accountService: WordPressComAccountServiceProtocol
 
     init(debounceDuration: Double = Constants.fieldDebounceDuration,
          stores: StoresManager = ServiceLocator.stores,
+         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.analytics = analytics
+        self.accountService = accountService
 
         $email
             .removeDuplicates()
@@ -50,6 +61,25 @@ final class AccountCreationFormViewModel: ObservableObject {
             .sink { [weak self] password in
                 self?.validatePassword(password)
             }.store(in: &subscriptions)
+    }
+
+    @MainActor
+    func checkIfWordPressAccountExists() async -> Bool {
+        do {
+            let accountExists: Bool = try await withCheckedThrowingContinuation { continuation in
+                accountService.isPasswordlessAccount(username: email, success: { _ in
+                    continuation.resume(returning: true)
+                }, failure: { error in
+                    DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                    continuation.resume(throwing: error)
+                })
+            }
+            return accountExists
+        } catch {
+            // TODO: analytics
+            shouldShowPasswordField = true
+            return false
+        }
     }
 
     /// Creates a WPCOM account with the email and password.
@@ -72,7 +102,6 @@ final class AccountCreationFormViewModel: ObservableObject {
         } catch let error as CreateAccountError {
             analytics.track(event: .StoreCreation.signupFailed(error: error))
             handleFailure(error: error)
-
             throw error
         }
     }

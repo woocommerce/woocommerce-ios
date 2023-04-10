@@ -26,6 +26,12 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
             let command = NavigateToEnterAccount(signInSource: signInSource)
             command.execute(from: self)
         }
+
+        rootView.existingEmailFound = { email in
+            // TODO: analytics
+            let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
+            command.execute(from: self)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -45,6 +51,9 @@ struct AccountCreationForm: View {
 
     /// Triggered when the user taps on the login CTA.
     var loginButtonTapped: (() -> Void) = {}
+
+    /// Triggered when the user enters an email that is associated with an existing WPCom account.
+    var existingEmailFound: ((String) -> Void) = { _ in }
 
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
@@ -129,7 +138,7 @@ struct AccountCreationForm: View {
                         if viewModel.shouldShowPasswordField == false {
                             let accountExists = await viewModel.checkIfWordPressAccountExists()
                             if accountExists {
-                                // TODO: show login flow
+                                existingEmailFound(viewModel.email)
                             }
                         } else {
                             let createAccountCompleted = (try? await viewModel.createAccount()) != nil

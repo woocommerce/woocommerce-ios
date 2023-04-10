@@ -45,7 +45,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         let sut = StoreCreationProgressViewModel(incrementInterval: incrementInterval,
                                                  progressViewAnimationTimerInterval: timeInterval)
         let gapBetweenProgress = StoreCreationProgressViewModel.Progress.allCases[1].rawValue - StoreCreationProgressViewModel.Progress.allCases[0].rawValue
-        let expectedIncrement = (gapBetweenProgress / Float(incrementInterval / timeInterval))
+        let expectedIncrement = (gapBetweenProgress / (incrementInterval / timeInterval))
 
         // When
         sut.onAppear()

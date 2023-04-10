@@ -46,7 +46,7 @@ final class StoreCreationCoordinator: Coordinator {
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
-    private var jetpackCheckRetryInterval: Double {
+    private var jetpackCheckRetryInterval: TimeInterval {
         isFreeTrialCreation ? 10 : 5
     }
 

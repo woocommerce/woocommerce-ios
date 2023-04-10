@@ -70,19 +70,6 @@ struct AccountCreationForm: View {
                         Text(Localization.subtitle)
                             .foregroundColor(Color(.secondaryLabel))
                             .bodyStyle()
-                        HStack(alignment: .firstTextBaseline) {
-                            // Login subtitle label.
-                            Text(Localization.loginSubtitle)
-                                .foregroundColor(Color(.secondaryLabel))
-                                .bodyStyle()
-
-                            // Login button.
-                            Button(Localization.loginButtonTitle) {
-                                loginButtonTapped()
-                            }
-                            .buttonStyle(TextButtonStyle())
-                            .disabled(isPerformingTask)
-                        }
                     }
                 }
 
@@ -140,6 +127,13 @@ struct AccountCreationForm: View {
             }
             .padding(.init(top: 0, leading: Layout.horizontalSpacing, bottom: 0, trailing: Layout.horizontalSpacing))
         }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(Localization.loginButtonTitle, action: loginButtonTapped)
+                    .buttonStyle(TextButtonStyle())
+                    .disabled(isPerformingTask)
+            }
+        }
     }
 }
 
@@ -172,7 +166,6 @@ private extension AccountCreationForm {
     enum Localization {
         static let title = NSLocalizedString("Get started in minutes", comment: "Title for the account creation form.")
         static let subtitle = NSLocalizedString("First, let’s create your account.", comment: "Subtitle for the account creation form.")
-        static let loginSubtitle = NSLocalizedString("Already registered?", comment: "Subtitle for the login button on the account creation form.")
         static let loginButtonTitle = NSLocalizedString("Log in", comment: "Title of the login button on the account creation form.")
         static let emailFieldTitle = NSLocalizedString("Your email address", comment: "Title of the email field on the account creation form.")
         static let emailFieldPlaceholder = NSLocalizedString("Email address", comment: "Placeholder of the email field on the account creation form.")

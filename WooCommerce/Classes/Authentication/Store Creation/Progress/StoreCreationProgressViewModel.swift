@@ -65,11 +65,11 @@ final class StoreCreationProgressViewModel: ObservableObject {
         guard let next = progress.next() else {
             return
         }
-        self.progress = next
+        progress = next
     }
 
     func markAsComplete() {
-        self.progress = .finished
+        progress = .finished
     }
 }
 

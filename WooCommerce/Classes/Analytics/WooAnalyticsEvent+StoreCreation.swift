@@ -10,8 +10,7 @@ extension WooAnalyticsEvent {
             static let errorType = "error_type"
             static let flow = "flow"
             static let step = "step"
-            static let category = "industry"
-            static let categoryGroup = "industry_group"
+            static let category = "industry_slug"
             static let sellingStatus = "user_commerce_journey"
             static let sellingPlatforms = "ecommerce_platforms"
             static let countryCode = "country_code"
@@ -68,7 +67,6 @@ extension WooAnalyticsEvent {
                                              countryCode: SiteAddress.CountryCode?) -> WooAnalyticsEvent {
             let properties = [
                 Key.category: category?.value,
-                Key.categoryGroup: category?.groupValue,
                 Key.sellingStatus: sellingStatus?.sellingStatus.analyticsValue,
                 Key.sellingPlatforms: sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ","),
                 Key.countryCode: countryCode?.rawValue

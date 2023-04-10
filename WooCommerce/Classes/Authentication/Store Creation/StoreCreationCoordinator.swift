@@ -382,7 +382,6 @@ private extension StoreCreationCoordinator {
                         let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
                         return .init(name: storeName,
                                      category: category?.value,
-                                     categoryGroup: category?.groupValue,
                                      sellingStatus: sellingStatus?.sellingStatus,
                                      sellingPlatforms: sellingPlatforms,
                                      countryCode: countryCode.rawValue)

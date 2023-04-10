@@ -75,6 +75,18 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }
 
+        /// Tracked when the site creation process takes too much time waiting for the store to be ready.
+        ///
+        static func siteCreationTimedOut() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationTimedOut, properties: [:])
+        }
+
+        /// Tracked when the store is jetpack ready, but other store properties are not in sync yet.
+        ///
+        static func siteCreationPropertiesOutOfSync() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationPropertiesOutOfSync, properties: [:])
+        }
+
         /// Tracked when the user taps on the CTA in login prologue (logged out) to create a store.
         static func loginPrologueCreateSiteTapped(isFreeTrial: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginPrologueCreateSiteTapped,

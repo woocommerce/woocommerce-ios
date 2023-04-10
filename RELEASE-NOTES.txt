@@ -2,6 +2,7 @@
 
 13.2
 -----
+- [**] Payments: UK merchants can collect In-Person Payments [https://github.com/woocommerce/woocommerce-ios/pull/9415]
 
 
 13.1

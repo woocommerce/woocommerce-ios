@@ -22,7 +22,6 @@ struct ProductInputTransformer {
     /// Adds, deletes, or updates order items based on the given product input.
     ///
     static func update(input: OrderSyncProductInput, on order: Order) -> Order {
-        // If the input's quantity is 0 or less, delete the item if required.
         guard input.quantity > 0 else {
             return remove(input: input, from: order)
         }
@@ -48,7 +47,6 @@ struct ProductInputTransformer {
             updateOrderItems(from: order, with: input, orderItems: &updatedOrderItems)
         }
 
-        // If the input's quantity is 0 or less, delete the item if required.
         // We perform a second loop for deletions so we don't attempt to access to overflown indexes
         for input in inputs {
             guard input.quantity > 0 else {
@@ -91,7 +89,6 @@ private extension ProductInputTransformer {
     ///
     /// - Returns: An array of Order Item entities
     private static func updateOrderItems(from input: OrderSyncProductInput, order: Order) -> [OrderItem] {
-        // If the input's quantity is 0 or less, delete the item if required.
         guard input.quantity > 0 else {
             return remove(input: input, from: order).items
         }

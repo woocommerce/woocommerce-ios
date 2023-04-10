@@ -657,6 +657,11 @@ private extension StoreCreationCoordinator {
         let retryInterval: UInt64 = isFreeTrialCreation ? 10_000_000_000 : 5_000_000_000
         siteIDFromStoreCreation = siteID
 
+        /// Determines if the `.siteCreationPropertiesOutOfSync` event has already been tracked.
+        /// Needed because we should only track this event once per store creation process.
+        ///
+        var haveTrackedOutOfSyncEvent = false
+
         jetpackSiteSubscription = $siteIDFromStoreCreation
             .compactMap { $0 }
             .removeDuplicates()
@@ -665,6 +670,26 @@ private extension StoreCreationCoordinator {
                 try await Task.sleep(nanoseconds: retryInterval)
                 return try await self?.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
             }
+            .receive(on: DispatchQueue.main)
+            .handleEvents(receiveCompletion: { [weak self] output in
+                guard let self else { return }
+
+                // Track when a properties out of sync event occur, but only track it once.
+                if self.isPropertiesOutOfSyncError(output) && !haveTrackedOutOfSyncEvent {
+                    self.analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
+                    haveTrackedOutOfSyncEvent = true
+                }
+            })
+            .handleEvents(receiveCompletion: { [weak self] output in
+                guard let self else { return }
+                self.storeCreationProgressViewModel?.incrementProgress()
+
+                // Track when a properties out of sync event occur, but only track it once.
+                if self.isPropertiesOutOfSyncError(output) && !haveTrackedOutOfSyncEvent {
+                    self.analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
+                    haveTrackedOutOfSyncEvent = true
+                }
+            })
             // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.
             .retry(10)
@@ -694,6 +719,19 @@ private extension StoreCreationCoordinator {
             }
     }
 
+    /// Determines if a given Subscriber.Completion entity contains a `StoreCreationError.newSiteIsNotFullySynced` error.
+    ///
+    @MainActor
+    func isPropertiesOutOfSyncError(_ output: Subscribers.Completion<Error>) -> Bool {
+        switch output {
+        case .failure(let error):
+            guard let creationError = error as? StoreCreationError else { return false }
+            return creationError == .newSiteIsNotFullySynced
+        case .finished:
+            return false
+        }
+    }
+
     @MainActor
     func syncSites(forSiteThatMatchesSiteID siteID: Int64, expectedStoreName: String) async throws -> Site {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
@@ -718,7 +756,7 @@ private extension StoreCreationCoordinator {
                 // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
                 guard site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName else {
                     DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
+                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotFullySynced)
                 }
 
                 continuation.resume(returning: site)

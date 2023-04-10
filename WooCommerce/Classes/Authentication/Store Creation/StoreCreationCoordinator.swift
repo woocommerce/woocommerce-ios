@@ -46,6 +46,11 @@ final class StoreCreationCoordinator: Coordinator {
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
+    private var jetpackCheckRetryInterval: TimeInterval {
+        isFreeTrialCreation ? 10 : 5
+    }
+
+    private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
 
     init(source: Source,
          navigationController: UINavigationController,
@@ -642,9 +647,12 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
-        let inProgressView = InProgressViewController(viewProperties: viewProperties)
+        let approxSecondsToWaitForNetworkRequest = 10.0
+        let viewModel = StoreCreationProgressViewModel(estimatedTimePerProgress: jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
+        let storeCreationProgressView = StoreCreationProgressHostingViewController(viewModel: viewModel)
         navigationController.isNavigationBarHidden = true
-        navigationController.pushViewController(inProgressView, animated: true)
+        self.storeCreationProgressViewModel = viewModel
+        navigationController.pushViewController(storeCreationProgressView, animated: true)
     }
 
     @MainActor
@@ -669,22 +677,27 @@ private extension StoreCreationCoordinator {
     func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64, expectedStoreName: String) {
         /// Free trial sites need more waiting time that regular sites.
         ///
-        let retryInterval: UInt64 = isFreeTrialCreation ? 10_000_000_000 : 5_000_000_000
         siteIDFromStoreCreation = siteID
 
         jetpackSiteSubscription = $siteIDFromStoreCreation
             .compactMap { $0 }
             .removeDuplicates()
             .asyncMap { [weak self] siteID -> Site? in
+                guard let self else {
+                    return nil
+                }
                 // Waits some seconds before syncing sites every time.
-                try await Task.sleep(nanoseconds: retryInterval)
-                return try await self?.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
+                try await Task.sleep(nanoseconds: UInt64(self.jetpackCheckRetryInterval * 1_000_000_000))
+                return try await self.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
             }
+            .receive(on: DispatchQueue.main)
+            .handleEvents(receiveCompletion: { [weak self] output in
+                self?.storeCreationProgressViewModel?.incrementProgress()
+            })
             // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.
             .retry(10)
             .replaceError(with: nil)
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self else { return }
                 guard let site else {
@@ -694,6 +707,8 @@ private extension StoreCreationCoordinator {
                     }
                     return
                 }
+
+                self.storeCreationProgressViewModel?.markAsComplete()
 
                 /// Free trial stores should land directly on the dashboard and not show any success view.
                 ///

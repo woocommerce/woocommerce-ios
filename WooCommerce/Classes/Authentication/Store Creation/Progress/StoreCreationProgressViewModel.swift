@@ -12,7 +12,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
         case finished = 4.0
     }
 
-    @Published private(set) var progress: Progress = .creatingStore
+    @Published private var progress: Progress = .creatingStore
 
     let totalProgressAmount = StoreCreationProgressViewModel.Progress.finished.rawValue
 

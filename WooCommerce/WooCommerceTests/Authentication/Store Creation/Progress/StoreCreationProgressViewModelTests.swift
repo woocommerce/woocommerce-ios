@@ -4,14 +4,6 @@ import XCTest
 final class StoreCreationProgressViewModelTests: XCTestCase {
     // MARK: Initial values
 
-    func test_progress_has_correct_initial_value() {
-        // Given
-        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
-
-        // Then
-        XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.creatingStore)
-    }
-
     func test_totalProgressAmount_has_correct_initial_value() {
         // Given
         let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
@@ -105,47 +97,47 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
 
     // MARK: Incrementing to next progress stage
 
-    func test_incrementProgress_sets_progress_as_expected() {
+    func test_incrementProgress_sets_progressValue_as_expected() {
         // Given
         let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
 
         // Then
-        XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.creatingStore)
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.creatingStore.rawValue)
 
         // When
         sut.incrementProgress()
 
         // Then
-        XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.buildingFoundations)
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.buildingFoundations.rawValue)
 
         // When
         sut.incrementProgress()
 
         // Then
-        XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.organizingStockRoom)
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.organizingStockRoom.rawValue)
 
         // When
         sut.incrementProgress()
 
         // Then
-        XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.applyingFinishingTouches)
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.applyingFinishingTouches.rawValue)
 
         // When
         sut.incrementProgress()
 
         // Then
-        XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.finished)
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.finished.rawValue)
 
         // When
         sut.incrementProgress()
 
         // Then
-        XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.finished)
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.finished.rawValue)
     }
 
     // MARK: Marking as complete
 
-    func test_markAsComplete_sets_progress_as_finished() {
+    func test_markAsComplete_sets_progressValue_as_finished() {
         // Given
         let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
 
@@ -153,6 +145,6 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         sut.markAsComplete()
 
         // Then
-        XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.finished)
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.finished.rawValue)
     }
 }

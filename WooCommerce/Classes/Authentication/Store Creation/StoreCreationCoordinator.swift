@@ -762,6 +762,8 @@ private extension StoreCreationCoordinator {
         alertController.view.tintColor = .text
         _ = alertController.addCancelActionWithTitle(Localization.WaitingForJetpackSite.TimeoutAlert.cancelActionTitle) { _ in }
         navigationController.present(alertController, animated: true)
+
+        analytics.track(event: .StoreCreation.siteCreationTimedOut())
     }
 }
 

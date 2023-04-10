@@ -100,6 +100,7 @@ struct AccountCreationForm: View {
                     .textInputAutocapitalization(.never)
                     .focused($focusedField, equals: .password)
                     .disabled(isPerformingTask)
+                    .renderedIf(viewModel.shouldShowPasswordField)
 
                     // Terms of Service link.
                     AttributedText(tosAttributedText, enablesLinkUnderline: true)
@@ -109,8 +110,19 @@ struct AccountCreationForm: View {
                         }
                         .safariSheet(url: $tosURL)
                 }
-
-                // CTA to submit the form.
+            }
+            .padding(.init(top: 0, leading: Layout.horizontalSpacing, bottom: 0, trailing: Layout.horizontalSpacing))
+        }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(Localization.loginButtonTitle, action: loginButtonTapped)
+                    .buttonStyle(TextButtonStyle())
+                    .disabled(isPerformingTask)
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            // CTA to submit the form.
+            VStack {
                 Button(Localization.submitButtonTitle.localizedCapitalized) {
                     Task { @MainActor in
                         isPerformingTask = true
@@ -124,15 +136,9 @@ struct AccountCreationForm: View {
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPerformingTask))
                 .disabled(!(viewModel.isEmailValid && viewModel.isPasswordValid) || isPerformingTask)
+                .padding()
             }
-            .padding(.init(top: 0, leading: Layout.horizontalSpacing, bottom: 0, trailing: Layout.horizontalSpacing))
-        }
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(Localization.loginButtonTitle, action: loginButtonTapped)
-                    .buttonStyle(TextButtonStyle())
-                    .disabled(isPerformingTask)
-            }
+            .background(Color(uiColor: .systemBackground))
         }
     }
 }

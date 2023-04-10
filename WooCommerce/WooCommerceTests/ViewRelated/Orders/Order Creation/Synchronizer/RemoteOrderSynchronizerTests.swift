@@ -240,7 +240,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(item.quantity, updatedInput.quantity)
     }
 
-    func test_sending_delete_product_input_updates_local_order() throws {
+    func test_sending_delete_product_input_updates_local_order_with_zero_order_items() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -253,11 +253,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setProduct.send(updatedInput)
 
         // Then
-        XCTAssertEqual(synchronizer.order.items.count, 1)
-        XCTAssertEqual(synchronizer.order.items[0].quantity, .zero)
+        XCTAssertEqual(synchronizer.order.items.count, 0)
+        XCTAssertTrue(synchronizer.order.items.isEmpty)
     }
 
-    func test_sending_delete_productID_input_updates_local_order() throws {
+    func test_sending_delete_productID_input_updates_local_order_with_zero_order_items() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
@@ -269,8 +269,8 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setProduct.send(updatedInput)
 
         // Then
-        XCTAssertEqual(synchronizer.order.items.count, 1)
-        XCTAssertEqual(synchronizer.order.items[0].quantity, .zero)
+        XCTAssertEqual(synchronizer.order.items.count, 0)
+        XCTAssertTrue(synchronizer.order.items.isEmpty)
     }
 
     func test_sending_addresses_input_updates_local_order() throws {

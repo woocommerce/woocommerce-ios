@@ -20,7 +20,7 @@ class ProductInputTransformerTests: XCTestCase {
         let originalOrder = OrderFactory.emptyNewOrder
 
         // When
-        let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder)
 
         // Then
         let item = try XCTUnwrap(updatedOrder.items.first)
@@ -44,10 +44,7 @@ class ProductInputTransformerTests: XCTestCase {
         let originalOrder = OrderFactory.emptyNewOrder
 
         // When
-        let updatedOrder = ProductInputTransformer.updateMultipleItems(
-            with: input,
-            on: originalOrder,
-            shouldUpdateOrDeleteZeroQuantities: .delete)
+        let updatedOrder = ProductInputTransformer.updateMultipleItems(with: input, on: originalOrder)
 
         // Then
         let items = try XCTUnwrap(updatedOrder.items)
@@ -73,7 +70,7 @@ class ProductInputTransformerTests: XCTestCase {
         let originalOrder = OrderFactory.emptyNewOrder
 
         // When
-        let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let updatedOrder = ProductInputTransformer.update(input: input, on: originalOrder)
 
         // Then
         let item = try XCTUnwrap(updatedOrder.items.first)
@@ -101,10 +98,7 @@ class ProductInputTransformerTests: XCTestCase {
         let originalOrder = OrderFactory.emptyNewOrder
 
         // When
-        let updatedOrder = ProductInputTransformer.updateMultipleItems(
-            with: input,
-            on: originalOrder,
-            shouldUpdateOrDeleteZeroQuantities: .delete)
+        let updatedOrder = ProductInputTransformer.updateMultipleItems(with: input, on: originalOrder)
 
         // Then
         let items = try XCTUnwrap(updatedOrder.items)
@@ -128,11 +122,11 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let input1 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleInputID + 1, product: .product(product), quantity: 1)
-        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1)
 
         // Then
         XCTAssertEqual(update2.items.count, 2)
@@ -142,11 +136,11 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2)
-        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1)
 
         // Then
         let item = try XCTUnwrap(update2.items.first)
@@ -162,13 +156,11 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
-        let initialOrder = ProductInputTransformer.updateMultipleItems(with: [productInput],
-                                                                       on: OrderFactory.emptyNewOrder,
-                                                                       shouldUpdateOrDeleteZeroQuantities: .delete)
+        let initialOrder = ProductInputTransformer.updateMultipleItems(with: [productInput], on: OrderFactory.emptyNewOrder)
 
         // When
         let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2)
-        let updatedOrder = ProductInputTransformer.updateMultipleItems(with: [productInput2], on: initialOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let updatedOrder = ProductInputTransformer.updateMultipleItems(with: [productInput2], on: initialOrder)
 
         // Then
         // Confirm that we still have only 1 item
@@ -192,7 +184,7 @@ class ProductInputTransformerTests: XCTestCase {
 
         // When
         let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
-        let updatedOrder = ProductInputTransformer.update(input: input, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
+        let updatedOrder = ProductInputTransformer.update(input: input, on: order)
 
         // Then
         let updatedItem = try XCTUnwrap(updatedOrder.items.first)
@@ -209,7 +201,7 @@ class ProductInputTransformerTests: XCTestCase {
 
         // When
         let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
-        let updatedOrder = ProductInputTransformer.updateMultipleItems(with: [input], on: order, shouldUpdateOrDeleteZeroQuantities: .update)
+        let updatedOrder = ProductInputTransformer.updateMultipleItems(with: [input], on: order)
 
         // Then
         let updatedItem = try XCTUnwrap(updatedOrder.items.first)
@@ -222,11 +214,11 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder)
 
         // When
         let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0)
-        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1)
 
         // Then
         XCTAssertEqual(update2.items.count, 0)
@@ -236,50 +228,12 @@ class ProductInputTransformerTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
         let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
-        let initialOrderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput],
-                                                                             on: OrderFactory.emptyNewOrder,
-                                                                             shouldUpdateOrDeleteZeroQuantities: .delete)
+        let initialOrderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput], on: OrderFactory.emptyNewOrder)
 
         // When
         let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0)
-        let orderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput2],
-                                                                      on: initialOrderUpdate,
-                                                                      shouldUpdateOrDeleteZeroQuantities: .delete)
+        let orderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput2], on: initialOrderUpdate)
         // Then
         XCTAssertEqual(orderUpdate.items.count, 0)
-    }
-
-    func test_sending_a_zero_quantity_update_product_input_does_not_delete_item_on_order() throws {
-        // Given
-        let product = Product.fake().copy(productID: sampleProductID)
-        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
-        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .update)
-
-        // When
-        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0)
-        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .update)
-
-        // Then
-        let item = try XCTUnwrap(update2.items.first)
-        XCTAssertEqual(item.quantity, input2.quantity)
-    }
-
-    func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_updates_zero_quantities_then_updates_item_on_order() throws {
-        // Given
-        let product = Product.fake().copy(productID: sampleProductID)
-        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
-        let initialOrderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput],
-                                                                             on: OrderFactory.emptyNewOrder,
-                                                                             shouldUpdateOrDeleteZeroQuantities: .update)
-
-        // When
-        let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0)
-        let orderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput2],
-                                                                      on: initialOrderUpdate,
-                                                                      shouldUpdateOrDeleteZeroQuantities: .update)
-
-        // Then
-        let item = try XCTUnwrap(orderUpdate.items.first)
-        XCTAssertEqual(item.quantity, productInput2.quantity)
     }
 }

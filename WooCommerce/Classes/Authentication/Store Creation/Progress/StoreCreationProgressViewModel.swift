@@ -116,21 +116,6 @@ private extension StoreCreationProgressViewModel.Progress {
 }
 
 private extension StoreCreationProgressViewModel.Progress {
-    func next() -> Self? {
-        let all = Self.allCases
-        guard let idx = all.firstIndex(of: self) else {
-            return nil
-        }
-
-        let next = all.index(after: idx)
-
-        if next == all.endIndex {
-            return nil
-        }
-
-        return all[next]
-    }
-
     enum Localization {
         enum Title {
             static let wooWeAreCreatingYourStore = NSLocalizedString("Woo! We are creating your store",

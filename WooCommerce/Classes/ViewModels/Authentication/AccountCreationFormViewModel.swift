@@ -24,6 +24,9 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// Local validation on the password field.
     @Published private(set) var isPasswordValid: Bool = false
 
+    /// Whether the password field should be present.
+    @Published private(set) var shouldShowPasswordField: Bool = false
+
     private let stores: StoresManager
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-29 09:54:20+0000 */
+/* Translation-Revision-Date: 2023-04-05 09:54:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -122,8 +122,8 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d個の商品";
 
-/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
-"%1$d Products selected" = "%1$d件の商品を選択済み";
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
+"%1$d Products Selected" = "%1$d件の商品を選択済み";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d営業日";
@@ -255,11 +255,9 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
 "1" = "1";
 
-/* Navigation bar title for selecting multiple products when one product has been selected. */
+/* Navigation bar title for selecting multiple products when one product has been selected.
+   Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1件の商品を選択済み";
-
-/* Title of the action button at the bottom of the Select Products screen when one product is selected */
-"1 Product selected" = "1件の商品を選択済み";
 
 /* Message of the free trial banner when there is 1 day left */
 "1 day left in your trial." = "お試し期間はあと1日です。";
@@ -2667,9 +2665,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL を入力";
 
-/* Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "ストアの住所を入力";
-
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "クーポンを入力";
 
@@ -3090,6 +3085,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "購入から履行まで - アプリから注文処理全体を管理します。";
+
+/* Subtitle displayed in the simplified prologue screen */
+"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "はじめての販売から数百万ドルの収益まで、Woo はあなたと共にあります。 Woo がなぜマーチャントから支持され、340にのぼるオンラインストアに利用されているかがおわかりいただけます。";
 
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "燃料ディスペンサー";
@@ -3983,6 +3981,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Loans Or Lending" = "ローン、貸付";
 
 /* Button title.  Tapping takes the user to the login form.
+   Button title. Takes the user to the login by store address flow.
    Log In button label.
    Title for the application password authorization web view
    View title during the log in process. */
@@ -6202,6 +6201,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "配送業者と金額を選択";
 
+/* Caption displayed in the simplified prologue screen */
+"Sell anything, anywhere." = "あらゆるものを売り、あらゆる場所へ届ける";
+
 /* Text for the send button in the product review reply screen */
 "Send" = "送信";
 
@@ -6831,6 +6833,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Switzerland" = "スイス";
+
+/* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
+"Syncing data" = "データを同期しています";
 
 /* Country option for a site address. */
 "Syria" = "シリア";
@@ -7531,6 +7536,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "自動クラッシュレポートを有効化して、アプリのパフォーマンス向上とたまに発生するバグの修正にご協力ください。";
 
+/* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
+"To launch your store, you need to upgrade to our plan. %1$@" = "ストアを公開するには、プランのアップグレードが必要です。%1$@";
+
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "この Apple ID で先に進むには、まず WordPress.com パスワードを使用してログインしてください。 これは一度しか尋ねられません。";
 
@@ -7824,6 +7832,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "国情報を取得できませんでした。後ほど、もう一度お試しください。";
 
+/* Error message when failing to fetch the WPCom account after logging in with magic link. */
+"Unable to fetch the logged in WordPress.com account. Please try again." = "ログイン中の WordPress.com アカウントを取得できません。 もう一度お試しください。";
+
 /* Error title for when we can't fetch existing variations. */
 "Unable to fetch variations" = "バリエーションを取得できません";
 
@@ -7907,6 +7918,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "その URL の WordPress サイトを読み込めません。 「ヘルプが必要ですか ?」をタップして FAQ を表示してください。";
+
+/* Error message displayed when failing to fetch the current site info. */
+"Unable to refresh current site info" = "現在のサイト情報を再読み込みできません";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "リストを更新できません";
@@ -8097,6 +8111,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "商品を更新中...";
+
+/* Title on the button to upgrade a free trial plan. */
+"Upgrade" = "アップグレード";
 
 /* Title for the button to upgrade from a free trial
    Title for the WebView when upgrading a free trial plan
@@ -8573,9 +8590,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce の送料";
 
-/* Caption displayed in the simplified prologue screen */
-"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce は WordPress に構築された、カスタマイズ可能かつオープンソースの eコマースプラットフォームです。";
-
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
 
@@ -8708,7 +8722,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your free store address" = "無料ストアのアドレス";
 
 /* Info details for an expired free trial */
-"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "お試し期間が終了したため、ご利用いただける機能に制限がかかります。 今すぐeコマースにサブスクリプション登録しましょう。";
+"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "お試し期間が終了しました。すべての機能へのアクセスが制限されています。 今すぐ Woo Express Performance プランのサブスクリプションを契約しましょう。";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone をカードリーダーとして使用するか、Bluetooth 経由で外付けリーダーに接続できます。";

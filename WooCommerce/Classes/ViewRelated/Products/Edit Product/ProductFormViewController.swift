@@ -453,7 +453,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isActionable else {
                     return
                 }
-                // TODO-9237: Track composite row is tapped
+                ServiceLocator.analytics.track(event: .ProductDetail.componentsTapped())
                 showCompositeComponents()
             }
         case .optionsCTA(let rows):

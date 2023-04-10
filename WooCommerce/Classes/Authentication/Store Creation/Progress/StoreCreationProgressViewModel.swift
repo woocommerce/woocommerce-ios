@@ -12,11 +12,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
         case finished = 4.0
     }
 
-    @Published private(set) var progress: Progress = .creatingStore {
-        didSet {
-            progressValue = progress.rawValue
-        }
-    }
+    @Published private(set) var progress: Progress = .creatingStore
 
     let totalProgressAmount = StoreCreationProgressViewModel.Progress.finished.rawValue
 
@@ -51,6 +47,9 @@ final class StoreCreationProgressViewModel: ObservableObject {
         // Increment the progress value until next progress increment
         let gapBetweenProgress = Progress.allCases[1].rawValue - Progress.allCases[0].rawValue
         self.incrementProgressValueBy = (gapBetweenProgress / (incrementInterval / progressViewAnimationTimerInterval))
+        $progress
+            .map { $0.rawValue }
+            .assign(to: &$progressValue)
     }
 
     // MARK: Public methods

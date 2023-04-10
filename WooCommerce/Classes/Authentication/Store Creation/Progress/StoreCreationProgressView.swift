@@ -106,6 +106,6 @@ private extension StoreCreationProgressView {
 
 struct StoreCreationProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(incrementInterval: 1))
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1))
     }
 }

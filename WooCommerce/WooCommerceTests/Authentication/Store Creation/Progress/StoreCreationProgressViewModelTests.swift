@@ -14,7 +14,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
 
     func test_progress_has_correct_initial_value() {
         // Given
-        let sut = StoreCreationProgressViewModel(incrementInterval: 1)
+        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
 
         // Then
         XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.creatingStore)
@@ -22,7 +22,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
 
     func test_totalProgressAmount_has_correct_initial_value() {
         // Given
-        let sut = StoreCreationProgressViewModel(incrementInterval: 1)
+        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
 
         // Then
         XCTAssertEqual(sut.totalProgressAmount, StoreCreationProgressViewModel.Progress.finished.rawValue)
@@ -30,7 +30,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
 
     func test_progressValue_has_correct_initial_value() {
         // Given
-        let sut = StoreCreationProgressViewModel(incrementInterval: 1)
+        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
 
         // Then
         XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.creatingStore.rawValue)
@@ -42,7 +42,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         // Given
         let timeInterval = 0.1
         let incrementInterval = 1.0
-        let sut = StoreCreationProgressViewModel(incrementInterval: incrementInterval,
+        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: incrementInterval,
                                                  progressViewAnimationTimerInterval: timeInterval)
         let gapBetweenProgress = StoreCreationProgressViewModel.Progress.allCases[1].rawValue - StoreCreationProgressViewModel.Progress.allCases[0].rawValue
         let expectedIncrement = (gapBetweenProgress / (incrementInterval / timeInterval))
@@ -64,7 +64,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         // Given
         let timeInterval = 0.1
         let incrementInterval = 1.0
-        let sut = StoreCreationProgressViewModel(incrementInterval: incrementInterval,
+        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: incrementInterval,
                                                  progressViewAnimationTimerInterval: timeInterval)
 
         // Then
@@ -89,7 +89,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         // Given
         let timeInterval = 0.1
         let incrementInterval = 1.0
-        let sut = StoreCreationProgressViewModel(incrementInterval: incrementInterval,
+        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: incrementInterval,
                                                  progressViewAnimationTimerInterval: timeInterval)
 
         // Then
@@ -115,7 +115,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
 
     func test_incrementProgress_sets_progress_as_expected() {
         // Given
-        let sut = StoreCreationProgressViewModel(incrementInterval: 1)
+        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
 
         // Then
         XCTAssertEqual(sut.progress, StoreCreationProgressViewModel.Progress.creatingStore)
@@ -155,7 +155,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
 
     func test_markAsComplete_sets_progress_as_finished() {
         // Given
-        let sut = StoreCreationProgressViewModel(incrementInterval: 1)
+        let sut = StoreCreationProgressViewModel(expectNextIncrementToOccurAfter: 1)
 
         // When
         sut.markAsComplete()

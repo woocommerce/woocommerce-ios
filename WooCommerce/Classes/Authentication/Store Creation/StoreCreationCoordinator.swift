@@ -647,7 +647,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
-        let approxSecondsToWaitForNetworkRequest = 5.0
+        let approxSecondsToWaitForNetworkRequest = 10.0
         let viewModel = StoreCreationProgressViewModel(estimatedTimePerProgress: jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
         let storeCreationProgressView = StoreCreationProgressHostingViewController(viewModel: viewModel)
         navigationController.isNavigationBarHidden = true

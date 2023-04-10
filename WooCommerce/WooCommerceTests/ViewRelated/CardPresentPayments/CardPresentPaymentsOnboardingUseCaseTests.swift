@@ -122,7 +122,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .ca)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
-        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanadaUK)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
@@ -137,7 +137,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_returns_wcpay_plugin_unsupported_version_for_canada_when_version_unsupported() {
         // Given
         setupCountry(country: .ca)
-        setupWCPayPlugin(status: .active, version: .unsupportedVersionCanadaUK)
+        setupWCPayPlugin(status: .active, version: .unsupportedVersionCanada)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
@@ -152,7 +152,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_does_not_return_plugin_unsupported_version_for_canada_when_version_is_supported() {
         // Given
         setupCountry(country: .ca)
-        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanadaUK)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanada)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
@@ -210,9 +210,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_setup_not_completed_stripe_when_stripe_and_wcPay_plugins_are_installed_in_UK() {
         // Given
-        setupCountry(country: .ca)
+        setupCountry(country: .gb)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
-        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanadaUK)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionUK)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
@@ -227,7 +227,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_returns_wcpay_plugin_unsupported_version_for_uk_when_version_unsupported() {
         // Given
         setupCountry(country: .gb)
-        setupWCPayPlugin(status: .active, version: .unsupportedVersionCanadaUK)
+        setupWCPayPlugin(status: .active, version: .unsupportedVersionUK)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
@@ -242,7 +242,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_does_not_return_plugin_unsupported_version_for_uk_when_version_is_supported() {
         // Given
         setupCountry(country: .gb)
-        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionCanadaUK)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionUK)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
@@ -266,7 +266,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertNotEqual(state, .countryNotSupported(countryCode: "CA"))
+        XCTAssertNotEqual(state, .countryNotSupported(countryCode: "GB"))
     }
 
 
@@ -1118,9 +1118,11 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
     enum WCPayPluginVersion: String {
         case unsupportedVersionWithPatch = "2.4.2"
         case unsupportedVersionWithoutPatch = "3.2"
-        case unsupportedVersionCanadaUK = "3.9.0"
+        case unsupportedVersionCanada = "3.9.0"
+        case unsupportedVersionUK = "4.3.0"
         case minimumSupportedVersion = "3.2.1" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for the US
-        case minimumSupportedVersionCanadaUK = "4.0.0" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for Canada and UK
+        case minimumSupportedVersionCanada = "4.0.0" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for Canada
+        case minimumSupportedVersionUK = "4.4.0" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for UK
         case supportedVersionWithPatch = "3.2.5"
         case supportedVersionWithoutPatch = "3.3"
     }

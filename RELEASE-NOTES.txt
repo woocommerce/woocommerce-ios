@@ -3,6 +3,7 @@
 13.2
 -----
 - [Internal] Store creation: New loading screen added for create store flow. [https://github.com/woocommerce/woocommerce-ios/pull/9383]
+- [**] Payments: UK merchants can collect In-Person Payments [https://github.com/woocommerce/woocommerce-ios/pull/9415]
 
 
 13.1

@@ -19,17 +19,11 @@ struct ProductInputTransformer {
         }
     }
 
-    enum UpdateOrDelete {
-        case update
-        case delete
-    }
-
     /// Adds, deletes, or updates order items based on the given product input.
-    /// When `shouldUpdateOrDeleteZeroQuantities` value is `.update`, items with `.zero` quantities will be updated instead of being deleted.
     ///
-    static func update(input: OrderSyncProductInput, on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
+    static func update(input: OrderSyncProductInput, on order: Order) -> Order {
         // If the input's quantity is 0 or less, delete the item if required.
-        guard input.quantity > 0 || shouldUpdateOrDeleteZeroQuantities == .update else {
+        guard input.quantity > 0 else {
             return remove(input: input, from: order)
         }
 
@@ -45,10 +39,9 @@ struct ProductInputTransformer {
     /// - Parameters:
     ///   - inputs: Array of product types the OrderSynchronizer supports
     ///   - order: Represents an Order entity.
-    ///   - shouldUpdateOrDeleteZeroQuantities: When its value is `.update`, items with `.zero` quantities will be updated instead of being deleted.
     ///
     /// - Returns: An Order entity.
-    static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
+    static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order) -> Order {
         var updatedOrderItems = order.items
 
         for input in inputs {
@@ -58,7 +51,7 @@ struct ProductInputTransformer {
         // If the input's quantity is 0 or less, delete the item if required.
         // We perform a second loop for deletions so we don't attempt to access to overflown indexes
         for input in inputs {
-            guard input.quantity > 0 || shouldUpdateOrDeleteZeroQuantities == .update else {
+            guard input.quantity > 0 else {
                 updatedOrderItems.removeAll(where: { $0.itemID == input.id })
                 return order.copy(items: updatedOrderItems)
             }
@@ -95,12 +88,11 @@ private extension ProductInputTransformer {
     /// - Parameters:
     ///   - input: Types of products the synchronizer supports
     ///   - order: Represents an Order entity.
-    ///   - shouldUpdateOrDeleteZeroQuantities: When its value is `.update`, items with `.zero` quantities will be updated instead of being deleted.
     ///
     /// - Returns: An array of Order Item entities
-    private static func updateOrderItems(from input: OrderSyncProductInput, order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> [OrderItem] {
+    private static func updateOrderItems(from input: OrderSyncProductInput, order: Order) -> [OrderItem] {
         // If the input's quantity is 0 or less, delete the item if required.
-        guard input.quantity > 0 || shouldUpdateOrDeleteZeroQuantities == .update else {
+        guard input.quantity > 0 else {
             return remove(input: input, from: order).items
         }
 

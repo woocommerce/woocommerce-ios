@@ -139,7 +139,7 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] productInput, order -> Order in
                 guard let self = self else { return order }
                 let localInput = self.replaceInputWithLocalIDIfNeeded(productInput)
-                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
+                let updatedOrder = ProductInputTransformer.update(input: localInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
@@ -157,10 +157,7 @@ private extension RemoteOrderSynchronizer {
                     self.replaceInputWithLocalIDIfNeeded($0)
                 }
 
-                let updatedOrder = ProductInputTransformer.updateMultipleItems(
-                    with: localInputs,
-                    on: order,
-                    shouldUpdateOrDeleteZeroQuantities: .update)
+                let updatedOrder = ProductInputTransformer.updateMultipleItems(with: localInputs, on: order)
 
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }

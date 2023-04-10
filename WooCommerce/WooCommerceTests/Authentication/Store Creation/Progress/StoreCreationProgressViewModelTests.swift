@@ -2,14 +2,6 @@ import XCTest
 @testable import WooCommerce
 
 final class StoreCreationProgressViewModelTests: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     // MARK: Initial values
 
     func test_progress_has_correct_initial_value() {

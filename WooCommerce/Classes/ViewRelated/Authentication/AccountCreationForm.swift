@@ -173,7 +173,7 @@ private extension AccountCreationForm {
         static let passwordFieldPlaceholder = NSLocalizedString("Password", comment: "Placeholder of the password field on the account creation form.")
         static let tosFormat = NSLocalizedString("By continuing, you agree to our %1$@.", comment: "Terms of service format on the account creation form.")
         static let tos = NSLocalizedString("Terms of Service", comment: "Terms of service link on the account creation form.")
-        static let submitButtonTitle = NSLocalizedString("Get started", comment: "Title of the submit button on the account creation form.")
+        static let submitButtonTitle = NSLocalizedString("Continue", comment: "Title of the submit button on the account creation form.")
     }
 
     enum Layout {

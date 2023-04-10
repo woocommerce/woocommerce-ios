@@ -82,12 +82,12 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                     "woocommerce_onboarding_profile": [
                         "industry": [
                             [
-                                "slug": profilerData.categoryGroup, // TODO: we need to clarify this list from Ghidorah
-                                "detail": profilerData.category // Only populated when it's a subcategory
+                                "slug": profilerData.categoryGroup,
+                                "detail": profilerData.category
                             ].compactMapValues { $0 }
                         ],
                         "is_store_country_set": true,
-                        "selling_venues": profilerData.sellingStatus?.rawValue,
+                        "selling_venues": profilerData.sellingStatus?.rawValue as Any?,
                         "other_platform": profilerData.sellingPlatforms as Any?
                     ].compactMapValues { $0 }
                 ]
@@ -174,7 +174,7 @@ public extension SiteCreationResponse {
     }
 }
 
-/// Data from the site creation profiler questions.
+/// Answers from the site creation profiler questions.
 public struct SiteProfilerData {
     public let name: String
     public let category: String?

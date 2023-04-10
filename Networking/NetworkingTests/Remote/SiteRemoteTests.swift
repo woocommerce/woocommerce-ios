@@ -163,6 +163,24 @@ final class SiteRemoteTests: XCTestCase {
         XCTAssertEqual(profilerIndustryDictionary, [["slug": "other"]])
     }
 
+    func test_enableFreeTrial_with_nil_industry_data_does_not_contain_industry_parameters() async throws {
+        // When
+        try? await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
+                                                                           // Both industry (category) data are nil.
+                                                                           category: nil,
+                                                                           categoryGroup: nil,
+                                                                           sellingStatus: .alreadySellingOnline,
+                                                                           sellingPlatforms: "wordPress",
+                                                                           countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let onboardingDictionary = try XCTUnwrap(parameterDictionary["wpcom_woocommerce_onboarding"] as? [String: Any])
+        let profilerDictionary = try XCTUnwrap(onboardingDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        let profilerIndustryDictionary = try XCTUnwrap(profilerDictionary["industry"] as? [[String: String]])
+        XCTAssertEqual(profilerIndustryDictionary, [[:]])
+    }
+
     func test_enableFreeTrial_with_nil_selling_status_does_not_contain_selling_status_parameters() async throws {
         // When
         try? await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",

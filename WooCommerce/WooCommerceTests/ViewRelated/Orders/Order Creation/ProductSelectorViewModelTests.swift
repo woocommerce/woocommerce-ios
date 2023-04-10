@@ -126,17 +126,15 @@ final class ProductSelectorViewModelTests: XCTestCase {
             storageManager: mockStorageManager,
             stores: mockStores
         )
+        var syncStatusSpy: [ProductSelectorViewModel.SyncStatus] = []
+
         mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
-                // TODO: This assertion will fail if we ran the test class or suite, but not individually
-                // And will fail not here, but on `test_synchronizeProducts_are_triggered_with_correct_filters`
-                // most likely we're persisnting sync state?
-                //XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
+                if let syncStatus = viewModel.syncStatus {
+                    syncStatusSpy.append(syncStatus)
+                }
                 let readOnlyProduct = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
-                // TODO: Refactor
-                // We're making sure to insert the product in the correct context storage,
-                // in this case we can't use the factory method as is a different context and thread and will fail
                 let product = mockStorageManager.viewStorage.insertNewObject(ofType: StorageProduct.self)
                 product.update(with: readOnlyProduct)
                 onCompletion(.success(true))
@@ -149,6 +147,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
 
         // Then
+        XCTAssertTrue(syncStatusSpy.contains(.firstPageSync))
         XCTAssertEqual(viewModel.syncStatus, .results)
     }
 

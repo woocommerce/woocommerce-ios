@@ -126,16 +126,22 @@ struct AccountCreationForm: View {
                 Button(Localization.submitButtonTitle.localizedCapitalized) {
                     Task { @MainActor in
                         isPerformingTask = true
-                        let createAccountCompleted = (try? await viewModel.createAccount()) != nil
-                        isPerformingTask = false
-
-                        if createAccountCompleted {
-                            completion()
+                        if viewModel.shouldShowPasswordField == false {
+                            let accountExists = await viewModel.checkIfWordPressAccountExists()
+                            if accountExists {
+                                // TODO: show login flow
+                            }
+                        } else {
+                            let createAccountCompleted = (try? await viewModel.createAccount()) != nil
+                            if createAccountCompleted {
+                                completion()
+                            }
                         }
+                        isPerformingTask = false
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPerformingTask))
-                .disabled(!(viewModel.isEmailValid && viewModel.isPasswordValid) || isPerformingTask)
+                .disabled(!viewModel.submitButtonEnabled || isPerformingTask)
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))

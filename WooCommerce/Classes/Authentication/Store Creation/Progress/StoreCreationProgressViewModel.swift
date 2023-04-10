@@ -1,7 +1,10 @@
 import UIKit
 
 final class StoreCreationProgressViewModel: ObservableObject {
-    enum Progress: Float, CaseIterable {
+    /// Conforms to `Double` to use a value for
+    /// `ProgressView` in `StoreCreationProgressView`
+    ///
+    enum Progress: Double, CaseIterable {
         case creatingStore = 0.0
         case buildingFoundations = 1.0
         case organizingStockRoom = 2.0
@@ -17,7 +20,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
 
     let totalProgressAmount = StoreCreationProgressViewModel.Progress.finished.rawValue
 
-    @Published private(set) var progressValue: Float = StoreCreationProgressViewModel.Progress.creatingStore.rawValue
+    @Published private(set) var progressValue: Double = StoreCreationProgressViewModel.Progress.creatingStore.rawValue
 
     var title: String {
         progress.title
@@ -37,7 +40,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
 
     private var animationTimer: Timer?
     private let progressViewAnimationTimerInterval: TimeInterval
-    private let incrementProgressValueBy: Float
+    private let incrementProgressValueBy: Double
 
     /// - Parameters:
     ///   - incrementInterval: Interval at which progress will be incremented to next case
@@ -47,7 +50,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
         self.progressViewAnimationTimerInterval = progressViewAnimationTimerInterval
         // Increment the progress value until next progress increment
         let gapBetweenProgress = Progress.allCases[1].rawValue - Progress.allCases[0].rawValue
-        self.incrementProgressValueBy = (gapBetweenProgress / Float(incrementInterval / progressViewAnimationTimerInterval))
+        self.incrementProgressValueBy = (gapBetweenProgress / (incrementInterval / progressViewAnimationTimerInterval))
     }
 
     // MARK: Public methods

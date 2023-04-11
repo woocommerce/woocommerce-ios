@@ -409,6 +409,8 @@ private extension StoreCreationCoordinator {
             Task {
                 await self?.createFreeTrialStore(from: navigationController, storeName: storeName)
             }
+
+            self?.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
         })
         navigationController.present(summaryViewController, animated: true)
     }
@@ -692,7 +694,6 @@ private extension StoreCreationCoordinator {
             // in the WPCOM `/me/sites` response.
             .retry(10)
             .replaceError(with: nil)
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self else { return }
                 guard let site else {

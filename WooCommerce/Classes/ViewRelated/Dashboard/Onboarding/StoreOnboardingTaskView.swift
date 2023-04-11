@@ -57,7 +57,7 @@ struct StoreOnboardingTaskView: View {
                                     .padding(Layout.PrivateLabel.padding)
                                     .background(Color(.wooCommercePurple(.shade0)))
                                     .cornerRadius(Layout.PrivateLabel.cornerRadius)
-                                    .renderedIf(!isRedacted && viewModel.task.type == .launchStore)
+                                    .renderedIf(!isRedacted && viewModel.task.type == .launchStore && !viewModel.task.isComplete)
                             }
 
                             // Task subtitle.

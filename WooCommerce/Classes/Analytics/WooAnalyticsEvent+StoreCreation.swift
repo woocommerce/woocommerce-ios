@@ -15,6 +15,7 @@ extension WooAnalyticsEvent {
             static let sellingPlatforms = "ecommerce_platforms"
             static let countryCode = "country_code"
             static let isFreeTrial = "is_free_trial"
+            static let waitingTime = "waiting_time"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -24,12 +25,13 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when a site is created from the store creation flow.
-        static func siteCreated(source: Source, siteURL: String, flow: Flow, isFreeTrial: Bool) -> WooAnalyticsEvent {
+        static func siteCreated(source: Source, siteURL: String, flow: Flow, isFreeTrial: Bool, waitingTime: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreated,
                               properties: [Key.source: source.rawValue,
                                            Key.url: siteURL,
                                            Key.flow: flow.rawValue,
-                                           Key.isFreeTrial: isFreeTrial])
+                                           Key.isFreeTrial: isFreeTrial,
+                                           Key.waitingTime: waitingTime])
         }
 
         /// Tracked when site creation fails.

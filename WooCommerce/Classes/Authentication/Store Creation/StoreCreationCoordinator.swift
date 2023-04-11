@@ -226,6 +226,10 @@ private extension StoreCreationCoordinator {
 
 private extension StoreCreationCoordinator {
     func observeSiteURLsFromStoreCreation() {
+
+        // Timestamp when we start observing times. Needed to track the store creating waiting duration.
+        let waitingTimeStart = Date()
+
         possibleSiteURLsFromStoreCreationSubscription = $possibleSiteURLsFromStoreCreation
             .filter { $0.isEmpty == false }
             .removeDuplicates()
@@ -243,7 +247,7 @@ private extension StoreCreationCoordinator {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self, let site else { return }
-                self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .web, isFreeTrial: false))
+                self.trackSiteCreatedEvent(site: site, flow: .web, timeAtStart: waitingTimeStart)
                 self.continueWithSelectedSite(site: site)
             }
     }
@@ -662,6 +666,10 @@ private extension StoreCreationCoordinator {
         ///
         var haveTrackedOutOfSyncEvent = false
 
+        /// Timestamp when we start observing times. Needed to track the store creating waiting duration.
+        ///
+        let waitingTimeStart = Date()
+
         jetpackSiteSubscription = $siteIDFromStoreCreation
             .compactMap { $0 }
             .removeDuplicates()
@@ -673,16 +681,6 @@ private extension StoreCreationCoordinator {
             .receive(on: DispatchQueue.main)
             .handleEvents(receiveCompletion: { [weak self] output in
                 guard let self else { return }
-
-                // Track when a properties out of sync event occur, but only track it once.
-                if self.isPropertiesOutOfSyncError(output) && !haveTrackedOutOfSyncEvent {
-                    self.analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
-                    haveTrackedOutOfSyncEvent = true
-                }
-            })
-            .handleEvents(receiveCompletion: { [weak self] output in
-                guard let self else { return }
-                self.storeCreationProgressViewModel?.incrementProgress()
 
                 // Track when a properties out of sync event occur, but only track it once.
                 if self.isPropertiesOutOfSyncError(output) && !haveTrackedOutOfSyncEvent {
@@ -705,13 +703,12 @@ private extension StoreCreationCoordinator {
                     return
                 }
 
+
+                self.trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
+
                 /// Free trial stores should land directly on the dashboard and not show any success view.
                 ///
                 if self.isFreeTrialCreation {
-                    self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue,
-                                                                           siteURL: site.url,
-                                                                           flow: .native,
-                                                                           isFreeTrial: true))
                     self.continueWithSelectedSite(site: site)
                 } else {
                     self.showSuccessView(from: navigationController, site: site)
@@ -778,7 +775,6 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showSuccessView(from navigationController: UINavigationController, site: Site) {
-        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native, isFreeTrial: false))
         guard let url = URL(string: site.url) else {
             return continueWithSelectedSite(site: site)
         }
@@ -802,6 +798,17 @@ private extension StoreCreationCoordinator {
         navigationController.present(alertController, animated: true)
 
         analytics.track(event: .StoreCreation.siteCreationTimedOut())
+    }
+
+    /// Tracks when a store has been successfully created.
+    ///
+    func trackSiteCreatedEvent(site: Site, flow: WooAnalyticsEvent.StoreCreation.Flow, timeAtStart: Date) {
+        let waitingTime = "\(Date().timeIntervalSince(timeAtStart))"
+        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue,
+                                                          siteURL: site.url,
+                                                          flow: flow,
+                                                          isFreeTrial: isFreeTrialCreation,
+                                                          waitingTime: waitingTime))
     }
 }
 

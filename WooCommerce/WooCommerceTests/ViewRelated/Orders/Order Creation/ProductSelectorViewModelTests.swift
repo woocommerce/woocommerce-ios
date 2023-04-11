@@ -144,10 +144,17 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
+        let _: Bool = waitFor { completion in
+            viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { sync in
+                if let syncStatus = viewModel.syncStatus {
+                    syncStatusSpy.append(syncStatus)
+                }
+                completion(sync)
+            })
+        }
 
         // Then
-        XCTAssertTrue(syncStatusSpy.contains(.firstPageSync))
+        XCTAssertEqual(syncStatusSpy, [.firstPageSync, .results])
         XCTAssertEqual(viewModel.syncStatus, .results)
     }
 

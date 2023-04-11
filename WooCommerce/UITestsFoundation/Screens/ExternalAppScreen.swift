@@ -8,7 +8,15 @@ public final class ExternalAppScreen {
         app = XCUIApplication()
     }
 
+    let universalLinks = [
+        "payments": "https://woocommerce.com/mobile/payments"
+    ]
+
     // To open universal links listed in mocked HTML file
+    public func openUniversalLinkFromSafariApp(linkedScreen: String) throws {
+        guard let universalLink = universalLinks[linkedScreen] else {
+            throw NSError(domain: "UI Test", code: 0, userInfo: [NSLocalizedDescriptionKey: "Universal link not found for key: \(linkedScreen)"])
+        }
 
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         safari.launch()
@@ -22,5 +30,6 @@ public final class ExternalAppScreen {
         safari.buttons["Go"].tap()
 
         // Tap on the universal link
+        if safari.staticTexts["TESTING LINKS"].exists { safari.links[universalLink].tap() }
     }
 }

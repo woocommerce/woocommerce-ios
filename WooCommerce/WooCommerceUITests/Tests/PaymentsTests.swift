@@ -21,7 +21,7 @@ final class PaymentsTests: XCTestCase {
     }
 
     func test_load_payments_universal_link() throws {
-        ExternalAppScreen().openUniversalLinkFromSafariApp(link: "Payments")
+        try ExternalAppScreen().openUniversalLinkFromSafariApp(linkedScreen: "payments")
         try PaymentsScreen().verifyPaymentsScreenLoaded()
     }
 }

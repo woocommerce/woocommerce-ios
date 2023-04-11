@@ -10,7 +10,8 @@ final class CardPresentConfigurationLoader {
 
     var configuration: CardPresentPaymentsConfiguration {
         .init(
-            country: SiteAddress().countryCode
+            country: SiteAddress().countryCode,
+            shouldReturnConfigurationForGB: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPUKExpansion)
         )
     }
 }

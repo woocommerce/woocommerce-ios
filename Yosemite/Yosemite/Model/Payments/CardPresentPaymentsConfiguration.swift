@@ -29,7 +29,7 @@ public struct CardPresentPaymentsConfiguration {
         self.stripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
     }
 
-    public init(country: String) {
+    public init(country: String, shouldReturnConfigurationForGB: Bool = false) {
         /// Changing `minimumVersion` values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
         switch country {
         case "US":
@@ -57,7 +57,7 @@ public struct CardPresentPaymentsConfiguration {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100
             )
-        case "GB":
+        case "GB" where shouldReturnConfigurationForGB:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent],

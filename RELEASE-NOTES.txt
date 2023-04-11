@@ -3,6 +3,7 @@
 13.2
 -----
 - [*] Optimized the account creation flow to navigate to the login flow if an existing email is detected. [https://github.com/woocommerce/woocommerce-ios/pull/9411]
+- [Internal] Store creation: New loading screen added for create store flow. [https://github.com/woocommerce/woocommerce-ios/pull/9383]
 
 
 13.1

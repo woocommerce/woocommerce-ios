@@ -29,8 +29,8 @@ struct StoreCreationCategoryQuestionView: View {
     var body: some View {
         OptionalStoreCreationProfilerQuestionView(viewModel: viewModel) {
             VStack(alignment: .leading, spacing: 16) {
+                // Category options.
                 ForEach(viewModel.categories, id: \.self) { category in
-                    // Category options.
                     Button(action: {
                         viewModel.selectCategory(category)
                     }, label: {

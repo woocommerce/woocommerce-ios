@@ -10,7 +10,7 @@ extension WooAnalyticsEvent {
             static let errorType = "error_type"
             static let flow = "flow"
             static let step = "step"
-            static let category = "industry_slug" // TODO: let android know
+            static let category = "industry_slug"
             static let sellingStatus = "user_commerce_journey"
             static let sellingPlatforms = "ecommerce_platforms"
             static let countryCode = "country_code"

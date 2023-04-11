@@ -57,7 +57,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         // Given
         mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         viewModel.email = "notanemail@woo.com"
-        _ = await viewModel.checkIfWordPressAccountExists()
+        _ = await viewModel.createAccountIfPossible()
 
         // When
         viewModel.password = "minim"
@@ -72,7 +72,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         // Given
         mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         viewModel.email = "notanemail@woo.com"
-        _ = await viewModel.checkIfWordPressAccountExists()
+        _ = await viewModel.createAccountIfPossible()
 
         // When
         viewModel.password = "minimu"
@@ -83,89 +83,90 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         }
     }
 
-    // MARK: - `checkIfWordPressAccountExists`
-    func test_checkIfWordPressAccountExists_success_returns_true() async {
+    // MARK: - `createAccountIfPossible`
+
+    func test_createAccountIfPossible_returns_false_if_account_exists() async {
         // Given
         mockAccountService.passwordlessAccountCheckError = nil
         viewModel.email = "notanemail@woo.com"
 
         // When
-        let result = await viewModel.checkIfWordPressAccountExists()
+        let result = await viewModel.createAccountIfPossible()
 
         // Then
-        XCTAssertTrue(result)
         XCTAssertFalse(viewModel.shouldShowPasswordField)
+        XCTAssertTrue(viewModel.existingEmailFound)
+        XCTAssertFalse(result)
     }
 
-    func test_checkIfWordPressAccountExists_failure_returns_false_and_set_shouldShowPasswordField_to_true() async {
+    func test_createAccountIfPossible_returns_false_when_triggered_the_first_time_if_account_does_not_exist() async {
         // Given
         mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         viewModel.email = "notanemail@woo.com"
 
         // When
-        let result = await viewModel.checkIfWordPressAccountExists()
+        let result = await viewModel.createAccountIfPossible()
 
         // Then
-        XCTAssertFalse(result)
         XCTAssertTrue(viewModel.shouldShowPasswordField)
+        XCTAssertFalse(viewModel.existingEmailFound)
+        XCTAssertFalse(result)
     }
 
-    // MARK: - `createAccount`
-
-    func test_createAccount_success_sets_state_to_authenticated() async {
+    func test_createAccountIfPossible_success_sets_state_to_authenticated() async {
         // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         mockAccountCreationSuccess(result: .init(authToken: "token", username: "username"))
         XCTAssertFalse(stores.isAuthenticated)
 
-        do {
-            // When
-            try await viewModel.createAccount()
+        // When
+        _ = await viewModel.createAccountIfPossible() // First submission to check account existence
+        let result = await viewModel.createAccountIfPossible()
 
-            // Then
-            XCTAssertTrue(stores.isAuthenticated)
-
-        } catch {
-            XCTFail("Function should not throw an error")
-        }
+        // Then
+        XCTAssertTrue(result)
+        XCTAssertTrue(stores.isAuthenticated)
     }
 
-    func test_createAccount_password_failure_sets_passwordErrorMessage() async {
+    func test_createAccountIfPossible_password_failure_sets_passwordErrorMessage() async {
         // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         mockAccountCreationFailure(error: .invalidPassword(message: "too complex to guess"))
         XCTAssertFalse(stores.isAuthenticated)
         XCTAssertNil(viewModel.passwordErrorMessage)
 
-        do {
-            try await viewModel.createAccount()
+        // When
+        _ = await viewModel.createAccountIfPossible() // First submission to check account existence
+        let result = await viewModel.createAccountIfPossible()
 
-            XCTFail("Function should have thrown an error")
-        } catch {
-            XCTAssertFalse(stores.isAuthenticated)
-            XCTAssertEqual(viewModel.passwordErrorMessage, "too complex to guess")
-        }
+        // Then
+        XCTAssertFalse(result)
+        XCTAssertFalse(stores.isAuthenticated)
+        XCTAssertEqual(viewModel.passwordErrorMessage, "too complex to guess")
     }
 
-    func test_createAccount_invalidEmail_failure_sets_emailErrorMessage() async {
+    func test_createAccountIfPossible_invalidEmail_failure_sets_emailErrorMessage() async {
         // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         mockAccountCreationFailure(error: .invalidEmail)
         XCTAssertNil(viewModel.emailErrorMessage)
 
-        do {
-            try await viewModel.createAccount()
+        // When
+        _ = await viewModel.createAccountIfPossible() // First submission to check account existence
+        let result = await viewModel.createAccountIfPossible()
 
-            XCTFail("Function should have thrown an error")
-        } catch {
-            // Then
-            XCTAssertNotNil(viewModel.emailErrorMessage)
-        }
+        // Then
+        XCTAssertFalse(result)
+        XCTAssertNotNil(viewModel.emailErrorMessage)
     }
 
     func test_passwordErrorMessage_is_cleared_after_changing_password_input() async {
         // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         mockAccountCreationFailure(error: .invalidPassword(message: "too complex to guess"))
 
         // When
-        try? await viewModel.createAccount()
+        _ = await viewModel.createAccountIfPossible()
         viewModel.password = "simple password"
 
         // Then
@@ -176,10 +177,11 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     func test_emailErrorMessage_is_cleared_after_changing_email_input() async {
         // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         mockAccountCreationFailure(error: .emailExists)
 
         // When
-        try? await viewModel.createAccount()
+        _ = await viewModel.createAccountIfPossible()
         viewModel.email = "real@woo.com"
 
         // Then
@@ -192,10 +194,12 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     func test_createAccount_success_tracks_expected_events() async {
         // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         mockAccountCreationSuccess(result: .init(authToken: "", username: ""))
 
         // When
-        try? await viewModel.createAccount()
+        _ = await viewModel.createAccountIfPossible() // First submission to check account existence
+        _ = await viewModel.createAccountIfPossible()
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_success"])
@@ -203,10 +207,12 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     func test_createAccount_failure_tracks_expected_events() async {
         // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
         mockAccountCreationFailure(error: .emailExists)
 
         // When
-        try? await viewModel.createAccount()
+        _ = await viewModel.createAccountIfPossible() // First submission to check account existence
+        _ = await viewModel.createAccountIfPossible()
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_failed"])

@@ -76,13 +76,13 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// - Returns: whether the creation succeeds.
     @MainActor
     func createAccountIfPossible() async -> Bool {
-        existingEmailFound = await checkIfWordPressAccountExists()
-        if !existingEmailFound, shouldShowPasswordField {
-            let createAccountCompleted = (try? await createAccount()) != nil
-            return createAccountCompleted
+        guard shouldShowPasswordField else {
+            existingEmailFound = await checkIfWordPressAccountExists()
+            shouldShowPasswordField = !existingEmailFound
+            return false
         }
-        shouldShowPasswordField = !existingEmailFound
-        return false
+        let createAccountCompleted = (try? await createAccount()) != nil
+        return createAccountCompleted
     }
 }
 

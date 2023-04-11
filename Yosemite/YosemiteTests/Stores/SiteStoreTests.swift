@@ -53,7 +53,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -78,7 +78,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -98,7 +98,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -118,7 +118,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -139,7 +139,7 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.createSite(name: "Salsa",
-                                                      domain: "salsa.roja",
+                                                      flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
                 promise(result)
             }))
@@ -197,5 +197,48 @@ final class SiteStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error, .unexpected(description: "WordPress API Error: [unauthorized] "))
+    }
+
+    // MARK: - `enableFreeTrial`
+
+    func test_enableFreeTrial_returns_success_on_success() throws {
+        // Given
+        remote.whenEnablingFreeTrial(thenReturn: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134, profilerData: .init(name: "",
+                                                                                            category: nil,
+                                                                                            categoryGroup: nil,
+                                                                                            sellingStatus: nil,
+                                                                                            sellingPlatforms: nil,
+                                                                                            countryCode: "US")) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_enableFreeTrial_returns_error_on_failure() throws {
+        // Given
+        remote.whenEnablingFreeTrial(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134, profilerData: .init(name: "",
+                                                                                            category: nil,
+                                                                                            categoryGroup: nil,
+                                                                                            sellingStatus: nil,
+                                                                                            sellingPlatforms: nil,
+                                                                                            countryCode: "US")) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
     }
 }

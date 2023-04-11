@@ -74,10 +74,13 @@ class DefaultStoresManager: StoresManager {
     /// Indicates if the StoresManager is currently authenticated with site credentials only.
     ///
     var isAuthenticatedWithoutWPCom: Bool {
-        if case .wporg = sessionManager.defaultCredentials {
-            return true
+        guard let credentials = sessionManager.defaultCredentials else {
+            return false
         }
-        return false
+        if case .wpcom = credentials {
+            return false
+        }
+        return true
     }
 
     @Published private var isLoggedIn: Bool = false
@@ -150,6 +153,16 @@ class DefaultStoresManager: StoresManager {
         listenToApplicationPasswordGenerationFailureNotification()
 
         return self
+    }
+
+    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
+    ///
+    func listenToApplicationPasswordGenerationFailureNotification() {
+        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
+                                                                                      object: nil,
+                                                                                      queue: .main) { [weak self] note in
+            _ = self?.deauthenticate()
+        }
     }
 
     /// Synchronizes all of the Session's Entities.
@@ -328,7 +341,7 @@ private extension DefaultStoresManager {
             credentials.hasPlaceholderUsername() else {
             return
         }
-        authenticate(credentials: .init(username: account.username, authToken: authToken, siteAddress: siteAddress))
+        authenticate(credentials: .wpcom(username: account.username, authToken: authToken, siteAddress: siteAddress))
     }
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
@@ -587,6 +600,9 @@ private extension DefaultStoresManager {
             keychain.siteCredentialPassword = password
             UserDefaults.group?[.defaultUsername] = username
             UserDefaults.group?[.defaultSiteAddress] = siteAddress
+        case let .applicationPassword(username, _, siteAddress):
+            UserDefaults.group?[.defaultUsername] = username
+            UserDefaults.group?[.defaultSiteAddress] = siteAddress
         default:
             break
         }
@@ -599,16 +615,6 @@ private extension DefaultStoresManager {
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
-    ///
-    func listenToApplicationPasswordGenerationFailureNotification() {
-        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
-                                                                                      object: nil,
-                                                                                      queue: .main) { [weak self] note in
-            _ = self?.deauthenticate()
-        }
     }
 }
 

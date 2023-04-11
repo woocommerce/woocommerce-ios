@@ -64,7 +64,10 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
         return .init(
             id: currentPlan.key,
             hasDomainCredit: currentPlan.value.hasDomainCredit ?? false,
-            expiryDate: currentPlan.value.expiryDate
+            expiryDate: currentPlan.value.expiryDate,
+            subscribedDate: currentPlan.value.subscribedDate,
+            name: currentPlan.value.name,
+            slug: currentPlan.value.slug
         )
     }
 
@@ -95,7 +98,7 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
                     "extra": [
                         "privacy": domain.supportsPrivacy
                     ]
-                ]
+                ] as [String: Any]
             ],
             "temporary": isTemporary
         ]
@@ -164,12 +167,30 @@ public struct WPComSitePlan: Equatable {
     ///
     public let expiryDate: Date?
 
+    /// Plan subscribe date. `Nil` if we are not subscribed to this plan.
+    ///
+    public let subscribedDate: Date?
+
+    /// Plan name
+    ///
+    public let name: String
+
+    /// Plan Slug
+    ///
+    public let slug: String
+
     public init(id: String = "",
                 hasDomainCredit: Bool,
-                expiryDate: Date? = nil) {
+                expiryDate: Date? = nil,
+                subscribedDate: Date? = nil,
+                name: String = "",
+                slug: String = "") {
         self.id = id
         self.hasDomainCredit = hasDomainCredit
         self.expiryDate = expiryDate
+        self.subscribedDate = subscribedDate
+        self.name = name
+        self.slug = slug
     }
 }
 
@@ -207,11 +228,17 @@ private struct SiteCurrentPlanResponse: Decodable {
     let isCurrentPlan: Bool?
     let hasDomainCredit: Bool?
     let expiryDate: Date?
+    let subscribedDate: Date?
+    let name: String
+    let slug: String
 
     private enum CodingKeys: String, CodingKey {
         case isCurrentPlan = "current_plan"
         case hasDomainCredit = "has_domain_credit"
         case expiryDate = "expiry"
+        case subscribedDate = "subscribed_date"
+        case name = "product_name"
+        case slug = "product_slug"
     }
 }
 

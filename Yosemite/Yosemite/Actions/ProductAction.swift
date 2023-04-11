@@ -6,6 +6,18 @@ import Networking
 ///
 public enum ProductAction: Action {
 
+    /// Searches products that contain a given keyword in the local database.
+    ///
+    /// - Parameter siteID: Site id of the products.
+    /// - Parameter keyword: Keyword to search.
+    /// - Parameter pageSize: They max amount of items to return.
+    /// - Parameter onCompletion: Callback called when the action is finished, including a Boolean showing whether results were found.
+    ///
+    case searchProductsInCache(siteID: Int64,
+                               keyword: String,
+                               pageSize: Int,
+                               onCompletion: (Bool) -> Void)
+
     /// Searches products that contain a given keyword.
     ///
     case searchProducts(siteID: Int64,
@@ -50,6 +62,15 @@ public enum ProductAction: Action {
         pageNumber: Int = ProductsRemote.Default.pageNumber,
         pageSize: Int = ProductsRemote.Default.pageSize,
         onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+
+    /// Retrieve cached popular products, that is, those that were included
+    /// in a completed order most often, in descending order.
+    ///
+    case retrievePopularCachedProducts(siteID: Int64, onCompletion: ([Product]) -> Void)
+
+    /// Retrieve the recently sold products in cache sorted by paid date
+    /// 
+    case retrieveRecentlySoldCachedProducts(siteID: Int64, onCompletion: ([Product]) -> Void)
 
     /// Deletes all of the cached products.
     ///

@@ -32,7 +32,8 @@ struct StoreOnboardingLaunchStoreView: View {
 
     var body: some View {
         ScrollView {
-            #warning("TODO: 9122 - show upsell banner when the launch store action requires an upgraded plan")
+            freeTrialBanner
+                .renderedIf(viewModel.state == .needsPlanUpgrade)
 
             // Readonly webview for the site.
             WebView(isPresented: .constant(true), url: viewModel.siteURL)
@@ -50,24 +51,64 @@ struct StoreOnboardingLaunchStoreView: View {
                         await viewModel.launchStore()
                     }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLaunchingStore))
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.state == .launchingStore))
+                .disabled(viewModel.state == .needsPlanUpgrade)
                 .padding(insets: Layout.buttonContainerPadding)
+                .renderedIf(viewModel.state != .checkingSitePlan)
             }
             .background(Color(.systemBackground))
         }
         .alert(item: $viewModel.error) { error in
-            Alert(title: Text(error.title),
-                  message: Text(error.message),
-                  dismissButton: .default(Text(error.dismissTitle)))
+            switch error {
+            case .alreadyLaunched:
+                return Alert(title: Text(error.title),
+                             message: Text(error.message),
+                             dismissButton: .default(Text(error.dismissTitle)))
+            case .unexpected:
+                return Alert(title: Text(error.title),
+                             message: Text(error.message),
+                             primaryButton: .default(Text(error.dismissTitle)),
+                             secondaryButton: .default(Text(error.retryTitle ?? ""), action: {
+                    Task { @MainActor in
+                        await viewModel.launchStore()
+                    }
+                }))
+            }
         }
         .navigationTitle(Localization.title)
+        .task {
+            await viewModel.checkEligibilityToPublishStore()
+        }
     }
 }
 
 private extension StoreOnboardingLaunchStoreView {
+    var freeTrialBanner: some View {
+        HStack(alignment: .top, spacing: Layout.FreeTrialBanner.horizontalSpacing) {
+            Image(uiImage: .infoOutlineImage)
+                .resizable()
+                .renderingMode(.template)
+                .foregroundColor(Color(.text))
+                .frame(width: Layout.FreeTrialBanner.infoIconSize.width * scale, height: Layout.FreeTrialBanner.infoIconSize.height * scale)
+
+            AttributedText(viewModel.upgradePlanAttributedString)
+        }
+        .padding(insets: Layout.FreeTrialBanner.padding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.bannerBackground))
+        .onTapGesture {
+            viewModel.didTapUpgrade()
+        }
+    }
+
     enum Layout {
         static let webviewHeight: CGFloat = 400
         static let buttonContainerPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        enum FreeTrialBanner {
+            static let infoIconSize: CGSize = .init(width: 24, height: 24)
+            static let horizontalSpacing: CGFloat = 16
+            static let padding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        }
     }
 
     enum Localization {
@@ -132,10 +173,22 @@ private extension SiteLaunchError {
             )
         }
     }
+
+    var retryTitle: String? {
+        switch self {
+        case .alreadyLaunched:
+            return nil
+        case .unexpected:
+            return NSLocalizedString(
+                "Try again",
+                comment: "Title of the try again action when the site cannot be launched from store onboarding > launch store screen."
+            )
+        }
+    }
 }
 
 struct StoreOnboardingLaunchStoreView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!, siteID: 0, onLaunch: {}))
+        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!, siteID: 0, onLaunch: {}, onUpgradeTapped: {}))
     }
 }

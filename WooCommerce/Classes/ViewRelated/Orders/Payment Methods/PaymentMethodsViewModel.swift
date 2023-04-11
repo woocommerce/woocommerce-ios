@@ -18,6 +18,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     @Published private(set) var showPayWithCardRow = false
 
+    @Published private(set) var showTapToPayRow = false
+
     /// Allows the onboarding flow to be presented before a card present payment when required
     ///
     private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
@@ -200,7 +202,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
             onSuccess()
             self.presentNoticeSubject.send(.completed)
-            self.trackFlowCompleted(method: .cash)
+            self.trackFlowCompleted(method: .cash, cardReaderType: .none)
         }
         stores.dispatch(action)
     }
@@ -214,17 +216,28 @@ final class PaymentMethodsViewModel: ObservableObject {
                         onFailure: @escaping () -> Void) {
         switch isTapToPayOnIPhoneEnabled {
         case true:
-            newCollectPayment(on: rootViewController, onSuccess: onSuccess, onFailure: onFailure)
+            newCollectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: onSuccess, onFailure: onFailure)
         case false:
             legacyCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
         }
     }
 
-    func newCollectPayment(on rootViewController: UIViewController?,
+    func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
+                        on rootViewController: UIViewController?,
+                        onSuccess: @escaping () -> Void,
+                        onFailure: @escaping () -> Void) {
+        newCollectPayment(using: discoveryMethod,
+                          on: rootViewController,
+                          onSuccess: onSuccess,
+                          onFailure: onFailure)
+    }
+
+    func newCollectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
+                           on rootViewController: UIViewController?,
                            useCase: CollectOrderPaymentProtocol? = nil,
                            onSuccess: @escaping () -> Void,
                            onFailure: @escaping () -> Void) {
-        trackCollectIntention(method: .card)
+        trackCollectIntention(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
         orderDurationRecorder.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
@@ -246,6 +259,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             configuration: CardPresentConfigurationLoader().configuration)
 
         collectPaymentsUseCase?.collectPayment(
+            using: discoveryMethod,
             onFailure: { [weak self] error in
                 self?.trackFlowFailed()
                 // Update order in case its status and/or other details are updated after a failed in-person payment
@@ -270,14 +284,14 @@ final class PaymentMethodsViewModel: ObservableObject {
                 self?.collectPaymentsUseCase = nil
 
                 // Tracks completion
-                self?.trackFlowCompleted(method: .card)
+                self?.trackFlowCompleted(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
             })
     }
 
     func legacyCollectPayment(on rootViewController: UIViewController?,
                               useCase: LegacyCollectOrderPaymentProtocol? = nil,
                               onSuccess: @escaping () -> Void) {
-        trackCollectIntention(method: .card)
+        trackCollectIntention(method: .card, cardReaderType: .external)
         orderDurationRecorder.recordCardPaymentStarted()
 
         guard let rootViewController = rootViewController else {
@@ -331,7 +345,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                             self?.legacyCollectPaymentsUseCase = nil
 
                             // Tracks completion
-                            self?.trackFlowCompleted(method: .card)
+                            self?.trackFlowCompleted(method: .card, cardReaderType: .external)
                         })
                 }
 
@@ -342,18 +356,18 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Tracks the collect by cash intention.
     ///
     func trackCollectByCash() {
-        trackCollectIntention(method: .cash)
+        trackCollectIntention(method: .cash, cardReaderType: .none)
     }
 
     func trackCollectByPaymentLink() {
-        trackCollectIntention(method: .paymentLink)
+        trackCollectIntention(method: .paymentLink, cardReaderType: .none)
     }
 
     /// Perform the necesary tasks after a link is shared.
     ///
     func performLinkSharedTasks() {
         presentNoticeSubject.send(.created)
-        trackFlowCompleted(method: .paymentLink)
+        trackFlowCompleted(method: .paymentLink, cardReaderType: .none)
     }
 
     /// Track the flow cancel scenario.
@@ -375,28 +389,49 @@ private extension PaymentMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///
     func bindStoreCPPState() {
-        ordersResultController.onDidChangeContent = updateCardPaymentVisibility
+        ordersResultController.onDidChangeContent = { [weak self] in
+            self?.updateCardPaymentVisibility()
+        }
         try? ordersResultController.performFetch()
     }
 
     func updateCardPaymentVisibility() {
         guard cardPresentPaymentsConfiguration.isSupportedCountry else {
             showPayWithCardRow = false
+            showTapToPayRow = false
 
             return
         }
 
+        localMobileReaderSupported { [weak self] tapToPaySupportedByDevice in
+            let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn) ?? false
+            self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
+                self?.showPayWithCardRow = orderIsEligible
+                self?.showTapToPayRow = orderIsEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
+            }
+        }
+    }
+
+    private func localMobileReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
+        let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
+                                                                 cardReaderType: .appleBuiltIn,
+                                                                 discoveryMethod: .localMobile,
+                                                                 onCompletion: onCompletion)
+        stores.dispatch(action)
+    }
+
+    private func orderIsEligibleForCardPresentPayment(onCompletion: @escaping (Bool) -> Void) {
         let action = OrderCardPresentPaymentEligibilityAction
             .orderIsEligibleForCardPresentPayment(orderID: orderID,
                                                   siteID: siteID,
-                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { [weak self] result in
-            switch result {
-            case .success(let eligible):
-                self?.showPayWithCardRow = eligible
-            case .failure(_):
-                self?.showPayWithCardRow = false
+                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { result in
+                switch result {
+                case .success(let eligibility):
+                    onCompletion(eligibility)
+                case .failure:
+                    onCompletion(false)
+                }
             }
-        }
 
         stores.dispatch(action)
     }
@@ -408,8 +443,12 @@ private extension PaymentMethodsViewModel {
 
     /// Tracks the `paymentsFlowCompleted` event.
     ///
-    func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
-        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow, amount: formattedTotal, method: method))
+    func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod,
+                            cardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType?) {
+        analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow,
+                                                                                    amount: formattedTotal,
+                                                                                    method: method,
+                                                                                    cardReaderType: cardReaderType))
     }
 
     /// Tracks the `paymentsFlowFailed` event.
@@ -426,9 +465,12 @@ private extension PaymentMethodsViewModel {
 
     /// Tracks `paymentsFlowCollect` event.
     ///
-    func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod) {
+    func trackCollectIntention(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod,
+                               cardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType?) {
+
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow,
                                                                                   method: method,
+                                                                                  cardReaderType: cardReaderType,
                                                                                   millisecondsSinceOrderAddNew:
                                                                                     try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
     }
@@ -449,6 +491,17 @@ private extension PaymentMethodsViewModel {
         static func markAsPaidInfo(total: String) -> String {
             NSLocalizedString("This will mark your order as complete if you received \(total) outside of WooCommerce",
                               comment: "Alert info when selecting the cash payment method during payments")
+        }
+    }
+}
+
+private extension CardReaderDiscoveryMethod {
+    var analyticsCardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType {
+        switch self {
+        case .localMobile:
+            return .builtIn
+        case .bluetoothScan:
+            return .external
         }
     }
 }

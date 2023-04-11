@@ -140,10 +140,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.domainPurchaseSuccessImage)
     }
 
-    func test_domainsImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.domainsImage)
-    }
-
     func test_domainSearchPlaceholderImage_is_not_nil() {
         XCTAssertNotNil(UIImage.domainSearchPlaceholderImage)
     }
@@ -240,12 +236,36 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.storeCreationPlanImage)
     }
 
+    func test_storeCreationProgressViewBackgroundGiftImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.storeCreationProgressViewBackgroundGiftImage)
+    }
+
+    func test_storeCreationProgressViewBackgroundWoman_is_not_nil() {
+        XCTAssertNotNil(UIImage.storeCreationProgressViewBackgroundWoman)
+    }
+
     func testStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.storeImage)
     }
 
+    func test_addProductImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.addProductImage)
+    }
+
     func test_launchStoreImage_is_not_nil() {
         XCTAssertNotNil(UIImage.launchStoreImage)
+    }
+
+    func test_storeDetailsImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.storeDetailsImage)
+    }
+
+    func test_customizeDomainsImagee_is_not_nil() {
+        XCTAssertNotNil(UIImage.customizeDomainsImage)
+    }
+
+    func test_getPaidImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.getPaidImage)
     }
 
     func test_storeSummaryImage_is_not_nil() {
@@ -742,7 +762,11 @@ final class IconsTests: XCTestCase {
     }
 
     func test_wpcomLogoImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.wpcomLogoImage)
+        XCTAssertNotNil(UIImage.wpcomLogoImage())
+    }
+
+    func test_wpcomLogoImage_with_tint_color_is_not_nil() {
+        XCTAssertNotNil(UIImage.wpcomLogoImage(tintColor: .red))
     }
 
     func test_jetpackSetupInterruptedImage_is_not_nil() {
@@ -763,5 +787,57 @@ final class IconsTests: XCTestCase {
 
     func test_icon_bolt_is_not_nil() {
         XCTAssertNotNil(UIImage.iconBolt)
+    }
+
+    func test_free_trial_illustration_is_not_nil() {
+        XCTAssertNotNil(UIImage.freeTrialIllustration)
+    }
+
+    func test_ecommerce_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.ecommerceIcon)
+    }
+
+    func test_support_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.supportIcon)
+    }
+
+    func test_backups_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.backupsIcon)
+    }
+
+    func test_gifts_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.giftIcon)
+    }
+
+    func test_emailOutline_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.emailOutlineIcon)
+    }
+
+    func test_shippingOutline_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.shippingOutlineIcon)
+    }
+
+    func test_advertising_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.advertisingIcon)
+    }
+
+    func test_launch_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.launchIcon)
+    }
+
+    func test_paymentsOption_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.paymentOptionsIcon)
+    }
+
+    func test_premiumThemes_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.premiumThemesIcon)
+    }
+
+    func test_siteSecurity_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.siteSecurityIcon)
+    }
+
+    func test_unlimitedProducts_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.unlimitedProductsIcon)
     }
 }

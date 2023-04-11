@@ -1,1 +1,1 @@
-Questa versione include diverse correzioni e miglioramenti che semplificano la gestione del tuo negozio dall'app. Continua a inviarci feedback: ti stiamo ascoltando!
+Questo rilascio include diverse piccole correzioni ai bug e miglioramenti che rendono l'esperienza più agevole e piacevole. È possibile duplicare un prodotto variabile e questo include la descrizione del prodotto, il prezzo di vendita e l'immagine. Disponiamo di alcuni interessanti aggiornamenti che sono in arrivo nelle prossime settimane. Resta sintonizzato per maggiori informazioni!

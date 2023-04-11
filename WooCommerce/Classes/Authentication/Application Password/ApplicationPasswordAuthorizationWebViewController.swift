@@ -7,8 +7,10 @@ import struct Networking.ApplicationPassword
 ///
 final class ApplicationPasswordAuthorizationWebViewController: UIViewController {
 
+    private let analytics: Analytics
+
     /// Callback when application password is authorized.
-    private let onSuccess: (ApplicationPassword) -> Void
+    private let onSuccess: (ApplicationPassword, UINavigationController?) -> Void
 
     /// Main web view
     private lazy var webView: WKWebView = {
@@ -43,11 +45,15 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 
     private let viewModel: ApplicationPasswordAuthorizationViewModel
     private var subscriptions: Set<AnyCancellable> = []
+    private var webViewInitialLoad = true
+    private var authorizationURL: String?
 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
-         onSuccess: @escaping (ApplicationPassword) -> Void) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
         self.onSuccess = onSuccess
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -68,11 +74,6 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 private extension ApplicationPasswordAuthorizationWebViewController {
     func configureNavigationBar() {
         title = Localization.login
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .done, target: nil, action: #selector(dismissView))
-    }
-
-    @objc func dismissView() {
-        dismiss(animated: true)
     }
 
     func configureWebView() {
@@ -99,7 +100,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
 
         webView.publisher(for: \.url)
             .sink { [weak self] url in
-                self?.handleAuthorizationResponse(with: url)
+                self?.handleWebViewURL(url)
             }
             .store(in: &subscriptions)
     }
@@ -132,11 +133,13 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             do {
                 guard let url = try await viewModel.fetchAuthURL() else {
                     DDLogError("⛔️ No authorization URL found for application passwords")
+                    analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
                     return showErrorAlert(message: Localization.applicationPasswordDisabled)
                 }
                 loadAuthorizationPage(url: url)
             } catch {
                 DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
+                analytics.track(.applicationPasswordAuthorizationURLFetchFailed, withError: error)
                 showErrorAlert(message: Localization.errorFetchingAuthURL, onRetry: { [weak self] in
                     self?.fetchAuthorizationURL()
                 })
@@ -158,11 +161,28 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             return
         }
         let request = URLRequest(url: urlWithQueries)
+        self.authorizationURL = request.url?.absoluteString
         webView.load(request)
     }
 
-    func handleAuthorizationResponse(with url: URL?) {
-        guard let url, url.absoluteString.hasPrefix(Constants.successURL) else {
+    func handleWebViewURL(_ url: URL?) {
+        guard let url else {
+            return
+        }
+        /// We need to track the web view steps based on these assumptions:
+        /// - First, the web view is loaded with the authorization URL that we built from the previous steps.
+        /// - Since the web view is not authenticated initially, the page will redirect to the login page, hence the `redirect-to` query.
+        /// We based on this query to detect the login page. The value of this query should be same as the initial URL.
+        /// - After login completes, the page will redirect to the initial URL.
+        if url.absoluteString == authorizationURL {
+            analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: webViewInitialLoad ? .initial : .authorization))
+            webViewInitialLoad = false
+        } else if url.absoluteString.contains(Constants.Query.redirect) {
+            analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: .login))
+        }
+
+        /// Callback handling
+        guard url.absoluteString.hasPrefix(Constants.successURL) else {
             return
         }
         let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
@@ -170,18 +190,25 @@ private extension ApplicationPasswordAuthorizationWebViewController {
               let username = queryItems.first(where: { $0.name == Constants.Query.username })?.value,
               let password = queryItems.first(where: { $0.name == Constants.Query.password })?.value else {
             DDLogError("⛔️ Authorization rejected for application passwords")
+            analytics.track(.applicationPasswordAuthorizationRejected)
             return showErrorAlert(message: Localization.authorizationRejected)
         }
+
+        // hide content and show loading indicator
+        webView.isHidden = true
+        progressBar.setProgress(0, animated: false)
+        activityIndicator.startAnimating()
+
+        analytics.track(.applicationPasswordAuthorizationApproved)
         let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
-        onSuccess(applicationPassword)
+        onSuccess(applicationPassword, navigationController)
         DDLogInfo("✅ Application password authorized")
-        dismissView()
     }
 
     func showErrorAlert(message: String, onRetry: (() -> Void)? = nil) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: Localization.cancel, style: .cancel) { [weak self] _ in
-            self?.dismissView()
+            self?.navigationController?.popViewController(animated: true)
         }
         alertController.addAction(action)
         if let onRetry {
@@ -203,6 +230,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             static let appName = "app_name"
             static let appID = "app_id"
             static let successURL = "success_url"
+            static let redirect = "redirect_to"
         }
     }
     enum Localization {

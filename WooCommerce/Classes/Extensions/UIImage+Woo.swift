@@ -228,6 +228,10 @@ extension UIImage {
         UIImage.gridicon(.creditCard)
     }
 
+    static var tapToPayOnIPhoneIcon: UIImage {
+        UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
+    }
+
     /// Customize Icon
     ///
     static var customizeImage: UIImage {
@@ -260,12 +264,6 @@ extension UIImage {
     ///
     static var domainPurchaseSuccessImage: UIImage {
         return UIImage(named: "domain-purchase-success")!
-    }
-
-    /// Domains image.
-    ///
-    static var domainsImage: UIImage {
-        UIImage.gridicon(.domains)
     }
 
     static var emailImage: UIImage {
@@ -425,16 +423,52 @@ extension UIImage {
         UIImage(named: "store-creation-plan")!
     }
 
+    /// Store creation progress view background image - Gift
+    ///
+    static var storeCreationProgressViewBackgroundGiftImage: UIImage {
+        UIImage(named: "store-creation-progress-bg-gift")!
+    }
+
+    /// Store creation progress view background image - Woman
+    ///
+    static var storeCreationProgressViewBackgroundWoman: UIImage {
+        UIImage(named: "store-creation-progress-bg-woman")!
+    }
+
     /// Store Image
     ///
     static var storeImage: UIImage {
         UIImage(named: "icon-store")!
     }
 
+    /// Store details Image
+    ///
+    static var storeDetailsImage: UIImage {
+        UIImage(named: "icon-store-details")!
+    }
+
+    /// Add product image
+    ///
+    static var addProductImage: UIImage {
+        UIImage(named: "icon-add-product")!
+    }
+
     /// Launch store Image
     ///
     static var launchStoreImage: UIImage {
         UIImage(named: "icon-launch-store")!
+    }
+
+    /// Customize domain image
+    ///
+    static var customizeDomainsImage: UIImage {
+        UIImage(named: "icon-customize-domain")!
+    }
+
+    /// Get paid image
+    ///
+    static var getPaidImage: UIImage {
+        UIImage(named: "icon-get-paid")!
     }
 
     /// Store summary image used in the store creation flow.
@@ -1174,8 +1208,12 @@ extension UIImage {
 
     /// WordPress.com logo image.
     ///
-    static var wpcomLogoImage: UIImage {
-        UIImage(named: "wpcom-logo")!
+    static func wpcomLogoImage(tintColor: UIColor? = nil) -> UIImage {
+        if let tintColor {
+            return UIImage(named: "wpcom-logo")!.imageWithTintColor(tintColor)!
+        } else {
+            return UIImage(named: "wpcom-logo")!
+        }
     }
 
     /// Image on the Jetpack setup interrupted screen
@@ -1227,6 +1265,60 @@ extension UIImage {
 
     static var iconBolt: UIImage {
         UIImage(imageLiteralResourceName: "icon-bolt")
+    }
+
+    /// Illustration for the free trial summary screen.
+    ///
+    static var freeTrialIllustration: UIImage {
+        UIImage(imageLiteralResourceName: "free-trial-ilustration")
+    }
+
+    static var ecommerceIcon: UIImage {
+        UIImage(imageLiteralResourceName: "ecommerce-icon")
+    }
+
+    static var supportIcon: UIImage {
+        UIImage(imageLiteralResourceName: "support-icon")
+    }
+
+    static var backupsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "backups-icon")
+    }
+
+    static var giftIcon: UIImage {
+        UIImage(imageLiteralResourceName: "gifts-icon")
+    }
+
+    static var emailOutlineIcon: UIImage {
+        UIImage(imageLiteralResourceName: "email-outline-icon")
+    }
+
+    static var shippingOutlineIcon: UIImage {
+        UIImage(imageLiteralResourceName: "shipping-outline-icon")
+    }
+
+    static var advertisingIcon: UIImage {
+        UIImage(imageLiteralResourceName: "advertising-icon")
+    }
+
+    static var launchIcon: UIImage {
+        UIImage(imageLiteralResourceName: "launch-icon")
+    }
+
+    static var paymentOptionsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "payment-options-icon")
+    }
+
+    static var premiumThemesIcon: UIImage {
+        UIImage(imageLiteralResourceName: "premium-themes-icon")
+    }
+
+    static var siteSecurityIcon: UIImage {
+        UIImage(imageLiteralResourceName: "site-security-icon")
+    }
+
+    static var unlimitedProductsIcon: UIImage {
+        UIImage(imageLiteralResourceName: "unlimited-products-icon")
     }
 }
 

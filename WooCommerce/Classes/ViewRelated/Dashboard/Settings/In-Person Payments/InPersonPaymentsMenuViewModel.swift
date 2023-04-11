@@ -37,9 +37,8 @@ final class InPersonPaymentsMenuViewModel {
         cardPresentPaymentsConfiguration.isSupportedCountry
     }
 
-    var isEligibleForTapToPayOnIPhone: Bool {
-        return isEligibleForCardPresentPayments && cardPresentPaymentsConfiguration.supportedReaders.contains { $0 == .appleBuiltIn }
-    }
+    @Published private(set) var isEligibleForTapToPayOnIPhone: Bool = false
+    @Published private(set) var shouldShowTapToPayOnIPhoneFeedbackRow: Bool = false
 
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
@@ -53,9 +52,58 @@ final class InPersonPaymentsMenuViewModel {
         guard let siteID = siteID else {
             return
         }
+        synchronizePaymentGateways(siteID: siteID)
+        checkTapToPaySupport(siteID: siteID)
+        checkShouldShowTapToPayFeedbackRow(siteID: siteID)
+        registerForNotifications()
+    }
 
+    private func synchronizePaymentGateways(siteID: Int64) {
         let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID, onCompletion: { _ in })
         stores.dispatch(action)
+    }
+
+    private func checkTapToPaySupport(siteID: Int64) {
+        let action = CardPresentPaymentAction.checkDeviceSupport(
+            siteID: siteID,
+            cardReaderType: .appleBuiltIn,
+            discoveryMethod: .localMobile) { [weak self] deviceSupportsTapToPay in
+                guard let self = self else { return }
+                self.isEligibleForTapToPayOnIPhone = (
+                    self.isEligibleForCardPresentPayments &&
+                    self.cardPresentPaymentsConfiguration.supportedReaders.contains { $0 == .appleBuiltIn } &&
+                    deviceSupportsTapToPay)
+        }
+        stores.dispatch(action)
+    }
+
+    private func checkShouldShowTapToPayFeedbackRow(siteID: Int64) {
+        let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(
+            siteID: siteID,
+            cardReaderType: .appleBuiltIn) { [weak self] firstTapToPayTransactionDate in
+                guard let self = self else { return }
+                guard let firstTapToPayTransactionDate = firstTapToPayTransactionDate,
+                      let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
+                    return self.shouldShowTapToPayOnIPhoneFeedbackRow = false
+                }
+
+                self.shouldShowTapToPayOnIPhoneFeedbackRow = firstTapToPayTransactionDate >= thirtyDaysAgo
+        }
+        stores.dispatch(action)
+    }
+
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshTapToPayFeedbackVisibility),
+                                               name: .firstInPersonPaymentsTransactionsWereUpdated,
+                                               object: nil)
+    }
+
+    @objc func refreshTapToPayFeedbackVisibility() {
+        guard let siteID = siteID else {
+            return
+        }
+        checkShouldShowTapToPayFeedbackRow(siteID: siteID)
     }
 
     func orderCardReaderPressed() {
@@ -69,6 +117,12 @@ final class InPersonPaymentsMenuViewModel {
                                                          onDismiss: { [weak self] in
             self?.showWebView = nil
         })
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: .firstInPersonPaymentsTransactionsWereUpdated,
+                                                  object: nil)
     }
 }
 

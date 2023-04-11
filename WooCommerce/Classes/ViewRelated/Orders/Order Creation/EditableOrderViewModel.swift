@@ -62,6 +62,12 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
+    /// Indicates whether Product Multi-Selection is enabled
+    ///
+    var isProductMultiSelectionEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)
+    }
+
     var title: String {
         switch flow {
         case .creation:
@@ -70,10 +76,6 @@ final class EditableOrderViewModel: ObservableObject {
             return String.localizedStringWithFormat(Localization.titleWithOrderNumber, order.number)
         }
     }
-
-    /// Latest state for Product Multi-Selection experimental feature
-    ///
-    @Published var isProductMultiSelectionBetaFeatureEnabled: Bool = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection)
 
     /// Active navigation bar trailing item.
     /// Defaults to create button.
@@ -178,8 +180,7 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
-            isClearSelectionEnabled: false,
+            supportsMultipleSelection: isProductMultiSelectionEnabled,
             toggleAllVariationsOnSelection: false,
             onProductSelected: { [weak self] product in
                 guard let self = self else { return }
@@ -191,6 +192,13 @@ final class EditableOrderViewModel: ObservableObject {
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+            }, onAllSelectionsCleared: { [weak self] in
+                guard let self = self else { return }
+                self.clearAllSelectedItems()
+                self.syncClearSelectionState()
+            }, onSelectedVariationsCleared: { [weak self] in
+                guard let self = self else { return }
+                self.clearSelectedVariations()
             })
     }
 
@@ -205,15 +213,15 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of selected/unselected Products, if any
     ///
-    @Published var selectedProducts: [Product] = []
+    @Published private var selectedProducts: [Product] = []
 
     /// Keeps track of selected/unselected Product Variations, if any
     ///
-    @Published var selectedProductVariations: [ProductVariation] = []
+    @Published private var selectedProductVariations: [ProductVariation] = []
 
     /// Keeps track of all selected Products and Product Variations IDs
     ///
-    var selectedProductsAndVariationsIDs: [Int64] {
+    private var selectedProductsAndVariationsIDs: [Int64] {
         let selectedProductsCount = selectedProducts.compactMap { $0.productID }
         let selectedProductVariationsCount = selectedProductVariations.compactMap { $0.productVariationID }
         return selectedProductsCount + selectedProductVariationsCount
@@ -324,8 +332,6 @@ final class EditableOrderViewModel: ObservableObject {
         // Needs to be reset before the view model is used.
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
-        configureProductMultiSelectionIfNeeded()
-
         configureDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
@@ -338,20 +344,6 @@ final class EditableOrderViewModel: ObservableObject {
         configureMultipleLinesMessage()
         resetAddressForm()
         syncInitialSelectedState()
-    }
-
-    /// Checks the current state of the Product Multi Selection feature toggle
-    ///
-    private func configureProductMultiSelectionIfNeeded() {
-        let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { result in
-            switch result {
-            case .success(let isEnabled):
-                self.isProductMultiSelectionBetaFeatureEnabled = isEnabled
-            case .failure(let error):
-                DDLogError("Unable to load MultiSelection feature switch state. \(error)")
-            }
-        })
-        stores.dispatch(action)
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -372,6 +364,21 @@ final class EditableOrderViewModel: ObservableObject {
         return itemsInOrder
     }
 
+    /// Clears selected products and variations
+    ///
+    private func clearAllSelectedItems() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .product))
+        selectedProducts.removeAll()
+        selectedProductVariations.removeAll()
+    }
+
+    /// Clears selected variations
+    /// 
+    private func clearSelectedVariations() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
+        selectedProductVariations.removeAll()
+    }
+
     /// Selects an order item by setting the `selectedProductViewModel`.
     ///
     /// - Parameter id: ID of the order item to select
@@ -386,7 +393,7 @@ final class EditableOrderViewModel: ObservableObject {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
-        if isProductMultiSelectionBetaFeatureEnabled {
+        if isProductMultiSelectionEnabled {
             // Updates selected products and selected variations for all items that have been removed directly from the Order
             // when using multi-selection, for example by tapping the `-` button within the Order view
             if item.productID != 0 {
@@ -843,8 +850,10 @@ private extension EditableOrderViewModel {
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
         orderSynchronizer.setProducts.send(addedItemsToSync + removedItemsToSync)
 
+        let productCount = addedItemsToSync.count - removedItemsToSync.count
+
         if addedItemsToSync.isNotEmpty {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: productCount))
         }
 
         if removedItemsToSync.isNotEmpty {
@@ -863,18 +872,20 @@ private extension EditableOrderViewModel {
             allProducts.append(product)
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+        if isProductMultiSelectionEnabled {
             // Multi-selection
             if !selectedProducts.contains(where: { $0.productID == product.productID }) {
                 selectedProducts.append(product)
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .product))
             } else {
                 selectedProducts.removeAll(where: { $0.productID == product.productID })
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
             }
         } else {
             // Single-selection
             let input = OrderSyncProductInput(product: .product(product), quantity: 1)
             orderSynchronizer.setProduct.send(input)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1))
         }
     }
 
@@ -893,18 +904,20 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+        if isProductMultiSelectionEnabled {
             // Multi-Selection
             if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
                 selectedProductVariations.append(variation)
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .variation))
             } else {
                 selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
+                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
             }
         } else {
             // Single-Selection
             let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
             orderSynchronizer.setProduct.send(input)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1))
         }
     }
 
@@ -1205,6 +1218,17 @@ private extension EditableOrderViewModel {
                     selectedProducts.append(product)
                 }
             }
+        }
+    }
+
+    /// Syncs initial selected state for all items in the Order when clearing selections
+    ///
+    func syncClearSelectionState() {
+        if flow == .creation {
+            syncInitialSelectedState()
+        } else {
+            selectedProducts = []
+            selectedProductVariations = []
         }
     }
 

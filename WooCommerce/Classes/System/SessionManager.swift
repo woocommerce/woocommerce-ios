@@ -2,6 +2,8 @@ import Combine
 import Foundation
 import Yosemite
 import KeychainAccess
+import protocol Networking.ApplicationPasswordUseCase
+import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 
 // MARK: - SessionManager Notifications
@@ -171,16 +173,25 @@ final class SessionManager: SessionManagerProtocol {
     /// Deletes application password
     ///
     func deleteApplicationPassword() {
-        guard case let .wporg(username, password, siteAddress) = loadCredentials(),
-              let usecase = try? DefaultApplicationPasswordUseCase(username: username,
-                                                                   password: password,
-                                                                   siteAddress: siteAddress,
-                                                                   keychain: keychain) else {
+        let useCase: ApplicationPasswordUseCase? = {
+            switch loadCredentials() {
+            case let .wporg(username, password, siteAddress):
+                return try? DefaultApplicationPasswordUseCase(username: username,
+                                                              password: password,
+                                                              siteAddress: siteAddress,
+                                                              keychain: keychain)
+            case let .applicationPassword(_, _, siteAddress):
+                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)
+            default:
+                return nil
+            }
+        }()
+        guard let useCase else {
             return
         }
 
         Task {
-            try await usecase.deletePassword()
+            try await useCase.deletePassword()
         }
     }
 }
@@ -192,6 +203,7 @@ private extension SessionManager {
     enum AuthenticationTypeIdentifier: String {
         case wpcom = "AuthenticationType.wpcom"
         case wporg = "AuthenticationType.wporg"
+        case applicationPassword = "AuthenticationType.applicationPassword"
 
         init(type: Credentials) {
             switch type {
@@ -199,6 +211,8 @@ private extension SessionManager {
                 self = AuthenticationTypeIdentifier.wpcom
             case .wporg:
                 self = AuthenticationTypeIdentifier.wporg
+            case .applicationPassword:
+                self = AuthenticationTypeIdentifier.applicationPassword
             }
         }
     }
@@ -226,6 +240,8 @@ private extension SessionManager {
             return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
         case .wporg:
             return .wporg(username: username, password: secret, siteAddress: siteAddress)
+        case .applicationPassword:
+            return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
         }
     }
 

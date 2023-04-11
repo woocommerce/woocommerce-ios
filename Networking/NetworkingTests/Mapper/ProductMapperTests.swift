@@ -105,7 +105,7 @@ final class ProductMapperTests: XCTestCase {
     }
 
     /// Verifies that the fields of the Product with alternative types are parsed correctly when they have different types than in the struct.
-    /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, `soldIndividually`, and `purchasable` allow alternative types.
+    /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, `soldIndividually`, `purchasable`, and `permalink`  allow alternative types.
     ///
     func test_that_product_alternative_types_are_properly_parsed() throws {
         let product = try XCTUnwrap(mapLoadProductResponseWithAlternativeTypes())
@@ -116,6 +116,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertTrue(product.manageStock)
         XCTAssertFalse(product.soldIndividually)
         XCTAssertTrue(product.purchasable)
+        XCTAssertEqual(product.permalink, "")
     }
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string
@@ -317,6 +318,29 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(bundledItem.title, "Beanie with Logo")
         XCTAssertEqual(bundledItem.stockStatus, .inStock)
     }
+
+    /// Test that products with the `composite` product type are properly parsed.
+    ///
+    func test_composite_products_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadCompositeProductResponse())
+        let compositeComponent = try XCTUnwrap(product.compositeComponents.first)
+
+        // Then
+        // Check parsed Product properties
+        XCTAssertEqual(product.productType, .composite)
+        XCTAssertEqual(product.compositeComponents.count, 3)
+
+        // Check parsed ProductCompositeComponent properties
+        XCTAssertEqual(compositeComponent.componentID, "1679310855")
+        XCTAssertEqual(compositeComponent.title, "Camera Body")
+        XCTAssertEqual(compositeComponent.description,
+                       "<p>Choose between the Nikon D600 or the powerful 5D Mark III and take your creativity to new levels.</p>\n")
+        XCTAssertEqual(compositeComponent.imageURL, "https://example.com/woo.jpg")
+        XCTAssertEqual(compositeComponent.optionType, .productIDs)
+        XCTAssertEqual(compositeComponent.optionIDs, [413, 412])
+        XCTAssertEqual(compositeComponent.defaultOptionID, "413")
+    }
 }
 
 
@@ -370,5 +394,11 @@ private extension ProductMapperTests {
     ///
     func mapLoadProductBundleResponse() -> Product? {
         return mapProduct(from: "product-bundle")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product-composite`
+    ///
+    func mapLoadCompositeProductResponse() -> Product? {
+        return mapProduct(from: "product-composite")
     }
 }

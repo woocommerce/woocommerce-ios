@@ -61,7 +61,8 @@ final class DashboardViewController: UIViewController {
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
         let horizontalMargin = Constants.horizontalMargin
-        view.layoutMargins = UIEdgeInsets(top: 0, left: horizontalMargin, bottom: 0, right: horizontalMargin)
+        let verticalMargin = Constants.verticalMargin
+        view.layoutMargins = UIEdgeInsets(top: 0, left: horizontalMargin, bottom: verticalMargin, right: horizontalMargin)
         view.isLayoutMarginsRelativeArrangement = true
         return view
     }()
@@ -127,7 +128,7 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    private let viewModel: DashboardViewModel = .init()
+    private let viewModel: DashboardViewModel
 
     private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
 
@@ -138,6 +139,7 @@ final class DashboardViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
+        self.viewModel = .init(siteID: siteID)
         super.init(nibName: nil, bundle: nil)
         configureTabBarItem()
     }
@@ -387,44 +389,10 @@ private extension DashboardViewController {
     /// Shows a web view for the merchant to update their site plan.
     ///
     func showUpgradePlanWebView() {
-        ServiceLocator.analytics.track(event: .FreeTrial.freeTrialUpgradeNowTapped(source: .banner))
-
-        // These URLs should be stored elsewhere.
-        // I'll wait until I reuse them in the plans menu to decide what is the best place for them.
-        // https://github.com/woocommerce/woocommerce-ios/issues/9057
-        guard let upgradeURL = URL(string: "https://wordpress.com/plans/\(siteID)") else { return }
-        let exitTrigger = "my-plan/trial-upgraded" // When a site is upgraded from a trial, this URL path is invoked.
-
-        let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.upgradeNow,
-                                                         initialURL: upgradeURL,
-                                                         urlToTriggerExit: exitTrigger) { [weak self] in
-            self?.exitUpgradeFreeTrialFlowAfterUpgrade()
-        }
-
-        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
-        webViewController.navigationItem.leftBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .cancel,
-                                                                              target: self,
-                                                                              action: #selector(exitUpgradeFreeTrialFlow))
-        let navigationController = UINavigationController(rootViewController: webViewController)
-        navigationController.isModalInPresentation = true
-        present(navigationController, animated: true)
-    }
-
-    /// Dismisses the upgrade now web view after the merchants successfully updates their plan.
-    ///
-    func exitUpgradeFreeTrialFlowAfterUpgrade() {
-        removeFreeTrialBanner()
-        dismiss(animated: true)
-
-        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeSuccess(source: .banner))
-    }
-
-    /// Dismisses the upgrade now web view when the user abandons the flow.
-    ///
-    @objc func exitUpgradeFreeTrialFlow() {
-        dismiss(animated: true)
-
-        ServiceLocator.analytics.track(event: .FreeTrial.planUpgradeAbandoned(source: .banner))
+        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
+            self?.removeFreeTrialBanner()
+        })
+        present(upgradeController, animated: true)
     }
 
     func configureDashboardUIContainer() {
@@ -521,7 +489,10 @@ private extension DashboardViewController {
     ///
     private func startAddProductFlow() {
         guard let announcementView, let navigationController else { return }
-        let coordinator = AddProductCoordinator(siteID: siteID, sourceView: announcementView, sourceNavigationController: navigationController)
+        let coordinator = AddProductCoordinator(siteID: siteID,
+                                                source: .productOnboarding,
+                                                sourceView: announcementView,
+                                                sourceNavigationController: navigationController)
         coordinator.onProductCreated = { [weak self] _ in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner
@@ -542,11 +513,17 @@ private extension DashboardViewController {
     }
 
     func observeAnnouncements() {
-        viewModel.$announcementViewModel.sink { [weak self] viewModel in
+        Publishers.CombineLatest(viewModel.$announcementViewModel,
+                                 viewModel.$showOnboarding)
+        .sink { [weak self] viewModel, showOnboarding in
             guard let self = self else { return }
             Task { @MainActor in
                 self.removeAnnouncement()
                 guard let viewModel = viewModel else {
+                    return
+                }
+
+                guard !showOnboarding else {
                     return
                 }
 
@@ -629,8 +606,8 @@ private extension DashboardViewController {
 
 private extension DashboardViewController {
     func observeOnboardingVisibility() {
-        Publishers.CombineLatest(viewModel.$showOnboarding,
-                                 ServiceLocator.stores.site.compactMap { $0 })
+        Publishers.CombineLatest(viewModel.$showOnboarding.removeDuplicates(),
+                                 ServiceLocator.stores.site.compactMap { $0 }.removeDuplicates())
         .sink { [weak self] showsOnboarding, site in
             guard let self else { return }
             if showsOnboarding {
@@ -660,10 +637,13 @@ private extension DashboardViewController {
             removeOnboardingCard()
         }
 
-        let hostingController = StoreOnboardingViewHostingController(viewModel: .init(isExpanded: false,
-                                                                                      siteID: site.siteID),
+        let hostingController = StoreOnboardingViewHostingController(viewModel: viewModel.storeOnboardingViewModel,
                                                                      navigationController: navigationController,
                                                                      site: site,
+                                                                     onUpgradePlan: { [weak self] in
+            guard let self else { return }
+            self.viewModel.syncFreeTrialBanner(siteID: self.siteID)
+        },
                                                                      shareFeedbackAction: { [weak self] in
             // Present survey
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)
@@ -791,7 +771,7 @@ private extension DashboardViewController {
                 await self?.reloadDashboardUIStatsVersion(forced: true)
             }
             group.addTask { [weak self] in
-                await self?.onboardingHostingController?.reloadTasks()
+                await self?.viewModel.reloadStoreOnboardingTasks()
             }
         }
     }
@@ -837,9 +817,8 @@ private extension DashboardViewController {
                     guard let self = self else { return }
 
                     let isJetpackCPSite = site?.isJetpackCPConnected == true
-                    let jetpackSetupForApplicationPassword = site?.isNonJetpackSite == true &&
-                        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)
-                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || jetpackSetupForApplicationPassword) && isVisibleFromAppSettings
+                    let isNonJetpackSite = site?.isNonJetpackSite == true
+                    let shouldShowJetpackBenefitsBanner = (isJetpackCPSite || isNonJetpackSite) && isVisibleFromAppSettings
 
                     self.updateJetpackBenefitsBannerVisibility(isBannerVisible: shouldShowJetpackBenefitsBanner, contentView: contentView)
                 }
@@ -874,13 +853,13 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
-        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title for the WebView when upgrading a free trial plan")
     }
 
     enum Constants {
         static let animationDurationSeconds = CGFloat(0.3)
         static let bannerBottomMargin = CGFloat(8)
         static let horizontalMargin = CGFloat(16)
+        static let verticalMargin = CGFloat(16)
         static let storeNameTextColor: UIColor = .secondaryLabel
         static let backgroundColor: UIColor = .listForeground(modal: false)
         static let iPhoneCollapsedNavigationBarHeight = CGFloat(44)

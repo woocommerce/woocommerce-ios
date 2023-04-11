@@ -48,8 +48,8 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [x] Add new product - Variable product
     - [ ] Add new product - Grouped product
     - [ ] Add new product - External product
-    - [ ] Search for product
-    - [ ] Filters for product
+    - [x] Search product
+    - [x] Filter product
     - [ ] Edit product
     - [ ] Add media library image to existing product
     - [ ] Add camera image to existing product
@@ -63,8 +63,17 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] New order results in a push notification
     - [ ] Orders push notification opens the correct order
     - [ ] Reviews push notification opens the correct review
-7. Settings
+7. Universal Links and Deeplinks
+    - [x] Universal Link to Payments screen
+    - [ ] Universal Link to an Order
+8. Settings
     - [ ] Contact support
+9. Payments
+    - [ ] Make a Simple payment
+    - [ ] Make a Tap to Pay on iPhone payment
+    - [ ] Manage Card Reader - Connect/Disconnect Reader
+    - [x] Card Reader Manual (Chipper) loads
+    - [ ] Learn More link loads
 
 ## Running tests
 

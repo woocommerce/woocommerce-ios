@@ -72,7 +72,10 @@ final class PaymentRemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(plan, .init(id: "1008",
                                    hasDomainCredit: false,
-                                   expiryDate: DateFormatter.Defaults.iso8601.date(from: "2025-01-01T00:00:00+00:00")))
+                                   expiryDate: DateFormatter.Defaults.iso8601.date(from: "2025-01-01T00:00:00+00:00"),
+                                   subscribedDate: DateFormatter.Defaults.iso8601.date(from: "2019-04-29T04:32:29+00:00"),
+                                   name: "WordPress.com Business",
+                                   slug: "business-bundle"))
     }
 
     func test_loadSiteCurrentPlan_returns_noCurrentPlan_error_when_response_has_no_current_plan() async throws {

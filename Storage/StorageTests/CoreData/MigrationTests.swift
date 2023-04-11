@@ -1629,6 +1629,50 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProduct.value(forKey: "bundleStockStatus") as? String, bundleStockStatus)
         XCTAssertEqual(migratedProduct.value(forKey: "bundledItems") as? NSOrderedSet, NSOrderedSet(array: [bundledItem]))
     }
+
+    func test_migrating_from_81_to_82_enables_creating_new_ProductCompositeComponent_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 81")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 81)
+        try sourceContext.save()
+
+        // Confidence Checks. This entity and relationship should not exist in Model 81.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "ProductCompositeComponent", in: sourceContext))
+        XCTAssertNil(product.entity.relationshipsByName["compositeComponents"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 82")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductCompositeComponent"), 0)
+
+        // Migrated product has expected empty components attribute.
+        let migratedProduct = try XCTUnwrap(targetContext.firstObject(ofType: Product.self))
+        XCTAssertEqual(migratedProduct.mutableOrderedSetValue(forKey: "compositeComponents").count, 0)
+
+        // Insert a new ProductCompositeComponent and add it to Product.
+        let component = insertCompositeComponent(to: targetContext)
+        migratedProduct.setValue(NSOrderedSet(array: [component]), forKey: "compositeComponents")
+        try targetContext.save()
+
+        // ProductCompositeComponent entity and attributes exist, including relationship with Product.
+        XCTAssertEqual(try targetContext.count(entityName: "ProductCompositeComponent"), 1)
+        XCTAssertNotNil(component.value(forKey: "componentID"))
+        XCTAssertNotNil(component.value(forKey: "title"))
+        XCTAssertNotNil(component.value(forKey: "imageURL"))
+        XCTAssertNotNil(component.value(forKey: "optionType"))
+        XCTAssertNotNil(component.value(forKey: "optionIDs"))
+        XCTAssertNotNil(component.value(forKey: "componentDescription"))
+        XCTAssertNotNil(component.value(forKey: "defaultOptionID"))
+        XCTAssertEqual(component.value(forKey: "product") as? NSManagedObject, migratedProduct)
+
+        // Product components attribute exists.
+        XCTAssertEqual(migratedProduct.value(forKey: "compositeComponents") as? NSOrderedSet, NSOrderedSet(array: [component]))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1925,7 +1969,7 @@ private extension MigrationTests {
             "shippingRequired": false,
             "shippingTaxable": false,
             "reviewsAllowed": true,
-            "groupedProducts": [],
+            "groupedProducts": [Int64](),
             "virtual": true,
             "stockStatusKey": "",
             "statusKey": "",
@@ -2111,7 +2155,7 @@ private extension MigrationTests {
             "title": "WooCommerce Payments",
             "gatewayDescription": "WooCommerce Payments - easy payments by Woo",
             "enabled": true,
-            "features": []
+            "features": [String]()
         ])
     }
 
@@ -2255,6 +2299,17 @@ private extension MigrationTests {
             "productID": 1,
             "stockStatus": "in_stock",
             "title": ""
+        ])
+    }
+
+    @discardableResult
+    func insertCompositeComponent(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductCompositeComponent", properties: [
+            "componentID": "1679310855",
+            "title": "Camera Body",
+            "imageURL": "https://example.com/woo.jpg",
+            "optionType": "product_ids",
+            "optionIDs": [413, 412]
         ])
     }
 }

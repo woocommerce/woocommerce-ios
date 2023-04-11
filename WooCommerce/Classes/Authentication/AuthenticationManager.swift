@@ -8,6 +8,8 @@ import enum Experiments.ABTest
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import protocol Networking.ApplicationPasswordUseCase
+import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
 import struct Experiments.CachedABTestVariationProvider
@@ -22,6 +24,9 @@ class AuthenticationManager: Authentication {
 
     /// Store creation coordinator in the logged-out state.
     private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
+
+    /// Store creation coordinator in the logged-in state.
+    private var storeCreationCoordinator: StoreCreationCoordinator?
 
     /// Keychain access for SIWA auth token
     ///
@@ -294,7 +299,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             defaultAction: { [weak self] in
                 guard let self else { return }
                 let webViewController = self.applicationPasswordWebView(for: siteURL)
-                viewController.present(UINavigationController(rootViewController: webViewController), animated: true)
+                viewController.navigationController?.pushViewController(webViewController, animated: true)
+                self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
             }
         )
         viewController.present(alertController, animated: true)
@@ -447,7 +453,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let action = AccountAction.synchronizeAccount { result in
             switch result {
             case .success(let account):
-                let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
+                let credentials = Credentials.wpcom(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
@@ -490,7 +496,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
-        analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped())
+        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
+        analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped(isFreeTrial: isFreeTrialEnabled))
 
         let coordinator = LoggedOutStoreCreationCoordinator(source: .prologue,
                                                             navigationController: navigationController)
@@ -577,6 +584,7 @@ private extension AuthenticationManager {
                           source: SignInSource? = nil,
                           in navigationController: UINavigationController,
                           onDismiss: @escaping () -> Void = {}) {
+        // Start the store picker
         let config: StorePickerConfiguration = {
             switch source {
             case .custom(let source):
@@ -595,6 +603,17 @@ private extension AuthenticationManager {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
+        }
+
+        // Start the store creation process if the user
+        // logged in from the store creation flow.
+        if case .custom(let source) = source,
+           let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
+           storeCreationSource == .prologue {
+            let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
+                                                       navigationController: navigationController)
+            self.storeCreationCoordinator = coordinator
+            coordinator.start()
         }
     }
 
@@ -653,8 +672,23 @@ private extension AuthenticationManager {
     ///
     func applicationPasswordWebView(for siteURL: String) -> UIViewController {
         let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
-        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel, onSuccess: { _ in
-            // TODO: handle success
+        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel,
+                                                                           onSuccess: { [weak self] applicationPassword, navigationController in
+            guard let navigationController else {
+                DDLogInfo("⚠️ No navigation controller found")
+                return
+            }
+            let credentials: Credentials = .applicationPassword(
+                username: applicationPassword.wpOrgUsername,
+                password: applicationPassword.password.secretValue,
+                siteAddress: siteURL
+            )
+            let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword,
+                                                            siteAddress: siteURL)
+            /// IMPORTANT: authenticate after creating the use case above to make sure that
+            /// the application password is saved into keychain.
+            ServiceLocator.stores.authenticate(credentials: credentials)
+            self?.checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
         })
         return controller
     }
@@ -705,6 +739,12 @@ private extension AuthenticationManager {
         ) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }
+        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+    }
+
+    func checkSiteCredentialLogin(to siteURL: String,
+                                  with useCase: ApplicationPasswordUseCase,
+                                  in navigationController: UINavigationController) {
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             guard let self else { return }

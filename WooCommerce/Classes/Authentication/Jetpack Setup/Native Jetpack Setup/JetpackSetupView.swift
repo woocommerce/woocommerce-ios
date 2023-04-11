@@ -1,20 +1,27 @@
 import SwiftUI
+import Yosemite
 
 /// Hosting controller for `JetpackSetupView`.
 ///
 final class JetpackSetupHostingController: UIHostingController<JetpackSetupView> {
     private let viewModel: JetpackSetupViewModel
-    private let analytics: Analytics
     private let authentication: Authentication
+    private let connectionWebViewCredentials: Credentials?
 
     init(siteURL: String,
          connectionOnly: Bool,
+         connectionWebViewCredentials: Credentials? = nil,
+         stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
-        self.analytics = analytics
-        self.viewModel = JetpackSetupViewModel(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: onStoreNavigation)
+        self.viewModel = JetpackSetupViewModel(siteURL: siteURL,
+                                               connectionOnly: connectionOnly,
+                                               stores: stores,
+                                               analytics: analytics,
+                                               onStoreNavigation: onStoreNavigation)
         self.authentication = authentication
+        self.connectionWebViewCredentials = connectionWebViewCredentials
         super.init(rootView: JetpackSetupView(viewModel: viewModel))
 
         rootView.webViewPresentationHandler = { [weak self] in
@@ -24,7 +31,8 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
         rootView.supportHandler = { [weak self] in
             guard let self else { return }
 
-            self.analytics.track(.loginJetpackSetupScreenGetSupportTapped, withProperties: self.viewModel.currentSetupStep?.analyticsDescription)
+            self.viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenGetSupportTapped, properties: self.viewModel.currentSetupStep?.analyticsDescription)
+            self.viewModel.trackSetupAfterLogin(tap: .support)
             self.presentSupport()
         }
 
@@ -39,7 +47,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        analytics.track(.loginJetpackSetupScreenViewed)
+        viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenViewed)
         configureNavigationBarAppearance()
     }
 
@@ -52,8 +60,8 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
     @objc
     private func dismissView() {
-        analytics.track(.loginJetpackSetupScreenDismissed,
-                        withProperties: viewModel.currentSetupStep?.analyticsDescription)
+        viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenDismissed, properties: viewModel.currentSetupStep?.analyticsDescription)
+        viewModel.trackSetupAfterLogin(tap: .dismiss)
         dismiss(animated: true)
     }
 
@@ -74,11 +82,16 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
             self.viewModel.shouldPresentWebView = false
             self.viewModel.didAuthorizeJetpackConnection()
             self.dismissView()
+        }, onFailure: { [weak self] errorCode in
+            guard let self else { return }
+            self.viewModel.shouldPresentWebView = false
+            self.viewModel.didEncounterErrorDuringConnection(code: errorCode)
+            self.dismissWebView()
         }, onDismissal: { [weak self] in
             guard let self else { return }
             self.viewModel.jetpackConnectionInterrupted = true
         })
-        let webView = AuthenticatedWebViewController(viewModel: webViewModel)
+        let webView = AuthenticatedWebViewController(viewModel: webViewModel, extraCredentials: connectionWebViewCredentials)
         webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
                                                                    style: .plain,
                                                                    target: self,
@@ -273,14 +286,15 @@ struct JetpackSetupView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.jetpackConnectionInterrupted) {
-            JetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: supportHandler, onContinue: {
+            JetpackSetupInterruptedView(siteURL: viewModel.siteURL, onSupport: {
+                viewModel.shouldPresentWebView = false
+                supportHandler()
+            }, onContinue: {
+                viewModel.shouldPresentWebView = false
                 viewModel.jetpackConnectionInterrupted = false
                 viewModel.didTapContinueConnectionButton()
-                // delay for the dismissal of the interrupted screen to complete.
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {
-                    webViewPresentationHandler()
-                }
             }, onCancellation: {
+                viewModel.shouldPresentWebView = false
                 viewModel.jetpackConnectionInterrupted = false
                 // delay for the dismissal of the interrupted screen to complete.
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.interruptedConnectionActionHandlerDelayTime) {

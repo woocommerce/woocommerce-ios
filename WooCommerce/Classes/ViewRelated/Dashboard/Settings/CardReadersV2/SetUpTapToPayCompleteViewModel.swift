@@ -6,16 +6,15 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
-    var dismiss: (() -> Void)?
 
-    private(set) var connectedReader: CardReaderSettingsTriState = .isUnknown {
-        didSet {
-            didUpdate?()
-        }
-    }
+    private var doneWasTapped: Bool = false
+
+    private(set) var connectedReader: CardReaderSettingsTriState = .isUnknown
 
     private let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
     private let stores: StoresManager
+
+    private let analytics: Analytics = ServiceLocator.analytics
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -47,7 +46,13 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     /// Notifies the viewModel owner if a change occurs via didChangeShouldShow
     ///
     private func reevaluateShouldShow() {
-        let newShouldShow: CardReaderSettingsTriState = connectedReader
+        let newShouldShow: CardReaderSettingsTriState
+
+        if doneWasTapped {
+            newShouldShow = .isFalse
+        } else {
+            newShouldShow = connectedReader
+        }
 
         let didChange = newShouldShow != shouldShow
 
@@ -59,7 +64,9 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
     }
 
     func doneTapped() {
-        dismiss?()
+        analytics.track(.tapToPaySetupSuccessDoneTapped)
+        doneWasTapped = true
+        reevaluateShouldShow()
     }
 
     deinit {

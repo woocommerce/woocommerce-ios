@@ -167,6 +167,7 @@ private extension Product_ProductFormTests {
                        addOns: [],
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
-                       bundledItems: [])
+                       bundledItems: [],
+                       compositeComponents: [])
     }
 }

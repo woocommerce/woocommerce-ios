@@ -33,6 +33,10 @@ enum WooConstants {
     ///
     static let siteCredentialPassword = "siteCredentialPassword"
 
+    /// Keychain Access's Key for the current application password
+    ///
+    static let applicationPassword = "ApplicationPassword"
+
     /// Shared UsersDefaults Suite Name
     ///
     static let sharedUserDefaultsSuiteName = "group.com.automattic.woocommerce"
@@ -181,6 +185,14 @@ extension WooConstants {
         /// URL for IPP feedback survey (Power Users case).  Used when merchants have a significant number of IPP transactions.
         ///
         case inPersonPaymentsPowerUsersFeedback = "https://automattic.survey.fm/woo-app-–-ipp-survey-for-power-users"
+#endif
+
+        /// URL for the Tap to Pay first payment survey
+        ///
+#if DEBUG
+        case tapToPayFirstPaymentFeedback = "https://automattic.survey.fm/woo-app-tap-to-pay-survey"
+#else
+        case tapToPayFirstPaymentFeedback = "https://automattic.survey.fm/woo-app-–-first-ttp-survey"
 #endif
 
         /// URL for the products feedback survey

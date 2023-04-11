@@ -161,8 +161,10 @@ final class CardReaderConnectionController {
     }
 
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
-        self.onCompletion = onCompletion
-        self.state = .initializing
+        Task { @MainActor [weak self] in
+            self?.onCompletion = onCompletion
+            self?.state = .initializing
+        }
     }
 }
 
@@ -282,7 +284,9 @@ private extension CardReaderConnectionController {
 
         /// Fetch the list of known readers - i.e. readers we should automatically connect to when we see them
         ///
-        knownCardReaderProvider.knownReader.sink(receiveValue: { [weak self] readerID in
+        knownCardReaderProvider.knownReader
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] readerID in
             guard let self = self else {
                 return
             }
@@ -375,7 +379,8 @@ private extension CardReaderConnectionController {
                 ServiceLocator.analytics.track(
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(forGatewayID: self.gatewayID,
                                                                                         error: error,
-                                                                                        countryCode: self.configuration.countryCode)
+                                                                                        countryCode: self.configuration.countryCode,
+                                                                                        siteID: self.siteID)
                 )
                 self.state = .discoveryFailed(error)
             })
@@ -521,7 +526,9 @@ private extension CardReaderConnectionController {
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
             guard let self = self else { return }
 
-            softwareUpdateEvents.sink { [weak self] event in
+            softwareUpdateEvents
+                .subscribe(on: DispatchQueue.main)
+                .sink { [weak self] event in
                 guard let self = self else { return }
 
                 switch event {
@@ -573,7 +580,8 @@ private extension CardReaderConnectionController {
                     event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
                                                                                          error: error,
                                                                                          countryCode: self.configuration.countryCode,
-                                                                                         cardReaderModel: candidateReader.readerType.model)
+                                                                                         cardReaderModel: candidateReader.readerType.model,
+                                                                                         siteID: self.siteID)
                 )
                 self.state = .connectingFailed(error)
             }

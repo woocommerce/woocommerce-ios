@@ -1,6 +1,15 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.1
+More love for In-Person Payments and orders this time around. We made it easier for you to search & select multiple products when creating an order. It's also possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats.
+
+## 13.0
+This release includes several bug fixes and improvements to make your experience smoother and more enjoyable. It's possible to duplicate a variable product and this includes the product description, sale price, and image. We have some exciting updates coming in the next few weeks. Stay tuned for more information!
+
+## 12.9
+For this release, we focused on making your experience smoother when creating an order and updating products. We have also made improvements to the login experience without Jetpack. Additionally, it's now possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats. Keep your feedback coming!
+
 ## 12.8
 This release includes a few enhancements to your store management experience. It's now possible to use the iOS Shortcuts app to create an order and collect payments from the WooCommerce mobile apps! Please try it out and share your feedback.
 

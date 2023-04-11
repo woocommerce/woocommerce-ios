@@ -54,6 +54,19 @@ final class RequestConvertorTests: XCTestCase {
         XCTAssertTrue(request is RESTRequest)
     }
 
+    func test_REST_request_is_returned_for_application_password_credentials_when_available_as_REST_request() {
+        // Given
+        let credentials: Credentials = .applicationPassword(username: "admin", password: "supersecret", siteAddress: "https://test.com/")
+        let converter = RequestConverter(credentials: credentials)
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 123, path: "test", availableAsRESTRequest: true)
+
+        // When
+        let request = converter.convert(jetpackRequest)
+
+        // Then
+        XCTAssertTrue(request is RESTRequest)
+    }
+
     func test_jetpack_request_is_returned_for_WPOrg_credentials_when_not_available_as_REST_request() {
         // Given
         let credentials: Credentials = .wporg(username: "admin", password: "supersecret", siteAddress: "https://test.com/")

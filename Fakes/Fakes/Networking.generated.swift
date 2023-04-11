@@ -127,6 +127,13 @@ extension Networking.Announcement {
         )
     }
 }
+extension CompositeComponentOptionType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> CompositeComponentOptionType {
+        .productIDs
+    }
+}
 extension Networking.Country {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -194,7 +201,10 @@ extension Networking.CreateProductVariation {
     public static func fake() -> Networking.CreateProductVariation {
         .init(
             regularPrice: .fake(),
-            attributes: .fake()
+            salePrice: .fake(),
+            attributes: .fake(),
+            description: .fake(),
+            image: .fake()
         )
     }
 }
@@ -831,7 +841,8 @@ extension Networking.Product {
             addOns: .fake(),
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
-            bundledItems: .fake()
+            bundledItems: .fake(),
+            compositeComponents: .fake()
         )
     }
 }
@@ -943,6 +954,21 @@ extension Networking.ProductCategory {
             parentID: .fake(),
             name: .fake(),
             slug: .fake()
+        )
+    }
+}
+extension Networking.ProductCompositeComponent {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductCompositeComponent {
+        .init(
+            componentID: .fake(),
+            title: .fake(),
+            description: .fake(),
+            imageURL: .fake(),
+            optionType: .fake(),
+            optionIDs: .fake(),
+            defaultOptionID: .fake()
         )
     }
 }

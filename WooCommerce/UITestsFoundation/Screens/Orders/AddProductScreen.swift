@@ -20,18 +20,18 @@ public final class AddProductScreen: ScreenObject {
         )
     }
 
-    /// Selects a product from the list.
+    /// Taps a product from the list.
     /// - Returns: Unified Order screen object.
     @discardableResult
-    public func selectProduct(byName name: String) throws -> UnifiedOrderScreen {
+    public func tapProduct(byName name: String) throws -> UnifiedOrderScreen {
         app.buttons.staticTexts[name].tap()
         return try UnifiedOrderScreen()
     }
 
-    /// Selects multiple products from the list.
+    /// Taps multiple products from the list.
     /// - Returns: Unified Order screen object.
     @discardableResult
-    public func selectMultipleProducts(numberOfProductsToAdd: Int) throws -> UnifiedOrderScreen {
+    public func tapMultipleProducts(numberOfProductsToAdd: Int) throws -> UnifiedOrderScreen {
         for product in 0..<numberOfProductsToAdd {
             let products = app.buttons.matching(identifier: "product-item")
             products.element(boundBy: product).tap()

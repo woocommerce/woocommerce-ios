@@ -13,11 +13,16 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
 
     private let task: Task
     private let site: Site
+    private let onDismiss: (() -> Void)?
 
-    init(task: Task, site: Site, navigationController: UINavigationController) {
+    init(task: Task,
+         site: Site,
+         navigationController: UINavigationController,
+         onDismiss: (() -> Void)? = nil) {
         self.task = task
         self.site = site
         self.navigationController = navigationController
+        self.onDismiss = onDismiss
     }
 
     func start() {
@@ -54,13 +59,14 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             return assertionFailure("Invalid URL for onboarding payments setup: \(urlString)")
         }
 
-        let webViewModel = DefaultAuthenticatedWebViewModel(title: title, initialURL: url)
+        let webViewModel = WPAdminWebViewModel(title: title, initialURL: url)
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(dismissWebview))
         navigationController.show(webViewController, sender: navigationController)
     }
 
     @objc func dismissWebview() {
+        onDismiss?()
         navigationController.dismiss(animated: true)
     }
 }
@@ -79,7 +85,7 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
 
     enum URLs {
         static func wcPay(site: Site) -> String {
-            "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-settings&tab=checkout"
+            "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments"
         }
 
         static func payments(site: Site) -> String {

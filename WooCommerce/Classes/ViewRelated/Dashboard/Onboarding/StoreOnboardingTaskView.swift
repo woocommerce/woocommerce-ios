@@ -36,10 +36,11 @@ struct StoreOnboardingTaskView: View {
                     .redacted(reason: isRedacted ? .placeholder : [])
 
                 VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                    Spacer().frame(height: Layout.spacerHeight)
+
                     HStack {
                         // Task labels
                         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                            Spacer().frame(height: Layout.spacerHeight)
 
                             HStack {
                                 // Task title.
@@ -64,13 +65,15 @@ struct StoreOnboardingTaskView: View {
                                 .subheadlineStyle()
                                 .multilineTextAlignment(.leading)
                                 .redacted(reason: isRedacted ? .placeholder : [])
+                                // This size modifier is necessary so that the subtitle is never truncated.
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer()
                         // Chevron icon
                         Image(uiImage: .chevronImage)
                             .flipsForRightToLeftLayoutDirection(true)
                             .foregroundColor(Color(.textTertiary))
-                            .renderedIf(!isRedacted)
+                            .renderedIf(!isRedacted && !viewModel.isComplete)
                     }
 
                     Spacer().frame(height: Layout.spacerHeight)

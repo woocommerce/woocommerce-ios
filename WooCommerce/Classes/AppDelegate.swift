@@ -71,6 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
+        listenToApplicationPasswordGenerationFailureNotification()
 
         // Since we are using Injection for refreshing the content of the app in debug mode,
         // we are going to enable Inject.animation that will be used when
@@ -458,6 +459,16 @@ extension AppDelegate {
         }
 
         ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
+    }
+
+    /// Deauthenticates the user upon application password generation failure.
+    ///
+    private func listenToApplicationPasswordGenerationFailureNotification() {
+        guard ServiceLocator.stores.isAuthenticatedWithoutWPCom else {
+            return
+        }
+
+        ServiceLocator.stores.listenToApplicationPasswordGenerationFailureNotification()
     }
 
     /// Runs whenever the Authentication Flow is completed successfully.

@@ -1,8 +1,34 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.2
+-----
+- [Internal] Store creation: New loading screen added for create store flow. [https://github.com/woocommerce/woocommerce-ios/pull/9383]
+- [*] Payments: Add account type field to receipts [https://github.com/woocommerce/woocommerce-ios/pull/9416]
+
+
+13.1
+-----
+- [internal] Users can now create a Free Trial store from the app from the Get Started section of the app prologue. [https://github.com/woocommerce/woocommerce-ios/pull/9396]
+- [**] Adds support for Product Multi-selection when creating and/or editing Orders. [https://github.com/woocommerce/woocommerce-ios/issues/8888]
+- [**] Users can now install Jetpack for their non-Jetpack sites after logging in with application passwords. [https://github.com/woocommerce/woocommerce-ios/pull/9354]
+- [*] Payments: We show a Tap to Pay on iPhone feedback survey button in the Payments menu after the first Tap to Pay on iPhone payment is taken [https://github.com/woocommerce/woocommerce-ios/pull/9366]
+- [Internal] Added SiteID to some IPP tracks events [https://github.com/woocommerce/woocommerce-ios/pull/9371]
+
+13.0
+-----
+- [*] Adds a banner in "Launch store" task screen to upgrade from free trial plan. [https://github.com/woocommerce/woocommerce-ios/pull/9323]
+- [*] Fix: Description, sale price, and image will be copied over to the new product variations when duplicating a variable product. [https://github.com/woocommerce/woocommerce-ios/pull/9322]
+
+
 12.9
 -----
-
+- [**] Dashboard: an onboarding card is shown for sites with the following tasks if any is incomplete: "tell us more about your store" (store location) that opens a webview, "add your first product" that starts the product creation flow, "launch your store" that publishes the store, "customize your domain" that starts the domain purchase flow, and "get paid" that opens a webview. A subset of the tasks may be shown to self-hosted sites and WPCOM sites on a free trial. [https://github.com/woocommerce/woocommerce-ios/pull/9285]
+- [*] Jetpack benefit banner and modal is now available on the dashboard screen after logging in with site credentials. [https://github.com/woocommerce/woocommerce-ios/pull/9232]
+- [*] Payments: Local search is added to the products selection screen in the order creation flow to speed the process. [https://github.com/woocommerce/woocommerce-ios/pull/9178]
+- [*] Fix: Prevent product variations not loading due to an encoding error for `permalink`, which was altered by a plugin. [https://github.com/woocommerce/woocommerce-ios/pull/9233]
+- [*] Login: Users can now log in to self-hosted sites without Jetpack by approving application password authorization to their sites. [https://github.com/woocommerce/woocommerce-ios/pull/9260]
+- [*] Payments: Tap to Pay on iPhone can now be selected from the Payment Methods screen [https://github.com/woocommerce/woocommerce-ios/pull/9242]
+- [**] Payments: Set up Tap to Pay on iPhone flow added to the Payments Menu. Use it to configure the reader, and try a payment, before collecting a card payment with a customer. [https://github.com/woocommerce/woocommerce-ios/pull/9280]
 
 12.8
 -----

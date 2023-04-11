@@ -30,7 +30,14 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
 
         viewModel.alertsPresenter = alertsPresenter
         viewModel.connectionController = connectionController
+        configureViewModel()
         configureView()
+    }
+
+    private func configureViewModel() {
+        viewModel.dismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 
     private func configureView() {
@@ -39,9 +46,6 @@ final class SetUpTapToPayInformationViewController: UIHostingController<SetUpTap
             WebviewHelper.launch(url, with: self)
         }
         rootView.learnMoreUrl = viewModel.learnMoreURL
-        rootView.dismiss = { [weak self] in
-            self?.dismiss(animated: true)
-        }
     }
 
     required init?(coder: NSCoder) {
@@ -58,7 +62,6 @@ struct SetUpTapToPayInformationView: View {
     @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
-    var dismiss: (() -> Void)? = nil
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
@@ -73,9 +76,9 @@ struct SetUpTapToPayInformationView: View {
     var body: some View {
         VStack {
             HStack {
-                Button("Cancel", action: {
-                    dismiss?()
-                })
+                Button(Localization.cancelButton) {
+                    viewModel.cancelTapped()
+                }
                 Spacer()
             }
             .padding(.top)
@@ -193,6 +196,10 @@ private enum Localization {
                  which should be translated separately and considered part of this sentence.
                  """
     )
+
+    static let cancelButton = NSLocalizedString(
+        "Cancel",
+        comment: "Settings > Set up Tap to Pay on iPhone > Information > Cancel button")
 }
 
 struct SetUpTapToPayInformationView_Previews: PreviewProvider {

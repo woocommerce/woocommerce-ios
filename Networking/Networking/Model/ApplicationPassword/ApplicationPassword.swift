@@ -26,7 +26,7 @@ public struct ApplicationPassword: Decodable {
             throw ApplicationPasswordDecodingError.missingWpOrgUsername
         }
 
-        let password = try container.decode(String.self, forKey: .password)
+        let password = try container.decodeIfPresent(String.self, forKey: .password) ?? ""
         let uuid = try container.decode(String.self, forKey: .uuid)
         self.init(wpOrgUsername: wpOrgUsername, password: Secret(password), uuid: uuid)
     }

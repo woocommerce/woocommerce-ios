@@ -8,16 +8,29 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     private let viewModel: StoreOnboardingViewModel
     private let sourceNavigationController: UINavigationController
     private let site: Site
-    private lazy var coordinator: StoreOnboardingCoordinator = .init(navigationController: sourceNavigationController,
-                                                                     site: site)
+    private let onUpgradePlan: (() -> Void)?
+
+    private lazy var coordinator = StoreOnboardingCoordinator(navigationController: sourceNavigationController,
+                                                              site: site,
+                                                              onTaskCompleted: { [weak self] task in
+        guard let self else { return }
+        self.reloadTasks()
+        ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: task))
+    }, reloadTasks: { [weak self] in
+        self?.reloadTasks()
+    }, onUpgradePlan: { [weak self] in
+        self?.onUpgradePlan?()
+    })
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
          site: Site,
+         onUpgradePlan: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.sourceNavigationController = navigationController
         self.site = site
+        self.onUpgradePlan = onUpgradePlan
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
                                                  shareFeedbackAction: shareFeedbackAction))
         if #unavailable(iOS 16.0) {
@@ -31,6 +44,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
                   !task.isComplete else {
                 return
             }
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskTapped(task: task.type))
             self.coordinator.start(task: task)
         }
 
@@ -51,22 +65,18 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         super.viewDidLoad()
 
         configureNavigationBarAppearance()
-        Task {
-            await reloadTasks()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        Task {
-            await reloadTasks()
-        }
+        reloadTasks()
     }
 
-    @MainActor
-    func reloadTasks() async {
-        await viewModel.reloadTasks()
+    private func reloadTasks() {
+        Task { @MainActor in
+            await viewModel.reloadTasks()
+        }
     }
 
     /// Shows a transparent navigation bar without a bottom border.
@@ -113,7 +123,7 @@ struct StoreOnboardingView: View {
     }
 
     private var content: some View {
-        VStack {
+        VStack(spacing: 0) {
             Color(uiColor: .listBackground)
                 .frame(height: Layout.VerticalSpacing.collapsedMode)
                 .renderedIf(!viewModel.isExpanded)
@@ -128,7 +138,7 @@ struct StoreOnboardingView: View {
                                        isRedacted: viewModel.isRedacted)
 
                 // Task list
-                VStack(alignment: .leading, spacing: Layout.verticalSpacingBetweenTasks) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(viewModel.tasksForDisplay) { taskViewModel in
                         let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
 
@@ -148,7 +158,8 @@ struct StoreOnboardingView: View {
                 Spacer()
                     .renderedIf(viewModel.isExpanded)
             }
-            .padding(insets: Layout.insets)
+            .padding(insets: viewModel.shouldShowViewAllButton ?
+                     Layout.insetsWithViewAllButton: Layout.insetsWithoutViewAllButton)
             .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
 
             Color(uiColor: .listBackground)
@@ -176,12 +187,12 @@ private extension StoreOnboardingView {
 
 private extension StoreOnboardingView {
     enum Layout {
-        static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let insetsWithViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 0, trailing: 16)
         enum VerticalSpacing {
             static let collapsedMode: CGFloat = 16
             static let expandedMode: CGFloat = 40
         }
-        static let verticalSpacingBetweenTasks: CGFloat = 4
     }
 
     enum Localization {
@@ -195,8 +206,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(isExpanded: false, siteID: 0))
+        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: false))
 
-        StoreOnboardingView(viewModel: .init(isExpanded: true, siteID: 0))
+        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: true))
     }
 }

@@ -14,11 +14,11 @@ import enum Hardware.UnderlyingError
 protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///
-    ///
+    /// - Parameter using: We specify a discovery method to allow us to choose between Tap to Pay and Bluetooth readers, which have distinct connection flows.
     /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
-    func collectPayment(onFailure: @escaping (Error) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
+    func collectPayment(using: CardReaderDiscoveryMethod, onFailure: @escaping (Error) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
 }
 
 /// Use case to collect payments from an order.
@@ -102,7 +102,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
-        self.analyticsTracker = CollectOrderPaymentAnalytics(analytics: analytics,
+        self.analyticsTracker = CollectOrderPaymentAnalytics(siteID: siteID,
+                                                             analytics: analytics,
                                                              configuration: configuration,
                                                              orderDurationRecorder: orderDurationRecorder)
     }
@@ -120,7 +121,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// - Parameter onFailure: Closure invoked after the payment process fails.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
-    func collectPayment(onFailure: @escaping (Error) -> (),
+    func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
+                        onFailure: @escaping (Error) -> (),
                         onCancel: @escaping () -> (),
                         onCompleted: @escaping () -> ()) {
         guard isTotalAmountValid() else {
@@ -130,6 +132,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         }
 
         preflightController = CardPresentPaymentPreflightController(siteID: siteID,
+                                                                    discoveryMethod: discoveryMethod,
                                                                     configuration: configuration,
                                                                     rootViewController: rootViewController,
                                                                     alertsPresenter: alertsPresenter,
@@ -154,6 +157,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         return onFailure(error)
                     case .success(let paymentData):
                         // Handle payment receipt
+                        self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
                         self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
                                                  alertProvider: paymentAlertProvider,
                                                  onCompleted: onCompleted)
@@ -463,6 +467,11 @@ private extension CollectOrderPaymentUseCase {
 
     func markSiteHasAtLeastOneIPPTransactionFinished() {
         stores.dispatch(AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: order.siteID))
+    }
+
+    func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {
+        stores.dispatch(AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: order.siteID,
+                                                                                  cardReaderType: cardReaderType))
     }
 }
 

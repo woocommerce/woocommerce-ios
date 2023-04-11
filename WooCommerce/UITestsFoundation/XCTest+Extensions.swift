@@ -47,18 +47,6 @@ extension XCTestCase {
         }
     }
 
-    public func waitForElementToNotExist(element: XCUIElement, timeout: TimeInterval? = nil) {
-        let notExistsPredicate = NSPredicate(format: "exists == false")
-        let expectation = XCTNSPredicateExpectation(predicate: notExistsPredicate,
-                                                    object: element)
-
-        let timeoutValue = timeout ?? 30
-        guard XCTWaiter().wait(for: [expectation], timeout: timeoutValue) == .completed else {
-            XCTFail("\(element) still exists after \(timeoutValue) seconds.")
-            return
-        }
-    }
-
     public func getRandomPhrase() -> String {
         var wordArray: [String] = []
         let phraseLength = Int.random(in: 3...6)
@@ -110,6 +98,18 @@ extension XCTestCase {
 
 extension XCUIElement {
 
+    public func waitForElementToNotExist(element: XCUIElement, timeout: TimeInterval? = nil) {
+        let notExistsPredicate = NSPredicate(format: "exists == false")
+        let expectation = XCTNSPredicateExpectation(predicate: notExistsPredicate,
+                                                    object: element)
+
+        let timeoutValue = timeout ?? 30
+        guard XCTWaiter().wait(for: [expectation], timeout: timeoutValue) == .completed else {
+            XCTFail("\(element) still exists after \(timeoutValue) seconds.")
+            return
+        }
+    }
+
     public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {
 
         let startCoordinate = self.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
@@ -123,9 +123,8 @@ extension XCUIElement {
         return staticTexts.containing(predicate).count
     }
 
-    public func assertTextVisibilityCount(textToFind: String, expectedCount: Int = 1) {
-        let count = try! getStaticTextVisibilityCount(textToFind: textToFind)
-        XCTAssertTrue(count == expectedCount, "Expected '\(textToFind)' to appear \(expectedCount) times, but it appeared '\(count)' times!")
+    public func assertTextVisibilityCount(textToFind: String, expectedCount: Int) {
+        XCTAssertEqual(try! getStaticTextVisibilityCount(textToFind: textToFind), expectedCount)
     }
 
     // Parent element is accessibilityIdentifier, child element is staticText

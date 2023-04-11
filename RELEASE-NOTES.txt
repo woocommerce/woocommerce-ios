@@ -2,6 +2,7 @@
 
 13.2
 -----
+- [Internal] Store creation: New loading screen added for create store flow. [https://github.com/woocommerce/woocommerce-ios/pull/9383]
 
 
 13.1

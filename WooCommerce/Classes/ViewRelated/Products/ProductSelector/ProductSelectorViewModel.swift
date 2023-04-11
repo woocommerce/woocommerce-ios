@@ -432,12 +432,6 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     func updateFilters(_ filters: FilterProductListViewModel.Criteria) {
         filtersSubject.send(filters)
     }
-
-    /// Retrieves the latest selected filters from the product list
-    ///
-    func retrieveUpdatedFilters() -> FilterProductListViewModel.Filters {
-        filtersSubject.value
-    }
 }
 
 // MARK: - Finite State Machine Management

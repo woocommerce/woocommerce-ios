@@ -72,11 +72,11 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Popular products, that is, most sold products in cache
     ///
-    var popularProducts: [Product] = []
+    private var popularProducts: [Product] = []
 
     /// Most recently sold products
     ///
-    var mostRecentlySoldProducts: [Product] = []
+    private var mostRecentlySoldProducts: [Product] = []
 
     /// Sections containing products
     ///

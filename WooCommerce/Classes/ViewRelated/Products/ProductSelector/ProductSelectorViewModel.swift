@@ -11,6 +11,8 @@ struct ProductsSectionViewModel: Identifiable {
     let productRows: [ProductRowViewModel]
 }
 
+/// Intermediate object to encapsulate information about sections before the `productRows` are created
+///
 private struct ProductsSection {
     let title: String
     let indexesRange: ClosedRange<Int>
@@ -83,7 +85,7 @@ final class ProductSelectorViewModel: ObservableObject {
     /// View Models for the sections
     /// 
     var productsSectionViewModels: [ProductsSectionViewModel] {
-        sections.map { ProductsSectionViewModel(title: $0.title, productRows: Array(productRows[$0.indexesRange]))}
+        sections.map { ProductsSectionViewModel(title: $0.title, productRows: Array(productRows[$0.indexesRange])) }
     }
 
     /// Determines if multiple item selection is supported.
@@ -209,7 +211,7 @@ final class ProductSelectorViewModel: ObservableObject {
             await loadTopProducts()
 
             configureSyncingCoordinator()
-            configureProductsResultsController()
+            refreshDataAndSync()
             configureFirstPageLoad()
             synchronizeProductFilterSearch()
         }
@@ -247,7 +249,7 @@ final class ProductSelectorViewModel: ObservableObject {
             await loadTopProducts()
 
             configureSyncingCoordinator()
-            configureProductsResultsController()
+            refreshDataAndSync()
             configureFirstPageLoad()
             synchronizeProductFilterSearch()
         }
@@ -383,7 +385,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             switch result {
             case .success:
-                self.updateProductsResultsController()
+                self.reloadData()
             case .failure(let error):
                 self.notice = NoticeFactory.productSyncNotice() { [weak self] in
                     self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
@@ -417,7 +419,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             switch result {
             case .success:
-                self.updateProductsResultsController()
+                self.reloadData()
             case .failure(let error):
                 self.notice = NoticeFactory.productSearchNotice() { [weak self] in
                     self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
@@ -445,7 +447,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                 return
             }
             if thereAreCachedResults {
-                self.updateProductsResultsController()
+                self.reloadData()
                 self.transitionToResultsUpdatedState()
             }
         }
@@ -495,16 +497,16 @@ private extension ProductSelectorViewModel {
 
 // MARK: - Configuration
 private extension ProductSelectorViewModel {
-    /// Performs initial fetch from storage and updates sync status accordingly.
+    /// Reloads data and triggers the UI load
     ///
-    func configureProductsResultsController() {
-        updateProductsResultsController()
+    func refreshDataAndSync() {
+        reloadData()
         transitionToResultsUpdatedState()
     }
 
-    /// Fetches products from storage.
+    /// Reloads the data from the storage and composes sections and selections.
     ///
-    func updateProductsResultsController() {
+    func reloadData() {
             do {
                 try productsResultsController.performFetch()
                 var loadedProducts: [Product] = []
@@ -552,15 +554,12 @@ private extension ProductSelectorViewModel {
 
         sections = [ProductsSection(title: Localization.popularProductsSectionTitle, indexesRange: 0...popularProducts.count-1)]
 
+        // We have last sold products
         if topProducts.count > popularProducts.count {
             sections.append(ProductsSection(title: Localization.lastSoldProductsSectionTitle, indexesRange: popularProducts.count...topProducts.count-1))
         }
 
         sections.append(ProductsSection(title: Localization.productsSectionTitle, indexesRange: topProducts.count...products.count-1))
-    }
-
-    func updateProductsWithMostPopularAndRecentlySold() {
-        products = (popularProducts + mostRecentlySoldProducts + products).uniqued()
     }
 
     func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters) {
@@ -611,7 +610,7 @@ private extension ProductSelectorViewModel {
                 guard let self = self else { return }
                 self.updateFilterButtonTitle(with: filtersSubject)
                 self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject)
-                self.updateProductsResultsController()
+                self.reloadData()
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
     }

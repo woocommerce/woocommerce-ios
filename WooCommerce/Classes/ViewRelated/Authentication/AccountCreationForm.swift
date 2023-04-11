@@ -28,7 +28,6 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
         }
 
         rootView.existingEmailHandler = { email in
-            // TODO: analytics
             let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
             command.execute(from: self)
         }
@@ -139,7 +138,7 @@ struct AccountCreationForm: View {
                             return
                         }
                         isPerformingTask = true
-                        let createAccountCompleted = await viewModel.createAccountIfPossible()
+                        let createAccountCompleted = (try? await viewModel.createAccount()) != nil
                         if createAccountCompleted {
                             completion()
                         }

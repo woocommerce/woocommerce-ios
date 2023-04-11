@@ -7,7 +7,6 @@ import enum Yosemite.AccountCreationAction
 import enum Yosemite.CreateAccountError
 import protocol Yosemite.StoresManager
 import class WordPressShared.EmailFormatValidator
-import class WordPressAuthenticator.WordPressComAccountService
 
 /// View model for `AccountCreationForm` view.
 final class AccountCreationFormViewModel: ObservableObject {
@@ -36,15 +35,12 @@ final class AccountCreationFormViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
-    private let accountService: WordPressComAccountServiceProtocol
 
     init(debounceDuration: Double = Constants.fieldDebounceDuration,
          stores: StoresManager = ServiceLocator.stores,
-         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.analytics = analytics
-        self.accountService = accountService
 
         $email
             .removeDuplicates()
@@ -71,39 +67,6 @@ final class AccountCreationFormViewModel: ObservableObject {
             .assign(to: &$submitButtonEnabled)
     }
 
-    /// Checks the entered email if it is associated with an existing WPCom account.
-    /// If not, creates a WPCOM account with the email and password.
-    /// - Returns: whether the creation succeeds.
-    @MainActor
-    func createAccountIfPossible() async -> Bool {
-        guard shouldShowPasswordField else {
-            existingEmailFound = await checkIfWordPressAccountExists()
-            shouldShowPasswordField = !existingEmailFound
-            return false
-        }
-        let createAccountCompleted = (try? await createAccount()) != nil
-        return createAccountCompleted
-    }
-}
-
-private extension AccountCreationFormViewModel {
-    @MainActor
-    func checkIfWordPressAccountExists() async -> Bool {
-        do {
-            let accountExists: Bool = try await withCheckedThrowingContinuation { continuation in
-                accountService.isPasswordlessAccount(username: email, success: { _ in
-                    continuation.resume(returning: true)
-                }, failure: { error in
-                    DDLogError("⛔️ Error checking for passwordless account: \(error)")
-                    continuation.resume(throwing: error)
-                })
-            }
-            return accountExists
-        } catch {
-            return false
-        }
-    }
-
     /// Creates a WPCOM account with the email and password.
     /// - Returns: async result of account creation.
     @MainActor
@@ -127,6 +90,9 @@ private extension AccountCreationFormViewModel {
             throw error
         }
     }
+}
+
+private extension AccountCreationFormViewModel {
 
     @MainActor
     func handleSuccess(data: CreateAccountResult) async {
@@ -146,7 +112,12 @@ private extension AccountCreationFormViewModel {
         case .invalidEmail:
             emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
-            passwordErrorMessage = message ?? Localization.passwordError
+            if shouldShowPasswordField {
+                passwordErrorMessage = message ?? Localization.passwordError
+            } else {
+                shouldShowPasswordField = true
+            }
+
         default:
             break
         }

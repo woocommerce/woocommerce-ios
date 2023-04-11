@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// View showing a list of products to select.
 ///
@@ -68,19 +69,25 @@ struct ProductSelectorView: View {
                 VStack(spacing: 0) {
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
-                        ForEach(viewModel.productSections) {
+                        ForEach(viewModel.productsSectionViewModels) {
                             section in
-                            Section(header: Text(section.title)) {
-                                ForEach(section.productRows) { rowViewModel in
-                                    createProductRow(rowViewModel: rowViewModel)
-                                        .padding(Constants.defaultPadding)
-                                        .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
-                                    Divider().frame(height: Constants.dividerHeight)
+                        Text(section.title.uppercased())
+                        .foregroundColor(Color(.text))
+                        .footnoteStyle()
+                        .padding(.top)
+                        .padding(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .renderedIf(section.title.isNotEmpty)
+                        ForEach(section.productRows) { rowViewModel in
+                            createProductRow(rowViewModel: rowViewModel)
+                            .padding(Constants.defaultPadding)
+                            .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
+                            Divider().frame(height: Constants.dividerHeight)
                                         .padding(.leading, Constants.defaultPadding)
-                                }
                             }
                         }
                     }
+
                     if configuration.multipleSelectionsEnabled {
                         Button(doneButtonTitle) {
                             viewModel.completeMultipleSelection()
@@ -144,7 +151,7 @@ struct ProductSelectorView: View {
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
-                viewModel.filters = filters
+                viewModel.updateFilters(filters)
             } onClearAction: {
                 // no-op
             } onDismissAction: {

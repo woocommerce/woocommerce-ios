@@ -6,7 +6,7 @@ import CryptoKit
 
 final class ReceiptRendererTest: XCTestCase {
     func test_TextWithoutHtmlSymbols() {
-        let expectedResultWithoutHtmlSymbolsMd5Description = "MD5 digest: dcf62ae7ac29fc305c280193887350b6"
+        let expectedResultWithoutHtmlSymbolsMd5Description = "MD5 digest: 16568a76909a0e2279356d334b31355e"
         let content = generateReceiptContent()
 
         let renderer = ReceiptRenderer(content: content)
@@ -18,7 +18,7 @@ final class ReceiptRendererTest: XCTestCase {
     }
 
     func test_TextWithHtmlSymbols() {
-        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: 40083b7f6ef076c8d84f8fca79611823"
+        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: d4dde7c09e3f6a3e8eab05027c65422a"
         let stringWithHtml = "<tt><table></table></footer>"
         let content = generateReceiptContent(stringToAppend: stringWithHtml)
 
@@ -31,7 +31,7 @@ final class ReceiptRendererTest: XCTestCase {
     }
 
     func test_TextWithVariationsSymbols() {
-        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: a30f786359ebb6197b58fe1eaddbb04f"
+        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: dedd63a1cb5d6977d372935979a270c0"
         let attributeOne = ReceiptLineAttribute(name: "name_attr_1", value: "value_attr_1")
         let attributeTwo = ReceiptLineAttribute(name: "name_attr_2", value: "value_attr_2")
         let content = generateReceiptContent(attributes: [attributeOne, attributeTwo])

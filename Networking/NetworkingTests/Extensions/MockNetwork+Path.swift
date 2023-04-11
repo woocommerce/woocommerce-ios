@@ -4,18 +4,23 @@ import XCTest
 extension MockNetwork {
     /// Returns the parameters ("\(key)=\(value)") for the WC API query in the first network request URL.
     var queryParameters: [String]? {
+        queryParametersDictionary?.map { "\($0.key)=\($0.value)" }
+    }
+
+    /// Returns the parameters dictionary for the WC API query in the first network request URL.
+    var queryParametersDictionary: [String: Any]? {
         guard let request = requestsForResponseData.first,
-            let urlRequest = try? request.asURLRequest(),
-            let url = urlRequest.url,
-            requestsForResponseData.count == 1 else {
-                return nil
+              let urlRequest = try? request.asURLRequest(),
+              let url = urlRequest.url,
+              requestsForResponseData.count == 1 else {
+            return nil
         }
         guard let urlComponents = URLComponents(string: url.absoluteString) else {
             return nil
         }
 
         if let dotcomRequest = request as? DotcomRequest {
-            return dotcomRequest.parameters?.map { "\($0.key)=\($0.value)" }
+            return dotcomRequest.parameters
         }
 
         let parameters = urlComponents.queryItems
@@ -25,6 +30,6 @@ extension MockNetwork {
               let queryDictionary = try? JSONSerialization.jsonObject(with: queryData) as? [String: String] else {
             return nil
         }
-        return queryDictionary.map({ $0.0 + "=" + $0.1 })
+        return queryDictionary
     }
 }

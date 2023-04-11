@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-28 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-04-04 13:54:19+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -122,8 +122,8 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "⁦%1$d⁩ من المنتجات";
 
-/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
-"%1$d Products selected" = "تم تحديد ⁦%1$d⁩ من المنتجات";
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
+"%1$d Products Selected" = "تم تحديد ⁦%1$d⁩ من المنتجات";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "⁦%1$d⁩ يوم عمل";
@@ -255,11 +255,9 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
 "1" = "6";
 
-/* Navigation bar title for selecting multiple products when one product has been selected. */
+/* Navigation bar title for selecting multiple products when one product has been selected.
+   Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "تم تحديد منتج واحد";
-
-/* Title of the action button at the bottom of the Select Products screen when one product is selected */
-"1 Product selected" = "تم تحديد منتج واحد";
 
 /* Message of the free trial banner when there is 1 day left */
 "1 day left in your trial." = "يتبقى يوم واحد في الإصدار التجريبي لديك.";
@@ -2667,9 +2665,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "إدخال عنوان URL";
 
-/* Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "إدخال عنوان متجرك";
-
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "إدخال قسيمة";
 
@@ -3090,6 +3085,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "بدءًا من الشراء وحتى الاستيفاء - يمكنك إدارة معالجة الطلبات بالكامل عبر التطبيق.";
+
+/* Subtitle displayed in the simplified prologue screen */
+"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "بدءًا من أول عملية بيع لك وصولاً إلى الملايين في الإيرادات، يكون Woo بجوارك. تعرّف على سبب ثقة التجار بنا لتشغيل 3.4 ملايين متجر على الإنترنت.";
 
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "جهات توزيع الوقود";
@@ -3983,6 +3981,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Loans Or Lending" = "القروض أو الإقراض";
 
 /* Button title.  Tapping takes the user to the login form.
+   Button title. Takes the user to the login by store address flow.
    Log In button label.
    Title for the application password authorization web view
    View title during the log in process. */
@@ -6202,6 +6201,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "تحديد شركة شحنك وأسعارها";
 
+/* Caption displayed in the simplified prologue screen */
+"Sell anything, anywhere." = "يمكنك بيع أي شيء في أي مكان.";
+
 /* Text for the send button in the product review reply screen */
 "Send" = "إرسال";
 
@@ -6831,6 +6833,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Switzerland" = "سويسرا";
+
+/* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
+"Syncing data" = "مزامنة البيانات";
 
 /* Country option for a site address. */
 "Syria" = "سوريا";
@@ -7531,6 +7536,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "لمساعدتنا على تحسين أداء التطبيق وإصلاح الأخطاء العرضية، قم بتمكين تقارير الأعطال التلقائية.";
 
+/* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
+"To launch your store, you need to upgrade to our plan. %1$@" = "لبدء متجرك، تتعين عليك الترقية إلى خطتنا. %1$@";
+
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "للمتابعة باستخدام معرِّف Apple هذا، يُرجى تسجيل الدخول أولاً باستخدام كلمة مرورك على ووردبريس.كوم. سيُطلب منك هذا مرة واحدة فقط.";
 
@@ -7824,6 +7832,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "يتعذر إحضار معلومات البلد، ترجى المحاولة مجددًا لاحقًا.";
 
+/* Error message when failing to fetch the WPCom account after logging in with magic link. */
+"Unable to fetch the logged in WordPress.com account. Please try again." = "يتعذر إحضار حساب ووردبريس.كوم الذي تم تسجيل الدخول إليه. ترجى المحاولة مجددًا.";
+
 /* Error title for when we can't fetch existing variations. */
 "Unable to fetch variations" = "يتعذر إحضار التباينات";
 
@@ -7907,6 +7918,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "يتعذر قراءة موقع WordPress على معرف URL ذلك. انقر على \"هل تحتاج إلى مساعدة إضافية\" لعرض الأسئلة المتداولة.";
+
+/* Error message displayed when failing to fetch the current site info. */
+"Unable to refresh current site info" = "يتعذر تحديث معلومات الموقع الحالي";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "يتعذر تحديث القائمة";
@@ -8097,6 +8111,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "جارٍ تحديث منتجاتك...";
+
+/* Title on the button to upgrade a free trial plan. */
+"Upgrade" = "ترقية";
 
 /* Title for the button to upgrade from a free trial
    Title for the WebView when upgrading a free trial plan
@@ -8573,9 +8590,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "الشحن عبر WooCommerce";
 
-/* Caption displayed in the simplified prologue screen */
-"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce هو منصة تجارة إلكترونية قابلة للتخصيص ومفتوحة المصدر ومدمجة في ووردبريس.";
-
 /* Option in the store creation selling platforms question. */
 "WordPress" = "ووردبريس";
 
@@ -8708,7 +8722,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your free store address" = "عنوان متجرك المجاني";
 
 /* Info details for an expired free trial */
-"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "انتهى الإصدار التجريبي المجاني الخاص بك، وأصبح لديك وصول محدود إلى كل الميزات. اشترك في خطة التجارة الإلكترونية الآن.";
+"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "انتهى الإصدار التجريبي المجاني الخاص بك، وأصبح لديك وصول محدود إلى كل الميزات. اشترك في خطة الأداء من Woo Express الآن.";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "يمكن استخدام iPhone الخاص بك كقارئ بطاقات أو يمكنك الاتصال بقارئ خارجي عبر البلوتوث.";

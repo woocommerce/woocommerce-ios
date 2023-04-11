@@ -46,6 +46,11 @@ final class StoreCreationCoordinator: Coordinator {
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
+    private var jetpackCheckRetryInterval: TimeInterval {
+        isFreeTrialCreation ? 10 : 5
+    }
+
+    private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
 
     init(source: Source,
          navigationController: UINavigationController,
@@ -150,7 +155,7 @@ private extension StoreCreationCoordinator {
                 self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
             } else {
                 if isFreeTrialEnabled {
-                    self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName)
+                    self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: nil)
                 } else {
                     self?.showDomainSelector(from: navigationController,
                                              storeName: storeName,
@@ -377,8 +382,19 @@ private extension StoreCreationCoordinator {
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
                     guard let self else { return }
+
+                    let profilerData: SiteProfilerData = {
+                        let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
+                        return .init(name: storeName,
+                                     category: category?.value,
+                                     categoryGroup: category?.groupValue,
+                                     sellingStatus: sellingStatus?.sellingStatus,
+                                     sellingPlatforms: sellingPlatforms,
+                                     countryCode: countryCode.rawValue)
+                    }()
+
                     if isFreeTrialEnabled {
-                        self.showFreeTrialSummaryView(from: navigationController, storeName: storeName)
+                        self.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: profilerData)
                     } else {
                         self.showDomainSelector(from: navigationController,
                                                 storeName: storeName,
@@ -398,12 +414,16 @@ private extension StoreCreationCoordinator {
     /// Presents the free trial summary view.
     /// After user confirmation proceeds to create a store with a free trial plan.
     ///
-    func showFreeTrialSummaryView(from navigationController: UINavigationController, storeName: String) {
+    func showFreeTrialSummaryView(from navigationController: UINavigationController,
+                                  storeName: String,
+                                  profilerData: SiteProfilerData?) {
         let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
         }, onContinue: { [weak self] in
             Task {
-                await self?.createFreeTrialStore(from: navigationController, storeName: storeName)
+                await self?.createFreeTrialStore(from: navigationController,
+                                                 storeName: storeName,
+                                                 profilerData: profilerData)
             }
         })
         navigationController.present(summaryViewController, animated: true)
@@ -415,7 +435,7 @@ private extension StoreCreationCoordinator {
     /// - Wait for JetPack to be installed on the site.
     ///
     @MainActor
-    func createFreeTrialStore(from navigationController: UINavigationController, storeName: String) async {
+    func createFreeTrialStore(from navigationController: UINavigationController, storeName: String, profilerData: SiteProfilerData?) async {
 
         // Make sure that nothing is presented on the view controller before showing the loading screen
         navigationController.presentedViewController?.dismiss(animated: true)
@@ -430,7 +450,7 @@ private extension StoreCreationCoordinator {
         case .success(let siteResult):
 
             // Enable Free trial on site
-            let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID)
+            let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID, profilerData: profilerData)
             switch freeTrialResult {
             case .success:
                 // Wait for jetpack to be installed
@@ -527,9 +547,9 @@ private extension StoreCreationCoordinator {
     /// Enables a free trial on a recently created store.
     ///
     @MainActor
-    func enableFreeTrial(siteID: Int64) async -> Result<Void, Error> {
+    func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async -> Result<Void, Error> {
         await withCheckedContinuation { continuation in
-            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID) { result in
+            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID, profilerData: profilerData) { result in
                 continuation.resume(returning: result)
             })
         }
@@ -627,9 +647,12 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
-        let inProgressView = InProgressViewController(viewProperties: viewProperties)
+        let approxSecondsToWaitForNetworkRequest = 10.0
+        let viewModel = StoreCreationProgressViewModel(estimatedTimePerProgress: jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
+        let storeCreationProgressView = StoreCreationProgressHostingViewController(viewModel: viewModel)
         navigationController.isNavigationBarHidden = true
-        navigationController.pushViewController(inProgressView, animated: true)
+        self.storeCreationProgressViewModel = viewModel
+        navigationController.pushViewController(storeCreationProgressView, animated: true)
     }
 
     @MainActor
@@ -654,22 +677,27 @@ private extension StoreCreationCoordinator {
     func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64, expectedStoreName: String) {
         /// Free trial sites need more waiting time that regular sites.
         ///
-        let retryInterval: UInt64 = isFreeTrialCreation ? 10_000_000_000 : 5_000_000_000
         siteIDFromStoreCreation = siteID
 
         jetpackSiteSubscription = $siteIDFromStoreCreation
             .compactMap { $0 }
             .removeDuplicates()
             .asyncMap { [weak self] siteID -> Site? in
+                guard let self else {
+                    return nil
+                }
                 // Waits some seconds before syncing sites every time.
-                try await Task.sleep(nanoseconds: retryInterval)
-                return try await self?.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
+                try await Task.sleep(nanoseconds: UInt64(self.jetpackCheckRetryInterval * 1_000_000_000))
+                return try await self.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
             }
+            .receive(on: DispatchQueue.main)
+            .handleEvents(receiveCompletion: { [weak self] output in
+                self?.storeCreationProgressViewModel?.incrementProgress()
+            })
             // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.
             .retry(10)
             .replaceError(with: nil)
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self else { return }
                 guard let site else {
@@ -679,6 +707,8 @@ private extension StoreCreationCoordinator {
                     }
                     return
                 }
+
+                self.storeCreationProgressViewModel?.markAsComplete()
 
                 /// Free trial stores should land directly on the dashboard and not show any success view.
                 ///

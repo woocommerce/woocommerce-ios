@@ -4,14 +4,14 @@ import Combine
 import Foundation
 import WooFoundation
 
-struct ProductSectionViewModel: Identifiable {
+struct ProductsSectionViewModel: Identifiable {
     let id = UUID()
 
     let title: String
     let productRows: [ProductRowViewModel]
 }
 
-private struct ProductSectionRange {
+private struct ProductsSection {
     let title: String
     let indexesRange: ClosedRange<Int>
 }
@@ -44,12 +44,12 @@ final class ProductSelectorViewModel: ObservableObject {
     /// View model for the filter list.
     ///
     var filterListViewModel: FilterProductListViewModel {
-        FilterProductListViewModel(filters: filters, siteID: siteID)
+        FilterProductListViewModel(filters: filtersSubject.value, siteID: siteID)
     }
 
-    /// Selected filter for the product list
+    /// Selected filters for the product list
     ///
-    @Published var filters = FilterProductListViewModel.Filters()
+    private let filtersSubject = CurrentValueSubject<FilterProductListViewModel.Filters, Never>(.init())
 
     /// Title of the filter button, should be updated with number of active filters.
     ///
@@ -76,10 +76,14 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     var mostRecentlySoldProducts: [Product] = []
 
-    private var sectionRanges: [ProductSectionRange] = []
+    /// Sections containing products
+    ///
+    private var sections: [ProductsSection] = []
 
-    var productSections: [ProductSectionViewModel] {
-        sectionRanges.map { ProductSectionViewModel(title: $0.title, productRows: Array(productRows[$0.indexesRange]))}
+    /// View Models for the sections
+    /// 
+    var productsSectionViewModels: [ProductsSectionViewModel] {
+        sections.map { ProductsSectionViewModel(title: $0.title, productRows: Array(productRows[$0.indexesRange]))}
     }
 
     /// Determines if multiple item selection is supported.
@@ -207,7 +211,7 @@ final class ProductSelectorViewModel: ObservableObject {
             configureSyncingCoordinator()
             configureProductsResultsController()
             configureFirstPageLoad()
-            configureProductSearch()
+            synchronizeProductFilterSearch()
         }
     }
 
@@ -245,7 +249,7 @@ final class ProductSelectorViewModel: ObservableObject {
             configureSyncingCoordinator()
             configureProductsResultsController()
             configureFirstPageLoad()
-            configureProductSearch()
+            synchronizeProductFilterSearch()
         }
     }
 
@@ -289,7 +293,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func clearSearchAndFilters() {
         searchTerm = ""
-        filters = .init()
+        filtersSubject.send(.init())
     }
 
     /// Updates selected variation list based on the new selected IDs
@@ -369,10 +373,10 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
-                                                       stockStatus: filters.stockStatus,
-                                                       productStatus: filters.productStatus,
-                                                       productType: filters.productType,
-                                                       productCategory: filters.productCategory,
+                                                       stockStatus: filtersSubject.value.stockStatus,
+                                                       productStatus: filtersSubject.value.productStatus,
+                                                       productType: filtersSubject.value.productType,
+                                                       productCategory: filtersSubject.value.productCategory,
                                                        sortOrder: .nameAscending,
                                                        shouldDeleteStoredProductsOnFirstPage: true) { [weak self] result in
             guard let self = self else { return }
@@ -402,10 +406,10 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize,
-                                                  stockStatus: filters.stockStatus,
-                                                  productStatus: filters.productStatus,
-                                                  productType: filters.productType,
-                                                  productCategory: filters.productCategory) { [weak self] result in
+                                                  stockStatus: filtersSubject.value.stockStatus,
+                                                  productStatus: filtersSubject.value.productStatus,
+                                                  productType: filtersSubject.value.productType,
+                                                  productCategory: filtersSubject.value.productCategory) { [weak self] result in
             // Don't continue if this isn't the latest search.
             guard let self = self, keyword == self.searchTerm else {
                 return
@@ -430,7 +434,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
     private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) {
         // At the moment local search supports neither filters nor pagination
-        guard filters.numberOfActiveFilters == 0,
+        guard filtersSubject.value.numberOfActiveFilters == 0,
               pageNumber == 1 else {
             return
         }
@@ -460,6 +464,12 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     func syncNextPage() {
         let lastIndex = productsResultsController.numberOfObjects - 1
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
+    }
+
+    /// Updates the selected filters for the product list
+    ///
+    func updateFilters(_ filters: FilterProductListViewModel.Criteria) {
+        filtersSubject.send(filters)
     }
 }
 
@@ -505,6 +515,7 @@ private extension ProductSelectorViewModel {
                 }
 
                 products = addTopProductsIfRequired(to: loadedProducts)
+                updateSections()
                 updateSelectionsFromInitialSelectedItems()
                 observeSelections()
             } catch {
@@ -512,30 +523,40 @@ private extension ProductSelectorViewModel {
             }
     }
 
+    /// Add the top products (popular, last sold) if necessary
+    /// 
     func addTopProductsIfRequired(to products: [Product]) -> [Product] {
         guard searchTerm.isEmpty else {
-            sectionRanges = [ProductSectionRange(title: "", indexesRange: 0...products.count-1)]
             return products
         }
 
-        let topProducts = (popularProducts + mostRecentlySoldProducts).uniqued()
-        let allProducts = (popularProducts + mostRecentlySoldProducts + products).uniqued()
+        return (popularProducts + mostRecentlySoldProducts + products).uniqued()
+    }
 
-        if topProducts.count > 0 {
-            sectionRanges = [ProductSectionRange(title: "Most Sold", indexesRange: 0...popularProducts.count-1)]
+    /// Keeps track of the sections ranges so the view models can be composed on demand.
+    ///
+    func updateSections() {
+        guard products.isNotEmpty else { return }
 
-            let mostRecentlySoldProductsDisplayedCount = topProducts.count - popularProducts.count
-
-            if topProducts.count > popularProducts.count {
-                sectionRanges.append(ProductSectionRange(title: "Recent", indexesRange: popularProducts.count...topProducts.count-1))
-            }
-
-            sectionRanges.append(ProductSectionRange(title: "Products", indexesRange: topProducts.count...allProducts.count-1))
-        } else {
-            sectionRanges.append(ProductSectionRange(title: "", indexesRange: 0...allProducts.count-1))
+        guard searchTerm.isEmpty else {
+            sections = [ProductsSection(title: Localization.productsSectionTitle, indexesRange: 0...products.count-1)]
+            return
         }
 
-        return (popularProducts + mostRecentlySoldProducts + products).uniqued()
+        let topProducts = (popularProducts + mostRecentlySoldProducts).uniqued()
+
+        guard topProducts.isNotEmpty else {
+            sections = [ProductsSection(title: Localization.productsSectionTitle, indexesRange: 0...products.count-1)]
+            return
+        }
+
+        sections = [ProductsSection(title: Localization.popularProductsSectionTitle, indexesRange: 0...popularProducts.count-1)]
+
+        if topProducts.count > popularProducts.count {
+            sections.append(ProductsSection(title: Localization.lastSoldProductsSectionTitle, indexesRange: popularProducts.count...topProducts.count-1))
+        }
+
+        sections.append(ProductsSection(title: Localization.productsSectionTitle, indexesRange: topProducts.count...products.count-1))
     }
 
     func updateProductsWithMostPopularAndRecentlySold() {
@@ -578,17 +599,18 @@ private extension ProductSelectorViewModel {
 
     /// Updates the product results predicate & triggers a new sync when search term changes
     ///
-    func configureProductSearch() {
+    func synchronizeProductFilterSearch() {
         let searchTermPublisher = $searchTerm
-            .dropFirst() // Drop initial value
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
 
-        searchTermPublisher.combineLatest($filters.removeDuplicates())
-            .sink { [weak self] searchTerm, filters in
+        let filtersPublisher = filtersSubject.removeDuplicates()
+
+        searchTermPublisher.combineLatest(filtersPublisher)
+            .sink { [weak self] searchTerm, filtersSubject in
                 guard let self = self else { return }
-                self.updateFilterButtonTitle(with: filters)
-                self.updatePredicate(searchTerm: searchTerm, filters: filters)
+                self.updateFilterButtonTitle(with: filtersSubject)
+                self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject)
                 self.updateProductsResultsController()
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
@@ -785,5 +807,8 @@ private extension ProductSelectorViewModel {
                 "Filter (%ld)",
                 comment: "Title of the button to filter products with filters applied on the Select Product screen"
         )
+        static let popularProductsSectionTitle = "Popular"
+        static let lastSoldProductsSectionTitle = "Last Sold"
+        static let productsSectionTitle = "Products"
     }
 }

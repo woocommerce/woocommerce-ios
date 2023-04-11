@@ -15,7 +15,7 @@ public final class PaymentsScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ collectPaymentButtonGetter ],
+            expectedElementGetters: [ collectPaymentButtonGetter, cardReaderManualsButtonGetter ],
             app: app
         )
     }
@@ -24,5 +24,11 @@ public final class PaymentsScreen: ScreenObject {
     public func tapCardReaderManuals() throws -> CardReaderManualsScreen {
         cardReaderManualsButton.tap()
         return try CardReaderManualsScreen()
+    }
+
+    @discardableResult
+    public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
+        XCTAssertTrue(isLoaded)
+        return self
     }
 }

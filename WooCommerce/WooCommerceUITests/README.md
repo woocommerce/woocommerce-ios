@@ -63,9 +63,12 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] New order results in a push notification
     - [ ] Orders push notification opens the correct order
     - [ ] Reviews push notification opens the correct review
-7. Settings
+7. Universal Links and Deeplinks
+    - [x] Universal Link to Payments screen
+    - [ ] Universal Link to an Order
+8. Settings
     - [ ] Contact support
-8. Payments
+9. Payments
     - [ ] Make a Simple payment
     - [ ] Make a Tap to Pay on iPhone payment
     - [ ] Manage Card Reader - Connect/Disconnect Reader

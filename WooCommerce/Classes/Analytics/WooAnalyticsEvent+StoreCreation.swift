@@ -75,6 +75,12 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }
 
+        /// Tracked when the "Try For Free" button in the "Summary View" is  tapped.
+        ///
+        static func siteCreationTryForFreeTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationTryForFreeTapped, properties: [:])
+        }
+
         /// Tracked when the site creation process takes too much time waiting for the store to be ready.
         ///
         static func siteCreationTimedOut() -> WooAnalyticsEvent {

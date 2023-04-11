@@ -8,6 +8,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var viewModel: AccountCreationFormViewModel!
+    private var mockAccountService: MockWordPressComAccountService!
 
     override func setUp() {
         super.setUp()
@@ -17,7 +18,8 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics)
+        mockAccountService = MockWordPressComAccountService()
+        viewModel = .init(debounceDuration: 0, stores: stores, accountService: mockAccountService, analytics: analytics)
     }
 
     override func tearDown() {
@@ -28,48 +30,84 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - `isEmailValid`
+    // MARK: - `submitButtonEnabled`
 
-    func test_isEmailValid_is_false_after_entering_invalid_email() {
+    func test_submitButtonEnabled_is_false_after_entering_invalid_email() {
         // When
         viewModel.email = "notanemail@woocom"
 
         // Then
         waitUntil {
-            self.viewModel.isEmailValid == false
+            self.viewModel.submitButtonEnabled == false
         }
     }
 
-    func test_isEmailValid_is_true_after_entering_valid_email() {
+    func test_submitButtonEnabled_is_true_after_entering_valid_email_and_shouldShowPasswordField_is_false() {
         // When
         viewModel.email = "notanemail@woo.com"
+        XCTAssertFalse(viewModel.shouldShowPasswordField)
 
         // Then
         waitUntil {
-            self.viewModel.isEmailValid == true
+            self.viewModel.submitButtonEnabled == true
         }
     }
 
-    // MARK: - `isPasswordValid`
+    func test_submitButtonEnabled_is_false_after_entering_password_less_than_minimum_length() async {
+        // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
+        viewModel.email = "notanemail@woo.com"
+        _ = await viewModel.checkIfWordPressAccountExists()
 
-    func test_isPasswordValid_is_false_after_entering_password_less_than_minimum_length() {
         // When
         viewModel.password = "minim"
 
         // Then
         waitUntil {
-            self.viewModel.isPasswordValid == false
+            self.viewModel.submitButtonEnabled == false
         }
     }
 
-    func test_isPasswordValid_is_true_after_entering_password_of_minimum_length() {
+    func test_submitButtonEnabled_is_true_after_entering_password_of_minimum_length() async {
+        // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
+        viewModel.email = "notanemail@woo.com"
+        _ = await viewModel.checkIfWordPressAccountExists()
+
         // When
         viewModel.password = "minimu"
 
         // Then
         waitUntil {
-            self.viewModel.isPasswordValid == true
+            self.viewModel.submitButtonEnabled == true
         }
+    }
+
+    // MARK: - `checkIfWordPressAccountExists`
+    func test_checkIfWordPressAccountExists_success_returns_true() async {
+        // Given
+        mockAccountService.passwordlessAccountCheckError = nil
+        viewModel.email = "notanemail@woo.com"
+
+        // When
+        let result = await viewModel.checkIfWordPressAccountExists()
+
+        // Then
+        XCTAssertTrue(result)
+        XCTAssertFalse(viewModel.shouldShowPasswordField)
+    }
+
+    func test_checkIfWordPressAccountExists_failure_returns_false_and_set_shouldShowPasswordField_to_true() async {
+        // Given
+        mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 404)
+        viewModel.email = "notanemail@woo.com"
+
+        // When
+        let result = await viewModel.checkIfWordPressAccountExists()
+
+        // Then
+        XCTAssertFalse(result)
+        XCTAssertTrue(viewModel.shouldShowPasswordField)
     }
 
     // MARK: - `createAccount`

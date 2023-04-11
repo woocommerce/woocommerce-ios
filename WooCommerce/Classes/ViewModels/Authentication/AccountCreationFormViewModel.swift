@@ -16,24 +16,19 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// An error can come from the WPCOM backend, when the email is invalid or already exists.
     @Published private(set) var emailErrorMessage: String?
     /// Local validation on the email field.
-    @Published private(set) var isEmailValid: Bool = false
+    @Published private var isEmailValid: Bool = false
 
     /// Password input.
     @Published var password: String = ""
     /// An error can come from the WPCOM backend, when the password is too simple.
     @Published private(set) var passwordErrorMessage: String?
     /// Local validation on the password field.
-    @Published private(set) var isPasswordValid: Bool = false
+    @Published private var isPasswordValid: Bool = false
 
     /// Whether the password field should be present.
     @Published private(set) var shouldShowPasswordField: Bool = false
 
-    var submitButtonEnabled: Bool {
-        guard shouldShowPasswordField else {
-            return isEmailValid
-        }
-        return isEmailValid && isPasswordValid
-    }
+    @Published private(set) var submitButtonEnabled: Bool = false
 
     private let stores: StoresManager
     private let analytics: Analytics
@@ -61,6 +56,16 @@ final class AccountCreationFormViewModel: ObservableObject {
             .sink { [weak self] password in
                 self?.validatePassword(password)
             }.store(in: &subscriptions)
+
+        $shouldShowPasswordField
+            .combineLatest($isEmailValid, $isPasswordValid)
+            .map { (shouldShowPasswordField, isEmailValid, isPasswordValid) -> Bool in
+                guard shouldShowPasswordField else {
+                    return isEmailValid
+                }
+                return isEmailValid && isPasswordValid
+            }
+            .assign(to: &$submitButtonEnabled)
     }
 
     @MainActor
@@ -76,7 +81,6 @@ final class AccountCreationFormViewModel: ObservableObject {
             }
             return accountExists
         } catch {
-            // TODO: analytics
             shouldShowPasswordField = true
             return false
         }

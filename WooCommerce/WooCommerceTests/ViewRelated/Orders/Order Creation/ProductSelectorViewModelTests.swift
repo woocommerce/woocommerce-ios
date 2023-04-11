@@ -144,12 +144,12 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        let _: Bool = waitFor { completion in
-            viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { sync in
+        waitFor { promise in
+            viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in
                 if let syncStatus = viewModel.syncStatus {
                     syncStatusSpy.append(syncStatus)
                 }
-                completion(sync)
+                promise(())
             })
         }
 

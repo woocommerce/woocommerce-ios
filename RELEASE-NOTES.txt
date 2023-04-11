@@ -2,6 +2,7 @@
 
 13.2
 -----
+- [*] Optimized the account creation flow to navigate to the login flow if an existing email is detected. [https://github.com/woocommerce/woocommerce-ios/pull/9411]
 
 
 13.1

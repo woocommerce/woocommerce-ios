@@ -1,1 +1,0 @@
-Den här versionen inkluderar ett flertal buggkorrigeringar och förbättringar som gör din upplevelse smidigare och mer njutbar. Det går att duplicera en variabel produkt och det innefattar även produktbeskrivning, försäljningspris och bild. Vi har några spännande uppdateringar som kommer nu i veckorna. Håll ögonen öppna efter mer information.

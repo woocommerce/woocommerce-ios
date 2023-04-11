@@ -1,1 +1,0 @@
-Dans cette version, nous avons résolu plusieurs bugs et apporté des améliorations pour vous offrir une expérience plus fluide et plus agréable. Il est possible de dupliquer une variante de produit, y compris la description, le prix de vente et l’image du produit. Des mises à jour intéressantes sont prévues dans les prochaines semaines. Tenez-vous au courant !

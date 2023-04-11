@@ -1,1 +1,0 @@
-Met deze release hebben we een aantal bugs verholpen en verbeteringen doorgevoerd om je ervaring soepeler en leuker te maken. Het is mogelijk om een variabel product te dupliceren, inclusief de productbeschrijving, verkoopprijs en afbeelding. De komende weken komen er nog een paar spannende updates aan. Houd onze site in de gaten voor meer informatie!

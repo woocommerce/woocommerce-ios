@@ -1274,6 +1274,8 @@
 		80C362732779A7EF005CEAD3 /* products_reviews_all.json in Resources */ = {isa = PBXBuildFile; fileRef = 80C362722779A7EF005CEAD3 /* products_reviews_all.json */; };
 		80CA638929C05E7B002E6BE6 /* PaymentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA638829C05E7B002E6BE6 /* PaymentsTests.swift */; };
 		80CA638C29C06029002E6BE6 /* PaymentsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA638B29C06029002E6BE6 /* PaymentsScreen.swift */; };
+		80CC80E829DEA3C700CA1687 /* ExternalAppScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC80E629DE74D400CA1687 /* ExternalAppScreen.swift */; };
+		80CC80F229DFC3E400CA1687 /* files.json in Resources */ = {isa = PBXBuildFile; fileRef = 80CC80F129DFC3E400CA1687 /* files.json */; };
 		80D9300329C8660C008865D8 /* CardReaderManualsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D9300229C8660C008865D8 /* CardReaderManualsScreen.swift */; };
 		80DA4F1C29CC505800BDF3BF /* products_search_results.json in Resources */ = {isa = PBXBuildFile; fileRef = 80DA4F1B29CC505800BDF3BF /* products_search_results.json */; };
 		80E6FC6D276312D50086CD67 /* products.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C923E9BD5500157A78 /* products.json */; };
@@ -3465,6 +3467,8 @@
 		80C362722779A7EF005CEAD3 /* products_reviews_all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = products_reviews_all.json; sourceTree = "<group>"; };
 		80CA638829C05E7B002E6BE6 /* PaymentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsTests.swift; sourceTree = "<group>"; };
 		80CA638B29C06029002E6BE6 /* PaymentsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsScreen.swift; sourceTree = "<group>"; };
+		80CC80E629DE74D400CA1687 /* ExternalAppScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalAppScreen.swift; sourceTree = "<group>"; };
+		80CC80F129DFC3E400CA1687 /* files.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = files.json; sourceTree = "<group>"; };
 		80D9300229C8660C008865D8 /* CardReaderManualsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsScreen.swift; sourceTree = "<group>"; };
 		80DA4F1B29CC505800BDF3BF /* products_search_results.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_search_results.json; sourceTree = "<group>"; };
 		80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Clibsodium.xcframework; path = ../Pods/Sodium/Clibsodium.xcframework; sourceTree = "<group>"; };
@@ -8482,6 +8486,7 @@
 				CCFC00D623E9BD5500157A78 /* me */,
 				CCFC00D923E9BD5500157A78 /* notifications */,
 				CCFC00DC23E9BD5500157A78 /* stats */,
+				80CC80F129DFC3E400CA1687 /* files.json */,
 			);
 			path = mappings;
 			sourceTree = "<group>";
@@ -9933,6 +9938,7 @@
 				F9BB249623F4B1C60068A420 /* Products */,
 				F9BB249923F501FB0068A420 /* Settings */,
 				F997172F23DBCEB200592D8E /* TabNavComponent.swift */,
+				80CC80E629DE74D400CA1687 /* ExternalAppScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -10508,6 +10514,7 @@
 				800A5BAE27586876009DE2CD /* products_2131.json in Resources */,
 				800A5BAC27586642009DE2CD /* products_2130.json in Resources */,
 				C0CE1F84282AB1590019138E /* countries.json in Resources */,
+				80CC80F229DFC3E400CA1687 /* files.json in Resources */,
 				80AD2CA627859B4400A63DE8 /* reports_leaderboards_stats_day.json in Resources */,
 				80C362732779A7EF005CEAD3 /* products_reviews_all.json in Resources */,
 				800A5BC7275889ED009DE2CD /* reports_revenue_stats_month.json in Resources */,
@@ -10779,6 +10786,7 @@
 				02DEA23328810B7A0057FC40 /* LoginOnboardingScreen.swift in Sources */,
 				3F0CF2FE270420DD00EF3D71 /* ScreenObject+Extension.swift in Sources */,
 				3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */,
+				80CC80E829DEA3C700CA1687 /* ExternalAppScreen.swift in Sources */,
 				3F0CF3002704490A00EF3D71 /* OrderSearchScreen.swift in Sources */,
 				DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */,
 				3F0CF3012704490A00EF3D71 /* ReviewsScreen.swift in Sources */,

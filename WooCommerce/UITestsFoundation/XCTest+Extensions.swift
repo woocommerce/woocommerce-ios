@@ -47,18 +47,6 @@ extension XCTestCase {
         }
     }
 
-    public func waitForElementToNotExist(element: XCUIElement, timeout: TimeInterval? = nil) {
-        let notExistsPredicate = NSPredicate(format: "exists == false")
-        let expectation = XCTNSPredicateExpectation(predicate: notExistsPredicate,
-                                                    object: element)
-
-        let timeoutValue = timeout ?? 30
-        guard XCTWaiter().wait(for: [expectation], timeout: timeoutValue) == .completed else {
-            XCTFail("\(element) still exists after \(timeoutValue) seconds.")
-            return
-        }
-    }
-
     public func getRandomPhrase() -> String {
         var wordArray: [String] = []
         let phraseLength = Int.random(in: 3...6)
@@ -109,6 +97,18 @@ extension XCTestCase {
 }
 
 extension XCUIElement {
+
+    public func waitForElementToNotExist(element: XCUIElement, timeout: TimeInterval? = nil) {
+        let notExistsPredicate = NSPredicate(format: "exists == false")
+        let expectation = XCTNSPredicateExpectation(predicate: notExistsPredicate,
+                                                    object: element)
+
+        let timeoutValue = timeout ?? 30
+        guard XCTWaiter().wait(for: [expectation], timeout: timeoutValue) == .completed else {
+            XCTFail("\(element) still exists after \(timeoutValue) seconds.")
+            return
+        }
+    }
 
     public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {
 

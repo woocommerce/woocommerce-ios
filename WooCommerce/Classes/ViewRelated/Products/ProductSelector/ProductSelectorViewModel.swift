@@ -32,12 +32,12 @@ final class ProductSelectorViewModel: ObservableObject {
     /// View model for the filter list.
     ///
     var filterListViewModel: FilterProductListViewModel {
-        FilterProductListViewModel(filters: filters.value, siteID: siteID)
+        FilterProductListViewModel(filters: filtersSubject.value, siteID: siteID)
     }
 
     /// Selected filters for the product list
     ///
-    private let filters = CurrentValueSubject<FilterProductListViewModel.Filters, Never>(.init())
+    private let filtersSubject = CurrentValueSubject<FilterProductListViewModel.Filters, Never>(.init())
 
     /// Title of the filter button, should be updated with number of active filters.
     ///
@@ -254,7 +254,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func clearSearchAndFilters() {
         searchTerm = ""
-        filters.send(.init())
+        filtersSubject.send(.init())
     }
 
     /// Updates selected variation list based on the new selected IDs
@@ -334,10 +334,10 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
-                                                       stockStatus: filters.value.stockStatus,
-                                                       productStatus: filters.value.productStatus,
-                                                       productType: filters.value.productType,
-                                                       productCategory: filters.value.productCategory,
+                                                       stockStatus: filtersSubject.value.stockStatus,
+                                                       productStatus: filtersSubject.value.productStatus,
+                                                       productType: filtersSubject.value.productType,
+                                                       productCategory: filtersSubject.value.productCategory,
                                                        sortOrder: .nameAscending,
                                                        shouldDeleteStoredProductsOnFirstPage: true) { [weak self] result in
             guard let self = self else { return }
@@ -367,10 +367,10 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize,
-                                                  stockStatus: filters.value.stockStatus,
-                                                  productStatus: filters.value.productStatus,
-                                                  productType: filters.value.productType,
-                                                  productCategory: filters.value.productCategory) { [weak self] result in
+                                                  stockStatus: filtersSubject.value.stockStatus,
+                                                  productStatus: filtersSubject.value.productStatus,
+                                                  productType: filtersSubject.value.productType,
+                                                  productCategory: filtersSubject.value.productCategory) { [weak self] result in
             // Don't continue if this isn't the latest search.
             guard let self = self, keyword == self.searchTerm else {
                 return
@@ -395,7 +395,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
     private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) {
         // At the moment local search supports neither filters nor pagination
-        guard filters.value.numberOfActiveFilters == 0,
+        guard filtersSubject.value.numberOfActiveFilters == 0,
               pageNumber == 1 else {
             return
         }
@@ -430,13 +430,13 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Updates the selected filters for the product list
     ///
     func updateFilters(_ filters: FilterProductListViewModel.Criteria) {
-        self.filters.send(filters)
+        filtersSubject.send(filters)
     }
 
     /// Retrieves the latest selected filters from the product list
     ///
     func retrieveUpdatedFilters() -> FilterProductListViewModel.Filters {
-        self.filters.value
+        filtersSubject.value
     }
 }
 
@@ -527,13 +527,13 @@ private extension ProductSelectorViewModel {
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
 
-        let filtersPublisher = filters.removeDuplicates()
+        let filtersPublisher = filtersSubject.removeDuplicates()
 
         searchTermPublisher.combineLatest(filtersPublisher)
-            .sink { [weak self] searchTerm, filters in
+            .sink { [weak self] searchTerm, filtersSubject in
                 guard let self = self else { return }
-                self.updateFilterButtonTitle(with: filters)
-                self.updatePredicate(searchTerm: searchTerm, filters: filters)
+                self.updateFilterButtonTitle(with: filtersSubject)
+                self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject)
                 self.updateProductsResultsController()
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)

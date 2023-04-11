@@ -65,7 +65,7 @@ public struct CardPresentPaymentsConfiguration {
                 paymentGateways: [WCPayAccount.gatewayID],
                 supportedReaders: [.wisepad3],
                 supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.4.0")],
-                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100
             )
         default:

@@ -30,6 +30,9 @@ final class AccountCreationFormViewModel: ObservableObject {
 
     @Published private(set) var submitButtonEnabled: Bool = false
 
+    /// Whether the user attempts to sign up with an email that is associated with an existing WPCom account.
+    @Published private(set) var existingEmailFound: Bool = false
+
     private let stores: StoresManager
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
@@ -68,6 +71,22 @@ final class AccountCreationFormViewModel: ObservableObject {
             .assign(to: &$submitButtonEnabled)
     }
 
+    /// Checks the entered email if it is associated with an existing WPCom account.
+    /// If not, creates a WPCOM account with the email and password.
+    /// - Returns: whether the creation succeeds.
+    @MainActor
+    func createAccountIfPossible() async -> Bool {
+        existingEmailFound = await checkIfWordPressAccountExists()
+        if !existingEmailFound, shouldShowPasswordField {
+            let createAccountCompleted = (try? await createAccount()) != nil
+            return createAccountCompleted
+        }
+        shouldShowPasswordField = !existingEmailFound
+        return false
+    }
+}
+
+private extension AccountCreationFormViewModel {
     @MainActor
     func checkIfWordPressAccountExists() async -> Bool {
         do {
@@ -81,7 +100,6 @@ final class AccountCreationFormViewModel: ObservableObject {
             }
             return accountExists
         } catch {
-            shouldShowPasswordField = true
             return false
         }
     }
@@ -109,9 +127,7 @@ final class AccountCreationFormViewModel: ObservableObject {
             throw error
         }
     }
-}
 
-private extension AccountCreationFormViewModel {
     @MainActor
     func handleSuccess(data: CreateAccountResult) async {
         await withCheckedContinuation { continuation in
@@ -126,7 +142,7 @@ private extension AccountCreationFormViewModel {
     func handleFailure(error: CreateAccountError) {
         switch error {
         case .emailExists:
-            emailErrorMessage = Localization.emailExistsError
+            existingEmailFound = true
         case .invalidEmail:
             emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
@@ -140,6 +156,7 @@ private extension AccountCreationFormViewModel {
 private extension AccountCreationFormViewModel {
     func validateEmail(_ email: String) {
         isEmailValid = EmailFormatValidator.validate(string: email)
+        existingEmailFound = false
         emailErrorMessage = nil
     }
 
@@ -155,8 +172,6 @@ private extension AccountCreationFormViewModel {
     }
 
     enum Localization {
-        static let emailExistsError = NSLocalizedString("An account with this email already exists.",
-                                                        comment: "Account creation error when the email is already associated with an existing WP.com account.")
         static let invalidEmailError = NSLocalizedString("Use a working email address, so you can receive our messages.",
                                                          comment: "Account creation error when the email is invalid.")
         static let passwordError = NSLocalizedString("Password must be at least 6 characters.",

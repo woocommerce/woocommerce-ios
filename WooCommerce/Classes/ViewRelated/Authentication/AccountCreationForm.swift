@@ -27,7 +27,7 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
             command.execute(from: self)
         }
 
-        rootView.existingEmailFound = { email in
+        rootView.existingEmailHandler = { email in
             // TODO: analytics
             let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
             command.execute(from: self)
@@ -53,7 +53,7 @@ struct AccountCreationForm: View {
     var loginButtonTapped: (() -> Void) = {}
 
     /// Triggered when the user enters an email that is associated with an existing WPCom account.
-    var existingEmailFound: ((String) -> Void) = { _ in }
+    var existingEmailHandler: ((String) -> Void) = { _ in }
 
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
@@ -134,17 +134,14 @@ struct AccountCreationForm: View {
             VStack {
                 Button(Localization.submitButtonTitle.localizedCapitalized) {
                     Task { @MainActor in
+                        guard viewModel.existingEmailFound == false else {
+                            existingEmailHandler(viewModel.email)
+                            return
+                        }
                         isPerformingTask = true
-                        if viewModel.shouldShowPasswordField == false {
-                            let accountExists = await viewModel.checkIfWordPressAccountExists()
-                            if accountExists {
-                                existingEmailFound(viewModel.email)
-                            }
-                        } else {
-                            let createAccountCompleted = (try? await viewModel.createAccount()) != nil
-                            if createAccountCompleted {
-                                completion()
-                            }
+                        let createAccountCompleted = await viewModel.createAccountIfPossible()
+                        if createAccountCompleted {
+                            completion()
                         }
                         isPerformingTask = false
                     }
@@ -154,6 +151,11 @@ struct AccountCreationForm: View {
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
+        }
+        .onChange(of: viewModel.existingEmailFound) { found in
+            if found {
+                existingEmailHandler(viewModel.email)
+            }
         }
     }
 }

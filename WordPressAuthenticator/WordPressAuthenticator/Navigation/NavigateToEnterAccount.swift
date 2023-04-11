@@ -12,7 +12,7 @@ public struct NavigateToEnterAccount: NavigationCommand {
     }
 
     public func execute(from: UIViewController?) {
-        continueWithDotCom(navigationController: from?.navigationController)
+        continueWithDotCom(email: email, navigationController: from?.navigationController)
     }
 }
 

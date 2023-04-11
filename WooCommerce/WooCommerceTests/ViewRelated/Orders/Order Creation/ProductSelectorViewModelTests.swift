@@ -838,12 +838,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         try await Task.sleep(nanoseconds: searchDebounceTime)
 
         // Then
-        let currentFilters = viewModel.filterListViewModel.criteria
-        assertEqual(filteredStockStatus, currentFilters.stockStatus)
-        assertEqual(filteredProductType, currentFilters.productType)
-        assertEqual(filteredProductStatus, currentFilters.productStatus)
-        assertEqual(filteredProductCategory, currentFilters.productCategory)
         assertEqual(filteredStockStatus, filters.stockStatus)
+        assertEqual(filteredProductType, filters.productType)
+        assertEqual(filteredProductStatus, filters.productStatus)
+        assertEqual(filteredProductCategory, filters.productCategory)
     }
 
     func test_searchProducts_are_triggered_with_correct_filters() async throws {

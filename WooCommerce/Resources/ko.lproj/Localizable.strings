@@ -1401,7 +1401,8 @@ which should be translated separately and considered part of this sentence. */
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "카탈로그 공개 설정";
 
-/* Edit product categories screen - Screen title
+/* Display label for the composite product's component option type
+   Edit product categories screen - Screen title
    Filter product categories screen - Screen title
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
@@ -2209,6 +2210,7 @@ which should be translated separately and considered part of this sentence. */
 "Describe your product to your future customers..." = "미래 고객에게 제품 설명...";
 
 /* The navigation bar title of the Aztec editor screen.
+   Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "설명";
@@ -2465,7 +2467,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ebay" = "이베이";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Ecommerce reports title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "전자상거래 보고서";
 
 /* Country option for a site address. */
@@ -4334,7 +4337,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "여러 스토어";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Multiple payment options title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "여러 가지 결제 옵션";
 
 /* Industry option in the store creation category question. */
@@ -4565,6 +4569,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option
+   Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
@@ -5208,7 +5213,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "나중에 다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
-/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+/* Suggestion to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "Please try again or contact support if this error continues." = "다시 시도하거나 이 오류가 계속 발생하면 지원팀에 문의하세요.";
 
 /* Error message when Jetpack connection fails */
@@ -5309,13 +5314,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "우편번호 누락";
 
-/* The text is followed by a WordPress.com logo on the store creation plan screen. */
+/* Text next to the WPCom logo in the free trial summary screen
+   The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "제공:";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Automattic 제공";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Premium Themes title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "프리미엄 테마";
 
 /* Title of in-progress modal when preparing for printing customs invoice */
@@ -5453,9 +5460,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "제품 링크";
 
-/* Cell title on beta features screen to enable Product Multi-Selection */
-"Product Multi-Selection" = "상품 다중 선택";
-
 /* Title of the view containing a single Product Review */
 "Product Review" = "제품 검토";
 
@@ -5498,6 +5502,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product type" = "제품 유형";
 
 /* Description for Top Performers left column header
+   Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title for the products card at the top of the top performers section in dashboard stats.
@@ -6373,7 +6378,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "배송 레이블이 구매되었습니다!";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Shipping labels title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Shipping labels" = "배송 레이블";
 
 /* Header text when printing multiple newly purchased shipping labels */
@@ -7038,9 +7044,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of button that displays the App's terms of service */
 "Terms of Service" = "서비스 약관";
 
-/* Cell description on beta features screen to enable Product Multi-Selection */
-"Test out Product Multi-Selection as we get ready to launch" = "시작 준비 완료 시 상품 다중 선택 테스트";
-
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "시작할 준비가 되었으니 앱 내 구매를 테스트해 보세요.";
 
@@ -7357,7 +7360,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "플러그인 로드를 시도하는 동안 문제가 발생했습니다. 인터넷을 확인하고 다시 시도하세요.";
 
-/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+/* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "사이트와 통신 중 오류가 발생했습니다.";
 
 /* Message to be displayed when the user encounters a generic error during Jetpack setup */
@@ -8011,7 +8014,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "무제한";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen.
+   Unlimited products title feature on the Free Trial Summary Screen */
 "Unlimited products" = "무제한 상품";
 
 /* Back button title when the product doesn't have a name */

@@ -1401,7 +1401,8 @@ which should be translated separately and considered part of this sentence. */
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "נראות הקטלוג";
 
-/* Edit product categories screen - Screen title
+/* Display label for the composite product's component option type
+   Edit product categories screen - Screen title
    Filter product categories screen - Screen title
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
@@ -2209,6 +2210,7 @@ which should be translated separately and considered part of this sentence. */
 "Describe your product to your future customers..." = "לתאר את המוצר שלך ללקוחות עתידיים...";
 
 /* The navigation bar title of the Aztec editor screen.
+   Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "תיאור";
@@ -2465,7 +2467,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ebay" = "eBay";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Ecommerce reports title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "דוחות של מסחר אלקטרוני";
 
 /* Country option for a site address. */
@@ -4334,7 +4337,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "מספר חנויות";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Multiple payment options title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "מספר תוכניות של תשלומים";
 
 /* Industry option in the store creation category question. */
@@ -4565,6 +4569,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option
+   Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
@@ -5208,7 +5213,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב מאוחר יותר או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
 
-/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+/* Suggestion to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "Please try again or contact support if this error continues." = "יש לנסות שוב או לפנות לתמיכה אם השגיאה ממשיכה להופיע.";
 
 /* Error message when Jetpack connection fails */
@@ -5309,13 +5314,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "המיקוד חסר";
 
-/* The text is followed by a WordPress.com logo on the store creation plan screen. */
+/* Text next to the WPCom logo in the free trial summary screen
+   The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "מופעל באמצעות";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "מופעל על ידי Automattic";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Premium Themes title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "ערכות פרימיום";
 
 /* Title of in-progress modal when preparing for printing customs invoice */
@@ -5453,9 +5460,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "קישור למוצר";
 
-/* Cell title on beta features screen to enable Product Multi-Selection */
-"Product Multi-Selection" = "בחירה מרובה במוצר";
-
 /* Title of the view containing a single Product Review */
 "Product Review" = "חוות דעת על מוצר";
 
@@ -5498,6 +5502,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product type" = "סוג מוצר";
 
 /* Description for Top Performers left column header
+   Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title for the products card at the top of the top performers section in dashboard stats.
@@ -6373,7 +6378,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "תווית המשלוח נרכשה!";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Shipping labels title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Shipping labels" = "תוויות משלוח";
 
 /* Header text when printing multiple newly purchased shipping labels */
@@ -7038,9 +7044,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of button that displays the App's terms of service */
 "Terms of Service" = "תנאי השירות";
 
-/* Cell description on beta features screen to enable Product Multi-Selection */
-"Test out Product Multi-Selection as we get ready to launch" = "כדאי לבדוק את האפשרות 'בחירה מרובה במוצרים' בזמן שאנחנו מתכוננים להשקה";
-
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "כדאי לבדוק את האפשרות לרכישה באפליקציה בזמן שאנחנו מתכוננים להשקה";
 
@@ -7357,7 +7360,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "אירעה בעיה בטעינת התוספים. יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
 
-/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+/* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "אירעה שגיאה בתקשורת עם האתר שלך.";
 
 /* Message to be displayed when the user encounters a generic error during Jetpack setup */
@@ -8011,7 +8014,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "ללא הגבלה";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen.
+   Unlimited products title feature on the Free Trial Summary Screen */
 "Unlimited products" = "מוצרים ללא הגבלה";
 
 /* Back button title when the product doesn't have a name */

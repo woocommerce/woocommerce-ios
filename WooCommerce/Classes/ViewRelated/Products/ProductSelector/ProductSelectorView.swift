@@ -77,7 +77,6 @@ struct ProductSelectorView: View {
                         .padding(.top)
                         .padding(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .renderedIf(section.title.isNotEmpty)
                         ForEach(section.productRows) { rowViewModel in
                             createProductRow(rowViewModel: rowViewModel)
                             .padding(Constants.defaultPadding)

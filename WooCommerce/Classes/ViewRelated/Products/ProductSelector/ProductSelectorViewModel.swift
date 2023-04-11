@@ -37,7 +37,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Selected filters for the product list
     ///
-    var filters = CurrentValueSubject<FilterProductListViewModel.Filters, Never>(.init())
+    private let filters = CurrentValueSubject<FilterProductListViewModel.Filters, Never>(.init())
 
     /// Title of the filter button, should be updated with number of active filters.
     ///
@@ -425,6 +425,18 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     func syncNextPage() {
         let lastIndex = productsResultsController.numberOfObjects - 1
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
+    }
+
+    /// Updates the selected filters for the product list
+    ///
+    func updateFilters(_ filters: FilterProductListViewModel.Criteria) {
+        self.filters.send(filters)
+    }
+
+    /// Retrieves the latest selected filters from the product list
+    ///
+    func retrieveUpdatedFilters() -> FilterProductListViewModel.Filters {
+        self.filters.value
     }
 }
 

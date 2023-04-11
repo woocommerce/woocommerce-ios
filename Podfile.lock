@@ -83,7 +83,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.18)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `c64b5de23f0e269999c66651b7bef03ed2dac6c6`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `95dfb1b9b4c47b29d2755cd3df376bb46a8e37c7`)
   - WordPressShared (~> 2.1)
   - WordPressUI (~> 1.12.5)
   - Wormholy (~> 1.6.6)
@@ -129,12 +129,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressAuthenticator:
-    :commit: c64b5de23f0e269999c66651b7bef03ed2dac6c6
+    :commit: 95dfb1b9b4c47b29d2755cd3df376bb46a8e37c7
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: c64b5de23f0e269999c66651b7bef03ed2dac6c6
+    :commit: 95dfb1b9b4c47b29d2755cd3df376bb46a8e37c7
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -173,6 +173,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 3f140179622bff17864d169dd8c0d0ae7fd492ae
+PODFILE CHECKSUM: bb8a73076a58380f173a8457332880b2adf9b80a
 
 COCOAPODS: 1.11.3

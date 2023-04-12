@@ -1512,6 +1512,44 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.multipleLinesMessage)
     }
+
+    func test_syncSelectionState_synchronizes_order_items_when_invoked() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 12345, purchasable: true)
+        let anotherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 67890, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProduct(readOnlyProduct: anotherProduct)
+
+        let item = OrderItem.fake().copy(productID: product.productID, quantity: 1)
+        let order = Order.fake().copy(siteID: sampleSiteID, items: [item])
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               featureFlagService: featureFlagService)
+
+        // Confidence check: Confirms selectedProducts initial state (1 item)
+        XCTAssertEqual(viewModel.selectedProducts.count, 1)
+
+        // When
+        viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
+        viewModel.productSelectorViewModel.completeMultipleSelection()
+
+        // Confidence check: New selectedProducts selectedProducts state (2 items)
+        XCTAssertEqual(viewModel.selectedProducts.count, 2)
+
+        // Confidence check: Clear selection without saving updates, updates selectedProducts state (0 items)
+        viewModel.productSelectorViewModel.clearSelection()
+        XCTAssertEqual(viewModel.selectedProducts.count, 0)
+
+        // Then
+        viewModel.syncSelectionState()
+        XCTAssertEqual(viewModel.selectedProducts.count, 2)
+
+    }
 }
 
 private extension MockStorageManager {

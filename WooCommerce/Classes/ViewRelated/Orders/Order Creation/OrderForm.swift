@@ -285,6 +285,7 @@ private struct ProductsSection: View {
                         viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {
                         viewModel.productSelectorViewModel.clearSearchAndFilters()
+                        viewModel.syncSelectionState()
                         navigationButtonID = UUID()
                     }
                 })

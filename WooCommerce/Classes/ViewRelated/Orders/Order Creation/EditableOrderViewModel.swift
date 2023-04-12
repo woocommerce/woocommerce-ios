@@ -213,11 +213,11 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps track of selected/unselected Products, if any
     ///
-    @Published private var selectedProducts: [Product] = []
+    @Published private(set) var selectedProducts: [Product] = []
 
     /// Keeps track of selected/unselected Product Variations, if any
     ///
-    @Published private var selectedProductVariations: [ProductVariation] = []
+    @Published private(set) var selectedProductVariations: [ProductVariation] = []
 
     /// Keeps track of all selected Products and Product Variations IDs
     ///
@@ -252,6 +252,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Representation of payment data display properties
     ///
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
+
+    /// Syncs initial selected state for all items in an Order
+    ///
+    func syncSelectionState() {
+        syncInitialSelectedState()
+    }
 
     /// Saves a shipping line.
     ///

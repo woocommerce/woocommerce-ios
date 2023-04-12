@@ -155,7 +155,7 @@ private extension CookieNonceAuthenticator {
     }
 
     func buildNonceRequestURL(base: URL) -> URL? {
-        URL(string: "admin-ajax.php?action=rest-nonce", relativeTo: base)
+        URL(string: base.absoluteString + "/admin-ajax.php?action=rest-nonce")
     }
 }
 

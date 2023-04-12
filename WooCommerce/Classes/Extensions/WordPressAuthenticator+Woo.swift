@@ -94,6 +94,7 @@ extension WordPressAuthenticator {
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
                                                                   signInWithSiteCredentialsButtonTitle: AuthenticationConstants.signInWithSiteCredsButtonTitle,
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
+                                                                  resetPasswordButtonTitle: AuthenticationConstants.forgotPassword,
                                                                   signupTermsOfService: AuthenticationConstants.signupTermsOfService,
                                                                   whatIsWPComLinkTitle: AuthenticationConstants.whatIsWPComLinkTitle,
                                                                   siteCreationButtonTitle: AuthenticationConstants.createSiteButtonTitle,

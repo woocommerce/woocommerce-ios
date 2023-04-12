@@ -139,7 +139,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchAccountConnectionURL(let completion):
                 completion(.success(expectedURL))
             default:
                 break
@@ -311,7 +311,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         var completed = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchAccountConnectionURL(let completion):
                 let error = NSError(domain: "Test", code: 123)
                 completion(.failure(error))
                 completed = true

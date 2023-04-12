@@ -1538,10 +1538,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
 
-        // Confidence check: New selectedProducts selectedProducts state (2 items)
+        // Confidence check: Confirms updated selectedProducts state (2 items)
         XCTAssertEqual(viewModel.selectedProducts.count, 2)
 
-        // Confidence check: Clear selection without saving updates, updates selectedProducts state (0 items)
+        // Confidence check: Confirms updated selectedProducts state after clearing selections (0 items)
         viewModel.productSelectorViewModel.clearSelection()
         XCTAssertEqual(viewModel.selectedProducts.count, 0)
 

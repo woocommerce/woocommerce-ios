@@ -444,6 +444,9 @@ private extension StoreCreationCoordinator {
 
         // Create store site
         let createStoreResult = await createStore(name: storeName, flow: .wooexpress)
+        if let profilerData {
+            analytics.track(event: .StoreCreation.siteCreationProfilerData(profilerData))
+        }
 
         switch createStoreResult {
         case .success(let siteResult):

@@ -74,6 +74,17 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }
 
+        /// Tracked when completing the last profiler question during the store creation flow when free trials are enabled.
+        static func siteCreationProfilerData(_ profilerData: SiteProfilerData) -> WooAnalyticsEvent {
+            let properties = [
+                Key.category: profilerData.category,
+                Key.sellingStatus: profilerData.sellingStatus?.analyticsValue,
+                Key.sellingPlatforms: profilerData.sellingPlatforms,
+                Key.countryCode: profilerData.countryCode
+            ].compactMapValues({ $0 })
+            return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
+        }
+
         /// Tracked when the user taps on the CTA in login prologue (logged out) to create a store.
         static func loginPrologueCreateSiteTapped(isFreeTrial: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginPrologueCreateSiteTapped,

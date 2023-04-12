@@ -12,8 +12,11 @@ public enum JetpackConnectionAction: Action {
     case installJetpackPlugin(completion: (Result<Void, Error>) -> Void)
     /// Updates Jetpack the plugin for the current site.
     case activateJetpackPlugin(completion: (Result<Void, Error>) -> Void)
-    /// Fetches the URL used for setting up Jetpack connection.
+    /// Fetches the URL used for setting up Jetpack site or account connection.
     case fetchJetpackConnectionURL(completion: (Result<URL, Error>) -> Void)
+    /// Fetches the URL used for account connection only.
+    /// Site registration will be handled automatically with cookie-nonce.
+    case fetchAccountConnectionURL(completion: (Result<URL, Error>) -> Void)
     /// Fetches the user connection state with the given site's Jetpack.
     case fetchJetpackUser(completion: (Result<JetpackUser, Error>) -> Void)
     /// Fetches the WPCom account with the given network

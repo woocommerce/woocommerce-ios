@@ -40,6 +40,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             activateJetpackPlugin(completion: completion)
         case .fetchJetpackConnectionURL(let completion):
             fetchJetpackConnectionURL(completion: completion)
+        case .fetchAccountConnectionURL(let completion):
+            fetchAccountConnectionURL(completion: completion)
         case .fetchJetpackUser(let completion):
             fetchJetpackUser(completion: completion)
         case .loadWPComAccount(let network, let onCompletion):
@@ -83,6 +85,23 @@ private extension JetpackConnectionStore {
         jetpackConnectionRemote?.fetchJetpackConnectionURL(completion: completion)
     }
 
+    func fetchAccountConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
+        jetpackConnectionRemote?.fetchJetpackConnectionURL { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let url):
+                // If we get the account connection URL, return it immediately.
+                if url.absoluteString.hasPrefix(Constants.jetpackAccountConnectionURL) {
+                    return completion(.success(url))
+                }
+                // Otherwise, request the url with redirection disabled and retrieve the URL in LOCATION header
+                self.jetpackConnectionRemote?.registerJetpackSiteConnection(with: url, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
     func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
         jetpackConnectionRemote?.fetchJetpackUser(completion: completion)
     }
@@ -98,5 +117,14 @@ private extension JetpackConnectionStore {
             }
         }
         self.accountRemote = remote
+    }
+}
+
+
+// MARK: - Enums
+//
+private extension JetpackConnectionStore {
+    enum Constants {
+        static let jetpackAccountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }
 }

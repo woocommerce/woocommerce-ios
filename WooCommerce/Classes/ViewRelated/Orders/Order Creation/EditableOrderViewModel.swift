@@ -199,6 +199,9 @@ final class EditableOrderViewModel: ObservableObject {
             }, onSelectedVariationsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearSelectedVariations()
+            }, onCloseButtonTapped: { [weak self] in
+                guard let self = self else { return }
+                self.syncOrderItemSelectionStateOnDismiss()
             })
     }
 
@@ -377,6 +380,13 @@ final class EditableOrderViewModel: ObservableObject {
     private func clearSelectedVariations() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
+    }
+
+    /// Synchronizes the item selection state by clearing all items, then retrieving the latest saved state
+    ///
+    func syncOrderItemSelectionStateOnDismiss() {
+        clearAllSelectedItems()
+        syncInitialSelectedState()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.

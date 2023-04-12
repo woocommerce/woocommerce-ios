@@ -27,10 +27,11 @@ final class ProductImageBackgroundFormViewModel: ObservableObject {
         defer {
             isGenerationInProgress = false
         }
-        let image = await requestOriginalImage()
-        self.originalImage = image
         do {
-            self.generatedImage = try await replaceBackground(image: image, prompt: prompt)
+            let generatedImageURL = try await replaceBackground(image: productImage, options: .init(backgroundDescription: prompt, scale: 0.7))
+            // TODO-JC: remove imageID hack to download UIImage properly
+            let generatedProductImage = productImage.copy(imageID: Int64(UUID().hashValue), src: generatedImageURL)
+            self.generatedImage = await requestUIImage(for: generatedProductImage)
         } catch {
             print(error)
         }
@@ -38,19 +39,16 @@ final class ProductImageBackgroundFormViewModel: ObservableObject {
 }
 
 private extension ProductImageBackgroundFormViewModel {
-    func requestOriginalImage() async -> UIImage {
+    func requestUIImage(for image: ProductImage) async -> UIImage {
         await withCheckedContinuation { continuation in
-            productUIImageLoader.requestImage(productImage: productImage) { image in
+            productUIImageLoader.requestImage(productImage: image) { image in
                 continuation.resume(returning: image)
             }?.store(in: &subscriptions)
         }
     }
 
-    func replaceBackground(image: UIImage, prompt: String) async throws -> UIImage {
-        guard let imageData = image.jpegData(compressionQuality: 1.0) else {
-            fatalError()
-        }
+    func replaceBackground(image: ProductImage, options: SceneOptions) async throws -> String {
         let remote = MediaRemote(network: AlamofireNetwork(credentials: nil))
-        return try await remote.replaceBackground(image: imageData, prompt: prompt)
+        return try await remote.replaceBackground(image: image, options: options)
     }
 }

@@ -39,7 +39,8 @@ struct ExternalRequest: Request {
     ///
     func asURLRequest() throws -> URLRequest {
         let dotcomURL = URL(string: url)!
-        return try URLRequest(url: dotcomURL, method: method, headers: headers)
+        let request = try URLRequest(url: dotcomURL, method: method, headers: headers)
+        return try URLEncoding.httpBody.encode(request, with: parameters)
     }
 
     func responseDataValidator() -> ResponseDataValidator {

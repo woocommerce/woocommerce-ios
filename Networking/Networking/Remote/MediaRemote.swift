@@ -31,7 +31,17 @@ public protocol MediaRemoteProtocol {
                                         mediaID: Int64,
                                         completion: @escaping (Result<WordPressMedia, Error>) -> Void)
 
-    func replaceBackground(image: Data, prompt: String) async throws -> UIImage
+    func replaceBackground(image: ProductImage, options: SceneOptions) async throws -> String
+}
+
+public struct SceneOptions {
+    public init(backgroundDescription: String, scale: Double) {
+        self.backgroundDescription = backgroundDescription
+        self.scale = scale
+    }
+
+    public let backgroundDescription: String
+    public let scale: Double
 }
 
 /// Media: Remote Endpoints
@@ -241,48 +251,99 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         }
     }
 
-    public func replaceBackground(image: Data, prompt: String) async throws -> UIImage {
-        let url = "https://apis.clipdrop.co/replace-background/v1"
-        let headers = [
-            "x-api-key": ""
-        ]
-        let promptData = prompt.data(using: .utf8)!
-        return try await withCheckedThrowingContinuation { continuation in
-            let request = ExternalRequest(method: .post, url: url, headers: headers)
-            let mapper = ClipDropMediaMapper()
+    private struct ImageBackgroundReplacementResponse: Decodable {
+        let url: String
+        let isBadOutput: Bool
 
-            // TODO-JC: use existing network instead of AF directly
-            Alamofire.upload(multipartFormData: { multipartFormData in
-                multipartFormData.append(
-                    image,
-                    withName: "image_file",
-                    fileName: "object.jpg",
-                    mimeType: "image/jpeg"
-                )
-                multipartFormData.append(promptData, withName: "prompt")
-            }, to: url, headers: headers) { encodingResult in
-                switch encodingResult {
-                case .success(let upload, _, _):
-                    upload.responseData { response in
-                        switch response.result {
-                        case .success:
-                            if let dataSafe = response.data, let imageReceived = UIImage.init(data: dataSafe) {
-                                continuation.resume(returning: imageReceived)
-                            } else {
-                                continuation.resume(throwing: NSError(domain: "111", code: 111))
-                            }
-                        case .failure(let error):
-                            continuation.resume(throwing: error)
-                        }
-                    }
-                    upload.uploadProgress { progress in
-                        // Progress callback if needed.
-                    }
-                case .failure(let encodingError):
-                    continuation.resume(throwing: encodingError)
-                }
-            }
+        private enum CodingKeys: String, CodingKey {
+            case url
+            case isBadOutput = "bad_output"
         }
+    }
+
+    private struct BackgroundReplacementResponse: Decodable {
+        let data: [String: [ImageBackgroundReplacementResponse]]
+    }
+
+    /// Replaces the background of an image based on the given scene options.
+    /// - Parameters:
+    ///   - image: Product image whose background is to be replaced.
+    ///   - options: Options for the background scene.
+    /// - Returns: Image URL.
+    public func replaceBackground(image: ProductImage, options: SceneOptions) async throws -> String {
+        let url = "https://api.scale.com/v1/catalog/forge/generations/scene_creation"
+        let headers = [
+            "authorization": ""
+        ]
+        // Ref: https://docs.scale.com/reference/forge-scene-creation
+        let parameters: [String: Any] = [
+            "product_images": [
+                image.src
+            ],
+            // Resolution of the generated images. Note that choosing HD will increase the latency of the endpoint by a few seconds and the resolution output can only be as high as the resolution of the input images. When choosing SD, the resolution of the generated images will be at most 512x512.
+            "resolution": "SD", // SD|HD
+            // Location of the object relative to the background
+            "scene_preposition": "in", // in|on|among
+            // [required] Description of the background you want to generate with AI. Fill in the blank: I want to see my product in/on <scene>.
+            "scene": options.backgroundDescription,
+            // The percentage of the total frame that the width of the object should be. For example, scale=0.5 corresponds to the object taking half of the total frame width.
+            "scale": options.scale,
+            // Ref: https://docs.scale.com/reference/forge-acceptable-background-modifiers
+            "modifiers": [
+//                [
+//                    "title": "Time of day",
+//                    // Sunrise, Noon, Afternoon, Sunset, Night
+//                    "selected_values": [
+////                        "Wide angle"
+//                    ]
+//                ],
+                [
+                    "title": "Perspective",
+                    // Close up, Wide angle, Top down, Straight on
+                    "selected_values": [
+                        "Wide angle"
+                    ]
+                ],
+//                [
+//                    "title": "Filters",
+//                    // Natural light, Front lit, Back lit, Top lit, Shallow depth of field, Deep depth of field, Tilt shift, HDR, Long Exposure, Macro lens, Light leak, Polaroid
+//                    "selected_values": [
+//                        "Front lit"
+//                    ]
+//                ],
+//                [
+//                    "title": "Placement",
+//                    // Outdoors, Indoors
+//                    "selected_values": [
+////                        "Indoors"
+//                    ]
+//                ],
+//                [
+//                    "title": "Vibe",
+//                    // Moody, Retro, Cheerful, Foggy, Warm, Cool, Dramatic
+//                    "selected_values": [
+////                        "Front lit"
+//                    ]
+//                ],
+//                [
+//                    "title": "Palette",
+//                    // [multi-select enabled] Tan, Yellow, Gold, Orange, Red, Maroon, Pink, Violet, Indigo, Green, Skyblue, Blue, White, Silver, Gray, Offwhite, Black
+//                    "selected_values": [
+////                        "Indoors"
+//                    ]
+//                ]
+            ]
+        ]
+        let request = ExternalRequest(method: .post, url: url, parameters: parameters, headers: headers)
+        let result: BackgroundReplacementResponse = try await enqueue(request)
+        // TODO-jc: better error handling
+        guard let imageResult = result.data.first?.value.first else {
+            throw NSError(domain: "scene generation", code: 1)
+        }
+        guard imageResult.isBadOutput == false else {
+            throw NSError(domain: "scene generation", code: 2)
+        }
+        return imageResult.url
     }
 }
 

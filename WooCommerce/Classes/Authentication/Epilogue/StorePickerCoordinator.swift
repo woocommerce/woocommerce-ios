@@ -142,6 +142,7 @@ private extension StorePickerCoordinator {
 
     /// Switches the current user's default store to the one having the provided `storeID`.
     /// After successfully switching, the store picker screen should be dismissed.
+    @available(*, renamed: "switchStore(with:)")
     func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
             guard let self = self else { return }
@@ -155,6 +156,15 @@ private extension StorePickerCoordinator {
             }
             onCompletion()
             self.onDismiss?()
+        }
+    }
+
+    @MainActor
+    func switchStore(with storeID: Int64) async {
+        return await withCheckedContinuation { continuation in
+            switchStore(with: storeID) {
+                continuation.resume(returning: ())
+            }
         }
     }
 }

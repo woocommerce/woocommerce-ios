@@ -2252,6 +2252,27 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Application password authorization in web view
+//
+extension WooAnalyticsEvent {
+    enum ApplicationPasswordAuthorization {
+        enum Key: String {
+            case step
+        }
+
+        enum Step: String {
+            case initial
+            case login
+            case authorization
+        }
+
+        static func webViewShown(step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .applicationPasswordAuthorizationWebViewShown,
+                              properties: [Key.step.rawValue: step.rawValue])
+        }
+    }
+}
+
 // MARK: - Free Trial
 //
 extension WooAnalyticsEvent {

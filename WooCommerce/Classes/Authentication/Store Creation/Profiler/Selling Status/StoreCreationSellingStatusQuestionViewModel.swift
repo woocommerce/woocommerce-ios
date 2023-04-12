@@ -1,20 +1,11 @@
 import Combine
 import Foundation
+import struct Yosemite.SiteProfilerData
 
 /// View model for `StoreCreationSellingStatusQuestionView`, an optional profiler question about store selling status in the store creation flow.
 @MainActor
 final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
-    /// Selling status options.
-    /// Its raw value is the value to be sent to the backend.
-    /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
-    enum SellingStatus: String {
-        /// Just starting my business.
-        case justStarting = "im_just_starting_my_business"
-        /// Already selling, but not online.
-        case alreadySellingButNotOnline = "im_already_selling_but_not_online"
-        /// Already selling online.
-        case alreadySellingOnline = "im_already_selling_online"
-    }
+    typealias SellingStatus = SiteProfilerData.SellingStatus
 
     let topHeader: String
 

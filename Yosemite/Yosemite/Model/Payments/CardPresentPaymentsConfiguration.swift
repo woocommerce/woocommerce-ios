@@ -29,7 +29,7 @@ public struct CardPresentPaymentsConfiguration {
         self.stripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
     }
 
-    public init(country: String) {
+    public init(country: String, shouldReturnConfigurationForGB: Bool = false) {
         /// Changing `minimumVersion` values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
         switch country {
         case "US":
@@ -55,6 +55,17 @@ public struct CardPresentPaymentsConfiguration {
                 supportedReaders: [.wisepad3],
                 supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+                stripeSmallestCurrencyUnitMultiplier: 100
+            )
+        case "GB" where shouldReturnConfigurationForGB:
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.GBP],
+                paymentGateways: [WCPayAccount.gatewayID],
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.4.0")],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100
             )
         default:

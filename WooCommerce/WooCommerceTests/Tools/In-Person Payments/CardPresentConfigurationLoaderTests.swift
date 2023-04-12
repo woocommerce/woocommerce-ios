@@ -66,6 +66,32 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         // Then
         XCTAssertFalse(configuration.isSupportedCountry)
     }
+
+    func test_configuration_for_UK_when_enabled_returns_supported() {
+        // Given
+        setupCountry(country: .gb)
+
+        // When
+        let featureFlagService = MockFeatureFlagService(isIPPUKExpansionEnabled: true)
+        let loader = CardPresentConfigurationLoader(stores: stores, featureFlagService: featureFlagService)
+        let configuration = loader.configuration
+
+        // Then
+        XCTAssertTrue(configuration.isSupportedCountry)
+    }
+
+    func test_configuration_for_UK_when_disabled_returns_not_supported() {
+        // Given
+        setupCountry(country: .gb)
+
+        // When
+        let featureFlagService = MockFeatureFlagService(isIPPUKExpansionEnabled: false)
+        let loader = CardPresentConfigurationLoader(stores: stores, featureFlagService: featureFlagService)
+        let configuration = loader.configuration
+
+        // Then
+        XCTAssertFalse(configuration.isSupportedCountry)
+    }
 }
 
 private extension CardPresentConfigurationLoaderTests {
@@ -85,5 +111,6 @@ private extension CardPresentConfigurationLoaderTests {
         case us = "US:CA"
         case ca = "CA:NS"
         case es = "ES"
+        case gb = "GB"
     }
 }

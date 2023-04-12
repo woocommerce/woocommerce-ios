@@ -166,7 +166,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_country_unsupported_with_canada_for_stripe() {
         // Given
-        setupCountry(country: .es)
+        setupCountry(country: .ca)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
 
         // When
@@ -177,6 +177,96 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertNotEqual(state, .countryNotSupported(countryCode: "CA"))
+    }
+
+    func test_onboarding_does_not_return_country_unsupported_with_uk_when_neither_wcpay_nor_stripe_plugin_installed() {
+        // Given
+        setupCountry(country: .gb)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertNotEqual(state, .countryNotSupported(countryCode: "GB"))
+    }
+
+    func test_onboarding_returns_country_unsupported_with_uk_when_stripe_plugin_installed() {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .countryNotSupportedStripe(plugin: .stripe, countryCode: "GB"))
+    }
+
+    func test_onboarding_returns_setup_not_completed_stripe_when_stripe_and_wcPay_plugins_are_installed_in_UK() {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionUK)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .wcPay))
+    }
+
+    func test_onboarding_returns_wcpay_plugin_unsupported_version_for_uk_when_version_unsupported() {
+        // Given
+        setupCountry(country: .gb)
+        setupWCPayPlugin(status: .active, version: .unsupportedVersionUK)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .pluginUnsupportedVersion(plugin: .wcPay))
+    }
+
+    func test_onboarding_does_not_return_plugin_unsupported_version_for_uk_when_version_is_supported() {
+        // Given
+        setupCountry(country: .gb)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionUK)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertNotEqual(state, .pluginUnsupportedVersion(plugin: .wcPay))
+    }
+
+    func test_onboarding_returns_country_unsupported_with_uk_for_stripe() {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertNotEqual(state, .countryNotSupported(countryCode: "GB"))
     }
 
 
@@ -986,6 +1076,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
     enum Country: String {
         case us = "US:CA"
         case ca = "CA:NS"
+        case gb = "GB"
         case es = "ES"
     }
 }
@@ -1028,8 +1119,10 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
         case unsupportedVersionWithPatch = "2.4.2"
         case unsupportedVersionWithoutPatch = "3.2"
         case unsupportedVersionCanada = "3.9.0"
+        case unsupportedVersionUK = "4.3.0"
         case minimumSupportedVersion = "3.2.1" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for the US
         case minimumSupportedVersionCanada = "4.0.0" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for Canada
+        case minimumSupportedVersionUK = "4.4.0" // Should match `CardPresentPaymentsConfiguration` `minimumSupportedPluginVersion` for UK
         case supportedVersionWithPatch = "3.2.5"
         case supportedVersionWithoutPatch = "3.3"
     }

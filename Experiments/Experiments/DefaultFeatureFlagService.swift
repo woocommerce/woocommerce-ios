@@ -48,7 +48,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
         case .storeCreationM3Profiler:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .justInTimeMessagesOnDashboard:
             return true
         case .IPPInAppFeedbackBanner:
@@ -88,6 +88,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .IPPUKExpansion:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

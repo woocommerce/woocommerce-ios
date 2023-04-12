@@ -1221,9 +1221,6 @@ private extension EditableOrderViewModel {
     /// Syncs initial selected state for all items in the Order when clearing selections
     ///
     func syncClearSelectionState() {
-        selectedProducts = []
-        selectedProductVariations = []
-
         if flow == .creation && orderSynchronizer.order.items.count == .zero {
             syncInitialSelectedState()
         }

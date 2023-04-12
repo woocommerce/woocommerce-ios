@@ -9,8 +9,12 @@ public final class SingleOrderScreen: ScreenObject {
         $0.buttons["order-details-edit-button"]
     }
 
-    private let summaryCellGetter: (XCUIApplication) -> XCUIElement = {
+    private let summaryCellTitleGetter: (XCUIApplication) -> XCUIElement = {
         $0.staticTexts["summary-table-view-cell-title-label"]
+    }
+
+    private let summaryCellPaymentStatusGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["summary-table-view-cell-payment-status-label"]
     }
 
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -25,7 +29,7 @@ public final class SingleOrderScreen: ScreenObject {
         tabBar = try TabNavComponent(app: app)
 
         try super.init(
-            expectedElementGetters: [ summaryCellGetter, editOrderButtonGetter ],
+            expectedElementGetters: [ summaryCellTitleGetter, summaryCellPaymentStatusGetter ],
             app: app
         )
     }

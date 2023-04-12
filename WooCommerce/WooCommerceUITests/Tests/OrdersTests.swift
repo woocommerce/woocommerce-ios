@@ -60,4 +60,9 @@ final class OrdersTests: XCTestCase {
             .cancelOrderCreation()
             .verifyOrdersScreenLoaded()
     }
+
+    func test_load_orders_universal_link() throws {
+        try ExternalAppScreen().openUniversalLinkFromSafariApp(linkedScreen: "orders")
+        try SingleOrderScreen().verifySingleOrderScreenLoaded()
+    }
 }

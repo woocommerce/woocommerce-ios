@@ -65,7 +65,7 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] Reviews push notification opens the correct review
 7. Universal Links and Deeplinks
     - [x] Universal Link to Payments screen
-    - [ ] Universal Link to an Order
+    - [x] Universal Link to an Order
 8. Settings
     - [ ] Contact support
 9. Payments

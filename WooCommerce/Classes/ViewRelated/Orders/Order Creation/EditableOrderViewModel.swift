@@ -195,7 +195,6 @@ final class EditableOrderViewModel: ObservableObject {
             }, onAllSelectionsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearAllSelectedItems()
-                self.syncClearSelectionState()
             }, onSelectedVariationsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearSelectedVariations()
@@ -1225,14 +1224,6 @@ private extension EditableOrderViewModel {
                     selectedProducts.append(product)
                 }
             }
-        }
-    }
-
-    /// Syncs initial selected state for all items in the Order when clearing selections
-    ///
-    func syncClearSelectionState() {
-        if flow == .creation && orderSynchronizer.order.items.count == .zero {
-            syncInitialSelectedState()
         }
     }
 

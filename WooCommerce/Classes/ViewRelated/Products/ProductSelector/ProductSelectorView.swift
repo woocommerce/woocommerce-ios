@@ -127,7 +127,7 @@ struct ProductSelectorView: View {
                     Button(cancelButtonTitle) {
                         isPresented.toggle()
                         if !isPresented {
-                            viewModel.cancelButtonTapped()
+                            viewModel.closeButtonTapped()
                         }
                     }
                 }

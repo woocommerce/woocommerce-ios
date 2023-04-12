@@ -34,7 +34,7 @@ struct HubMenu: View {
         VStack {
             TopBar(avatarURL: viewModel.avatarURL,
                    storeTitle: viewModel.storeTitle,
-                   storeURL: viewModel.storeURL.absoluteString,
+                   storeURL: viewModel.storeURL.host,
                    switchStoreEnabled: viewModel.switchStoreEnabled) {
                 viewModel.presentSwitchStore()
             }
@@ -181,15 +181,16 @@ struct HubMenu: View {
                             .accessibilityIdentifier("store-url")
                     }
                 }
-                Spacer()
-                VStack {
-                    // TODO: Migrate settings button & tracks to list below
+                       .frame(maxWidth: .infinity, alignment: .leading)
 
+                VStack {
                     Image(uiImage: .chevronDownImage)
                         .resizable()
                         .frame(width: Constants.chevronSize, height: Constants.chevronSize)
                         .foregroundColor(Color(.textSubtle))
                         .renderedIf(switchStoreEnabled)
+
+                    // TODO: Migrate settings button & tracks - to list below
 
 //                    Button {
 //                        ServiceLocator.analytics.track(.hubMenuSettingsTapped)

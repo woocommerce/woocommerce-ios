@@ -1258,7 +1258,6 @@
 		800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */; };
 		800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */; };
 		803B0A4629CC2CE20051EFD6 /* ProductSearchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803B0A4529CC2CE20051EFD6 /* ProductSearchScreen.swift */; };
-		806062F229432BB8006BB1F9 /* products_add_new.json in Resources */ = {isa = PBXBuildFile; fileRef = 806062F129432BB8006BB1F9 /* products_add_new.json */; };
 		80AD2CA22782B4EB00A63DE8 /* products_list_1.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA12782B4EB00A63DE8 /* products_list_1.json */; };
 		80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AD2CA327858BAB00A63DE8 /* StatsTests.swift */; };
 		80AD2CA627859B4400A63DE8 /* reports_leaderboards_stats_day.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA527859B4400A63DE8 /* reports_leaderboards_stats_day.json */; };
@@ -1276,6 +1275,11 @@
 		80CA638C29C06029002E6BE6 /* PaymentsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA638B29C06029002E6BE6 /* PaymentsScreen.swift */; };
 		80CC80E829DEA3C700CA1687 /* ExternalAppScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC80E629DE74D400CA1687 /* ExternalAppScreen.swift */; };
 		80CC80F229DFC3E400CA1687 /* files.json in Resources */ = {isa = PBXBuildFile; fileRef = 80CC80F129DFC3E400CA1687 /* files.json */; };
+		80CC810329E673AB00CA1687 /* products_add_new_physical_2129.json in Resources */ = {isa = PBXBuildFile; fileRef = 80CC810229E673AB00CA1687 /* products_add_new_physical_2129.json */; };
+		80CC810529E6748C00CA1687 /* products_add_new_virtual_2123.json in Resources */ = {isa = PBXBuildFile; fileRef = 80CC810429E6748C00CA1687 /* products_add_new_virtual_2123.json */; };
+		80CC810729E6763F00CA1687 /* products_add_new_variable_2131.json in Resources */ = {isa = PBXBuildFile; fileRef = 80CC810629E6763F00CA1687 /* products_add_new_variable_2131.json */; };
+		80CC810B29E6800F00CA1687 /* products_add_new_grouped_2130.json in Sources */ = {isa = PBXBuildFile; fileRef = 80CC810A29E6800F00CA1687 /* products_add_new_grouped_2130.json */; };
+		80CC810D29E683CE00CA1687 /* products_add_new_external_2132.json in Resources */ = {isa = PBXBuildFile; fileRef = 80CC810C29E683CE00CA1687 /* products_add_new_external_2132.json */; };
 		80D9300329C8660C008865D8 /* CardReaderManualsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80D9300229C8660C008865D8 /* CardReaderManualsScreen.swift */; };
 		80DA4F1C29CC505800BDF3BF /* products_search_results.json in Resources */ = {isa = PBXBuildFile; fileRef = 80DA4F1B29CC505800BDF3BF /* products_search_results.json */; };
 		80E6FC6D276312D50086CD67 /* products.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C923E9BD5500157A78 /* products.json */; };
@@ -3451,7 +3455,6 @@
 		800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_year.json; sourceTree = "<group>"; };
 		800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTests.swift; sourceTree = "<group>"; };
 		803B0A4529CC2CE20051EFD6 /* ProductSearchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchScreen.swift; sourceTree = "<group>"; };
-		806062F129432BB8006BB1F9 /* products_add_new.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_add_new.json; sourceTree = "<group>"; };
 		80AD2CA12782B4EB00A63DE8 /* products_list_1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_list_1.json; sourceTree = "<group>"; };
 		80AD2CA327858BAB00A63DE8 /* StatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTests.swift; sourceTree = "<group>"; };
 		80AD2CA527859B4400A63DE8 /* reports_leaderboards_stats_day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reports_leaderboards_stats_day.json; sourceTree = "<group>"; };
@@ -3469,6 +3472,11 @@
 		80CA638B29C06029002E6BE6 /* PaymentsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsScreen.swift; sourceTree = "<group>"; };
 		80CC80E629DE74D400CA1687 /* ExternalAppScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalAppScreen.swift; sourceTree = "<group>"; };
 		80CC80F129DFC3E400CA1687 /* files.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = files.json; sourceTree = "<group>"; };
+		80CC810229E673AB00CA1687 /* products_add_new_physical_2129.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_add_new_physical_2129.json; sourceTree = "<group>"; };
+		80CC810429E6748C00CA1687 /* products_add_new_virtual_2123.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_add_new_virtual_2123.json; sourceTree = "<group>"; };
+		80CC810629E6763F00CA1687 /* products_add_new_variable_2131.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_add_new_variable_2131.json; sourceTree = "<group>"; };
+		80CC810A29E6800F00CA1687 /* products_add_new_grouped_2130.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_add_new_grouped_2130.json; sourceTree = "<group>"; };
+		80CC810C29E683CE00CA1687 /* products_add_new_external_2132.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_add_new_external_2132.json; sourceTree = "<group>"; };
 		80D9300229C8660C008865D8 /* CardReaderManualsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsScreen.swift; sourceTree = "<group>"; };
 		80DA4F1B29CC505800BDF3BF /* products_search_results.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_search_results.json; sourceTree = "<group>"; };
 		80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Clibsodium.xcframework; path = ../Pods/Sodium/Clibsodium.xcframework; sourceTree = "<group>"; };
@@ -8564,8 +8572,12 @@
 				80AD2CA12782B4EB00A63DE8 /* products_list_1.json */,
 				80B8D3442785A08900FE6E6B /* products_list_2.json */,
 				80B8D3482785A0A900FE6E6B /* products_list_3.json */,
-				806062F129432BB8006BB1F9 /* products_add_new.json */,
 				80DA4F1B29CC505800BDF3BF /* products_search_results.json */,
+				80CC810429E6748C00CA1687 /* products_add_new_virtual_2123.json */,
+				80CC810229E673AB00CA1687 /* products_add_new_physical_2129.json */,
+				80CC810A29E6800F00CA1687 /* products_add_new_grouped_2130.json */,
+				80CC810629E6763F00CA1687 /* products_add_new_variable_2131.json */,
+				80CC810C29E683CE00CA1687 /* products_add_new_external_2132.json */,
 			);
 			path = products;
 			sourceTree = "<group>";
@@ -10512,6 +10524,7 @@
 				800A5BB827586A96009DE2CD /* products_reviews_6156.json in Resources */,
 				D8CD0605258B384E00B52D63 /* oauth2_token-error.json in Resources */,
 				800A5BAE27586876009DE2CD /* products_2131.json in Resources */,
+				80CC810D29E683CE00CA1687 /* products_add_new_external_2132.json in Resources */,
 				800A5BAC27586642009DE2CD /* products_2130.json in Resources */,
 				C0CE1F84282AB1590019138E /* countries.json in Resources */,
 				80CC80F229DFC3E400CA1687 /* files.json in Resources */,
@@ -10530,10 +10543,12 @@
 				C0A37CB8282957EB00E0826D /* orders_3337_add_customer_details.json in Resources */,
 				800A5BBE27586AEF009DE2CD /* products_reviews_6163.json in Resources */,
 				FE6BCDFC26A9D0E700D96FE2 /* users_me.json in Resources */,
+				80CC810329E673AB00CA1687 /* products_add_new_physical_2129.json in Resources */,
 				CCF27B3A280EF98F00B755E1 /* orders_3337.json in Resources */,
 				CC5C278B27EE314F00B25D2A /* orders_3337_create_order.json in Resources */,
 				800A5BA027562EE5009DE2CD /* orders_processing.json in Resources */,
 				80AD2CA22782B4EB00A63DE8 /* products_list_1.json in Resources */,
+				80CC810529E6748C00CA1687 /* products_add_new_virtual_2123.json in Resources */,
 				80B8D34127859C6F00FE6E6B /* reports_leaderboards_stats_month.json in Resources */,
 				800A5BC6275889ED009DE2CD /* reports_revenue_stats_hour.json in Resources */,
 				800A5BB027586898009DE2CD /* products_2132.json in Resources */,
@@ -10542,11 +10557,11 @@
 				CC2A08022862400100510C4B /* orders_3337_add_shipping.json in Resources */,
 				800A5BC027586AFC009DE2CD /* products_reviews_6164.json in Resources */,
 				800A5BC5275889ED009DE2CD /* reports_revenue_stats_day.json in Resources */,
+				80CC810729E6763F00CA1687 /* products_add_new_variable_2131.json in Resources */,
 				800A5B972755BA02009DE2CD /* status.json in Resources */,
 				800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */,
 				CC2A08062863222500510C4B /* orders_3337_add_fee.json in Resources */,
 				800A5BBC27586AE1009DE2CD /* products_reviews_6162.json in Resources */,
-				806062F229432BB8006BB1F9 /* products_add_new.json in Resources */,
 				800A5B6127548F53009DE2CD /* sites_posts_password.json in Resources */,
 				800A5BB427586A0E009DE2CD /* products_reviews_6155.json in Resources */,
 				800A5B5F27548F31009DE2CD /* site_info_wordpress_com.json in Resources */,
@@ -12555,6 +12570,7 @@
 				80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */,
 				800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */,
 				800A5B9E275623FC009DE2CD /* LoginFlow.swift in Sources */,
+				80CC810B29E6800F00CA1687 /* products_add_new_grouped_2130.json in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

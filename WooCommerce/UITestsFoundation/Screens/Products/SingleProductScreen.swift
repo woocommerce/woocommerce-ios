@@ -41,17 +41,32 @@ public final class SingleProductScreen: ScreenObject {
         return self
     }
 
-    public func verifyNewProductScreenLoaded(productName: String) {
+    public func verifyPublishedProductScreenLoaded(productType: String, productName: String) {
+        let priceLabel = NSPredicate(format: "label == 'Price'")
+        let addVariationLabel = NSPredicate(format: "label == 'Add variations'")
+
+        // common fields on a published product screen
         XCTAssertTrue(app.buttons["save-product-button"].exists)
         XCTAssertTrue(app.staticTexts["TIP"].exists)
         XCTAssertTrue(app.textViews[productName].exists)
+
+        // different product types displays different fields on the published product screen
+        // this is to validate that the correct screens are displayed
+        switch productType {
+        case "physical", "virtual":
+            XCTAssertTrue(app.staticTexts.containing(priceLabel).firstMatch.exists)
+        case "variable":
+            XCTAssertTrue(app.staticTexts.containing(addVariationLabel).firstMatch.exists)
+        default:
+            fatalError("Product Type \(productType) doesn't exist!")
+        }
     }
 
     public func verifyProductTypeScreenLoaded(productType: String) throws -> Self {
         let addPriceLabel = NSPredicate(format: "label == 'Add Price'")
         let inventoryLabel = NSPredicate(format: "label == 'Inventory'")
-        let productTypeLabel = NSPredicate(format: "label ==[c] '\(productType)'")
         let addVariationLabel = NSPredicate(format: "label == 'Add variations'")
+        let productTypeLabel = NSPredicate(format: "label ==[c] '\(productType)'")
 
         // the common fields on add product screen
         XCTAssertTrue(app.cells["product-review-cell"].exists)

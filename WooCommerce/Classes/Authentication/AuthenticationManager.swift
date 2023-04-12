@@ -605,15 +605,25 @@ private extension AuthenticationManager {
             storePickerCoordinator?.start()
         }
 
-        // Start the store creation process if the user
-        // logged in from the store creation flow.
+        // If the user is from the store creation flow
         if case .custom(let source) = source,
            let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
            storeCreationSource == .prologue {
-            let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
-                                                       navigationController: navigationController)
-            self.storeCreationCoordinator = coordinator
-            coordinator.start()
+            Task { @MainActor in
+                do {
+                    // Proceed into the app if there is only one valid store available
+                    try await storePickerCoordinator?.switchStoreIfOnlyOneStoreIsAvailable()
+                } catch StorePickerCoordinator.StoreSelectionError.noStoresAvailable {
+                    // Start the store creation process because the user does
+                    // not have any existing stores
+                    let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
+                                                               navigationController: navigationController)
+                    self.storeCreationCoordinator = coordinator
+                    coordinator.start()
+                } catch {
+                    // Do nothing as the store picker is already presented
+                }
+            }
         }
     }
 

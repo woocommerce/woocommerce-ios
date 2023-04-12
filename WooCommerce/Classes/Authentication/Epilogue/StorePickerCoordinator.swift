@@ -17,9 +17,9 @@ final class StorePickerCoordinator: Coordinator {
     ///
     var onDismiss: (() -> Void)?
 
-    /// The switchStoreUseCase object initialized with the ServiceLocator stores
+    /// SwitchStoreUseCase
     ///
-    private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores)
+    private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     /// The RoleEligibilityUseCase object initialized with the ServiceLocator stores
     ///
@@ -35,9 +35,12 @@ final class StorePickerCoordinator: Coordinator {
         return pickerVC
     }()
 
-    init(_ navigationController: UINavigationController, config: StorePickerConfiguration) {
+    init(_ navigationController: UINavigationController,
+         config: StorePickerConfiguration,
+         switchStoreUseCase: SwitchStoreUseCaseProtocol = SwitchStoreUseCase(stores: ServiceLocator.stores)) {
         self.navigationController = navigationController
         self.selectedConfiguration = config
+        self.switchStoreUseCase = switchStoreUseCase
     }
 
     func start() {

@@ -256,7 +256,7 @@ private extension WrongAccountErrorViewModel {
     ///
     func fetchJetpackConnectionURL(onCompletion: ((URL) -> Void)? = nil) {
         primaryButtonLoading = true
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
+        let action = JetpackConnectionAction.fetchAccountConnectionURL { [weak self] result in
             guard let self = self else { return }
             self.primaryButtonLoading = false
             switch result {

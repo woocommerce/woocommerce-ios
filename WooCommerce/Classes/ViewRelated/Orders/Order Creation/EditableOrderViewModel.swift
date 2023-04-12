@@ -1205,9 +1205,6 @@ private extension EditableOrderViewModel {
     /// Syncs initial selected state for all items in the Order
     ///
     func syncInitialSelectedState() {
-        selectedProducts = []
-        selectedProductVariations = []
-
         let _ = orderSynchronizer.order.items.map { item in
             if item.variationID != 0 {
                 if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -1224,11 +1221,11 @@ private extension EditableOrderViewModel {
     /// Syncs initial selected state for all items in the Order when clearing selections
     ///
     func syncClearSelectionState() {
-        if flow == .creation {
+        selectedProducts = []
+        selectedProductVariations = []
+
+        if flow == .creation && orderSynchronizer.order.items.count == .zero {
             syncInitialSelectedState()
-        } else {
-            selectedProducts = []
-            selectedProductVariations = []
         }
     }
 

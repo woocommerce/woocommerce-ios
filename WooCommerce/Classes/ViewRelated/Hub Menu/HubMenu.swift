@@ -38,7 +38,7 @@ struct HubMenu: View {
                    switchStoreEnabled: viewModel.switchStoreEnabled) {
                 viewModel.presentSwitchStore()
             }
-                   .padding([.leading, .trailing], Constants.padding)
+
 
             ScrollView {
                 let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
@@ -217,7 +217,11 @@ struct HubMenu: View {
                 }
                 .fixedSize()
             }
-            .padding([.top, .leading, .trailing], Constants.padding)
+            .padding()
+            .background(Color(.listForeground(modal: false)))
+            .cornerRadius(Constants.cornerRadius)
+            .padding()
+
 
             NavigationLink(destination:
                             SettingsView(),

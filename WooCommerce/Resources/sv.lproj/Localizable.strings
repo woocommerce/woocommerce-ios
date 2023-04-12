@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-09 19:57:11+0000 */
+/* Translation-Revision-Date: 2023-04-11 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -268,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
+
+/* 24/7 support title feature on the Free Trial Summary Screen */
+"24\/7 support" = "Support dygnet runt";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
@@ -945,6 +948,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Auto Services" = "Biltjänster";
 
+/* Auto updates & backups title feature on the Free Trial Summary Screen */
+"Auto updates & backups" = "Automatiska uppdateringar och säkerhetskopieringar";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Automatiskt hanterat på denna webbplats";
 
@@ -1619,6 +1625,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for completed order status. */
 "Completed" = "Färdig";
+
+/* Title for the list of component options in the Component Settings view */
+"Component Options" = "Komponentalternativ";
+
+/* Title for the settings of a component in a composite product */
+"Component Settings" = "Komponentinställningar";
 
 /* Title for Components row in the product form screen.
    Title for the list of components in a composite product */
@@ -2935,6 +2947,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Fast Food Restaurants" = "Snabbmatsrestaurang";
 
+/* Fast to launch title feature on the Free Trial Summary Screen */
+"Fast to launch" = "Snabb lansering";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -3844,6 +3859,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Starta Wormholy-felsökning";
+
+/* Main title for the free trial summary screen. */
+"Launch in days, grow for years" = "Lansering på några dagar, med åratal av tillväxtmöjligheter";
 
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Lansera din butik";
@@ -5120,6 +5138,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Kontrollera att ditt Apple-ID är giltigt och försök sedan igen. Ett giltigt Apple-ID krävs för att godkänna Apples användarvillkor";
 
+/* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"Please connect Jetpack through your admin page on a browser or contact support." = "Anslut Jetpack via din adminsida i en webbläsare eller kontakta supporten.";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Anslut din butik till Jetpack för att komma åt den på denna app.";
 
@@ -6296,6 +6317,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Dela betalningslänk";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Tap to Pay on iPhone Feedback" = "Dela feedback om Tryck för att betala på iPhone";
+
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "Dela URL";
 
@@ -6527,6 +6551,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "Permalänk";
+
+/* Social advertising title feature on the Free Trial Summary Screen */
+"Social advertising" = "Social annonsering";
 
 /* Industry option in the store creation category question. */
 "Software" = "Programvara";
@@ -6779,6 +6806,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "Prenumerationer och presentkort";
+
+/* Subscriptions & product kits title feature on the Free Trial Summary Screen */
+"Subscriptions & product kits" = "Prenumerationer och produktkit";
 
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
@@ -7381,6 +7411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message to be displayed when the user encounters a generic error during Jetpack setup */
 "There was an error completing your request." = "Det gick inte att slutföra din begäran.";
 
+/* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"There was an error connecting your site to Jetpack." = "Det gick inte att ansluta din webbplats till Jetpack.";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "Det gick inte att skapa beställningen";
 
@@ -7739,6 +7772,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Försök att ansluta igen för att komma åt din butik.";
+
+/* Title for the features list in the free trial Summary Screen */
+"Try it free for 14 days." = "Prova gratis i 14 dagar.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Prova det nu";
@@ -8440,6 +8476,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "Vi vet att det är viktigt för ditt företag.";
 
+/* Main description for the free trial summary screen */
+"We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com." = "Vi tillhandahåller allt du behöver för att bygga och utveckla en onlinebutik som drivs med WooCommerce och har WordPress.com som webbhotell.";
+
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Vi använder andra spårningsverktyg, inklusive verktyg från utomstående parter. Läs om dessa och hur vi kontrollerar dem.";
 
@@ -8664,6 +8703,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "Du kan redigera paketprodukter i webbadminpanelen.";
+
+/* Info notice at the bottom of the component settings screen */
+"You can edit component settings in the web dashboard." = "Du kan redigera komponentinställningar i webbadminpanelen.";
 
 /* Info notice at the bottom of the components screen */
 "You can edit components in the web dashboard." = "Du kan redigera komponenter i webbadminpanelen.";

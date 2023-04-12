@@ -294,14 +294,23 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
             return
         }
-        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
-            message: (error as NSError).localizedDescription,
-            defaultAction: { [weak self] in
+        let webViewLoginAction: (() -> Void)? = {
+            guard ServiceLocator.stores.isAuthenticated == false else {
+                /// If the user has already been authenticated with a WPCom account
+                /// and goes through site credential login for Jetpack connection,
+                /// we don't support application password login entry point in the error alert.
+                return nil
+            }
+            return { [weak self] in
                 guard let self else { return }
                 let webViewController = self.applicationPasswordWebView(for: siteURL)
                 viewController.navigationController?.pushViewController(webViewController, animated: true)
                 self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
             }
+        }()
+        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: (error as NSError).localizedDescription,
+            defaultAction: webViewLoginAction
         )
         viewController.present(alertController, animated: true)
     }

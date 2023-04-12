@@ -1,6 +1,7 @@
 import TestKit
 import WordPressAuthenticator
 import XCTest
+import struct Yosemite.Site
 @testable import WooCommerce
 
 final class StorePickerCoordinatorTests: XCTestCase {
@@ -96,5 +97,83 @@ final class StorePickerCoordinatorTests: XCTestCase {
         waitUntil {
             self.navigationController.topViewController is StorePickerViewController
         }
+    }
+
+    // MARK: switchStoreIfOnlyOneStoreIsAvailable
+
+    func test_it_throws_noStoresAvailable_when_there_are_no_stores_with_active_woocommerce() async throws {
+        // Given
+        let switchStoreUseCase = MockSwitchStoreUseCase()
+        switchStoreUseCase.availableStores = [Site.fake().copy(isWooCommerceActive: false)]
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .listStores,
+                                                 switchStoreUseCase: switchStoreUseCase)
+
+        do {
+            // When
+            try await coordinator.switchStoreIfOnlyOneStoreIsAvailable()
+        } catch {
+            guard let dotcomError = error as? StorePickerCoordinator.StoreSelectionError else {
+                return XCTFail()
+            }
+
+            // Then
+            XCTAssertEqual(dotcomError, .noStoresAvailable)
+        }
+    }
+
+    func test_it_throws_moreThanOneStoreAvailable_when_there_are_many_stores_with_active_woocommerce() async throws {
+        // Given
+        let switchStoreUseCase = MockSwitchStoreUseCase()
+        switchStoreUseCase.availableStores = [Site.fake().copy(isWooCommerceActive: true),
+                                              Site.fake().copy(isWooCommerceActive: true),
+                                              Site.fake().copy(isWooCommerceActive: false)]
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .listStores,
+                                                 switchStoreUseCase: switchStoreUseCase)
+
+        do {
+            // When
+            try await coordinator.switchStoreIfOnlyOneStoreIsAvailable()
+        } catch {
+            guard let dotcomError = error as? StorePickerCoordinator.StoreSelectionError else {
+                return XCTFail()
+            }
+
+            // Then
+            XCTAssertEqual(dotcomError, .moreThanOneStoreAvailable)
+        }
+    }
+
+    func test_it_does_not_throw_error_when_there_is_only_one_store_with_active_woocommerce() async throws {
+        // Given
+        let switchStoreUseCase = MockSwitchStoreUseCase()
+        switchStoreUseCase.availableStores = [Site.fake().copy(isWooCommerceActive: true)]
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .listStores,
+                                                 switchStoreUseCase: switchStoreUseCase)
+
+        do {
+            // When
+            try await coordinator.switchStoreIfOnlyOneStoreIsAvailable()
+        } catch {
+            XCTFail("Should not throw an error")
+        }
+    }
+
+    func test_it_switches_store_when_there_is_only_one_store_with_active_woocommerce() async throws {
+        // Given
+        let switchStoreUseCase = MockSwitchStoreUseCase()
+        let site = Site.fake().copy(isWooCommerceActive: true)
+        switchStoreUseCase.availableStores = [site]
+        let coordinator = StorePickerCoordinator(navigationController,
+                                                 config: .listStores,
+                                                 switchStoreUseCase: switchStoreUseCase)
+
+        // When
+        try await coordinator.switchStoreIfOnlyOneStoreIsAvailable()
+
+        // Then
+        XCTAssertEqual(switchStoreUseCase.destinationStoreIDs, [site.siteID])
     }
 }

@@ -7,6 +7,11 @@ import Yosemite
 ///
 final class StorePickerCoordinator: Coordinator {
 
+    enum StoreSelectionError: Error {
+        case noStoresAvailable
+        case moreThanOneStoreAvailable
+    }
+
     unowned private(set) var navigationController: UINavigationController
 
     /// Determines how the store picker should initialized
@@ -46,8 +51,24 @@ final class StorePickerCoordinator: Coordinator {
     func start() {
         showStorePicker()
     }
-}
 
+    /// Checks available stores and switch store if only one valid store is available
+    ///
+    @MainActor
+    func switchStoreIfOnlyOneStoreIsAvailable() async throws {
+        let sites = switchStoreUseCase.getAvailableStores()
+
+        guard let siteID = sites.first?.siteID else {
+            throw StoreSelectionError.noStoresAvailable
+        }
+
+        guard !sites.containsMoreThanOne else {
+            throw StoreSelectionError.moreThanOneStoreAvailable
+        }
+
+        await switchStore(with: siteID)
+    }
+}
 
 // MARK: - StorePickerViewControllerDelegate Conformance
 //

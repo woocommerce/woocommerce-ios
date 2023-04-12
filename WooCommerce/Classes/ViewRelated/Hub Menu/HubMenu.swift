@@ -155,10 +155,6 @@ struct HubMenu: View {
         let switchStoreEnabled: Bool
         var switchStoreHandler: (() -> Void)?
 
-        @State private var showSettings = false
-        @ScaledMetric var settingsSize: CGFloat = 28
-        @ScaledMetric var settingsIconSize: CGFloat = 20
-
         var body: some View {
             HStack(spacing: Constants.padding) {
                 if let avatarURL = avatarURL {
@@ -184,36 +180,38 @@ struct HubMenu: View {
                             .lineLimit(1)
                             .accessibilityIdentifier("store-url")
                     }
-                    Button(Localization.switchStore) {
-                        switchStoreHandler?()
-                    }
-                    .linkStyle()
-                    .accessibilityIdentifier("switch-store-button")
-                    .renderedIf(switchStoreEnabled)
                 }
                 Spacer()
                 VStack {
-                    Button {
-                        ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-                        showSettings = true
-                    } label: {
-                        ZStack {
-                            Circle()
-                                .fill(Color(UIColor(light: .white,
-                                                    dark: .secondaryButtonBackground)))
-                                .frame(width: settingsSize,
-                                       height: settingsSize)
-                            if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
-                                Image(uiImage: cogImage)
-                                    .resizable()
-                                    .frame(width: settingsIconSize,
-                                           height: settingsIconSize)
-                            }
-                        }
-                    }
-                    .accessibilityLabel(Localization.settings)
-                    .accessibilityIdentifier("dashboard-settings-button")
-                    Spacer()
+                    // TODO: Migrate settings button & tracks to list below
+
+                    Image(uiImage: .chevronDownImage)
+                        .resizable()
+                        .frame(width: Constants.chevronSize, height: Constants.chevronSize)
+                        .foregroundColor(Color(.textSubtle))
+                        .renderedIf(switchStoreEnabled)
+
+//                    Button {
+//                        ServiceLocator.analytics.track(.hubMenuSettingsTapped)
+//                        showSettings = true
+//                    } label: {
+//                        ZStack {
+//                            Circle()
+//                                .fill(Color(UIColor(light: .white,
+//                                                    dark: .secondaryButtonBackground)))
+//                                .frame(width: settingsSize,
+//                                       height: settingsSize)
+//                            if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
+//                                Image(uiImage: cogImage)
+//                                    .resizable()
+//                                    .frame(width: settingsIconSize,
+//                                           height: settingsIconSize)
+//                            }
+//                        }
+//                    }
+//                    .accessibilityLabel(Localization.settings)
+//                    .accessibilityIdentifier("dashboard-settings-button")
+//                    Spacer()
                 }
                 .fixedSize()
             }
@@ -221,13 +219,18 @@ struct HubMenu: View {
             .background(Color(.listForeground(modal: false)))
             .cornerRadius(Constants.cornerRadius)
             .padding()
+            .onTapGesture {
+                if switchStoreEnabled {
+                    switchStoreHandler?()
+                }
+            }
 
 
-            NavigationLink(destination:
-                            SettingsView(),
-                           isActive: $showSettings) {
-                EmptyView()
-            }.hidden()
+//            NavigationLink(destination:
+//                            SettingsView(),
+//                           isActive: $showSettings) {
+//                EmptyView()
+//            }.hidden()
         }
     }
 
@@ -238,13 +241,12 @@ struct HubMenu: View {
         static let padding: CGFloat = 16
         static let topBarSpacing: CGFloat = 2
         static let avatarSize: CGFloat = 40
+        static let chevronSize: CGFloat = 20
         static let trackingOptionKey = "option"
         static let trackingBadgeVisibleKey = "badge_visible"
     }
 
     private enum Localization {
-        static let switchStore = NSLocalizedString("Switch store",
-                                                   comment: "Switch store option in the hub menu")
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
     }
 }

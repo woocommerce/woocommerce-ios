@@ -1,0 +1,1 @@
+Den här gången har vi lagt mer tid på personliga betalningar och beställningar. Vi har gjort det enklare för dig att söka efter och välja flera produkter när du skapar en beställning. Det är också möjligt att installera Jetpack från appen om du vill ha ytterligare funktionalitet, såsom push-notiser och besöksstatistik.

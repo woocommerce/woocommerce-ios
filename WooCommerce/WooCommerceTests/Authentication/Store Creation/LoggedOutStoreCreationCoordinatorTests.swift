@@ -31,6 +31,6 @@ final class LoggedOutStoreCreationCoordinatorTests: XCTestCase {
         coordinator.start()
 
         // Then
-        assertThat(navigationController.topViewController, isAnInstanceOf: AccountCreationFormHostingController.self)
+        assertThat(navigationController.topViewController, isAnInstanceOf: AccountCreationEmailFormHostingController.self)
     }
 }

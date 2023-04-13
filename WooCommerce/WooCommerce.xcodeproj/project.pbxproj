@@ -274,7 +274,7 @@
 		026D4A24280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D4A23280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift */; };
 		0270F47624D005B00005210A /* ProductFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */; };
 		0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47724D006F60005210A /* ProductFormPresentationStyle.swift */; };
-		027111422913B9FC00F5269A /* AccountCreationFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027111412913B9FC00F5269A /* AccountCreationFormViewModelTests.swift */; };
+		027111422913B9FC00F5269A /* AccountCreationPasswordFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027111412913B9FC00F5269A /* AccountCreationPasswordFormViewModelTests.swift */; };
 		0271125D2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271125C2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift */; };
 		0271139A24DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271139924DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift */; };
 		0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271E1632509C66200633F7A /* DefaultProductFormTableViewModelTests.swift */; };
@@ -2489,7 +2489,7 @@
 		0270C0A827069BEF00FC799F /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModelProtocol.swift; sourceTree = "<group>"; };
 		0270F47724D006F60005210A /* ProductFormPresentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormPresentationStyle.swift; sourceTree = "<group>"; };
-		027111412913B9FC00F5269A /* AccountCreationFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationFormViewModelTests.swift; sourceTree = "<group>"; };
+		027111412913B9FC00F5269A /* AccountCreationPasswordFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationPasswordFormViewModelTests.swift; sourceTree = "<group>"; };
 		0271125C2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutAppSettingsTests.swift; sourceTree = "<group>"; };
 		0271139924DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsTabProductViewModel+VariationTests.swift"; sourceTree = "<group>"; };
 		0271E1632509C66200633F7A /* DefaultProductFormTableViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModelTests.swift; sourceTree = "<group>"; };
@@ -5140,7 +5140,7 @@
 		027111402913B9D400F5269A /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
-				027111412913B9FC00F5269A /* AccountCreationFormViewModelTests.swift */,
+				027111412913B9FC00F5269A /* AccountCreationPasswordFormViewModelTests.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -12467,7 +12467,7 @@
 				4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */,
 				02077F72253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift in Sources */,
 				D8C11A6222E24C4A00D4A88D /* LedgerTableViewCellTests.swift in Sources */,
-				027111422913B9FC00F5269A /* AccountCreationFormViewModelTests.swift in Sources */,
+				027111422913B9FC00F5269A /* AccountCreationPasswordFormViewModelTests.swift in Sources */,
 				DE50295328BF4A8A00551736 /* JetpackConnectionWebViewModelTests.swift in Sources */,
 				D802549126552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift in Sources */,
 				A655725D258B91AE008AE7CA /* OrderListCellViewModelTests.swift in Sources */,

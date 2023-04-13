@@ -48,6 +48,8 @@ class AuthenticationManager: Authentication {
     ///
     private let storageManager: StorageManagerType
 
+    private let stores: StoresManager
+
     private let featureFlagService: FeatureFlagService
 
     private let analytics: Analytics
@@ -60,14 +62,21 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the use case
     private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+    /// Injected for unit test purposes
+    private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
+
+    init(stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
-         abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider()) {
+         abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) {
+        self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.abTestVariationProvider = abTestVariationProvider
+        self.purchasesManager = purchasesManager
     }
 
     /// Initializes the WordPress Authenticator.

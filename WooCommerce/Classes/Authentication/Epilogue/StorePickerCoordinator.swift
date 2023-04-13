@@ -7,11 +7,6 @@ import protocol Storage.StorageManagerType
 ///
 final class StorePickerCoordinator: Coordinator {
 
-    enum StoreSelectionError: Error {
-        case noStoresAvailable
-        case moreThanOneStoreAvailable
-    }
-
     unowned private(set) var navigationController: UINavigationController
 
     /// Determines how the store picker should initialized
@@ -62,19 +57,28 @@ final class StorePickerCoordinator: Coordinator {
 
     /// Checks available stores and switch store if only one valid store is available
     ///
+    /// - Returns: true if store switched successfull
     @MainActor
-    func switchStoreIfOnlyOneStoreIsAvailable() async throws {
-        let sites = switchStoreUseCase.getAvailableStores()
+    func switchStoreIfOnlyOneStoreIsAvailable() async -> Bool {
+        let storePickerViewModel = StorePickerViewModel(configuration: .switchingStores,
+                                                        stores: stores,
+                                                        storageManager: storageManager)
+        await storePickerViewModel.refreshSites(currentlySelectedSiteID: nil)
 
-        guard let siteID = sites.first?.siteID else {
-            throw StoreSelectionError.noStoresAvailable
+        guard case let .available(sites) = storePickerViewModel.state, sites.isNotEmpty else {
+            return false
         }
 
         guard !sites.containsMoreThanOne else {
-            throw StoreSelectionError.moreThanOneStoreAvailable
+            return false
         }
 
-        await switchStore(with: siteID)
+        guard let onlyAvailableStore = sites.first else {
+            return false
+        }
+
+        await switchStore(with: onlyAvailableStore.siteID)
+        return true
     }
 }
 

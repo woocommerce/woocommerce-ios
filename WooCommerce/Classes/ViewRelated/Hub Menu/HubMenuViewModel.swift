@@ -35,9 +35,13 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
 
-    /// Child items
+    /// Settings Elements
     ///
-    @Published private(set) var menuElements: [HubMenuItem] = []
+    @Published private(set) var settingsElements: [HubMenuItem] = []
+
+    /// General items
+    ///
+    @Published private(set) var generalElements: [HubMenuItem] = []
 
     /// The switch store button should be hidden when logged in with site credentials only.
     ///
@@ -76,23 +80,32 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
-        menuElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews()]
-        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
-            menuElements.append(InAppPurchases())
-        }
+        setupSettingsElements()
+        setupGeneralElements()
+    }
+
+    private func setupSettingsElements() {
+        settingsElements = [Settings()]
 
         // Only show the upgrades menu on WPCom sites
         if stores.sessionManager.defaultSite?.isWordPressComStore == true {
-            menuElements.append(Upgrades())
+            settingsElements.append(Upgrades())
+        }
+    }
+
+    private func setupGeneralElements() {
+        generalElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews()]
+        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
+            generalElements.append(InAppPurchases())
         }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
             guard let self = self else { return }
-            if let index = self.menuElements.firstIndex(where: { item in
+            if let index = self.generalElements.firstIndex(where: { item in
                 type(of: item).id == ViewStore.id
             }), isInboxMenuShown {
-                self.menuElements.insert(Inbox(), at: index + 1)
+                self.generalElements.insert(Inbox(), at: index + 1)
             }
         }
 
@@ -101,12 +114,12 @@ final class HubMenuViewModel: ObservableObject {
             guard case let .success(enabled) = result, enabled else {
                 return
             }
-            if let index = self.menuElements.firstIndex(where: { item in
+            if let index = self.generalElements.firstIndex(where: { item in
                 type(of: item).id == Reviews.id
             }) {
-                self.menuElements.insert(Coupons(), at: index)
+                self.generalElements.insert(Coupons(), at: index)
             } else {
-                self.menuElements.append(Coupons())
+                self.generalElements.append(Coupons())
             }
         }
 
@@ -200,6 +213,18 @@ extension HubMenuItem {
 }
 
 extension HubMenuViewModel {
+
+    struct Settings: HubMenuItem {
+        static var id = "settings"
+
+        let title: String = Localization.settings
+        let icon: UIImage = .cogImage
+        let iconColor: UIColor = .primary
+        var badge: HubMenuBadgeType = .number(number: 0)
+        let accessibilityIdentifier: String = "dashboard-settings-button"
+        let trackingOption: String = "settings"
+    }
+
     struct Payments: HubMenuItem {
 
         static var id = "payments"
@@ -291,6 +316,7 @@ extension HubMenuViewModel {
     }
 
     enum Localization {
+        static let settings = NSLocalizedString("Settings", comment: "Title of the hub menu settings button")
         static let payments = NSLocalizedString("Payments",
                                                 comment: "Title of the hub menu payments button")
         static let myStore = NSLocalizedString("My Store",

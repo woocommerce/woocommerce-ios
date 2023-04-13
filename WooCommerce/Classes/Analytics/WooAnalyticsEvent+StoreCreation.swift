@@ -10,8 +10,7 @@ extension WooAnalyticsEvent {
             static let errorType = "error_type"
             static let flow = "flow"
             static let step = "step"
-            static let category = "industry"
-            static let categoryGroup = "industry_group"
+            static let category = "industry_slug"
             static let sellingStatus = "user_commerce_journey"
             static let sellingPlatforms = "ecommerce_platforms"
             static let countryCode = "country_code"
@@ -70,10 +69,20 @@ extension WooAnalyticsEvent {
                                              countryCode: SiteAddress.CountryCode?) -> WooAnalyticsEvent {
             let properties = [
                 Key.category: category?.value,
-                Key.categoryGroup: category?.groupValue,
                 Key.sellingStatus: sellingStatus?.sellingStatus.analyticsValue,
                 Key.sellingPlatforms: sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ","),
                 Key.countryCode: countryCode?.rawValue
+            ].compactMapValues({ $0 })
+            return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
+        }
+
+        /// Tracked when completing the last profiler question during the store creation flow when free trials are enabled.
+        static func siteCreationProfilerData(_ profilerData: SiteProfilerData) -> WooAnalyticsEvent {
+            let properties = [
+                Key.category: profilerData.category,
+                Key.sellingStatus: profilerData.sellingStatus?.analyticsValue,
+                Key.sellingPlatforms: profilerData.sellingPlatforms,
+                Key.countryCode: profilerData.countryCode
             ].compactMapValues({ $0 })
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }

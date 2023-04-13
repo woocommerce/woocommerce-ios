@@ -202,7 +202,6 @@ protocol HubMenuItem {
     var description: String { get }
     var icon: UIImage { get }
     var iconColor: UIColor { get }
-    var badge: HubMenuBadgeType { get }
     var accessibilityIdentifier: String { get }
     var trackingOption: String { get }
 }
@@ -222,7 +221,6 @@ extension HubMenuViewModel {
         let description: String = Localization.settingsDescription
         let icon: UIImage = .cogImage
         let iconColor: UIColor = .primary
-        var badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "dashboard-settings-button"
         let trackingOption: String = "settings"
     }
@@ -235,7 +233,6 @@ extension HubMenuViewModel {
         let description: String = Localization.paymentsDescription
         let icon: UIImage = .walletImage
         let iconColor: UIColor = .withColorStudio(.orange)
-        var badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-payments"
         let trackingOption: String = "payments"
     }
@@ -247,7 +244,6 @@ extension HubMenuViewModel {
         let description: String = Localization.woocommerceAdminDescription
         let icon: UIImage = .wordPressLogoImage
         let iconColor: UIColor = .wooBlue
-        let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-woocommerce-admin"
         let trackingOption: String = "admin_menu"
     }
@@ -259,7 +255,6 @@ extension HubMenuViewModel {
         let description: String = Localization.viewStoreDescription
         let icon: UIImage = .storeImage
         let iconColor: UIColor = .accent
-        let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-view-store"
         let trackingOption: String = "view_store"
     }
@@ -271,7 +266,6 @@ extension HubMenuViewModel {
         let description: String = Localization.inboxDescription
         let icon: UIImage = .mailboxImage
         let iconColor: UIColor = .withColorStudio(.blue, shade: .shade40)
-        let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-inbox"
         let trackingOption: String = "inbox"
     }
@@ -284,7 +278,6 @@ extension HubMenuViewModel {
         let icon: UIImage = .couponImage
         let iconColor: UIColor = UIColor(light: .withColorStudio(.green, shade: .shade30),
                                          dark: .withColorStudio(.green, shade: .shade50))
-        let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-coupons"
         let trackingOption: String = "coupons"
     }
@@ -296,7 +289,6 @@ extension HubMenuViewModel {
         let description: String = Localization.reviewsDescription
         let icon: UIImage = .starImage(size: 24.0)
         let iconColor: UIColor = .primary
-        let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-reviews"
         let trackingOption: String = "reviews"
     }
@@ -308,7 +300,6 @@ extension HubMenuViewModel {
         let description: String = "Debug your inApp Purchases"
         let icon: UIImage = UIImage(systemName: "ladybug.fill")!
         let iconColor: UIColor = .red
-        let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-iap"
         let trackingOption: String = "debug-iap"
     }
@@ -320,7 +311,6 @@ extension HubMenuViewModel {
         let description: String = Localization.upgradesDescription
         let icon: UIImage = .iconBolt
         let iconColor: UIColor = .primary
-        let badge: HubMenuBadgeType = .number(number: 0)
         let accessibilityIdentifier: String = "menu-upgrades"
         let trackingOption: String = "upgrades"
     }

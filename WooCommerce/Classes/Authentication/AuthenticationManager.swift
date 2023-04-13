@@ -545,7 +545,7 @@ private extension AuthenticationManager {
     @MainActor
     func autoSelectStoreOrPresentStoreCreationFlow(source: SignInSource? = nil,
                                                    in navigationController: UINavigationController) async {
-        // If the user is from the store creation flow
+        // If the user logs in from the store creation flow
         guard case .custom(let source) = source,
               let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
               storeCreationSource == .prologue else {

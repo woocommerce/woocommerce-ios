@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
-import protocol Storage.StorageManagerType
+
 
 /// Simplifies and decouples the store picker from the caller
 ///
@@ -17,19 +17,15 @@ final class StorePickerCoordinator: Coordinator {
     ///
     var onDismiss: (() -> Void)?
 
-    /// SwitchStoreUseCase
+    /// The switchStoreUseCase object initialized with the ServiceLocator stores
     ///
-    private let switchStoreUseCase: SwitchStoreUseCaseProtocol
+    private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores)
 
     /// The RoleEligibilityUseCase object initialized with the ServiceLocator stores
     ///
     private let roleEligibilityUseCase = RoleEligibilityUseCase(stores: ServiceLocator.stores)
 
     private var storeCreationCoordinator: StoreCreationCoordinator?
-
-    private let stores: StoresManager
-
-    private let storageManager: StorageManagerType
 
     /// Site Picker VC
     ///
@@ -39,48 +35,16 @@ final class StorePickerCoordinator: Coordinator {
         return pickerVC
     }()
 
-    init(_ navigationController: UINavigationController,
-         config: StorePickerConfiguration,
-         stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         switchStoreUseCase: SwitchStoreUseCaseProtocol = SwitchStoreUseCase(stores: ServiceLocator.stores)) {
+    init(_ navigationController: UINavigationController, config: StorePickerConfiguration) {
         self.navigationController = navigationController
         self.selectedConfiguration = config
-        self.stores = stores
-        self.storageManager = storageManager
-        self.switchStoreUseCase = switchStoreUseCase
     }
 
     func start() {
         showStorePicker()
     }
-
-    /// Checks available stores and switch store if only one valid store is available
-    ///
-    /// - Returns: true if store switched successfull
-    @MainActor
-    func switchStoreIfOnlyOneStoreIsAvailable() async -> Bool {
-        let storePickerViewModel = StorePickerViewModel(configuration: .switchingStores,
-                                                        stores: stores,
-                                                        storageManager: storageManager)
-        await storePickerViewModel.refreshSites(currentlySelectedSiteID: nil)
-
-        guard case let .available(sites) = storePickerViewModel.state, sites.isNotEmpty else {
-            return false
-        }
-
-        guard !sites.containsMoreThanOne else {
-            return false
-        }
-
-        guard let onlyAvailableStore = sites.first else {
-            return false
-        }
-
-        await switchStore(with: onlyAvailableStore.siteID)
-        return true
-    }
 }
+
 
 // MARK: - StorePickerViewControllerDelegate Conformance
 //
@@ -188,15 +152,6 @@ private extension StorePickerCoordinator {
             }
             onCompletion()
             self.onDismiss?()
-        }
-    }
-
-    @MainActor
-    func switchStore(with storeID: Int64) async {
-        await withCheckedContinuation { continuation in
-            switchStore(with: storeID) {
-                continuation.resume(returning: ())
-            }
         }
     }
 }

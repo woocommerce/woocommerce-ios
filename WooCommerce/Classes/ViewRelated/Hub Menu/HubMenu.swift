@@ -26,21 +26,70 @@ struct HubMenu: View {
     ///
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
+    /// Returns `nil` if `viewModel.switchStoreEnabled` is false.
+    /// Otherwise returns a closure calls `viewModel.presentSwitchStore()` when invoked.
+    ///
+    private var storeSwitchTapHandler: (() -> ())? {
+        guard viewModel.switchStoreEnabled else { return nil }
+        return {
+            viewModel.presentSwitchStore()
+        }
+    }
+
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        EmptyView()
+        List {
+
+            Section {
+                Row(title: viewModel.storeTitle,
+                    description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
+                    icon: .remote(viewModel.avatarURL),
+                    chevron: .down,
+                    tapHandler: storeSwitchTapHandler,
+                    titleAccessibilityID: "store-title",
+                    descriptionAccessibilityID: "store-url",
+                    chevronAccessibilityID: "switch-store-button")
+                .cornerRadius(HubMenu.Constants.cornerRadius)
+            }
+
+            Section("Settings") {
+                Row(title: "Settings",
+                    description: "Update your preferences",
+                    icon: .local(.cogImage),
+                    chevron: .leading,
+                    tapHandler: {})
+                .foregroundColor(Color(.primary))
+                .accessibilityIdentifier("dashboard-settings-button")
+            }
+
+            Section("General") {
+                ForEach(viewModel.menuElements, id: \.id) { menu in
+                    Row(title: menu.title,
+                        description: "",
+                        icon: .local(menu.icon),
+                        chevron: .leading,
+                        tapHandler: nil)
+                    .foregroundColor(Color(menu.iconColor))
+                }
+            }
+        }
+        .listStyle(.automatic)
+        .navigationBarHidden(true)
+        .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
+        .onAppear {
+            viewModel.setupMenuElements()
+            enableMenuItemTaps()
+        }
+        .onReceive(timer) { _ in
+            // fall back method in case menu disabled state is not reset properly
+            enableMenuItemTaps()
+        }
+    }
+
 //        VStack {
-//            TopBar(avatarURL: viewModel.avatarURL,
-//                   storeTitle: viewModel.storeTitle,
-//                   storeURL: viewModel.storeURL.host,
-//                   switchStoreEnabled: viewModel.switchStoreEnabled) {
-//                viewModel.presentSwitchStore()
-//            }
-//
-//
 //            ScrollView {
 //                let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
 //
@@ -131,22 +180,10 @@ struct HubMenu: View {
 //                EmptyView()
 //            }
 //        }
-//        .enableInjection()
-//        .navigationBarHidden(true)
-//        .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
-//        .onAppear {
-//            viewModel.setupMenuElements()
-//            enableMenuItemTaps()
-//        }
-//        .onReceive(timer) { _ in
-//            // fall back method in case menu disabled state is not reset properly
-//            enableMenuItemTaps()
-//        }
-    }
 
     /// Reset state to make the menu items tappable
     private func enableMenuItemTaps() {
-        shouldDisableItemTaps = false
+        shouldDisableItemTaps = false // TODO: test this
     }
 }
 
@@ -156,7 +193,7 @@ private extension HubMenu {
 
         enum Icon {
             case local(UIImage)
-            case remote(URL)
+            case remote(URL?)
         }
 
         enum Chevron {
@@ -179,25 +216,43 @@ private extension HubMenu {
         let chevron: Chevron
         let tapHandler: (() -> Void)?
 
-        let titleAccessibilityID: String?
-        let descriptionAccessibilityID: String?
+        var titleAccessibilityID: String?
+        var descriptionAccessibilityID: String?
+        var chevronAccessibilityID: String?
 
         var body: some View {
             HStack(spacing: HubMenu.Constants.padding) {
 
-                // Icon
-                Group {
-                    switch icon {
-                    case .local(let asset):
-                        Image(uiImage: asset)
-                            .resizable()
-                    case .remote(let url):
-                        KFImage(url)
-                            .resizable()
+                HStack(spacing: .zero) {
+                    /// iOS 16, aligns the list dividers to the first text position.
+                    /// This tricks the system by rendering an empty text and forcing the list lo align the divider to it.
+                    /// Without this, the divider will be rendered from the title and will not cover the icon.
+                    /// Ideally we would want to use the `alignmentGuide` modifier but that is only available on iOS 16.
+                    ///
+                    Text("")
+
+                    // Icon
+                    Group {
+                        switch icon {
+                        case .local(let asset):
+                            Circle()
+                                .fill(Color(.listBackground))
+                                .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+                                .overlay {
+                                    Image(uiImage: asset)
+                                        .resizable()
+                                        .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
+                                }
+
+                        case .remote(let url):
+                            KFImage(url)
+                                .resizable()
+                                .clipShape(Circle())
+                                .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+                        }
                     }
                 }
-                .clipShape(Circle())
-                .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+
 
                 // Title & Description
                 VStack(alignment: .leading, spacing: HubMenu.Constants.topBarSpacing) {
@@ -218,7 +273,8 @@ private extension HubMenu {
                     .resizable()
                     .frame(width: HubMenu.Constants.chevronSize, height: HubMenu.Constants.chevronSize)
                     .foregroundColor(Color(.textSubtle))
-                    .renderedIf(tapHandler != nil)
+                    .renderedIf(tapHandler != nil) // TODO: Check if this is needed
+                    .accessibilityIdentifier(chevronAccessibilityID ?? "")
 
                     // TODO: Migrate settings button & tracks - to list below
 
@@ -244,10 +300,8 @@ private extension HubMenu {
                     //                    .accessibilityIdentifier("dashboard-settings-button")
                     //                    Spacer()
             }
-            .padding()
+            .padding(.vertical, Constants.rowVerticalPadding)
             .background(Color(.listForeground(modal: false)))
-            .cornerRadius(HubMenu.Constants.cornerRadius)
-            .padding()
             .onTapGesture {
                 tapHandler?() // TODO: Check what happens when logged in with store credentials and not wpcom
             }
@@ -260,12 +314,12 @@ private extension HubMenu {
 private extension HubMenu {
     enum Constants {
         static let cornerRadius: CGFloat = 10
-        static let itemSpacing: CGFloat = 12
-        static let itemSize: CGFloat = 160
         static let padding: CGFloat = 16
+        static let rowVerticalPadding: CGFloat = 8
         static let topBarSpacing: CGFloat = 2
         static let avatarSize: CGFloat = 40
         static let chevronSize: CGFloat = 20
+        static let iconSize: CGFloat = 20
         static let trackingOptionKey = "option"
         static let trackingBadgeVisibleKey = "badge_visible"
     }
@@ -290,17 +344,8 @@ struct HubMenu_Previews: PreviewProvider {
 //        HubMenu(viewModel: .init(siteID: 123))
 //            .previewLayout(.fixed(width: 1024, height: 768))
 
-        Group {
-            HubMenu.Row(title: "My Store",
-                        description: "mystore.wordpress.com",
-                        icon: .local(.gearBarButtonItemImage),
-                        chevron: .leading,
-                        tapHandler: nil,
-                        titleAccessibilityID: nil,
-                        descriptionAccessibilityID: nil)
-            .padding()
+        NavigationView {
+            HubMenu(viewModel: .init(siteID: 123))
         }
-        .background(.gray)
-        .previewLayout(.sizeThatFits)
     }
 }

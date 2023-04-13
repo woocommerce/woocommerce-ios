@@ -348,7 +348,7 @@ private extension ProductStore {
             .uniqued()
 
         // Retrieve products from product ids and finish
-        let products = retrieveProducts(from: sortedByOccurenceProductIDs)
+        let products = retrieveProducts(from: sortedByOccurenceProductIDs, siteID: siteID)
         onCompletion(products)
     }
 
@@ -364,7 +364,7 @@ private extension ProductStore {
             .map { $0.productID }
             .uniqued()
 
-        let products = retrieveProducts(from: productIDs)
+        let products = retrieveProducts(from: productIDs, siteID: siteID)
         onCompletion(products)
     }
 
@@ -375,12 +375,14 @@ private extension ProductStore {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [completedOrderPredicate, sitePredicate])
     }
 
-    func retrieveProducts(from productIDs: [Int64]) -> [Product] {
+    func retrieveProducts(from productIDs: [Int64], siteID: Int64) -> [Product] {
         productIDs
             .compactMap {
-                let predicate = NSPredicate(format: "productID == %lld", $0)
+                let productPredicate = NSPredicate(format: "productID == %lld", $0)
+                let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
+                let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [productPredicate, sitePredicate])
                 let product = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                          matching: predicate,
+                                                          matching: compoundPredicate,
                                                           sortedBy: nil).first
                 return product
             }.map { $0.toReadOnly() }

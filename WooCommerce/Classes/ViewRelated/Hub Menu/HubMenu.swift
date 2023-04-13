@@ -19,14 +19,6 @@ struct HubMenu: View {
     @State private var showingIAPDebug = false
     @State private var showSettings = false
 
-    /// State to disable multiple taps on menu items
-    /// Make sure to reset the value to false after dismissing sub-flows
-    @State private var shouldDisableItemTaps = false
-
-    /// A timer used as a fallback method for resetting disabled state of the menu
-    ///
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
     /// Returns `nil` if `viewModel.switchStoreEnabled` is false.
     /// Otherwise returns a closure calls `viewModel.presentSwitchStore()` when invoked.
     ///
@@ -91,20 +83,15 @@ struct HubMenu: View {
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
         .onAppear {
             viewModel.setupMenuElements()
-            enableMenuItemTaps()
         }
-        .onReceive(timer) { _ in
-            // fall back method in case menu disabled state is not reset properly
-            enableMenuItemTaps()
-        }
-        .sheet(isPresented: $showingWooCommerceAdmin, onDismiss: enableMenuItemTaps) {
+        .sheet(isPresented: $showingWooCommerceAdmin) {
             WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
                                                           navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
                                                           authenticated: viewModel.shouldAuthenticateAdminPage)) {
                 showingWooCommerceAdmin = false
             }
         }
-        .sheet(isPresented: $showingViewStore, onDismiss: enableMenuItemTaps) {
+        .sheet(isPresented: $showingViewStore) {
             WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.storeURL,
                                                           navigationTitle: HubMenuViewModel.Localization.viewStore,
                                                           authenticated: false)) {
@@ -139,11 +126,6 @@ struct HubMenu: View {
         LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
             EmptyView()
         }
-    }
-
-    /// Reset state to make the menu items tappable
-    private func enableMenuItemTaps() {
-        shouldDisableItemTaps = false // TODO: test this
     }
 
     /// Handle navigation when tapping a list menu row.
@@ -287,13 +269,13 @@ private extension HubMenu {
                     .resizable()
                     .frame(width: HubMenu.Constants.chevronSize, height: HubMenu.Constants.chevronSize)
                     .foregroundColor(Color(.textSubtle))
-                    .renderedIf(tapHandler != nil) // TODO: Check if this is needed
+                    .renderedIf(tapHandler != nil)
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")
             }
             .padding(.vertical, Constants.rowVerticalPadding)
             .background(Color(.listForeground(modal: false)))
             .onTapGesture {
-                tapHandler?() // TODO: Check what happens when logged in with store credentials and not wpcom
+                tapHandler?()
             }
 
         }

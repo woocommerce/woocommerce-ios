@@ -43,6 +43,7 @@ struct HubMenu: View {
     var body: some View {
         List {
 
+            // Store Section
             Section {
                 Row(title: viewModel.storeTitle,
                     description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
@@ -55,7 +56,8 @@ struct HubMenu: View {
                 .cornerRadius(HubMenu.Constants.cornerRadius)
             }
 
-            Section("Settings") {
+            // Settings Section
+            Section(Localization.settings) {
                 Row(title: "Settings",
                     description: "Update your preferences",
                     icon: .local(.cogImage),
@@ -65,7 +67,8 @@ struct HubMenu: View {
                 .accessibilityIdentifier("dashboard-settings-button")
             }
 
-            Section("General") {
+            // General Section
+            Section(Localization.general) {
                 ForEach(viewModel.menuElements, id: \.id) { menu in
                     Row(title: menu.title,
                         description: "",
@@ -189,13 +192,20 @@ struct HubMenu: View {
 
 // MARK: SubViews
 private extension HubMenu {
+
+    /// Reusable List row for the hub menu
+    ///
     struct Row: View {
 
+        /// Image source for the icon/avatar.
+        ///
         enum Icon {
             case local(UIImage)
             case remote(URL?)
         }
 
+        /// Style for the chevron indicator.
+        ///
         enum Chevron {
             case down
             case leading
@@ -210,10 +220,24 @@ private extension HubMenu {
             }
         }
 
+        /// Row Title
+        ///
         let title: String
+
+        /// Row Description
+        ///
         let description: String
+
+        /// Row Icon
+        ///
         let icon: Icon
+
+        /// Row chevron indicator
+        ///
         let chevron: Chevron
+
+        /// Closure invoked when the row is tapped.
+        ///
         let tapHandler: (() -> Void)?
 
         var titleAccessibilityID: String?
@@ -236,7 +260,7 @@ private extension HubMenu {
                         switch icon {
                         case .local(let asset):
                             Circle()
-                                .fill(Color(.listBackground))
+                                .fill(Color(.init(light: .listBackground, dark: .secondaryButtonBackground)))
                                 .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
                                 .overlay {
                                     Image(uiImage: asset)
@@ -326,26 +350,23 @@ private extension HubMenu {
 
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
+        static let general = NSLocalizedString("General", comment: "General section title in the hub menu")
     }
 }
 
 struct HubMenu_Previews: PreviewProvider {
     static var previews: some View {
-//        HubMenu(viewModel: .init(siteID: 123))
-//            .environment(\.colorScheme, .light)
-//
-//        HubMenu(viewModel: .init(siteID: 123))
-//            .environment(\.colorScheme, .dark)
-//
-//        HubMenu(viewModel: .init(siteID: 123))
-//            .previewLayout(.fixed(width: 312, height: 528))
-//            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-//
-//        HubMenu(viewModel: .init(siteID: 123))
-//            .previewLayout(.fixed(width: 1024, height: 768))
+        HubMenu(viewModel: .init(siteID: 123))
+            .environment(\.colorScheme, .light)
 
-        NavigationView {
-            HubMenu(viewModel: .init(siteID: 123))
-        }
+        HubMenu(viewModel: .init(siteID: 123))
+            .environment(\.colorScheme, .dark)
+
+        HubMenu(viewModel: .init(siteID: 123))
+            .previewLayout(.fixed(width: 312, height: 528))
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+
+        HubMenu(viewModel: .init(siteID: 123))
+            .previewLayout(.fixed(width: 1024, height: 768))
     }
 }

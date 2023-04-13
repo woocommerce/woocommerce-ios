@@ -50,7 +50,7 @@ public final class SingleProductScreen: ScreenObject {
         XCTAssertTrue(app.staticTexts["TIP"].exists)
         XCTAssertTrue(app.textViews[productName].exists)
 
-        // different product types displays different fields on the published product screen
+        // different product types display different fields on the published product screen
         // this is to validate that the correct screens are displayed
         switch productType {
         case "physical", "virtual":
@@ -65,14 +65,14 @@ public final class SingleProductScreen: ScreenObject {
     public func verifyProductTypeScreenLoaded(productType: String) throws -> Self {
         let addPriceLabel = NSPredicate(format: "label == 'Add Price'")
         let inventoryLabel = NSPredicate(format: "label == 'Inventory'")
-        let addVariationLabel = NSPredicate(format: "label == 'Add variations'")
         let productTypeLabel = NSPredicate(format: "label ==[c] '\(productType)'")
+        let addVariationLabel = NSPredicate(format: "label == 'Add variations'")
 
         // the common fields on add product screen
         XCTAssertTrue(app.cells["product-review-cell"].exists)
         XCTAssertTrue(app.staticTexts.containing(productTypeLabel).firstMatch.exists)
 
-        // different product types displays different fields on add product screen
+        // different product types display different fields on add product screen
         // this is to validate that the correct screens are displayed
         switch productType {
         case "physical", "virtual":

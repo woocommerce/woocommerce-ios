@@ -82,7 +82,7 @@ public final class SingleProductScreen: ScreenObject {
             XCTAssertTrue(app.staticTexts.containing(addVariationLabel).firstMatch.exists)
             XCTAssertTrue(app.staticTexts.containing(inventoryLabel).firstMatch.exists)
         default:
-            fatalError("Product Type \(productType) doesn't exist!")
+            XCTFail("Product Type \(productType) doesn't exist!")
         }
         return self
     }

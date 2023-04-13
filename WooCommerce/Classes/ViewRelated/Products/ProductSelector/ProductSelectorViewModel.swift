@@ -213,14 +213,13 @@ final class ProductSelectorViewModel: ObservableObject {
 
         Task { @MainActor in
             await loadTopProducts()
-
-            configureSyncingCoordinator()
-            refreshDataAndSync()
-            configureFirstPageLoad()
-            synchronizeProductFilterSearch()
         }
-    }
 
+        configureSyncingCoordinator()
+        refreshDataAndSync()
+        configureFirstPageLoad()
+        synchronizeProductFilterSearch()
+    }
 
     /// Initializer for multiple selections
     ///
@@ -253,12 +252,12 @@ final class ProductSelectorViewModel: ObservableObject {
 
         Task { @MainActor in
             await loadTopProducts()
-
-            configureSyncingCoordinator()
-            refreshDataAndSync()
-            configureFirstPageLoad()
-            synchronizeProductFilterSearch()
         }
+
+        configureSyncingCoordinator()
+        refreshDataAndSync()
+        configureFirstPageLoad()
+        synchronizeProductFilterSearch()
     }
 
     /// Selects or unselects a product to add to the order
@@ -652,7 +651,7 @@ private extension ProductSelectorViewModel {
 
             guard let self = self else { return }
 
-            let action = ProductAction.retrievePopularCachedProducts(siteID: self.siteID, onCompletion: { products in
+            let action = ProductAction.retrievePopularCachedProducts(siteID: siteID, onCompletion: { products in
                 self.popularProducts = self.refineTopProducts(products)
                 continuation.resume(returning: ())
             })
@@ -669,7 +668,7 @@ private extension ProductSelectorViewModel {
 
             guard let self = self else { return }
 
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.siteID, onCompletion: { products in
+            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: siteID, onCompletion: { products in
                 self.mostRecentlySoldProducts = self.refineTopProducts(products)
                 continuation.resume(returning: ())
             })
@@ -683,6 +682,10 @@ private extension ProductSelectorViewModel {
     func loadTopProducts() async {
         await self.loadPopularProducts()
         await self.loadMostRecentlySoldProducts()
+
+        Task { @MainActor in
+            reloadData()
+        }
     }
 
     /// Refines the top showing products (popular and recently sold) by slicing and removing the non purchasable (if required)

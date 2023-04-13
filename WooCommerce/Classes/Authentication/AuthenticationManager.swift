@@ -553,7 +553,8 @@ private extension AuthenticationManager {
 private extension AuthenticationManager {
     @MainActor
     func autoSelectStoreOrPresentStoreCreationFlow(source: SignInSource? = nil,
-                                                   in navigationController: UINavigationController) async {
+                                                   in navigationController: UINavigationController,
+                                                   onCompletion: @escaping () -> Void) async {
         // If the user logs in from the store creation flow
         guard case .custom(let source) = source,
               let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
@@ -561,17 +562,38 @@ private extension AuthenticationManager {
             return
         }
 
-        // Proceed into the app if there is only one valid store available
-        let isSwitchStoreSuccess = await storePickerCoordinator?.switchStoreIfOnlyOneStoreIsAvailable()
+        let availableStores = await getAvailableStores()
 
-        // Start the store creation process because the user does
-        // not have any existing stores
-        if isSwitchStoreSuccess == false {
+        // If there are no stores available
+        if availableStores.isEmpty {
+            // Start the store creation process because the user does
+            // not have any existing stores
             let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
-                                                       navigationController: navigationController)
+                                                       navigationController: navigationController,
+                                                       featureFlagService: featureFlagService,
+                                                       purchasesManager: purchasesManager)
             self.storeCreationCoordinator = coordinator
             coordinator.start()
+            return
         }
+
+        // Proceed into the app if there is only one valid store available
+        if availableStores.count == 1, let onlyAvailableSite = availableStores.first {
+            storePickerCoordinator?.didSelectStore(with: onlyAvailableSite.siteID, onCompletion: onCompletion)
+        }
+    }
+
+    func getAvailableStores() async -> [Site] {
+        let storePickerViewModel = StorePickerViewModel(configuration: .switchingStores,
+                                                        stores: stores,
+                                                        storageManager: storageManager)
+        await storePickerViewModel.refreshSites(currentlySelectedSiteID: nil)
+
+        guard case let .available(sites) = storePickerViewModel.state, sites.isNotEmpty else {
+            return []
+        }
+
+        return sites
     }
 
     func isJetpackInvalidForSelfHostedSite(url: String) -> Bool {
@@ -639,7 +661,8 @@ private extension AuthenticationManager {
 
         Task { @MainActor in
             await autoSelectStoreOrPresentStoreCreationFlow(source: source,
-                                                            in: navigationController)
+                                                            in: navigationController,
+                                                            onCompletion: onDismiss)
         }
     }
 

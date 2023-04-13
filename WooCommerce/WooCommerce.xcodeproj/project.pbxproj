@@ -1885,6 +1885,7 @@
 		DE126D0F26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0E26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift */; };
 		DE17865929E7C7BC004D4E75 /* AccountCreationEmailForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE17865829E7C7BC004D4E75 /* AccountCreationEmailForm.swift */; };
 		DE17865B29E7C9FF004D4E75 /* AccountCreationEmailFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE17865A29E7C9FF004D4E75 /* AccountCreationEmailFormViewModel.swift */; };
+		DE17865D29E7DD1D004D4E75 /* AccountCreationTOSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE17865C29E7DD1D004D4E75 /* AccountCreationTOSView.swift */; };
 		DE19BB0C26C2688B00AB70D9 /* SelectionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB0B26C2688B00AB70D9 /* SelectionList.swift */; };
 		DE19BB1226C3811100AB70D9 /* LearnMoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */; };
 		DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */; };
@@ -4114,6 +4115,7 @@
 		DE126D0E26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormInputViewModelTests.swift; sourceTree = "<group>"; };
 		DE17865829E7C7BC004D4E75 /* AccountCreationEmailForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCreationEmailForm.swift; sourceTree = "<group>"; };
 		DE17865A29E7C9FF004D4E75 /* AccountCreationEmailFormViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCreationEmailFormViewModel.swift; sourceTree = "<group>"; };
+		DE17865C29E7DD1D004D4E75 /* AccountCreationTOSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationTOSView.swift; sourceTree = "<group>"; };
 		DE19BB0B26C2688B00AB70D9 /* SelectionList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionList.swift; sourceTree = "<group>"; };
 		DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreRow.swift; sourceTree = "<group>"; };
 		DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetails.swift; sourceTree = "<group>"; };
@@ -5563,6 +5565,7 @@
 				DE17865829E7C7BC004D4E75 /* AccountCreationEmailForm.swift */,
 				02E3B62729026C8F007E0F13 /* AccountCreationPasswordForm.swift */,
 				02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */,
+				DE17865C29E7DD1D004D4E75 /* AccountCreationTOSView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -11937,6 +11940,7 @@
 				DE17865929E7C7BC004D4E75 /* AccountCreationEmailForm.swift in Sources */,
 				037D270D28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift in Sources */,
 				AEA3F90D27BE76B300B9F555 /* ShippingLineDetails.swift in Sources */,
+				DE17865D29E7DD1D004D4E75 /* AccountCreationTOSView.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
 				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
 				03E471BE29388787001A58AD /* BuiltInCardReaderConnectionController.swift in Sources */,

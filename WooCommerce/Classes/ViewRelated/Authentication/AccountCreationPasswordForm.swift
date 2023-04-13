@@ -26,11 +26,6 @@ final class AccountCreationPasswordFormHostingController: UIHostingController<Ac
             let command = NavigateToEnterAccount(signInSource: signInSource)
             command.execute(from: self)
         }
-
-        rootView.existingEmailHandler = { email in
-            let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
-            command.execute(from: self)
-        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -47,13 +42,9 @@ struct AccountCreationPasswordForm: View {
     /// Triggered when the user taps on the login CTA.
     var loginButtonTapped: (() -> Void) = {}
 
-    /// Triggered when the user enters an email that is associated with an existing WPCom account.
-    var existingEmailHandler: ((String) -> Void) = { _ in }
-
     @ObservedObject private var viewModel: AccountCreationPasswordFormViewModel
 
     @State private var isPerformingTask = false
-    @State private var tosURL: URL?
 
     @FocusState private var isFocused: Bool
 
@@ -94,12 +85,7 @@ struct AccountCreationPasswordForm: View {
                     .disabled(isPerformingTask)
 
                     // Terms of Service link.
-                    AttributedText(tosAttributedText, enablesLinkUnderline: true)
-                        .attributedTextLinkColor(Color(.secondaryLabel))
-                        .environment(\.customOpenURL) { url in
-                            tosURL = url
-                        }
-                        .safariSheet(url: $tosURL)
+                    AccountCreationTOSView()
                 }
             }
             .padding(.init(top: 0, leading: Layout.horizontalSpacing, bottom: 0, trailing: Layout.horizontalSpacing))
@@ -134,39 +120,12 @@ struct AccountCreationPasswordForm: View {
 }
 
 private extension AccountCreationPasswordForm {
-    var tosAttributedText: NSAttributedString {
-        let result = NSMutableAttributedString(
-            string: .localizedStringWithFormat(Localization.tosFormat, Localization.tos),
-            attributes: [
-                .foregroundColor: UIColor.secondaryLabel,
-                .font: UIFont.caption1
-            ]
-        )
-        result.replaceFirstOccurrence(
-            of: Localization.tos,
-            with: NSAttributedString(
-                string: Localization.tos,
-                attributes: [
-                    .font: UIFont.caption1,
-                    .link: Constants.tosURL,
-                    .underlineStyle: NSUnderlineStyle.single.rawValue
-                ]
-            ))
-        return result
-    }
-
-    enum Constants {
-        static let tosURL = WooConstants.URLs.termsOfService.asURL()
-    }
-
     enum Localization {
-        static let title = NSLocalizedString("Get started in minutes", comment: "Title for the account creation form.")
+        static let title = NSLocalizedString("Create your password", comment: "Title for the account creation password form.")
         static let subtitle = NSLocalizedString("First, let’s create your account.", comment: "Subtitle for the account creation form.")
         static let loginButtonTitle = NSLocalizedString("Log in", comment: "Title of the login button on the account creation form.")
         static let passwordFieldTitle = NSLocalizedString("Choose a password", comment: "Title of the password field on the account creation form.")
         static let passwordFieldPlaceholder = NSLocalizedString("Password", comment: "Placeholder of the password field on the account creation form.")
-        static let tosFormat = NSLocalizedString("By continuing, you agree to our %1$@.", comment: "Terms of service format on the account creation form.")
-        static let tos = NSLocalizedString("Terms of Service", comment: "Terms of service link on the account creation form.")
         static let submitButtonTitle = NSLocalizedString("Continue", comment: "Title of the submit button on the account creation form.")
     }
 

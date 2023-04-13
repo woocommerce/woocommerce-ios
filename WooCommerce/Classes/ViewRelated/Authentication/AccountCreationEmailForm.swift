@@ -53,7 +53,6 @@ struct AccountCreationEmailForm: View {
     @ObservedObject private var viewModel: AccountCreationEmailFormViewModel
 
     @State private var isPerformingTask = false
-    @State private var tosURL: URL?
 
     @FocusState private var isFocused: Bool
 
@@ -93,12 +92,7 @@ struct AccountCreationEmailForm: View {
                     .disabled(isPerformingTask)
 
                     // Terms of Service link.
-                    AttributedText(tosAttributedText, enablesLinkUnderline: true)
-                        .attributedTextLinkColor(Color(.secondaryLabel))
-                        .environment(\.customOpenURL) { url in
-                            tosURL = url
-                        }
-                        .safariSheet(url: $tosURL)
+                    AccountCreationTOSView()
                 }
             }
             .padding(.init(top: 0, leading: Layout.horizontalSpacing, bottom: 0, trailing: Layout.horizontalSpacing))
@@ -135,39 +129,12 @@ struct AccountCreationEmailForm: View {
 }
 
 private extension AccountCreationEmailForm {
-    var tosAttributedText: NSAttributedString {
-        let result = NSMutableAttributedString(
-            string: .localizedStringWithFormat(Localization.tosFormat, Localization.tos),
-            attributes: [
-                .foregroundColor: UIColor.secondaryLabel,
-                .font: UIFont.caption1
-            ]
-        )
-        result.replaceFirstOccurrence(
-            of: Localization.tos,
-            with: NSAttributedString(
-                string: Localization.tos,
-                attributes: [
-                    .font: UIFont.caption1,
-                    .link: Constants.tosURL,
-                    .underlineStyle: NSUnderlineStyle.single.rawValue
-                ]
-            ))
-        return result
-    }
-
-    enum Constants {
-        static let tosURL = WooConstants.URLs.termsOfService.asURL()
-    }
-
     enum Localization {
         static let title = NSLocalizedString("Get started in minutes", comment: "Title for the account creation form.")
         static let subtitle = NSLocalizedString("First, let’s create your account.", comment: "Subtitle for the account creation form.")
         static let loginButtonTitle = NSLocalizedString("Log in", comment: "Title of the login button on the account creation form.")
         static let emailFieldTitle = NSLocalizedString("Your email address", comment: "Title of the email field on the account creation form.")
         static let emailFieldPlaceholder = NSLocalizedString("Email address", comment: "Placeholder of the email field on the account creation form.")
-        static let tosFormat = NSLocalizedString("By continuing, you agree to our %1$@.", comment: "Terms of service format on the account creation form.")
-        static let tos = NSLocalizedString("Terms of Service", comment: "Terms of service link on the account creation form.")
         static let submitButtonTitle = NSLocalizedString("Continue", comment: "Title of the submit button on the account creation form.")
     }
 

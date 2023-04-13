@@ -26,7 +26,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
 
         // Then
-        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Inbox.id
         }))
     }
@@ -62,11 +62,11 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then both inbox and coupons are in the menu
-        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Inbox.id
         }))
 
-        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Coupons.id
         }))
     }
@@ -102,7 +102,7 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then
-        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Inbox.id
         }))
     }
@@ -138,11 +138,11 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then neither inbox nor coupons is in the menu
-        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Inbox.id
         }))
 
-        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Coupons.id
         }))
     }
@@ -165,7 +165,7 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         // Then
-        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Coupons.id
         }))
     }
@@ -187,7 +187,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
         viewModel.setupMenuElements()
 
-        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Coupons.id
         }))
     }
@@ -369,7 +369,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
         viewModel.setupMenuElements()
 
-        XCTAssertNotNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Upgrades.id
         }))
     }
@@ -386,7 +386,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
         viewModel.setupMenuElements()
 
-        XCTAssertNil(viewModel.menuElements.firstIndex(where: { item in
+        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Upgrades.id
         }))
     }

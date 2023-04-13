@@ -133,8 +133,7 @@ struct HubMenu: View {
     ///
     private func handleTap(menu: HubMenuItem) {
         ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
-            Constants.trackingOptionKey: menu.trackingOption,
-            Constants.trackingBadgeVisibleKey: menu.badge.shouldBeRendered
+            Constants.trackingOptionKey: menu.trackingOption
         ])
 
         switch type(of: menu).id {
@@ -292,7 +291,6 @@ private extension HubMenu {
         static let chevronSize: CGFloat = 20
         static let iconSize: CGFloat = 20
         static let trackingOptionKey = "option"
-        static let trackingBadgeVisibleKey = "badge_visible"
     }
 
     enum Localization {

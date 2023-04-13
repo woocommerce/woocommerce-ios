@@ -1,3 +1,4 @@
+import TestKit
 import XCTest
 import WordPressAuthenticator
 import Yosemite
@@ -5,9 +6,24 @@ import Yosemite
 
 /// Test cases for `AuthenticationManager`.
 final class AuthenticationManagerTests: XCTestCase {
+    private var navigationController: UINavigationController!
+    private let window = UIWindow(frame: UIScreen.main.bounds)
+
     override func setUp() {
-        WordPressAuthenticator.initializeAuthenticator()
         super.setUp()
+
+        window.makeKeyAndVisible()
+        navigationController = .init()
+        window.rootViewController = navigationController
+        WordPressAuthenticator.initializeAuthenticator()
+    }
+
+    override func tearDown() {
+        navigationController = nil
+        window.resignKey()
+        window.rootViewController = nil
+
+        super.tearDown()
     }
 
     /// We do not allow automatic WPCOM account sign-up if the user entered an email that is not
@@ -495,6 +511,44 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_active"] as? Bool))
         XCTAssertTrue(try XCTUnwrap(analyticsProvider.receivedProperties.first?["is_jetpack_connected"] as? Bool))
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["url_after_redirects"] as? String, siteInfo.url)
+    }
+
+    func test_it_presents_store_creation_flow_when_there_are_no_valid_stores() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true,
+                                                        isStoreCreationM2WithInAppPurchasesEnabled: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .synchronizeSites(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        let testSite = Site.fake().copy(isWooCommerceActive: false)
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: testSite)
+
+        let manager = AuthenticationManager(stores: stores,
+                                            storageManager: storage,
+                                            featureFlagService: featureFlagService,
+                                            purchasesManager: MockInAppPurchases(fetchProductsDuration: 0))
+
+        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)
+        let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
+
+        // When
+        manager.presentLoginEpilogue(in: navigationController,
+                                     for: credentials,
+                                     source: SignInSource.custom(source: LoggedOutStoreCreationCoordinator.Source.prologue.rawValue),
+                                     onDismiss: {})
+
+        // Then
+        waitUntil {
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
+        }
     }
 }
 

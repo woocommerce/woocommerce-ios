@@ -74,8 +74,38 @@ struct HubMenu: View {
                         description: "",
                         icon: .local(menu.icon),
                         chevron: .leading,
-                        tapHandler: nil)
+                        tapHandler: {
+
+                        // TODO: This should be done in the View Model
+                        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
+                            Constants.trackingOptionKey: menu.trackingOption,
+                            Constants.trackingBadgeVisibleKey: menu.badge.shouldBeRendered
+                        ])
+
+                        switch type(of: menu).id {
+                        case HubMenuViewModel.Payments.id:
+                            showingPayments = true
+                        case HubMenuViewModel.WoocommerceAdmin.id:
+                            showingWooCommerceAdmin = true
+                        case HubMenuViewModel.ViewStore.id:
+                            showingViewStore = true
+                        case HubMenuViewModel.Inbox.id:
+                            showingInbox = true
+                        case HubMenuViewModel.Reviews.id:
+                            showingReviews = true
+                        case HubMenuViewModel.Coupons.id:
+                            showingCoupons = true
+                        case HubMenuViewModel.InAppPurchases.id:
+                            showingIAPDebug = true
+                        case HubMenuViewModel.Upgrades.id:
+                            viewModel.presentUpgrades()
+                        default:
+                            break
+                        }
+
+                    })
                     .foregroundColor(Color(menu.iconColor))
+                    .accessibilityIdentifier(menu.accessibilityIdentifier)
                 }
             }
         }
@@ -90,99 +120,46 @@ struct HubMenu: View {
             // fall back method in case menu disabled state is not reset properly
             enableMenuItemTaps()
         }
+        .sheet(isPresented: $showingWooCommerceAdmin, onDismiss: enableMenuItemTaps) {
+            WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
+                                                          navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
+                                                          authenticated: viewModel.shouldAuthenticateAdminPage)) {
+                showingWooCommerceAdmin = false
+            }
+        }
+        .sheet(isPresented: $showingViewStore, onDismiss: enableMenuItemTaps) {
+            WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.storeURL,
+                                                          navigationTitle: HubMenuViewModel.Localization.viewStore,
+                                                          authenticated: false)) {
+                showingViewStore = false
+            }
+        }
+        NavigationLink(destination:
+                        InPersonPaymentsMenu()
+            .navigationTitle(InPersonPaymentsView.Localization.title),
+                       isActive: $showingPayments) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination:
+                        Inbox(viewModel: .init(siteID: viewModel.siteID)),
+                       isActive: $showingInbox) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination:
+                        ReviewsView(siteID: viewModel.siteID),
+                       isActive: $showingReviews) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
+            EmptyView()
+        }.hidden()
+        LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
+            EmptyView()
+        }
     }
-
-//        VStack {
-//            ScrollView {
-//                let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
-//
-//                LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
-//                    ForEach(viewModel.menuElements, id: \.id) { menu in
-//                        // Currently the badge is always zero, because we are not handling push notifications count
-//                        // correctly due to the first behavior described here p91TBi-66O:
-//                        // AppDelegate’s `application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`
-//                        // can be called twice for the same push notification when receiving it
-//                        // and tapping on it to open the app. This means that some push notifications are incrementing the badge number by 2, and some by 1.
-//                        HubMenuElement(image: menu.icon,
-//                                       imageColor: menu.iconColor,
-//                                       text: menu.title,
-//                                       badge: menu.badge,
-//                                       isDisabled: $shouldDisableItemTaps,
-//                                       onTapGesture: {
-//                            ServiceLocator.analytics.track(.hubMenuOptionTapped,
-//                                                           withProperties: [
-//                                                            Constants.trackingOptionKey: menu.trackingOption,
-//                                                            Constants.trackingBadgeVisibleKey: menu.badge.shouldBeRendered
-//                                                           ])
-//                            switch type(of: menu).id {
-//                            case HubMenuViewModel.Payments.id:
-//                                showingPayments = true
-//                            case HubMenuViewModel.WoocommerceAdmin.id:
-//                                showingWooCommerceAdmin = true
-//                            case HubMenuViewModel.ViewStore.id:
-//                                showingViewStore = true
-//                            case HubMenuViewModel.Inbox.id:
-//                                showingInbox = true
-//                            case HubMenuViewModel.Reviews.id:
-//                                showingReviews = true
-//                            case HubMenuViewModel.Coupons.id:
-//                                showingCoupons = true
-//                            case HubMenuViewModel.InAppPurchases.id:
-//                                showingIAPDebug = true
-//                            case HubMenuViewModel.Upgrades.id:
-//                                viewModel.presentUpgrades()
-//                            default:
-//                                break
-//                            }
-//                        }).accessibilityIdentifier(menu.accessibilityIdentifier)
-//                    }
-//                    .background(Color(.listForeground(modal: false)))
-//                    .cornerRadius(Constants.cornerRadius)
-//                    .padding([.bottom], Constants.padding)
-//                }
-//                .padding(Constants.padding)
-//                .background(Color(.listBackground))
-//            }
-//            .sheet(isPresented: $showingWooCommerceAdmin, onDismiss: enableMenuItemTaps) {
-//                WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
-//                                                              navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
-//                                                              authenticated: viewModel.shouldAuthenticateAdminPage)) {
-//                    showingWooCommerceAdmin = false
-//                }
-//            }
-//            .sheet(isPresented: $showingViewStore, onDismiss: enableMenuItemTaps) {
-//                WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.storeURL,
-//                                                              navigationTitle: HubMenuViewModel.Localization.viewStore,
-//                                                              authenticated: false)) {
-//                    showingViewStore = false
-//                }
-//            }
-//            NavigationLink(destination:
-//                            InPersonPaymentsMenu()
-//                            .navigationTitle(InPersonPaymentsView.Localization.title),
-//                           isActive: $showingPayments) {
-//                EmptyView()
-//            }.hidden()
-//            NavigationLink(destination:
-//                            Inbox(viewModel: .init(siteID: viewModel.siteID)),
-//                           isActive: $showingInbox) {
-//                EmptyView()
-//            }.hidden()
-//            NavigationLink(destination:
-//                            ReviewsView(siteID: viewModel.siteID),
-//                           isActive: $showingReviews) {
-//                EmptyView()
-//            }.hidden()
-//            NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
-//                EmptyView()
-//            }.hidden()
-//            NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
-//                EmptyView()
-//            }.hidden()
-//            LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
-//                EmptyView()
-//            }
-//        }
 
     /// Reset state to make the menu items tappable
     private func enableMenuItemTaps() {

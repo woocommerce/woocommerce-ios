@@ -82,8 +82,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                     "woocommerce_onboarding_profile": [
                         "industry": [
                             [
-                                "slug": profilerData.categoryGroup,
-                                "detail": profilerData.category
+                                "slug": profilerData.category
                             ].compactMapValues { $0 }
                         ],
                         "is_store_country_set": true,
@@ -178,7 +177,6 @@ public extension SiteCreationResponse {
 public struct SiteProfilerData {
     public let name: String
     public let category: String?
-    public let categoryGroup: String?
     public let sellingStatus: SellingStatus?
     public let sellingPlatforms: String?
     public let countryCode: String
@@ -197,13 +195,11 @@ public struct SiteProfilerData {
 
     public init(name: String,
                 category: String?,
-                categoryGroup: String?,
                 sellingStatus: SiteProfilerData.SellingStatus?,
                 sellingPlatforms: String?,
                 countryCode: String) {
         self.name = name
         self.category = category
-        self.categoryGroup = categoryGroup
         self.sellingStatus = sellingStatus
         self.sellingPlatforms = sellingPlatforms
         self.countryCode = countryCode

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-04 23:54:04+0000 */
+/* Translation-Revision-Date: 2023-04-11 22:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -268,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
+
+/* 24/7 support title feature on the Free Trial Summary Screen */
+"24\/7 support" = "Supporto 24\/7";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
@@ -945,6 +948,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Auto Services" = "Servizi automobilistici";
 
+/* Auto updates & backups title feature on the Free Trial Summary Screen */
+"Auto updates & backups" = "Backup e aggiornamenti automatici";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Auto-gestito su questo sito";
 
@@ -1401,7 +1407,8 @@ which should be translated separately and considered part of this sentence. */
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "Visibilità  del catalogo";
 
-/* Edit product categories screen - Screen title
+/* Display label for the composite product's component option type
+   Edit product categories screen - Screen title
    Filter product categories screen - Screen title
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
@@ -1618,6 +1625,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for completed order status. */
 "Completed" = "Operazione completata";
+
+/* Title for the list of component options in the Component Settings view */
+"Component Options" = "Opzioni componente";
+
+/* Title for the settings of a component in a composite product */
+"Component Settings" = "Impostazioni componente";
 
 /* Title for Components row in the product form screen.
    Title for the list of components in a composite product */
@@ -2185,6 +2198,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Predefinito";
 
+/* Title for the default component option field in the Component Settings view */
+"Default Option" = "Opzione predefinita";
+
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
@@ -2209,6 +2225,7 @@ which should be translated separately and considered part of this sentence. */
 "Describe your product to your future customers..." = "Descrivi il prodotto ai futuri clienti...";
 
 /* The navigation bar title of the Aztec editor screen.
+   Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Descrizione";
@@ -2465,7 +2482,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ebay" = "Ebay";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Ecommerce reports title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "Rapporti di eCommerce";
 
 /* Country option for a site address. */
@@ -2557,6 +2575,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
 "Email address" = "Indirizzo e-mail";
+
+/* Email marketing title feature on the Free Trial Summary Screen */
+"Email marketing" = "Marketing tramite e-mail";
 
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Nota e-mail al cliente";
@@ -2925,6 +2946,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Fast Food Restaurants" = "Fast food";
+
+/* Fast to launch title feature on the Free Trial Summary Screen */
+"Fast to launch" = "Veloce da lanciare";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -3836,6 +3860,9 @@ which should be translated separately and considered part of this sentence. */
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Avvia il debug di Wormholy";
 
+/* Main title for the free trial summary screen. */
+"Launch in days, grow for years" = "Lancio in pochi giorni, crescita per anni";
+
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Lancia il tuo negozio";
 
@@ -4334,7 +4361,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Più negozi";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Multiple payment options title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Opzioni di pagamento multiple";
 
 /* Industry option in the store creation category question. */
@@ -4488,6 +4516,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Nessun codice promozionale trovato";
 
+/* Text indicated that no card is needed for a free trial */
+"No credit card required." = "Nessuna carta di credito richiesta.";
+
 /* A error message when it's not possible to acquirethe Analytics Hub current selection range */
 "No current period available" = "Nessun periodo corrente disponibile";
 
@@ -4511,6 +4542,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "No need to wonder where that stampbook went" = "Non dovrai metterti alla ricerca di un francobollo";
+
+/* Placeholder when there are no component options to show in the Component Settings view */
+"No options selected" = "Nessuna opzione selezionata";
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "Nessun ordine selezionato";
@@ -4565,6 +4599,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option
+   Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
@@ -5103,6 +5138,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Verifica che il tuo ID Apple sia valido, quindi riprova. Per accettare i Termini di servizio di Apple è necessario un ID Apple valido";
 
+/* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"Please connect Jetpack through your admin page on a browser or contact support." = "Connetti Jetpack tramite la tua pagina di amministrazione su un browser o contatta il supporto.";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Connetti il negozio a Jetpack per permetterne l'accesso su questa app.";
 
@@ -5208,7 +5246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Riprova più tardi o contattaci per ricevere assistenza.";
 
-/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+/* Suggestion to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "Please try again or contact support if this error continues." = "Riprova o contatta il supporto se l'errore persiste.";
 
 /* Error message when Jetpack connection fails */
@@ -5309,13 +5347,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "Codice postale mancante";
 
-/* The text is followed by a WordPress.com logo on the store creation plan screen. */
+/* Text next to the WPCom logo in the free trial summary screen
+   The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Con tecnologia";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Utilizza Automattic";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Premium Themes title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "Temi premium";
 
 /* Title of in-progress modal when preparing for printing customs invoice */
@@ -5453,9 +5493,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "Link del prodotto";
 
-/* Cell title on beta features screen to enable Product Multi-Selection */
-"Product Multi-Selection" = "Selezione multipla dei prodotti";
-
 /* Title of the view containing a single Product Review */
 "Product Review" = "Recensione prodotto";
 
@@ -5498,6 +5535,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product type" = "Tipo di prodotto";
 
 /* Description for Top Performers left column header
+   Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title for the products card at the top of the top performers section in dashboard stats.
@@ -6279,6 +6317,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Condividi il link di pagamento";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Tap to Pay on iPhone Feedback" = "Condividi il feedback su Tocca per pagare su iPhone";
+
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "Condividi URL";
 
@@ -6373,7 +6414,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "Etichetta di spedizione acquistata.";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Shipping labels title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Shipping labels" = "Etichette di spedizione";
 
 /* Header text when printing multiple newly purchased shipping labels */
@@ -6487,6 +6529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "L'indirizzo del sito deve contenere almeno 4 caratteri.";
 
+/* Site security title feature on the Free Trial Summary Screen */
+"Site security" = "Sicurezza del sito";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
    The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
@@ -6506,6 +6551,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "Abbreviazione";
+
+/* Social advertising title feature on the Free Trial Summary Screen */
+"Social advertising" = "Pubblicità sui social";
 
 /* Industry option in the store creation category question. */
 "Software" = "Software";
@@ -6758,6 +6806,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "Abbonamenti e giftcard";
+
+/* Subscriptions & product kits title feature on the Free Trial Summary Screen */
+"Subscriptions & product kits" = "Kit di prodotti e abbonamenti";
 
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
@@ -7037,9 +7088,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Termini di Servizio";
-
-/* Cell description on beta features screen to enable Product Multi-Selection */
-"Test out Product Multi-Selection as we get ready to launch" = "Prova la Selezione multipla dei prodotti mentre ci prepariamo al lancio";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Prova gli acquisti in-app mentre ci prepariamo al lancio";
@@ -7357,11 +7405,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "Si è verificato un problema durante il tentativo di caricamento dei plugin. Controlla la connessione Internet e riprova.";
 
-/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+/* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Si è verificato un errore durante la comunicazione con il sito.";
 
 /* Message to be displayed when the user encounters a generic error during Jetpack setup */
 "There was an error completing your request." = "Si è verificato un errore durante il completamento della richiesta.";
+
+/* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"There was an error connecting your site to Jetpack." = "Si è verificato un errore durante la connessione del tuo sito a Jetpack.";
 
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "Si è verificato un errore durante la creazione dell'ordine";
@@ -7692,6 +7743,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Prova di nuovo la ricezione";
 
+/* Text in the button to continue with the free trial plan */
+"Try For Free" = "Prova gratis";
+
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Prova di nuovo l'installazione";
 
@@ -7718,6 +7772,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Prova a connetterti di nuovo per accedere al tuo negozio.";
+
+/* Title for the features list in the free trial Summary Screen */
+"Try it free for 14 days." = "Effettua la prova gratuita per 14 giorni.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Prova ora";
@@ -8011,7 +8068,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "Illimitato";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen.
+   Unlimited products title feature on the Free Trial Summary Screen */
 "Unlimited products" = "Prodotti illimitati";
 
 /* Back button title when the product doesn't have a name */
@@ -8418,6 +8476,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "Sappiamo che è essenziale per la tua attività.";
 
+/* Main description for the free trial summary screen */
+"We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com." = "Offriamo tutto il necessario per costruire e far crescere un negozio online, con tecnologia WooCommerce e ospitato su WordPress.com.";
+
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Utilizziamo altri strumenti di tracciamento, inclusi alcuni di terze parti. Leggi le informazioni sugli strumenti e come utilizzarli.";
 
@@ -8642,6 +8703,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "Puoi modificare i prodotti in pacchetto nella bacheca web.";
+
+/* Info notice at the bottom of the component settings screen */
+"You can edit component settings in the web dashboard." = "Puoi modificare le impostazioni dei componenti nella bacheca web.";
 
 /* Info notice at the bottom of the components screen */
 "You can edit components in the web dashboard." = "Puoi modificare i componenti nella bacheca web.";

@@ -54,7 +54,7 @@ struct ProductVariationSelector: View {
                                 .accessibilityHint(Localization.productRowAccessibilityHint)
                                 .padding(Constants.defaultPadding)
                                 .onTapGesture {
-                                    viewModel.selectVariation(rowViewModel.productOrVariationID)
+                                    viewModel.changeSelectionStateForVariation(with: rowViewModel.productOrVariationID)
                                     if !multipleSelectionsEnabled {
                                         isPresented.toggle()
                                     }

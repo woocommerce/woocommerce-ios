@@ -1040,13 +1040,12 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
-    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_a_different_site_returns_false() throws {
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_using_legacy_code_for_a_different_site_returns_false() throws {
         // Given
         let siteIDA: Int64 = 1
         let siteIDB: Int64 = 2
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteIDA)
-        subject?.onAction(updateAction)
+        try generalAppSettings?.setValue([siteIDA], for: \.sitesWithAtLeastOneIPPTransactionFinished)
 
         // When
         let result: Bool = waitFor { promise in
@@ -1060,12 +1059,50 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
-    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_that_site_returns_true() throws {
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_using_legacy_code_for_that_site_returns_true() throws {
         // Given
         let siteID: Int64 = 1
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
-        subject?.onAction(updateAction)
+        try generalAppSettings?.setValue([siteID], for: \.sitesWithAtLeastOneIPPTransactionFinished)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_a_different_site_returns_false() throws {
+        // Given
+        let siteIDA: Int64 = 1
+        let siteIDB: Int64 = 2
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let action = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteIDA, cardReaderType: .other)
+        subject?.onAction(action)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteIDB) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_via_first_transactions_for_that_site_returns_true() throws {
+        // Given
+        let siteID: Int64 = 1
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let action = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .other)
+        subject?.onAction(action)
 
         // When
         let result: Bool = waitFor { promise in

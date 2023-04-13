@@ -205,7 +205,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice, ProductVariationSelectorViewModel.NoticeFactory.productVariationSyncNotice(retryAction: {}))
     }
 
-    func test_selectVariation_invokes_onVariationSelected_closure_for_existing_variation() {
+    func test_selectVariation_invokes_onVariationSelectionStateChanged_closure_for_existing_variation() {
         // Given
         var selectedVariationID: Int64?
         var selectedProductID: Int64?
@@ -218,13 +218,13 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
                                                             product: product,
                                                             storageManager: storageManager,
-                                                            onVariationSelected: { variation, product in
+                                                            onVariationSelectionStateChanged: { variation, product in
             selectedVariationID = variation.productVariationID
             selectedProductID = product.productID
         })
 
         // When
-        viewModel.selectVariation(productVariation.productVariationID)
+        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID)
 
         // Then
         XCTAssertEqual(selectedVariationID, productVariation.productVariationID)
@@ -242,7 +242,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
                                                           storageManager: storageManager)
 
         // When
-        viewModel.selectVariation(productVariation.productVariationID)
+        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID)
 
         // Then
         let row = viewModel.productVariationRows.first(where: { $0.productOrVariationID == productVariation.productVariationID })
@@ -261,7 +261,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
                                                           storageManager: storageManager)
 
         // When
-        viewModel.selectVariation(productVariation.productVariationID)
+        viewModel.changeSelectionStateForVariation(with: productVariation.productVariationID)
         // Confidence check
         let row = viewModel.productVariationRows.first(where: { $0.productOrVariationID == productVariation.productVariationID })
         XCTAssertEqual(row?.selectedState, .selected)

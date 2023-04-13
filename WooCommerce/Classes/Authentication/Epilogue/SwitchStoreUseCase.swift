@@ -4,10 +4,6 @@ import protocol Storage.StorageManagerType
 
 protocol SwitchStoreUseCaseProtocol {
     func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void)
-
-    /// Returns available WooCommerce stores from storage
-    ///
-    func getAvailableStores() -> [Site]
 }
 
 /// Simplifies and decouples the store picker from the caller
@@ -29,14 +25,6 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     init(stores: StoresManager, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores
         self.storageManager = storageManager
-    }
-
-    /// Returns available WooCommerce stores from storage
-    ///
-    func getAvailableStores() -> [Site] {
-        refreshStoredSites()
-
-        return wooCommerceSites
     }
 
     /// The async version of `switchStore` that wraps the completion block version.

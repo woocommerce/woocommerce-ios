@@ -542,6 +542,29 @@ private extension AuthenticationManager {
 
 // MARK: - Private helpers
 private extension AuthenticationManager {
+    @MainActor
+    func autoSelectStoreOrPresentStoreCreationFlow(source: SignInSource? = nil,
+                                                   in navigationController: UINavigationController) async {
+        // If the user is from the store creation flow
+        guard case .custom(let source) = source,
+              let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
+              storeCreationSource == .prologue else {
+            return
+        }
+
+        // Proceed into the app if there is only one valid store available
+        let isSwitchStoreSuccess = await storePickerCoordinator?.switchStoreIfOnlyOneStoreIsAvailable()
+
+        // Start the store creation process because the user does
+        // not have any existing stores
+        if isSwitchStoreSuccess == false {
+            let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
+                                                       navigationController: navigationController)
+            self.storeCreationCoordinator = coordinator
+            coordinator.start()
+        }
+    }
+
     func isJetpackInvalidForSelfHostedSite(url: String) -> Bool {
         if let site = currentSelfHostedSite, site.url == url,
             (!site.hasJetpack || !site.isJetpackActive) {
@@ -605,25 +628,9 @@ private extension AuthenticationManager {
             storePickerCoordinator?.start()
         }
 
-        // If the user is from the store creation flow
-        if case .custom(let source) = source,
-           let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
-           storeCreationSource == .prologue {
-            Task { @MainActor in
-                do {
-                    // Proceed into the app if there is only one valid store available
-                    try await storePickerCoordinator?.switchStoreIfOnlyOneStoreIsAvailable()
-                } catch StorePickerCoordinator.StoreSelectionError.noStoresAvailable {
-                    // Start the store creation process because the user does
-                    // not have any existing stores
-                    let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
-                                                               navigationController: navigationController)
-                    self.storeCreationCoordinator = coordinator
-                    coordinator.start()
-                } catch {
-                    // Do nothing as the store picker is already presented
-                }
-            }
+        Task { @MainActor in
+            await autoSelectStoreOrPresentStoreCreationFlow(source: source,
+                                                            in: navigationController)
         }
     }
 

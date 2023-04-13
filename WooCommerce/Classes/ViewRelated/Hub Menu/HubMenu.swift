@@ -46,6 +46,7 @@ struct HubMenu: View {
                     titleAccessibilityID: "store-title",
                     descriptionAccessibilityID: "store-url",
                     chevronAccessibilityID: "switch-store-button")
+                .lineLimit(1)
             }
 
             // Settings Section
@@ -254,12 +255,10 @@ private extension HubMenu {
                 VStack(alignment: .leading, spacing: HubMenu.Constants.topBarSpacing) {
                     Text(title)
                         .headlineStyle()
-                        .lineLimit(1)
                         .accessibilityIdentifier(titleAccessibilityID ?? "")
 
                     Text(description)
                         .subheadlineStyle()
-                        .lineLimit(1)
                         .accessibilityIdentifier(descriptionAccessibilityID ?? "")
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

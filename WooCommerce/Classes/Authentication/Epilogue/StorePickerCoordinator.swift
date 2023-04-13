@@ -193,7 +193,7 @@ private extension StorePickerCoordinator {
 
     @MainActor
     func switchStore(with storeID: Int64) async {
-        return await withCheckedContinuation { continuation in
+        await withCheckedContinuation { continuation in
             switchStore(with: storeID) {
                 continuation.resume(returning: ())
             }

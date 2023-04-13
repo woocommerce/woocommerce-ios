@@ -3,19 +3,19 @@ import enum WordPressAuthenticator.SignInSource
 import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Hosting controller that wraps an `AccountCreationForm`.
-final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {
+final class AccountCreationEmailFormHostingController: UIHostingController<AccountCreationEmailForm> {
     private let analytics: Analytics
 
-    init(viewModel: AccountCreationFormViewModel,
+    init(viewModel: AccountCreationEmailFormViewModel,
          signInSource: SignInSource,
          analytics: Analytics = ServiceLocator.analytics,
-         completion: @escaping () -> Void) {
+         completion: @escaping (String) -> Void) {
         self.analytics = analytics
-        super.init(rootView: AccountCreationForm(viewModel: viewModel))
+        super.init(rootView: AccountCreationEmailForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController.
-        rootView.completion = {
-            completion()
+        rootView.completion = { email in
+            completion(email)
         }
 
         rootView.loginButtonTapped = { [weak self] in
@@ -39,14 +39,10 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 }
 
 /// A form that allows the user to create a WPCOM account with an email and password.
-struct AccountCreationForm: View {
-    private enum Field: Hashable {
-        case email
-        case password
-    }
+struct AccountCreationEmailForm: View {
 
     /// Triggered when the account is created and the app is authenticated.
-    var completion: (() -> Void) = {}
+    var completion: ((String) -> Void) = { _ in }
 
     /// Triggered when the user taps on the login CTA.
     var loginButtonTapped: (() -> Void) = {}
@@ -54,14 +50,14 @@ struct AccountCreationForm: View {
     /// Triggered when the user enters an email that is associated with an existing WPCom account.
     var existingEmailHandler: ((String) -> Void) = { _ in }
 
-    @ObservedObject private var viewModel: AccountCreationFormViewModel
+    @ObservedObject private var viewModel: AccountCreationEmailFormViewModel
 
     @State private var isPerformingTask = false
     @State private var tosURL: URL?
 
-    @FocusState private var focusedField: Field?
+    @FocusState private var isFocused: Bool
 
-    init(viewModel: AccountCreationFormViewModel) {
+    init(viewModel: AccountCreationEmailFormViewModel) {
         self.viewModel = viewModel
     }
 
@@ -90,25 +86,11 @@ struct AccountCreationForm: View {
                                                                   text: $viewModel.email,
                                                                   isSecure: false,
                                                                   errorMessage: viewModel.emailErrorMessage,
-                                                                  isFocused: focusedField == .email))
+                                                                  isFocused: isFocused))
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
-                    .focused($focusedField, equals: .email)
+                    .focused($isFocused)
                     .disabled(isPerformingTask)
-
-                    // Password field.
-                    AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
-                                                                  placeholder: Localization.passwordFieldPlaceholder,
-                                                                  keyboardType: .default,
-                                                                  text: $viewModel.password,
-                                                                  isSecure: true,
-                                                                  errorMessage: viewModel.passwordErrorMessage,
-                                                                  isFocused: focusedField == .password))
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .focused($focusedField, equals: .password)
-                    .disabled(isPerformingTask)
-                    .renderedIf(viewModel.shouldShowPasswordField)
 
                     // Terms of Service link.
                     AttributedText(tosAttributedText, enablesLinkUnderline: true)
@@ -133,33 +115,26 @@ struct AccountCreationForm: View {
             VStack {
                 Button(Localization.submitButtonTitle.localizedCapitalized) {
                     Task { @MainActor in
-                        guard viewModel.existingEmailFound == false else {
-                            existingEmailHandler(viewModel.email)
-                            return
-                        }
                         isPerformingTask = true
-                        let createAccountCompleted = (try? await viewModel.createAccount()) != nil
-                        if createAccountCompleted {
-                            completion()
+                        let accountExists = await viewModel.checkIfWPComAccountExists()
+                        if accountExists {
+                            existingEmailHandler(viewModel.email)
+                        } else {
+                            completion(viewModel.email)
                         }
                         isPerformingTask = false
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPerformingTask))
-                .disabled(!viewModel.submitButtonEnabled || isPerformingTask)
+                .disabled(!viewModel.isEmailValid || isPerformingTask)
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
         }
-        .onChange(of: viewModel.existingEmailFound) { found in
-            if found {
-                existingEmailHandler(viewModel.email)
-            }
-        }
     }
 }
 
-private extension AccountCreationForm {
+private extension AccountCreationEmailForm {
     var tosAttributedText: NSAttributedString {
         let result = NSMutableAttributedString(
             string: .localizedStringWithFormat(Localization.tosFormat, Localization.tos),
@@ -191,8 +166,6 @@ private extension AccountCreationForm {
         static let loginButtonTitle = NSLocalizedString("Log in", comment: "Title of the login button on the account creation form.")
         static let emailFieldTitle = NSLocalizedString("Your email address", comment: "Title of the email field on the account creation form.")
         static let emailFieldPlaceholder = NSLocalizedString("Email address", comment: "Placeholder of the email field on the account creation form.")
-        static let passwordFieldTitle = NSLocalizedString("Choose a password", comment: "Title of the password field on the account creation form.")
-        static let passwordFieldPlaceholder = NSLocalizedString("Password", comment: "Placeholder of the password field on the account creation form.")
         static let tosFormat = NSLocalizedString("By continuing, you agree to our %1$@.", comment: "Terms of service format on the account creation form.")
         static let tos = NSLocalizedString("Terms of Service", comment: "Terms of service link on the account creation form.")
         static let submitButtonTitle = NSLocalizedString("Continue", comment: "Title of the submit button on the account creation form.")
@@ -205,12 +178,12 @@ private extension AccountCreationForm {
     }
 }
 
-struct AccountCreationForm_Previews: PreviewProvider {
+struct AccountCreationEmailForm_Previews: PreviewProvider {
     static var previews: some View {
-        AccountCreationForm(viewModel: .init())
+        AccountCreationEmailForm(viewModel: .init())
             .preferredColorScheme(.light)
 
-        AccountCreationForm(viewModel: .init())
+        AccountCreationEmailForm(viewModel: .init())
             .preferredColorScheme(.dark)
             .dynamicTypeSize(.xxxLarge)
     }

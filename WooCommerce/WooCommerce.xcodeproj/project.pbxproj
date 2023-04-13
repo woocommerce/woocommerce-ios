@@ -466,8 +466,8 @@
 		02DFECE725EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DFECE625EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift */; };
 		02E19B9C284743A40010B254 /* ProductImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E19B9B284743A40010B254 /* ProductImageUploader.swift */; };
 		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */; };
-		02E3B62829026C8F007E0F13 /* AccountCreationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */; };
-		02E3B62D290631B3007E0F13 /* AccountCreationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62C290631B3007E0F13 /* AccountCreationFormViewModel.swift */; };
+		02E3B62829026C8F007E0F13 /* AccountCreationPasswordForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62729026C8F007E0F13 /* AccountCreationPasswordForm.swift */; };
+		02E3B62D290631B3007E0F13 /* AccountCreationPasswordFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62C290631B3007E0F13 /* AccountCreationPasswordFormViewModel.swift */; };
 		02E3B62F2906322B007E0F13 /* AuthenticationFormFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */; };
 		02E3B63129066858007E0F13 /* StoreCreationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B63029066858007E0F13 /* StoreCreationCoordinator.swift */; };
 		02E4908929AE49B9005942AE /* TopPerformersEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */; };
@@ -1883,6 +1883,8 @@
 		DE126D0B26CA2331007F901D /* ValidationErrorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0A26CA2331007F901D /* ValidationErrorRow.swift */; };
 		DE126D0D26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0C26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift */; };
 		DE126D0F26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE126D0E26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift */; };
+		DE17865929E7C7BC004D4E75 /* AccountCreationEmailForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE17865829E7C7BC004D4E75 /* AccountCreationEmailForm.swift */; };
+		DE17865B29E7C9FF004D4E75 /* AccountCreationEmailFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE17865A29E7C9FF004D4E75 /* AccountCreationEmailFormViewModel.swift */; };
 		DE19BB0C26C2688B00AB70D9 /* SelectionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB0B26C2688B00AB70D9 /* SelectionList.swift */; };
 		DE19BB1226C3811100AB70D9 /* LearnMoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */; };
 		DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */; };
@@ -2677,8 +2679,8 @@
 		02DFECE625EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationInfoViewController.swift; sourceTree = "<group>"; };
 		02E19B9B284743A40010B254 /* ProductImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageUploader.swift; sourceTree = "<group>"; };
 		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommand.swift; sourceTree = "<group>"; };
-		02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationForm.swift; sourceTree = "<group>"; };
-		02E3B62C290631B3007E0F13 /* AccountCreationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationFormViewModel.swift; sourceTree = "<group>"; };
+		02E3B62729026C8F007E0F13 /* AccountCreationPasswordForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationPasswordForm.swift; sourceTree = "<group>"; };
+		02E3B62C290631B3007E0F13 /* AccountCreationPasswordFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationPasswordFormViewModel.swift; sourceTree = "<group>"; };
 		02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationFormFieldView.swift; sourceTree = "<group>"; };
 		02E3B63029066858007E0F13 /* StoreCreationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCoordinator.swift; sourceTree = "<group>"; };
 		02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersEmptyView.swift; sourceTree = "<group>"; };
@@ -4110,6 +4112,8 @@
 		DE126D0A26CA2331007F901D /* ValidationErrorRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationErrorRow.swift; sourceTree = "<group>"; };
 		DE126D0C26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		DE126D0E26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormInputViewModelTests.swift; sourceTree = "<group>"; };
+		DE17865829E7C7BC004D4E75 /* AccountCreationEmailForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCreationEmailForm.swift; sourceTree = "<group>"; };
+		DE17865A29E7C9FF004D4E75 /* AccountCreationEmailFormViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCreationEmailFormViewModel.swift; sourceTree = "<group>"; };
 		DE19BB0B26C2688B00AB70D9 /* SelectionList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionList.swift; sourceTree = "<group>"; };
 		DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreRow.swift; sourceTree = "<group>"; };
 		DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetails.swift; sourceTree = "<group>"; };
@@ -5556,7 +5560,8 @@
 		02E3B62629026C83007E0F13 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
-				02E3B62729026C8F007E0F13 /* AccountCreationForm.swift */,
+				DE17865829E7C7BC004D4E75 /* AccountCreationEmailForm.swift */,
+				02E3B62729026C8F007E0F13 /* AccountCreationPasswordForm.swift */,
 				02E3B62E2906322B007E0F13 /* AuthenticationFormFieldView.swift */,
 			);
 			path = Authentication;
@@ -5565,7 +5570,8 @@
 		02E3B62B290631A5007E0F13 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
-				02E3B62C290631B3007E0F13 /* AccountCreationFormViewModel.swift */,
+				DE17865A29E7C9FF004D4E75 /* AccountCreationEmailFormViewModel.swift */,
+				02E3B62C290631B3007E0F13 /* AccountCreationPasswordFormViewModel.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -10975,7 +10981,7 @@
 				2688643D25D470C000821BA5 /* EditAttributesViewModel.swift in Sources */,
 				31C21FA426D9949000916E2E /* SeveralReadersFoundViewController.swift in Sources */,
 				45E1482527736D1E0099CF23 /* SettingsView.swift in Sources */,
-				02E3B62829026C8F007E0F13 /* AccountCreationForm.swift in Sources */,
+				02E3B62829026C8F007E0F13 /* AccountCreationPasswordForm.swift in Sources */,
 				CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */,
 				DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */,
 				B6E851F3276320C70041D1BA /* RefundFeesDetailsViewModel.swift in Sources */,
@@ -11163,6 +11169,7 @@
 				B555530F21B57DE700449E71 /* ApplicationAdapter.swift in Sources */,
 				025C00682550DE4700FAC222 /* ProductSKUInputScannerViewController.swift in Sources */,
 				456BEFB626D912EC002AC16C /* AuthenticatedWebView.swift in Sources */,
+				DE17865B29E7C9FF004D4E75 /* AccountCreationEmailFormViewModel.swift in Sources */,
 				310D1B482734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift in Sources */,
 				AE1CC33829129A010021C8EF /* LinkBehavior.swift in Sources */,
 				26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */,
@@ -11404,7 +11411,7 @@
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,
 				03E471D829424CF9001A58AD /* CardPresentModalBuiltInReaderProcessing.swift in Sources */,
 				4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */,
-				02E3B62D290631B3007E0F13 /* AccountCreationFormViewModel.swift in Sources */,
+				02E3B62D290631B3007E0F13 /* AccountCreationPasswordFormViewModel.swift in Sources */,
 				0304E36628BE1EED00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				26E0ADF12631D94D00A5EB3B /* TopBannerWrapperView.swift in Sources */,
@@ -11927,6 +11934,7 @@
 				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
 				02564A8A246CDF6100D6DB2A /* ProductsTopBannerFactory.swift in Sources */,
 				D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */,
+				DE17865929E7C7BC004D4E75 /* AccountCreationEmailForm.swift in Sources */,
 				037D270D28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift in Sources */,
 				AEA3F90D27BE76B300B9F555 /* ShippingLineDetails.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,

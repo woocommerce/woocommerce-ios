@@ -9,45 +9,28 @@ import protocol Yosemite.StoresManager
 import class WordPressShared.EmailFormatValidator
 
 /// View model for `AccountCreationForm` view.
-final class AccountCreationFormViewModel: ObservableObject {
-    /// Email input.
-    @Published var email: String = ""
-    /// An error can come from the WPCOM backend, when the email is invalid or already exists.
-    @Published private(set) var emailErrorMessage: String?
-    /// Local validation on the email field.
-    @Published private var isEmailValid: Bool = false
+final class AccountCreationPasswordFormViewModel: ObservableObject {
 
     /// Password input.
     @Published var password: String = ""
     /// An error can come from the WPCOM backend, when the password is too simple.
     @Published private(set) var passwordErrorMessage: String?
     /// Local validation on the password field.
-    @Published private var isPasswordValid: Bool = false
+    @Published private(set) var isPasswordValid: Bool = false
 
-    /// Whether the password field should be present.
-    @Published private(set) var shouldShowPasswordField: Bool = false
-
-    @Published private(set) var submitButtonEnabled: Bool = false
-
-    /// Whether the user attempts to sign up with an email that is associated with an existing WPCom account.
-    @Published private(set) var existingEmailFound: Bool = false
-
+    /// Email input.
+    private let email: String
     private let stores: StoresManager
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(debounceDuration: Double = Constants.fieldDebounceDuration,
+    init(email: String,
+         debounceDuration: Double = Constants.fieldDebounceDuration,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
+        self.email = email
         self.stores = stores
         self.analytics = analytics
-
-        $email
-            .removeDuplicates()
-            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
-            .sink { [weak self] email in
-                self?.validateEmail(email)
-            }.store(in: &subscriptions)
 
         $password
             .removeDuplicates()
@@ -56,15 +39,6 @@ final class AccountCreationFormViewModel: ObservableObject {
                 self?.validatePassword(password)
             }.store(in: &subscriptions)
 
-        $shouldShowPasswordField
-            .combineLatest($isEmailValid, $isPasswordValid)
-            .map { (shouldShowPasswordField, isEmailValid, isPasswordValid) -> Bool in
-                guard shouldShowPasswordField else {
-                    return isEmailValid
-                }
-                return isEmailValid && isPasswordValid
-            }
-            .assign(to: &$submitButtonEnabled)
     }
 
     /// Creates a WPCOM account with the email and password.
@@ -92,7 +66,7 @@ final class AccountCreationFormViewModel: ObservableObject {
     }
 }
 
-private extension AccountCreationFormViewModel {
+private extension AccountCreationPasswordFormViewModel {
 
     @MainActor
     func handleSuccess(data: CreateAccountResult) async {
@@ -107,16 +81,8 @@ private extension AccountCreationFormViewModel {
     @MainActor
     func handleFailure(error: CreateAccountError) {
         switch error {
-        case .emailExists:
-            existingEmailFound = true
-        case .invalidEmail:
-            emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
-            if shouldShowPasswordField {
-                passwordErrorMessage = message ?? Localization.passwordError
-            } else {
-                shouldShowPasswordField = true
-            }
+            passwordErrorMessage = message ?? Localization.passwordError
 
         default:
             break
@@ -124,20 +90,14 @@ private extension AccountCreationFormViewModel {
     }
 }
 
-private extension AccountCreationFormViewModel {
-    func validateEmail(_ email: String) {
-        isEmailValid = EmailFormatValidator.validate(string: email)
-        existingEmailFound = false
-        emailErrorMessage = nil
-    }
-
+private extension AccountCreationPasswordFormViewModel {
     func validatePassword(_ password: String) {
         isPasswordValid = password.count >= 6
         passwordErrorMessage = nil
     }
 }
 
-private extension AccountCreationFormViewModel {
+private extension AccountCreationPasswordFormViewModel {
     enum Constants {
         static let fieldDebounceDuration = 0.3
     }

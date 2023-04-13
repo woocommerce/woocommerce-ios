@@ -26,8 +26,22 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
     }
 
     func start() {
-        let accountCreationController = AccountCreationFormHostingController(
+        let accountCreationController = AccountCreationEmailFormHostingController(
             viewModel: .init(),
+            signInSource: .custom(source: source.rawValue),
+            analytics: analytics
+        ) { [weak self] email in
+            guard let self else { return }
+            self.showPasswordForm(email: email)
+        }
+        navigationController.show(accountCreationController, sender: self)
+    }
+}
+
+private extension LoggedOutStoreCreationCoordinator {
+    func showPasswordForm(email: String) {
+        let accountCreationController = AccountCreationPasswordFormHostingController(
+            viewModel: .init(email: email),
             signInSource: .custom(source: source.rawValue),
             analytics: analytics
         ) { [weak self] in
@@ -36,9 +50,7 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
         }
         navigationController.show(accountCreationController, sender: self)
     }
-}
 
-private extension LoggedOutStoreCreationCoordinator {
     func startStoreCreation(in navigationController: UINavigationController) {
         // Shows the store picker first, so that after dismissal of the store creation view it goes back to the store picker.
         let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLogin(source: source))

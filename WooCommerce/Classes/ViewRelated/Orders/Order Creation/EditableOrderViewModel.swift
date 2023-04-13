@@ -195,10 +195,13 @@ final class EditableOrderViewModel: ObservableObject {
             }, onAllSelectionsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearAllSelectedItems()
-                self.syncClearSelectionState()
+                self.trackClearAllSelectedItemsTapped()
             }, onSelectedVariationsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearSelectedVariations()
+            }, onCloseButtonTapped: { [weak self] in
+                guard let self = self else { return }
+                self.syncOrderItemSelectionStateOnDismiss()
             })
     }()
 
@@ -367,9 +370,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Clears selected products and variations
     ///
     private func clearAllSelectedItems() {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .product))
         selectedProducts.removeAll()
         selectedProductVariations.removeAll()
+    }
+
+    private func trackClearAllSelectedItemsTapped() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .product))
     }
 
     /// Clears selected variations
@@ -377,6 +383,13 @@ final class EditableOrderViewModel: ObservableObject {
     private func clearSelectedVariations() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
+    }
+
+    /// Synchronizes the item selection state by clearing all items, then retrieving the latest saved state
+    ///
+    func syncOrderItemSelectionStateOnDismiss() {
+        clearAllSelectedItems()
+        syncInitialSelectedState()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -1216,17 +1229,6 @@ private extension EditableOrderViewModel {
                     selectedProducts.append(product)
                 }
             }
-        }
-    }
-
-    /// Syncs initial selected state for all items in the Order when clearing selections
-    ///
-    func syncClearSelectionState() {
-        if flow == .creation {
-            syncInitialSelectedState()
-        } else {
-            selectedProducts = []
-            selectedProductVariations = []
         }
     }
 

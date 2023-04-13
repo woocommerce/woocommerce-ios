@@ -146,6 +146,8 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private let onSelectedVariationsCleared: (() -> Void)?
 
+    private let onCloseButtonTapped: (() -> Void)?
+
     /// Initializer for single selection
     ///
     init(siteID: Int64,
@@ -160,7 +162,8 @@ final class ProductSelectorViewModel: ObservableObject {
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
-         onSelectedVariationsCleared: (() -> Void)? = nil) {
+         onSelectedVariationsCleared: (() -> Void)? = nil,
+         onCloseButtonTapped: (() -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -174,6 +177,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.purchasableItemsOnly = purchasableItemsOnly
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
+        self.onCloseButtonTapped = onCloseButtonTapped
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -193,7 +197,8 @@ final class ProductSelectorViewModel: ObservableObject {
          toggleAllVariationsOnSelection: Bool = true,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
-         onSelectedVariationsCleared: (() -> Void)? = nil) {
+         onSelectedVariationsCleared: (() -> Void)? = nil,
+         onCloseButtonTapped: (() -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -207,6 +212,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.purchasableItemsOnly = purchasableItemsOnly
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
+        self.onCloseButtonTapped = onCloseButtonTapped
 
         configureSyncingCoordinator()
         configureProductsResultsController()
@@ -311,6 +317,12 @@ final class ProductSelectorViewModel: ObservableObject {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: allIDs.count))
         onMultipleSelectionCompleted?(allIDs)
+    }
+
+    /// Triggers completion closure when the close button is tapped
+    ///
+    func closeButtonTapped() {
+        onCloseButtonTapped?()
     }
 
     /// Unselect all items.

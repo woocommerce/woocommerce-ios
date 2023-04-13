@@ -218,6 +218,7 @@ extension HubMenuViewModel {
         static var id = "settings"
 
         let title: String = Localization.settings
+        let description: String = Localization.settingsDescription
         let icon: UIImage = .cogImage
         let iconColor: UIColor = .primary
         var badge: HubMenuBadgeType = .number(number: 0)
@@ -230,6 +231,7 @@ extension HubMenuViewModel {
         static var id = "payments"
 
         let title: String = Localization.payments
+        let description: String = Localization.paymentsDescription
         let icon: UIImage = .walletImage
         let iconColor: UIColor = .withColorStudio(.orange)
         var badge: HubMenuBadgeType = .number(number: 0)
@@ -241,6 +243,7 @@ extension HubMenuViewModel {
         static var id = "woocommerceAdmin"
 
         let title: String = Localization.woocommerceAdmin
+        let description: String = Localization.woocommerceAdminDescription
         let icon: UIImage = .wordPressLogoImage
         let iconColor: UIColor = .wooBlue
         let badge: HubMenuBadgeType = .number(number: 0)
@@ -252,6 +255,7 @@ extension HubMenuViewModel {
         static var id = "viewStore"
 
         let title: String = Localization.viewStore
+        let description: String = Localization.viewStoreDescription
         let icon: UIImage = .storeImage
         let iconColor: UIColor = .accent
         let badge: HubMenuBadgeType = .number(number: 0)
@@ -263,6 +267,7 @@ extension HubMenuViewModel {
         static var id = "inbox"
 
         let title: String = Localization.inbox
+        let description: String = ""
         let icon: UIImage = .mailboxImage
         let iconColor: UIColor = .withColorStudio(.blue, shade: .shade40)
         let badge: HubMenuBadgeType = .number(number: 0)
@@ -274,6 +279,7 @@ extension HubMenuViewModel {
         static var id = "coupons"
 
         let title: String = Localization.coupon
+        let description: String = ""
         let icon: UIImage = .couponImage
         let iconColor: UIColor = UIColor(light: .withColorStudio(.green, shade: .shade30),
                                          dark: .withColorStudio(.green, shade: .shade50))
@@ -286,6 +292,7 @@ extension HubMenuViewModel {
         static var id = "reviews"
 
         let title: String = Localization.reviews
+        let description: String = Localization.reviewsDescription
         let icon: UIImage = .starImage(size: 24.0)
         let iconColor: UIColor = .primary
         let badge: HubMenuBadgeType = .number(number: 0)
@@ -297,6 +304,7 @@ extension HubMenuViewModel {
         static var id = "iap"
 
         let title: String = "[Debug] IAP"
+        let description: String = "Debug your inApp Purchases"
         let icon: UIImage = UIImage(systemName: "ladybug.fill")!
         let iconColor: UIColor = .red
         let badge: HubMenuBadgeType = .number(number: 0)
@@ -308,6 +316,7 @@ extension HubMenuViewModel {
         static var id = "upgrades"
 
         let title: String = Localization.upgrades
+        let description: String = Localization.upgradesDescription
         let icon: UIImage = .iconBolt
         let iconColor: UIColor = .primary
         let badge: HubMenuBadgeType = .number(number: 0)
@@ -317,18 +326,23 @@ extension HubMenuViewModel {
 
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Title of the hub menu settings button")
+        static let settingsDescription = NSLocalizedString("Update your preferences", comment: "Description of the hub menu settings button")
         static let payments = NSLocalizedString("Payments",
                                                 comment: "Title of the hub menu payments button")
+        static let paymentsDescription = NSLocalizedString("Join the mobile payments", comment: "Description of the hub menu payments button")
         static let myStore = NSLocalizedString("My Store",
                                                comment: "Title of the hub menu view in case there is no title for the store")
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",
                                                         comment: "Title of one of the hub menu options")
+        static let woocommerceAdminDescription = NSLocalizedString("Manage more on admin", comment: "Description of one of the hub menu options")
         static let viewStore = NSLocalizedString("View Store",
                                                  comment: "Title of one of the hub menu options")
+        static let viewStoreDescription = NSLocalizedString("View your store", comment: "Description of one of the hub menu options")
         static let inbox = NSLocalizedString("Inbox", comment: "Title of the Inbox menu in the hub menu")
         static let coupon = NSLocalizedString("Coupons", comment: "Title of the Coupons menu in the hub menu")
-        static let reviews = NSLocalizedString("Reviews",
-                                               comment: "Title of one of the hub menu options")
+        static let reviews = NSLocalizedString("Reviews", comment: "Title of one of the hub menu options")
+        static let reviewsDescription = NSLocalizedString("Capture reviews for your store", comment: "Description of one of the hub menu options")
         static let upgrades = NSLocalizedString("Upgrades", comment: "Title of one of the hub menu options")
+        static let upgradesDescription = NSLocalizedString("Manage your plans", comment: "Description of one of the hub menu options")
     }
 }

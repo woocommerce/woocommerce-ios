@@ -52,7 +52,7 @@ struct HubMenu: View {
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in
                     Row(title: menu.title,
-                        description: "",
+                        description: menu.description,
                         icon: .local(menu.icon),
                         chevron: .leading,
                         tapHandler: {
@@ -67,7 +67,7 @@ struct HubMenu: View {
             Section(Localization.general) {
                 ForEach(viewModel.generalElements, id: \.id) { menu in
                     Row(title: menu.title,
-                        description: "",
+                        description: menu.description,
                         icon: .local(menu.icon),
                         chevron: .leading,
                         tapHandler: {

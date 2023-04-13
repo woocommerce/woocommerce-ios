@@ -199,6 +199,7 @@ final class HubMenuViewModel: ObservableObject {
 protocol HubMenuItem {
     static var id: String { get }
     var title: String { get }
+    var description: String { get }
     var icon: UIImage { get }
     var iconColor: UIColor { get }
     var badge: HubMenuBadgeType { get }

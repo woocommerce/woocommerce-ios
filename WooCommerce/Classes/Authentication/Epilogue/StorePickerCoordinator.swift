@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
-
+import protocol Storage.StorageManagerType
 
 /// Simplifies and decouples the store picker from the caller
 ///
@@ -32,6 +32,10 @@ final class StorePickerCoordinator: Coordinator {
 
     private var storeCreationCoordinator: StoreCreationCoordinator?
 
+    private let stores: StoresManager
+
+    private let storageManager: StorageManagerType
+
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {
@@ -42,9 +46,13 @@ final class StorePickerCoordinator: Coordinator {
 
     init(_ navigationController: UINavigationController,
          config: StorePickerConfiguration,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          switchStoreUseCase: SwitchStoreUseCaseProtocol = SwitchStoreUseCase(stores: ServiceLocator.stores)) {
         self.navigationController = navigationController
         self.selectedConfiguration = config
+        self.stores = stores
+        self.storageManager = storageManager
         self.switchStoreUseCase = switchStoreUseCase
     }
 

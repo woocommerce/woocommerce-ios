@@ -14,88 +14,10 @@ common_params:
     # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
     IMAGE_ID: xcode-14.2
 
-# This is the default pipeline – it will build and test the app
 steps:
-  #################
-  # Build the app
-  #################
-  - label: ":pipeline: Build"
-    key: "build"
-    command: ".buildkite/commands/build-for-testing.sh"
+
+  - label: "🛠 Release Build (App Store Connect)"
+    command: ".buildkite/commands/release-build.sh true"
+    priority: 1
     env: *common_env
     plugins: *common_plugins
-    notify:
-      - github_commit_status:
-          context: "Build"
-
-  #################
-  # Create Installable Build
-  #################
-  - label: "🛠 Installable Build"
-    command: ".buildkite/commands/installable-build.sh"
-    env: *common_env
-    plugins: *common_plugins
-    if: build.pull_request.id != null
-    notify:
-      - github_commit_status:
-          context: "Installable Build"
-
-  #################
-  # Run Unit Tests
-  #################
-  - label: "🔬 Unit Tests"
-    command: ".buildkite/commands/run-unit-tests.sh"
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
-    artifact_paths:
-      - "fastlane/test_output/*"
-    notify:
-      - github_commit_status:
-          context: "Unit Tests"
-
-  #################
-  # Linters
-  #################
-  - group: Linters
-    steps:
-      - label: "🧹 Lint Translations"
-        command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"
-        plugins:
-          - docker#v3.8.0:
-              image: "public.ecr.aws/automattic/glotpress-validator:1.0.0"
-        agents:
-          queue: "default"
-        notify:
-          - github_commit_status:
-              context: "Lint Translations"
-
-      - label: ":sleuth_or_spy: Lint Localized Strings Format"
-        command: .buildkite/commands/lint-localized-strings-format.sh
-        plugins: *common_plugins
-        env: *common_env
-
-  #################
-  # UI Tests
-  #################
-  - label: "🔬 UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 14'
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
-    artifact_paths:
-      - "fastlane/test_output/*"
-    notify:
-      - github_commit_status:
-          context: "UI Tests (iPhone)"
-
-  - label: "🔬 UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (5th generation)"
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
-    artifact_paths:
-      - "fastlane/test_output/*"
-    notify:
-      - github_commit_status:
-          context: "UI Tests (iPad)"

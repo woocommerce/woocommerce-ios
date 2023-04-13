@@ -452,33 +452,33 @@ platform :ios do
       export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
     )
 
-    testflight(
-      skip_waiting_for_build_processing: true,
-      api_key_path: ASC_KEY_PATH
-    )
-    sh('cd .. && rm WooCommerce.ipa')
+    # testflight(
+    #   skip_waiting_for_build_processing: true,
+    #   api_key_path: ASC_KEY_PATH
+    # )
+    # sh('cd .. && rm WooCommerce.ipa')
 
-    sentry_upload_dsym(
-      auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
-      org_slug: 'a8c',
-      project_slug: 'woocommerce-ios',
-      dsym_path: './WooCommerce.app.dSYM.zip'
-    )
-    sh('cd .. && rm WooCommerce.app.dSYM.zip')
+    # sentry_upload_dsym(
+    #   auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
+    #   org_slug: 'a8c',
+    #   project_slug: 'woocommerce-ios',
+    #   dsym_path: './WooCommerce.app.dSYM.zip'
+    # )
+    # sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
-    if options[:create_release]
-      archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
-      zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
+    # if options[:create_release]
+    #   archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
+    #   zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
-      version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
-      create_release(repository: GHHELPER_REPO,
-                     version: version,
-                     release_notes_file_path: './WooCommerce/Resources/release_notes.txt',
-                     release_assets: archive_zip_path.to_s,
-                     prerelease: options[:beta_release])
+    #   version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
+    #   create_release(repository: GHHELPER_REPO,
+    #                  version: version,
+    #                  release_notes_file_path: './WooCommerce/Resources/release_notes.txt',
+    #                  release_assets: archive_zip_path.to_s,
+    #                  prerelease: options[:beta_release])
 
-      sh("rm #{archive_zip_path}")
-    end
+    #   sh("rm #{archive_zip_path}")
+    # end
   end
 
   #####################################################################################

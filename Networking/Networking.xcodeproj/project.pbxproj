@@ -602,6 +602,7 @@
 		CCF48B2C2628AE160034EA83 /* shipping-label-account-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = CCF48B2B2628AE160034EA83 /* shipping-label-account-settings.json */; };
 		CCF48B382628AEAE0034EA83 /* shipping-label-account-settings-no-payment-methods.json in Resources */ = {isa = PBXBuildFile; fileRef = CCF48B372628AEAE0034EA83 /* shipping-label-account-settings-no-payment-methods.json */; };
 		CCF48B802628BBC10034EA83 /* ShippingLabelAccountSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF48B7F2628BBC10034EA83 /* ShippingLabelAccountSettingsMapperTests.swift */; };
+		CCFEB8F429E8504300537456 /* product-subscription.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFEB8F329E8504300537456 /* product-subscription.json */; };
 		CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F12223942D90075ED8D /* ProductImage.swift */; };
 		CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */; };
 		CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */; };
@@ -1510,6 +1511,7 @@
 		CCF48B2B2628AE160034EA83 /* shipping-label-account-settings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-account-settings.json"; sourceTree = "<group>"; };
 		CCF48B372628AEAE0034EA83 /* shipping-label-account-settings-no-payment-methods.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-account-settings-no-payment-methods.json"; sourceTree = "<group>"; };
 		CCF48B7F2628BBC10034EA83 /* ShippingLabelAccountSettingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAccountSettingsMapperTests.swift; sourceTree = "<group>"; };
+		CCFEB8F329E8504300537456 /* product-subscription.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-subscription.json"; sourceTree = "<group>"; };
 		CE0A0F12223942D90075ED8D /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
 		CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttribute.swift; sourceTree = "<group>"; };
 		CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDefaultAttribute.swift; sourceTree = "<group>"; };
@@ -2507,6 +2509,7 @@
 				CC01CE5729B0EBED004FF537 /* product-bundle.json */,
 				CC33754F29C88B920006A538 /* product-composite.json */,
 				02DD6491248A3EC00082523E /* product-external.json */,
+				CCFEB8F329E8504300537456 /* product-subscription.json */,
 				4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */,
 				025CA2C7238F4FF400B05C81 /* product-shipping-classes-load-all.json */,
 				020220E123966CD900290165 /* product-shipping-classes-load-one.json */,
@@ -3451,6 +3454,7 @@
 				D865CE6E278CC19A002C8520 /* stripe-location.json in Resources */,
 				DEA6B1C4296C0F45005AA5E9 /* payment-gateway-cod-without-data.json in Resources */,
 				CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */,
+				CCFEB8F429E8504300537456 /* product-subscription.json in Resources */,
 				D8FBFF1522D3BE09006E3336 /* order-stats-v4-defaults.json in Resources */,
 				7495AACF225D366D00801A89 /* variation-as-product.json in Resources */,
 				0272E3FB254AABB800436277 /* order-with-line-item-attributes-before-API-support.json in Resources */,

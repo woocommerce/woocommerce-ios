@@ -171,12 +171,22 @@ private extension ReceiptRenderer {
         }
 
         /// According to the documentation, only `Application name` and `AID`
-        /// are required in the US.
+        /// are required in the US, but since `Account type` is required in other countries,
+        /// we add it if we have it.
         /// https://stripe.com/docs/terminal/checkout/receipts#custom
-        return """
+        let baseRequiredItems = """
                \(Localization.applicationName): \(emv.applicationPreferredName.htmlStripped())<br/>
                \(Localization.aid): \(emv.dedicatedFileName.htmlStripped())
                """
+
+        guard let accountType = emv.accountType else {
+            return baseRequiredItems
+        }
+
+        return baseRequiredItems + """
+            <br/>
+            \(Localization.accountType): \(accountType.htmlStripped())
+            """
     }
 
     private func cardIconCSS() -> String {

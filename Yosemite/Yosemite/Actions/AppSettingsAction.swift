@@ -187,10 +187,6 @@ public enum AppSettingsAction: Action {
     ///
     case loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void)
 
-    /// Stores that the user finished an IPP transaction for the given siteID
-    ///
-    case markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64)
-
     // MARK: - In Person Payments
 
     /// Sets the last state of the simple payments taxes toggle for a provided store.

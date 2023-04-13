@@ -127,8 +127,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         onCompleted: @escaping () -> ()) {
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
-            onFailure(error)
-            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: onCancel)
+            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: {
+                onFailure(error)
+            })
         }
 
         preflightController = CardPresentPaymentPreflightController(siteID: siteID,
@@ -278,7 +279,6 @@ private extension CollectOrderPaymentUseCase {
             }, onCompletion: { [weak self] result in
                 switch result {
                 case .success(let capturedPaymentData):
-                    self?.markSiteHasAtLeastOneIPPTransactionFinished()
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
                     onCompletion(.success(capturedPaymentData))
                 case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
@@ -463,10 +463,6 @@ private extension CollectOrderPaymentUseCase {
                                                  storeName: stores.sessionManager.defaultSite?.name),
                                      from: rootViewController,
                                      completion: onCompleted)
-    }
-
-    func markSiteHasAtLeastOneIPPTransactionFinished() {
-        stores.dispatch(AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: order.siteID))
     }
 
     func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {

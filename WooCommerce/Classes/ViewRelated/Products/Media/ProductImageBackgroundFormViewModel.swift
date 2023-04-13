@@ -5,7 +5,29 @@ import Networking
 import Yosemite
 
 final class ProductImageBackgroundFormViewModel: ObservableObject {
+    // Scene options.
     @Published var prompt: String
+    @Published var scale: Double = 0.8
+    @Published var prepositionIndex: Int = 0
+    let prepositionOptions: [SceneOptions.ScenePreposition] = [.in, .on, .among]
+    @Published var resolutionIndex: Int = 0
+    let resolutionOptions: [SceneOptions.Resolution] = [.default, .high]
+    @Published var timeOfDay: SceneOptions.TimeOfDay?
+    let timeOfDayOptions: [SceneOptions.TimeOfDay?] = [nil] + SceneOptions.TimeOfDay.allCases
+    @Published var perspective: SceneOptions.Perspective?
+    let perspectiveOptions: [SceneOptions.Perspective?] = [nil] + SceneOptions.Perspective.allCases
+    @Published var filters: SceneOptions.Filters?
+    let filtersOptions: [SceneOptions.Filters?] = [nil] + SceneOptions.Filters.allCases
+    @Published var placement: SceneOptions.Placement?
+    let placementOptions: [SceneOptions.Placement?] = [nil] + SceneOptions.Placement.allCases
+    @Published var vibe: SceneOptions.Vibe?
+    let vibeOptions: [SceneOptions.Vibe?] = [nil] + SceneOptions.Vibe.allCases
+
+    var modifiers: [String] {
+        [timeOfDay?.rawValue, perspective?.rawValue, filters?.rawValue, placement?.rawValue, vibe?.rawValue]
+        .compactMap { $0 }
+    }
+
     @Published var originalImage: UIImage?
     @Published var generatedImage: UIImage?
     @Published var isGenerationInProgress: Bool = false
@@ -28,7 +50,12 @@ final class ProductImageBackgroundFormViewModel: ObservableObject {
             isGenerationInProgress = false
         }
         do {
-            let generatedImageURL = try await replaceBackground(image: productImage, options: .init(backgroundDescription: prompt, scale: 0.7))
+            let generatedImageURL = try await replaceBackground(image: productImage,
+                                                                options: .init(backgroundDescription: prompt,
+                                                                               scale: scale,
+                                                                               preposition: prepositionOptions[prepositionIndex],
+                                                                               resolution: resolutionOptions[resolutionIndex],
+                                                                               timeOfDay: timeOfDay))
             // TODO-JC: remove imageID hack to download UIImage properly
             let generatedProductImage = productImage.copy(imageID: Int64(UUID().hashValue), src: generatedImageURL)
             self.generatedImage = await requestUIImage(for: generatedProductImage)

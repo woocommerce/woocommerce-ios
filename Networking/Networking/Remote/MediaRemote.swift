@@ -35,13 +35,91 @@ public protocol MediaRemoteProtocol {
 }
 
 public struct SceneOptions {
-    public init(backgroundDescription: String, scale: Double) {
+    public init(backgroundDescription: String,
+                scale: Double,
+                preposition: SceneOptions.ScenePreposition,
+                resolution: SceneOptions.Resolution,
+                timeOfDay: SceneOptions.TimeOfDay? = nil,
+                perspective: SceneOptions.Perspective? = nil,
+                filters: SceneOptions.Filters? = nil,
+                placement: SceneOptions.Placement? = nil,
+                vibe: SceneOptions.Vibe? = nil) {
         self.backgroundDescription = backgroundDescription
         self.scale = scale
+        self.preposition = preposition
+        self.resolution = resolution
+        self.timeOfDay = timeOfDay
+        self.perspective = perspective
+        self.filters = filters
+        self.placement = placement
+        self.vibe = vibe
     }
 
     public let backgroundDescription: String
     public let scale: Double
+    public let preposition: ScenePreposition
+    public let resolution: Resolution
+    public let timeOfDay: TimeOfDay?
+    public let perspective: Perspective?
+    public let filters: Filters?
+    public let placement: Placement?
+    public let vibe: Vibe?
+
+    public enum ScenePreposition: String {
+        case `in`
+        case on
+        case among
+    }
+
+    public enum Resolution: String {
+        case `default` = "SD"
+        case high = "HD"
+    }
+
+    public enum TimeOfDay: String, CaseIterable {
+        case sunrise = "Sunrise"
+        case noon = "Noon"
+        case afternoon = "Afternoon"
+        case sunset = "Sunset"
+        case night = "Night"
+    }
+
+    public enum Perspective: String, CaseIterable {
+        case closeUp = "Close up"
+        case wideAngle = "Wide angle"
+        case topDown = "Top down"
+        case straightOn = "Straight on"
+    }
+
+    public enum Filters: String, CaseIterable {
+        case naturalLight = "Natural light"
+        case frontLit = "Front lit"
+        case backLit = "Back lit"
+        case topLit = "Top lit"
+        case shallowDepthOfField = "Shallow depth of field"
+        case deepDepthOfField = "Deep depth of field"
+        case tiltShift = "Tilt shift"
+        case hdr = "HDR"
+        case longExposure = "Long Exposure"
+        case macroLens = "Macro lens"
+        case lightLeak = "Light leak"
+        case polaroid = "Polaroid"
+    }
+
+    public enum Placement: String, CaseIterable {
+        case outdoors = "Outdoors"
+        case indoors = "Indoors"
+    }
+
+    public enum Vibe: String, CaseIterable {
+        case moody = "Moody"
+        case retro = "Retro"
+        case cheerful = "Cheerful"
+        case foggy = "Foggy"
+        case warm = "Warm"
+        case cool = "Cool"
+        case dramatic = "Dramatic"
+    }
 }
 
 /// Media: Remote Endpoints
@@ -281,15 +359,60 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                 image.src
             ],
             // Resolution of the generated images. Note that choosing HD will increase the latency of the endpoint by a few seconds and the resolution output can only be as high as the resolution of the input images. When choosing SD, the resolution of the generated images will be at most 512x512.
-            "resolution": "SD", // SD|HD
+            "resolution": options.resolution.rawValue, // SD|HD
             // Location of the object relative to the background
-            "scene_preposition": "in", // in|on|among
+            "scene_preposition": options.preposition.rawValue, // in|on|among
             // [required] Description of the background you want to generate with AI. Fill in the blank: I want to see my product in/on <scene>.
             "scene": options.backgroundDescription,
             // The percentage of the total frame that the width of the object should be. For example, scale=0.5 corresponds to the object taking half of the total frame width.
             "scale": options.scale,
             // Ref: https://docs.scale.com/reference/forge-acceptable-background-modifiers
             "modifiers": [
+                options.timeOfDay.map {
+                    [
+                        "title": "Time of day",
+                        // Sunrise, Noon, Afternoon, Sunset, Night
+                        "selected_values": [
+                            $0.rawValue
+                        ]
+                    ]
+                },
+                options.perspective.map {
+                    [
+                        "title": "Perspective",
+                        // Close up, Wide angle, Top down, Straight on
+                        "selected_values": [
+                            $0.rawValue
+                        ]
+                    ]
+                },
+                options.filters.map {
+                    [
+                        "title": "Filters",
+                        // Sunrise, Noon, Afternoon, Sunset, Night
+                        "selected_values": [
+                            $0.rawValue
+                        ]
+                    ]
+                },
+                options.placement.map {
+                    [
+                        "title": "Placement",
+                        // Close up, Wide angle, Top down, Straight on
+                        "selected_values": [
+                            $0.rawValue
+                        ]
+                    ]
+                },
+                options.vibe.map {
+                    [
+                        "title": "Vibe",
+                        // Close up, Wide angle, Top down, Straight on
+                        "selected_values": [
+                            $0.rawValue
+                        ]
+                    ]
+                }
 //                [
 //                    "title": "Time of day",
 //                    // Sunrise, Noon, Afternoon, Sunset, Night
@@ -332,7 +455,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
 ////                        "Indoors"
 //                    ]
 //                ]
-            ]
+            ].compactMap { $0 }
         ]
         let request = ExternalRequest(method: .post, url: url, parameters: parameters, headers: headers)
         let result: BackgroundReplacementResponse = try await enqueue(request)

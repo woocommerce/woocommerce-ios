@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Networking.SceneOptions
 
 /// Hosting controller for `ProductImageBackgroundFormView`.
 ///
@@ -25,16 +26,84 @@ struct ProductImageBackgroundFormView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Background description")
-                    .subheadlineStyle()
-                TextEditor(text: $viewModel.prompt)
-                    .bodyStyle()
-                    .foregroundColor(.secondary)
-                    .frame(minHeight: Layout.minimuEditorSize)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
-                    )
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("I want to see my product")
+                        .headlineStyle()
+                    SegmentedView(selection: $viewModel.prepositionIndex, views: viewModel.prepositionOptions.map { Text($0.rawValue) })
+                    TextEditor(text: $viewModel.prompt)
+                        .bodyStyle()
+                        .foregroundColor(.secondary)
+                        .frame(minHeight: Layout.minimuEditorSize)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                        )
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Scale")
+                        .subheadlineStyle()
+                    Slider(value: $viewModel.scale, in: 0...1)
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Resolution")
+                        .subheadlineStyle()
+                    SegmentedView(selection: $viewModel.resolutionIndex, views: viewModel.resolutionOptions.map { Text($0.description) })
+                }
+
+                HStack {
+                    ForEach(viewModel.modifiers, id: \.self) {
+                        BadgeView(text: $0)
+                    }
+                }
+
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("Time of day")
+                        Picker("Time of day", selection: $viewModel.timeOfDay) {
+                            ForEach(viewModel.timeOfDayOptions, id: \.self) {
+                                Text($0?.rawValue ?? "None")
+                            }
+                        }
+                    }
+
+                    HStack {
+                        Text("Perspective")
+                        Picker("Perspective", selection: $viewModel.perspective) {
+                            ForEach(viewModel.perspectiveOptions, id: \.self) {
+                                Text($0?.rawValue ?? "None")
+                            }
+                        }
+                    }
+
+                    HStack {
+                        Text("Filters")
+                        Picker("Filters", selection: $viewModel.filters) {
+                            ForEach(viewModel.filtersOptions, id: \.self) {
+                                Text($0?.rawValue ?? "None")
+                            }
+                        }
+                    }
+
+                    HStack {
+                        Text("Placement")
+                        Picker("Placement", selection: $viewModel.placement) {
+                            ForEach(viewModel.placementOptions, id: \.self) {
+                                Text($0?.rawValue ?? "None")
+                            }
+                        }
+                    }
+
+                    HStack {
+                        Text("Vibe")
+                        Picker("Vibe", selection: $viewModel.vibe) {
+                            ForEach(viewModel.vibeOptions, id: \.self) {
+                                Text($0?.rawValue ?? "None")
+                            }
+                        }
+                    }
+                }
 
                 HStack {
                     Button(viewModel.generatedImage == nil ? "Generate": "Regenerate") {
@@ -68,6 +137,17 @@ private extension ProductImageBackgroundFormView {
     enum Layout {
         static let minimuEditorSize: CGFloat = 60
         static let cornerRadius: CGFloat = 8
+    }
+}
+
+private extension SceneOptions.Resolution {
+    var description: String {
+        switch self {
+        case .default:
+            return "Default"
+        case .high:
+            return "High"
+        }
     }
 }
 

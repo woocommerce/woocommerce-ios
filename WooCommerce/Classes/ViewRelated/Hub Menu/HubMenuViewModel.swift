@@ -268,7 +268,7 @@ extension HubMenuViewModel {
         static var id = "inbox"
 
         let title: String = Localization.inbox
-        let description: String = ""
+        let description: String = Localization.inboxDescription
         let icon: UIImage = .mailboxImage
         let iconColor: UIColor = .withColorStudio(.blue, shade: .shade40)
         let badge: HubMenuBadgeType = .number(number: 0)
@@ -280,7 +280,7 @@ extension HubMenuViewModel {
         static var id = "coupons"
 
         let title: String = Localization.coupon
-        let description: String = ""
+        let description: String = Localization.couponDescription
         let icon: UIImage = .couponImage
         let iconColor: UIColor = UIColor(light: .withColorStudio(.green, shade: .shade30),
                                          dark: .withColorStudio(.green, shade: .shade50))
@@ -340,7 +340,9 @@ extension HubMenuViewModel {
                                                  comment: "Title of one of the hub menu options")
         static let viewStoreDescription = NSLocalizedString("View your store", comment: "Description of one of the hub menu options")
         static let inbox = NSLocalizedString("Inbox", comment: "Title of the Inbox menu in the hub menu")
+        static let inboxDescription = NSLocalizedString("Check important notifications", comment: "Description of the Inbox menu in the hub menu")
         static let coupon = NSLocalizedString("Coupons", comment: "Title of the Coupons menu in the hub menu")
+        static let couponDescription = NSLocalizedString("Manage your coupons", comment: "Description of the Coupons menu in the hub menu")
         static let reviews = NSLocalizedString("Reviews", comment: "Title of one of the hub menu options")
         static let reviewsDescription = NSLocalizedString("Capture reviews for your store", comment: "Description of one of the hub menu options")
         static let upgrades = NSLocalizedString("Upgrades", comment: "Title of one of the hub menu options")

@@ -53,23 +53,25 @@ struct HubMenu: View {
                     titleAccessibilityID: "store-title",
                     descriptionAccessibilityID: "store-url",
                     chevronAccessibilityID: "switch-store-button")
-                .cornerRadius(HubMenu.Constants.cornerRadius)
             }
 
             // Settings Section
             Section(Localization.settings) {
-                Row(title: "Settings",
-                    description: "Update your preferences",
-                    icon: .local(.cogImage),
-                    chevron: .leading,
-                    tapHandler: {})
-                .foregroundColor(Color(.primary))
-                .accessibilityIdentifier("dashboard-settings-button")
+                ForEach(viewModel.settingsElements, id: \.id) { menu in
+                    Row(title: menu.title,
+                        description: "",
+                        icon: .local(menu.icon),
+                        chevron: .leading,
+                        tapHandler: {
+                    })
+                    .foregroundColor(Color(menu.iconColor))
+                    .accessibilityIdentifier(menu.accessibilityIdentifier)
+                }
             }
 
             // General Section
             Section(Localization.general) {
-                ForEach(viewModel.menuElements, id: \.id) { menu in
+                ForEach(viewModel.generalElements, id: \.id) { menu in
                     Row(title: menu.title,
                         description: "",
                         icon: .local(menu.icon),

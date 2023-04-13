@@ -431,7 +431,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                    storageManager: storageManager,
-                                                   onProductSelected: { selectedProduct = $0.productID })
+                                                   onProductSelectionStateChanged: { selectedProduct = $0.productID })
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID)
@@ -448,7 +448,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  supportsMultipleSelection: true,
-                                                 onProductSelected: { selectedProduct = $0.productID })
+                                                 onProductSelectionStateChanged: { selectedProduct = $0.productID })
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID)
@@ -493,7 +493,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  supportsMultipleSelection: true,
-                                                 onProductSelected: { _ in })
+                                                 onProductSelectionStateChanged: { _ in })
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID)
@@ -528,7 +528,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  supportsMultipleSelection: false,
-                                                 onProductSelected: { _ in })
+                                                 onProductSelectionStateChanged: { _ in })
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID)
@@ -939,7 +939,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(
             siteID: sampleSiteID,
             storageManager: storageManager,
-            onProductSelected: {
+            onProductSelectionStateChanged: {
                 selectedProduct = $0.productID
             })
 

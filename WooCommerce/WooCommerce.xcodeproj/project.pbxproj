@@ -702,6 +702,7 @@
 		26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26771A13256FFA8700EE030E /* IssueRefundCoordinatingController.swift */; };
 		2677B559299F322300862180 /* SupportForm+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2677B558299F322300862180 /* SupportForm+Presentation.swift */; };
 		2678897C270E6E8B00BD249E /* SimplePaymentsAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678897B270E6E8B00BD249E /* SimplePaymentsAmount.swift */; };
+		267C01CF29E89E1700FCC97B /* StorePlanSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */; };
 		267D6882296485850072ED0C /* ProductVariationGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267D6881296485850072ED0C /* ProductVariationGeneratorTests.swift */; };
 		26838354296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838353296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift */; };
 		26838356296F702B00CCF60A /* GenerateAllVariationsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838355296F702B00CCF60A /* GenerateAllVariationsPresenter.swift */; };
@@ -2914,6 +2915,7 @@
 		26771A13256FFA8700EE030E /* IssueRefundCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundCoordinatingController.swift; sourceTree = "<group>"; };
 		2677B558299F322300862180 /* SupportForm+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SupportForm+Presentation.swift"; sourceTree = "<group>"; };
 		2678897B270E6E8B00BD249E /* SimplePaymentsAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsAmount.swift; sourceTree = "<group>"; };
+		267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlanSynchronizer.swift; sourceTree = "<group>"; };
 		267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilderTests.swift; sourceTree = "<group>"; };
 		267D6881296485850072ED0C /* ProductVariationGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationGeneratorTests.swift; sourceTree = "<group>"; };
 		26838353296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationsOptionPresenter.swift; sourceTree = "<group>"; };
@@ -5946,6 +5948,7 @@
 				264957A229C520860095AA4C /* UpgradesView.swift */,
 				261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */,
 				261E91A429CA592E00A5C118 /* UpgradePlanCoordinatingController.swift */,
+				267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */,
 			);
 			name = Upgrades;
 			path = Classes/ViewRelated/Upgrades;
@@ -11448,6 +11451,7 @@
 				7441EBC9226A71AA008BF83D /* TitleBodyTableViewCell.swift in Sources */,
 				0260B1B12805321B00FCFE8C /* OrderDetailsPaymentAlertsProtocol.swift in Sources */,
 				4556ED38270645A6005CBC0D /* ShippingLabelCarrierSectionHeader.swift in Sources */,
+				267C01CF29E89E1700FCC97B /* StorePlanSynchronizer.swift in Sources */,
 				B541B21C2189F3D8008FE7C1 /* StringStyles.swift in Sources */,
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,

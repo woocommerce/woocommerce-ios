@@ -17,6 +17,7 @@ struct HubMenu: View {
     @State private var showingReviews = false
     @State private var showingCoupons = false
     @State private var showingIAPDebug = false
+    @State private var showSettings = false
 
     /// State to disable multiple taps on menu items
     /// Make sure to reset the value to false after dismissing sub-flows
@@ -63,6 +64,7 @@ struct HubMenu: View {
                         icon: .local(menu.icon),
                         chevron: .leading,
                         tapHandler: {
+                            self.handleTap(menu: menu)
                     })
                     .foregroundColor(Color(menu.iconColor))
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
@@ -77,34 +79,7 @@ struct HubMenu: View {
                         icon: .local(menu.icon),
                         chevron: .leading,
                         tapHandler: {
-
-                        // TODO: This should be done in the View Model
-                        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
-                            Constants.trackingOptionKey: menu.trackingOption,
-                            Constants.trackingBadgeVisibleKey: menu.badge.shouldBeRendered
-                        ])
-
-                        switch type(of: menu).id {
-                        case HubMenuViewModel.Payments.id:
-                            showingPayments = true
-                        case HubMenuViewModel.WoocommerceAdmin.id:
-                            showingWooCommerceAdmin = true
-                        case HubMenuViewModel.ViewStore.id:
-                            showingViewStore = true
-                        case HubMenuViewModel.Inbox.id:
-                            showingInbox = true
-                        case HubMenuViewModel.Reviews.id:
-                            showingReviews = true
-                        case HubMenuViewModel.Coupons.id:
-                            showingCoupons = true
-                        case HubMenuViewModel.InAppPurchases.id:
-                            showingIAPDebug = true
-                        case HubMenuViewModel.Upgrades.id:
-                            viewModel.presentUpgrades()
-                        default:
-                            break
-                        }
-
+                            self.handleTap(menu: menu)
                     })
                     .foregroundColor(Color(menu.iconColor))
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
@@ -136,6 +111,9 @@ struct HubMenu: View {
                 showingViewStore = false
             }
         }
+        NavigationLink(destination: SettingsView(), isActive: $showSettings) {
+            EmptyView()
+        }.hidden()
         NavigationLink(destination:
                         InPersonPaymentsMenu()
             .navigationTitle(InPersonPaymentsView.Localization.title),
@@ -166,6 +144,39 @@ struct HubMenu: View {
     /// Reset state to make the menu items tappable
     private func enableMenuItemTaps() {
         shouldDisableItemTaps = false // TODO: test this
+    }
+
+    /// Handle navigation when tapping a list menu row.
+    ///
+    private func handleTap(menu: HubMenuItem) {
+        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
+            Constants.trackingOptionKey: menu.trackingOption,
+            Constants.trackingBadgeVisibleKey: menu.badge.shouldBeRendered
+        ])
+
+        switch type(of: menu).id {
+        case HubMenuViewModel.Settings.id:
+            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
+            showSettings = true
+        case HubMenuViewModel.Payments.id:
+            showingPayments = true
+        case HubMenuViewModel.WoocommerceAdmin.id:
+            showingWooCommerceAdmin = true
+        case HubMenuViewModel.ViewStore.id:
+            showingViewStore = true
+        case HubMenuViewModel.Inbox.id:
+            showingInbox = true
+        case HubMenuViewModel.Reviews.id:
+            showingReviews = true
+        case HubMenuViewModel.Coupons.id:
+            showingCoupons = true
+        case HubMenuViewModel.InAppPurchases.id:
+            showingIAPDebug = true
+        case HubMenuViewModel.Upgrades.id:
+            viewModel.presentUpgrades()
+        default:
+            break
+        }
     }
 }
 
@@ -278,30 +289,6 @@ private extension HubMenu {
                     .foregroundColor(Color(.textSubtle))
                     .renderedIf(tapHandler != nil) // TODO: Check if this is needed
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")
-
-                    // TODO: Migrate settings button & tracks - to list below
-
-                    //                    Button {
-                    //                        ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-                    //                        showSettings = true
-                    //                    } label: {
-                    //                        ZStack {
-                    //                            Circle()
-                    //                                .fill(Color(UIColor(light: .white,
-                    //                                                    dark: .secondaryButtonBackground)))
-                    //                                .frame(width: settingsSize,
-                    //                                       height: settingsSize)
-                    //                            if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
-                    //                                Image(uiImage: cogImage)
-                    //                                    .resizable()
-                    //                                    .frame(width: settingsIconSize,
-                    //                                           height: settingsIconSize)
-                    //                            }
-                    //                        }
-                    //                    }
-                    //                    .accessibilityLabel(Localization.settings)
-                    //                    .accessibilityIdentifier("dashboard-settings-button")
-                    //                    Spacer()
             }
             .padding(.vertical, Constants.rowVerticalPadding)
             .background(Color(.listForeground(modal: false)))

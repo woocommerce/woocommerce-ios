@@ -19,16 +19,6 @@ struct HubMenu: View {
     @State private var showingIAPDebug = false
     @State private var showSettings = false
 
-    /// Returns `nil` if `viewModel.switchStoreEnabled` is false.
-    /// Otherwise returns a closure calls `viewModel.presentSwitchStore()` when invoked.
-    ///
-    private var storeSwitchTapHandler: (() -> ())? {
-        guard viewModel.switchStoreEnabled else { return nil }
-        return {
-            viewModel.presentSwitchStore()
-        }
-    }
-
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
     }
@@ -38,28 +28,34 @@ struct HubMenu: View {
 
             // Store Section
             Section {
-                Row(title: viewModel.storeTitle,
-                    description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
-                    icon: .remote(viewModel.avatarURL),
-                    chevron: .down,
-                    tapHandler: storeSwitchTapHandler,
-                    titleAccessibilityID: "store-title",
-                    descriptionAccessibilityID: "store-url",
-                    chevronAccessibilityID: "switch-store-button")
-                .lineLimit(1)
+                Button {
+                    if viewModel.switchStoreEnabled {
+                        viewModel.presentSwitchStore()
+                    }
+                } label: {
+                    Row(title: viewModel.storeTitle,
+                        description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
+                        icon: .remote(viewModel.avatarURL),
+                        chevron: .down,
+                        titleAccessibilityID: "store-title",
+                        descriptionAccessibilityID: "store-url",
+                        chevronAccessibilityID: "switch-store-button")
+                    .lineLimit(1)
+                }
             }
 
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in
-                    Row(title: menu.title,
-                        description: menu.description,
-                        icon: .local(menu.icon),
-                        chevron: .leading,
-                        tapHandler: {
-                            self.handleTap(menu: menu)
-                    })
-                    .foregroundColor(Color(menu.iconColor))
+                    Button {
+                        handleTap(menu: menu)
+                    } label: {
+                        Row(title: menu.title,
+                            description: menu.description,
+                            icon: .local(menu.icon),
+                            chevron: .leading)
+                        .foregroundColor(Color(menu.iconColor))
+                    }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
                 }
             }
@@ -67,14 +63,15 @@ struct HubMenu: View {
             // General Section
             Section(Localization.general) {
                 ForEach(viewModel.generalElements, id: \.id) { menu in
-                    Row(title: menu.title,
-                        description: menu.description,
-                        icon: .local(menu.icon),
-                        chevron: .leading,
-                        tapHandler: {
-                            self.handleTap(menu: menu)
-                    })
-                    .foregroundColor(Color(menu.iconColor))
+                    Button {
+                        handleTap(menu: menu)
+                    } label: {
+                        Row(title: menu.title,
+                            description: menu.description,
+                            icon: .local(menu.icon),
+                            chevron: .leading)
+                        .foregroundColor(Color(menu.iconColor))
+                    }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
                 }
             }
@@ -208,10 +205,6 @@ private extension HubMenu {
         ///
         let chevron: Chevron
 
-        /// Closure invoked when the row is tapped.
-        ///
-        let tapHandler: (() -> Void)?
-
         var titleAccessibilityID: String?
         var descriptionAccessibilityID: String?
         var chevronAccessibilityID: String?
@@ -267,15 +260,9 @@ private extension HubMenu {
                     .resizable()
                     .frame(width: HubMenu.Constants.chevronSize, height: HubMenu.Constants.chevronSize)
                     .foregroundColor(Color(.textSubtle))
-                    .renderedIf(tapHandler != nil)
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")
             }
             .padding(.vertical, Constants.rowVerticalPadding)
-            .background(Color(.listForeground(modal: false)))
-            .onTapGesture {
-                tapHandler?()
-            }
-
         }
     }
 }

@@ -56,11 +56,17 @@ private extension JetpackConnectionStore {
     }
 
     func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
-        jetpackConnectionRemote?.retrieveJetpackPluginDetails(completion: completion)
+        guard let remote = jetpackConnectionRemote else {
+            return completion(.failure(ConnectionError.notAuthenticated))
+        }
+        remote.retrieveJetpackPluginDetails(completion: completion)
     }
 
     func installJetpackPlugin(completion: @escaping (Result<Void, Error>) -> Void) {
-        jetpackConnectionRemote?.installJetpackPlugin(completion: { result in
+        guard let remote = jetpackConnectionRemote else {
+            return completion(.failure(ConnectionError.notAuthenticated))
+        }
+        remote.installJetpackPlugin(completion: { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -71,7 +77,10 @@ private extension JetpackConnectionStore {
     }
 
     func activateJetpackPlugin(completion: @escaping (Result<Void, Error>) -> Void) {
-        jetpackConnectionRemote?.activateJetpackPlugin(completion: { result in
+        guard let remote = jetpackConnectionRemote else {
+            return completion(.failure(ConnectionError.notAuthenticated))
+        }
+        remote.activateJetpackPlugin(completion: { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -82,12 +91,17 @@ private extension JetpackConnectionStore {
     }
 
     func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
-        jetpackConnectionRemote?.fetchJetpackConnectionURL(completion: completion)
+        guard let remote = jetpackConnectionRemote else {
+            return completion(.failure(ConnectionError.notAuthenticated))
+        }
+        remote.fetchJetpackConnectionURL(completion: completion)
     }
 
     func fetchAccountConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
-        jetpackConnectionRemote?.fetchJetpackConnectionURL { [weak self] result in
-            guard let self else { return }
+        guard let remote = jetpackConnectionRemote else {
+            return completion(.failure(ConnectionError.notAuthenticated))
+        }
+        remote.fetchJetpackConnectionURL { result in
             switch result {
             case .success(let url):
                 // If we get the account connection URL, return it immediately.
@@ -95,7 +109,7 @@ private extension JetpackConnectionStore {
                     return completion(.success(url))
                 }
                 // Otherwise, request the url with redirection disabled and retrieve the URL in LOCATION header
-                self.jetpackConnectionRemote?.registerJetpackSiteConnection(with: url, completion: completion)
+                remote.registerJetpackSiteConnection(with: url, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -103,7 +117,10 @@ private extension JetpackConnectionStore {
     }
 
     func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
-        jetpackConnectionRemote?.fetchJetpackUser(completion: completion)
+        guard let remote = jetpackConnectionRemote else {
+            return completion(.failure(ConnectionError.notAuthenticated))
+        }
+        remote.fetchJetpackUser(completion: completion)
     }
 
     func loadWPComAccount(network: Network, onCompletion: @escaping (Account?) -> Void) {
@@ -124,6 +141,9 @@ private extension JetpackConnectionStore {
 // MARK: - Enums
 //
 private extension JetpackConnectionStore {
+    enum ConnectionError: Error {
+        case notAuthenticated
+    }
     enum Constants {
         static let jetpackAccountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }

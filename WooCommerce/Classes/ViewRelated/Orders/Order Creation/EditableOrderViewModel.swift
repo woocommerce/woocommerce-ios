@@ -195,6 +195,7 @@ final class EditableOrderViewModel: ObservableObject {
             }, onAllSelectionsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearAllSelectedItems()
+                self.trackClearAllSelectedItemsTapped()
             }, onSelectedVariationsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearSelectedVariations()
@@ -369,9 +370,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Clears selected products and variations
     ///
     private func clearAllSelectedItems() {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .product))
         selectedProducts.removeAll()
         selectedProductVariations.removeAll()
+    }
+
+    private func trackClearAllSelectedItemsTapped() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .product))
     }
 
     /// Clears selected variations

@@ -107,11 +107,14 @@ struct ComponentSettings: View {
                         .frame(width: optionImageWidth, height: optionImageWidth)
                         .cornerRadius(Layout.imageCornerRadius)
                         .accessibilityHidden(true)
-                        .padding()
+                        .padding(.trailing)
+                        .renderedIf(viewModel.shouldShowOptionImages)
 
                     Text(option.title)
                         .bodyStyle()
                 }
+                .padding()
+
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)

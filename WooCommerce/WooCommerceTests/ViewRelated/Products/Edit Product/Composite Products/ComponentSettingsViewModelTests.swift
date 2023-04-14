@@ -104,6 +104,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.options.first?.title, expectedCategory.name)
         XCTAssertEqual(viewModel.options.first?.imageURL, nil)
         XCTAssertEqual(viewModel.defaultOptionTitle, defaultProduct.name)
+        XCTAssertFalse(viewModel.shouldShowOptionImages)
     }
 
     func test_view_model_loads_product_component_options() {
@@ -134,6 +135,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.options.first?.title, expectedProduct.name)
         XCTAssertEqual(viewModel.options.first?.imageURL, expectedProduct.imageURL)
         XCTAssertEqual(viewModel.defaultOptionTitle, expectedProduct.name)
+        XCTAssertTrue(viewModel.shouldShowOptionImages)
     }
 
     func test_view_model_has_expected_values_after_loading_error_for_product_options() {

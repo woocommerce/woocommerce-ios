@@ -69,6 +69,12 @@ final class ComponentSettingsViewModel: ObservableObject {
         description.isNotEmpty
     }
 
+    /// Whether to display images for component options
+    ///
+    /// Used to disable images when component options are categories.
+    ///
+    let shouldShowOptionImages: Bool
+
     // MARK: Loading State
 
     /// Dependency state.
@@ -112,13 +118,15 @@ final class ComponentSettingsViewModel: ObservableObject {
          imageURL: URL?,
          optionsType: String,
          options: [ComponentOption],
-         defaultOptionTitle: String = Localization.noDefaultOption) {
+         defaultOptionTitle: String = Localization.noDefaultOption,
+         shouldShowOptionImages: Bool = true) {
         self.componentTitle = title
         self.description = description
         self.imageURL = imageURL
         self.optionsType = optionsType
         self.options = options
         self.defaultOptionTitle = defaultOptionTitle
+        self.shouldShowOptionImages = shouldShowOptionImages
     }
 }
 
@@ -135,7 +143,8 @@ extension ComponentSettingsViewModel {
                   description: component.description.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines),
                   imageURL: component.imageURL,
                   optionsType: component.optionType.description,
-                  options: ComponentSettingsViewModel.optionsLoadingPlaceholder)
+                  options: ComponentSettingsViewModel.optionsLoadingPlaceholder,
+                  shouldShowOptionImages: component.optionType != .categoryIDs)
 
         // Then load details about the component options.
         loadComponentOptions(siteID: siteID,
@@ -207,11 +216,9 @@ private extension ComponentSettingsViewModel {
             let categoryAction = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: categoryID) { [weak self] result in
                 switch result {
                 case .success(let category):
-                    // TODO-8965: Either add support for category images or hide the placeholder in the UI
-                    // We currently don't parse category images from the API response
+                    // We don't show images for categories in the app, so the image URL is always nil.
                     let option = ComponentOption(id: category.categoryID, title: category.name, imageURL: nil)
                     categoryOptions.append(option)
-
                     if categoryID == optionIDs.last { // Replace loading placeholder with synced category options.
                         self?.options = categoryOptions
                         self?.categoriesState = .loaded

@@ -1,1 +1,6 @@
-More love for In-Person Payments and orders this time around. We made it easier for you to search & select multiple products when creating an order. It's also possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats.
+- [Internal] Store creation: New loading screen added for create store flow. [https://github.com/woocommerce/woocommerce-ios/pull/9383]
+- [*] Payments: Add account type field to receipts [https://github.com/woocommerce/woocommerce-ios/pull/9416]
+- [*] Products can now be filtered within Order creation [https://github.com/woocommerce/woocommerce-ios/pull/9258]
+- [*] Products: Adds read-only support for the Composite Products extension in the Products list, including a list of components in product details. [https://github.com/woocommerce/woocommerce-ios/pull/9455]
+
+

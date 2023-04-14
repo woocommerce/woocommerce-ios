@@ -4,7 +4,13 @@ import UIKit
 /// The first view controller always has large title, while the following view controllers in the navigation stack do not have large title by default.
 /// The following view controllers can override `preferredLargeTitleDisplayMode` function to change the large title display mode.
 final class WooTabNavigationController: WooNavigationController {
-    init() {
+
+    /// Site plan synchronizer. Used to fetch the current plan of a store and show the trial banner if needed.
+    ///
+    private let sitePlanSynchronizer: StorePlanSynchronizer
+
+    init(sitePlanSynchronizer: StorePlanSynchronizer) {
+        self.sitePlanSynchronizer = sitePlanSynchronizer
         super.init(nibName: nil, bundle: nil)
         navigationBar.prefersLargeTitles = true
         delegate = self

@@ -9,10 +9,10 @@ final class OrdersSplitViewWrapperController: UIViewController {
     private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
     private lazy var ordersViewController = OrdersRootViewController(siteID: siteID)
 
-    init(siteID: Int64) {
+    init(siteID: Int64, sitePlanSynchronizer: StorePlanSynchronizer) {
         self.siteID = siteID
         super.init(nibName: nil, bundle: nil)
-        configureSplitView()
+        configureSplitView(sitePlanSynchronizer: sitePlanSynchronizer)
         configureTabBarItem()
     }
 
@@ -55,8 +55,8 @@ final class OrdersSplitViewWrapperController: UIViewController {
 }
 
 private extension OrdersSplitViewWrapperController {
-    func configureSplitView() {
-        let ordersNavigationController = WooTabNavigationController()
+    func configureSplitView(sitePlanSynchronizer: StorePlanSynchronizer) {
+        let ordersNavigationController = WooTabNavigationController(sitePlanSynchronizer: sitePlanSynchronizer)
         ordersNavigationController.viewControllers = [ordersViewController]
 
         let emptyStateViewController = EmptyStateViewController(style: .basic)

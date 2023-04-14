@@ -352,12 +352,12 @@ final class ProductMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(product.productType, .subscription)
         XCTAssertEqual(subscriptionSettings.length, "2")
-        XCTAssertEqual(subscriptionSettings.period, "month")
+        XCTAssertEqual(subscriptionSettings.period, .month)
         XCTAssertEqual(subscriptionSettings.periodInterval, "1")
         XCTAssertEqual(subscriptionSettings.price, "5")
         XCTAssertEqual(subscriptionSettings.signUpFee, "")
         XCTAssertEqual(subscriptionSettings.trialLength, "1")
-        XCTAssertEqual(subscriptionSettings.trialPeriod, "week")
+        XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
     }
 }
 

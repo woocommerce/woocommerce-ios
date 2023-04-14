@@ -49,11 +49,11 @@ final class ComponentSettingsViewModel: ObservableObject {
 
     /// Component options
     ///
-    let options: [ComponentOption]
+    @Published var options: [ComponentOption]
 
     /// Title of the default (pre-selected) component option
     ///
-    let defaultOptionTitle: String
+    @Published var defaultOptionTitle: String
 
     // MARK: Section Visibility
 
@@ -67,6 +67,44 @@ final class ComponentSettingsViewModel: ObservableObject {
     ///
     var shouldShowDescription: Bool {
         description.isNotEmpty
+    }
+
+    // MARK: Loading State
+
+    /// Dependency state.
+    ///
+    enum LoadState {
+        case notLoaded
+        case loading
+        case loaded
+    }
+
+    /// Current product dependency state.
+    ///
+    @Published private var productsState: LoadState = .notLoaded
+
+    /// Current category dependency state.
+    ///
+    @Published private var categoriesState: LoadState = .notLoaded
+
+    /// Current component options dependency state.
+    ///
+    /// This state reflects either the `productsState` or `categoriesState`, depending on the component option type.
+    ///
+    private var componentOptionsState: LoadState {
+        optionsType == CompositeComponentOptionType.productIDs.description ? productsState : categoriesState
+    }
+
+    /// Indicates if the Component Options section should should show a redacted state.
+    ///
+    var showOptionsLoadingIndicator: Bool {
+        componentOptionsState == .loading
+    }
+
+    /// Indicates if the Default Option section should should show a redacted state.
+    ///
+    var showDefaultOptionLoadingIndicator: Bool {
+        productsState == .loading
     }
 
     init(title: String,
@@ -86,13 +124,108 @@ final class ComponentSettingsViewModel: ObservableObject {
 
 // MARK: Initializers
 extension ComponentSettingsViewModel {
-    convenience init(component: ComponentsListViewModel.Component) {
+    /// Initializes the view model using a `Component` from the `ComponentsListViewModel`.
+    /// Used when navigating to `ComponentSettings` from `ComponentsList`.
+    ///
+    convenience init(siteID: Int64,
+                     component: ComponentsListViewModel.Component,
+                     stores: StoresManager = ServiceLocator.stores) {
         // Initialize the view model with the available component settings and placeholders for the component options.
         self.init(title: component.title,
                   description: component.description.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines),
                   imageURL: component.imageURL,
                   optionsType: component.optionType.description,
-                  options: [])
+                  options: ComponentSettingsViewModel.optionsLoadingPlaceholder)
+
+        // Then load details about the component options.
+        loadComponentOptions(siteID: siteID,
+                             optionIDs: component.optionIDs,
+                             defaultOptionID: Int64(component.defaultOptionID),
+                             type: component.optionType,
+                             stores: stores)
+    }
+}
+
+// MARK: Private helpers
+private extension ComponentSettingsViewModel {
+    /// Load the component options (products or categories) if needed.
+    ///
+    func loadComponentOptions(siteID: Int64,
+                              optionIDs: [Int64],
+                              defaultOptionID: Int64?,
+                              type: CompositeComponentOptionType,
+                              stores: StoresManager) {
+        syncProducts(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
+        syncCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, type: type, stores: stores)
+    }
+
+    /// Syncs products and sets the default option and (if the component options are products) the options list.
+    ///
+    func syncProducts(siteID: Int64, optionIDs: [Int64], defaultOptionID: Int64?, type: CompositeComponentOptionType, stores: StoresManager) {
+        guard productsState == .notLoaded else { return }
+
+        // If the component options are products, sync the products matching the list of option IDs.
+        // Otherwise, the component options are categories, so we only need to sync the default option (a product).
+        let productsToSync = type == .productIDs ? optionIDs : [defaultOptionID].compactMap { $0 }
+        let productAction = ProductAction.retrieveProducts(siteID: siteID, productIDs: productsToSync) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success((let products, _)):
+                self.defaultOptionTitle = products.first(where: { $0.productID == defaultOptionID })?.name ?? Localization.noDefaultOption
+                if type == .productIDs {
+                    self.options = products.map { product in
+                        ComponentOption(id: product.productID, title: product.name, imageURL: product.imageURL)
+                    }
+                }
+                self.productsState = .loaded
+            case .failure(let error):
+                if type == .productIDs {
+                    self.options = []
+                }
+                self.productsState = .notLoaded
+                DDLogError("⛔️ Unable to fetch products for composite component settings: \(error)")
+                // TODO-8956: Display notice about loading error
+            }
+        }
+
+        productsState = .loading
+        stores.dispatch(productAction)
+    }
+
+    /// Syncs the provided categories if the component options are categories.
+    ///
+    func syncCategoriesIfNeeded(siteID: Int64, optionIDs: [Int64], type: CompositeComponentOptionType, stores: StoresManager) {
+        guard type == .categoryIDs && categoriesState == .notLoaded else { return }
+
+        categoriesState = .loading
+
+        // Sync each category individually because we only need the provided categories, which we expect is a small list.
+        // Our other option is a full category sync each time this view loads, which could be very large.
+        var categoryOptions: [ComponentOption] = []
+        for categoryID in optionIDs {
+            let categoryAction = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: categoryID) { [weak self] result in
+                switch result {
+                case .success(let category):
+                    // TODO-8965: Either add support for category images or hide the placeholder in the UI
+                    // We currently don't parse category images from the API response
+                    let option = ComponentOption(id: category.categoryID, title: category.name, imageURL: nil)
+                    categoryOptions.append(option)
+
+                    if categoryID == optionIDs.last { // Replace loading placeholder with synced category options.
+                        self?.options = categoryOptions
+                        self?.categoriesState = .loaded
+                    }
+                case .failure(let error):
+                    // If syncing any of the categories fails, bail and display an error instead of an incomplete list.
+                    self?.options = []
+                    self?.categoriesState = .notLoaded
+                    // TODO-8956: Display notice about loading error
+                    DDLogError("⛔️ Unable to fetch category \(categoryID) for the composite component settings: \(error)")
+                }
+            }
+            stores.dispatch(categoryAction)
+        }
     }
 }
 
@@ -104,4 +237,10 @@ private extension ComponentSettingsViewModel {
                                                   comment: "Info notice at the bottom of the component settings screen")
         static let noDefaultOption = NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product")
     }
+
+    /// Placeholder for the list of component options.
+    ///
+    /// Used in the redacted loading view.
+    ///
+    static let optionsLoadingPlaceholder: [ComponentOption] = [ComponentOption(id: 1, title: "Component Option", imageURL: nil)]
 }

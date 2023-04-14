@@ -7,7 +7,7 @@ struct ComponentSettings: View {
 
     /// View model that directs the view content.
     ///
-    let viewModel: ComponentSettingsViewModel
+    @StateObject var viewModel: ComponentSettingsViewModel
 
     /// Dynamic image width for the component image, also used for its height.
     ///
@@ -24,6 +24,7 @@ struct ComponentSettings: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+                // Component image
                 KFImage(viewModel.imageURL)
                     .placeholder {
                         Image(uiImage: .productPlaceholderImage)
@@ -37,6 +38,7 @@ struct ComponentSettings: View {
                     .padding()
                     .renderedIf(viewModel.shouldShowImage)
 
+                // Component title
                 Text(viewModel.componentTitle)
                     .headlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -47,6 +49,7 @@ struct ComponentSettings: View {
                         .padding(.leading)
                         .padding(.trailing, insets: -safeAreaInsets)
 
+                    // Component description
                     TitleAndSubtitleRow(title: Localization.description, subtitle: viewModel.description)
                 }
                 .renderedIf(viewModel.shouldShowDescription)
@@ -55,6 +58,7 @@ struct ComponentSettings: View {
             .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
 
+            // Component options
             ListHeaderView(text: Localization.componentOptions.uppercased(), alignment: .left)
                 .padding(.horizontal, insets: safeAreaInsets)
             LazyVStack(alignment: .leading, spacing: Layout.sectionSpacing) {
@@ -63,14 +67,19 @@ struct ComponentSettings: View {
                     .padding()
 
                 optionsList
+                    .redacted(reason: viewModel.showOptionsLoadingIndicator ? .placeholder : [])
+                    .shimmering(active: viewModel.showOptionsLoadingIndicator)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
 
+            // Default component option
             TitleAndValueRow(title: Localization.defaultOption, value: .placeholder(viewModel.defaultOptionTitle))
                 .padding(.horizontal, insets: safeAreaInsets)
                 .addingTopAndBottomDividers()
+                .redacted(reason: viewModel.showDefaultOptionLoadingIndicator ? .placeholder : [])
+                .shimmering(active: viewModel.showDefaultOptionLoadingIndicator)
                 .background(Color(.listForeground(modal: false)))
 
             FooterNotice(infoText: viewModel.infoNotice)
@@ -153,8 +162,7 @@ struct ComponentSettings_Previews: PreviewProvider {
                                                            description: "",
                                                            imageURL: nil,
                                                            optionsType: "Products",
-                                                           options: [],
-                                                           defaultOptionTitle: "")
+                                                           options: [])
 
     static var previews: some View {
         ComponentSettings(viewModel: viewModel)

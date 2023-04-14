@@ -55,7 +55,7 @@ public final class SingleProductScreen: ScreenObject {
         case "variable":
             XCTAssertTrue(app.staticTexts["Add variations"].exists)
         default:
-            fatalError("Product Type \(productType) doesn't exist!")
+            XCTFail("Product Type \(productType) doesn't exist!")
         }
     }
 

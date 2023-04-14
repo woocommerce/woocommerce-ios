@@ -113,6 +113,10 @@ final class ComponentSettingsViewModel: ObservableObject {
         productsState == .loading
     }
 
+    /// Indicates if the view should show an error notice.
+    ///
+    var errorNotice: Notice? = nil
+
     init(title: String,
          description: String,
          imageURL: URL?,
@@ -165,7 +169,7 @@ private extension ComponentSettingsViewModel {
                               type: CompositeComponentOptionType,
                               stores: StoresManager) {
         syncProducts(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
-        syncCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, type: type, stores: stores)
+        syncCategoriesIfNeeded(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
     }
 
     /// Syncs products and sets the default option and (if the component options are products) the options list.
@@ -194,7 +198,10 @@ private extension ComponentSettingsViewModel {
                 }
                 self.productsState = .notLoaded
                 DDLogError("⛔️ Unable to fetch products for composite component settings: \(error)")
-                // TODO-8956: Display notice about loading error
+                self.errorNotice = self.createErrorNotice() { [weak self] in
+                    self?.errorNotice = nil
+                    self?.loadComponentOptions(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
+                }
             }
         }
 
@@ -204,7 +211,7 @@ private extension ComponentSettingsViewModel {
 
     /// Syncs the provided categories if the component options are categories.
     ///
-    func syncCategoriesIfNeeded(siteID: Int64, optionIDs: [Int64], type: CompositeComponentOptionType, stores: StoresManager) {
+    func syncCategoriesIfNeeded(siteID: Int64, optionIDs: [Int64], defaultOptionID: Int64?, type: CompositeComponentOptionType, stores: StoresManager) {
         guard type == .categoryIDs && categoriesState == .notLoaded else { return }
 
         categoriesState = .loading
@@ -227,12 +234,21 @@ private extension ComponentSettingsViewModel {
                     // If syncing any of the categories fails, bail and display an error instead of an incomplete list.
                     self?.options = []
                     self?.categoriesState = .notLoaded
-                    // TODO-8956: Display notice about loading error
+                    self?.errorNotice = self?.createErrorNotice() { [weak self] in
+                        self?.errorNotice = nil
+                        self?.loadComponentOptions(siteID: siteID, optionIDs: optionIDs, defaultOptionID: defaultOptionID, type: type, stores: stores)
+                    }
                     DDLogError("⛔️ Unable to fetch category \(categoryID) for the composite component settings: \(error)")
                 }
             }
             stores.dispatch(categoryAction)
         }
+    }
+
+    /// Creates an error notice with the provided retry action
+    ///
+    func createErrorNotice(retryAction: @escaping (() -> Void)) -> Notice {
+        .init(title: Localization.optionsLoadingError, feedbackType: .error, actionTitle: Localization.retry, actionHandler: retryAction)
     }
 }
 
@@ -243,6 +259,9 @@ private extension ComponentSettingsViewModel {
         static let infoNotice = NSLocalizedString("You can edit component settings in the web dashboard.",
                                                   comment: "Info notice at the bottom of the component settings screen")
         static let noDefaultOption = NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product")
+        static let optionsLoadingError = NSLocalizedString("Unable to load all component options",
+                                                            comment: "Error message when component options are not loaded on the component settings screen")
+        static let retry = NSLocalizedString("Retry", comment: "Retry action title")
     }
 
     /// Placeholder for the list of component options.

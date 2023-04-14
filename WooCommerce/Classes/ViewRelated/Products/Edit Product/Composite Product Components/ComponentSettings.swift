@@ -85,6 +85,7 @@ struct ComponentSettings: View {
             FooterNotice(infoText: viewModel.infoNotice)
                 .padding(.horizontal, insets: safeAreaInsets)
         }
+        .notice($viewModel.errorNotice, autoDismiss: false)
         .navigationTitle(viewModel.viewTitle)
         .ignoresSafeArea(edges: .horizontal)
         .background(

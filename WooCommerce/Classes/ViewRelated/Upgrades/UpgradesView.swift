@@ -27,7 +27,7 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
     ///
     private func showUpgradePlanWebView(siteID: Int64, viewModel: UpgradesViewModel) {
         let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .upgradesScreen, onSuccess: {
-            viewModel.loadPlan(forced: true)
+            viewModel.loadPlan()
         })
         present(upgradeController, animated: true)
     }

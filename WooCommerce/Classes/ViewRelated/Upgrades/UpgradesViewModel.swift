@@ -1,23 +1,10 @@
 import Foundation
 import Yosemite
+import Combine
 
 /// ViewModel for the Upgrades View
 ///
 final class UpgradesViewModel: ObservableObject {
-
-    /// Dependency state.
-    ///
-    enum PlanState: Equatable {
-        case notLoaded
-        case loading
-        case loaded(WPComSitePlan)
-    }
-
-    /// Indicates if the view should should a redacted state.
-    ///
-    var showLoadingIndicator: Bool {
-        planState == .loading
-    }
 
     /// Indicates if the view should show an error notice.
     ///
@@ -39,9 +26,13 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private(set) var shouldShowCancelTrialButton = false
 
-    /// Current dependency state.
+    /// Indicates if the view should should a redacted state.
     ///
-    @Published private var planState = PlanState.notLoaded
+    private(set) var showLoadingIndicator = false
+
+    /// Observable subscription store.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
 
     /// Current site id.
     ///
@@ -51,54 +42,76 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Shared store plan synchronizer.
+    ///
+    private let storePlanSynchronizer: StorePlanSynchronizer
+
     /// Analytics provider.
     ///
     private let analytics: Analytics
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics) {
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
+        self.storePlanSynchronizer = storePlanSynchronizer
         self.analytics = analytics
+        observePlan()
     }
 
-    /// Loads the plan from network if needed.
+    /// Loads the plan from network.
     ///
-    func loadPlan(forced: Bool = false) {
-        // Do not fetch the plan anymore if it is loaded, unless a force-load is requested.
-        guard planState == .notLoaded || forced == true else { return }
-
-        planState = .loading
-        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case .success(let plan):
-                self.planState = .loaded(plan)
-                self.updateViewProperties(from: plan)
-            case .failure(let error):
-                self.planState = .notLoaded
-                self.updateViewProperties(from: error)
-            }
-        }
-        stores.dispatch(action)
+    func loadPlan() {
+        storePlanSynchronizer.reloadPlan()
     }
 }
 
 // MARK: Helpers
 private extension UpgradesViewModel {
+    /// Observes and reacts to plan changes
+    ///
+    func observePlan() {
+        storePlanSynchronizer.$planState.sink { [weak self] planState in
+            guard let self else { return }
+            switch planState {
+            case .loading:
+                self.updateLoadingViewProperties()
+            case .loaded(let plan):
+                self.updateViewProperties(from: plan)
+            case .failed:
+                self.updateFailedViewProperties()
+            case .notLoaded:
+                break // No-op
+            }
+            self.objectWillChange.send()
+        }
+        .store(in: &subscriptions)
+    }
+
     func updateViewProperties(from plan: WPComSitePlan) {
         planName = Self.getPlanName(from: plan)
         planInfo = Self.getPlanInfo(from: plan)
         shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan)
         errorNotice = nil
+        showLoadingIndicator = false
     }
 
-    func updateViewProperties(from error: Error) {
-        DDLogError("⛔️ Unable to fetch site's plan: \(error)")
+    func updateLoadingViewProperties() {
+        planName = ""
+        planInfo = ""
+        shouldShowUpgradeButton = false
+        errorNotice = nil
+        showLoadingIndicator = true
+    }
+
+    func updateFailedViewProperties() {
         planName = ""
         planInfo = ""
         shouldShowUpgradeButton = false
         errorNotice = createErrorNotice()
+        showLoadingIndicator = false
     }
 
     /// Removes any occurrences of `WordPress.com` from the site's name.
@@ -189,7 +202,7 @@ private extension UpgradesViewModel {
     ///
     func createErrorNotice() -> Notice {
         .init(title: Localization.fetchErrorNotice, feedbackType: .error, actionTitle: Localization.retry) { [weak self] in
-            self?.loadPlan()
+             self?.loadPlan()
         }
     }
 }

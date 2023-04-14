@@ -14,6 +14,7 @@ final class StorePlanSynchronizer: ObservableObject {
         case loading
         case loaded(WPComSitePlan)
         case failed
+        case unavailable
     }
 
     /// Current synced plan.
@@ -46,9 +47,15 @@ final class StorePlanSynchronizer: ObservableObject {
     /// Loads the plan from network
     ///
     func reloadPlan() {
-        // If there is no logged-in site or the site is not a WPCom site, set the plan to `.failed`
-        guard let siteID = site?.siteID, site?.isWordPressComStore == true else {
-            planState = .failed
+        // If there is no logged-in site set the state to `.notLoaded`
+        guard let site else {
+            planState = .notLoaded
+            return
+        }
+
+        // If the site is not a WPCom store set the state to `.unavailable`
+        guard site.isWordPressComStore else {
+            planState = .unavailable
             return
         }
 
@@ -56,7 +63,7 @@ final class StorePlanSynchronizer: ObservableObject {
         guard planState != .loading else { return }
 
         planState = .loading
-        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
+            let action = PaymentAction.loadSiteCurrentPlan(siteID: site.siteID) { [weak self] result in
             guard let self else { return }
 
             switch result {

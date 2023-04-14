@@ -76,14 +76,12 @@ private extension UpgradesViewModel {
         storePlanSynchronizer.$planState.sink { [weak self] planState in
             guard let self else { return }
             switch planState {
-            case .loading:
+            case .loading, .notLoaded:
                 self.updateLoadingViewProperties()
             case .loaded(let plan):
                 self.updateViewProperties(from: plan)
-            case .failed:
+            case .failed, .unavailable:
                 self.updateFailedViewProperties()
-            case .notLoaded:
-                break // No-op
             }
             self.objectWillChange.send()
         }

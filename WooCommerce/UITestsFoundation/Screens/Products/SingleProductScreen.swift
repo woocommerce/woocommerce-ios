@@ -42,9 +42,6 @@ public final class SingleProductScreen: ScreenObject {
     }
 
     public func verifyPublishedProductScreenLoaded(productType: String, productName: String) {
-        let priceLabel = NSPredicate(format: "label == 'Price'")
-        let addVariationLabel = NSPredicate(format: "label == 'Add variations'")
-
         // common fields on a published product screen
         XCTAssertTrue(app.buttons["save-product-button"].exists)
         XCTAssertTrue(app.staticTexts["TIP"].exists)
@@ -54,19 +51,16 @@ public final class SingleProductScreen: ScreenObject {
         // this is to validate that the correct screens are displayed
         switch productType {
         case "physical", "virtual":
-            XCTAssertTrue(app.staticTexts.containing(priceLabel).firstMatch.exists)
+            XCTAssertTrue(app.staticTexts["Price"].exists)
         case "variable":
-            XCTAssertTrue(app.staticTexts.containing(addVariationLabel).firstMatch.exists)
+            XCTAssertTrue(app.staticTexts["Add variations"].exists)
         default:
             fatalError("Product Type \(productType) doesn't exist!")
         }
     }
 
     public func verifyProductTypeScreenLoaded(productType: String) throws -> Self {
-        let addPriceLabel = NSPredicate(format: "label == 'Add Price'")
-        let inventoryLabel = NSPredicate(format: "label == 'Inventory'")
         let productTypeLabel = NSPredicate(format: "label ==[c] '\(productType)'")
-        let addVariationLabel = NSPredicate(format: "label == 'Add variations'")
 
         // the common fields on add product screen
         XCTAssertTrue(app.cells["product-review-cell"].exists)
@@ -76,11 +70,11 @@ public final class SingleProductScreen: ScreenObject {
         // this is to validate that the correct screens are displayed
         switch productType {
         case "physical", "virtual":
-            XCTAssertTrue(app.staticTexts.containing(addPriceLabel).firstMatch.exists)
-            XCTAssertTrue(app.staticTexts.containing(inventoryLabel).firstMatch.exists)
+            XCTAssertTrue(app.staticTexts["Add Price"].exists)
+            XCTAssertTrue(app.staticTexts["Inventory"].exists)
         case "variable":
-            XCTAssertTrue(app.staticTexts.containing(addVariationLabel).firstMatch.exists)
-            XCTAssertTrue(app.staticTexts.containing(inventoryLabel).firstMatch.exists)
+            XCTAssertTrue(app.staticTexts["Add variations"].exists)
+            XCTAssertTrue(app.staticTexts["Inventory"].exists)
         default:
             XCTFail("Product Type \(productType) doesn't exist!")
         }

@@ -761,7 +761,7 @@ final class ProductStoreTests: XCTestCase {
 
     func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_returns_them_sorted() {
         let productIDs: [Int64] = [1, 2, 3]
-        preparePopularProductsSamples(with: productIDs)
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: productIDs)
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -780,7 +780,7 @@ final class ProductStoreTests: XCTestCase {
     }
 
     func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_orders_are_not_completed_returns_empty_array() {
-        preparePopularProductsSamples(with: [1, 2, 3], orderStatus: .pending)
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: [1, 2, 3], orderStatus: .pending)
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -797,7 +797,7 @@ final class ProductStoreTests: XCTestCase {
     }
 
     func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_siteID_is_different_returns_empty_array() {
-        preparePopularProductsSamples(with: [1, 2, 3])
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: [1, 2, 3])
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -817,7 +817,7 @@ final class ProductStoreTests: XCTestCase {
 
     func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_returns_them_sorted() {
         let productIDs: [Int64] = [1, 2, 3]
-        prepareRecentlySoldProductSamples(with: productIDs)
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: productIDs)
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -836,7 +836,7 @@ final class ProductStoreTests: XCTestCase {
     }
 
     func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_but_orders_are_not_completed_returns_empty_array() {
-        prepareRecentlySoldProductSamples(with: [1, 2, 3], orderStatus: .pending)
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: [1, 2, 3], orderStatus: .pending)
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -853,7 +853,7 @@ final class ProductStoreTests: XCTestCase {
     }
 
     func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_but_siteID_is_different_returns_empty_array() {
-        prepareRecentlySoldProductSamples(with: [1, 2, 3])
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: [1, 2, 3])
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -2271,8 +2271,8 @@ private extension ProductStoreTests {
         return [topping, soda, delivery]
     }
 
-    func preparePopularProductsSamples(with productIDs: [Int64], orderStatus: OrderStatusEnum = .completed) {
-        productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: $0))}
+    func preparePopularProductsSamples(with siteID: Int64, productIDs: [Int64], orderStatus: OrderStatusEnum = .completed) {
+        productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, productID: $0))}
 
         let orderItems = productIDs.map { OrderItem.fake().copy(productID: $0) }
         let orders = (0 ..< 3).map { _ in Order.fake().copy(siteID: sampleSiteID, status: orderStatus) }

@@ -28,9 +28,11 @@ final class AccountCreationFormViewModel: ObservableObject {
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(debounceDuration: Double = Constants.fieldDebounceDuration,
+    init(email: String = "",
+         debounceDuration: Double = Constants.fieldDebounceDuration,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
+        self.email = email
         self.stores = stores
         self.analytics = analytics
 
@@ -89,8 +91,6 @@ private extension AccountCreationFormViewModel {
     @MainActor
     func handleFailure(error: CreateAccountError) {
         switch error {
-        case .emailExists:
-            emailErrorMessage = Localization.emailExistsError
         case .invalidEmail:
             emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
@@ -119,8 +119,6 @@ private extension AccountCreationFormViewModel {
     }
 
     enum Localization {
-        static let emailExistsError = NSLocalizedString("An account with this email already exists.",
-                                                        comment: "Account creation error when the email is already associated with an existing WP.com account.")
         static let invalidEmailError = NSLocalizedString("Use a working email address, so you can receive our messages.",
                                                          comment: "Account creation error when the email is invalid.")
         static let passwordError = NSLocalizedString("Password must be at least 6 characters.",

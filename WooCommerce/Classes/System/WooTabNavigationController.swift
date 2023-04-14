@@ -5,12 +5,7 @@ import UIKit
 /// The following view controllers can override `preferredLargeTitleDisplayMode` function to change the large title display mode.
 final class WooTabNavigationController: WooNavigationController {
 
-    /// Site plan synchronizer. Used to fetch the current plan of a store and show the trial banner if needed.
-    ///
-    private let sitePlanSynchronizer: StorePlanSynchronizer
-
-    init(sitePlanSynchronizer: StorePlanSynchronizer) {
-        self.sitePlanSynchronizer = sitePlanSynchronizer
+    init() {
         super.init(nibName: nil, bundle: nil)
         navigationBar.prefersLargeTitles = true
         delegate = self

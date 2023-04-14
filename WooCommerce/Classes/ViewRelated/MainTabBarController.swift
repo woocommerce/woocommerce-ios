@@ -86,17 +86,13 @@ final class MainTabBarController: UITabBarController {
     ///
     private let viewModel = MainTabViewModel()
 
-    /// Shared plan synchronizer.
-    ///
-    private static let sitePlanSynchronizer = StorePlanSynchronizer()
-
     /// Tab view controllers
     ///
-    private let dashboardNavigationController = WooTabNavigationController(sitePlanSynchronizer: sitePlanSynchronizer)
-    private let ordersNavigationController = WooTabNavigationController(sitePlanSynchronizer: sitePlanSynchronizer)
-    private let productsNavigationController = WooTabNavigationController(sitePlanSynchronizer: sitePlanSynchronizer)
-    private let reviewsNavigationController = WooTabNavigationController(sitePlanSynchronizer: sitePlanSynchronizer)
-    private let hubMenuNavigationController = WooTabNavigationController(sitePlanSynchronizer: sitePlanSynchronizer)
+    private let dashboardNavigationController = WooTabNavigationController()
+    private let ordersNavigationController = WooTabNavigationController()
+    private let productsNavigationController = WooTabNavigationController()
+    private let reviewsNavigationController = WooTabNavigationController()
+    private let hubMenuNavigationController = WooTabNavigationController()
     private var reviewsTabCoordinator: ReviewsCoordinator?
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
@@ -522,7 +518,7 @@ private extension MainTabBarController {
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
         if isOrdersSplitViewFeatureFlagOn {
-            return OrdersSplitViewWrapperController(siteID: siteID, sitePlanSynchronizer: Self.sitePlanSynchronizer)
+            return OrdersSplitViewWrapperController(siteID: siteID)
         } else {
             return OrdersRootViewController(siteID: siteID)
         }

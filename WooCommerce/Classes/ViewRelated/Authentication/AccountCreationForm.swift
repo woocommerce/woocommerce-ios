@@ -1,17 +1,23 @@
 import SwiftUI
 import enum WordPressAuthenticator.SignInSource
 import struct WordPressAuthenticator.NavigateToEnterAccount
+import enum Yosemite.CreateAccountError
 
 /// Hosting controller that wraps an `AccountCreationForm`.
 final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {
     private let analytics: Analytics
+    private let signInSource: SignInSource
+    private let completion: () -> Void
 
-    init(viewModel: AccountCreationFormViewModel,
+    init(field: AccountCreationForm.Field = .email,
+         viewModel: AccountCreationFormViewModel,
          signInSource: SignInSource,
          analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void) {
         self.analytics = analytics
-        super.init(rootView: AccountCreationForm(viewModel: viewModel))
+        self.signInSource = signInSource
+        self.completion = completion
+        super.init(rootView: AccountCreationForm(field: field, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController.
         rootView.completion = {
@@ -26,16 +32,36 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
             let command = NavigateToEnterAccount(signInSource: signInSource)
             command.execute(from: self)
         }
+
+        rootView.emailSubmissionHandler = { [weak self] email, isExisting in
+            self?.handleEmailSubmission(email: email, isExisting: isExisting)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    private func handleEmailSubmission(email: String, isExisting: Bool) {
+        guard !isExisting else {
+            /// Navigates to login with the existing email address.
+            let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
+            command.execute(from: self)
+            return
+        }
+        /// Navigates to password field for account creation
+        let viewModel = AccountCreationFormViewModel(email: email)
+        let passwordView = AccountCreationFormHostingController(field: .password,
+                                                                viewModel: viewModel,
+                                                                signInSource: signInSource,
+                                                                completion: completion)
+        navigationController?.show(passwordView, sender: nil)
+    }
 }
 
 /// A form that allows the user to create a WPCOM account with an email and password.
 struct AccountCreationForm: View {
-    private enum Field: Hashable {
+    enum Field: Equatable {
         case email
         case password
     }
@@ -46,15 +72,30 @@ struct AccountCreationForm: View {
     /// Triggered when the user taps on the login CTA.
     var loginButtonTapped: (() -> Void) = {}
 
+    /// Triggered when the user submits an email address.
+    var emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void) = { _, _ in }
+
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
     @State private var isPerformingTask = false
     @State private var tosURL: URL?
 
-    @FocusState private var focusedField: Field?
+    @FocusState private var isFocused: Bool
 
-    init(viewModel: AccountCreationFormViewModel) {
+    private let field: Field
+
+    private var isSubmitButtonDisabled: Bool {
+        switch field {
+        case .email:
+            return !viewModel.isEmailValid || isPerformingTask
+        case .password:
+            return !viewModel.isPasswordValid || isPerformingTask
+        }
+    }
+
+    init(field: Field, viewModel: AccountCreationFormViewModel) {
         self.viewModel = viewModel
+        self.field = field
     }
 
     var body: some View {
@@ -63,7 +104,7 @@ struct AccountCreationForm: View {
                 // Header.
                 VStack(alignment: .leading, spacing: Layout.horizontalSpacing) {
                     // Title label.
-                    Text(Localization.title)
+                    Text(field == .email ? Localization.title : Localization.titleForPassword)
                         .largeTitleStyle()
                     VStack(alignment: .leading, spacing: 0) {
                         // Subtitle label.
@@ -82,11 +123,12 @@ struct AccountCreationForm: View {
                                                                   text: $viewModel.email,
                                                                   isSecure: false,
                                                                   errorMessage: viewModel.emailErrorMessage,
-                                                                  isFocused: focusedField == .email))
+                                                                  isFocused: isFocused))
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
-                    .focused($focusedField, equals: .email)
+                    .focused($isFocused)
                     .disabled(isPerformingTask)
+                    .renderedIf(field == .email)
 
                     // Password field.
                     AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
@@ -95,12 +137,12 @@ struct AccountCreationForm: View {
                                                                   text: $viewModel.password,
                                                                   isSecure: true,
                                                                   errorMessage: viewModel.passwordErrorMessage,
-                                                                  isFocused: focusedField == .password))
+                                                                  isFocused: isFocused))
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
-                    .focused($focusedField, equals: .password)
+                    .focused($isFocused)
                     .disabled(isPerformingTask)
-                    .renderedIf(viewModel.shouldShowPasswordField)
+                    .renderedIf(field == .password)
 
                     // Terms of Service link.
                     AttributedText(tosAttributedText, enablesLinkUnderline: true)
@@ -126,16 +168,21 @@ struct AccountCreationForm: View {
                 Button(Localization.submitButtonTitle.localizedCapitalized) {
                     Task { @MainActor in
                         isPerformingTask = true
-                        let createAccountCompleted = (try? await viewModel.createAccount()) != nil
-                        isPerformingTask = false
-
-                        if createAccountCompleted {
+                        do {
+                            try await viewModel.createAccount()
                             completion()
+                        } catch CreateAccountError.emailExists {
+                            emailSubmissionHandler(viewModel.email, true)
+                        } catch CreateAccountError.invalidPassword where field == .email {
+                            emailSubmissionHandler(viewModel.email, false)
+                        } catch {
+                            // No-op
                         }
+                        isPerformingTask = false
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPerformingTask))
-                .disabled(!(viewModel.isEmailValid && viewModel.isPasswordValid) || isPerformingTask)
+                .disabled(isSubmitButtonDisabled)
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
@@ -171,6 +218,7 @@ private extension AccountCreationForm {
 
     enum Localization {
         static let title = NSLocalizedString("Get started in minutes", comment: "Title for the account creation form.")
+        static let titleForPassword = NSLocalizedString("Create your password", comment: "Title for the account creation form to create new password.")
         static let subtitle = NSLocalizedString("First, let’s create your account.", comment: "Subtitle for the account creation form.")
         static let loginButtonTitle = NSLocalizedString("Log in", comment: "Title of the login button on the account creation form.")
         static let emailFieldTitle = NSLocalizedString("Your email address", comment: "Title of the email field on the account creation form.")
@@ -191,10 +239,10 @@ private extension AccountCreationForm {
 
 struct AccountCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        AccountCreationForm(viewModel: .init())
+        AccountCreationForm(field: .email, viewModel: .init())
             .preferredColorScheme(.light)
 
-        AccountCreationForm(viewModel: .init())
+        AccountCreationForm(field: .password, viewModel: .init())
             .preferredColorScheme(.dark)
             .dynamicTypeSize(.xxxLarge)
     }

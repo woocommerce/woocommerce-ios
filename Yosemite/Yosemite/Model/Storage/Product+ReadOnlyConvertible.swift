@@ -174,7 +174,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        bundleStockStatus: productBundleStockStatus,
                        bundleStockQuantity: bundleStockQuantity as? Int64,
                        bundledItems: bundledItemsArray.map { $0.toReadOnly() },
-                       compositeComponents: compositeComponentsArray.map { $0.toReadOnly() })
+                       compositeComponents: compositeComponentsArray.map { $0.toReadOnly() },
+                       subscription: nil) // TODO: Convert the subscription
     }
 
     // MARK: - Private Helpers

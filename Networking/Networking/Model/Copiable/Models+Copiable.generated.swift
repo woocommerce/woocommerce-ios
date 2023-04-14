@@ -1056,7 +1056,8 @@ extension Networking.Product {
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
-        compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy
+        compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
+        subscription: NullableCopiableProp<ProductSubscription> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1125,6 +1126,7 @@ extension Networking.Product {
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
         let bundledItems = bundledItems ?? self.bundledItems
         let compositeComponents = compositeComponents ?? self.compositeComponents
+        let subscription = subscription ?? self.subscription
 
         return Networking.Product(
             siteID: siteID,
@@ -1193,7 +1195,8 @@ extension Networking.Product {
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
             bundledItems: bundledItems,
-            compositeComponents: compositeComponents
+            compositeComponents: compositeComponents,
+            subscription: subscription
         )
     }
 }

@@ -562,24 +562,28 @@ private extension ProductSelectorViewModel {
             }
     }
 
-    func createSectionsAddingTopProductsIfRequired(from products: [Product]) {
+    func createSectionsAddingTopProductsIfRequired(from baseProducts: [Product]) {
         guard popularProducts.isNotEmpty,
               shouldShowTopProducts else {
-            sections = [ProductsSection(type: .restOfProducts, products: products)]
+            sections = [ProductsSection(type: .restOfProducts, products: baseProducts)]
             return
         }
 
         sections = [ProductsSection(type: .mostPopular, products: popularProducts)]
 
-        let addingLastSoldProducts = lastSoldProducts.filter { !popularProducts.contains($0) }
+        appendSectionIfNotEmpty(type: .lastSold, products: lastSoldProducts
+            .filter { !popularProducts.contains($0) })
 
-        // We have last sold products
-        if addingLastSoldProducts.isNotEmpty {
-            sections.append(ProductsSection(type: .lastSold, products: addingLastSoldProducts))
+        appendSectionIfNotEmpty(type: .restOfProducts, products: baseProducts
+            .filter { !products.contains($0) })
+    }
+
+    func appendSectionIfNotEmpty(type: ProductsSectionType, products: [Product]) {
+        guard products.isNotEmpty else {
+            return
         }
 
-        let remainingProducts = products.filter { !(popularProducts + addingLastSoldProducts).contains($0) }
-        sections.append(ProductsSection(type: .restOfProducts, products: remainingProducts))
+        sections.append(ProductsSection(type: type, products: products))
     }
 
     func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters) {

@@ -11,11 +11,26 @@ struct ProductsSectionViewModel: Identifiable {
     let productRows: [ProductRowViewModel]
 }
 
-/// Intermediate object to encapsulate information about sections before the `productRows` are created
-///
 private struct ProductsSection {
-    let title: String
-    let indexesRange: ClosedRange<Int>
+    let type: ProductsSectionType
+    let products: [Product]
+}
+
+private enum ProductsSectionType {
+    case mostPopular
+    case lastSold
+    case restOfProducts
+
+    var title: String {
+        switch self {
+        case .mostPopular:
+            return ProductSelectorViewModel.Localization.popularProductsSectionTitle
+        case .lastSold:
+            return ProductSelectorViewModel.Localization.lastSoldProductsSectionTitle
+        case .restOfProducts:
+            return ProductSelectorViewModel.Localization.productsSectionTitle
+        }
+    }
 }
 
 /// View model for `ProductSelectorView`.
@@ -64,11 +79,11 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// All products that can be added to an order.
     ///
-    @Published private var products: [Product] = []
-
-    /// View models for each product row
-    ///
-    @Published private(set) var productRows: [ProductRowViewModel] = []
+    private var products: [Product] {
+        sections
+            .map { $0.products }
+            .flatMap { $0 }
+    }
 
     /// Popular products, that is, most sold products in cache
     ///
@@ -76,7 +91,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Most recently sold products
     ///
-    private var mostRecentlySoldProducts: [Product] = []
+    private var lastSoldProducts: [Product] = []
 
     private var shouldShowTopProducts: Bool {
         searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
@@ -84,13 +99,11 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Sections containing products
     ///
-    private var sections: [ProductsSection] = []
+    @Published private var sections: [ProductsSection] = []
 
     /// View Models for the sections
     /// 
-    var productsSectionViewModels: [ProductsSectionViewModel] {
-        sections.map { ProductsSectionViewModel(title: $0.title, productRows: Array(productRows[$0.indexesRange])) }
-    }
+    @Published var productsSectionViewModels: [ProductsSectionViewModel] = []
 
     /// Determines if multiple item selection is supported.
     ///
@@ -541,8 +554,7 @@ private extension ProductSelectorViewModel {
                     loadedProducts = productsResultsController.fetchedObjects
                 }
 
-                products = addTopProductsIfRequired(to: loadedProducts)
-                updateSections()
+                createSectionsAddingTopProductsIfRequired(from: loadedProducts)
                 updateSelectionsFromInitialSelectedItems()
                 observeSelections()
             } catch {
@@ -550,41 +562,24 @@ private extension ProductSelectorViewModel {
             }
     }
 
-    /// Add the top products (popular, last sold) if necessary
-    /// 
-    func addTopProductsIfRequired(to products: [Product]) -> [Product] {
-        guard shouldShowTopProducts else {
-            return products
-        }
-
-        return (popularProducts + mostRecentlySoldProducts + products).uniqued()
-    }
-
-    /// Keeps track of the sections ranges so the view models can be composed on demand.
-    ///
-    func updateSections() {
-        guard products.isNotEmpty else { return }
-
-        guard shouldShowTopProducts else {
-            sections = [ProductsSection(title: Localization.productsSectionTitle, indexesRange: 0...products.count-1)]
+    func createSectionsAddingTopProductsIfRequired(from products: [Product]) {
+        guard popularProducts.isNotEmpty,
+              shouldShowTopProducts else {
+            sections = [ProductsSection(type: .restOfProducts, products: products)]
             return
         }
 
-        let topProducts = (popularProducts + mostRecentlySoldProducts).uniqued()
+        sections = [ProductsSection(type: .mostPopular, products: popularProducts)]
 
-        guard topProducts.isNotEmpty else {
-            sections = [ProductsSection(title: Localization.productsSectionTitle, indexesRange: 0...products.count-1)]
-            return
-        }
-
-        sections = [ProductsSection(title: Localization.popularProductsSectionTitle, indexesRange: 0...popularProducts.count-1)]
+        let addingLastSoldProducts = lastSoldProducts.filter { !popularProducts.contains($0) }
 
         // We have last sold products
-        if topProducts.count > popularProducts.count {
-            sections.append(ProductsSection(title: Localization.lastSoldProductsSectionTitle, indexesRange: popularProducts.count...topProducts.count-1))
+        if addingLastSoldProducts.isNotEmpty {
+            sections.append(ProductsSection(type: .lastSold, products: addingLastSoldProducts))
         }
 
-        sections.append(ProductsSection(title: Localization.productsSectionTitle, indexesRange: topProducts.count...products.count-1))
+        let remainingProducts = products.filter { !(popularProducts + addingLastSoldProducts).contains($0) }
+        sections.append(ProductsSection(type: .restOfProducts, products: remainingProducts))
     }
 
     func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters) {
@@ -673,7 +668,7 @@ private extension ProductSelectorViewModel {
             guard let self = self else { return }
 
             let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: siteID, onCompletion: { products in
-                self.mostRecentlySoldProducts = self.refineTopProducts(products)
+                self.lastSoldProducts = self.refineTopProducts(products)
                 continuation.resume(returning: ())
             })
 
@@ -742,15 +737,24 @@ private extension ProductSelectorViewModel {
     /// Observes changes in selections to update product rows
     ///
     func observeSelections() {
-        $products.combineLatest($selectedProductIDs, $selectedProductVariationIDs) {
-            [weak self] products, selectedProductIDs, selectedVariationIDs -> [ProductRowViewModel] in
+        $sections.combineLatest($selectedProductIDs, $selectedProductVariationIDs) {
+            [weak self] sections, selectedProductIDs, selectedVariationIDs -> [ProductsSectionViewModel] in
             guard let self = self else {
                 return []
             }
-            return self.generateProductRows(products: products,
+            return self.generateProductsSectionViewModels(sections: sections,
                                             selectedProductIDs: selectedProductIDs,
                                             selectedProductVariationIDs: selectedVariationIDs)
-        }.assign(to: &$productRows)
+        }.assign(to: &$productsSectionViewModels)
+    }
+
+    func generateProductsSectionViewModels(sections: [ProductsSection],
+                                           selectedProductIDs: [Int64],
+                                           selectedProductVariationIDs: [Int64]) -> [ProductsSectionViewModel] {
+        sections.map { ProductsSectionViewModel(title: $0.type.title,
+                                                productRows: generateProductRows(products: $0.products,
+                                                                                 selectedProductIDs: selectedProductIDs,
+                                                                                 selectedProductVariationIDs: selectedProductVariationIDs)) }
     }
 
     /// Generates product rows based on products and selected product/variation IDs

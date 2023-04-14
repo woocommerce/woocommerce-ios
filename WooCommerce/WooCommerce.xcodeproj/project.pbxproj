@@ -1272,6 +1272,7 @@
 		80C3626F277453E8005CEAD3 /* ReviewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C3626E277453E7005CEAD3 /* ReviewsTests.swift */; };
 		80C3627127745737005CEAD3 /* ReviewDataStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C3627027745737005CEAD3 /* ReviewDataStructs.swift */; };
 		80C362732779A7EF005CEAD3 /* products_reviews_all.json in Resources */ = {isa = PBXBuildFile; fileRef = 80C362722779A7EF005CEAD3 /* products_reviews_all.json */; };
+		80C5D4E129E90DAC00352EC7 /* UniversalLinksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C5D4E029E90DAC00352EC7 /* UniversalLinksTests.swift */; };
 		80CA638929C05E7B002E6BE6 /* PaymentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA638829C05E7B002E6BE6 /* PaymentsTests.swift */; };
 		80CA638C29C06029002E6BE6 /* PaymentsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CA638B29C06029002E6BE6 /* PaymentsScreen.swift */; };
 		80CC80E829DEA3C700CA1687 /* ExternalAppScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC80E629DE74D400CA1687 /* ExternalAppScreen.swift */; };
@@ -3465,6 +3466,7 @@
 		80C3626E277453E7005CEAD3 /* ReviewsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewsTests.swift; sourceTree = "<group>"; };
 		80C3627027745737005CEAD3 /* ReviewDataStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewDataStructs.swift; sourceTree = "<group>"; };
 		80C362722779A7EF005CEAD3 /* products_reviews_all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = products_reviews_all.json; sourceTree = "<group>"; };
+		80C5D4E029E90DAC00352EC7 /* UniversalLinksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinksTests.swift; sourceTree = "<group>"; };
 		80CA638829C05E7B002E6BE6 /* PaymentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsTests.swift; sourceTree = "<group>"; };
 		80CA638B29C06029002E6BE6 /* PaymentsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsScreen.swift; sourceTree = "<group>"; };
 		80CC80E629DE74D400CA1687 /* ExternalAppScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalAppScreen.swift; sourceTree = "<group>"; };
@@ -8426,6 +8428,7 @@
 				80C3626E277453E7005CEAD3 /* ReviewsTests.swift */,
 				80AD2CA327858BAB00A63DE8 /* StatsTests.swift */,
 				80CA638829C05E7B002E6BE6 /* PaymentsTests.swift */,
+				80C5D4E029E90DAC00352EC7 /* UniversalLinksTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -12550,6 +12553,7 @@
 				80E6FC79276C3FD60086CD67 /* MockDataReader.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,
 				80CA638929C05E7B002E6BE6 /* PaymentsTests.swift in Sources */,
+				80C5D4E129E90DAC00352EC7 /* UniversalLinksTests.swift in Sources */,
 				80089F182949B92D0078C671 /* ProductFlow.swift in Sources */,
 				800A5B58275483D6009DE2CD /* OrdersTests.swift in Sources */,
 				80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */,

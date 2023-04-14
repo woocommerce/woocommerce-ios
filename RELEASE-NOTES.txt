@@ -5,6 +5,7 @@
 - [Internal] Store creation: New loading screen added for create store flow. [https://github.com/woocommerce/woocommerce-ios/pull/9383]
 - [*] Payments: Add account type field to receipts [https://github.com/woocommerce/woocommerce-ios/pull/9416]
 - [*] Products can now be filtered within Order creation [https://github.com/woocommerce/woocommerce-ios/pull/9258]
+- [*] Products: Adds read-only support for the Composite Products extension in the Products list, including a list of components in product details. [https://github.com/woocommerce/woocommerce-ios/pull/9455]
 
 
 13.1

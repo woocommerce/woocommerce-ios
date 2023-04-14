@@ -78,6 +78,10 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private var mostRecentlySoldProducts: [Product] = []
 
+    private var shouldShowTopProducts: Bool {
+        searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
+    }
+
     /// Sections containing products
     ///
     private var sections: [ProductsSection] = []
@@ -549,7 +553,7 @@ private extension ProductSelectorViewModel {
     /// Add the top products (popular, last sold) if necessary
     /// 
     func addTopProductsIfRequired(to products: [Product]) -> [Product] {
-        guard searchTerm.isEmpty else {
+        guard shouldShowTopProducts else {
             return products
         }
 
@@ -561,7 +565,7 @@ private extension ProductSelectorViewModel {
     func updateSections() {
         guard products.isNotEmpty else { return }
 
-        guard searchTerm.isEmpty else {
+        guard shouldShowTopProducts else {
             sections = [ProductsSection(title: Localization.productsSectionTitle, indexesRange: 0...products.count-1)]
             return
         }

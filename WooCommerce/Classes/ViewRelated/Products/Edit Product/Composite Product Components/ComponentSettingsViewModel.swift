@@ -222,7 +222,6 @@ private extension ComponentSettingsViewModel {
                     self?.categoriesState = .notLoaded
                     // TODO-8956: Display notice about loading error
                     DDLogError("⛔️ Unable to fetch category \(categoryID) for the composite component settings: \(error)")
-                    break
                 }
             }
             stores.dispatch(categoryAction)

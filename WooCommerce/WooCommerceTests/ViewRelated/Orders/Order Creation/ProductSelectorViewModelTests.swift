@@ -1077,3 +1077,9 @@ private extension ProductSelectorViewModelTests {
         }
     }
 }
+
+private extension ProductSelectorViewModel {
+    var productRows: [ProductRowViewModel] {
+        productsSectionViewModels.flatMap { $0.productRows }
+    }
+}

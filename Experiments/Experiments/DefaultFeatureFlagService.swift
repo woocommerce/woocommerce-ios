@@ -88,7 +88,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .IPPUKExpansion:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

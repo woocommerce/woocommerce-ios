@@ -1469,7 +1469,8 @@ extension Networking.ProductVariation {
         dimensions: CopiableProp<ProductDimensions> = .copy,
         shippingClass: NullableCopiableProp<String> = .copy,
         shippingClassID: CopiableProp<Int64> = .copy,
-        menuOrder: CopiableProp<Int64> = .copy
+        menuOrder: CopiableProp<Int64> = .copy,
+        subscription: NullableCopiableProp<ProductSubscription> = .copy
     ) -> Networking.ProductVariation {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1507,6 +1508,7 @@ extension Networking.ProductVariation {
         let shippingClass = shippingClass ?? self.shippingClass
         let shippingClassID = shippingClassID ?? self.shippingClassID
         let menuOrder = menuOrder ?? self.menuOrder
+        let subscription = subscription ?? self.subscription
 
         return Networking.ProductVariation(
             siteID: siteID,
@@ -1544,7 +1546,8 @@ extension Networking.ProductVariation {
             dimensions: dimensions,
             shippingClass: shippingClass,
             shippingClassID: shippingClassID,
-            menuOrder: menuOrder
+            menuOrder: menuOrder,
+            subscription: subscription
         )
     }
 }

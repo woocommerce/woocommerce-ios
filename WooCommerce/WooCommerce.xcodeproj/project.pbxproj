@@ -953,7 +953,6 @@
 		4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4541D889270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift */; };
 		454453C82755171E00464AC5 /* HubMenuCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454453C72755171E00464AC5 /* HubMenuCoordinatorTests.swift */; };
 		454453CA27566CDE00464AC5 /* HubMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454453C927566CDE00464AC5 /* HubMenuViewModel.swift */; };
-		454453CC27566FAE00464AC5 /* HubMenuElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454453CB27566FAE00464AC5 /* HubMenuElement.swift */; };
 		45455E322657C3F300BBB0C4 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 45455E312657C3F300BBB0C4 /* Shimmer */; };
 		45455EFA26580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45455EF926580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift */; };
 		4546E09A271F0942003836F3 /* FilteredOrdersHeaderBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4546E098271F0942003836F3 /* FilteredOrdersHeaderBar.swift */; };
@@ -3150,7 +3149,6 @@
 		4541D889270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarriersSectionViewModel.swift; sourceTree = "<group>"; };
 		454453C72755171E00464AC5 /* HubMenuCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuCoordinatorTests.swift; sourceTree = "<group>"; };
 		454453C927566CDE00464AC5 /* HubMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuViewModel.swift; sourceTree = "<group>"; };
-		454453CB27566FAE00464AC5 /* HubMenuElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuElement.swift; sourceTree = "<group>"; };
 		45455EF926580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierRowViewModel.swift; sourceTree = "<group>"; };
 		4546E098271F0942003836F3 /* FilteredOrdersHeaderBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredOrdersHeaderBar.swift; sourceTree = "<group>"; };
 		4546E099271F0942003836F3 /* FilteredOrdersHeaderBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FilteredOrdersHeaderBar.xib; sourceTree = "<group>"; };
@@ -6729,7 +6727,6 @@
 				45BBFBC2274FDA6400213001 /* HubMenuViewController.swift */,
 				45BBFBC4274FDCE900213001 /* HubMenu.swift */,
 				454453C927566CDE00464AC5 /* HubMenuViewModel.swift */,
-				454453CB27566FAE00464AC5 /* HubMenuElement.swift */,
 			);
 			path = "Hub Menu";
 			sourceTree = "<group>";
@@ -11676,7 +11673,6 @@
 				B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */,
 				45C8B2662316AB460002FA77 /* BillingAddressTableViewCell.swift in Sources */,
 				E11228BC2707161E004E9F2D /* CardPresentModalUpdateFailed.swift in Sources */,
-				454453CC27566FAE00464AC5 /* HubMenuElement.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
 				4512054F2464741B005D68DE /* ProductVisibility.swift in Sources */,
 				45A4221A24ACC79C003B1E4C /* SwitchStoreNoticePresenter.swift in Sources */,

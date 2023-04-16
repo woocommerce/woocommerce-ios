@@ -103,7 +103,7 @@ final class HubMenuViewModel: ObservableObject {
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
             guard let self = self else { return }
             if let index = self.generalElements.firstIndex(where: { item in
-                type(of: item).id == ViewStore.id
+                type(of: item).id == Reviews.id
             }), isInboxMenuShown {
                 self.generalElements.insert(Inbox(), at: index + 1)
             }

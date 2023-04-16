@@ -34,10 +34,6 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    /// Current site id.
-    ///
-    private let siteID: Int64
-
     /// Stores manager.
     ///
     private let stores: StoresManager
@@ -50,11 +46,9 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
-    init(siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores,
+    init(stores: StoresManager = ServiceLocator.stores,
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
          analytics: Analytics = ServiceLocator.analytics) {
-        self.siteID = siteID
         self.stores = stores
         self.storePlanSynchronizer = storePlanSynchronizer
         self.analytics = analytics

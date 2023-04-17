@@ -151,7 +151,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
         return resultsController
     }()
@@ -502,8 +502,11 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync next page of products from remote.
     ///
     func syncNextPage() {
-        let lastIndex = productsResultsController.numberOfObjects - 1
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
+        let numberOfLoadedObjects = productsResultsController.numberOfObjects
+        let extraLoadedObjectsFromTopProducts = numberOfLoadedObjects % syncingCoordinator.pageSize
+
+        let lastRequestedIndex = numberOfLoadedObjects - extraLoadedObjectsFromTopProducts - 1
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastRequestedIndex)
     }
 
     /// Updates the selected filters for the product list

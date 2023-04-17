@@ -204,7 +204,7 @@ final class HubMenuViewModel: ObservableObject {
         ServiceLocator.storePlanSynchronizer.$planState.map { planState in
             switch planState {
             case .loaded(let plan):
-                return plan.name.capitalized
+                return WPComPlanNameSanitizer.getPlanName(from: plan).uppercased()
             default:
                 return ""
             }

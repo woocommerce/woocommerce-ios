@@ -126,6 +126,18 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         sut.incrementProgress()
 
         // Then
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.turningOnTheLights.rawValue)
+
+        // When
+        sut.incrementProgress()
+
+        // Then
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.openingTheDoors.rawValue)
+
+        // When
+        sut.incrementProgress()
+
+        // Then
         XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.finished.rawValue)
 
         // When

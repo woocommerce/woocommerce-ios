@@ -46,10 +46,10 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrievePopularCachedProducts(let siteID, let limit, let onCompletion):
-            retrievePopularCachedProducts(siteID: siteID, limit: limit, onCompletion: onCompletion)
-        case .retrieveRecentlySoldCachedProducts(let siteID, let limit, let onCompletion):
-            retrieveRecentlySoldCachedProducts(siteID: siteID, limit: limit, onCompletion: onCompletion)
+        case .retrievePopularCachedProducts(let siteID, let onCompletion):
+            retrievePopularCachedProducts(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveRecentlySoldCachedProducts(let siteID, let onCompletion):
+            retrieveRecentlySoldCachedProducts(siteID: siteID, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -323,7 +323,7 @@ private extension ProductStore {
         }
     }
 
-    func retrievePopularCachedProducts(siteID: Int64, limit: Int, onCompletion: @escaping ([Product]) -> Void) {
+    func retrievePopularCachedProducts(siteID: Int64, onCompletion: @escaping ([Product]) -> Void) {
         // Get completed orders
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),
@@ -334,7 +334,6 @@ private extension ProductStore {
         // Get product ids sorted by occurence
         let completedOrdersItems = completedOrders.flatMap { $0.items }
         let productIDCountDictionary = completedOrdersItems.reduce(into: [:]) { counts, orderItem in counts[orderItem.productID, default: 0] += 1 }
-
         let sortedByOccurenceProductIDs = productIDCountDictionary
             .sorted {
                 // if the count is the same let's sort it by product id just to avoid randomly sorted sequences
@@ -348,20 +347,12 @@ private extension ProductStore {
             .map { $0.key }
             .uniqued()
 
-        debugPrint("sortedByOccurenceProductIDs", sortedByOccurenceProductIDs)
-
-        retrieveProducts(siteID: siteID,
-                         productIDs: Array(sortedByOccurenceProductIDs.prefix(limit)),
-                         pageNumber: Default.firstPageNumber,
-                         pageSize: limit) { [weak self] _ in
-            guard let self = self else { return }
-
-            // Let's retrieve them locally to keep the order, as the remote call doesn't do it
-            onCompletion(self.retrieveCachedProducts(from: sortedByOccurenceProductIDs, siteID: siteID))
-        }
+        // Retrieve products from product ids and finish
+        let products = retrieveProducts(from: sortedByOccurenceProductIDs, siteID: siteID)
+        onCompletion(products)
     }
 
-    func retrieveRecentlySoldCachedProducts(siteID: Int64, limit: Int, onCompletion: @escaping ([Product]) -> Void) {
+    func retrieveRecentlySoldCachedProducts(siteID: Int64, onCompletion: @escaping ([Product]) -> Void) {
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),
                                                       sortedBy: [NSSortDescriptor(key: #keyPath(StorageOrder.datePaid), ascending: false)])
@@ -373,12 +364,8 @@ private extension ProductStore {
             .map { $0.productID }
             .uniqued()
 
-        retrieveProducts(siteID: siteID, productIDs: Array(productIDs.prefix(limit)), pageNumber: Default.firstPageNumber, pageSize: limit) { [weak self] _ in
-            guard let self = self else { return }
-
-            // Let's retrieve them locally to keep the order, as the remote call doesn't do it
-            onCompletion(self.retrieveCachedProducts(from: productIDs, siteID: siteID))
-        }
+        let products = retrieveProducts(from: productIDs, siteID: siteID)
+        onCompletion(products)
     }
 
     func completedOrdersPredicate(from siteID: Int64) -> NSPredicate {
@@ -388,7 +375,7 @@ private extension ProductStore {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [completedOrderPredicate, sitePredicate])
     }
 
-    func retrieveCachedProducts(from productIDs: [Int64], siteID: Int64) -> [Product] {
+    func retrieveProducts(from productIDs: [Int64], siteID: Int64) -> [Product] {
         productIDs
             .compactMap {
                 let productPredicate = NSPredicate(format: "productID == %lld", $0)

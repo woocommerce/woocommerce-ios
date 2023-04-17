@@ -222,6 +222,32 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_failed"])
     }
+
+    func test_createAccount_failure_with_invalid_password_is_not_tracked_if_emailSubmissionHandler_is_available() async {
+        // Given
+        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { _, _ in })
+        mockAccountCreationFailure(error: .invalidPassword(message: nil))
+        viewModel.email = "test@example.com"
+
+        // When
+        try? await viewModel.createAccount()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted"])
+    }
+
+    func test_createAccount_failure_with_invalid_password_is__tracked_if_emailSubmissionHandler_is_not_available() async {
+        // Given
+        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics)
+        mockAccountCreationFailure(error: .invalidPassword(message: nil))
+        viewModel.email = "test@example.com"
+
+        // When
+        try? await viewModel.createAccount()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_failed"])
+    }
 }
 
 private extension AccountCreationFormViewModelTests {

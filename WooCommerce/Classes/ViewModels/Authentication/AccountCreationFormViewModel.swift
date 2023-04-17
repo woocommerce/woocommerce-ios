@@ -72,7 +72,16 @@ final class AccountCreationFormViewModel: ObservableObject {
 
             await handleSuccess(data: data)
         } catch let error as CreateAccountError {
-            analytics.track(event: .StoreCreation.signupFailed(error: error))
+            /// Skip tracking if the password field is yet to be presented.
+            let shouldSkipTrackingError: Bool = {
+                guard case .invalidPassword = error else {
+                    return false
+                }
+                return emailSubmissionHandler != nil
+            }()
+            if !shouldSkipTrackingError {
+                analytics.track(event: .StoreCreation.signupFailed(error: error))
+            }
             handleFailure(error: error)
 
             throw error

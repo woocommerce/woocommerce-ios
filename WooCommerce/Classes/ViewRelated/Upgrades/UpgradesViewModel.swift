@@ -120,9 +120,11 @@ private extension UpgradesViewModel {
             }
         }
 
-        // For non-free trials plans  remove any mention to WPCom.
-        let toRemove = "WordPress.com"
-        let sanitizedName = plan.name.replacingOccurrences(of: toRemove, with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+        // For non-free trials plans  remove any mention to WPCom or Woo Express.
+        let toRemove = ["WordPress.com", "Woo Express:"]
+        let sanitizedName = toRemove.reduce(plan.name) { planName, prefixToRemove in
+            planName.replacingOccurrences(of: prefixToRemove, with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+        }
 
         if daysLeft > 0 {
             return sanitizedName

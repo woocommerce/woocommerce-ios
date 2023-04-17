@@ -26,15 +26,16 @@ final class AccountCreationFormViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let analytics: Analytics
+    private let emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(email: String = "",
-         debounceDuration: Double = Constants.fieldDebounceDuration,
+    init(debounceDuration: Double = Constants.fieldDebounceDuration,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
-        self.email = email
+         analytics: Analytics = ServiceLocator.analytics,
+         emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void)? = nil) {
         self.stores = stores
         self.analytics = analytics
+        self.emailSubmissionHandler = emailSubmissionHandler
 
         $email
             .removeDuplicates()
@@ -91,10 +92,16 @@ private extension AccountCreationFormViewModel {
     @MainActor
     func handleFailure(error: CreateAccountError) {
         switch error {
+        case .emailExists:
+            emailSubmissionHandler?(email, true)
         case .invalidEmail:
             emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
-            passwordErrorMessage = message ?? Localization.passwordError
+            if let handler = emailSubmissionHandler {
+                handler(email, false)
+            } else {
+                passwordErrorMessage = message ?? Localization.passwordError
+            }
         default:
             break
         }

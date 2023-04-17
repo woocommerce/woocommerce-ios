@@ -1,4 +1,6 @@
 import UIKit
+import enum WordPressAuthenticator.SignInSource
+import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Coordinates navigation for store creation flow in logged-out state that starts with WPCOM authentication.
 final class LoggedOutStoreCreationCoordinator: Coordinator {
@@ -26,8 +28,12 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
     }
 
     func start() {
+        let viewModel = AccountCreationFormViewModel(emailSubmissionHandler: { [weak self] email, isExisting in
+            self?.handleEmailSubmission(email: email, isExisting: isExisting)
+        })
         let accountCreationController = AccountCreationFormHostingController(
-            viewModel: .init(),
+            field: .email,
+            viewModel: viewModel,
             signInSource: .custom(source: source.rawValue),
             analytics: analytics
         ) { [weak self] in
@@ -39,6 +45,25 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
 }
 
 private extension LoggedOutStoreCreationCoordinator {
+    func handleEmailSubmission(email: String, isExisting: Bool) {
+        let signInSource: SignInSource = .custom(source: source.rawValue)
+        guard !isExisting else {
+            /// Navigates to login with the existing email address.
+            let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
+            command.execute(from: navigationController)
+            return
+        }
+        /// Navigates to password field for account creation
+        let passwordView = AccountCreationFormHostingController(field: .password(email: email),
+                                                                viewModel: .init(),
+                                                                signInSource: signInSource,
+                                                                completion: { [weak self] in
+            guard let self else { return }
+            self.startStoreCreation(in: self.navigationController)
+        })
+        navigationController.show(passwordView, sender: nil)
+    }
+
     func startStoreCreation(in navigationController: UINavigationController) {
         // Shows the store picker first, so that after dismissal of the store creation view it goes back to the store picker.
         let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLogin(source: source))

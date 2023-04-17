@@ -32,30 +32,10 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
             let command = NavigateToEnterAccount(signInSource: signInSource)
             command.execute(from: self)
         }
-
-        rootView.emailSubmissionHandler = { [weak self] email, isExisting in
-            self?.handleEmailSubmission(email: email, isExisting: isExisting)
-        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    private func handleEmailSubmission(email: String, isExisting: Bool) {
-        guard !isExisting else {
-            /// Navigates to login with the existing email address.
-            let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
-            command.execute(from: self)
-            return
-        }
-        /// Navigates to password field for account creation
-        let viewModel = AccountCreationFormViewModel(email: email)
-        let passwordView = AccountCreationFormHostingController(field: .password,
-                                                                viewModel: viewModel,
-                                                                signInSource: signInSource,
-                                                                completion: completion)
-        navigationController?.show(passwordView, sender: nil)
     }
 }
 
@@ -63,7 +43,7 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 struct AccountCreationForm: View {
     enum Field: Equatable {
         case email
-        case password
+        case password(email: String)
     }
 
     /// Triggered when the account is created and the app is authenticated.
@@ -71,9 +51,6 @@ struct AccountCreationForm: View {
 
     /// Triggered when the user taps on the login CTA.
     var loginButtonTapped: (() -> Void) = {}
-
-    /// Triggered when the user submits an email address.
-    var emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void) = { _, _ in }
 
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
@@ -96,6 +73,9 @@ struct AccountCreationForm: View {
     init(field: Field, viewModel: AccountCreationFormViewModel) {
         self.viewModel = viewModel
         self.field = field
+        if case let .password(email) = field {
+            viewModel.email = email
+        }
     }
 
     var body: some View {
@@ -116,33 +96,33 @@ struct AccountCreationForm: View {
 
                 // Form fields.
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
-                    // Email field.
-                    AuthenticationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
-                                                                  placeholder: Localization.emailFieldPlaceholder,
-                                                                  keyboardType: .emailAddress,
-                                                                  text: $viewModel.email,
-                                                                  isSecure: false,
-                                                                  errorMessage: viewModel.emailErrorMessage,
-                                                                  isFocused: isFocused))
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .focused($isFocused)
-                    .disabled(isPerformingTask)
-                    .renderedIf(field == .email)
-
-                    // Password field.
-                    AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
-                                                                  placeholder: Localization.passwordFieldPlaceholder,
-                                                                  keyboardType: .default,
-                                                                  text: $viewModel.password,
-                                                                  isSecure: true,
-                                                                  errorMessage: viewModel.passwordErrorMessage,
-                                                                  isFocused: isFocused))
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .focused($isFocused)
-                    .disabled(isPerformingTask)
-                    .renderedIf(field == .password)
+                    if case .email = field {
+                        // Email field.
+                        AuthenticationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
+                                                                     placeholder: Localization.emailFieldPlaceholder,
+                                                                     keyboardType: .emailAddress,
+                                                                     text: $viewModel.email,
+                                                                     isSecure: false,
+                                                                     errorMessage: viewModel.emailErrorMessage,
+                                                                     isFocused: isFocused))
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .focused($isFocused)
+                        .disabled(isPerformingTask)
+                    } else {
+                        // Password field.
+                        AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
+                                                                     placeholder: Localization.passwordFieldPlaceholder,
+                                                                     keyboardType: .default,
+                                                                     text: $viewModel.password,
+                                                                     isSecure: true,
+                                                                     errorMessage: viewModel.passwordErrorMessage,
+                                                                     isFocused: isFocused))
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .focused($isFocused)
+                        .disabled(isPerformingTask)
+                    }
 
                     // Terms of Service link.
                     AttributedText(tosAttributedText, enablesLinkUnderline: true)
@@ -171,12 +151,8 @@ struct AccountCreationForm: View {
                         do {
                             try await viewModel.createAccount()
                             completion()
-                        } catch CreateAccountError.emailExists {
-                            emailSubmissionHandler(viewModel.email, true)
-                        } catch CreateAccountError.invalidPassword where field == .email {
-                            emailSubmissionHandler(viewModel.email, false)
                         } catch {
-                            // No-op
+                            // No-op - errors are handled by the view model.
                         }
                         isPerformingTask = false
                     }
@@ -242,7 +218,7 @@ struct AccountCreationForm_Previews: PreviewProvider {
         AccountCreationForm(field: .email, viewModel: .init())
             .preferredColorScheme(.light)
 
-        AccountCreationForm(field: .password, viewModel: .init())
+        AccountCreationForm(field: .password(email: "test@example.com"), viewModel: .init())
             .preferredColorScheme(.dark)
             .dynamicTypeSize(.xxxLarge)
     }

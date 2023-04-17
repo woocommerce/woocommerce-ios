@@ -3,7 +3,9 @@ import Foundation
 
 /// Mapper: OrderNotes
 ///
-class OrderNotesMapper: Mapper {
+struct OrderNotesMapper: Mapper {
+
+    let siteID: Int64
 
     /// (Attempts) to convert a dictionary into [OrderNote].
     ///
@@ -11,11 +13,10 @@ class OrderNotesMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 
-        do {
-            return try decoder.decode(OrderNotesEnvelope.self, from: response).orderNotes
-        } catch {
+        guard siteID != WooConstants.placeholderSiteID else {
             return try decoder.decode([OrderNote].self, from: response)
         }
+        return try decoder.decode(OrderNotesEnvelope.self, from: response).orderNotes
     }
 }
 

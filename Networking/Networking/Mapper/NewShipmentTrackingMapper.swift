@@ -22,12 +22,10 @@ struct NewShipmentTrackingMapper: Mapper {
             .siteID: siteID,
             .orderID: orderID
         ]
-
-        do {
-            return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
-        } catch {
+        guard siteID != WooConstants.placeholderSiteID else {
             return try decoder.decode(ShipmentTracking.self, from: response)
         }
+        return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
     }
 }
 

@@ -21,11 +21,10 @@ struct OrderListMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
-            return try decoder.decode(OrderListEnvelope.self, from: response).orders
-        } catch {
+        guard siteID != WooConstants.placeholderSiteID else {
             return try decoder.decode([Order].self, from: response)
         }
+        return try decoder.decode(OrderListEnvelope.self, from: response).orders
     }
 }
 

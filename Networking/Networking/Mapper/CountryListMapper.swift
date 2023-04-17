@@ -5,14 +5,15 @@ import Foundation
 ///
 struct CountryListMapper: Mapper {
 
+    let siteID: Int64
+
     /// (Attempts) to convert an instance of Data into an array of Country Entities.
     ///
     func map(response: Data) throws -> [Country] {
-        do {
-            return try JSONDecoder().decode(CountryListEnvelope.self, from: response).data
-        } catch {
+        guard siteID != WooConstants.placeholderSiteID else {
             return try JSONDecoder().decode([Country].self, from: response)
         }
+        return try JSONDecoder().decode(CountryListEnvelope.self, from: response).data
     }
 }
 

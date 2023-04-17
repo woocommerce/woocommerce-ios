@@ -96,7 +96,7 @@ public class OrdersRemote: Remote {
                                      path: path,
                                      parameters: nil,
                                      availableAsRESTRequest: true)
-        let mapper = OrderNotesMapper()
+        let mapper = OrderNotesMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -275,7 +275,7 @@ public class OrdersRemote: Remote {
         let parameters = [ParameterKeys.note: note,
                           ParameterKeys.customerNote: String(isCustomerNote),
                           ParameterKeys.addedByUser: String(true)] // This will always be true when creating notes in-app
-        let mapper = OrderNoteMapper()
+        let mapper = OrderNoteMapper(siteID: siteID)
 
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .post,

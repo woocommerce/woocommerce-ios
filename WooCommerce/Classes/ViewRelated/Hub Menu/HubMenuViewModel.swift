@@ -31,6 +31,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var storeTitle = Localization.myStore
 
+    @Published private(set) var planName = ""
+
     @Published private(set) var storeURL = WooConstants.URLs.blog.asURL()
 
     @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
@@ -71,6 +73,7 @@ final class HubMenuViewModel: ObservableObject {
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         observeSiteForUIUpdates()
+        observePlanName()
     }
 
     func viewDidAppear() {
@@ -193,6 +196,20 @@ final class HubMenuViewModel: ObservableObject {
                 return true
             }
             .assign(to: &$shouldAuthenticateAdminPage)
+    }
+
+    /// Observe the current site's plan name and assign it to the `planName` published property.
+    ///
+    private func observePlanName() {
+        ServiceLocator.storePlanSynchronizer.$planState.map { planState in
+            switch planState {
+            case .loaded(let plan):
+                return plan.name.capitalized
+            default:
+                return ""
+            }
+        }
+        .assign(to: &$planName)
     }
 }
 

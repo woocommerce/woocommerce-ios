@@ -34,7 +34,7 @@ struct HubMenu: View {
                     }
                 } label: {
                     Row(title: viewModel.storeTitle,
-                        badge: "FREE TRIAL",
+                        badge: viewModel.planName,
                         description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
                         icon: .remote(viewModel.avatarURL),
                         chevron: .down,
@@ -260,8 +260,8 @@ private extension HubMenu {
                             .headlineStyle()
                             .accessibilityIdentifier(titleAccessibilityID ?? "")
 
-                        if let badge {
-                            BadgeView(text: badge)
+                        if let badge, badge.isNotEmpty {
+                            BadgeView(text: badge) // TODO: Adjust for dark mode
                         }
                     }
 

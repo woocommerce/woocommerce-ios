@@ -27,14 +27,15 @@ struct BadgeView: View {
 
     var body: some View {
         Text(text)
+            .bold()
             .foregroundColor(Color(.textBrand))
+            .captionStyle()
             .padding(.leading, Layout.horizontalPadding)
             .padding(.trailing, Layout.horizontalPadding)
             .padding(.top, Layout.verticalPadding)
             .padding(.bottom, Layout.verticalPadding)
             .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .fill(Color(.withColorStudio(.wooCommercePurple, shade: .shade0))))
-            .font(.system(size: 12, weight: .bold))
     }
 }
 

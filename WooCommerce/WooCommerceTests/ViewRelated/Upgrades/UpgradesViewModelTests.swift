@@ -105,6 +105,35 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.errorNotice)
     }
 
+    func test_WooExpress_is_removed_from_plan_name() {
+        // Given
+        let expireDate = Date().addingDays(300)
+        let plan = WPComSitePlan(id: "another-id",
+                                 hasDomainCredit: false,
+                                 expiryDate: expireDate,
+                                 name: "Woo Express: Essential")
+
+        let session = SessionManager.testingInstance
+        let stores = MockStoresManager(sessionManager: session)
+        session.defaultSite = sampleSite
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(plan))
+            default:
+                break
+            }
+        }
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+
+        // When
+        viewModel.loadPlan()
+
+        // Then
+        XCTAssertEqual(viewModel.planName, NSLocalizedString("Essential", comment: ""))
+    }
+
     func test_error_fetching_plan_has_correct_view_model_values() {
         // Given
         let session = SessionManager.testingInstance

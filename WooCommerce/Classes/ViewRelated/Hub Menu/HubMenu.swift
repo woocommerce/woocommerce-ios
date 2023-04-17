@@ -261,7 +261,7 @@ private extension HubMenu {
                             .accessibilityIdentifier(titleAccessibilityID ?? "")
 
                         if let badge, badge.isNotEmpty {
-                            BadgeView(text: badge) // TODO: Adjust for dark mode
+                            BadgeView(text: badge)
                         }
                     }
 

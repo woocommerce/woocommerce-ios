@@ -37,6 +37,8 @@ enum ProductFormEditAction: Equatable {
     case bundledProducts(actionable: Bool)
     // Composite products only
     case components(actionable: Bool)
+    // Subscription products only
+    case subscription(actionable: Bool)
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -70,6 +72,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isDownloadableFilesSettingBased: Bool
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
+    private let isSubscriptionProductsEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -84,6 +87,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isDownloadableFilesSettingBased: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
+         isSubscriptionProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -99,6 +103,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isDownloadableFilesSettingBased = isDownloadableFilesSettingBased
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
+        self.isSubscriptionProductsEnabled = isSubscriptionProductsEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -160,6 +165,8 @@ private extension ProductFormActionsFactory {
             return allSettingsSectionActionsForBundleProduct()
         case .composite:
             return allSettingsSectionActionsForCompositeProduct()
+        case .subscription:
+            return allSettingsSectionActionsForSubscriptionProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()
         }
@@ -299,6 +306,27 @@ private extension ProductFormActionsFactory {
         return actions.compactMap { $0 }
     }
 
+    func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
+        let shouldShowSubscriptionRow = isSubscriptionProductsEnabled
+        // Only show price settings row if subscriptions row is not shown; otherwise, price is part of subscription details.
+        let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false && !shouldShowSubscriptionRow
+        let shouldShowReviewsRow = product.reviewsAllowed
+
+        let actions: [ProductFormEditAction?] = [
+            shouldShowSubscriptionRow ? .subscription(actionable: true) : nil,
+            shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
+            shouldShowReviewsRow ? .reviews: nil,
+            .inventorySettings(editable: false),
+            .categories(editable: editable),
+            .addOns(editable: editable),
+            .tags(editable: editable),
+            .shortDescription(editable: editable),
+            .linkedProducts(editable: editable),
+            .productType(editable: false)
+        ]
+        return actions.compactMap { $0 }
+    }
+
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
@@ -388,6 +416,9 @@ private extension ProductFormActionsFactory {
             return true
         case .components:
             // The components row is always visible in the settings section for a composite product.
+            return true
+        case .subscription:
+            // The subscription row is always visible in the settings section for a subscription product.
             return true
         default:
             return false

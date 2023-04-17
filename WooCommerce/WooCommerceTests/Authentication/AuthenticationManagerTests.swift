@@ -556,6 +556,85 @@ final class AuthenticationManagerTests: XCTestCase {
             (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
         }
     }
+
+    func test_it_auto_switches_store_when_there_is_only_one_valid_store() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
+        let sessionManager = SessionManager.makeForTesting()
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .synchronizeSites(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        let testSite = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: testSite)
+
+        let switchStoreUseCase = MockSwitchStoreUseCase()
+        let manager = AuthenticationManager(stores: stores,
+                                            storageManager: storage,
+                                            featureFlagService: featureFlagService,
+                                            purchasesManager: WebPurchasesForWPComPlans(stores: stores),
+                                            switchStoreUseCase: switchStoreUseCase)
+
+        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)
+        let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
+
+        // When
+        manager.presentLoginEpilogue(in: navigationController,
+                                     for: credentials,
+                                     source: SignInSource.custom(source: LoggedOutStoreCreationCoordinator.Source.prologue.rawValue),
+                                     onDismiss: {
+            // Then
+            XCTAssertEqual(switchStoreUseCase.destinationStoreIDs, [123])
+        })
+    }
+
+    func test_it_does_not_auto_select_store_when_there_are_more_than_one_only_one_valid_stores() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
+        let sessionManager = SessionManager.makeForTesting()
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .synchronizeSites(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        let storage = MockStorageManager()
+
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: true))
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 124, isWooCommerceActive: true))
+
+        let switchStoreUseCase = MockSwitchStoreUseCase()
+        let manager = AuthenticationManager(stores: stores,
+                                            storageManager: storage,
+                                            featureFlagService: featureFlagService,
+                                            purchasesManager: WebPurchasesForWPComPlans(stores: stores),
+                                            switchStoreUseCase: switchStoreUseCase)
+
+        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)
+        let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
+
+        // When
+        manager.presentLoginEpilogue(in: navigationController,
+                                     for: credentials,
+                                     source: SignInSource.custom(source: LoggedOutStoreCreationCoordinator.Source.prologue.rawValue),
+                                     onDismiss: {
+            // Then
+            XCTAssertEqual(switchStoreUseCase.destinationStoreIDs, [])
+        })
+    }
 }
 
 private extension AuthenticationManagerTests {

@@ -79,6 +79,7 @@ public typealias ProductShippingClass = Networking.ProductShippingClass
 public typealias ProductStatus = Networking.ProductStatus
 public typealias ProductCatalogVisibility = Networking.ProductCatalogVisibility
 public typealias ProductStockStatus = Networking.ProductStockStatus
+public typealias ProductSubscription = Networking.ProductSubscription
 public typealias ProductType = Networking.ProductType
 public typealias ProductCategory = Networking.ProductCategory
 public typealias ProductTag = Networking.ProductTag

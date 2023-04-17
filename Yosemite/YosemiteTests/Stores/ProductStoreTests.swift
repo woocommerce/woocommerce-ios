@@ -1897,7 +1897,8 @@ private extension ProductStoreTests {
                        bundleStockStatus: .inStock,
                        bundleStockQuantity: nil,
                        bundledItems: [],
-                       compositeComponents: [])
+                       compositeComponents: [],
+                       subscription: nil)
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -2057,7 +2058,8 @@ private extension ProductStoreTests {
                        bundleStockStatus: .insufficientStock,
                        bundleStockQuantity: 0,
                        bundledItems: [.fake(), .fake()],
-                       compositeComponents: [.fake(), .fake()])
+                       compositeComponents: [.fake(), .fake()],
+                       subscription: nil)
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -2191,7 +2193,8 @@ private extension ProductStoreTests {
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
                        bundledItems: [],
-                       compositeComponents: [])
+                       compositeComponents: [],
+                       subscription: nil)
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

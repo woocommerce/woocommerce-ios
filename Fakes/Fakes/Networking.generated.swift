@@ -842,7 +842,8 @@ extension Networking.Product {
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
             bundledItems: .fake(),
-            compositeComponents: .fake()
+            compositeComponents: .fake(),
+            subscription: .fake()
         )
     }
 }

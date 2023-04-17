@@ -173,7 +173,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    var productSelectorViewModel: ProductSelectorViewModel {
+    lazy var productSelectorViewModel: ProductSelectorViewModel = {
         ProductSelectorViewModel(
             siteID: siteID,
             selectedItemIDs: selectedProductsAndVariationsIDs,
@@ -182,25 +182,28 @@ final class EditableOrderViewModel: ObservableObject {
             stores: stores,
             supportsMultipleSelection: isProductMultiSelectionEnabled,
             toggleAllVariationsOnSelection: false,
-            onProductSelected: { [weak self] product in
+            onProductSelectionStateChanged: { [weak self] product in
                 guard let self = self else { return }
-                self.addProductToOrder(product)
+                self.addOrRemoveProductToOrder(product)
             },
-            onVariationSelected: { [weak self] variation, parentProduct in
+            onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
-                self.addProductVariationToOrder(variation, parent: parentProduct)
+                self.addOrRemoveProductVariationToOrder(variation, parent: parentProduct)
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
             }, onAllSelectionsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearAllSelectedItems()
-                self.syncClearSelectionState()
+                self.trackClearAllSelectedItemsTapped()
             }, onSelectedVariationsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearSelectedVariations()
+            }, onCloseButtonTapped: { [weak self] in
+                guard let self = self else { return }
+                self.syncOrderItemSelectionStateOnDismiss()
             })
-    }
+    }()
 
     /// View models for each product row in the order.
     ///
@@ -367,9 +370,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Clears selected products and variations
     ///
     private func clearAllSelectedItems() {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .product))
         selectedProducts.removeAll()
         selectedProductVariations.removeAll()
+    }
+
+    private func trackClearAllSelectedItemsTapped() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .product))
     }
 
     /// Clears selected variations
@@ -377,6 +383,13 @@ final class EditableOrderViewModel: ObservableObject {
     private func clearSelectedVariations() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
+    }
+
+    /// Synchronizes the item selection state by clearing all items, then retrieving the latest saved state
+    ///
+    func syncOrderItemSelectionStateOnDismiss() {
+        clearAllSelectedItems()
+        syncInitialSelectedState()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -394,14 +407,12 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setProduct.send(input)
 
         if isProductMultiSelectionEnabled {
-            // Updates selected products and selected variations for all items that have been removed directly from the Order
-            // when using multi-selection, for example by tapping the `-` button within the Order view
-            if item.productID != 0 {
-                selectedProducts.removeAll(where: { $0.productID == item.productID })
-            }
             if item.variationID != 0 {
-                selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
+                productSelectorViewModel.changeSelectionStateForVariation(with: item.variationID, productID: item.productID)
+            } else if item.productID != 0 {
+                productSelectorViewModel.changeSelectionStateForProduct(with: item.productID)
             }
+
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -866,7 +877,7 @@ private extension EditableOrderViewModel {
     // TODO:
     // This method needs to be refactored, to reflect that adds products to Order for single selection,
     // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
-    func addProductToOrder(_ product: Product) {
+    func addOrRemoveProductToOrder(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
             allProducts.append(product)
@@ -894,7 +905,7 @@ private extension EditableOrderViewModel {
     // TODO:
     // This method needs to be refactored, to reflect that adds variations to Order for single selection,
     // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
-    func addProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
+    func addOrRemoveProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
             allProducts.append(product)
@@ -1218,17 +1229,6 @@ private extension EditableOrderViewModel {
                     selectedProducts.append(product)
                 }
             }
-        }
-    }
-
-    /// Syncs initial selected state for all items in the Order when clearing selections
-    ///
-    func syncClearSelectionState() {
-        if flow == .creation {
-            syncInitialSelectedState()
-        } else {
-            selectedProducts = []
-            selectedProductVariations = []
         }
     }
 

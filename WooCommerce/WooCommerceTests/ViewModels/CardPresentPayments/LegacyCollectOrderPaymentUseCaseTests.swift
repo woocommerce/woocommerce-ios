@@ -192,28 +192,6 @@ final class LegacyCollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(action.orderID, defaultOrderID)
     }
 
-    func test_collectPayment_dispatches_markSiteHasAtLeastOneIPPTransactionFinished_after_successful_client_side_capture() throws {
-        // Given
-        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
-        mockSuccessfulCardPresentPaymentActions(intent: intent)
-        var markSiteHasAtLeastOneIPPTransactionFinishedActionSiteID: Int64?
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let .markSiteHasAtLeastOneIPPTransactionFinished(siteID) = action {
-                markSiteHasAtLeastOneIPPTransactionFinishedActionSiteID = siteID
-            }
-        }
-
-        // When
-        waitFor { promise in
-            self.useCase.collectPayment(onCollect: { _ in
-                promise(())
-            }, onCancel: {}, onCompleted: {})
-        }
-
-        // Then
-        XCTAssertEqual(markSiteHasAtLeastOneIPPTransactionFinishedActionSiteID, defaultSiteID)
-    }
-
     func test_collectPayment_with_noninterac_does_not_dispatch_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
         // Given
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])

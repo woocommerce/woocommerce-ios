@@ -18,6 +18,12 @@ class GetMocks {
         2132: "rose gold shades"
     ]
 
+    private static let file = [
+        "physical": "products_add_new_physical_2129",
+        "virtual": "products_add_new_virtual_2123",
+        "variable": "products_add_new_variable_2131"
+    ]
+
     static func getMockData(test: AnyClass, filename file: String) -> Data {
         let json = Bundle(for: test).url(forResource: file, withExtension: "json")!
 
@@ -39,8 +45,8 @@ class GetMocks {
         return updatedData
     }
 
-    static func readNewProductData() throws -> ProductData {
-        let originalData = try JSONDecoder().decode(NewProductMock.self, from: self.getMockData(test: ProductsTests.self, filename: "products_add_new"))
+    static func readNewProductData(productType: String) throws -> ProductData {
+        let originalData = try JSONDecoder().decode(NewProductMock.self, from: self.getMockData(test: ProductsTests.self, filename: file[productType]!))
 
         return try XCTUnwrap(originalData.response.jsonBody.data)
     }
@@ -74,7 +80,7 @@ class GetMocks {
         return updatedData
     }
 
-    static func readNewOrderData() throws -> OrderData {
+    static func readSingleOrderData() throws -> OrderData {
         let originalData = try JSONDecoder().decode(OrderMock.self, from: self.getMockData(test: OrdersTests.self, filename: "orders_3337"))
         return try XCTUnwrap(originalData.response.jsonBody.data)
     }

@@ -10,12 +10,12 @@ extension WooAnalyticsEvent {
             static let errorType = "error_type"
             static let flow = "flow"
             static let step = "step"
-            static let category = "industry"
-            static let categoryGroup = "industry_group"
+            static let category = "industry_slug"
             static let sellingStatus = "user_commerce_journey"
             static let sellingPlatforms = "ecommerce_platforms"
             static let countryCode = "country_code"
             static let isFreeTrial = "is_free_trial"
+            static let waitingTime = "waiting_time"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -25,12 +25,13 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when a site is created from the store creation flow.
-        static func siteCreated(source: Source, siteURL: String, flow: Flow, isFreeTrial: Bool) -> WooAnalyticsEvent {
+        static func siteCreated(source: Source, siteURL: String, flow: Flow, isFreeTrial: Bool, waitingTime: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreated,
                               properties: [Key.source: source.rawValue,
                                            Key.url: siteURL,
                                            Key.flow: flow.rawValue,
-                                           Key.isFreeTrial: isFreeTrial])
+                                           Key.isFreeTrial: isFreeTrial,
+                                           Key.waitingTime: waitingTime])
         }
 
         /// Tracked when site creation fails.
@@ -68,12 +69,40 @@ extension WooAnalyticsEvent {
                                              countryCode: SiteAddress.CountryCode?) -> WooAnalyticsEvent {
             let properties = [
                 Key.category: category?.value,
-                Key.categoryGroup: category?.groupValue,
                 Key.sellingStatus: sellingStatus?.sellingStatus.analyticsValue,
                 Key.sellingPlatforms: sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ","),
                 Key.countryCode: countryCode?.rawValue
             ].compactMapValues({ $0 })
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
+        }
+
+        /// Tracked when completing the last profiler question during the store creation flow when free trials are enabled.
+        static func siteCreationProfilerData(_ profilerData: SiteProfilerData) -> WooAnalyticsEvent {
+            let properties = [
+                Key.category: profilerData.category,
+                Key.sellingStatus: profilerData.sellingStatus?.analyticsValue,
+                Key.sellingPlatforms: profilerData.sellingPlatforms,
+                Key.countryCode: profilerData.countryCode
+            ].compactMapValues({ $0 })
+            return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
+        }
+
+        /// Tracked when the "Try For Free" button in the "Summary View" is  tapped.
+        ///
+        static func siteCreationTryForFreeTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationTryForFreeTapped, properties: [:])
+        }
+
+        /// Tracked when the site creation process takes too much time waiting for the store to be ready.
+        ///
+        static func siteCreationTimedOut() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationTimedOut, properties: [:])
+        }
+
+        /// Tracked when the store is jetpack ready, but other store properties are not in sync yet.
+        ///
+        static func siteCreationPropertiesOutOfSync() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationPropertiesOutOfSync, properties: [:])
         }
 
         /// Tracked when the user taps on the CTA in login prologue (logged out) to create a store.

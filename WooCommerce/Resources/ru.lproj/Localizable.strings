@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-10 13:54:25+0000 */
+/* Translation-Revision-Date: 2023-04-12 13:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -3861,7 +3861,7 @@ which should be translated separately and considered part of this sentence. */
 "Launch Wormholy Debug" = "Запустить отладчик Wormholy";
 
 /* Main title for the free trial summary screen. */
-"Launch in days, grow for years" = "Запустите за считанные дни, развивайте годами";
+"Launch in days, grow for years" = "Запуск за несколько дней и бесконечные возможности развития";
 
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Запустите собственный магазин";
@@ -6318,7 +6318,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Share Payment Link" = "Поделиться ссылкой на оплату";
 
 /* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Tap to Pay on iPhone Feedback" = "Поделитесь отзывом о Tap to Pay on iPhone";
+"Share Tap to Pay on iPhone Feedback" = "Поделитесь отзывом об оплате в касание на iPhone";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "URL-адрес рекомендации";
@@ -7774,7 +7774,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try connecting again to access your store." = "Попробуйте подключиться ещё раз, чтобы войти в магазин.";
 
 /* Title for the features list in the free trial Summary Screen */
-"Try it free for 14 days." = "Пользуйтесь бесплатно в течение 14 дней.";
+"Try it free for 14 days." = "Пользуйтесь бесплатно в течение 14 дней.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Попробовать";
@@ -8705,7 +8705,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "You can edit bundled products in the web dashboard." = "Товары в комплекте можно редактировать в веб-консоли.";
 
 /* Info notice at the bottom of the component settings screen */
-"You can edit component settings in the web dashboard." = "Настройки компонентов можно редактировать в веб-консоли.";
+"You can edit component settings in the web dashboard." = "Настройки компонентов можно редактировать в консоли.";
 
 /* Info notice at the bottom of the components screen */
 "You can edit components in the web dashboard." = "Компоненты можно редактировать в веб-консоли.";

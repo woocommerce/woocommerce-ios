@@ -231,6 +231,10 @@ private extension StoreCreationCoordinator {
 
 private extension StoreCreationCoordinator {
     func observeSiteURLsFromStoreCreation() {
+
+        // Timestamp when we start observing times. Needed to track the store creating waiting duration.
+        let waitingTimeStart = Date()
+
         possibleSiteURLsFromStoreCreationSubscription = $possibleSiteURLsFromStoreCreation
             .filter { $0.isEmpty == false }
             .removeDuplicates()
@@ -248,7 +252,7 @@ private extension StoreCreationCoordinator {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] site in
                 guard let self, let site else { return }
-                self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue, siteURL: site.url, flow: .web, isFreeTrial: false))
+                self.trackSiteCreatedEvent(site: site, flow: .web, timeAtStart: waitingTimeStart)
                 self.continueWithSelectedSite(site: site)
             }
     }
@@ -387,7 +391,6 @@ private extension StoreCreationCoordinator {
                         let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
                         return .init(name: storeName,
                                      category: category?.value,
-                                     categoryGroup: category?.groupValue,
                                      sellingStatus: sellingStatus?.sellingStatus,
                                      sellingPlatforms: sellingPlatforms,
                                      countryCode: countryCode.rawValue)
@@ -425,6 +428,8 @@ private extension StoreCreationCoordinator {
                                                  storeName: storeName,
                                                  profilerData: profilerData)
             }
+
+            self?.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
         })
         navigationController.present(summaryViewController, animated: true)
     }
@@ -445,6 +450,9 @@ private extension StoreCreationCoordinator {
 
         // Create store site
         let createStoreResult = await createStore(name: storeName, flow: .wooexpress)
+        if let profilerData {
+            analytics.track(event: .StoreCreation.siteCreationProfilerData(profilerData))
+        }
 
         switch createStoreResult {
         case .success(let siteResult):
@@ -679,6 +687,15 @@ private extension StoreCreationCoordinator {
         ///
         siteIDFromStoreCreation = siteID
 
+        /// Determines if the `.siteCreationPropertiesOutOfSync` event has already been tracked.
+        /// Needed because we should only track this event once per store creation process.
+        ///
+        var haveTrackedOutOfSyncEvent = false
+
+        /// Timestamp when we start observing times. Needed to track the store creating waiting duration.
+        ///
+        let waitingTimeStart = Date()
+
         jetpackSiteSubscription = $siteIDFromStoreCreation
             .compactMap { $0 }
             .removeDuplicates()
@@ -692,7 +709,14 @@ private extension StoreCreationCoordinator {
             }
             .receive(on: DispatchQueue.main)
             .handleEvents(receiveCompletion: { [weak self] output in
-                self?.storeCreationProgressViewModel?.incrementProgress()
+                guard let self else { return }
+                self.storeCreationProgressViewModel?.incrementProgress()
+
+                // Track when a properties out of sync event occur, but only track it once.
+                if self.isPropertiesOutOfSyncError(output) && !haveTrackedOutOfSyncEvent {
+                    self.analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
+                    haveTrackedOutOfSyncEvent = true
+                }
             })
             // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
             // in the WPCOM `/me/sites` response.
@@ -709,19 +733,29 @@ private extension StoreCreationCoordinator {
                 }
 
                 self.storeCreationProgressViewModel?.markAsComplete()
+                self.trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
 
                 /// Free trial stores should land directly on the dashboard and not show any success view.
                 ///
                 if self.isFreeTrialCreation {
-                    self.analytics.track(event: .StoreCreation.siteCreated(source: self.source.analyticsValue,
-                                                                           siteURL: site.url,
-                                                                           flow: .native,
-                                                                           isFreeTrial: true))
                     self.continueWithSelectedSite(site: site)
                 } else {
                     self.showSuccessView(from: navigationController, site: site)
                 }
             }
+    }
+
+    /// Determines if a given Subscriber.Completion entity contains a `StoreCreationError.newSiteIsNotFullySynced` error.
+    ///
+    @MainActor
+    func isPropertiesOutOfSyncError(_ output: Subscribers.Completion<Error>) -> Bool {
+        switch output {
+        case .failure(let error):
+            guard let creationError = error as? StoreCreationError else { return false }
+            return creationError == .newSiteIsNotFullySynced
+        case .finished:
+            return false
+        }
     }
 
     @MainActor
@@ -748,7 +782,7 @@ private extension StoreCreationCoordinator {
                 // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
                 guard site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName else {
                     DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
+                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotFullySynced)
                 }
 
                 continuation.resume(returning: site)
@@ -770,7 +804,6 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func showSuccessView(from navigationController: UINavigationController, site: Site) {
-        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue, siteURL: site.url, flow: .native, isFreeTrial: false))
         guard let url = URL(string: site.url) else {
             return continueWithSelectedSite(site: site)
         }
@@ -792,6 +825,19 @@ private extension StoreCreationCoordinator {
         alertController.view.tintColor = .text
         _ = alertController.addCancelActionWithTitle(Localization.WaitingForJetpackSite.TimeoutAlert.cancelActionTitle) { _ in }
         navigationController.present(alertController, animated: true)
+
+        analytics.track(event: .StoreCreation.siteCreationTimedOut())
+    }
+
+    /// Tracks when a store has been successfully created.
+    ///
+    func trackSiteCreatedEvent(site: Site, flow: WooAnalyticsEvent.StoreCreation.Flow, timeAtStart: Date) {
+        let waitingTime = "\(Date().timeIntervalSince(timeAtStart))"
+        analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue,
+                                                          siteURL: site.url,
+                                                          flow: flow,
+                                                          isFreeTrial: isFreeTrialCreation,
+                                                          waitingTime: waitingTime))
     }
 }
 

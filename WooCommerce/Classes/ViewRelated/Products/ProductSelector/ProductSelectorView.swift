@@ -127,7 +127,7 @@ struct ProductSelectorView: View {
                     Button(cancelButtonTitle) {
                         isPresented.toggle()
                         if !isPresented {
-                            viewModel.clearSelection()
+                            viewModel.closeButtonTapped()
                         }
                     }
                 }
@@ -178,7 +178,7 @@ struct ProductSelectorView: View {
                        viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
-                    viewModel.selectProduct(rowViewModel.productOrVariationID)
+                    viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
                     if !configuration.multipleSelectionsEnabled {
                         isPresented.toggle()
                     }

@@ -7,8 +7,6 @@ struct StoreCreationCategoryAnswer: Equatable {
     let name: String
     /// Raw value of the category (industry) to be sent to the backend.
     let value: String
-    /// Raw value of the category group (industry group) to be sent to the backend.
-    let groupValue: String
 }
 
 /// View model for `StoreCreationCategoryQuestionView`, an optional profiler question about store category in the store creation flow.
@@ -40,12 +38,11 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
 
 extension StoreCreationCategoryQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
     func continueButtonTapped() async {
-        guard let selectedCategory,
-        let categoryGroup = categorySections.first(where: { $0.categories.contains(selectedCategory) })?.group else {
+        guard let selectedCategory else {
             return onSkip()
         }
 
-        onContinue(.init(name: selectedCategory.name, value: selectedCategory.rawValue, groupValue: categoryGroup.rawValue))
+        onContinue(.init(name: selectedCategory.name, value: selectedCategory.rawValue))
     }
 
     func skipButtonTapped() {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-04-11 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -268,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
+
+/* 24/7 support title feature on the Free Trial Summary Screen */
+"24\/7 support" = "24 小時全年無休的支援";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
@@ -945,6 +948,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Auto Services" = "汽車維修";
 
+/* Auto updates & backups title feature on the Free Trial Summary Screen */
+"Auto updates & backups" = "自動更新和備份";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "在此網站上自動管理";
 
@@ -1620,6 +1626,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for completed order status. */
 "Completed" = "已完成";
 
+/* Title for the list of component options in the Component Settings view */
+"Component Options" = "組件選項";
+
+/* Title for the settings of a component in a composite product */
+"Component Settings" = "組件設定";
+
 /* Title for Components row in the product form screen.
    Title for the list of components in a composite product */
 "Components" = "組件";
@@ -2186,6 +2198,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "預設";
 
+/* Title for the default component option field in the Component Settings view */
+"Default Option" = "預設選項";
+
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
@@ -2561,6 +2576,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder of the email field on the account creation form. */
 "Email address" = "電子郵件地址";
 
+/* Email marketing title feature on the Free Trial Summary Screen */
+"Email marketing" = "電子郵件行銷";
+
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "將備註透過電子郵件傳送給客戶";
 
@@ -2928,6 +2946,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Fast Food Restaurants" = "速食餐廳";
+
+/* Fast to launch title feature on the Free Trial Summary Screen */
+"Fast to launch" = "快速上線";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -3839,6 +3860,9 @@ which should be translated separately and considered part of this sentence. */
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "啟動 Wormholy 除錯";
 
+/* Main title for the free trial summary screen. */
+"Launch in days, grow for years" = "幾天內上線，經營好幾年";
+
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "推出你的商店";
 
@@ -4492,6 +4516,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "沒有找到折價券";
 
+/* Text indicated that no card is needed for a free trial */
+"No credit card required." = "無需使用信用卡。";
+
 /* A error message when it's not possible to acquirethe Analytics Hub current selection range */
 "No current period available" = "無法使用這一期";
 
@@ -4515,6 +4542,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "No need to wonder where that stampbook went" = "不必再煩惱去哪裡找郵票了";
+
+/* Placeholder when there are no component options to show in the Component Settings view */
+"No options selected" = "未選取選項";
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "未選取訂單";
@@ -5107,6 +5137,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "請檢查你的 Apple ID 是否有效，然後再試一次。 需要有效的 Apple ID 才能接受 Apple 的服務條款";
+
+/* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"Please connect Jetpack through your admin page on a browser or contact support." = "請透過瀏覽器上的管理頁面連結 Jetpack，或聯絡支援團隊。";
 
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "請將你的商店連結到 Jetpack，以在此應用程式上存取你的商店。";
@@ -6284,6 +6317,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "分享付款連結";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Tap to Pay on iPhone Feedback" = "分享 iPhone「Tap to Pay」(輕觸付款) 功能的意見";
+
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "分享 URL";
 
@@ -6493,6 +6529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "網站位址至少必須為 4 個字元。";
 
+/* Site security title feature on the Free Trial Summary Screen */
+"Site security" = "網站安全";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
    The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
@@ -6512,6 +6551,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "代稱";
+
+/* Social advertising title feature on the Free Trial Summary Screen */
+"Social advertising" = "社群媒體廣告";
 
 /* Industry option in the store creation category question. */
 "Software" = "軟體";
@@ -6764,6 +6806,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "訂購與禮品卡";
+
+/* Subscriptions & product kits title feature on the Free Trial Summary Screen */
+"Subscriptions & product kits" = "訂購和商品套件";
 
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
@@ -7366,6 +7411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message to be displayed when the user encounters a generic error during Jetpack setup */
 "There was an error completing your request." = "處理你的要求時發生錯誤。";
 
+/* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"There was an error connecting your site to Jetpack." = "將你的網站連結至 Jetpack 時發生錯誤。";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "建立訂單時發生錯誤";
 
@@ -7695,6 +7743,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "重新嘗試收款";
 
+/* Text in the button to continue with the free trial plan */
+"Try For Free" = "免費試用";
+
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "嘗試重新安裝";
 
@@ -7721,6 +7772,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "嘗試重新連結以存取商店。";
+
+/* Title for the features list in the free trial Summary Screen */
+"Try it free for 14 days." = "立即免費試用 14 天。";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "立即試試";
@@ -8422,6 +8476,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "我們知道這對你的業務相當重要。";
 
+/* Main description for the free trial summary screen */
+"We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com." = "我們提供打造和經營線上商店所需的一切工具，由 WooCommerce 提供技術支援，並託管於 WordPress.com。";
+
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "我們會使用其他的追蹤工具，包括由第三方所提供的追蹤工具。瞭解相關資訊及其控制方式。";
 
@@ -8646,6 +8703,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "你可以在網頁儀表板中編輯搭售產品。";
+
+/* Info notice at the bottom of the component settings screen */
+"You can edit component settings in the web dashboard." = "你可以在網頁儀表板中編輯組件設定。";
 
 /* Info notice at the bottom of the components screen */
 "You can edit components in the web dashboard." = "你可以在網頁儀表板中編輯組件。";

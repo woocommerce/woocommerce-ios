@@ -36,6 +36,7 @@ enum StoreCreationError: Error {
     case invalidCompletionPath
     case newSiteUnavailable
     case newSiteIsNotJetpackSite
+    case newSiteIsNotFullySynced
 }
 
 private extension StoreCreationWebViewModel {

@@ -4,8 +4,8 @@ import XCTest
 
 final class UpgradesViewModelTests: XCTestCase {
 
-    let sampleSiteID: Int64 = 123
     let freeTrialID = "1052"
+    let sampleSite = Site.fake().copy(siteID: 123, isWordPressComStore: true)
 
     func test_active_free_trial_plan_has_correct_view_model_values() {
         // Given
@@ -14,7 +14,10 @@ final class UpgradesViewModelTests: XCTestCase {
                                  hasDomainCredit: false,
                                  expiryDate: expireDate)
 
-        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let session = SessionManager.testingInstance
+        let stores = MockStoresManager(sessionManager: session)
+        session.defaultSite = sampleSite
+
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
             case .loadSiteCurrentPlan(_, let completion):
@@ -23,9 +26,10 @@ final class UpgradesViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = UpgradesViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
         viewModel.loadPlan()
 
         // Then
@@ -43,7 +47,9 @@ final class UpgradesViewModelTests: XCTestCase {
                                  hasDomainCredit: false,
                                  expiryDate: expireDate)
 
-        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let session = SessionManager.testingInstance
+        let stores = MockStoresManager(sessionManager: session)
+        session.defaultSite = sampleSite
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
             case .loadSiteCurrentPlan(_, let completion):
@@ -52,7 +58,8 @@ final class UpgradesViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = UpgradesViewModel(siteID: sampleSiteID, stores: stores)
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
 
         // When
         viewModel.loadPlan()
@@ -73,7 +80,9 @@ final class UpgradesViewModelTests: XCTestCase {
                                  expiryDate: expireDate,
                                  name: "WordPress.com eCommerce")
 
-        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let session = SessionManager.testingInstance
+        let stores = MockStoresManager(sessionManager: session)
+        session.defaultSite = sampleSite
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
             case .loadSiteCurrentPlan(_, let completion):
@@ -82,7 +91,8 @@ final class UpgradesViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = UpgradesViewModel(siteID: sampleSiteID, stores: stores)
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
 
         // When
         viewModel.loadPlan()
@@ -97,7 +107,9 @@ final class UpgradesViewModelTests: XCTestCase {
 
     func test_error_fetching_plan_has_correct_view_model_values() {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let session = SessionManager.testingInstance
+        let stores = MockStoresManager(sessionManager: session)
+        session.defaultSite = sampleSite
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
             case .loadSiteCurrentPlan(_, let completion):
@@ -107,7 +119,8 @@ final class UpgradesViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = UpgradesViewModel(siteID: sampleSiteID, stores: stores)
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
 
         // When
         viewModel.loadPlan()

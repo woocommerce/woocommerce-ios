@@ -10,7 +10,7 @@ public final class LoginSiteAddressScreen: ScreenObject {
     private let siteAddressFieldGetter: (XCUIApplication) -> XCUIElement = {
         $0.textFields["Site address"]
     }
-    
+
     private let helpButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["authenticator-help-button"]
     }

@@ -1568,6 +1568,7 @@
 		CC13C0CD278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC13C0CC278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift */; };
 		CC1AB56827FC5822003DEF43 /* OrderStatusScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AB56727FC5821003DEF43 /* OrderStatusScreen.swift */; };
 		CC200BB127847DE300EC5884 /* OrderPaymentSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC200BB027847DE300EC5884 /* OrderPaymentSection.swift */; };
+		CC24A4F429ED6FF70009D6DA /* SubscriptionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC24A4F329ED6FF70009D6DA /* SubscriptionSettings.swift */; };
 		CC254F2D26C17AB5005F3C82 /* BottomButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */; };
 		CC254F3026C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */; };
 		CC254F3226C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F3126C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift */; };
@@ -3791,6 +3792,7 @@
 		CC13C0CC278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		CC1AB56727FC5821003DEF43 /* OrderStatusScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusScreen.swift; sourceTree = "<group>"; };
 		CC200BB027847DE300EC5884 /* OrderPaymentSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderPaymentSection.swift; sourceTree = "<group>"; };
+		CC24A4F329ED6FF70009D6DA /* SubscriptionSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSettings.swift; sourceTree = "<group>"; };
 		CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonView.swift; sourceTree = "<group>"; };
 		CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackage.swift; sourceTree = "<group>"; };
 		CC254F3126C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewModel.swift; sourceTree = "<group>"; };
@@ -4686,6 +4688,7 @@
 				45E9A6E124DAE18E00A600E8 /* Reviews */,
 				CC01CE5B29B2342E004FF537 /* Bundled Products */,
 				CCFBBCF229C4B8820081B595 /* Composite Product Components */,
+				CC24A4F229ED6FC00009D6DA /* Subscription */,
 				02162724237963AF000208D2 /* ProductFormViewController.swift */,
 				02162725237963AF000208D2 /* ProductFormViewController.xib */,
 				45912FE22526642200982948 /* ProductFormViewController+Helpers.swift */,
@@ -8333,6 +8336,14 @@
 			path = PaymentSection;
 			sourceTree = "<group>";
 		};
+		CC24A4F229ED6FC00009D6DA /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				CC24A4F329ED6FF70009D6DA /* SubscriptionSettings.swift */,
+			);
+			path = Subscription;
+			sourceTree = "<group>";
+		};
 		CC254F2E26C2A4E6005F3C82 /* Package Creation */ = {
 			isa = PBXGroup;
 			children = (
@@ -11688,6 +11699,7 @@
 				D8815B132638686200EDAD62 /* CardPresentModalError.swift in Sources */,
 				020ACF88299A809000B3638B /* LearnMoreAttributedText.swift in Sources */,
 				02EAA4CA2911004B00918DAB /* TextFieldStyles.swift in Sources */,
+				CC24A4F429ED6FF70009D6DA /* SubscriptionSettings.swift in Sources */,
 				453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */,
 				45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */,
 				318853362639FC9C00F66A9C /* PaymentSettingsFlowPresentingViewController.swift in Sources */,

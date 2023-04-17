@@ -224,6 +224,7 @@ public typealias StorageProductDefaultAttribute = Storage.ProductDefaultAttribut
 public typealias StorageProductDownload = Storage.ProductDownload
 public typealias StorageProductReview = Storage.ProductReview
 public typealias StorageProductShippingClass = Storage.ProductShippingClass
+public typealias StorageProductSubscription = Storage.ProductSubscription
 public typealias StorageProductTag = Storage.ProductTag
 public typealias StorageRefund = Storage.Refund
 public typealias StorageProductVariation = Storage.ProductVariation

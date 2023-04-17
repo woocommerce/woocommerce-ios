@@ -74,6 +74,7 @@ public final class HelpScreen: ScreenObject {
 
     public func verifySubmitButtonDisabled() throws -> Self {
         XCTAssertTrue(!submitButton.isEnabled)
+
         return self
     }
 

@@ -67,7 +67,7 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [x] Universal Link to Payments screen
     - [x] Universal Link to an Order
 8. Settings
-    - [ ] Contact support
+    - [x] Contact support
 9. Payments
     - [ ] Make a Simple payment
     - [ ] Make a Tap to Pay on iPhone payment

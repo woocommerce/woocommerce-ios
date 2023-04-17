@@ -479,6 +479,38 @@ private extension SiteCredentialsViewController {
             displayError(error as NSError, sourceTag: sourceTag)
         }
     }
+
+    func syncDataOrPresentWPComLogin(with wporgCredentials: WordPressOrgCredentials) {
+        if configuration.isWPComLoginRequiredForSiteCredentialsLogin {
+            presentWPComLogin(wporgCredentials: wporgCredentials)
+            return
+        }
+        // Client didn't explicitly ask for WPCOM credentials. (`isWPComLoginRequiredForSiteCredentialsLogin` is false)
+        // So, sync the available credentials and finish sign in.
+        //
+        let credentials = AuthenticatorCredentials(wporg: wporgCredentials)
+        WordPressAuthenticator.shared.delegate?.sync(credentials: credentials) { [weak self] in
+            NotificationCenter.default.post(name: Foundation.Notification.Name(rawValue: WordPressAuthenticator.WPSigninDidFinishNotification), object: nil)
+            self?.showLoginEpilogue(for: credentials)
+        }
+    }
+
+    func presentWPComLogin(wporgCredentials: WordPressOrgCredentials) {
+        // Try to get the jetpack email from XML-RPC response dictionary.
+        //
+        guard let loginFields = makeLoginFieldsUsing(xmlrpc: wporgCredentials.xmlrpc,
+                                                     options: wporgCredentials.options) else {
+            WPAuthenticatorLogError("Unexpected response from .org site credentials sign in using XMLRPC.")
+            let credentials = AuthenticatorCredentials(wporg: wporgCredentials)
+            showLoginEpilogue(for: credentials)
+            return
+        }
+
+        // Present verify email instructions screen. Passing loginFields will prefill the jetpack email in `VerifyEmailViewController`
+        //
+        presentVerifyEmail(loginFields: loginFields)
+    }
+
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.
@@ -534,38 +566,13 @@ extension SiteCredentialsViewController {
     }
 
     func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any]) {
-        guard let delegate = WordPressAuthenticator.shared.delegate else {
-            fatalError("Error: Where did the delegate go?")
-        }
-
         let wporg = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
-        let credentials = AuthenticatorCredentials(wporg: wporg)
-
-        guard configuration.isWPComLoginRequiredForSiteCredentialsLogin else {
-            // Client didn't explicitly ask for WPCOM credentials. (`isWPComLoginRequiredForSiteCredentialsLogin` is false)
-            // So, sync the available credentials and finish sign in.
-            //
-            delegate.sync(credentials: credentials) { [weak self] in
-                NotificationCenter.default.post(name: Foundation.Notification.Name(rawValue: WordPressAuthenticator.WPSigninDidFinishNotification), object: nil)
-                self?.showLoginEpilogue(for: credentials)
-            }
-            return
+        /// If `completionHandler` is available, return early with the credentials.
+        if let completionHandler = completionHandler {
+            completionHandler(wporg)
+        } else {
+            syncDataOrPresentWPComLogin(with: wporg)
         }
-
-        // Try to get the jetpack email from XML-RPC response dictionary.
-        //
-        guard let loginFields = makeLoginFieldsUsing(xmlrpc: xmlrpc, options: options) else {
-            if let completionHandler = completionHandler {
-                return completionHandler(wporg)
-            }
-            WPAuthenticatorLogError("Unexpected response from .org site credentials sign in using XMLRPC.")
-            showLoginEpilogue(for: credentials)
-            return
-        }
-
-        // Present verify email instructions screen. Passing loginFields will prefill the jetpack email in `VerifyEmailViewController`
-        //
-        presentVerifyEmail(loginFields: loginFields)
     }
 
     override func displayRemoteError(_ error: Error) {

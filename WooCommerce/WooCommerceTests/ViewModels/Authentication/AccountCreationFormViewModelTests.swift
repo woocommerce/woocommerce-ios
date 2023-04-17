@@ -236,7 +236,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted"])
     }
 
-    func test_createAccount_failure_with_invalid_password_is__tracked_if_emailSubmissionHandler_is_not_available() async {
+    func test_createAccount_failure_with_invalid_password_is_tracked_if_emailSubmissionHandler_is_not_available() async {
         // Given
         viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics)
         mockAccountCreationFailure(error: .invalidPassword(message: nil))

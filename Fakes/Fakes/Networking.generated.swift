@@ -842,7 +842,8 @@ extension Networking.Product {
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
             bundledItems: .fake(),
-            compositeComponents: .fake()
+            compositeComponents: .fake(),
+            subscription: .fake()
         )
     }
 }
@@ -1148,7 +1149,8 @@ extension Networking.ProductVariation {
             dimensions: .fake(),
             shippingClass: .fake(),
             shippingClassID: .fake(),
-            menuOrder: .fake()
+            menuOrder: .fake(),
+            subscription: .fake()
         )
     }
 }

@@ -26,7 +26,7 @@ final class OrdersTests: XCTestCase {
     }
 
     func test_create_new_order() throws {
-        let order = try GetMocks.readNewOrderData()
+        let order = try GetMocks.readSingleOrderData()
 
         try TabNavComponent().goToOrdersScreen()
             .startOrderCreation()

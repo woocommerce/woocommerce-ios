@@ -1056,7 +1056,8 @@ extension Networking.Product {
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
-        compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy
+        compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
+        subscription: NullableCopiableProp<ProductSubscription> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1125,6 +1126,7 @@ extension Networking.Product {
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
         let bundledItems = bundledItems ?? self.bundledItems
         let compositeComponents = compositeComponents ?? self.compositeComponents
+        let subscription = subscription ?? self.subscription
 
         return Networking.Product(
             siteID: siteID,
@@ -1193,7 +1195,8 @@ extension Networking.Product {
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
             bundledItems: bundledItems,
-            compositeComponents: compositeComponents
+            compositeComponents: compositeComponents,
+            subscription: subscription
         )
     }
 }
@@ -1466,7 +1469,8 @@ extension Networking.ProductVariation {
         dimensions: CopiableProp<ProductDimensions> = .copy,
         shippingClass: NullableCopiableProp<String> = .copy,
         shippingClassID: CopiableProp<Int64> = .copy,
-        menuOrder: CopiableProp<Int64> = .copy
+        menuOrder: CopiableProp<Int64> = .copy,
+        subscription: NullableCopiableProp<ProductSubscription> = .copy
     ) -> Networking.ProductVariation {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1504,6 +1508,7 @@ extension Networking.ProductVariation {
         let shippingClass = shippingClass ?? self.shippingClass
         let shippingClassID = shippingClassID ?? self.shippingClassID
         let menuOrder = menuOrder ?? self.menuOrder
+        let subscription = subscription ?? self.subscription
 
         return Networking.ProductVariation(
             siteID: siteID,
@@ -1541,7 +1546,8 @@ extension Networking.ProductVariation {
             dimensions: dimensions,
             shippingClass: shippingClass,
             shippingClassID: shippingClassID,
-            menuOrder: menuOrder
+            menuOrder: menuOrder,
+            subscription: subscription
         )
     }
 }

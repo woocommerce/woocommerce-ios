@@ -4,6 +4,8 @@ import XCTest
 
 final class ComponentsListViewModelTests: XCTestCase {
 
+    private let sampleSiteID: Int64 = 12345
+
     func test_view_model_prefills_component_data_correctly() throws {
         // Given
         let compositeComponent = ProductCompositeComponent.fake().copy(componentID: "1",
@@ -13,7 +15,7 @@ final class ComponentsListViewModelTests: XCTestCase {
                                                                        optionType: .productIDs)
 
         // When
-        let viewModel = ComponentsListViewModel(components: [compositeComponent])
+        let viewModel = ComponentsListViewModel(siteID: sampleSiteID, components: [compositeComponent])
         let component = try XCTUnwrap(viewModel.components.first)
 
         // Then

@@ -434,7 +434,8 @@ private extension ProductVariationsRemoteTests {
                                                               height: ""),
                                 shippingClass: "",
                                 shippingClassID: 0,
-                                menuOrder: 1)
+                                menuOrder: 1,
+                                subscription: nil)
     }
 
     func sampleProductVariationAttributes() -> [ProductVariationAttribute] {

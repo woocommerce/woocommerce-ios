@@ -71,7 +71,8 @@ extension Product {
                 bundleStockStatus: nil,
                 bundleStockQuantity: nil,
                 bundledItems: [],
-                compositeComponents: [])
+                compositeComponents: [],
+                subscription: nil)
     }
 }
 

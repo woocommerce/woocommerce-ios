@@ -65,18 +65,23 @@ class AuthenticationManager: Authentication {
     /// Injected for unit test purposes
     private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
 
+    /// Injected for unit test purposes
+    private let switchStoreUseCase: SwitchStoreUseCaseProtocol?
+
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) {
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.abTestVariationProvider = abTestVariationProvider
         self.purchasesManager = purchasesManager
+        self.switchStoreUseCase = switchStoreUseCase
     }
 
     /// Initializes the WordPress Authenticator.
@@ -651,7 +656,9 @@ private extension AuthenticationManager {
                 return .login
             }
         }()
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: config)
+        storePickerCoordinator = StorePickerCoordinator(navigationController,
+                                                        config: config,
+                                                        switchStoreUseCase: switchStoreUseCase)
         storePickerCoordinator?.onDismiss = onDismiss
         if let siteID = siteID {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)

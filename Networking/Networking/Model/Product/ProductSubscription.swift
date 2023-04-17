@@ -1,7 +1,8 @@
 import Foundation
+import Codegen
 
 /// Represents the subscription settings extracted from product meta data for a Subscription-type Product.
-public struct ProductSubscription: Decodable, Equatable {
+public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable {
     /// Subscription automatically expires after this number of subscription periods.
     ///
     /// For example, subscription with period of `month` and length of "2" expires after 2 months. Subscription with length of "0" never expires.
@@ -58,7 +59,7 @@ private extension ProductSubscription {
 
 /// Represents all possible subscription periods
 ///
-public enum SubscriptionPeriod: String, Codable {
+public enum SubscriptionPeriod: String, Codable, GeneratedFakeable {
     case day
     case week
     case month

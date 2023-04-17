@@ -80,7 +80,7 @@ class GetMocks {
         return updatedData
     }
 
-    static func readNewOrderData() throws -> OrderData {
+    static func readSingleOrderData() throws -> OrderData {
         let originalData = try JSONDecoder().decode(OrderMock.self, from: self.getMockData(test: OrdersTests.self, filename: "orders_3337"))
         return try XCTUnwrap(originalData.response.jsonBody.data)
     }

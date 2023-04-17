@@ -434,6 +434,7 @@
         <relationship name="productShippingClass" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductShippingClass" inverseName="products" inverseEntity="ProductShippingClass"/>
         <relationship name="productVariations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductVariation" inverseName="product" inverseEntity="ProductVariation"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductSearchResults" inverseName="products" inverseEntity="ProductSearchResults"/>
+        <relationship name="subscription" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductSubscription" inverseName="product" inverseEntity="ProductSubscription"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ProductTag" inverseName="products" inverseEntity="ProductTag"/>
     </entity>
     <entity name="ProductAddOn" representedClassName="ProductAddOn" syncable="YES">
@@ -565,6 +566,17 @@
         <attribute name="slug" attributeType="String"/>
         <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product" inverseName="productShippingClass" inverseEntity="Product"/>
     </entity>
+    <entity name="ProductSubscription" representedClassName="ProductSubscription" syncable="YES">
+        <attribute name="length" attributeType="String" defaultValueString=""/>
+        <attribute name="period" attributeType="String" defaultValueString=""/>
+        <attribute name="periodInterval" attributeType="String" defaultValueString=""/>
+        <attribute name="price" attributeType="String" defaultValueString=""/>
+        <attribute name="signUpFee" attributeType="String" defaultValueString=""/>
+        <attribute name="trialLength" attributeType="String" defaultValueString=""/>
+        <attribute name="trialPeriod" attributeType="String" defaultValueString=""/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="subscription" inverseEntity="Product"/>
+        <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="subscription" inverseEntity="ProductVariation"/>
+    </entity>
     <entity name="ProductTag" representedClassName="ProductTag" syncable="YES">
         <attribute name="name" attributeType="String"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -610,6 +622,7 @@
         <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDownload" inverseName="productVariation" inverseEntity="ProductDownload"/>
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductImage" inverseName="productVariation" inverseEntity="ProductImage"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="productVariations" inverseEntity="Product"/>
+        <relationship name="subscription" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductSubscription" inverseName="productVariation" inverseEntity="ProductSubscription"/>
     </entity>
     <entity name="Refund" representedClassName="Refund" syncable="YES">
         <attribute name="amount" optional="YES" attributeType="String"/>

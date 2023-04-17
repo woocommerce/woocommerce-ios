@@ -13,7 +13,7 @@ public final class DataRemote: Remote {
                                      siteID: siteID,
                                      path: Path.countries,
                                      availableAsRESTRequest: true)
-        let mapper = CountryListMapper()
+        let mapper = CountryListMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

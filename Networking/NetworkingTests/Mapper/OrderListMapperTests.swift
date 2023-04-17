@@ -171,35 +171,35 @@ private extension OrderListMapperTests {
 
     /// Returns the [Order] output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrders(from filename: String) -> [Order] {
+    func mapOrders(siteID: Int64, from filename: String) -> [Order] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! OrderListMapper(siteID: dummySiteID).map(response: response)
+        return try! OrderListMapper(siteID: siteID).map(response: response)
     }
 
     /// Returns the [Order] output upon receiving `orders-load-all`
     ///
     func mapLoadAllOrdersResponse() -> [Order] {
-        return mapOrders(from: "orders-load-all")
+        return mapOrders(siteID: dummySiteID, from: "orders-load-all")
     }
 
     /// Returns the [Order] output upon receiving `orders-load-all-without-data`
     ///
     func mapLoadAllOrdersResponseWithoutDataEnvelope() -> [Order] {
-        return mapOrders(from: "orders-load-all-without-data")
+        return mapOrders(siteID: WooConstants.placeholderSiteID, from: "orders-load-all-without-data")
     }
 
     /// Returns the [Order] output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> [Order] {
-        return mapOrders(from: "broken-orders")
+        return mapOrders(siteID: dummySiteID, from: "broken-orders")
     }
 
     /// Returns the [Order] output upon receiving `broken-orders-mark-2`
     ///
     func mapLoadBrokenOrdersResponseMarkII() -> [Order] {
-        return mapOrders(from: "broken-orders-mark-2")
+        return mapOrders(siteID: dummySiteID, from: "broken-orders-mark-2")
     }
 }

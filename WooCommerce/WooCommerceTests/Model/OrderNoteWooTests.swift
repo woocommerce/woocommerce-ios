@@ -40,6 +40,6 @@ private extension OrderNoteWooTests {
     ///
     func mapOrderNotes(from filename: String) throws -> [OrderNote] {
         let response = Loader.contentsOf(filename)!
-        return try OrderNotesMapper().map(response: response)
+        return try OrderNotesMapper(siteID: 123).map(response: response)
     }
 }

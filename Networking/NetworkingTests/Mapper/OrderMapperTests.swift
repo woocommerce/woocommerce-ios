@@ -55,7 +55,7 @@ final class OrderMapperTests: XCTestCase {
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
         let datePaid = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:14")
 
-        XCTAssertEqual(order.siteID, dummySiteID)
+        XCTAssertEqual(order.siteID, WooConstants.placeholderSiteID)
         XCTAssertEqual(order.orderID, 963)
         XCTAssertEqual(order.parentID, 0)
         XCTAssertEqual(order.customerID, 11)
@@ -388,73 +388,73 @@ private extension OrderMapperTests {
 
     /// Returns the Order output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrder(from filename: String) -> Order? {
+    func mapOrder(siteID: Int64, from filename: String) -> Order? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! OrderMapper(siteID: dummySiteID).map(response: response)
+        return try! OrderMapper(siteID: siteID).map(response: response)
     }
 
     /// Returns the Order output upon receiving `order`
     ///
     func mapLoadOrderResponse() -> Order? {
-        return mapOrder(from: "order")
+        return mapOrder(siteID: dummySiteID, from: "order")
     }
 
     /// Returns the Order output upon receiving `order-without-data`
     ///
     func mapLoadOrderResponseWithoutDataEnvelope() -> Order? {
-        return mapOrder(from: "order-without-data")
+        return mapOrder(siteID: WooConstants.placeholderSiteID, from: "order-without-data")
     }
 
     /// Returns the Order output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderResponse() -> Order? {
-        return mapOrder(from: "broken-order")
+        return mapOrder(siteID: dummySiteID, from: "broken-order")
     }
 
     /// Returns the Order output upon receiving `order-fully-refunded`
     ///
     func mapLoadFullyRefundedOrderResponse() -> Order? {
-        return mapOrder(from: "order-fully-refunded")
+        return mapOrder(siteID: dummySiteID, from: "order-fully-refunded")
     }
 
     /// Returns the Order output upon receiving `order-details-partially-refunded`
     ///
     func mapLoadPartiallRefundedOrderResponse() -> Order? {
-        return mapOrder(from: "order-details-partially-refunded")
+        return mapOrder(siteID: dummySiteID, from: "order-details-partially-refunded")
     }
 
     /// Returns the Order output upon receiving `order-with-line-item-attributes`
     ///
     func mapLoadOrderWithLineItemAttributesResponse() -> Order? {
-        return mapOrder(from: "order-with-line-item-attributes")
+        return mapOrder(siteID: dummySiteID, from: "order-with-line-item-attributes")
     }
 
     /// Returns the Order output upon receiving `order-with-faulty-attributes`
     /// Where the `value` to `_measurement_data` is not a `string` but a `JSON object`
     ///
     func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
-        return mapOrder(from: "order-with-faulty-attributes")
+        return mapOrder(siteID: dummySiteID, from: "order-with-faulty-attributes")
     }
 
     /// Returns the Order output upon receiving `order-with-line-item-attributes-before-API-support`
     ///
     func mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse() -> Order? {
-        return mapOrder(from: "order-with-line-item-attributes-before-API-support")
+        return mapOrder(siteID: dummySiteID, from: "order-with-line-item-attributes-before-API-support")
     }
 
     /// Returns the Order output upon receiving `order-with-deleted-refunds`
     ///
     func mapLoadOrderWithDeletedRefundsResponse() -> Order? {
-        return mapOrder(from: "order-with-deleted-refunds")
+        return mapOrder(siteID: dummySiteID, from: "order-with-deleted-refunds")
     }
 
     /// Returns the Order output upon receiving `order-with-charge`
     ///
     func mapLoadOrderWithChargeResponse() -> Order? {
-        return mapOrder(from: "order-with-charge")
+        return mapOrder(siteID: dummySiteID, from: "order-with-charge")
     }
 
 }

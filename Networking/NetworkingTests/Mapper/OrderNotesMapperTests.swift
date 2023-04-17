@@ -79,29 +79,29 @@ private extension OrderNotesMapperTests {
 
     /// Returns the [OrderNote] output upon receiving `filename` (Data Encoded)
     ///
-    func mapNotes(from filename: String) -> [OrderNote] {
+    func mapNotes(siteID: Int64, from filename: String) -> [OrderNote] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! OrderNotesMapper().map(response: response)
+        return try! OrderNotesMapper(siteID: siteID).map(response: response)
     }
 
     /// Returns the [OrderNote] output upon receiving `order-notes`
     ///
     func mapLoadAllOrderNotesResponse() -> [OrderNote] {
-        return mapNotes(from: "order-notes")
+        return mapNotes(siteID: 123, from: "order-notes")
     }
 
     /// Returns the [OrderNote] output upon receiving `order-notes-without-data`
     ///
     func mapLoadAllOrderNotesResponseWithoutDataEnvelope() -> [OrderNote] {
-        return mapNotes(from: "order-notes-without-data")
+        return mapNotes(siteID: WooConstants.placeholderSiteID, from: "order-notes-without-data")
     }
 
     /// Returns the [OrderNote] output upon receiving `broken-order`
     ///
     func mapLoadBrokenOrderNotesResponse() -> [OrderNote] {
-        return mapNotes(from: "broken-notes")
+        return mapNotes(siteID: 123, from: "broken-notes")
     }
 }

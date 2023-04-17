@@ -43,23 +43,23 @@ private extension CountryListMapperTests {
 
     /// Returns the CountryListMapperTests output upon receiving `filename` (Data Encoded)
     ///
-    func mapCountries(from filename: String) -> [Country]? {
+    func mapCountries(siteID: Int64, from filename: String) -> [Country]? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! CountryListMapper().map(response: response)
+        return try! CountryListMapper(siteID: siteID).map(response: response)
     }
 
     /// Returns the [Country] output upon receiving `countries`
     ///
     func mapCountriesResponse() -> [Country]? {
-        return mapCountries(from: "countries")
+        return mapCountries(siteID: 123, from: "countries")
     }
 
     /// Returns the [Country] output upon receiving `countries-without-data`
     ///
     func mapCountriesResponseWithoutDataEnvelope() -> [Country]? {
-        return mapCountries(from: "countries-without-data")
+        return mapCountries(siteID: -1, from: "countries-without-data")
     }
 }

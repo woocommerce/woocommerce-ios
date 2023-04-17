@@ -11,12 +11,12 @@ public final class PrologueScreen: ScreenObject {
         $0.buttons["Prologue Continue Button"]
     }
 
-    private let selectSiteButtonGetter: (XCUIApplication) -> XCUIElement = {
+    private let logInButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Prologue Self Hosted Button"]
     }
 
     private var continueButton: XCUIElement { continueButtonGetter(app) }
-    private var selectSiteButton: XCUIElement { selectSiteButtonGetter(app) }
+    private var logInButton: XCUIElement { logInButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
@@ -34,8 +34,8 @@ public final class PrologueScreen: ScreenObject {
         return try GetStartedScreen()
     }
 
-    public func tapSiteAddress() throws -> LoginSiteAddressScreen {
-        selectSiteButton.tap()
+    public func tapLogIn() throws -> LoginSiteAddressScreen {
+        logInButton.tap()
         return try LoginSiteAddressScreen()
     }
 
@@ -46,7 +46,7 @@ public final class PrologueScreen: ScreenObject {
     }
 
     public func isSiteAddressLoginAvailable() throws -> Bool {
-        selectSiteButton.waitForExistence(timeout: 1)
+        logInButton.waitForExistence(timeout: 1)
     }
 
     public func isWPComLoginAvailable() throws -> Bool {

@@ -35,7 +35,8 @@ struct BadgeView: View {
             .padding(.top, Layout.verticalPadding)
             .padding(.bottom, Layout.verticalPadding)
             .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .fill(Color(.withColorStudio(.wooCommercePurple, shade: .shade0))))
+                .fill(Color(.wooCommercePurple(.shade0)))
+            )
     }
 }
 

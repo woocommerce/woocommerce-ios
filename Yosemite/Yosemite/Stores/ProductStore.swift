@@ -348,16 +348,15 @@ private extension ProductStore {
             .map { $0.key }
             .uniqued()
 
-        debugPrint("sortedByOccurenceProductIDs", sortedByOccurenceProductIDs)
-
         retrieveProducts(siteID: siteID,
                          productIDs: Array(sortedByOccurenceProductIDs.prefix(limit)),
                          pageNumber: Default.firstPageNumber,
-                         pageSize: limit) { [weak self] _ in
-            guard let self = self else { return }
-
-            // Let's retrieve them locally to keep the order, as the remote call doesn't do it
-            onCompletion(self.retrieveCachedProducts(from: sortedByOccurenceProductIDs, siteID: siteID))
+                         pageSize: limit) { result in
+            if case let .success((products, _)) = result {
+                onCompletion(products)
+            } else {
+                onCompletion([])
+            }
         }
     }
 
@@ -373,11 +372,16 @@ private extension ProductStore {
             .map { $0.productID }
             .uniqued()
 
-        retrieveProducts(siteID: siteID, productIDs: Array(productIDs.prefix(limit)), pageNumber: Default.firstPageNumber, pageSize: limit) { [weak self] _ in
-            guard let self = self else { return }
+        retrieveProducts(siteID: siteID,
+                         productIDs: Array(productIDs.prefix(limit)),
+                         pageNumber: Default.firstPageNumber,
+                         pageSize: limit) { result in
 
-            // Let's retrieve them locally to keep the order, as the remote call doesn't do it
-            onCompletion(self.retrieveCachedProducts(from: productIDs, siteID: siteID))
+            if case let .success((products, _)) = result {
+                onCompletion(products)
+            } else {
+                onCompletion([])
+            }
         }
     }
 
@@ -386,19 +390,6 @@ private extension ProductStore {
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: [completedOrderPredicate, sitePredicate])
-    }
-
-    func retrieveCachedProducts(from productIDs: [Int64], siteID: Int64) -> [Product] {
-        productIDs
-            .compactMap {
-                let productPredicate = NSPredicate(format: "productID == %lld", $0)
-                let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
-                let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [productPredicate, sitePredicate])
-                let product = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                          matching: compoundPredicate,
-                                                          sortedBy: nil).first
-                return product
-            }.map { $0.toReadOnly() }
     }
 
     /// Adds a product.

@@ -654,7 +654,9 @@ private extension ProductSelectorViewModel {
 
             guard let self = self else { return }
 
-            let action = ProductAction.retrievePopularCachedProducts(siteID: siteID, onCompletion: { products in
+            let action = ProductAction.retrievePopularCachedProducts(siteID: siteID,
+                                                                     limit: Constants.topSectionsMaxLength,
+                                                                     onCompletion: { products in
                 self.popularProducts = self.refineTopProducts(products)
                 continuation.resume(returning: ())
             })
@@ -671,7 +673,9 @@ private extension ProductSelectorViewModel {
 
             guard let self = self else { return }
 
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: siteID, onCompletion: { products in
+            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: siteID,
+                                                                          limit: Constants.topSectionsMaxLength,
+                                                                          onCompletion: { products in
                 self.lastSoldProducts = self.refineTopProducts(products)
                 continuation.resume(returning: ())
             })
@@ -846,5 +850,11 @@ private extension ProductSelectorViewModel {
         static let popularProductsSectionTitle = "Popular"
         static let lastSoldProductsSectionTitle = "Last Sold"
         static let productsSectionTitle = "Products"
+    }
+}
+
+private extension ProductSelectorViewModel {
+    enum Constants {
+        static let topSectionsMaxLength = 5
     }
 }

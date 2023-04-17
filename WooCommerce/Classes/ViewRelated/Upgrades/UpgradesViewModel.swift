@@ -110,22 +110,12 @@ private extension UpgradesViewModel {
     /// Free Trial's have an special handling!
     ///
     static func getPlanName(from plan: WPComSitePlan) -> String {
-        // Handle the "Free trial" case specially.
         let daysLeft = daysLeft(for: plan)
-        if plan.isFreeTrial {
-            if daysLeft > 0 {
-                return Localization.freeTrial
-            } else {
-                return Localization.trialEnded
-            }
+        if plan.isFreeTrial, daysLeft <= 0 {
+            return Localization.trialEnded
         }
 
-        // For non-free trials plans  remove any mention to WPCom or Woo Express.
-        let toRemove = ["WordPress.com", "Woo Express:"]
-        let sanitizedName = toRemove.reduce(plan.name) { planName, prefixToRemove in
-            planName.replacingOccurrences(of: prefixToRemove, with: "").trimmingCharacters(in: .whitespacesAndNewlines)
-        }
-
+        let sanitizedName = WPComPlanNameSanitizer.getPlanName(from: plan)
         if daysLeft > 0 {
             return sanitizedName
         } else {
@@ -204,7 +194,6 @@ private extension UpgradesViewModel {
 // MARK: Definitions
 private extension UpgradesViewModel {
     enum Localization {
-        static let freeTrial = NSLocalizedString("Free Trial", comment: "Plan name for an active free trial")
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
         static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. " +
                                                       "Subscribe to Woo Express Performance Plan now.",

@@ -34,6 +34,7 @@ struct HubMenu: View {
                     }
                 } label: {
                     Row(title: viewModel.storeTitle,
+                        badge: viewModel.planName,
                         description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
                         icon: .remote(viewModel.avatarURL),
                         chevron: .down,
@@ -51,6 +52,7 @@ struct HubMenu: View {
                         handleTap(menu: menu)
                     } label: {
                         Row(title: menu.title,
+                            badge: nil,
                             description: menu.description,
                             icon: .local(menu.icon),
                             chevron: .leading)
@@ -67,6 +69,7 @@ struct HubMenu: View {
                         handleTap(menu: menu)
                     } label: {
                         Row(title: menu.title,
+                            badge: nil,
                             description: menu.description,
                             icon: .local(menu.icon),
                             chevron: .leading)
@@ -193,6 +196,10 @@ private extension HubMenu {
         ///
         let title: String
 
+        /// Optional badge text. Render next to `title`
+        ///
+        let badge: String?
+
         /// Row Description
         ///
         let description: String
@@ -208,6 +215,8 @@ private extension HubMenu {
         var titleAccessibilityID: String?
         var descriptionAccessibilityID: String?
         var chevronAccessibilityID: String?
+
+        @Environment(\.sizeCategory) private var sizeCategory
 
         var body: some View {
             HStack(spacing: HubMenu.Constants.padding) {
@@ -245,9 +254,16 @@ private extension HubMenu {
 
                 // Title & Description
                 VStack(alignment: .leading, spacing: HubMenu.Constants.topBarSpacing) {
-                    Text(title)
-                        .headlineStyle()
-                        .accessibilityIdentifier(titleAccessibilityID ?? "")
+
+                    AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.badgeSpacing(sizeCategory: sizeCategory)) {
+                        Text(title)
+                            .headlineStyle()
+                            .accessibilityIdentifier(titleAccessibilityID ?? "")
+
+                        if let badge, badge.isNotEmpty {
+                            BadgeView(text: badge)
+                        }
+                    }
 
                     Text(description)
                         .subheadlineStyle()
@@ -278,6 +294,12 @@ private extension HubMenu {
         static let chevronSize: CGFloat = 20
         static let iconSize: CGFloat = 20
         static let trackingOptionKey = "option"
+
+        /// Spacing for the badge view in the avatar row.
+        ///
+        static func badgeSpacing(sizeCategory: ContentSizeCategory) -> CGFloat {
+            sizeCategory.isAccessibilityCategory ? .zero : 4
+        }
     }
 
     enum Localization {

@@ -6,8 +6,6 @@ import enum Yosemite.CreateAccountError
 /// Hosting controller that wraps an `AccountCreationForm`.
 final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {
     private let analytics: Analytics
-    private let signInSource: SignInSource
-    private let completion: () -> Void
 
     init(field: AccountCreationForm.Field = .email,
          viewModel: AccountCreationFormViewModel,
@@ -15,8 +13,6 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
          analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void) {
         self.analytics = analytics
-        self.signInSource = signInSource
-        self.completion = completion
         super.init(rootView: AccountCreationForm(field: field, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController.
@@ -43,7 +39,7 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 struct AccountCreationForm: View {
     enum Field: Equatable {
         case email
-        case password(email: String)
+        case password
     }
 
     /// Triggered when the account is created and the app is authenticated.
@@ -73,9 +69,6 @@ struct AccountCreationForm: View {
     init(field: Field, viewModel: AccountCreationFormViewModel) {
         self.viewModel = viewModel
         self.field = field
-        if case let .password(email) = field {
-            viewModel.email = email
-        }
     }
 
     var body: some View {
@@ -96,33 +89,33 @@ struct AccountCreationForm: View {
 
                 // Form fields.
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
-                    if case .email = field {
-                        // Email field.
-                        AuthenticationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
-                                                                     placeholder: Localization.emailFieldPlaceholder,
-                                                                     keyboardType: .emailAddress,
-                                                                     text: $viewModel.email,
-                                                                     isSecure: false,
-                                                                     errorMessage: viewModel.emailErrorMessage,
-                                                                     isFocused: isFocused))
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .focused($isFocused)
-                        .disabled(isPerformingTask)
-                    } else {
-                        // Password field.
-                        AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
-                                                                     placeholder: Localization.passwordFieldPlaceholder,
-                                                                     keyboardType: .default,
-                                                                     text: $viewModel.password,
-                                                                     isSecure: true,
-                                                                     errorMessage: viewModel.passwordErrorMessage,
-                                                                     isFocused: isFocused))
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .focused($isFocused)
-                        .disabled(isPerformingTask)
-                    }
+                    // Email field.
+                    AuthenticationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
+                                                                 placeholder: Localization.emailFieldPlaceholder,
+                                                                 keyboardType: .emailAddress,
+                                                                 text: $viewModel.email,
+                                                                 isSecure: false,
+                                                                 errorMessage: viewModel.emailErrorMessage,
+                                                                 isFocused: isFocused))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
+                    .disabled(isPerformingTask)
+                    .renderedIf(field == .email)
+
+                    // Password field.
+                    AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
+                                                                 placeholder: Localization.passwordFieldPlaceholder,
+                                                                 keyboardType: .default,
+                                                                 text: $viewModel.password,
+                                                                 isSecure: true,
+                                                                 errorMessage: viewModel.passwordErrorMessage,
+                                                                 isFocused: isFocused))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
+                    .disabled(isPerformingTask)
+                    .renderedIf(field == .password)
 
                     // Terms of Service link.
                     AttributedText(tosAttributedText, enablesLinkUnderline: true)
@@ -218,7 +211,7 @@ struct AccountCreationForm_Previews: PreviewProvider {
         AccountCreationForm(field: .email, viewModel: .init())
             .preferredColorScheme(.light)
 
-        AccountCreationForm(field: .password(email: "test@example.com"), viewModel: .init())
+        AccountCreationForm(field: .password, viewModel: .init())
             .preferredColorScheme(.dark)
             .dynamicTypeSize(.xxxLarge)
     }

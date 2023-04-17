@@ -54,8 +54,8 @@ private extension LoggedOutStoreCreationCoordinator {
             return
         }
         /// Navigates to password field for account creation
-        let passwordView = AccountCreationFormHostingController(field: .password(email: email),
-                                                                viewModel: .init(),
+        let passwordView = AccountCreationFormHostingController(field: .password,
+                                                                viewModel: .init(email: email),
                                                                 signInSource: signInSource,
                                                                 completion: { [weak self] in
             guard let self else { return }

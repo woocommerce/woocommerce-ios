@@ -29,12 +29,14 @@ final class AccountCreationFormViewModel: ObservableObject {
     private let emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(debounceDuration: Double = Constants.fieldDebounceDuration,
+    init(email: String = "",
+         debounceDuration: Double = Constants.fieldDebounceDuration,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void)? = nil) {
         self.stores = stores
         self.analytics = analytics
+        self.email = email
         self.emailSubmissionHandler = emailSubmissionHandler
 
         $email

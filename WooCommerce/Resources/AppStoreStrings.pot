@@ -57,9 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v13.1-whats-new"
+msgctxt "v13.2-whats-new"
 msgid ""
-"More love for In-Person Payments and orders this time around. We made it easier for you to search & select multiple products when creating an order. It's also possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats.\n"
+"For this release, we focused on improving your experience when creating orders and collecting payments. It's now possible to filter products when searching for a product to add to your order. Please try it out and share your feedback.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

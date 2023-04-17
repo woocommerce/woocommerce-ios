@@ -5,8 +5,8 @@ import SwiftUI
 /// Hosting controller that wraps a `SubscriptionSettings` view.
 ///
 final class SubscriptionSettingsViewController: UIHostingController<SubscriptionSettings> {
-    init() {
-        super.init(rootView: SubscriptionSettings())
+    init(viewModel: SubscriptionSettingsViewModel) {
+        super.init(rootView: SubscriptionSettings(viewModel: viewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -20,6 +20,10 @@ final class SubscriptionSettingsViewController: UIHostingController<Subscription
 ///
 struct SubscriptionSettings: View {
 
+    /// View model that directs the view content.
+    ///
+    let viewModel: SubscriptionSettingsViewModel
+
     /// Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
@@ -28,25 +32,25 @@ struct SubscriptionSettings: View {
         ScrollView {
             VStack(alignment: .leading) {
                 // Subscription price
-                TitleAndSubtitleRow(title: Localization.priceTitle, subtitle: "$60.00 every 4 months")
+                TitleAndSubtitleRow(title: Localization.priceTitle, subtitle: viewModel.priceDescription)
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)
 
                 // Expire after
-                TitleAndSubtitleRow(title: Localization.expiryTitle, subtitle: "12 months")
+                TitleAndSubtitleRow(title: Localization.expiryTitle, subtitle: viewModel.expiryDescription)
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)
 
                 // Signup fee
-                TitleAndSubtitleRow(title: Localization.signupFeeTitle, subtitle: "$5.00")
+                TitleAndSubtitleRow(title: Localization.signupFeeTitle, subtitle: viewModel.signupFeeDescription)
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)
 
                 // Free trial
-                TitleAndSubtitleRow(title: Localization.freeTrialTitle, subtitle: "No trial period")
+                TitleAndSubtitleRow(title: Localization.freeTrialTitle, subtitle: viewModel.freeTrialDescription)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
@@ -76,7 +80,13 @@ private extension SubscriptionSettings {
 }
 
 struct SubscriptionSettings_Previews: PreviewProvider {
+
+    static let viewModel = SubscriptionSettingsViewModel(price: "$60.00 every 4 months",
+                                                         expiresAfter: "12 months",
+                                                         signupFee: "$5.00",
+                                                         freeTrial: "No trial period")
+
     static var previews: some View {
-        SubscriptionSettings()
+        SubscriptionSettings(viewModel: viewModel)
     }
 }

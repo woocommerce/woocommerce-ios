@@ -175,6 +175,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.compositeComponents
     }
 
+    var subscription: ProductSubscription? {
+        product.subscription
+    }
+
     func isStockStatusEnabled() -> Bool {
         // Only a variable product's stock status is not editable.
         productType != .variable

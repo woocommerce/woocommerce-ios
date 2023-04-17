@@ -186,6 +186,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         []
     }
 
+    var subscription: ProductSubscription? {
+        productVariation.subscription
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

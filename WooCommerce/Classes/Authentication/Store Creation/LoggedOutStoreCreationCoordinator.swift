@@ -50,7 +50,7 @@ private extension LoggedOutStoreCreationCoordinator {
         guard !isExisting else {
             /// Navigates to login with the existing email address.
             let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
-            command.execute(from: navigationController)
+            command.execute(from: navigationController.topViewController ?? navigationController)
             return
         }
         /// Navigates to password field for account creation

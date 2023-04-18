@@ -461,6 +461,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 // TODO: Track row tapped
                 showSubscriptionSettings()
+            case .noVariationsWarning:
+                return // This warning is not actionable.
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]

@@ -143,8 +143,6 @@ private extension DefaultProductFormTableViewModel {
                 return .status(viewModel: variationStatusRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .noPriceWarning:
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: false))
-            case .subscription(let actionable):
-                return .subscription(viewModel: subscriptionRow(product: productVariation, isActionable: actionable), isActionable: actionable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -562,7 +560,7 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isActionable)
     }
 
-    // MARK: Subscription products and product variations only
+    // MARK: Subscription products only
 
     func subscriptionRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.priceImage

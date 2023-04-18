@@ -14,19 +14,19 @@ final class PaymentsRouteTests: XCTestCase {
         sut = PaymentsRoute(deepLinkForwarder: deepLinkForwarder, featureFlagService: featureFlagService)
     }
 
-    func test_canHandle_true_for_set_up_tap_to_pay() {
+    func test_canHandle_returns_true_for_set_up_tap_to_pay_deep_link_path() {
         XCTAssertTrue(sut.canHandle(subPath: "payments/tap-to-pay"))
     }
 
-    func test_canHandle_true_for_payments_menu() {
+    func test_canHandle_returns_true_for_payments_menu_deep_link_path() {
         XCTAssertTrue(sut.canHandle(subPath: "payments"))
     }
 
-    func test_canHandle_true_for_collect_payment() {
+    func test_canHandle_returns_true_for_collect_payment_deep_link_path() {
         XCTAssertTrue(sut.canHandle(subPath: "payments/collect-payment"))
     }
 
-    func test_performAction_payments_deep_link_forwarded() {
+    func test_performAction_forwards_payments_deep_link_to_hub_menu() {
         // Given
         let path = "payments"
 
@@ -38,7 +38,7 @@ final class PaymentsRouteTests: XCTestCase {
         assertEqual(HubMenuCoordinator.DeepLinkDestination.paymentsMenu, deepLinkForwarder.spyForwardedHubMenuDeepLink)
     }
 
-    func test_performAction_tap_to_pay_deep_link_forwarded() {
+    func test_performAction_forwards_tap_to_pay_deep_link_to_hub_menu() {
         // Given
         let path = "payments/tap-to-pay"
 
@@ -50,7 +50,7 @@ final class PaymentsRouteTests: XCTestCase {
         assertEqual(HubMenuCoordinator.DeepLinkDestination.tapToPayOnIPhone, deepLinkForwarder.spyForwardedHubMenuDeepLink)
     }
 
-    func test_performAction_collect_payment_deep_link_forwarded() {
+    func test_performAction_forwards_collect_payment_deep_link_to_hub_menu() {
         // Given
         let path = "payments/collect-payment"
 
@@ -62,7 +62,7 @@ final class PaymentsRouteTests: XCTestCase {
         assertEqual(HubMenuCoordinator.DeepLinkDestination.simplePayments, deepLinkForwarder.spyForwardedHubMenuDeepLink)
     }
 
-    func test_performAction_unrecognised_path_no_deep_link_forwarded() {
+    func test_performAction_does_not_forward_unrecognised_deep_link_to_hub_menu() {
         // Given
         let path = "payments/some-future-feature"
 

@@ -268,7 +268,7 @@ private struct SelectableSecondaryButton: View {
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
                     .strokeBorder(
                         Color(borderColor),
-                        lineWidth: Style.defaultBorderWidth
+                        lineWidth: isSelected ? Style.defaultSelectedBorderWidth: Style.defaultBorderWidth
                     )
             )
     }
@@ -374,6 +374,7 @@ private struct PlusButton: View {
 private enum Style {
     static let defaultCornerRadius = CGFloat(8.0)
     static let defaultBorderWidth = CGFloat(1.0)
+    static let defaultSelectedBorderWidth = CGFloat(2.0)
     static let defaultEdgeInsets = EdgeInsets(top: 12, leading: 22, bottom: 12, trailing: 22)
 }
 

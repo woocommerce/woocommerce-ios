@@ -286,6 +286,10 @@ private extension ProductVariationsViewController {
 private extension ProductVariationsViewController {
     func configureTopStackView() {
         guard viewModel.shouldAllowGeneration(for: product) else {
+            // Hide top stack view by reducing its height to 0.
+            // Otherwise, a blank space is shown where the "Generate Variation" button would be.
+            let zeroHeight = topStackView.heightAnchor.constraint(equalToConstant: 0)
+            topStackView.addConstraint(zeroHeight)
             return
         }
 

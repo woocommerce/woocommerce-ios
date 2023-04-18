@@ -307,14 +307,19 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
-        let shouldShowSubscriptionRow = isSubscriptionProductsEnabled
-        // Only show price settings row if subscriptions row is not shown; otherwise, price is part of subscription details.
-        let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false && !shouldShowSubscriptionRow
+        let subscriptionOrPriceRow: ProductFormEditAction? = {
+            if isSubscriptionProductsEnabled {
+                return .subscription(actionable: true)
+            } else if !product.regularPrice.isNilOrEmpty {
+                return .priceSettings(editable: false, hideSeparator: false)
+            } else {
+                return nil
+            }
+        }()
         let shouldShowReviewsRow = product.reviewsAllowed
 
         let actions: [ProductFormEditAction?] = [
-            shouldShowSubscriptionRow ? .subscription(actionable: true) : nil,
-            shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
+            subscriptionOrPriceRow,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             .categories(editable: editable),

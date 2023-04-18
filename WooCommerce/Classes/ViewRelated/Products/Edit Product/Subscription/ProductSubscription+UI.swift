@@ -18,6 +18,21 @@ extension ProductSubscription {
         }
     }
 
+    /// Localized string describing the subscription trial period.
+    ///
+    /// Example: "No trial period" or "12 months"
+    ///
+    var trialDescription: String {
+        switch self.trialLength {
+        case "", "0":
+            return Localization.noTrial
+        case "1":
+            return "1 \(self.trialPeriod.descriptionSingular)"
+        default:
+            return "\(self.trialLength) \(self.trialPeriod.descriptionPlural)"
+        }
+    }
+
     /// Localized string describing the subscription price, billing interval, and period.
     ///
     /// Example: "$50.00 every year" or "$10.00 every 2 weeks"
@@ -61,6 +76,7 @@ private extension ProductSubscription {
                                                    "Reads like: '$60.00 every 2 months'.")
         static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
         static let noSignupFee = NSLocalizedString("No signup fee", comment: "Display label when a subscription has no signup fee.")
+        static let noTrial = NSLocalizedString("No trial period", comment: "Display label when a subscription has no trial period.")
     }
 }
 

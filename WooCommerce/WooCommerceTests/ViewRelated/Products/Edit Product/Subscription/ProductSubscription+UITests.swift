@@ -66,6 +66,30 @@ final class ProductSubscription_UITests: XCTestCase {
         XCTAssertEqual(subscription.signupFeeDescription(currencySettings: currencySettings), Localization.noSignupFee)
     }
 
+    func test_trialDescription_returns_expected_description_for_singular_trial_length() {
+        // Given
+        let subscription = ProductSubscription.fake().copy(trialLength: "1", trialPeriod: samplePeriod)
+
+        // Then
+        XCTAssertEqual(subscription.trialDescription, "1 \(samplePeriod.descriptionSingular)")
+    }
+
+    func test_trialDescription_returns_expected_description_for_plural_trial_length() {
+        // Given
+        let subscription = ProductSubscription.fake().copy(trialLength: "2", trialPeriod: samplePeriod)
+
+        // Then
+        XCTAssertEqual(subscription.trialDescription, "2 \(samplePeriod.descriptionPlural)")
+    }
+
+    func test_trialDescription_returns_expected_description_for_no_trial() {
+        // Given
+        let subscription = ProductSubscription.fake().copy(trialLength: "0", trialPeriod: samplePeriod)
+
+        // Then
+        XCTAssertEqual(subscription.trialDescription, Localization.noTrial)
+    }
+
 }
 
 private extension ProductSubscription_UITests {
@@ -75,5 +99,6 @@ private extension ProductSubscription_UITests {
                                                    "Reads like: '$60.00 every 2 months'.")
         static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
         static let noSignupFee = NSLocalizedString("No signup fee", comment: "Display label when a subscription has no signup fee.")
+        static let noTrial = NSLocalizedString("No trial period", comment: "Display label when a subscription has no trial period.")
     }
 }

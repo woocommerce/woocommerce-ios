@@ -26,6 +26,14 @@ final class ProductSubscription_UITests: XCTestCase {
                        String.localizedStringWithFormat(Localization.priceFormat, "$5.00", "2 \(samplePeriod.descriptionPlural)"))
     }
 
+    func test_priceDescription_returns_expected_description_for_no_price_set() {
+        // Given
+        let subscription = ProductSubscription.fake().copy(price: "")
+
+        // Then
+        XCTAssertEqual(subscription.priceDescription(), Localization.noPrice)
+    }
+
     func test_expiryDescription_returns_expected_description_for_singular_subscription_length() {
         // Given
         let subscription = ProductSubscription.fake().copy(length: "1", period: samplePeriod)
@@ -97,6 +105,7 @@ private extension ProductSubscription_UITests {
         static let priceFormat = NSLocalizedString("%1$@ every %2$@",
                                                    comment: "Description of the subscription price for a product, with the price and billing frequency. " +
                                                    "Reads like: '$60.00 every 2 months'.")
+        static let noPrice = NSLocalizedString("No price set", comment: "Display label when a subscription has no price.")
         static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
         static let noSignupFee = NSLocalizedString("No signup fee", comment: "Display label when a subscription has no signup fee.")
         static let noTrial = NSLocalizedString("No trial period", comment: "Display label when a subscription has no trial period.")

@@ -570,12 +570,9 @@ private extension DefaultProductFormTableViewModel {
 
         var subscriptionDetails = [String]()
 
-        if let priceDescription = product.subscription?.priceDescription() {
-            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, priceDescription))
-        }
-
-        if let expiryDescription = product.subscription?.expiryDescription {
-            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, expiryDescription))
+        if let subscription = product.subscription {
+            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, subscription.priceDescription()))
+            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, subscription.expiryDescription))
         }
 
         let details = subscriptionDetails.isEmpty ? nil: subscriptionDetails.joined(separator: "\n")

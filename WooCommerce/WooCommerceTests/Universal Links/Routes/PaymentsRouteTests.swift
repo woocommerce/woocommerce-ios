@@ -1,12 +1,12 @@
 import XCTest
-import TestKit
+
 @testable import WooCommerce
 
 final class PaymentsRouteTests: XCTestCase {
 
-    var deepLinkForwarder: MockDeepLinkForwarder!
-    var featureFlagService: MockFeatureFlagService!
-    var sut: PaymentsRoute!
+    private var deepLinkForwarder: MockDeepLinkForwarder!
+    private var featureFlagService: MockFeatureFlagService!
+    private var sut: PaymentsRoute!
 
     override func setUp() {
         deepLinkForwarder = MockDeepLinkForwarder()

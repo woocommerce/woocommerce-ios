@@ -1432,6 +1432,36 @@ extension Networking.ProductReview {
     }
 }
 
+extension Networking.ProductSubscription {
+    public func copy(
+        length: CopiableProp<String> = .copy,
+        period: CopiableProp<SubscriptionPeriod> = .copy,
+        periodInterval: CopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
+        signUpFee: CopiableProp<String> = .copy,
+        trialLength: CopiableProp<String> = .copy,
+        trialPeriod: CopiableProp<SubscriptionPeriod> = .copy
+    ) -> Networking.ProductSubscription {
+        let length = length ?? self.length
+        let period = period ?? self.period
+        let periodInterval = periodInterval ?? self.periodInterval
+        let price = price ?? self.price
+        let signUpFee = signUpFee ?? self.signUpFee
+        let trialLength = trialLength ?? self.trialLength
+        let trialPeriod = trialPeriod ?? self.trialPeriod
+
+        return Networking.ProductSubscription(
+            length: length,
+            period: period,
+            periodInterval: periodInterval,
+            price: price,
+            signUpFee: signUpFee,
+            trialLength: trialLength,
+            trialPeriod: trialPeriod
+        )
+    }
+}
+
 extension Networking.ProductVariation {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

@@ -554,6 +554,9 @@
 		0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */; };
 		037D270D28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */; };
 		0386CFEB2852108B00134466 /* PaymentMethodsHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */; };
+		0388E1A629E04433007DF84D /* PaymentsRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */; };
+		0388E1A829E04687007DF84D /* DeepLinkForwarder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A729E04687007DF84D /* DeepLinkForwarder.swift */; };
+		0388E1AA29E04715007DF84D /* MockDeepLinkForwarder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */; };
 		038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */; };
 		038BC37F29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */; };
 		038BC38129C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */; };
@@ -1640,7 +1643,9 @@
 		CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49EC24000533003166BA /* TestCredentials.swift */; };
 		CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE4CD162667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift */; };
 		CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE4CD272669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift */; };
+		CCE64E3E29EEA9DA00C1C937 /* ProductSubscription+UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE64E3D29EEA9DA00C1C937 /* ProductSubscription+UITests.swift */; };
 		CCE73D2329ED8DAC0064E797 /* SubscriptionSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE73D2229ED8DAC0064E797 /* SubscriptionSettingsViewModel.swift */; };
+		CCE73D2529EDAB5C0064E797 /* ProductSubscription+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE73D2429EDAB5C0064E797 /* ProductSubscription+UI.swift */; };
 		CCE785C829C1E8280003977F /* BundledProductsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE785C729C1E8280003977F /* BundledProductsListViewModelTests.swift */; };
 		CCE785CA29C1F9170003977F /* ProductBundleItemStockStatus+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE785C929C1F9170003977F /* ProductBundleItemStockStatus+UI.swift */; };
 		CCEC256A27B581E800EF9FA3 /* ProductVariationFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEC256927B581E800EF9FA3 /* ProductVariationFormatter.swift */; };
@@ -2780,6 +2785,9 @@
 		0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationCardDetailsCell.swift; sourceTree = "<group>"; };
 		037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderModalFlowViewControllerProtocol.swift; sourceTree = "<group>"; };
 		0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsHostingController.swift; sourceTree = "<group>"; };
+		0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRouteTests.swift; sourceTree = "<group>"; };
+		0388E1A729E04687007DF84D /* DeepLinkForwarder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkForwarder.swift; sourceTree = "<group>"; };
+		0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDeepLinkForwarder.swift; sourceTree = "<group>"; };
 		038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayCompleteViewModel.swift; sourceTree = "<group>"; };
 		038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayCompleteViewController.swift; sourceTree = "<group>"; };
 		038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayTryPaymentPromptViewModel.swift; sourceTree = "<group>"; };
@@ -3870,7 +3878,9 @@
 		CCDC49F1240060F3003166BA /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = UnitTests.xctestplan; path = WooCommerceTests/UnitTests.xctestplan; sourceTree = SOURCE_ROOT; };
 		CCE4CD162667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
 		CCE4CD272669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsTopBanner.swift; sourceTree = "<group>"; };
+		CCE64E3D29EEA9DA00C1C937 /* ProductSubscription+UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSubscription+UITests.swift"; sourceTree = "<group>"; };
 		CCE73D2229ED8DAC0064E797 /* SubscriptionSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSettingsViewModel.swift; sourceTree = "<group>"; };
+		CCE73D2429EDAB5C0064E797 /* ProductSubscription+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSubscription+UI.swift"; sourceTree = "<group>"; };
 		CCE785C729C1E8280003977F /* BundledProductsListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledProductsListViewModelTests.swift; sourceTree = "<group>"; };
 		CCE785C929C1F9170003977F /* ProductBundleItemStockStatus+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductBundleItemStockStatus+UI.swift"; sourceTree = "<group>"; };
 		CCEC256927B581E800EF9FA3 /* ProductVariationFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormatter.swift; sourceTree = "<group>"; };
@@ -4588,6 +4598,7 @@
 		020B2F9723BDF2D000BD79AD /* Edit Product */ = {
 			isa = PBXGroup;
 			children = (
+				CCE64E3C29EEA9C500C1C937 /* Subscription */,
 				CC09A91029CB1AB700D6C4AD /* Composite Products */,
 				CCE785C629C1E80D0003977F /* Bundled Products */,
 				455208592582907C001CF873 /* Add Product Variation */,
@@ -5709,6 +5720,14 @@
 				0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */,
 			);
 			path = "Payment Methods";
+			sourceTree = "<group>";
+		};
+		0388E1A429E0441F007DF84D /* Routes */ = {
+			isa = PBXGroup;
+			children = (
+				0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */,
+			);
+			path = Routes;
 			sourceTree = "<group>";
 		};
 		039F373B2860DC12009A2B4C /* Payment Methods */ = {
@@ -7221,6 +7240,7 @@
 				02660503293D8D24004084EA /* PaymentCaptureCelebration.swift */,
 				EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */,
 				DE4D23B329B58C5A003A4B5D /* MockWordPressComAccountService.swift */,
+				0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -8208,6 +8228,7 @@
 				B958A7CE28B50FAE00823EEF /* Routes */,
 				B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */,
 				B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */,
+				0388E1A729E04687007DF84D /* DeepLinkForwarder.swift */,
 			);
 			path = "Universal Links";
 			sourceTree = "<group>";
@@ -8225,6 +8246,7 @@
 		B958A7CF28B527FB00823EEF /* Universal Links */ = {
 			isa = PBXGroup;
 			children = (
+				0388E1A429E0441F007DF84D /* Routes */,
 				B958A7D028B5281800823EEF /* UniversalLinkRouterTests.swift */,
 			);
 			path = "Universal Links";
@@ -8355,6 +8377,7 @@
 			children = (
 				CC24A4F329ED6FF70009D6DA /* SubscriptionSettings.swift */,
 				CCE73D2229ED8DAC0064E797 /* SubscriptionSettingsViewModel.swift */,
+				CCE73D2429EDAB5C0064E797 /* ProductSubscription+UI.swift */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -8471,6 +8494,14 @@
 				F997174823DC0A7800592D8E /* PeriodStatsTable.swift */,
 			);
 			path = MyStore;
+			sourceTree = "<group>";
+		};
+		CCE64E3C29EEA9C500C1C937 /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				CCE64E3D29EEA9DA00C1C937 /* ProductSubscription+UITests.swift */,
+			);
+			path = Subscription;
 			sourceTree = "<group>";
 		};
 		CCE785C629C1E80D0003977F /* Bundled Products */ = {
@@ -11174,6 +11205,7 @@
 				02C37B7D2967B72A00F0CF9E /* FreeStagingDomainView.swift in Sources */,
 				457509E4267B9E91005FA2EA /* AggregatedProductListViewController.swift in Sources */,
 				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
+				CCE73D2529EDAB5C0064E797 /* ProductSubscription+UI.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,
 				CC666F2627F359590045AF1E /* OrdersTopBannerFactory.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
@@ -11968,6 +12000,7 @@
 				31E6F21F26B3577800227E6F /* LegacyCardReaderConnectionController.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
+				0388E1A829E04687007DF84D /* DeepLinkForwarder.swift in Sources */,
 				B6A10E9C292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift in Sources */,
 				26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */,
 				0229ED00258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift in Sources */,
@@ -12352,6 +12385,7 @@
 				D83F5939225B424B00626E75 /* AddManualTrackingViewModelTests.swift in Sources */,
 				0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */,
 				FEED57FA2686544D00E47FD9 /* RoleErrorViewModelTests.swift in Sources */,
+				0388E1AA29E04715007DF84D /* MockDeepLinkForwarder.swift in Sources */,
 				022C7D7729793ABE0036568D /* PaidDomainSelectorDataProviderTests.swift in Sources */,
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
 				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,
@@ -12533,6 +12567,7 @@
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
 				26F94E34267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift in Sources */,
 				AE7C957F27C417FA007E8E12 /* FeeLineDetailsViewModelTests.swift in Sources */,
+				CCE64E3E29EEA9DA00C1C937 /* ProductSubscription+UITests.swift in Sources */,
 				0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */,
 				028A4655295AD2DA001CF6CE /* StoreCreationSellingStatusQuestionViewModelTests.swift in Sources */,
 				EE81B1382865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift in Sources */,
@@ -12551,6 +12586,7 @@
 				02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */,
 				CC923A1D2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift in Sources */,
 				267C01D129E9B18E00FCC97B /* StorePlanSynchronizerTests.swift in Sources */,
+				0388E1A629E04433007DF84D /* PaymentsRouteTests.swift in Sources */,
 				D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */,
 				CC04918F292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift in Sources */,
 				02BC5AA524D27F8900C43326 /* ProductVariationFormViewModel+UpdatesTests.swift in Sources */,

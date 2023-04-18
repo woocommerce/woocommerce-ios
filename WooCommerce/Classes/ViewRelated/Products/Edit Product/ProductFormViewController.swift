@@ -1722,10 +1722,13 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showSubscriptionSettings() {
-        let viewModel = SubscriptionSettingsViewModel(price: "$60.00 every 4 months",
-                                                      expiresAfter: "12 months",
-                                                      signupFee: "$5.00",
-                                                      freeTrial: "No trial period") // TODO: 8952 - Replace with real data
+        guard let product = product as? EditableProductModel, let subscription = product.subscription else {
+            return
+        }
+        let viewModel = SubscriptionSettingsViewModel(price: subscription.priceDescription() ?? "",
+                                                      expiresAfter: subscription.expiryDescription,
+                                                      signupFee: subscription.signupFeeDescription(),
+                                                      freeTrial: subscription.trialDescription)
         let viewController = SubscriptionSettingsViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

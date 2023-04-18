@@ -567,9 +567,14 @@ private extension DefaultProductFormTableViewModel {
         let title = Localization.subscriptionTitle
 
         var subscriptionDetails = [String]()
-        // TODO: 8952 - Replace with real price and expiry data
-        subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, "$60.00 every 4 months"))
-        subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, "12 months"))
+
+        if let priceDescription = product.subscription?.priceDescription() {
+            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, priceDescription))
+        }
+
+        if let expiryDescription = product.subscription?.expiryDescription {
+            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, expiryDescription))
+        }
 
         let details = subscriptionDetails.isEmpty ? nil: subscriptionDetails.joined(separator: "\n")
 

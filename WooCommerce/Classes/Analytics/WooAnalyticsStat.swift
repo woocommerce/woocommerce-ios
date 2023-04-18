@@ -196,6 +196,9 @@ public enum WooAnalyticsStat: String {
     case siteCreationSitePreviewed = "site_creation_site_previewed"
     case siteCreationManageStoreTapped = "site_creation_store_management_opened"
     case siteCreationProfilerData = "site_creation_profiler_data"
+    case siteCreationTryForFreeTapped = "site_creation_try_for_free_tapped"
+    case siteCreationTimedOut = "site_creation_timed_out"
+    case siteCreationPropertiesOutOfSync = "site_creation_properties_out_of_sync"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
     case signupFormLoginTapped = "signup_login_button_tapped"
     case signupSubmitted = "signup_submitted"
@@ -354,6 +357,7 @@ public enum WooAnalyticsStat: String {
     case orderCreationProductSelectorItemSelected = "order_creation_product_selector_item_selected"
     case orderCreationProductSelectorItemUnselected = "order_creation_product_selector_item_unselected"
     case orderCreationProductSelectorConfirmButtonTapped = "order_creation_product_selector_confirm_button_tapped"
+    case orderCreationProductSelectorClearSelectionButtonTapped = "order_creation_product_selector_clear_selection_button_tapped"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -567,6 +571,7 @@ public enum WooAnalyticsStat: String {
     case productDetailPreviewTapped = "product_detail_preview_tapped"
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
+    case productDetailViewComponentsTapped = "product_details_view_components_tapped"
 
     // MARK: Edit Product Variation Events
     //

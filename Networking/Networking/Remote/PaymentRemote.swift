@@ -98,7 +98,7 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
                     "extra": [
                         "privacy": domain.supportsPrivacy
                     ]
-                ]
+                ] as [String: Any]
             ],
             "temporary": isTemporary
         ]

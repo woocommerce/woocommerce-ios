@@ -24,6 +24,16 @@ protocol AuthenticatedWebViewModel {
     /// Triggered when the web view redirects to a new URL
     func handleRedirect(for url: URL?)
 
-    /// Handler for a navigation URL
+    /// Handler for a navigation URL before the navigation
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy
+
+    /// Handler after receiving response for a navigation
+    func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy
+}
+
+extension AuthenticatedWebViewModel {
+    /// Default implementation for the optional method
+    func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy {
+        return .allow
+    }
 }

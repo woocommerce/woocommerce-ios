@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-28 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-04-11 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -122,8 +122,8 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d 個商品";
 
-/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
-"%1$d Products selected" = "已選取 %1$d 件商品";
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
+"%1$d Products Selected" = "已選取 %1$d 件商品";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d 個工作天";
@@ -255,11 +255,9 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
 "1" = "1";
 
-/* Navigation bar title for selecting multiple products when one product has been selected. */
+/* Navigation bar title for selecting multiple products when one product has been selected.
+   Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "已選取　1 件商品";
-
-/* Title of the action button at the bottom of the Select Products screen when one product is selected */
-"1 Product selected" = "已選取 1 件商品";
 
 /* Message of the free trial banner when there is 1 day left */
 "1 day left in your trial." = "試用期尚餘 1 天。";
@@ -270,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
+
+/* 24/7 support title feature on the Free Trial Summary Screen */
+"24\/7 support" = "24 小時全年無休的支援";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
@@ -947,6 +948,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Auto Services" = "汽車維修";
 
+/* Auto updates & backups title feature on the Free Trial Summary Screen */
+"Auto updates & backups" = "自動更新和備份";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "在此網站上自動管理";
 
@@ -1403,7 +1407,8 @@ which should be translated separately and considered part of this sentence. */
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "目錄可見度";
 
-/* Edit product categories screen - Screen title
+/* Display label for the composite product's component option type
+   Edit product categories screen - Screen title
    Filter product categories screen - Screen title
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
@@ -1620,6 +1625,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for completed order status. */
 "Completed" = "已完成";
+
+/* Title for the list of component options in the Component Settings view */
+"Component Options" = "組件選項";
+
+/* Title for the settings of a component in a composite product */
+"Component Settings" = "組件設定";
 
 /* Title for Components row in the product form screen.
    Title for the list of components in a composite product */
@@ -2187,6 +2198,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "預設";
 
+/* Title for the default component option field in the Component Settings view */
+"Default Option" = "預設選項";
+
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
@@ -2211,6 +2225,7 @@ which should be translated separately and considered part of this sentence. */
 "Describe your product to your future customers..." = "請向未來的客戶描述你的產品…";
 
 /* The navigation bar title of the Aztec editor screen.
+   Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "說明";
@@ -2467,7 +2482,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ebay" = "eBay";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Ecommerce reports title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "電子商務報告";
 
 /* Country option for a site address. */
@@ -2559,6 +2575,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
 "Email address" = "電子郵件地址";
+
+/* Email marketing title feature on the Free Trial Summary Screen */
+"Email marketing" = "電子郵件行銷";
 
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "將備註透過電子郵件傳送給客戶";
@@ -2666,9 +2685,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "輸入 URL";
-
-/* Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "輸入你的商店地址";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "輸入優惠券";
@@ -2931,6 +2947,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Fast Food Restaurants" = "速食餐廳";
 
+/* Fast to launch title feature on the Free Trial Summary Screen */
+"Fast to launch" = "快速上線";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -3090,6 +3109,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "從購買到完成訂單，你可以透過應用程式管理整個訂單流程。";
+
+/* Subtitle displayed in the simplified prologue screen */
+"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "從完成第一筆銷售到實現百萬收益，讓 Woo 一路陪伴你。  瞭解商家為何信賴我們為 340 萬間線上商店提供支援。";
 
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "加油站";
@@ -3838,6 +3860,9 @@ which should be translated separately and considered part of this sentence. */
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "啟動 Wormholy 除錯";
 
+/* Main title for the free trial summary screen. */
+"Launch in days, grow for years" = "幾天內上線，經營好幾年";
+
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "推出你的商店";
 
@@ -3983,6 +4008,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Loans Or Lending" = "貸款或放貸";
 
 /* Button title.  Tapping takes the user to the login form.
+   Button title. Takes the user to the login by store address flow.
    Log In button label.
    Title for the application password authorization web view
    View title during the log in process. */
@@ -4335,7 +4361,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "經營多家商店";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Multiple payment options title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "多種付款選項";
 
 /* Industry option in the store creation category question. */
@@ -4489,6 +4516,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "沒有找到折價券";
 
+/* Text indicated that no card is needed for a free trial */
+"No credit card required." = "無需使用信用卡。";
+
 /* A error message when it's not possible to acquirethe Analytics Hub current selection range */
 "No current period available" = "無法使用這一期";
 
@@ -4512,6 +4542,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "No need to wonder where that stampbook went" = "不必再煩惱去哪裡找郵票了";
+
+/* Placeholder when there are no component options to show in the Component Settings view */
+"No options selected" = "未選取選項";
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "未選取訂單";
@@ -4566,6 +4599,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option
+   Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
@@ -5104,6 +5138,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "請檢查你的 Apple ID 是否有效，然後再試一次。 需要有效的 Apple ID 才能接受 Apple 的服務條款";
 
+/* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"Please connect Jetpack through your admin page on a browser or contact support." = "請透過瀏覽器上的管理頁面連結 Jetpack，或聯絡支援團隊。";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "請將你的商店連結到 Jetpack，以在此應用程式上存取你的商店。";
 
@@ -5209,7 +5246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "請稍後再試或與我們聯絡，我們將很樂意提供協助！";
 
-/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+/* Suggestion to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "Please try again or contact support if this error continues." = "請再試一次；如果持續發生此錯誤，請聯絡支援團隊。";
 
 /* Error message when Jetpack connection fails */
@@ -5310,13 +5347,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "未填寫郵遞區號";
 
-/* The text is followed by a WordPress.com logo on the store creation plan screen. */
+/* Text next to the WPCom logo in the free trial summary screen
+   The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "技術支援：";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "由 Automattic 提供技術";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Premium Themes title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "進階版佈景主題";
 
 /* Title of in-progress modal when preparing for printing customs invoice */
@@ -5454,9 +5493,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "產品連結";
 
-/* Cell title on beta features screen to enable Product Multi-Selection */
-"Product Multi-Selection" = "產品多重選取";
-
 /* Title of the view containing a single Product Review */
 "Product Review" = "產品評論";
 
@@ -5499,6 +5535,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product type" = "產品類型";
 
 /* Description for Top Performers left column header
+   Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title for the products card at the top of the top performers section in dashboard stats.
@@ -6202,6 +6239,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "選擇你的貨運業者與費率";
 
+/* Caption displayed in the simplified prologue screen */
+"Sell anything, anywhere." = "銷售任何商品，不受地域限制。";
+
 /* Text for the send button in the product review reply screen */
 "Send" = "傳送";
 
@@ -6276,6 +6316,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "分享付款連結";
+
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Tap to Pay on iPhone Feedback" = "分享 iPhone「Tap to Pay」(輕觸付款) 功能的意見";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "分享 URL";
@@ -6371,7 +6414,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "已購買郵寄標籤！";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Shipping labels title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Shipping labels" = "運送標籤";
 
 /* Header text when printing multiple newly purchased shipping labels */
@@ -6485,6 +6529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "網站位址至少必須為 4 個字元。";
 
+/* Site security title feature on the Free Trial Summary Screen */
+"Site security" = "網站安全";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
    The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
@@ -6504,6 +6551,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "代稱";
+
+/* Social advertising title feature on the Free Trial Summary Screen */
+"Social advertising" = "社群媒體廣告";
 
 /* Industry option in the store creation category question. */
 "Software" = "軟體";
@@ -6757,6 +6807,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "訂購與禮品卡";
 
+/* Subscriptions & product kits title feature on the Free Trial Summary Screen */
+"Subscriptions & product kits" = "訂購和商品套件";
+
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
    Subtotal label for a refund details view
@@ -6831,6 +6884,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Switzerland" = "瑞士";
+
+/* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
+"Syncing data" = "正在同步資料";
 
 /* Country option for a site address. */
 "Syria" = "敘利亞";
@@ -7032,9 +7088,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "服務條款";
-
-/* Cell description on beta features screen to enable Product Multi-Selection */
-"Test out Product Multi-Selection as we get ready to launch" = "推出前測試多重選取產品的階段";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "在準備推出前測試應用程式內購買項目";
@@ -7352,11 +7405,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "嘗試載入外掛程式時出現問題。 請檢查你的網際網路，然後再試一次。";
 
-/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+/* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "與你的網站通訊時發生錯誤。";
 
 /* Message to be displayed when the user encounters a generic error during Jetpack setup */
 "There was an error completing your request." = "處理你的要求時發生錯誤。";
+
+/* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"There was an error connecting your site to Jetpack." = "將你的網站連結至 Jetpack 時發生錯誤。";
 
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "建立訂單時發生錯誤";
@@ -7531,6 +7587,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "為了協助我們改善應用程式的效能並修正偶爾出現的錯誤，請啟用自動當機報告。";
 
+/* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
+"To launch your store, you need to upgrade to our plan. %1$@" = "若要推出商店，你必須升級至我們的方案。%1$@";
+
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "若要繼續使用這個 Apple ID，請先使用你的 WordPress.com 密碼登入。 系統只會向你要求一次。";
 
@@ -7684,6 +7743,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "重新嘗試收款";
 
+/* Text in the button to continue with the free trial plan */
+"Try For Free" = "免費試用";
+
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "嘗試重新安裝";
 
@@ -7710,6 +7772,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "嘗試重新連結以存取商店。";
+
+/* Title for the features list in the free trial Summary Screen */
+"Try it free for 14 days." = "立即免費試用 14 天。";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "立即試試";
@@ -7824,6 +7889,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "無法擷取國家\/地區資訊，請稍後再試一次。";
 
+/* Error message when failing to fetch the WPCom account after logging in with magic link. */
+"Unable to fetch the logged in WordPress.com account. Please try again." = "無法擷取已登入的 WordPress.com 帳號。 請再試一次。";
+
 /* Error title for when we can't fetch existing variations. */
 "Unable to fetch variations" = "無法擷取款式";
 
@@ -7907,6 +7975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。 點選「需要更多說明？」即可檢視常見問題。";
+
+/* Error message displayed when failing to fetch the current site info. */
+"Unable to refresh current site info" = "無法重新整理目前網站資訊";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "無法重新整理清單";
@@ -7997,7 +8068,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "無限制";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen.
+   Unlimited products title feature on the Free Trial Summary Screen */
 "Unlimited products" = "不限制產品數量";
 
 /* Back button title when the product doesn't have a name */
@@ -8097,6 +8169,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "正在更新你的產品...";
+
+/* Title on the button to upgrade a free trial plan. */
+"Upgrade" = "升級";
 
 /* Title for the button to upgrade from a free trial
    Title for the WebView when upgrading a free trial plan
@@ -8401,6 +8476,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "我們知道這對你的業務相當重要。";
 
+/* Main description for the free trial summary screen */
+"We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com." = "我們提供打造和經營線上商店所需的一切工具，由 WooCommerce 提供技術支援，並託管於 WordPress.com。";
+
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "我們會使用其他的追蹤工具，包括由第三方所提供的追蹤工具。瞭解相關資訊及其控制方式。";
 
@@ -8573,9 +8651,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
-/* Caption displayed in the simplified prologue screen */
-"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce 是可自訂的開放原始碼電子商務平台，架構在 WordPress 上。";
-
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
 
@@ -8628,6 +8703,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "你可以在網頁儀表板中編輯搭售產品。";
+
+/* Info notice at the bottom of the component settings screen */
+"You can edit component settings in the web dashboard." = "你可以在網頁儀表板中編輯組件設定。";
 
 /* Info notice at the bottom of the components screen */
 "You can edit components in the web dashboard." = "你可以在網頁儀表板中編輯組件。";
@@ -8708,7 +8786,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your free store address" = "你的免費商店位址";
 
 /* Info details for an expired free trial */
-"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "你的免費試用期已結束，存取所有功能時皆會受到限制。 立即訂閱電子商務版";
+"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "你的免費試用已結束，存取所有功能時將會受到限制。 立即訂閱 Woo Express Performance 方案。";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "你的 iPhone 可做為讀卡機使用，或者你可以透過藍牙連線至外部讀卡機。";

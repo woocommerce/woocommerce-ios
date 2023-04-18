@@ -316,7 +316,6 @@ private extension LegacyCollectOrderPaymentUseCase {
             }, onCompletion: { [weak self] result in
                 switch result {
                 case .success(let capturedPaymentData):
-                    self?.markSiteHasAtLeastOneIPPTransactionFinished()
                     self?.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData, onCompletion: onCompletion)
                 case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(_))):
                     self?.trackPaymentCancelation()
@@ -334,12 +333,13 @@ private extension LegacyCollectOrderPaymentUseCase {
                                  onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         // Record success
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
-                            .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
-                                                   countryCode: configuration.countryCode,
-                                                   paymentMethod: capturedPaymentData.paymentMethod,
-                                                   cardReaderModel: connectedReader?.readerType.model ?? "",
-                                                   millisecondsSinceOrderAddNew: try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
-                                                   millisecondsSinceCardPaymentStarted: try? orderDurationRecorder.millisecondsSinceCardPaymentStarted()))
+            .collectPaymentSuccess(forGatewayID: paymentGatewayAccount.gatewayID,
+                                   countryCode: configuration.countryCode,
+                                   paymentMethod: capturedPaymentData.paymentMethod,
+                                   cardReaderModel: connectedReader?.readerType.model ?? "",
+                                   millisecondsSinceOrderAddNew: try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
+                                   millisecondsSinceCardPaymentStarted: try? orderDurationRecorder.millisecondsSinceCardPaymentStarted(),
+                                   siteID: siteID))
         orderDurationRecorder.reset()
 
         // Success Callback
@@ -383,7 +383,8 @@ private extension LegacyCollectOrderPaymentUseCase {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentFailed(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                        error: error,
                                                                                        countryCode: configuration.countryCode,
-                                                                                       cardReaderModel: connectedReader?.readerType.model))
+                                                                                       cardReaderModel: connectedReader?.readerType.model,
+                                                                                       siteID: siteID))
     }
 
     /// Cancels payment and record analytics.
@@ -399,7 +400,8 @@ private extension LegacyCollectOrderPaymentUseCase {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                                          countryCode: configuration.countryCode,
                                                                                          cardReaderModel: connectedReader?.readerType.model ?? "",
-                                                                                         cancellationSource: .other))
+                                                                                         cancellationSource: .other,
+                                                                                         siteID: siteID))
     }
 
     /// Allow merchants to print or email the payment receipt.
@@ -451,10 +453,6 @@ private extension LegacyCollectOrderPaymentUseCase {
                                      from: rootViewController,
                                      completion: onCompleted)
     }
-
-    func markSiteHasAtLeastOneIPPTransactionFinished() {
-        stores.dispatch(AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: order.siteID))
-    }
 }
 
 // MARK: Interac handling
@@ -494,7 +492,8 @@ private extension LegacyCollectOrderPaymentUseCase {
             analytics.track(event: .InPersonPayments
                 .collectInteracPaymentSuccess(gatewayID: paymentGatewayAccount.gatewayID,
                                               countryCode: configuration.countryCode,
-                                              cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                              cardReaderModel: connectedReader?.readerType.model ?? "",
+                                              siteID: siteID))
         default:
             return
         }

@@ -1,0 +1,138 @@
+{
+    "request": {
+        "method": "POST",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "bodyPatterns": [
+            {
+                "matches": ".*path=/wc/v3/products%26_method%3Dpost"
+            },
+            {
+                "contains": "name%22%3A%22Malaya%20shades"
+            }
+        ]
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "id": 2123,
+                "name": "Malaya shades",
+                "slug": "malaya-shades",
+                "permalink": "https:\/\/automatticwidgets.wpcomstaging.com\/product\/malaya-shades\/",
+                "date_created": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",
+                "date_created_gmt": "{{now format=customformat}}",
+                "date_modified": "{{now format=customformat}}",
+                "date_modified_gmt": "{{now format=customformat}}",
+                "type": "simple",
+                "status": "publish",
+                "featured": false,
+                "catalog_visibility": "visible",
+                "description": "simple virtual product",
+                "short_description": "",
+                "sku": "",
+                "price": "140",
+                "regular_price": "140",
+                "sale_price": "",
+                "date_on_sale_from": null,
+                "date_on_sale_from_gmt": null,
+                "date_on_sale_to": null,
+                "date_on_sale_to_gmt": null,
+                "on_sale": false,
+                "purchasable": true,
+                "virtual": true,
+                "total_sales": 0,
+                "downloadable": false,
+                "downloads": [],
+                "download_limit": -1,
+                "download_expiry": -1,
+                "external_url": "",
+                "button_text": "",
+                "tax_status": "taxable",
+                "tax_class": "",
+                "manage_stock": false,
+                "stock_quantity": null,
+                "backorders": "no",
+                "backorders_allowed": false,
+                "backordered": false,
+                "low_stock_amount": null,
+                "sold_individually": false,
+                "weight": "",
+                "dimensions": {
+                    "length": "",
+                    "width": "",
+                    "height": ""
+                },
+                "shipping_required": true,
+                "shipping_taxable": true,
+                "shipping_class": "",
+                "shipping_class_id": 0,
+                "reviews_allowed": true,
+                "average_rating": "0",
+                "rating_count": 0,
+                "upsell_ids": [],
+                "cross_sell_ids": [],
+                "parent_id": 0,
+                "purchase_note": "",
+                "categories": [],
+                "tags": [],
+                "images": [
+                    {
+                        "id": 2128,
+                        "date_created": "2020-01-28T09:52:59",
+                        "date_created_gmt": "2020-01-28T09:52:59",
+                        "date_modified": "2020-01-28T09:52:59",
+                        "date_modified_gmt": "2020-01-28T09:52:59",
+                        "src": "https://i1.wp.com/automatticwidgets.wpcomstaging.com/wp-content/uploads/2020/01/Mask-Group.png?fit=201%2C201&ssl=1",
+                        "name": "Mask Group",
+                        "alt": ""
+                    }
+                ],
+                "attributes": [],
+                "default_attributes": [],
+                "variations": [],
+                "grouped_products": [],
+                "menu_order": 0,
+                "price_html": "",
+                "related_ids": [],
+                "meta_data": [
+                    {
+                        "id": 2574,
+                        "key": "_product_addons",
+                        "value": []
+                    },
+                    {
+                        "id": 2575,
+                        "key": "_product_addons_exclude_global",
+                        "value": "0"
+                    },
+                    {
+                        "id": 2591,
+                        "key": "_wpas_done_all",
+                        "value": "1"
+                    },
+                    {
+                        "id": 4047,
+                        "key": "_last_editor_used_jetpack",
+                        "value": "classic-editor"
+                    }
+                ],
+                "stock_status": "instock",
+                "has_options": false,
+                "jetpack_likes_enabled": true,
+                "_links": {
+                    "self": [
+                        {
+                            "href": "https:\/\/automatticwidgets.wpcomstaging.com\/wp-json\/wc\/v3\/products\/2123"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "https:\/\/automatticwidgets.wpcomstaging.com\/wp-json\/wc\/v3\/products"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
+

@@ -614,43 +614,6 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
-    func test_loadProductMultiSelectionFeatureSwitchState_returns_isEnabled_false_on_new_generalAppSettings() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { actionResult in
-                promise(actionResult)
-            })
-            self.subject?.onAction(action)
-        }
-
-        // Then
-        let isEnabled = try result.get()
-        XCTAssertFalse(isEnabled)
-    }
-
-    func test_setProductMultiSelectionFeatureSwitchState_when_switch_state_isEnabled_then_returns_true() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-
-        // When
-        let updateAction = AppSettingsAction.setProductMultiSelectionFeatureSwitchState(isEnabled: true) { _ in }
-        subject?.onAction(updateAction)
-
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { actionResult in
-                promise(actionResult)
-            })
-            self.subject?.onAction(action)
-        }
-
-        // Then
-        let isEnabled = try result.get()
-        XCTAssertTrue(isEnabled)
-    }
-
     // MARK: - General Store Settings
 
     func test_saving_isTelemetryAvailable_works_correctly() throws {
@@ -1077,13 +1040,12 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
-    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_a_different_site_returns_false() throws {
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_using_legacy_code_for_a_different_site_returns_false() throws {
         // Given
         let siteIDA: Int64 = 1
         let siteIDB: Int64 = 2
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteIDA)
-        subject?.onAction(updateAction)
+        try generalAppSettings?.setValue([siteIDA], for: \.sitesWithAtLeastOneIPPTransactionFinished)
 
         // When
         let result: Bool = waitFor { promise in
@@ -1097,12 +1059,11 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
-    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_that_site_returns_true() throws {
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_using_legacy_code_for_that_site_returns_true() throws {
         // Given
         let siteID: Int64 = 1
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
-        subject?.onAction(updateAction)
+        try generalAppSettings?.setValue([siteID], for: \.sitesWithAtLeastOneIPPTransactionFinished)
 
         // When
         let result: Bool = waitFor { promise in
@@ -1114,6 +1075,118 @@ extension AppSettingsStoreTests {
 
         // Then
         XCTAssertTrue(result)
+    }
+
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_a_different_site_returns_false() throws {
+        // Given
+        let siteIDA: Int64 = 1
+        let siteIDB: Int64 = 2
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let action = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteIDA, cardReaderType: .other)
+        subject?.onAction(action)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteIDB) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_via_first_transactions_for_that_site_returns_true() throws {
+        // Given
+        let siteID: Int64 = 1
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let action = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .other)
+        subject?.onAction(action)
+
+        // When
+        let result: Bool = waitFor { promise in
+            let action = AppSettingsAction.loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID) { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_given_no_data_has_been_stored_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let actualValue = waitFor { promise in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 1, cardReaderType: .appleBuiltIn) { maybeDate in
+                promise(maybeDate)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(actualValue)
+    }
+
+    func test_given_a_date_was_previously_stored_for_the_site_and_reader_loadFirstInPersonPaymentsTransactionDate_returns_that_date() throws {
+        // Given
+        let siteID: Int64 = 1
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .appleBuiltIn)
+        subject?.onAction(updateAction)
+
+        // When
+        let actualValue = waitFor { promise in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .appleBuiltIn) { maybeDate in
+                promise(maybeDate)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let storedDate = try XCTUnwrap(actualValue)
+        XCTAssertTrue(storedDate.timeIntervalSinceNow < 60)
+    }
+
+    func test_given_a_date_was_only_previously_stored_for_another_site_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: 1, cardReaderType: .appleBuiltIn)
+        subject?.onAction(updateAction)
+
+        // When
+        let actualValue = waitFor { promise in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: 100, cardReaderType: .appleBuiltIn) { maybeDate in
+                promise(maybeDate)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(actualValue)
+    }
+
+    func test_given_a_date_was_only_previously_stored_for_another_reader_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
+        // Given
+        let siteID: Int64 = 1
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: siteID, cardReaderType: .stripeM2)
+        subject?.onAction(updateAction)
+
+        // When
+        let actualValue = waitFor { promise in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(siteID: siteID, cardReaderType: .appleBuiltIn) { maybeDate in
+                promise(maybeDate)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(actualValue)
     }
 }
 
@@ -1135,7 +1208,6 @@ private extension AppSettingsStoreTests {
             isCouponManagementSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
             isTapToPayOnIPhoneSwitchEnabled: false,
-            isProductMultiSelectionSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: []
@@ -1152,7 +1224,6 @@ private extension AppSettingsStoreTests {
             isCouponManagementSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
             isTapToPayOnIPhoneSwitchEnabled: false,
-            isProductMultiSelectionSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: []

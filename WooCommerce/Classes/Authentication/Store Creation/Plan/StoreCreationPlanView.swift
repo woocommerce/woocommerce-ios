@@ -119,7 +119,7 @@ struct StoreCreationPlanView: View {
                             Text(Localization.poweredByWPCOMPrompt)
                                 .foregroundColor(Color(.secondaryLabel))
                                 .footnoteStyle()
-                            Image(uiImage: .wpcomLogoImage)
+                            Image(uiImage: .wpcomLogoImage())
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 18 * scale)

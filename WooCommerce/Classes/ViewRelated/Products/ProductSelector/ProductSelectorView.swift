@@ -127,7 +127,7 @@ struct ProductSelectorView: View {
                     Button(cancelButtonTitle) {
                         isPresented.toggle()
                         if !isPresented {
-                            viewModel.clearSelection()
+                            viewModel.closeButtonTapped()
                         }
                     }
                 }
@@ -139,7 +139,7 @@ struct ProductSelectorView: View {
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
-                viewModel.filters = filters
+                viewModel.updateFilters(filters)
             } onClearAction: {
                 // no-op
             } onDismissAction: {
@@ -178,7 +178,7 @@ struct ProductSelectorView: View {
                        viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
-                    viewModel.selectProduct(rowViewModel.productOrVariationID)
+                    viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
                     if !configuration.multipleSelectionsEnabled {
                         isPresented.toggle()
                     }

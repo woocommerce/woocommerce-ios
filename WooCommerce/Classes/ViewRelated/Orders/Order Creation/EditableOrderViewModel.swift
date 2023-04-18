@@ -62,6 +62,12 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
+    /// Indicates whether Product Multi-Selection is enabled
+    ///
+    var isProductMultiSelectionEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)
+    }
+
     var title: String {
         switch flow {
         case .creation:
@@ -70,10 +76,6 @@ final class EditableOrderViewModel: ObservableObject {
             return String.localizedStringWithFormat(Localization.titleWithOrderNumber, order.number)
         }
     }
-
-    /// Latest state for Product Multi-Selection experimental feature
-    ///
-    @Published var isProductMultiSelectionBetaFeatureEnabled: Bool = ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection)
 
     /// Active navigation bar trailing item.
     /// Defaults to create button.
@@ -171,34 +173,37 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the product list
     ///
-    var productSelectorViewModel: ProductSelectorViewModel {
+    lazy var productSelectorViewModel: ProductSelectorViewModel = {
         ProductSelectorViewModel(
             siteID: siteID,
             selectedItemIDs: selectedProductsAndVariationsIDs,
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: isProductMultiSelectionBetaFeatureEnabled,
+            supportsMultipleSelection: isProductMultiSelectionEnabled,
             toggleAllVariationsOnSelection: false,
-            onProductSelected: { [weak self] product in
+            onProductSelectionStateChanged: { [weak self] product in
                 guard let self = self else { return }
-                self.addProductToOrder(product)
+                self.addOrRemoveProductToOrder(product)
             },
-            onVariationSelected: { [weak self] variation, parentProduct in
+            onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
-                self.addProductVariationToOrder(variation, parent: parentProduct)
+                self.addOrRemoveProductVariationToOrder(variation, parent: parentProduct)
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
             }, onAllSelectionsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearAllSelectedItems()
-                self.syncInitialSelectedState()
+                self.trackClearAllSelectedItemsTapped()
             }, onSelectedVariationsCleared: { [weak self] in
                 guard let self = self else { return }
                 self.clearSelectedVariations()
+            }, onCloseButtonTapped: { [weak self] in
+                guard let self = self else { return }
+                self.syncOrderItemSelectionStateOnDismiss()
             })
-    }
+    }()
 
     /// View models for each product row in the order.
     ///
@@ -330,8 +335,6 @@ final class EditableOrderViewModel: ObservableObject {
         // Needs to be reset before the view model is used.
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
 
-        configureProductMultiSelectionIfNeeded()
-
         configureDisabledState()
         configureNavigationTrailingItem()
         configureSyncErrors()
@@ -344,20 +347,6 @@ final class EditableOrderViewModel: ObservableObject {
         configureMultipleLinesMessage()
         resetAddressForm()
         syncInitialSelectedState()
-    }
-
-    /// Checks the current state of the Product Multi Selection feature toggle
-    ///
-    private func configureProductMultiSelectionIfNeeded() {
-        let action = AppSettingsAction.loadProductMultiSelectionFeatureSwitchState(onCompletion: { result in
-            switch result {
-            case .success(let isEnabled):
-                self.isProductMultiSelectionBetaFeatureEnabled = isEnabled
-            case .failure(let error):
-                DDLogError("Unable to load MultiSelection feature switch state. \(error)")
-            }
-        })
-        stores.dispatch(action)
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -381,24 +370,26 @@ final class EditableOrderViewModel: ObservableObject {
     /// Clears selected products and variations
     ///
     private func clearAllSelectedItems() {
-        selectedProducts.forEach { _ in
-            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
-        }
         selectedProducts.removeAll()
-
-        selectedProductVariations.forEach { _ in
-            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
-        }
         selectedProductVariations.removeAll()
+    }
+
+    private func trackClearAllSelectedItemsTapped() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .product))
     }
 
     /// Clears selected variations
     /// 
     private func clearSelectedVariations() {
-        selectedProductVariations.forEach { _ in
-            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
-        }
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
+    }
+
+    /// Synchronizes the item selection state by clearing all items, then retrieving the latest saved state
+    ///
+    func syncOrderItemSelectionStateOnDismiss() {
+        clearAllSelectedItems()
+        syncInitialSelectedState()
     }
 
     /// Selects an order item by setting the `selectedProductViewModel`.
@@ -415,15 +406,13 @@ final class EditableOrderViewModel: ObservableObject {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
-        if isProductMultiSelectionBetaFeatureEnabled {
-            // Updates selected products and selected variations for all items that have been removed directly from the Order
-            // when using multi-selection, for example by tapping the `-` button within the Order view
-            if item.productID != 0 {
-                selectedProducts.removeAll(where: { $0.productID == item.productID })
-            }
+        if isProductMultiSelectionEnabled {
             if item.variationID != 0 {
-                selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
+                productSelectorViewModel.changeSelectionStateForVariation(with: item.variationID, productID: item.productID)
+            } else if item.productID != 0 {
+                productSelectorViewModel.changeSelectionStateForProduct(with: item.productID)
             }
+
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -888,13 +877,13 @@ private extension EditableOrderViewModel {
     // TODO:
     // This method needs to be refactored, to reflect that adds products to Order for single selection,
     // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
-    func addProductToOrder(_ product: Product) {
+    func addOrRemoveProductToOrder(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+        if isProductMultiSelectionEnabled {
             // Multi-selection
             if !selectedProducts.contains(where: { $0.productID == product.productID }) {
                 selectedProducts.append(product)
@@ -916,7 +905,7 @@ private extension EditableOrderViewModel {
     // TODO:
     // This method needs to be refactored, to reflect that adds variations to Order for single selection,
     // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
-    func addProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
+    func addOrRemoveProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
             allProducts.append(product)
@@ -926,7 +915,7 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1), isProductMultiSelectionBetaFeatureEnabled {
+        if isProductMultiSelectionEnabled {
             // Multi-Selection
             if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
                 selectedProductVariations.append(variation)

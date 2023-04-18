@@ -19,7 +19,7 @@ final class StorePickerCoordinator: Coordinator {
 
     /// The switchStoreUseCase object initialized with the ServiceLocator stores
     ///
-    private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores)
+    private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     /// The RoleEligibilityUseCase object initialized with the ServiceLocator stores
     ///
@@ -35,9 +35,12 @@ final class StorePickerCoordinator: Coordinator {
         return pickerVC
     }()
 
-    init(_ navigationController: UINavigationController, config: StorePickerConfiguration) {
+    init(_ navigationController: UINavigationController,
+         config: StorePickerConfiguration,
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
         self.navigationController = navigationController
         self.selectedConfiguration = config
+        self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: ServiceLocator.stores)
     }
 
     func start() {
@@ -178,8 +181,9 @@ private extension StorePickerConfiguration {
             return .fullscreen
         case .switchingStores:
             return .modally
-        case .storeCreationFromLogin:
-            return .navigationStack(animated: true)
+        case .storeCreationFromLogin(let source):
+            let willPresentStoreCreationScreenAfterNavigation = source == .prologue
+            return .navigationStack(animated: willPresentStoreCreationScreenAfterNavigation ? false : true)
         default:
             return .navigationStack(animated: true)
         }

@@ -28,28 +28,18 @@ struct StoreCreationCategoryQuestionView: View {
 
     var body: some View {
         OptionalStoreCreationProfilerQuestionView(viewModel: viewModel) {
-            VStack(spacing: 32) {
-                ForEach(viewModel.categorySections, id: \.self) { section in
-                    VStack(alignment: .leading, spacing: 8) {
-                        // Category group name.
-                        Text(section.group.name.uppercased())
-                            .foregroundColor(Color(.textSubtle))
-                            .captionStyle()
-                        VStack(alignment: .leading, spacing: 16) {
-                            // Category options.
-                            ForEach(section.categories, id: \.name) { category in
-                                Button(action: {
-                                    viewModel.selectCategory(category)
-                                }, label: {
-                                    HStack {
-                                        Text(category.name)
-                                        Spacer()
-                                    }
-                                })
-                                .buttonStyle(SelectableSecondaryButtonStyle(isSelected: viewModel.selectedCategory == category))
-                            }
+            VStack(alignment: .leading, spacing: 16) {
+                // Category options.
+                ForEach(viewModel.categories, id: \.self) { category in
+                    Button(action: {
+                        viewModel.selectCategory(category)
+                    }, label: {
+                        HStack {
+                            Text(category.name)
+                            Spacer()
                         }
-                    }
+                    })
+                    .buttonStyle(SelectableSecondaryButtonStyle(isSelected: viewModel.selectedCategory == category))
                 }
             }
         }

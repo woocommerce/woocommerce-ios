@@ -24,7 +24,7 @@ final class LoginTests: XCTestCase {
 
         try TabNavComponent()
             .goToMenuScreen()
-            .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrl)
+            .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrlHost)
             .openSettingsPane()
             .logOut()
             .verifyPrologueScreenLoaded()
@@ -45,7 +45,7 @@ final class LoginTests: XCTestCase {
 
         try TabNavComponent()
             .goToMenuScreen()
-            .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrl)
+            .verifySelectedStoreDisplays(storeTitle: TestCredentials.storeName, storeURL: TestCredentials.siteUrlHost)
             .openSettingsPane()
             .logOut()
             .verifyPrologueScreenLoaded()

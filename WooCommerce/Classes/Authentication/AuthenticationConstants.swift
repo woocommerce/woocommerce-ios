@@ -100,6 +100,11 @@ struct AuthenticationConstants {
         comment: "The hint button's title text to help users find their store address."
     )
 
+    static let forgotPassword = NSLocalizedString(
+        "Forgot password?",
+        comment: "Button to see instructions for resetting password of a WPCom account."
+    )
+
     /// Footer for Terms of Service of Sign In With Apple and Sign In with Google
     //
     static let signupTermsOfService = NSLocalizedString(

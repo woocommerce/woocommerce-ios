@@ -38,10 +38,6 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_disabled() {
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = false
-
-        // Then
         XCTAssertFalse(viewModel.productSelectorViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
@@ -50,9 +46,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
-
-        // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
 
         // Then
         XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
@@ -271,7 +264,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
@@ -285,11 +278,11 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         viewModel.productRows[0].incrementQuantity()
 
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
@@ -309,9 +302,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
-        viewModel.productSelectorViewModel.selectProduct(anotherProduct.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: anotherProduct.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
         // And when another product is added to the order (to confirm the first product's quantity change is retained)
         viewModel.productRows[0].incrementQuantity()
@@ -327,7 +319,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         // Product quantity is 1
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         XCTAssertEqual(viewModel.productRows[0].quantity, 1)
 
         // When
@@ -341,7 +333,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
 
         // When
         let expectedRow = viewModel.productRows[0]
@@ -359,8 +351,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertProducts([product0, product1])
 
         // Given products are added to order
-        viewModel.productSelectorViewModel.selectProduct(product0.productID)
-        viewModel.productSelectorViewModel.selectProduct(product1.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product1.productID)
 
         // When
         let expectedRemainingRow = viewModel.productRows[1]
@@ -540,7 +532,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When & Then
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
 
@@ -562,7 +554,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
                                             methodID: "other",
@@ -600,7 +592,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         let testFeeLine = OrderFeeLine(feeID: 0,
                                        name: "Fee",
                                        taxClass: "",
@@ -640,7 +632,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         let testCouponLine = OrderCouponLine(couponID: 0, code: "COUPONCODE", discount: "1.5", discountTax: "")
         viewModel.saveCouponLine(testCouponLine)
 
@@ -669,7 +661,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
                                             methodID: "other",
@@ -707,7 +699,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         let testFeeLine = OrderFeeLine(feeID: 0,
                                        name: "Fee",
                                        taxClass: "",
@@ -747,7 +739,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
 
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
@@ -874,7 +866,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -953,8 +945,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = false
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderProductAdd.rawValue])
@@ -975,8 +966,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.isProductMultiSelectionBetaFeatureEnabled = true
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         viewModel.productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -1006,7 +996,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.productSelectorViewModel.selectProduct(product.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         viewModel.productRows[0].incrementQuantity()
 
         // Then
@@ -1027,7 +1017,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // Given products are added to order
-        viewModel.productSelectorViewModel.selectProduct(product0.productID)
+        viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
 
         // When
         let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
@@ -1038,6 +1028,36 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let properties = try XCTUnwrap(analytics.receivedProperties.last?["flow"] as? String)
         XCTAssertEqual(properties, "creation")
+    }
+
+    func test_product_selector_source_is_tracked_when_product_selector_clear_selection_button_is_tapped() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics),
+                                               featureFlagService: featureFlagService)
+
+        // When
+        viewModel.productSelectorViewModel.clearSelection()
+
+        // Then
+        XCTAssertTrue(analytics.receivedEvents.contains(where: {
+            $0.description == WooAnalyticsStat.orderCreationProductSelectorClearSelectionButtonTapped.rawValue })
+        )
+
+        guard let eventIndex = analytics.receivedEvents.firstIndex(where: {
+            $0.description == WooAnalyticsStat.orderCreationProductSelectorClearSelectionButtonTapped.rawValue }) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analytics.receivedProperties[eventIndex]
+        guard let event = eventProperties.first(where: { $0.key as? String == "source"}) else {
+            return XCTFail("No property received")
+        }
+
+        XCTAssertEqual(event.value as? String, "product_selector")
     }
 
     func test_shipping_method_tracked_when_added() throws {

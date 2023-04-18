@@ -131,6 +131,13 @@ final class JetpackSetupViewModel: ObservableObject {
         checkJetpackConnection()
     }
 
+    func didEncounterErrorDuringConnection(code: Int?) {
+        setupFailed = true
+        setupErrorDetail = .init(setupErrorMessage: Localization.connectionErrorMessage,
+                                 setupErrorSuggestion: Localization.connectionErrorSuggestion,
+                                 errorCode: code)
+    }
+
     func navigateToStore() {
         trackSetupDuringLogin(.loginJetpackSetupGoToStoreTapped)
         trackSetupAfterLogin(tap: .goToStore)
@@ -419,15 +426,23 @@ extension JetpackSetupViewModel {
         )
         static let communicationErrorMessage = NSLocalizedString(
             "There was an error communicating with your site.",
-            comment: "Message to be displayed when the user encounters a permission error during Jetpack setup"
+            comment: "Message to be displayed when there's an error communicating with the remote site during Jetpack setup"
         )
         static let communicationErrorSuggestion = NSLocalizedString(
             "Please try again or contact support if this error continues.",
-            comment: "Suggestion to be displayed when the user encounters a permission error during Jetpack setup"
+            comment: "Suggestion to be displayed when there's an error communicating with the remote site during Jetpack setup"
         )
         static let genericErrorMessage = NSLocalizedString(
             "There was an error completing your request.",
             comment: "Message to be displayed when the user encounters a generic error during Jetpack setup"
+        )
+        static let connectionErrorMessage = NSLocalizedString(
+            "There was an error connecting your site to Jetpack.",
+            comment: "Message to be displayed when the user encounters an error during the connection step of Jetpack setup"
+        )
+        static let connectionErrorSuggestion = NSLocalizedString(
+            "Please connect Jetpack through your admin page on a browser or contact support.",
+            comment: "Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup"
         )
     }
 

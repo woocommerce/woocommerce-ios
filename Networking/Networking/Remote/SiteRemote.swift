@@ -15,7 +15,7 @@ public protocol SiteRemoteProtocol {
 
     /// Enables a free trial plan for a site.
     ///
-    func enableFreeTrial(siteID: Int64) async throws
+    func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws
 }
 
 /// Site: Remote Endpoints
@@ -59,7 +59,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                 "theme": flow.theme,
                 "use_theme_annotation": false,
                 "wpcom_public_coming_soon": 1
-            ]
+            ] as [String: Any]
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
 
@@ -72,9 +72,27 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         return try await enqueue(request)
     }
 
-    public func enableFreeTrial(siteID: Int64) async throws {
+    public func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws {
         let path = Path.enableFreeTrial(siteID: siteID)
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
+        let parameters: [String: Any]? = profilerData.map { profilerData in
+            [
+                "wpcom_woocommerce_onboarding": [
+                    "blogname": profilerData.name,
+                    "woocommerce_default_country": profilerData.countryCode,
+                    "woocommerce_onboarding_profile": [
+                        "industry": [
+                            [
+                                "slug": profilerData.category
+                            ].compactMapValues { $0 }
+                        ],
+                        "is_store_country_set": true,
+                        "selling_venues": profilerData.sellingStatus?.rawValue as Any?,
+                        "other_platform": profilerData.sellingPlatforms as Any?
+                    ].compactMapValues { $0 }
+                ]
+            ]
+        }
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
         return try await enqueue(request)
     }
 }
@@ -152,6 +170,39 @@ public extension SiteCreationResponse {
             case url
             case siteSlug = "site_slug"
         }
+    }
+}
+
+/// Answers from the site creation profiler questions.
+public struct SiteProfilerData {
+    public let name: String
+    public let category: String?
+    public let sellingStatus: SellingStatus?
+    public let sellingPlatforms: String?
+    public let countryCode: String
+
+    /// Selling status options.
+    /// Its raw value is the value to be sent to the backend.
+    /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
+    public enum SellingStatus: String {
+        /// Just starting my business.
+        case justStarting = "no"
+        /// Already selling, but not online.
+        case alreadySellingButNotOnline = "brick-mortar"
+        /// Already selling online.
+        case alreadySellingOnline = "other"
+    }
+
+    public init(name: String,
+                category: String?,
+                sellingStatus: SiteProfilerData.SellingStatus?,
+                sellingPlatforms: String?,
+                countryCode: String) {
+        self.name = name
+        self.category = category
+        self.sellingStatus = sellingStatus
+        self.sellingPlatforms = sellingPlatforms
+        self.countryCode = countryCode
     }
 }
 

@@ -101,6 +101,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// List of components that this product consists of. Applicable to composite-type products only.
     public let compositeComponents: [ProductCompositeComponent]
 
+    // MARK: Subscription Product properties
+
+    /// Subscription settings. Applicable to subscription-type products only.
+    public let subscription: ProductSubscription?
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -219,7 +224,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 bundleStockStatus: ProductStockStatus?,
                 bundleStockQuantity: Int64?,
                 bundledItems: [ProductBundleItem],
-                compositeComponents: [ProductCompositeComponent]) {
+                compositeComponents: [ProductCompositeComponent],
+                subscription: ProductSubscription?) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -287,6 +293,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.bundleStockQuantity = bundleStockQuantity
         self.bundledItems = bundledItems
         self.compositeComponents = compositeComponents
+        self.subscription = subscription
     }
 
     /// The public initializer for Product.
@@ -449,13 +456,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
-        ///`ProductCompositeComponent.defaultOptionID` is being returned as an `Int` instead of as a `String` in some test store.
-        /// Since this feature is still in development I'm defaulting to evict any composite component when a parsing error occurs.
-        /// We should identify why that field can be of multiple types before releasing the feature to the public.
-        ///
         // Composite Product properties
-        let compositeComponents = (try? container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents)) ?? []
+        let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
 
+        // Subscription properties
+        let subscription = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?.extractProductSubscription()
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -523,7 +528,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   bundleStockStatus: bundleStockStatus,
                   bundleStockQuantity: bundleStockQuantity,
                   bundledItems: bundledItems,
-                  compositeComponents: compositeComponents)
+                  compositeComponents: compositeComponents,
+                  subscription: subscription)
     }
 
     public func encode(to encoder: Encoder) throws {

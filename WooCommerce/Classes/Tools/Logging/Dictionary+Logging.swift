@@ -21,7 +21,7 @@ extension Dictionary where Key == String {
                     "Code": nsError.code,
                     "Description": nsError.localizedDescription,
                     "User Info": nsError.userInfo.description
-                ]
+                ] as [String: Any]
                 return formattedProperties
             }
 

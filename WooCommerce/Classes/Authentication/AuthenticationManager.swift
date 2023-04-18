@@ -25,6 +25,9 @@ class AuthenticationManager: Authentication {
     /// Store creation coordinator in the logged-out state.
     private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
 
+    /// Store creation coordinator in the logged-in state.
+    private var storeCreationCoordinator: StoreCreationCoordinator?
+
     /// Keychain access for SIWA auth token
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -45,6 +48,8 @@ class AuthenticationManager: Authentication {
     ///
     private let storageManager: StorageManagerType
 
+    private let stores: StoresManager
+
     private let featureFlagService: FeatureFlagService
 
     private let analytics: Analytics
@@ -57,14 +62,26 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the use case
     private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+    /// Injected for unit test purposes
+    private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
+
+    /// Injected for unit test purposes
+    private let switchStoreUseCase: SwitchStoreUseCaseProtocol?
+
+    init(stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
-         abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider()) {
+         abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
+        self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.abTestVariationProvider = abTestVariationProvider
+        self.purchasesManager = purchasesManager
+        self.switchStoreUseCase = switchStoreUseCase
     }
 
     /// Initializes the WordPress Authenticator.
@@ -539,6 +556,51 @@ private extension AuthenticationManager {
 
 // MARK: - Private helpers
 private extension AuthenticationManager {
+    @MainActor
+    func autoSelectStoreOrPresentStoreCreationFlow(source: SignInSource? = nil,
+                                                   in navigationController: UINavigationController,
+                                                   onCompletion: @escaping () -> Void) async {
+        // If the user logs in from the store creation flow
+        guard case .custom(let source) = source,
+              let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
+              storeCreationSource == .prologue else {
+            return
+        }
+
+        let availableStores = await getAvailableStores()
+
+        // If there are no stores available
+        if availableStores.isEmpty {
+            // Start the store creation process because the user does
+            // not have any existing stores
+            let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
+                                                       navigationController: navigationController,
+                                                       featureFlagService: featureFlagService,
+                                                       purchasesManager: purchasesManager)
+            self.storeCreationCoordinator = coordinator
+            coordinator.start()
+            return
+        }
+
+        // Proceed into the app if there is only one valid store available
+        if availableStores.count == 1, let onlyAvailableSite = availableStores.first {
+            storePickerCoordinator?.didSelectStore(with: onlyAvailableSite.siteID, onCompletion: onCompletion)
+        }
+    }
+
+    func getAvailableStores() async -> [Site] {
+        let storePickerViewModel = StorePickerViewModel(configuration: .switchingStores,
+                                                        stores: stores,
+                                                        storageManager: storageManager)
+        await storePickerViewModel.refreshSites(currentlySelectedSiteID: nil)
+
+        guard case let .available(sites) = storePickerViewModel.state, sites.isNotEmpty else {
+            return []
+        }
+
+        return sites
+    }
+
     func isJetpackInvalidForSelfHostedSite(url: String) -> Bool {
         if let site = currentSelfHostedSite, site.url == url,
             (!site.hasJetpack || !site.isJetpackActive) {
@@ -581,6 +643,7 @@ private extension AuthenticationManager {
                           source: SignInSource? = nil,
                           in navigationController: UINavigationController,
                           onDismiss: @escaping () -> Void = {}) {
+        // Start the store picker
         let config: StorePickerConfiguration = {
             switch source {
             case .custom(let source):
@@ -593,12 +656,20 @@ private extension AuthenticationManager {
                 return .login
             }
         }()
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: config)
+        storePickerCoordinator = StorePickerCoordinator(navigationController,
+                                                        config: config,
+                                                        switchStoreUseCase: switchStoreUseCase)
         storePickerCoordinator?.onDismiss = onDismiss
         if let siteID = siteID {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
+        }
+
+        Task { @MainActor in
+            await autoSelectStoreOrPresentStoreCreationFlow(source: source,
+                                                            in: navigationController,
+                                                            onCompletion: onDismiss)
         }
     }
 

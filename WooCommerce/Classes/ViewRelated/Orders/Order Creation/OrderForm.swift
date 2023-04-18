@@ -360,7 +360,8 @@ struct OrderForm_Previews: PreviewProvider {
 private extension ProductSelectorView.Configuration {
     static func addProductToOrder() -> ProductSelectorView.Configuration {
         ProductSelectorView.Configuration(
-            multipleSelectionsEnabled: ServiceLocator.generalAppSettings.betaFeatureEnabled(.productMultiSelection),
+            showsFilters: true,
+            multipleSelectionsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1),
             searchHeaderBackgroundColor: .listBackground,
             prefersLargeTitle: false,
             doneButtonTitleSingularFormat: Localization.doneButtonSingular,

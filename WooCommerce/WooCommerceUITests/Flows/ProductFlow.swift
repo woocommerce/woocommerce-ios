@@ -4,7 +4,7 @@ import XCTest
 class ProductFlow {
 
     static func addAndVerifyNewProduct(productType: String) throws {
-        let product = try GetMocks.readNewProductData()
+        let product = try GetMocks.readNewProductData(productType: productType)
 
         try TabNavComponent().goToProductsScreen()
             .tapAddProduct()
@@ -12,6 +12,6 @@ class ProductFlow {
             .verifyProductTypeScreenLoaded(productType: productType)
             .addProductTitle(productTitle: product.name)
             .publishProduct()
-            .verifyNewProductScreenLoaded(productName: product.name)
+            .verifyPublishedProductScreenLoaded(productType: productType, productName: product.name)
     }
 }

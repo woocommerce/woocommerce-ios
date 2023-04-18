@@ -89,6 +89,10 @@ final class ServiceLocator {
     ///
     private static var _connectivityObserver: ConnectivityObserver = DefaultConnectivityObserver()
 
+    /// Store WPCom plan synchronizer.
+    ///
+    private static var _storePlanSynchronizer: StorePlanSynchronizer = StorePlanSynchronizer()
+
     /// Storage for general app settings
     ///
     private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
@@ -226,6 +230,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the ConnectivityObserver protocol.
     static var connectivityObserver: ConnectivityObserver {
         _connectivityObserver
+    }
+
+    /// Provides access point to the `StorePlanSynchronizer`.
+    ///
+    static var storePlanSynchronizer: StorePlanSynchronizer {
+        _storePlanSynchronizer
     }
 
     /// Provides access point to GeneralAppSettingsStorage

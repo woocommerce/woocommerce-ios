@@ -4,12 +4,6 @@ import Foundation
 
 class GetMocks {
 
-    let stockStatus = [
-        "instock": "in stock",
-        "onbackorder": "on back order",
-        "outofstock": "out of stock"
-    ]
-
     let productName = [
         2123: "malaya shades",
         2129: "akoya pearl shades",
@@ -18,11 +12,17 @@ class GetMocks {
         2132: "rose gold shades"
     ]
 
-    private static let file = [
-        "physical": "products_add_new_physical_2129",
-        "virtual": "products_add_new_virtual_2123",
-        "variable": "products_add_new_variable_2131"
-    ]
+    enum StockStatus: String {
+        case instock = "in stock"
+        case onbackorder = "on back order"
+        case outofstock = "out of stock"
+    }
+
+    enum File: String {
+        case physical = "products_add_new_physical_2129"
+        case virtual = "products_add_new_virtual_2123"
+        case variable = "products_add_new_variable_2131"
+    }
 
     static func getMockData(test: AnyClass, filename file: String) -> Data {
         let json = Bundle(for: test).url(forResource: file, withExtension: "json")!
@@ -38,7 +38,8 @@ class GetMocks {
 
         for index in 0..<updatedData.count {
             let rawStockStatus = updatedData[index].stock_status
-            let humanReadableStockStatus = GetMocks.init().stockStatus[rawStockStatus]!
+            let stockStatus = StockStatus(rawValue: rawStockStatus)
+            let humanReadableStockStatus = stockStatus!.rawValue
             updatedData[index].stock_status = humanReadableStockStatus
         }
 
@@ -46,7 +47,9 @@ class GetMocks {
     }
 
     static func readNewProductData(productType: String) throws -> ProductData {
-        let originalData = try JSONDecoder().decode(NewProductMock.self, from: self.getMockData(test: ProductsTests.self, filename: file[productType]!))
+        let fileType = File(rawValue: productType)
+
+        let originalData = try JSONDecoder().decode(NewProductMock.self, from: self.getMockData(test: ProductsTests.self, filename: fileType!.rawValue))
 
         return try XCTUnwrap(originalData.response.jsonBody.data)
     }

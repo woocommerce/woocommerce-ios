@@ -77,6 +77,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
     }
 
     func configureWebView() {
+        webView.navigationDelegate = self
         view.addSubview(webView)
         NSLayoutConstraint.activate([
             view.leadingAnchor.constraint(equalTo: webView.leadingAnchor),
@@ -169,6 +170,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         guard let url else {
             return
         }
+
         /// We need to track the web view steps based on these assumptions:
         /// - First, the web view is loaded with the authorization URL that we built from the previous steps.
         /// - Since the web view is not authenticated initially, the page will redirect to the login page, hence the `redirect-to` query.
@@ -180,29 +182,6 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         } else if url.absoluteString.contains(Constants.Query.redirect) {
             analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: .login))
         }
-
-        /// Callback handling
-        guard url.absoluteString.hasPrefix(Constants.successURL) else {
-            return
-        }
-        let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        guard let queryItems = components?.queryItems,
-              let username = queryItems.first(where: { $0.name == Constants.Query.username })?.value,
-              let password = queryItems.first(where: { $0.name == Constants.Query.password })?.value else {
-            DDLogError("⛔️ Authorization rejected for application passwords")
-            analytics.track(.applicationPasswordAuthorizationRejected)
-            return showErrorAlert(message: Localization.authorizationRejected)
-        }
-
-        // hide content and show loading indicator
-        webView.isHidden = true
-        progressBar.setProgress(0, animated: false)
-        activityIndicator.startAnimating()
-
-        analytics.track(.applicationPasswordAuthorizationApproved)
-        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
-        onSuccess(applicationPassword, navigationController)
-        DDLogInfo("✅ Application password authorized")
     }
 
     func showErrorAlert(message: String, onRetry: (() -> Void)? = nil) {
@@ -218,6 +197,42 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             alertController.addAction(retryAction)
         }
         present(alertController, animated: true)
+    }
+}
+
+extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
+        guard let url = navigationAction.request.url else {
+            return .allow
+        }
+        /// Callback handling
+        guard url.absoluteString.hasPrefix(Constants.successURL) else {
+            return .allow
+        }
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        guard let queryItems = components?.queryItems,
+              let username = queryItems.first(where: { $0.name == Constants.Query.username })?.value,
+              let password = queryItems.first(where: { $0.name == Constants.Query.password })?.value else {
+            DDLogError("⛔️ Authorization rejected for application passwords")
+            analytics.track(.applicationPasswordAuthorizationRejected)
+            showErrorAlert(message: Localization.authorizationRejected)
+            return .cancel
+        }
+
+        // hide content and show loading indicator
+        webView.isHidden = true
+        progressBar.setProgress(0, animated: false)
+        activityIndicator.startAnimating()
+
+        analytics.track(.applicationPasswordAuthorizationApproved)
+        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
+        onSuccess(applicationPassword, navigationController)
+        DDLogInfo("✅ Application password authorized")
+        return .cancel
+    }
+
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        progressBar.setProgress(0, animated: false)
     }
 }
 

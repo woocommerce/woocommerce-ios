@@ -230,10 +230,6 @@ extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegat
         DDLogInfo("✅ Application password authorized")
         return .cancel
     }
-
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        progressBar.setProgress(0, animated: false)
-    }
 }
 
 private extension ApplicationPasswordAuthorizationWebViewController {

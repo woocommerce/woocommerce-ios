@@ -182,9 +182,6 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         }
 
         /// Callback handling
-        guard url.absoluteString.hasPrefix(Constants.successURL) else {
-            return
-        }
         let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         guard let queryItems = components?.queryItems,
               let username = queryItems.first(where: { $0.name == Constants.Query.username })?.value,

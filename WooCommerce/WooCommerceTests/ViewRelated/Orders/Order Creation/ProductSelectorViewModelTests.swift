@@ -976,9 +976,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .retrievePopularCachedProducts(_, let onCompletion):
+            case .retrievePopularCachedProducts(_, _, let onCompletion):
                 onCompletion(mostPopularProducts)
-            case .retrieveRecentlySoldCachedProducts(_, let onCompletion):
+            case .retrieveRecentlySoldCachedProducts(_, _, let onCompletion):
                 onCompletion(mostRecentlySoldProducts)
             default:
                 break
@@ -1003,9 +1003,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .retrievePopularCachedProducts(_, let onCompletion):
+            case .retrievePopularCachedProducts(_, _, let onCompletion):
                 onCompletion(duplicatedProducts)
-            case .retrieveRecentlySoldCachedProducts(_, let onCompletion):
+            case .retrieveRecentlySoldCachedProducts(_, _, let onCompletion):
                 onCompletion(duplicatedProducts)
             default:
                 break
@@ -1035,9 +1035,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .retrievePopularCachedProducts(_, let onCompletion):
+            case .retrievePopularCachedProducts(_, _, let onCompletion):
                 onCompletion(mostPopularPurchasableProducts)
-            case .retrieveRecentlySoldCachedProducts(_, let onCompletion):
+            case .retrieveRecentlySoldCachedProducts(_, _, let onCompletion):
                 onCompletion(mostRecentlySoldButNonPurchasableProducts)
             default:
                 break

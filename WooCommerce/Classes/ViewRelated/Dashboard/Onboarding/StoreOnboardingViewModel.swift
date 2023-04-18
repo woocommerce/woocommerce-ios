@@ -172,6 +172,18 @@ private extension StoreOnboardingViewModel {
                         } else {
                             return true
                         }
+                    }).map({ [weak self] task in
+                        // If store is already live and launchStore task is incomplete
+                        // mark the task as complete
+                        guard let self,
+                              case .launchStore = task.type,
+                              !task.isComplete,
+                              let isBlogPublic = self.stores.sessionManager.defaultSite?.isBlogPublic,
+                              isBlogPublic else {
+                            return task
+                        }
+
+                        return StoreOnboardingTask(isComplete: true, type: .launchStore)
                     }))
                 case .failure(let error):
                     return continuation.resume(throwing: error)

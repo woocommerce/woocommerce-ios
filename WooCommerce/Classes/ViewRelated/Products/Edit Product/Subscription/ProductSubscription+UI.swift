@@ -39,6 +39,19 @@ extension ProductSubscription {
 
         return String.localizedStringWithFormat(Localization.priceFormat, formattedPrice, billingFrequency)
     }
+
+    /// Localized string describing the subscription signup fee.
+    ///
+    /// Example: "No signup fee" or "$5.00"
+    ///
+    func signupFeeDescription(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        guard let formattedPrice = currencyFormatter.formatAmount(self.signUpFee) else {
+            return Localization.noSignupFee
+        }
+
+        return formattedPrice
+    }
 }
 
 private extension ProductSubscription {
@@ -47,6 +60,7 @@ private extension ProductSubscription {
                                                    comment: "Description of the subscription price for a product, with the price and billing frequency. " +
                                                    "Reads like: '$60.00 every 2 months'.")
         static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
+        static let noSignupFee = NSLocalizedString("No signup fee", comment: "Display label when a subscription has no signup fee.")
     }
 }
 

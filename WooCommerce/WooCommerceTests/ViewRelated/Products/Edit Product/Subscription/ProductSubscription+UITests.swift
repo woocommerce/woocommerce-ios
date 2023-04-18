@@ -50,6 +50,22 @@ final class ProductSubscription_UITests: XCTestCase {
         XCTAssertEqual(subscription.expiryDescription, Localization.neverExpire)
     }
 
+    func test_signupFeeDescription_returns_formatted_signUpFee() {
+        // Given
+        let subscription = ProductSubscription.fake().copy(signUpFee: "5")
+
+        // Then
+        XCTAssertEqual(subscription.signupFeeDescription(currencySettings: currencySettings), "$5.00")
+    }
+
+    func test_signupFeeDescription_returns_expected_description_for_no_signup_fee() {
+        // Given
+        let subscription = ProductSubscription.fake().copy(signUpFee: "")
+
+        // Then
+        XCTAssertEqual(subscription.signupFeeDescription(currencySettings: currencySettings), Localization.noSignupFee)
+    }
+
 }
 
 private extension ProductSubscription_UITests {
@@ -58,5 +74,6 @@ private extension ProductSubscription_UITests {
                                                    comment: "Description of the subscription price for a product, with the price and billing frequency. " +
                                                    "Reads like: '$60.00 every 2 months'.")
         static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
+        static let noSignupFee = NSLocalizedString("No signup fee", comment: "Display label when a subscription has no signup fee.")
     }
 }

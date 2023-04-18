@@ -26,7 +26,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 //
 private extension GenerativeContentRemote {
     enum Path {
-        static let text   = "jetpack-ai/completions"
+        static let text = "jetpack-ai/completions"
     }
 
     enum ParameterKey {

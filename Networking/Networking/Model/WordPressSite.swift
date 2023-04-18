@@ -102,7 +102,8 @@ public extension WordPressSite {
               isWordPressComStore: false,
               jetpackConnectionActivePlugins: [],
               timezone: timezone,
-              gmtOffset: Double(gmtOffset) ?? 0)
+              gmtOffset: Double(gmtOffset) ?? 0,
+              isBlogPublic: false)
     }
 
     struct Authentication: Decodable {

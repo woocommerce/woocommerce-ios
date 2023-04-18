@@ -78,6 +78,7 @@ extension Product {
     @NSManaged public var bundleStockStatus: String?
     @NSManaged public var bundledItems: NSOrderedSet?
     @NSManaged public var compositeComponents: NSOrderedSet?
+    @NSManaged public var subscription: ProductSubscription?
 
 }
 

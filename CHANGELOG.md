@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.2
+For this release, we focused on improving your experience when creating orders and collecting payments. It's now possible to filter products when searching for a product to add to your order. Please try it out and share your feedback.
+
+## 13.1
+More love for In-Person Payments and orders this time around. We made it easier for you to search & select multiple products when creating an order. It's also possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats.
+
 ## 13.0
 This release includes several bug fixes and improvements to make your experience smoother and more enjoyable. It's possible to duplicate a variable product and this includes the product description, sale price, and image. We have some exciting updates coming in the next few weeks. Stay tuned for more information!
 

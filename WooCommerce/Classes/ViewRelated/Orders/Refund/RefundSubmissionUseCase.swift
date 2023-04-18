@@ -443,7 +443,8 @@ private extension RefundSubmissionUseCase {
             analytics.track(event: WooAnalyticsEvent.InPersonPayments
                 .interacRefundSuccess(gatewayID: paymentGatewayAccount.gatewayID,
                                       countryCode: cardPresentConfiguration.countryCode,
-                                      cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                      cardReaderModel: connectedReader?.readerType.model ?? "",
+                                      siteID: order.siteID))
         default:
             // Tracks refund success events with other payment methods if needed.
             return
@@ -458,7 +459,8 @@ private extension RefundSubmissionUseCase {
                 .interacRefundFailed(error: error,
                                      gatewayID: paymentGatewayAccount.gatewayID,
                                      countryCode: cardPresentConfiguration.countryCode,
-                                     cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                     cardReaderModel: connectedReader?.readerType.model ?? "",
+                                     siteID: order.siteID))
         default:
             // Tracks refund failure events with other payment methods if needed.
             return
@@ -471,7 +473,8 @@ private extension RefundSubmissionUseCase {
         case .interacPresent:
             analytics.track(event: .InPersonPayments.interacRefundCanceled(gatewayID: paymentGatewayAccount.gatewayID,
                                                                            countryCode: cardPresentConfiguration.countryCode,
-                                                                           cardReaderModel: connectedReader?.readerType.model ?? ""))
+                                                                           cardReaderModel: connectedReader?.readerType.model ?? "",
+                                                                           siteID: order.siteID))
         default:
             // Tracks refund cancellation events with other payment methods if needed.
             return

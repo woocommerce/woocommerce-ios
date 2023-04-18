@@ -192,8 +192,6 @@ public class AppSettingsStore: Store {
             loadLastSelectedStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
         case .loadSiteHasAtLeastOneIPPTransactionFinished(let siteID, let onCompletion):
             loadSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID, onCompletion: onCompletion)
-        case .markSiteHasAtLeastOneIPPTransactionFinished(let siteID):
-            markSiteHasAtLeastOneIPPTransactionFinished(siteID: siteID)
         case .loadFirstInPersonPaymentsTransactionDate(siteID: let siteID, cardReaderType: let cardReaderType, onCompletion: let completion):
             loadFirstInPersonPaymentsTransactionDate(siteID: siteID, using: cardReaderType, onCompletion: completion)
         case .storeInPersonPaymentsTransactionIfFirst(siteID: let siteID, cardReaderType: let cardReaderType):
@@ -826,14 +824,10 @@ extension AppSettingsStore {
     }
 
     func loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void) {
-        onCompletion(generalAppSettings.value(for: \.sitesWithAtLeastOneIPPTransactionFinished).contains(siteID))
-    }
-
-    func markSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64) {
-        var updatingSet = generalAppSettings.settings.sitesWithAtLeastOneIPPTransactionFinished
-        updatingSet.insert(siteID)
-
-        try? generalAppSettings.setValue(updatingSet, for: \.sitesWithAtLeastOneIPPTransactionFinished)
+        let storeSettings = getStoreSettings(for: siteID)
+        let hasStoredTransactionsByReader = storeSettings.firstInPersonPaymentsTransactionsByReaderType.count > 0
+        let hasLegacyIPPTransactionStored = generalAppSettings.value(for: \.sitesWithAtLeastOneIPPTransactionFinished).contains(siteID)
+        onCompletion(hasStoredTransactionsByReader || hasLegacyIPPTransactionStored)
     }
 }
 

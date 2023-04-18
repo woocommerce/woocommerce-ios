@@ -50,14 +50,8 @@ struct StoreOnboardingTaskView: View {
                                     .redacted(reason: isRedacted ? .placeholder : [])
 
                                 // PRIVATE label.
-                                Text(Localization.privateLabel.uppercased())
-                                    .font(.caption)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                                    .padding(Layout.PrivateLabel.padding)
-                                    .background(Color(.wooCommercePurple(.shade0)))
-                                    .cornerRadius(Layout.PrivateLabel.cornerRadius)
-                                    .renderedIf(!isRedacted && viewModel.task.type == .launchStore)
+                                BadgeView(text: Localization.privateLabel.uppercased())
+                                    .renderedIf(!isRedacted && viewModel.task.type == .launchStore && !viewModel.task.isComplete)
                             }
 
                             // Task subtitle.

@@ -6,7 +6,7 @@ import SwiftUI
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
 
     init(siteID: Int64) {
-        let viewModel = UpgradesViewModel(siteID: siteID)
+        let viewModel = UpgradesViewModel()
         super.init(rootView: .init(viewModel: viewModel))
 
         // Assign after of `init` for `self` to be properly initialized.
@@ -27,7 +27,7 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
     ///
     private func showUpgradePlanWebView(siteID: Int64, viewModel: UpgradesViewModel) {
         let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .upgradesScreen, onSuccess: {
-            viewModel.loadPlan(forced: true)
+            viewModel.loadPlan()
         })
         present(upgradeController, animated: true)
     }
@@ -119,7 +119,7 @@ private extension UpgradesView {
 struct UpgradesPreviews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            UpgradesView(viewModel: .init(siteID: 0))
+            UpgradesView(viewModel: .init())
         }
     }
 }

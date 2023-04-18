@@ -5,6 +5,10 @@ import Yosemite
 ///
 final class ComponentsListViewModel: ObservableObject {
 
+    /// Site ID
+    ///
+    private let siteID: Int64
+
     /// Represents a component
     ///
     struct Component: Identifiable, Equatable {
@@ -22,6 +26,12 @@ final class ComponentsListViewModel: ObservableObject {
 
         /// Type of component options (e.g. products or categories)
         let optionType: CompositeComponentOptionType
+
+        /// Product IDs or category IDs to use for populating component options.
+        let optionIDs: [Int64]
+
+        /// The product ID of the default/pre-selected component option.
+        let defaultOptionID: String
     }
 
     /// View title
@@ -36,22 +46,25 @@ final class ComponentsListViewModel: ObservableObject {
     ///
     let components: [Component]
 
-    init(components: [Component]) {
+    init(siteID: Int64, components: [Component]) {
+        self.siteID = siteID
         self.components = components
     }
 }
 
 // MARK: Initializers
 extension ComponentsListViewModel {
-    convenience init(components: [ProductCompositeComponent]) {
+    convenience init(siteID: Int64, components: [ProductCompositeComponent]) {
         let viewModels = components.map { component in
             return Component(id: component.componentID,
                              title: component.title,
                              imageURL: URL(string: component.imageURL),
                              description: component.description,
-                             optionType: component.optionType)
+                             optionType: component.optionType,
+                             optionIDs: component.optionIDs,
+                             defaultOptionID: component.defaultOptionID)
         }
-        self.init(components: viewModels)
+        self.init(siteID: siteID, components: viewModels)
     }
 }
 
@@ -60,7 +73,7 @@ extension ComponentsListViewModel {
     /// Returns a `ComponentSettingsViewModel` for the provided component.
     ///
     func getSettingsViewModel(for component: Component) -> ComponentSettingsViewModel {
-        ComponentSettingsViewModel(component: component)
+        ComponentSettingsViewModel(siteID: siteID, component: component)
     }
 }
 

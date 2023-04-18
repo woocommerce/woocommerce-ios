@@ -341,6 +341,24 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(compositeComponent.optionIDs, [413, 412])
         XCTAssertEqual(compositeComponent.defaultOptionID, "413")
     }
+
+    /// Test that products with the `subscription` product type are properly parsed.
+    ///
+    func test_subscription_products_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadSubscriptionProductResponse())
+        let subscriptionSettings = try XCTUnwrap(product.subscription)
+
+        // Then
+        XCTAssertEqual(product.productType, .subscription)
+        XCTAssertEqual(subscriptionSettings.length, "2")
+        XCTAssertEqual(subscriptionSettings.period, .month)
+        XCTAssertEqual(subscriptionSettings.periodInterval, "1")
+        XCTAssertEqual(subscriptionSettings.price, "5")
+        XCTAssertEqual(subscriptionSettings.signUpFee, "")
+        XCTAssertEqual(subscriptionSettings.trialLength, "1")
+        XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
+    }
 }
 
 
@@ -400,5 +418,11 @@ private extension ProductMapperTests {
     ///
     func mapLoadCompositeProductResponse() -> Product? {
         return mapProduct(from: "product-composite")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product-subscription`
+    ///
+    func mapLoadSubscriptionProductResponse() -> Product? {
+        return mapProduct(from: "product-subscription")
     }
 }

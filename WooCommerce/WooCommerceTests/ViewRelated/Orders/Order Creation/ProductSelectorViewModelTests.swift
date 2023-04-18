@@ -116,15 +116,27 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncStatus, .empty)
     }
 
+    @MainActor
     func test_sync_status_updates_as_expected_when_products_are_synced() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+        let mockStorageManager = MockStorageManager()
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = ProductSelectorViewModel(
+            siteID: sampleSiteID,
+            storageManager: mockStorageManager,
+            stores: mockStores
+        )
+        var syncStatusSpy: [ProductSelectorViewModel.SyncStatus] = []
+
+        mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
-                XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
-                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
-                self.insert(product)
+                if let syncStatus = viewModel.syncStatus {
+                    syncStatusSpy.append(syncStatus)
+                }
+                let readOnlyProduct = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                let product = mockStorageManager.viewStorage.insertNewObject(ofType: StorageProduct.self)
+                product.update(with: readOnlyProduct)
                 onCompletion(.success(true))
             default:
                 XCTFail("Unsupported Action")
@@ -132,9 +144,17 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
+        waitFor { promise in
+            viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in
+                if let syncStatus = viewModel.syncStatus {
+                    syncStatusSpy.append(syncStatus)
+                }
+                promise(())
+            })
+        }
 
         // Then
+        XCTAssertEqual(syncStatusSpy, [.firstPageSync, .results])
         XCTAssertEqual(viewModel.syncStatus, .results)
     }
 
@@ -297,17 +317,20 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
 
         // When
+        let filters = FilterProductListViewModel.Filters(
+            stockStatus: .outOfStock,
+            productStatus: .draft,
+            productType: .simple,
+            productCategory: nil,
+            numberOfActiveFilters: 3)
+
         viewModel.searchTerm = "shirt"
-        viewModel.filters = .init(stockStatus: .outOfStock,
-                                  productStatus: .draft,
-                                  productType: .simple,
-                                  productCategory: nil,
-                                  numberOfActiveFilters: 3)
+        viewModel.updateFilters(filters)
         viewModel.clearSearchAndFilters()
 
         // Then
         XCTAssertEqual(viewModel.searchTerm, "")
-        XCTAssertEqual(viewModel.filters, FilterProductListViewModel.Filters())
+        XCTAssertEqual(viewModel.filterListViewModel.criteria, FilterProductListViewModel.Filters())
     }
 
     func test_clearing_search_returns_full_product_list() {
@@ -343,12 +366,13 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
 
         // Then
+        let currentFilters = viewModel.filterListViewModel.criteria
         XCTAssertEqual(viewModel.searchTerm, "")
-        XCTAssertNil(viewModel.filters.stockStatus)
-        XCTAssertNil(viewModel.filters.productCategory)
-        XCTAssertNil(viewModel.filters.productType)
-        XCTAssertNil(viewModel.filters.productCategory)
-        XCTAssertEqual(viewModel.filters.numberOfActiveFilters, 0)
+        XCTAssertNil(currentFilters.stockStatus)
+        XCTAssertNil(currentFilters.productCategory)
+        XCTAssertNil(currentFilters.productType)
+        XCTAssertNil(currentFilters.productCategory)
+        XCTAssertEqual(currentFilters.numberOfActiveFilters, 0)
     }
 
     func test_view_model_fires_error_notice_when_product_sync_fails() {
@@ -372,11 +396,17 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_view_model_fires_error_notice_when_product_search_fails() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
+        let mockStorageManager = MockStorageManager()
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = ProductSelectorViewModel(
+            siteID: sampleSiteID,
+            storageManager: mockStorageManager,
+            stores: mockStores
+        )
 
         // When
         let notice: Notice? = waitFor { promise in
-            self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
                 switch action {
                 case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                     onCompletion(.failure(NSError(domain: "Error", code: 0)))
@@ -401,10 +431,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                    storageManager: storageManager,
-                                                   onProductSelected: { selectedProduct = $0.productID })
+                                                   onProductSelectionStateChanged: { selectedProduct = $0.productID })
 
         // When
-        viewModel.selectProduct(product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         XCTAssertEqual(selectedProduct, product.productID)
@@ -418,10 +448,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  supportsMultipleSelection: true,
-                                                 onProductSelected: { selectedProduct = $0.productID })
+                                                 onProductSelectionStateChanged: { selectedProduct = $0.productID })
 
         // When
-        viewModel.selectProduct(product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         XCTAssertEqual(selectedProduct, product.productID)
@@ -463,10 +493,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  supportsMultipleSelection: true,
-                                                 onProductSelected: { _ in })
+                                                 onProductSelectionStateChanged: { _ in })
 
         // When
-        viewModel.selectProduct(product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -482,8 +512,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  storageManager: storageManager)
 
         // When
-        viewModel.selectProduct(product.productID)
-        viewModel.selectProduct(product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -498,11 +528,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  supportsMultipleSelection: false,
-                                                 onProductSelected: { _ in })
+                                                 onProductSelectionStateChanged: { _ in })
 
         // When
-        viewModel.selectProduct(product.productID)
-        viewModel.selectProduct(product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -519,8 +549,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  supportsMultipleSelection: true)
 
         // When
-        viewModel.selectProduct(product.productID)
-        viewModel.selectProduct(product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
 
         // Then
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
@@ -629,7 +659,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         })
 
         // When
-        viewModel.selectProduct(simpleProduct.productID)
+        viewModel.changeSelectionStateForProduct(with: simpleProduct.productID)
         viewModel.updateSelectedVariations(productID: variableProduct.productID, selectedVariationIDs: [12])
         viewModel.completeMultipleSelection()
 
@@ -672,14 +702,15 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.filterButtonTitle, defaultTitle)
 
         // When
-        viewModel.searchTerm = ""
-        viewModel.filters = FilterProductListViewModel.Filters(
+        let filters = FilterProductListViewModel.Filters(
             stockStatus: ProductStockStatus.outOfStock,
             productStatus: ProductStatus.draft,
             productType: ProductType.simple,
             productCategory: nil,
             numberOfActiveFilters: 3
         )
+        viewModel.searchTerm = ""
+        viewModel.updateFilters(filters)
         try await Task.sleep(nanoseconds: searchDebounceTime)
 
         // Then
@@ -695,13 +726,14 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.filters = FilterProductListViewModel.Filters(
+        let filters = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
             productType: ProductType.simple,
             productCategory: nil,
             numberOfActiveFilters: 1
         )
+        viewModel.updateFilters(filters)
         viewModel.searchTerm = ""
         try await Task.sleep(nanoseconds: searchDebounceTime)
 
@@ -719,7 +751,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  supportsMultipleSelection: true)
 
         // When
-        viewModel.selectProduct(product.productID)
+        viewModel.changeSelectionStateForProduct(with: product.productID)
         // Confidence check
         let productRow = viewModel.productRows.first(where: { $0.productOrVariationID == product.productID })
         XCTAssertEqual(productRow?.selectedState, .selected)
@@ -764,9 +796,17 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(onAllSelectionsClearedCalled)
     }
 
+    @MainActor
     func test_synchronizeProducts_are_triggered_with_correct_filters() async throws {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
+        let mockStorageManager = MockStorageManager()
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = ProductSelectorViewModel(
+            siteID: sampleSiteID,
+            storageManager: mockStorageManager,
+            stores: mockStores
+        )
+
         var filteredStockStatus: ProductStockStatus?
         var filteredProductStatus: ProductStatus?
         var filteredProductType: ProductType?
@@ -778,7 +818,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
             numberOfActiveFilters: 1
         )
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+
+        mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, stockStatus, productStatus, productType, category, _, _, _, onCompletion):
                 filteredStockStatus = stockStatus
@@ -792,7 +833,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.filters = filters
+        viewModel.updateFilters(filters)
         viewModel.searchTerm = ""
         try await Task.sleep(nanoseconds: searchDebounceTime)
 
@@ -831,7 +872,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.filters = filters
+        viewModel.updateFilters(filters)
         viewModel.searchTerm = "hiii"
         try await Task.sleep(nanoseconds: searchDebounceTime)
 
@@ -864,19 +905,19 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 2) // 2 spaghetti
 
         // When
-        let updatedFilters = FilterProductListViewModel.Filters(
+        let filters = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
             productType: ProductType.variable,
             productCategory: nil,
             numberOfActiveFilters: 1
         )
-        viewModel.filters = updatedFilters
+        viewModel.updateFilters(filters)
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 0) // no product matches the filter and search term
-
         // When
+
         viewModel.searchTerm = ""
         waitUntil {
             viewModel.productRows.isNotEmpty
@@ -898,16 +939,16 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(
             siteID: sampleSiteID,
             storageManager: storageManager,
-            onProductSelected: {
+            onProductSelectionStateChanged: {
                 selectedProduct = $0.productID
             })
 
         // When
-        viewModel.selectProduct(products[0].productID)
+        viewModel.changeSelectionStateForProduct(with: products[0].productID)
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
-                viewModel.selectProduct(products[1].productID)
+                viewModel.changeSelectionStateForProduct(with: products[1].productID)
                 onCompletion(.success(true))
             default:
                 XCTFail("Unsupported Action")

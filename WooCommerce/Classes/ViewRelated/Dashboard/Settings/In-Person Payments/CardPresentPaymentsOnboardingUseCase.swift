@@ -475,7 +475,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isInUndefinedState(account: PaymentGatewayAccount) -> Bool {
-        account.wcpayStatus != .complete
+        account.wcpayStatus == .unknown
     }
 
     func isNetworkError(_ error: Error) -> Bool {

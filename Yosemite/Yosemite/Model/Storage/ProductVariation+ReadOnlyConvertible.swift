@@ -104,7 +104,8 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 dimensions: productDimensions,
                                 shippingClass: shippingClass,
                                 shippingClassID: shippingClassID,
-                                menuOrder: menuOrder)
+                                menuOrder: menuOrder,
+                                subscription: subscription?.toReadOnly())
     }
 }
 

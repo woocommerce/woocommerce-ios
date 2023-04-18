@@ -45,6 +45,7 @@ extension ProductVariation {
     @NSManaged public var downloads: Set<ProductDownload>?
     @NSManaged public var product: Product?
     @NSManaged public var attributes: NSOrderedSet
+    @NSManaged public var subscription: ProductSubscription?
 
 }
 

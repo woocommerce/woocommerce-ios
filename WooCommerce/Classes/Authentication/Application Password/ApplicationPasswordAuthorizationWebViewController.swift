@@ -45,6 +45,8 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 
     private let viewModel: ApplicationPasswordAuthorizationViewModel
     private var subscriptions: Set<AnyCancellable> = []
+    private var webViewInitialLoad = true
+    private var authorizationURL: String?
 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
          analytics: Analytics = ServiceLocator.analytics,
@@ -98,7 +100,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
 
         webView.publisher(for: \.url)
             .sink { [weak self] url in
-                self?.handleAuthorizationResponse(with: url)
+                self?.handleWebViewURL(url)
             }
             .store(in: &subscriptions)
     }
@@ -159,12 +161,28 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             return
         }
         let request = URLRequest(url: urlWithQueries)
+        self.authorizationURL = request.url?.absoluteString
         webView.load(request)
-        analytics.track(.applicationPasswordAuthorizationWebViewShown)
     }
 
-    func handleAuthorizationResponse(with url: URL?) {
-        guard let url, url.absoluteString.hasPrefix(Constants.successURL) else {
+    func handleWebViewURL(_ url: URL?) {
+        guard let url else {
+            return
+        }
+        /// We need to track the web view steps based on these assumptions:
+        /// - First, the web view is loaded with the authorization URL that we built from the previous steps.
+        /// - Since the web view is not authenticated initially, the page will redirect to the login page, hence the `redirect-to` query.
+        /// We based on this query to detect the login page. The value of this query should be same as the initial URL.
+        /// - After login completes, the page will redirect to the initial URL.
+        if url.absoluteString == authorizationURL {
+            analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: webViewInitialLoad ? .initial : .authorization))
+            webViewInitialLoad = false
+        } else if url.absoluteString.contains(Constants.Query.redirect) {
+            analytics.track(event: .ApplicationPasswordAuthorization.webViewShown(step: .login))
+        }
+
+        /// Callback handling
+        guard url.absoluteString.hasPrefix(Constants.successURL) else {
             return
         }
         let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
@@ -212,6 +230,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             static let appName = "app_name"
             static let appID = "app_id"
             static let successURL = "success_url"
+            static let redirect = "redirect_to"
         }
     }
     enum Localization {

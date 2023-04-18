@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-03-28 13:54:04+0000 */
+/* Translation-Revision-Date: 2023-04-11 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -122,8 +122,8 @@ which should be translated separately and considered part of this sentence. */
 /* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
 "%1$d Products" = "%1$d produkter";
 
-/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products selected */
-"%1$d Products selected" = "%1$d produkter valda";
+/* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
+"%1$d Products Selected" = "%1$d produkter valda";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
 "%1$d business day" = "%1$d arbetsdag";
@@ -255,11 +255,9 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 1 */
 "1" = "1";
 
-/* Navigation bar title for selecting multiple products when one product has been selected. */
+/* Navigation bar title for selecting multiple products when one product has been selected.
+   Title of the action button at the bottom of the Select Products screen when one product is selected */
 "1 Product Selected" = "1 produkt vald";
-
-/* Title of the action button at the bottom of the Select Products screen when one product is selected */
-"1 Product selected" = "1 produkt vald";
 
 /* Message of the free trial banner when there is 1 day left */
 "1 day left in your trial." = "1 dag kvar av din provperiod.";
@@ -270,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
+
+/* 24/7 support title feature on the Free Trial Summary Screen */
+"24\/7 support" = "Support dygnet runt";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
@@ -947,6 +948,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Auto Services" = "Biltjänster";
 
+/* Auto updates & backups title feature on the Free Trial Summary Screen */
+"Auto updates & backups" = "Automatiska uppdateringar och säkerhetskopieringar";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Automatiskt hanterat på denna webbplats";
 
@@ -1403,7 +1407,8 @@ which should be translated separately and considered part of this sentence. */
    Product Catalog Visibility navigation title */
 "Catalog Visibility" = "Synlighet i katalog";
 
-/* Edit product categories screen - Screen title
+/* Display label for the composite product's component option type
+   Edit product categories screen - Screen title
    Filter product categories screen - Screen title
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
@@ -1620,6 +1625,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for completed order status. */
 "Completed" = "Färdig";
+
+/* Title for the list of component options in the Component Settings view */
+"Component Options" = "Komponentalternativ";
+
+/* Title for the settings of a component in a composite product */
+"Component Settings" = "Komponentinställningar";
 
 /* Title for Components row in the product form screen.
    Title for the list of components in a composite product */
@@ -2187,6 +2198,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Standard";
 
+/* Title for the default component option field in the Component Settings view */
+"Default Option" = "Standardalternativ";
+
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
@@ -2211,6 +2225,7 @@ which should be translated separately and considered part of this sentence. */
 "Describe your product to your future customers..." = "Beskriv din produkt till dina blivande kunder …";
 
 /* The navigation bar title of the Aztec editor screen.
+   Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Beskrivning";
@@ -2467,7 +2482,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ebay" = "Ebay";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Ecommerce reports title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "E-handelsrapporter";
 
 /* Country option for a site address. */
@@ -2559,6 +2575,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
 "Email address" = "E-postadress";
+
+/* Email marketing title feature on the Free Trial Summary Screen */
+"Email marketing" = "E-postmarknadsföring";
 
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Skicka notering till kund via e-post";
@@ -2666,9 +2685,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Ange URL";
-
-/* Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Ange din butiksadress";
 
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "Ange en rabattkod";
@@ -2931,6 +2947,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Fast Food Restaurants" = "Snabbmatsrestaurang";
 
+/* Fast to launch title feature on the Free Trial Summary Screen */
+"Fast to launch" = "Snabb lansering";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -3090,6 +3109,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Från köp till fullföljande – hantera hela beställningsprocessen via appen.";
+
+/* Subtitle displayed in the simplified prologue screen */
+"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "Woo finns med dig hela vägen från din första försäljning till miljoner i intäkter. Se varför handlare förlitar sig på oss för att driva 3,4 miljoner onlinebutiker.";
 
 /* Industry option in the store creation category question. */
 "Fuel Dispensers" = "Bränsleautomater";
@@ -3838,6 +3860,9 @@ which should be translated separately and considered part of this sentence. */
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Starta Wormholy-felsökning";
 
+/* Main title for the free trial summary screen. */
+"Launch in days, grow for years" = "Lansering på några dagar, med åratal av tillväxtmöjligheter";
+
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Lansera din butik";
 
@@ -3983,6 +4008,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Loans Or Lending" = "Lån eller utlåning";
 
 /* Button title.  Tapping takes the user to the login form.
+   Button title. Takes the user to the login by store address flow.
    Log In button label.
    Title for the application password authorization web view
    View title during the log in process. */
@@ -4335,7 +4361,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Flera butiker";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Multiple payment options title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Flera betalningsalternativ";
 
 /* Industry option in the store creation category question. */
@@ -4489,6 +4516,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Inga rabattkoder hittades";
 
+/* Text indicated that no card is needed for a free trial */
+"No credit card required." = "Inget kreditkort krävs.";
+
 /* A error message when it's not possible to acquirethe Analytics Hub current selection range */
 "No current period available" = "Ingen nuvarande period tillgänglig";
 
@@ -4512,6 +4542,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "No need to wonder where that stampbook went" = "Du behöver inte undra vart stämpelboken tog vägen";
+
+/* Placeholder when there are no component options to show in the Component Settings view */
+"No options selected" = "Inga alternativ valda";
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "Ingen beställning vald";
@@ -4566,6 +4599,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
    Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option
+   Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
@@ -5104,6 +5138,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Kontrollera att ditt Apple-ID är giltigt och försök sedan igen. Ett giltigt Apple-ID krävs för att godkänna Apples användarvillkor";
 
+/* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"Please connect Jetpack through your admin page on a browser or contact support." = "Anslut Jetpack via din adminsida i en webbläsare eller kontakta supporten.";
+
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Anslut din butik till Jetpack för att komma åt den på denna app.";
 
@@ -5209,7 +5246,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Försök igen senare eller kontakta oss så hjälper vi dig gärna!";
 
-/* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
+/* Suggestion to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "Please try again or contact support if this error continues." = "Försök igen eller kontakta supporten om detta fel fortsätter.";
 
 /* Error message when Jetpack connection fails */
@@ -5310,13 +5347,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "Postnummer saknas";
 
-/* The text is followed by a WordPress.com logo on the store creation plan screen. */
+/* Text next to the WPCom logo in the free trial summary screen
+   The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Drivs med";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Drivs av Automattic";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Premium Themes title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "Premium-teman";
 
 /* Title of in-progress modal when preparing for printing customs invoice */
@@ -5454,9 +5493,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Edit Product External Link navigation title */
 "Product Link" = "Produktlänk";
 
-/* Cell title on beta features screen to enable Product Multi-Selection */
-"Product Multi-Selection" = "Flerval av produkter";
-
 /* Title of the view containing a single Product Review */
 "Product Review" = "Produktrecension";
 
@@ -5499,6 +5535,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Product type" = "Produkttyp";
 
 /* Description for Top Performers left column header
+   Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
    Title for the products card at the top of the top performers section in dashboard stats.
@@ -6202,6 +6239,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Välj ditt transportföretag och avgifter";
 
+/* Caption displayed in the simplified prologue screen */
+"Sell anything, anywhere." = "Sälj allt, var som helst.";
+
 /* Text for the send button in the product review reply screen */
 "Send" = "Skicka";
 
@@ -6276,6 +6316,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Dela betalningslänk";
+
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Tap to Pay on iPhone Feedback" = "Dela feedback om Tryck för att betala på iPhone";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "Dela URL";
@@ -6371,7 +6414,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "Fraktetikett köpt!";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Shipping labels title feature on the Free Trial Summary Screen
+   Title of eCommerce plan feature on the store creation plan screen. */
 "Shipping labels" = "Fraktsedlar";
 
 /* Header text when printing multiple newly purchased shipping labels */
@@ -6485,6 +6529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Adressen till webbplatsen måste bestå av minst 4 bokstäver.";
 
+/* Site security title feature on the Free Trial Summary Screen */
+"Site security" = "Webbplatssäkerhet";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
    The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
@@ -6504,6 +6551,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "Permalänk";
+
+/* Social advertising title feature on the Free Trial Summary Screen */
+"Social advertising" = "Social annonsering";
 
 /* Industry option in the store creation category question. */
 "Software" = "Programvara";
@@ -6757,6 +6807,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "Prenumerationer och presentkort";
 
+/* Subscriptions & product kits title feature on the Free Trial Summary Screen */
+"Subscriptions & product kits" = "Prenumerationer och produktkit";
+
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
    Subtotal label for a refund details view
@@ -6831,6 +6884,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Switzerland" = "Schweiz";
+
+/* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
+"Syncing data" = "Synkroniserar data";
 
 /* Country option for a site address. */
 "Syria" = "Syrien";
@@ -7032,9 +7088,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Användarvillkor";
-
-/* Cell description on beta features screen to enable Product Multi-Selection */
-"Test out Product Multi-Selection as we get ready to launch" = "Testa flerval av produkter när vi börjar närma oss lansering";
 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "Testa köp i appen medan vi gör oss redo för lansering";
@@ -7352,11 +7405,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "Det var ett problem vid försöket att ladda tilläggen. Kontrollera ditt internet och försök igen.";
 
-/* Message to be displayed when the user encounters a permission error during Jetpack setup */
+/* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Ett fel uppstod vid kommunikationen med din webbplats.";
 
 /* Message to be displayed when the user encounters a generic error during Jetpack setup */
 "There was an error completing your request." = "Det gick inte att slutföra din begäran.";
+
+/* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"There was an error connecting your site to Jetpack." = "Det gick inte att ansluta din webbplats till Jetpack.";
 
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "Det gick inte att skapa beställningen";
@@ -7531,6 +7587,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "För att hjälpa oss att förbättra appens prestanda och åtgärda eventuella fel, aktivera automatiska kraschrapporter.";
 
+/* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
+"To launch your store, you need to upgrade to our plan. %1$@" = "Du behöver uppgradera till vår plan för att starta din butik. %1$@";
+
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "För att fortsätta med detta Apple-ID måste du först logga in med ditt WordPress.com-lösenord. Du kommer bara att bli ombedd att göra detta en gång.";
 
@@ -7684,6 +7743,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Prova att ta emot igen";
 
+/* Text in the button to continue with the free trial plan */
+"Try For Free" = "Prova gratis";
+
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Prova installera igen";
 
@@ -7710,6 +7772,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Försök att ansluta igen för att komma åt din butik.";
+
+/* Title for the features list in the free trial Summary Screen */
+"Try it free for 14 days." = "Prova gratis i 14 dagar.";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Prova det nu";
@@ -7824,6 +7889,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when we fail to load country information in the edit address screen. */
 "Unable to fetch country information, please try again later." = "Kan inte hämta landsinformation, försök igen senare.";
 
+/* Error message when failing to fetch the WPCom account after logging in with magic link. */
+"Unable to fetch the logged in WordPress.com account. Please try again." = "Det går inte att hämta det inloggade WordPress.com-kontot. Försök igen.";
+
 /* Error title for when we can't fetch existing variations. */
 "Unable to fetch variations" = "Det gick inte att hämta variationer";
 
@@ -7907,6 +7975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Kunde inte läsa WordPress-webbplatsen på denna URL. Tryck på \"Behöver du hjälp?\" för att visa Vanliga frågor.";
+
+/* Error message displayed when failing to fetch the current site info. */
+"Unable to refresh current site info" = "Det går inte att uppdatera aktuell webbplatsinformation";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Kunde inte uppdatera listan";
@@ -7997,7 +8068,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "Obegränsad";
 
-/* Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen.
+   Unlimited products title feature on the Free Trial Summary Screen */
 "Unlimited products" = "Obegränsat antal produkter";
 
 /* Back button title when the product doesn't have a name */
@@ -8097,6 +8169,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Uppdaterar dina produkter …";
+
+/* Title on the button to upgrade a free trial plan. */
+"Upgrade" = "Uppgradera";
 
 /* Title for the button to upgrade from a free trial
    Title for the WebView when upgrading a free trial plan
@@ -8401,6 +8476,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "Vi vet att det är viktigt för ditt företag.";
 
+/* Main description for the free trial summary screen */
+"We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com." = "Vi tillhandahåller allt du behöver för att bygga och utveckla en onlinebutik som drivs med WooCommerce och har WordPress.com som webbhotell.";
+
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Vi använder andra spårningsverktyg, inklusive verktyg från utomstående parter. Läs om dessa och hur vi kontrollerar dem.";
 
@@ -8573,9 +8651,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
-/* Caption displayed in the simplified prologue screen */
-"WooCommerce is a customizable, open-source eCommerce platform built on WordPress." = "WooCommerce är en anpassningsbar e-handelsplattform med öppen källkod byggd på WordPress.";
-
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
 
@@ -8628,6 +8703,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "Du kan redigera paketprodukter i webbadminpanelen.";
+
+/* Info notice at the bottom of the component settings screen */
+"You can edit component settings in the web dashboard." = "Du kan redigera komponentinställningar i webbadminpanelen.";
 
 /* Info notice at the bottom of the components screen */
 "You can edit components in the web dashboard." = "Du kan redigera komponenter i webbadminpanelen.";
@@ -8708,7 +8786,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your free store address" = "Din kostnadsfria butiksadress";
 
 /* Info details for an expired free trial */
-"Your free trial has ended, and you have limited access to all the features. Subscribe to eCommerce now." = "Din kostnadsfria provperiod har avslutats och du har begränsad åtkomst till alla funktionerna. Prenumerera på eCommerce nu.";
+"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "Din kostnadsfria provperiod är slut och du har begränsad tillgång till alla funktioner. Prenumerera på Woo Express Performance Plan nu.";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Din iPhone kan användas som kortläsare, eller så kan du ansluta till en extern läsare via bluetooth.";

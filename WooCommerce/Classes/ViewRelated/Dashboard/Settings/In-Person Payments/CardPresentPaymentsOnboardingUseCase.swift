@@ -337,7 +337,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
                 return .codPaymentGatewayNotSetUp(plugin: plugin)
             }
         }
-        guard !isInUndefinedState(account: account) else {
+        guard canCollectCardPresentPayments(account: account) else {
             return .genericError
         }
 
@@ -474,8 +474,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return codGateway.enabled
     }
 
-    func isInUndefinedState(account: PaymentGatewayAccount) -> Bool {
-        account.wcpayStatus == .unknown
+    func canCollectCardPresentPayments(account: PaymentGatewayAccount) -> Bool {
+        account.wcpayStatus == .complete ||
+        account.wcpayStatus == .restrictedSoon
     }
 
     func isNetworkError(_ error: Error) -> Bool {

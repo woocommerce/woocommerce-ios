@@ -59,6 +59,8 @@ struct SubscriptionSettings: View {
             FooterNotice(infoText: Localization.infoNotice)
                 .padding(.horizontal, insets: safeAreaInsets)
         }
+        .navigationBarTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.inline)
         .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)

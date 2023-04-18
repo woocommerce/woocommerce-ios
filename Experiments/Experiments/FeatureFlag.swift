@@ -187,4 +187,8 @@ public enum FeatureFlag: Int {
     /// Enables UK-based stores taking In-Person Payments
     ///
     case IPPUKExpansion
+
+    /// Enables subscription product settings in product details
+    ///
+    case subscriptionProducts
 }

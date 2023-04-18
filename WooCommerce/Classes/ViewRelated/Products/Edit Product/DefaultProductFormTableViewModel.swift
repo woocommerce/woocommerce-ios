@@ -116,6 +116,8 @@ private extension DefaultProductFormTableViewModel {
                 return .bundledProducts(viewModel: bundledProductsRow(product: product, isActionable: actionable), isActionable: actionable)
             case .components(let actionable):
                 return .components(viewModel: componentsRow(product: product, isActionable: actionable), isActionable: actionable)
+            case .subscription(let actionable):
+                return .subscription(viewModel: subscriptionRow(product: product, isActionable: actionable), isActionable: actionable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -555,6 +557,25 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details,
                                                         isActionable: isActionable)
     }
+
+    // MARK: Subscription products only
+
+    func subscriptionRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.priceImage
+        let title = Localization.subscriptionTitle
+
+        var subscriptionDetails = [String]()
+        // TODO: 8952 - Replace with real price and expiry data
+        subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, "$60.00 every 4 months"))
+        subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, "12 months"))
+
+        let details = subscriptionDetails.isEmpty ? nil: subscriptionDetails.joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isActionable)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -761,5 +782,12 @@ private extension DefaultProductFormTableViewModel {
                                                                comment: "Format of the number of components in singular form")
         static let pluralComponentsFormat = NSLocalizedString("%ld components",
                                                               comment: "Format of the number of components in plural form")
+
+        // Subscription
+        static let subscriptionTitle = NSLocalizedString("Subscription", comment: "Title for Subscription row in the product form screen.")
+        static let subscriptionPriceFormat = NSLocalizedString("Regular price: %@",
+                                                               comment: "Format of the regular price on the Subscription row")
+        static let subscriptionExpiryFormat = NSLocalizedString("Expire after: %@",
+                                                                comment: "Format of the expiry details on the Subscription row")
     }
 }

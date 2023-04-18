@@ -105,7 +105,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 shippingClass: shippingClass,
                                 shippingClassID: shippingClassID,
                                 menuOrder: menuOrder,
-                                subscription: nil) // TODO: Convert the subscription
+                                subscription: subscription?.toReadOnly())
     }
 }
 

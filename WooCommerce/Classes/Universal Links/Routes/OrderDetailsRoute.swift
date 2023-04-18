@@ -4,9 +4,13 @@ import Yosemite
 /// Shows order details from a given universal link that matches the right path
 ///
 struct OrderDetailsRoute: Route {
-    let subPath: String = "/orders/details"
+    private let subPath: String = "orders/details"
 
-    func perform(with parameters: [String: String]) -> Bool {
+    func canHandle(subPath: String) -> Bool {
+        return subPath == self.subPath
+    }
+
+    func perform(for subPath: String, with parameters: [String: String]) -> Bool {
         guard let storeIdString = parameters[ParametersKeys.blogId],
               let storeId = Int64(storeIdString),
               let orderIdString = parameters[ParametersKeys.orderId],

@@ -34,6 +34,7 @@ struct FreeTrialBanner: View {
 
             HStack(alignment: .center) {
                 Image(uiImage: .infoOutlineImage)
+                    .accessibilityHidden(true)
 
                 AdaptiveStack(verticalAlignment: .center, spacing: Layout.spacing) {
                     Text(mainText)
@@ -43,6 +44,7 @@ struct FreeTrialBanner: View {
                         .underline(true)
                         .linkStyle()
                         .onTapGesture(perform: onUpgradeNowTapped)
+                        .accessibilityAddTraits(.isButton)
                 }
             }
             .padding()

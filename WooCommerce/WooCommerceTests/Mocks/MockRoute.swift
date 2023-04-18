@@ -1,15 +1,19 @@
 @testable import WooCommerce
 
 final class MockRoute: Route {
-    let subPath: String
-    let performAction: ([String: String]) -> Bool
+    let performAction: (_ subpath: String, _ parameters: [String: String]) -> Bool
+    let handledSubpaths: [String]
 
-    init(subPath: String, performAction: @escaping ([String: String]) -> Bool) {
-        self.subPath = subPath
+    init(handledSubpaths: [String], performAction: @escaping (_ subpath: String, _ parameters: [String: String]) -> Bool) {
+        self.handledSubpaths = handledSubpaths
         self.performAction = performAction
     }
 
-    func perform(with parameters: [String: String]) -> Bool {
-        performAction(parameters)
+    func canHandle(subPath: String) -> Bool {
+        return handledSubpaths.contains { $0 == subPath }
+    }
+
+    func perform(for subPath: String, with parameters: [String: String]) -> Bool {
+        performAction(subPath, parameters)
     }
 }

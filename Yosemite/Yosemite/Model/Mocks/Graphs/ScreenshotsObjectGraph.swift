@@ -47,7 +47,8 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         isWordPressComStore: true,
         jetpackConnectionActivePlugins: [],
         timezone: "UTC",
-        gmtOffset: 0
+        gmtOffset: 0,
+        isBlogPublic: true
     )
 
     /// May not be needed anymore if we're not mocking the API

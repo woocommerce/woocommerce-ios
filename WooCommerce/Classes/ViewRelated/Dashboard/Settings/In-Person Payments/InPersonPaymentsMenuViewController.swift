@@ -457,6 +457,18 @@ extension InPersonPaymentsMenuViewController {
     func setUpTapToPayOnIPhoneWasPressed() {
         ServiceLocator.analytics.track(.setUpTapToPayOnIPhoneTapped)
 
+        presentSetUpTapToPayOnIPhoneViewController()
+    }
+
+    func presentSetUpTapToPayOnIPhoneViewController() {
+        if featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2) {
+            presentSetUpTapToPayOnIPhoneWithOnboarding()
+        } else {
+            presentSetUpTapToPayOnIPhoneWithoutOnboarding()
+        }
+    }
+
+    private func presentSetUpTapToPayOnIPhoneWithoutOnboarding() {
         guard let siteID = stores.sessionManager.defaultStoreID,
               let activePaymentGateway = pluginState?.preferred else {
             return
@@ -468,6 +480,24 @@ extension InPersonPaymentsMenuViewController {
         let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
         let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
         controller.navigationBar.isHidden = true
+
+        navigationController?.present(controller, animated: true)
+    }
+
+    private func presentSetUpTapToPayOnIPhoneWithOnboarding() {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let activePaymentGateway = pluginState?.preferred ?? .wcPay
+
+        let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
+                                                                    configuration: viewModel.cardPresentPaymentsConfiguration,
+                                                                    activePaymentGateway: activePaymentGateway)
+        let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
+        let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
+        controller.navigationBar.isHidden = true
+
         navigationController?.present(controller, animated: true)
     }
 

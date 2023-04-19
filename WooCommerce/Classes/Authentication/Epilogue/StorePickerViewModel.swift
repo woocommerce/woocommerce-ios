@@ -48,6 +48,15 @@ final class StorePickerViewModel {
         ])
     }
 
+    @MainActor
+    func refreshSites(currentlySelectedSiteID: Int64?) async {
+        await withCheckedContinuation { continuation in
+            refreshSites(currentlySelectedSiteID: currentlySelectedSiteID) {
+                continuation.resume()
+            }
+        }
+    }
+
     func refreshSites(currentlySelectedSiteID: Int64?, completion: (() -> Void)? = nil) {
         refetchSitesAndUpdateState()
 

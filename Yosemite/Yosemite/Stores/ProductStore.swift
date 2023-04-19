@@ -606,6 +606,7 @@ extension ProductStore {
             handleProductAddOns(readOnlyProduct, storageProduct, storage)
             handleProductBundledItems(readOnlyProduct, storageProduct, storage)
             handleProductCompositeComponents(readOnlyProduct, storageProduct, storage)
+            handleProductSubscription(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -826,6 +827,25 @@ extension ProductStore {
             return storageCompositeComponent
         }
         storageProduct.addToCompositeComponents(NSOrderedSet(array: storageCompositeComponents))
+    }
+
+    /// Updates, inserts, or prunes the provided StorageProduct's subscription using the provided read-only Product's subscription
+    ///
+    func handleProductSubscription(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        guard let readOnlySubscription = readOnlyProduct.subscription else {
+            if let existingStorageSubscription = storageProduct.subscription {
+                storage.deleteObject(existingStorageSubscription)
+            }
+            return
+        }
+
+        if let existingStorageSubscription = storageProduct.subscription {
+            existingStorageSubscription.update(with: readOnlySubscription)
+        } else {
+            let newStorageSubscription = storage.insertNewObject(ofType: Storage.ProductSubscription.self)
+            newStorageSubscription.update(with: readOnlySubscription)
+            storageProduct.subscription = newStorageSubscription
+        }
     }
 }
 

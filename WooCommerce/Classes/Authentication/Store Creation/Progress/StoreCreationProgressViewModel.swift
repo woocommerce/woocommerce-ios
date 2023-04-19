@@ -9,7 +9,9 @@ final class StoreCreationProgressViewModel: ObservableObject {
         case buildingFoundations = 1.0
         case organizingStockRoom = 2.0
         case applyingFinishingTouches = 3.0
-        case finished = 4.0
+        case turningOnTheLights = 4.0
+        case openingTheDoors = 5.0
+        case finished = 6.0
     }
 
     @Published private var progress: Progress = .creatingStore
@@ -101,8 +103,12 @@ private extension StoreCreationProgressViewModel.Progress {
             return Localization.Title.buildingTheFoundations
         case .organizingStockRoom:
             return Localization.Title.organizingTheStockRoom
-        case .applyingFinishingTouches, .finished:
+        case .applyingFinishingTouches:
             return Localization.Title.finishingTouches
+        case .turningOnTheLights:
+            return Localization.Title.turningOnLights
+        case .openingTheDoors, .finished:
+            return Localization.Title.openingDoors
         }
     }
 
@@ -114,8 +120,12 @@ private extension StoreCreationProgressViewModel.Progress {
             return Localization.Subtitle.founded
         case .organizingStockRoom:
             return Localization.Subtitle.catOrDog
-        case .applyingFinishingTouches, .finished:
+        case .applyingFinishingTouches:
             return Localization.Subtitle.meetups
+        case .turningOnTheLights:
+            return Localization.Subtitle.wooTeam
+        case .openingTheDoors, .finished:
+            return Localization.Subtitle.favColor
         }
     }
 }
@@ -133,6 +143,12 @@ private extension StoreCreationProgressViewModel.Progress {
                                                                   comment: "Title text in the store creation loading screen")
 
             static let finishingTouches = NSLocalizedString("Applying the finishing touches",
+                                                            comment: "Title text in the store creation loading screen")
+
+            static let turningOnLights = NSLocalizedString("Turning on the lights",
+                                                            comment: "Title text in the store creation loading screen")
+
+            static let openingDoors = NSLocalizedString("Opening the doors",
                                                             comment: "Title text in the store creation loading screen")
         }
 
@@ -152,6 +168,14 @@ private extension StoreCreationProgressViewModel.Progress {
 
             static let meetups = NSLocalizedString(
                 "There are more than 150 WooCommerce meetups held all over the world! A great way to meet fellow store owners.",
+                comment: "Subtitle text in the store creation loading screen")
+
+            static let wooTeam = NSLocalizedString(
+                "The Woo team is made up of over 350 talented individuals, distributed across 30+ countries.",
+                comment: "Subtitle text in the store creation loading screen")
+
+            static let favColor = NSLocalizedString(
+                "Our favorite color is purple.",
                 comment: "Subtitle text in the store creation loading screen")
         }
     }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-05 09:54:07+0000 */
+/* Translation-Revision-Date: 2023-04-12 11:54:21+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -268,6 +268,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
+
+/* 24/7 support title feature on the Free Trial Summary Screen */
+"24\/7 support" = "24時間体制のサポート";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
@@ -945,6 +948,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Auto Services" = "自動車サービス";
 
+/* Auto updates & backups title feature on the Free Trial Summary Screen */
+"Auto updates & backups" = "自動的に更新とバックアップを実行";
+
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "このサイトで自動管理";
 
@@ -1620,6 +1626,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for completed order status. */
 "Completed" = "完了";
 
+/* Title for the list of component options in the Component Settings view */
+"Component Options" = "コンポーネントオプション";
+
+/* Title for the settings of a component in a composite product */
+"Component Settings" = "コンポーネントの設定";
+
 /* Title for Components row in the product form screen.
    Title for the list of components in a composite product */
 "Components" = "コンポーネント";
@@ -2186,6 +2198,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "デフォルト";
 
+/* Title for the default component option field in the Component Settings view */
+"Default Option" = "デフォルトオプション";
+
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
@@ -2561,6 +2576,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder of the email field on the account creation form. */
 "Email address" = "メールアドレス";
 
+/* Email marketing title feature on the Free Trial Summary Screen */
+"Email marketing" = "メールマーケティング";
+
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "顧客にメールでメモを送信";
 
@@ -2928,6 +2946,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Fast Food Restaurants" = "ファストフード店";
+
+/* Fast to launch title feature on the Free Trial Summary Screen */
+"Fast to launch" = "公開までが速い";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -3839,6 +3860,9 @@ which should be translated separately and considered part of this sentence. */
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Wormholy デバッグを起動";
 
+/* Main title for the free trial summary screen. */
+"Launch in days, grow for years" = "数日で公開、長期的に成長";
+
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "ストアを立ち上げる";
 
@@ -4492,6 +4516,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "クーポンがありません";
 
+/* Text indicated that no card is needed for a free trial */
+"No credit card required." = "クレジットカードは不要です。";
+
 /* A error message when it's not possible to acquirethe Analytics Hub current selection range */
 "No current period available" = "利用できる現在の期間がありません";
 
@@ -4515,6 +4542,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "No need to wonder where that stampbook went" = "切手がどこにいったのか探す必要はありません";
+
+/* Placeholder when there are no component options to show in the Component Settings view */
+"No options selected" = "オプションが選択されていません";
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "注文が選択されていません";
@@ -5107,6 +5137,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Apple ID が有効であることを確認してから、もう一度お試しください。 Apple の利用規約に同意するには、有効な Apple ID が必要です";
+
+/* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"Please connect Jetpack through your admin page on a browser or contact support." = "ブラウザーの管理画面から Jetpack を接続するか、サポートにお問い合わせください。";
 
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "このアプリでアクセスするには、ストアを Jetpack に連携してください。";
@@ -6284,6 +6317,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "支払いリンクを共有する";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Tap to Pay on iPhone Feedback" = "Tap to Pay on iPhone へのフィードバックをお聞かせください";
+
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "共有 URL";
 
@@ -6493,6 +6529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "サイトアドレスは4文字以上にしてください。";
 
+/* Site security title feature on the Free Trial Summary Screen */
+"Site security" = "サイトセキュリティ";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
    The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
@@ -6512,6 +6551,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "スラッグ";
+
+/* Social advertising title feature on the Free Trial Summary Screen */
+"Social advertising" = "ソーシャル広告";
 
 /* Industry option in the store creation category question. */
 "Software" = "ソフトウェア";
@@ -6764,6 +6806,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "サブスクリプション & ギフトカード";
+
+/* Subscriptions & product kits title feature on the Free Trial Summary Screen */
+"Subscriptions & product kits" = "定期購入商品キット";
 
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
@@ -7366,6 +7411,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message to be displayed when the user encounters a generic error during Jetpack setup */
 "There was an error completing your request." = "リクエストを完了する際にエラーが発生しました。";
 
+/* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
+"There was an error connecting your site to Jetpack." = "サイトを Jetpack に接続する際にエラーが発生しました。";
+
 /* Notice text after failing to create a simple payments order. */
 "There was an error creating the order" = "注文の作成中にエラーが発生しました";
 
@@ -7695,6 +7743,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "もう一度受け取りを試みる";
 
+/* Text in the button to continue with the free trial plan */
+"Try For Free" = "無料でお試し";
+
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "インストールを再試行";
 
@@ -7721,6 +7772,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "ストアにアクセスするには、もう一度接続してみてください。";
+
+/* Title for the features list in the free trial Summary Screen */
+"Try it free for 14 days." = "無料で14日間お試しください。";
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "今すぐお試しください";
@@ -8422,6 +8476,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "We know it’s essential to your business." = "ビジネスに欠かせないものであることはわかっています。";
 
+/* Main description for the free trial summary screen */
+"We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com." = "WooCommerce を使用し WordPress.com でホスティングされるオンラインストアの構築と拡大に必要なすべてを提供します。";
+
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "サードパーティのものを含め、他の追跡ツールを使用します。それらについての詳細と設定方法についてお読みください。";
 
@@ -8646,6 +8703,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "ウェブダッシュボードでパッケージ同梱商品を編集できます。";
+
+/* Info notice at the bottom of the component settings screen */
+"You can edit component settings in the web dashboard." = "ウェブダッシュボードでコンポーネントの設定を編集できます。";
 
 /* Info notice at the bottom of the components screen */
 "You can edit components in the web dashboard." = "ウェブダッシュボードでコンポーネントを編集できます。";

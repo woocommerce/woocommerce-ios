@@ -76,6 +76,9 @@ protocol ProductFormDataModel {
     // Composite Products
     var compositeComponents: [ProductCompositeComponent] { get }
 
+    // Subscription Products
+    var subscription: ProductSubscription? { get }
+
     /// True if a product has been saved remotely.
     var existsRemotely: Bool { get }
 }

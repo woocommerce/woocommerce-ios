@@ -1,0 +1,180 @@
+{
+    "data": {
+        "id": 204,
+        "name": "Coffee Subscription (Choose your grind) - Whole bean, Weekly",
+        "slug": "coffee-subscription-your-choice-weekly-whole-bean",
+        "permalink": "https://example.com/product/coffee-subscription-choose-your-grind/?attribute_grind=Whole+bean&attribute_frequency=Weekly",
+        "date_created": "2023-01-24T18:24:06",
+        "date_created_gmt": "2023-01-24T18:24:06",
+        "date_modified": "2023-04-05T18:08:12",
+        "date_modified_gmt": "2023-04-05T17:08:12",
+        "type": "subscription_variation",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "",
+        "short_description": "",
+        "sku": "",
+        "price": "5",
+        "regular_price": "5",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": "0",
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "low_stock_amount": null,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": false,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 200,
+        "purchase_note": "",
+        "categories": [],
+        "tags": [],
+        "images": [
+            {
+                "id": 199,
+                "date_created": "2023-01-24T18:16:07",
+                "date_created_gmt": "2023-01-24T18:16:07",
+                "date_modified": "2023-01-27T10:55:09",
+                "date_modified_gmt": "2023-01-27T10:55:09",
+                "src": "https://example.com/wp-content/uploads/2023/01/coffee-beans.jpg",
+                "name": "coffee-beans",
+                "alt": ""
+            }
+        ],
+        "attributes": [
+            {
+                "id": 0,
+                "name": "Grind",
+                "option": "Whole bean"
+            },
+            {
+                "id": 0,
+                "name": "Frequency",
+                "option": "Weekly"
+            }
+        ],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 1,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>5.00</bdi></span> <span class=\"subscription-details\"> / week</span>",
+        "related_ids": [],
+        "meta_data": [
+            {
+                "id": 4464,
+                "key": "_subscription_period",
+                "value": "week"
+            },
+            {
+                "id": 4465,
+                "key": "_subscription_period_interval",
+                "value": "1"
+            },
+            {
+                "id": 4466,
+                "key": "_subscription_length",
+                "value": "0"
+            },
+            {
+                "id": 4467,
+                "key": "_subscription_trial_period",
+                "value": "month"
+            },
+            {
+                "id": 4685,
+                "key": "_subscription_sign_up_fee",
+                "value": ""
+            },
+            {
+                "id": 4686,
+                "key": "_subscription_price",
+                "value": "5"
+            },
+            {
+                "id": 4687,
+                "key": "_subscription_trial_length",
+                "value": "0"
+            },
+            {
+                "id": 4688,
+                "key": "_subscription_payment_sync_date",
+                "value": "0"
+            }
+        ],
+        "stock_status": "instock",
+        "has_options": true,
+        "composite_virtual": false,
+        "composite_layout": "",
+        "composite_add_to_cart_form_location": "",
+        "composite_editable_in_cart": false,
+        "composite_sold_individually_context": "",
+        "composite_shop_price_calc": "",
+        "composite_components": [],
+        "composite_scenarios": [],
+        "bundled_by": [],
+        "bundle_stock_status": "instock",
+        "bundle_stock_quantity": null,
+        "bundle_virtual": false,
+        "bundle_layout": "",
+        "bundle_add_to_cart_form_location": "",
+        "bundle_editable_in_cart": false,
+        "bundle_sold_individually_context": "",
+        "bundle_item_grouping": "",
+        "bundle_min_size": "",
+        "bundle_max_size": "",
+        "bundled_items": [],
+        "bundle_sell_ids": [],
+        "jetpack_publicize_connections": [],
+        "jetpack_sharing_enabled": true,
+        "jetpack_likes_enabled": true,
+        "brands": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/204"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/200"
+                }
+            ]
+        }
+    }
+}

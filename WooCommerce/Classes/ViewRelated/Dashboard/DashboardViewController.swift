@@ -177,7 +177,7 @@ final class DashboardViewController: UIViewController {
         configureTitle()
 
         // Proactively update the free trial banner every time we navigate to the dashboard.
-        viewModel.syncFreeTrialBanner(siteID: siteID)
+        viewModel.syncFreeTrialBannerState()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -642,7 +642,7 @@ private extension DashboardViewController {
                                                                      site: site,
                                                                      onUpgradePlan: { [weak self] in
             guard let self else { return }
-            self.viewModel.syncFreeTrialBanner(siteID: self.siteID)
+            self.viewModel.syncFreeTrialBannerState()
         },
                                                                      shareFeedbackAction: { [weak self] in
             // Present survey

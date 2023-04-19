@@ -18,13 +18,13 @@ final class RefundMapperTests: XCTestCase {
     ///
     func test_Refund_fields_are_properly_parsed() {
         let results = [mapLoadRefundResponse(), mapLoadRefundResponseWithoutDataEnvelope()]
-        for refund in results {
+        for (index, refund) in results.enumerated() {
             guard let refund else {
                 XCTFail("No mock file found.")
                 return
             }
-
-            XCTAssertEqual(refund.siteID, dummySiteID)
+            let expectedSiteID: Int64 = index == 0 ? dummySiteID : WooConstants.placeholderSiteID
+            XCTAssertEqual(refund.siteID, expectedSiteID)
             XCTAssertEqual(refund.refundID, 562)
 
             let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-01T19:33:46")
@@ -149,24 +149,24 @@ private extension RefundMapperTests {
 
     /// Returns the RefundMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapRefund(from filename: String) -> Refund? {
+    func mapRefund(siteID: Int64, from filename: String) -> Refund? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! RefundMapper(siteID: dummySiteID, orderID: orderID).map(response: response)
+        return try? RefundMapper(siteID: siteID, orderID: orderID).map(response: response)
     }
 
     /// Returns the RefundsMapper output upon receiving `refund-single`
     ///
     func mapLoadRefundResponse() -> Refund? {
-        return mapRefund(from: "refund-single")
+        return mapRefund(siteID: dummySiteID, from: "refund-single")
     }
 
     /// Returns the RefundsMapper output upon receiving `refund-single-without-data`
     ///
     func mapLoadRefundResponseWithoutDataEnvelope() -> Refund? {
-        return mapRefund(from: "refund-single-without-data")
+        return mapRefund(siteID: WooConstants.placeholderSiteID, from: "refund-single-without-data")
     }
 
     /// Creates a dummy refund with items and taxes

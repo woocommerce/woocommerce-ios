@@ -27,11 +27,11 @@ struct RefundMapper: Mapper {
             .orderID: orderID
         ]
 
-        do {
-            return try decoder.decode(RefundEnvelope.self, from: response).refund
-        } catch {
+        guard siteID != WooConstants.placeholderSiteID else {
             return try decoder.decode(Refund.self, from: response)
         }
+
+        return try decoder.decode(RefundEnvelope.self, from: response).refund
     }
 
     /// (Attempts) to encode a Refund object into JSONEncoded data.

@@ -18,11 +18,12 @@ final class RefundListMapperTests: XCTestCase {
     ///
     func test_Refund_fields_are_properly_parsed() {
         let result = [mapLoadAllRefundsResponse(), mapLoadAllRefundsResponseWithoutDataEnvelope()]
-        for refunds in result {
+        for (index, refunds) in result.enumerated() {
+            let expectedSiteID: Int64 = index == 0 ? dummySiteID : WooConstants.placeholderSiteID
             XCTAssertEqual(refunds.count, 2)
 
             let firstRefund = refunds[0]
-            XCTAssertEqual(firstRefund.siteID, dummySiteID)
+            XCTAssertEqual(firstRefund.siteID, expectedSiteID)
             XCTAssertEqual(firstRefund.orderID, orderID)
             XCTAssertEqual(firstRefund.refundID, 590)
 
@@ -37,7 +38,7 @@ final class RefundListMapperTests: XCTestCase {
             }
 
             let secondRefund = refunds[1]
-            XCTAssertEqual(secondRefund.siteID, dummySiteID)
+            XCTAssertEqual(secondRefund.siteID, expectedSiteID)
             XCTAssertEqual(secondRefund.orderID, orderID)
             XCTAssertEqual(secondRefund.refundID, 562)
 
@@ -117,23 +118,23 @@ private extension RefundListMapperTests {
 
     /// Returns the RefundListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapRefunds(from filename: String) -> [Refund] {
+    func mapRefunds(siteID: Int64, from filename: String) -> [Refund] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! RefundListMapper(siteID: dummySiteID, orderID: orderID).map(response: response)
+        return try! RefundListMapper(siteID: siteID, orderID: orderID).map(response: response)
     }
 
     /// Returns the RefundListMapper output upon receiving `refunds-all`
     ///
     func mapLoadAllRefundsResponse() -> [Refund] {
-        return mapRefunds(from: "refunds-all")
+        return mapRefunds(siteID: dummySiteID, from: "refunds-all")
     }
 
     /// Returns the RefundListMapper output upon receiving `refunds-all-without-data`
     ///
     func mapLoadAllRefundsResponseWithoutDataEnvelope() -> [Refund] {
-        return mapRefunds(from: "refunds-all-without-data")
+        return mapRefunds(siteID: WooConstants.placeholderSiteID, from: "refunds-all-without-data")
     }
 }

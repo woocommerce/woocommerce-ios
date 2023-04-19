@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Product Entity.
 ///
-public struct Product: Codable, GeneratedCopiable, GeneratedFakeable {
+public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String

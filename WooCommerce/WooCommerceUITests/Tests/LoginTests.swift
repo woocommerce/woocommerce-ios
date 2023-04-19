@@ -17,7 +17,7 @@ final class LoginTests: XCTestCase {
             return
         }
         try PrologueScreen()
-            .tapSiteAddress()
+            .tapLogIn()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)

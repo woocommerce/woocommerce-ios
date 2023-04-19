@@ -137,6 +137,7 @@ public typealias SiteSummaryStats = Networking.SiteSummaryStats
 public typealias SiteVisitStats = Networking.SiteVisitStats
 public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
 public typealias StateOfACountry = Networking.StateOfACountry
+public typealias Subscription = Networking.Subscription
 public typealias SubscriptionPeriod = Networking.SubscriptionPeriod
 public typealias SystemPlugin = Networking.SystemPlugin
 public typealias SystemStatus = Networking.SystemStatus

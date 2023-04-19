@@ -80,9 +80,9 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhone
 
-    /// Enables Tap to Pay on iPhone M2 setup flow, on eligible devices.
+    /// Enables Tap to Pay on iPhone Milestone 2 (Tap to Pay deeplinks, JITM deeplink handling, JITM customisation) on eligible devices.
     ///
-    case tapToPayOnIPhoneSetupFlow
+    case tapToPayOnIPhoneMilestone2
 
     /// Store creation MVP.
     ///
@@ -187,4 +187,8 @@ public enum FeatureFlag: Int {
     /// Enables UK-based stores taking In-Person Payments
     ///
     case IPPUKExpansion
+
+    /// Enables subscription product settings in product details
+    ///
+    case subscriptionProducts
 }

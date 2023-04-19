@@ -2,10 +2,16 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
-## Model 83 (Release 13.2.0.0)
-- @selanthiraiyan 2023-04-18
+## Model 84 (Release 13.2.0.0)
+- @selanthiraiyan 2023-04-20
     - Added `isPublic` attribute to `Site` entity.
     
+## Model 83 (Release 13.3.0.0)
+- @rachelmcr 2023-04-17
+    - Added `ProductSubscription` entity.
+    - Added relationship between `Product` and `ProductSubscription`.
+    - Added relationship between `ProductVariation` and `ProductSubscription`.
+
 ## Model 82 (Release 12.9.0.0)
 - @rachelmcr 2023-03-20
     - Added `ProductCompositeComponent` entity.

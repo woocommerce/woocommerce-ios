@@ -842,7 +842,8 @@ extension Networking.Product {
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
             bundledItems: .fake(),
-            compositeComponents: .fake()
+            compositeComponents: .fake(),
+            subscription: .fake()
         )
     }
 }
@@ -1082,6 +1083,21 @@ extension ProductStockStatus {
         .inStock
     }
 }
+extension Networking.ProductSubscription {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductSubscription {
+        .init(
+            length: .fake(),
+            period: .fake(),
+            periodInterval: .fake(),
+            price: .fake(),
+            signUpFee: .fake(),
+            trialLength: .fake(),
+            trialPeriod: .fake()
+        )
+    }
+}
 extension Networking.ProductTag {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1148,7 +1164,8 @@ extension Networking.ProductVariation {
             dimensions: .fake(),
             shippingClass: .fake(),
             shippingClassID: .fake(),
-            menuOrder: .fake()
+            menuOrder: .fake(),
+            subscription: .fake()
         )
     }
 }
@@ -1770,6 +1787,13 @@ extension Networking.StoredProductSettings {
         .init(
             settings: .fake()
         )
+    }
+}
+extension SubscriptionPeriod {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> SubscriptionPeriod {
+        .day
     }
 }
 extension Networking.SystemPlugin {

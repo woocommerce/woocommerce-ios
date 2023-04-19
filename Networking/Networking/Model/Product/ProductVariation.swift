@@ -56,6 +56,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
 
     public let menuOrder: Int64
 
+    /// Subscription settings. Applicable to variations in variable subscription-type products only.
+    public let subscription: ProductSubscription?
+
     /// Computed Properties
     ///
     /// Whether the product variation has an integer (or nil) stock quantity.
@@ -106,7 +109,8 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                 dimensions: ProductDimensions,
                 shippingClass: String?,
                 shippingClassID: Int64,
-                menuOrder: Int64) {
+                menuOrder: Int64,
+                subscription: ProductSubscription?) {
         self.siteID = siteID
         self.productID = productID
         self.productVariationID = productVariationID
@@ -143,6 +147,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         self.shippingClass = shippingClass
         self.shippingClassID = shippingClassID
         self.menuOrder = menuOrder
+        self.subscription = subscription
     }
 
     /// The public initializer for ProductVariation.
@@ -249,6 +254,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let shippingClassID = try container.decode(Int64.self, forKey: .shippingClassID)
         let menuOrder = try container.decode(Int64.self, forKey: .menuOrder)
 
+        // Subscription settings for subscription variations
+        let subscription = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?.extractProductSubscription()
+
         self.init(siteID: siteID,
                   productID: productID,
                   productVariationID: productVariationID,
@@ -284,7 +292,8 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                   dimensions: dimensions,
                   shippingClass: shippingClass,
                   shippingClassID: shippingClassID,
-                  menuOrder: menuOrder)
+                  menuOrder: menuOrder,
+                  subscription: subscription)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -393,6 +402,8 @@ private extension ProductVariation {
 
         case attributes
         case menuOrder          = "menu_order"
+
+        case metadata           = "meta_data"
     }
 }
 

@@ -3,5 +3,6 @@ struct TestCredentials {
     static let emailAddress: String = "t@wp.com"
     static let password: String = "pw"
     static let siteUrl: String = "http://yourwoosite.com"
+    static let siteUrlHost: String = "yourwoosite.com"
     static let storeName: String = "Your WooCommerce Store"
 }

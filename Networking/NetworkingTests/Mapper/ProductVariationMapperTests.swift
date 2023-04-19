@@ -41,6 +41,23 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertTrue(productVariation.purchasable)
         XCTAssertEqual(productVariation.permalink, "")
     }
+
+    /// Test that the fields for variations of a subscription product are properly parsed.
+    ///
+    func test_subscription_variations_are_properly_parsed() throws {
+        // Given
+        let productVariation = try XCTUnwrap(mapLoadSubscriptionVariationResponse())
+        let subscriptionSettings = try XCTUnwrap(productVariation.subscription)
+
+        // Then
+        XCTAssertEqual(subscriptionSettings.length, "0")
+        XCTAssertEqual(subscriptionSettings.period, .week)
+        XCTAssertEqual(subscriptionSettings.periodInterval, "1")
+        XCTAssertEqual(subscriptionSettings.price, "5")
+        XCTAssertEqual(subscriptionSettings.signUpFee, "")
+        XCTAssertEqual(subscriptionSettings.trialLength, "0")
+        XCTAssertEqual(subscriptionSettings.trialPeriod, .month)
+    }
 }
 
 /// Private Helpers
@@ -72,6 +89,12 @@ private extension ProductVariationMapperTests {
     ///
     func mapLoadProductVariationResponseWithAlternativeTypes() -> ProductVariation? {
         return mapProductVariation(from: "product-variation-alternative-types")
+    }
+
+    /// Returns the ProductVariationMapper output upon receiving `product-variation-subscription`
+    ///
+    func mapLoadSubscriptionVariationResponse() -> ProductVariation? {
+        return mapProductVariation(from: "product-variation-subscription")
     }
 }
 
@@ -122,7 +145,8 @@ private extension ProductVariationMapperTests {
                                                               height: ""),
                                 shippingClass: "",
                                 shippingClassID: 0,
-                                menuOrder: 1)
+                                menuOrder: 1,
+                                subscription: nil)
     }
 
     func sampleProductVariationAttributes() -> [ProductVariationAttribute] {

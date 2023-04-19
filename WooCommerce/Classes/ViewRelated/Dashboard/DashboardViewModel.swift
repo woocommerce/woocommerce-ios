@@ -23,6 +23,10 @@ final class DashboardViewModel {
 
     @Published private(set) var freeTrialBannerViewModel: FreeTrialBannerViewModel? = nil
 
+    /// Observable subscription store.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
     /// Trigger to start the Add Product flow
     ///
     let addProductTrigger = PassthroughSubject<Void, Never>()
@@ -43,6 +47,7 @@ final class DashboardViewModel {
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         setupObserverForShowOnboarding()
+        observeFreeTrialStorePlan()
     }
 
     /// Reloads store onboarding tasks
@@ -173,25 +178,24 @@ final class DashboardViewModel {
 
     /// Fetches the current site plan.
     ///
-    func syncFreeTrialBanner(siteID: Int64) {
-        // Only fetch free trial information is the site is a WPCom site.
-        guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
-            return DDLogInfo("⚠️ Site is not a WPCOM site.")
-        }
+    func syncFreeTrialBannerState() {
+        ServiceLocator.storePlanSynchronizer.reloadPlan()
+    }
 
-        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success(let plan):
-                if plan.isFreeTrial {
-                    self?.freeTrialBannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
-                } else {
-                    self?.freeTrialBannerViewModel = nil
-                }
-            case .failure(let error):
-                DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
+    /// Observe for any store plan changes.
+    ///
+    func observeFreeTrialStorePlan() {
+        ServiceLocator.storePlanSynchronizer.$planState.sink { [weak self] planState in
+            switch planState {
+            case .loaded(let plan) where plan.isFreeTrial:
+                self?.freeTrialBannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
+            case .loading, .failed:
+                break // No-op
+            default:
+                self?.freeTrialBannerViewModel = nil
             }
         }
-        stores.dispatch(action)
+        .store(in: &subscriptions)
     }
 
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.

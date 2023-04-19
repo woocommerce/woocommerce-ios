@@ -174,7 +174,12 @@ private extension StoreOnboardingViewModel {
                         }
                     }).map({ [weak self] task in
                         // If store is already live and launchStore task is incomplete
-                        // mark the task as complete
+                        // mark the task as complete.
+                        //
+                        // We do this as a workaround because there is an issue with the backend
+                        // and `launchStore` task is marked as `incomplete` for already live stores.
+                        //
+                        // More info at https://github.com/woocommerce/woocommerce-ios/issues/9477
                         guard let self,
                               case .launchStore = task.type,
                               !task.isComplete,

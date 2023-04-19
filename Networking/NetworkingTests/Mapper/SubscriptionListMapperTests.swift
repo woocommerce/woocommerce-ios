@@ -83,4 +83,3 @@ private extension SubscriptionListMapperTests {
         return try mapSubscriptions(from: "subscription-list-without-data")
     }
 }
-

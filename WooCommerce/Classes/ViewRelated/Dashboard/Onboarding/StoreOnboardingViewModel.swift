@@ -178,8 +178,7 @@ private extension StoreOnboardingViewModel {
                         guard let self,
                               case .launchStore = task.type,
                               !task.isComplete,
-                              let isPublic = self.stores.sessionManager.defaultSite?.isPublic,
-                              isPublic else {
+                              self.stores.sessionManager.defaultSite?.isPublic == true else {
                             return task
                         }
 

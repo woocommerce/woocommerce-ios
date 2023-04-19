@@ -149,7 +149,7 @@
       "options": {
         "timezone": "",
         "gmt_offset": -4,
-        "blog_public": 0,
+        "blog_public": 1,
         "videopress_enabled": false,
         "upgraded_filetypes_enabled": false,
         "login_url": "https:\/\/thoughts.testing.blog\/wp-login.php",

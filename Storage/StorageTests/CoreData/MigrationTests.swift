@@ -1673,28 +1673,6 @@ final class MigrationTests: XCTestCase {
         // Product components attribute exists.
         XCTAssertEqual(migratedProduct.value(forKey: "compositeComponents") as? NSOrderedSet, NSOrderedSet(array: [component]))
     }
-
-    func test_migrating_from_82_to_83_adds_isPublic_attribute() throws {
-        // Given
-        let sourceContainer = try startPersistentContainer("Model 82")
-        let sourceContext = sourceContainer.viewContext
-
-        let site = insertSite(to: sourceContainer.viewContext)
-        try sourceContext.save()
-
-        XCTAssertNil(site.entity.attributesByName["isPublic"])
-
-        // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 83")
-
-        // Then
-        let targetContext = targetContainer.viewContext
-        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
-
-        let isPublic = try XCTUnwrap(migratedSite.value(forKey: "isPublic") as? Bool)
-        XCTAssertFalse(isPublic)
-    }
-
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -1628,8 +1628,7 @@ extension Networking.Site {
             isWordPressComStore: .fake(),
             jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
-            gmtOffset: .fake(),
-            isPublic: .fake()
+            gmtOffset: .fake()
         )
     }
 }

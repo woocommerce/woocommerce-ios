@@ -46,10 +46,10 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrievePopularCachedProducts(let siteID, let limit, let onCompletion):
-            retrievePopularCachedProducts(siteID: siteID, limit: limit, onCompletion: onCompletion)
-        case .retrieveLastSoldCachedProducts(let siteID, let limit, let onCompletion):
-            retrieveLastSoldCachedProducts(siteID: siteID, limit: limit, onCompletion: onCompletion)
+        case .retrievePopularCachedProducts(let siteID, let limit, let excludedProductIDs, let onCompletion):
+            retrievePopularCachedProducts(siteID: siteID, limit: limit, excludedProductIDs: excludedProductIDs, onCompletion: onCompletion)
+        case .retrieveLastSoldCachedProducts(let siteID, let limit, let excludedProductIDs, let onCompletion):
+            retrieveLastSoldCachedProducts(siteID: siteID, limit: limit, excludedProductIDs: excludedProductIDs, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -323,7 +323,7 @@ private extension ProductStore {
         }
     }
 
-    func retrievePopularCachedProducts(siteID: Int64, limit: Int, onCompletion: @escaping ([Product]) -> Void) {
+    func retrievePopularCachedProducts(siteID: Int64, limit: Int, excludedProductIDs: [Int64], onCompletion: @escaping ([Product]) -> Void) {
         // Get completed orders
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),
@@ -347,6 +347,7 @@ private extension ProductStore {
             }
             .map { $0.key }
             .uniqued()
+            .filter { !excludedProductIDs.contains($0) }
 
         retrieveProducts(siteID: siteID,
                          productIDs: Array(sortedByOccurenceProductIDs.prefix(limit)),
@@ -360,7 +361,7 @@ private extension ProductStore {
         }
     }
 
-    func retrieveLastSoldCachedProducts(siteID: Int64, limit: Int, onCompletion: @escaping ([Product]) -> Void) {
+    func retrieveLastSoldCachedProducts(siteID: Int64, limit: Int, excludedProductIDs: [Int64], onCompletion: @escaping ([Product]) -> Void) {
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),
                                                       sortedBy: [NSSortDescriptor(key: #keyPath(StorageOrder.datePaid), ascending: false)])
@@ -371,6 +372,7 @@ private extension ProductStore {
             .flatMap { $0.items }
             .map { $0.productID }
             .uniqued()
+            .filter { !excludedProductIDs.contains($0) }
 
         retrieveProducts(siteID: siteID,
                          productIDs: Array(productIDs.prefix(limit)),

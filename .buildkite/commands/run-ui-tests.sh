@@ -25,7 +25,7 @@ install_cocoapods
 
 RUN=10
 TESTS_EXIT_STATUS=0
-for i in $(seq $RUN); do
+for ((i=1; i<=RUN; i++)); do
     echo "--- RUN $i"
     bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE"
     INDIVIDUAL_EXIT_STATUS=$?
@@ -35,16 +35,10 @@ for i in $(seq $RUN); do
     rm -rf WooCommerce.xcresult
     cd ../../
 
-    if [ $INDIVIDUAL_EXIT_STATUS != 0 ]; then
-        TESTS_EXIT_STATUS=$INDIVIDUAL_EXIT_STATUS
+    if [ "$INDIVIDUAL_EXIT_STATUS" -ne 0 ]; then
+        TESTS_EXIT_STATUS="$INDIVIDUAL_EXIT_STATUS"
     fi
 done
 set -e
-
-if [[ "$TESTS_EXIT_STATUS" -ne 0 ]]; then
-  # Keep the (otherwise collapsed) current "Testing" section open in Buildkite logs on error. See https://buildkite.com/docs/pipelines/managing-log-output#collapsing-output
-  echo "^^^ +++"
-  echo "UI Tests failed!"
-fi
 
 exit $TESTS_EXIT_STATUS

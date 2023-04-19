@@ -597,6 +597,7 @@
 		CCB2CAA226209A1200285CA0 /* generic_success_data.json in Resources */ = {isa = PBXBuildFile; fileRef = CCB2CAA126209A1200285CA0 /* generic_success_data.json */; };
 		CCB2CAA82620ABCC00285CA0 /* shipping-label-create-package-error.json in Resources */ = {isa = PBXBuildFile; fileRef = CCB2CAA72620ABCC00285CA0 /* shipping-label-create-package-error.json */; };
 		CCB573AA268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB573A9268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift */; };
+		CCE5F38F29EFFE3800087332 /* subscription-list.json in Resources */ = {isa = PBXBuildFile; fileRef = CCE5F38E29EFFE3800087332 /* subscription-list.json */; };
 		CCEC5E9129E9BF1400912D6B /* product-variation-subscription.json in Resources */ = {isa = PBXBuildFile; fileRef = CCEC5E9029E9BF1400912D6B /* product-variation-subscription.json */; };
 		CCF434642906BD7200B4475A /* ProductIDMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF434632906BD7200B4475A /* ProductIDMapper.swift */; };
 		CCF434662906C2A400B4475A /* products-ids-only.json in Resources */ = {isa = PBXBuildFile; fileRef = CCF434652906C2A400B4475A /* products-ids-only.json */; };
@@ -1513,6 +1514,7 @@
 		CCB2CAA126209A1200285CA0 /* generic_success_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = generic_success_data.json; sourceTree = "<group>"; };
 		CCB2CAA72620ABCC00285CA0 /* shipping-label-create-package-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-create-package-error.json"; sourceTree = "<group>"; };
 		CCB573A9268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStatusPollingResponse.swift; sourceTree = "<group>"; };
+		CCE5F38E29EFFE3800087332 /* subscription-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "subscription-list.json"; sourceTree = "<group>"; };
 		CCEC5E9029E9BF1400912D6B /* product-variation-subscription.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-variation-subscription.json"; sourceTree = "<group>"; };
 		CCF434632906BD7200B4475A /* ProductIDMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductIDMapper.swift; sourceTree = "<group>"; };
 		CCF434652906C2A400B4475A /* products-ids-only.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-ids-only.json"; sourceTree = "<group>"; };
@@ -2630,6 +2632,7 @@
 				74E30950216E8DCE00ABCE4C /* site-visits-alt.json */,
 				CCA1D6072943804C00B40560 /* site-summary-stats.json */,
 				022902D122E2436300059692 /* stats_module_disabled_error.json */,
+				CCE5F38E29EFFE3800087332 /* subscription-list.json */,
 				45ED4F11239E8C57004F1BE3 /* taxes-classes.json */,
 				EE57C1492980CE4B00BC31E7 /* taxes-classes-without-data.json */,
 				74ABA1C4213F17AA00FFAD30 /* top-performers-day.json */,
@@ -3255,6 +3258,7 @@
 				09885C8027C3FFD200910A62 /* product-variations-bulk-update.json in Resources */,
 				31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */,
 				02AF07EE27493AE700B2D81E /* media-upload-to-wordpress-site.json in Resources */,
+				CCE5F38F29EFFE3800087332 /* subscription-list.json in Resources */,
 				DE4F2A4029750EF400B0701C /* inbox-note-without-data.json in Resources */,
 				45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */,
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,

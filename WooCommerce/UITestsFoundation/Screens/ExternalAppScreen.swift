@@ -31,6 +31,6 @@ public final class ExternalAppScreen {
         safari.buttons["Go"].tap()
 
         // Tap on the universal link
-        if safari.staticTexts["TESTING LINKS"].exists { safari.links[universalLink].tap() }
+        if safari.links[universalLink].isHittable { safari.links[universalLink].tap() }
     }
 }

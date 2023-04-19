@@ -4,7 +4,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 
 ## Model 83 (Release 13.2.0.0)
 - @selanthiraiyan 2023-04-18
-    - Added `isBlogPublic` attribute to `Site` entity.
+    - Added `isPublic` attribute to `Site` entity.
     
 ## Model 82 (Release 12.9.0.0)
 - @rachelmcr 2023-03-20

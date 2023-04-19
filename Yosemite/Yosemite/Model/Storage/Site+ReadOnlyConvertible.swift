@@ -24,7 +24,7 @@ extension Storage.Site: ReadOnlyConvertible {
         jetpackConnectionActivePlugins = site.jetpackConnectionActivePlugins
         timezone = site.timezone
         gmtOffset = site.gmtOffset
-        isBlogPublic = site.isBlogPublic
+        isPublic = site.isPublic
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -45,6 +45,6 @@ extension Storage.Site: ReadOnlyConvertible {
                     jetpackConnectionActivePlugins: jetpackConnectionActivePlugins ?? [],
                     timezone: timezone ?? "",
                     gmtOffset: gmtOffset,
-                    isBlogPublic: isBlogPublic)
+                    isPublic: isPublic)
     }
 }

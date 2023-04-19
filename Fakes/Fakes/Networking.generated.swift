@@ -1629,7 +1629,7 @@ extension Networking.Site {
             jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
             gmtOffset: .fake(),
-            isBlogPublic: .fake()
+            isPublic: .fake()
         )
     }
 }

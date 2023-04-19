@@ -48,7 +48,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         jetpackConnectionActivePlugins: [],
         timezone: "UTC",
         gmtOffset: 0,
-        isBlogPublic: true
+        isPublic: true
     )
 
     /// May not be needed anymore if we're not mocking the API

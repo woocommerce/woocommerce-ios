@@ -1962,7 +1962,7 @@ extension Networking.Site {
         jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
         gmtOffset: CopiableProp<Double> = .copy,
-        isBlogPublic: CopiableProp<Bool> = .copy
+        isPublic: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -1979,7 +1979,7 @@ extension Networking.Site {
         let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
-        let isBlogPublic = isBlogPublic ?? self.isBlogPublic
+        let isPublic = isPublic ?? self.isPublic
 
         return Networking.Site(
             siteID: siteID,
@@ -1997,7 +1997,7 @@ extension Networking.Site {
             jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
             gmtOffset: gmtOffset,
-            isBlogPublic: isBlogPublic
+            isPublic: isPublic
         )
     }
 }

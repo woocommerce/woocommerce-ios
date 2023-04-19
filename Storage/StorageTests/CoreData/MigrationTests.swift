@@ -1674,7 +1674,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProduct.value(forKey: "compositeComponents") as? NSOrderedSet, NSOrderedSet(array: [component]))
     }
 
-    func test_migrating_from_82_to_83_adds_isBlogPublic_attribute() throws {
+    func test_migrating_from_82_to_83_adds_isPublic_attribute() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 82")
         let sourceContext = sourceContainer.viewContext
@@ -1682,7 +1682,7 @@ final class MigrationTests: XCTestCase {
         let site = insertSite(to: sourceContainer.viewContext)
         try sourceContext.save()
 
-        XCTAssertNil(site.entity.attributesByName["isBlogPublic"])
+        XCTAssertNil(site.entity.attributesByName["isPublic"])
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 83")
@@ -1691,8 +1691,8 @@ final class MigrationTests: XCTestCase {
         let targetContext = targetContainer.viewContext
         let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
 
-        let isBlogPublic = try XCTUnwrap(migratedSite.value(forKey: "isBlogPublic") as? Bool)
-        XCTAssertFalse(isBlogPublic)
+        let isPublic = try XCTUnwrap(migratedSite.value(forKey: "isPublic") as? Bool)
+        XCTAssertFalse(isPublic)
     }
 
 }

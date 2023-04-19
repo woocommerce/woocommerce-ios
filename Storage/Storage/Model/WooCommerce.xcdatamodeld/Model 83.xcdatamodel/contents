@@ -732,9 +732,9 @@
         <attribute name="adminURL" optional="YES" attributeType="String"/>
         <attribute name="frameNonce" optional="YES" attributeType="String"/>
         <attribute name="gmtOffset" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="isBlogPublic" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isJetpackConnected" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isJetpackThePluginInstalled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isPublic" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isWooCommerceActive" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="isWordPressStore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="jetpackConnectionActivePlugins" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>

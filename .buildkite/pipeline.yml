@@ -88,6 +88,9 @@ steps:
     notify:
       - github_commit_status:
           context: "UI Tests (iPhone)"
+    retry:
+      manual:
+        permit_on_passed: true
 
   - label: "🔬 UI Tests (iPad)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Air (5th generation)"
@@ -99,3 +102,6 @@ steps:
     notify:
       - github_commit_status:
           context: "UI Tests (iPad)"
+    retry:
+      manual:
+        permit_on_passed: true

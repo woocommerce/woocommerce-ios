@@ -23,12 +23,22 @@ install_gems
 echo "--- :cocoapods: Setting up Pods"
 install_cocoapods
 
-echo "--- 🧪 Testing"
-xcrun simctl list >> /dev/null
-rake mocks &
-set +e
-bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE"
-TESTS_EXIT_STATUS=$?
+RUN=10
+TESTS_EXIT_STATUS=0
+for i in $(seq $RUN); do
+    echo "--- RUN $i"
+    bundle exec fastlane test_without_building name:"$TEST_NAME" device:"$DEVICE"
+    INDIVIDUAL_EXIT_STATUS=$?
+
+    echo "--- 📦 Zipping test results Run: $i Status: $INDIVIDUAL_EXIT_STATUS"
+    cd fastlane/test_output/ && zip -rq WooCommerce-run-"$i"-status-"$INDIVIDUAL_EXIT_STATUS".xcresult.zip WooCommerce.xcresult && cd -
+    rm -rf WordPress.xcresult
+    cd ../../
+
+    if [ $INDIVIDUAL_EXIT_STATUS != 0 ]; then
+        TESTS_EXIT_STATUS=$INDIVIDUAL_EXIT_STATUS
+    fi
+done
 set -e
 
 if [[ "$TESTS_EXIT_STATUS" -ne 0 ]]; then
@@ -36,8 +46,5 @@ if [[ "$TESTS_EXIT_STATUS" -ne 0 ]]; then
   echo "^^^ +++"
   echo "UI Tests failed!"
 fi
-
-echo "--- 📦 Zipping test results"
-cd fastlane/test_output/ && zip -rq WooCommerce.xcresult.zip WooCommerce.xcresult && cd -
 
 exit $TESTS_EXIT_STATUS

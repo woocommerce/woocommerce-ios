@@ -374,6 +374,18 @@ class CurrencyFormatterTests: XCTestCase {
         XCTAssertEqual(amount, expectedResult)
     }
 
+    func testFormatHumanReadableWorksUsingLowerCaseCountryCode() {
+        let inputValue = "105.01"
+        let expectedResult = "£105.01"
+        let locale = sampleLocale
+        let amount = CurrencyFormatter(currencySettings: sampleCurrencySettings)
+            .formatHumanReadableAmount(inputValue,
+                                       with: "gbp",
+                                       roundSmallNumbers: false,
+                                       locale: locale)
+        XCTAssertEqual(amount, expectedResult)
+    }
+
     func testFormatHumanReadableWithRoundingWorksUsingSmallNegativeDecimalValue() {
         let inputValue = "-76.64"
         let expectedResult = "-$76"

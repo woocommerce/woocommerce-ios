@@ -88,7 +88,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .compositeProducts:
             return true
         case .IPPUKExpansion:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .subscriptionProducts:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

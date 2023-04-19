@@ -31,7 +31,7 @@ for i in $(seq $RUN); do
     INDIVIDUAL_EXIT_STATUS=$?
 
     echo "--- 📦 Zipping test results Run: $i Status: $INDIVIDUAL_EXIT_STATUS"
-    cd fastlane/test_output/ && zip -rq WooCommerce-run-"$i"-status-"$INDIVIDUAL_EXIT_STATUS".xcresult.zip WooCommerce.xcresult && cd -
+    cd fastlane/test_output/ && zip -rq WooCommerce-run-"$i"-status-"$INDIVIDUAL_EXIT_STATUS".xcresult.zip WooCommerce.xcresult
     rm -rf WooCommerce.xcresult
     cd ../../
 

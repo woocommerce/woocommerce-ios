@@ -32,7 +32,7 @@ for i in $(seq $RUN); do
 
     echo "--- 📦 Zipping test results Run: $i Status: $INDIVIDUAL_EXIT_STATUS"
     cd fastlane/test_output/ && zip -rq WooCommerce-run-"$i"-status-"$INDIVIDUAL_EXIT_STATUS".xcresult.zip WooCommerce.xcresult && cd -
-    rm -rf WordPress.xcresult
+    rm -rf WooCommerce.xcresult
     cd ../../
 
     if [ $INDIVIDUAL_EXIT_STATUS != 0 ]; then

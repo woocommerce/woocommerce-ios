@@ -48,8 +48,8 @@ public class ProductStore: Store {
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrievePopularCachedProducts(let siteID, let limit, let onCompletion):
             retrievePopularCachedProducts(siteID: siteID, limit: limit, onCompletion: onCompletion)
-        case .retrieveRecentlySoldCachedProducts(let siteID, let limit, let onCompletion):
-            retrieveRecentlySoldCachedProducts(siteID: siteID, limit: limit, onCompletion: onCompletion)
+        case .retrieveLastSoldCachedProducts(let siteID, let limit, let onCompletion):
+            retrieveLastSoldCachedProducts(siteID: siteID, limit: limit, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -360,7 +360,7 @@ private extension ProductStore {
         }
     }
 
-    func retrieveRecentlySoldCachedProducts(siteID: Int64, limit: Int, onCompletion: @escaping ([Product]) -> Void) {
+    func retrieveLastSoldCachedProducts(siteID: Int64, limit: Int, onCompletion: @escaping ([Product]) -> Void) {
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),
                                                       sortedBy: [NSSortDescriptor(key: #keyPath(StorageOrder.datePaid), ascending: false)])

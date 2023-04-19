@@ -579,6 +579,7 @@
 		CC33754E29C884000006A538 /* ProductCompositeComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC33754D29C884000006A538 /* ProductCompositeComponent.swift */; };
 		CC33755029C88B920006A538 /* product-composite.json in Resources */ = {isa = PBXBuildFile; fileRef = CC33754F29C88B920006A538 /* product-composite.json */; };
 		CC6A1FF5270E042200F6AF4A /* OrderMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */; };
+		CC75108929EFEEF20035FBA4 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC75108829EFEEF20035FBA4 /* Subscription.swift */; };
 		CC75108B29EFF1A90035FBA4 /* SubscriptionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC75108A29EFF1A90035FBA4 /* SubscriptionStatus.swift */; };
 		CC80E3F92948C8BC00D5FF45 /* site-visits-quarter.json in Resources */ = {isa = PBXBuildFile; fileRef = CC80E3F82948C8BC00D5FF45 /* site-visits-quarter.json */; };
 		CC851D0625E51ADF00249E9C /* Decimal+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC851D0525E51ADF00249E9C /* Decimal+Extensions.swift */; };
@@ -1497,6 +1498,7 @@
 		CC33754D29C884000006A538 /* ProductCompositeComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCompositeComponent.swift; sourceTree = "<group>"; };
 		CC33754F29C88B920006A538 /* product-composite.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-composite.json"; sourceTree = "<group>"; };
 		CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetaData.swift; sourceTree = "<group>"; };
+		CC75108829EFEEF20035FBA4 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		CC75108A29EFF1A90035FBA4 /* SubscriptionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionStatus.swift; sourceTree = "<group>"; };
 		CC80E3F82948C8BC00D5FF45 /* site-visits-quarter.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-visits-quarter.json"; sourceTree = "<group>"; };
 		CC851D0525E51ADF00249E9C /* Decimal+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+Extensions.swift"; sourceTree = "<group>"; };
@@ -2322,6 +2324,7 @@
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
 				45150A9B2683417A006922EA /* StateOfACountry.swift */,
 				311D412B2783BF7400052F64 /* StripeAccount.swift */,
+				CC75108829EFEEF20035FBA4 /* Subscription.swift */,
 				CC75108A29EFF1A90035FBA4 /* SubscriptionStatus.swift */,
 				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
 				3148976F27232982007A86BD /* SystemStatus.swift */,
@@ -3947,6 +3950,7 @@
 				0359EA1327AAC6D00048DE2D /* WCPayCardPaymentDetails.swift in Sources */,
 				CCB2CA9E262091CB00285CA0 /* SuccessDataResultMapper.swift in Sources */,
 				68CB801028D89A0400E169F8 /* CustomerRemote.swift in Sources */,
+				CC75108929EFEEF20035FBA4 /* Subscription.swift in Sources */,
 				DE50295B28C5F99700551736 /* DotcomUser.swift in Sources */,
 				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,
 				24F98C582502EA8800F49B68 /* FeatureFlagMapper.swift in Sources */,

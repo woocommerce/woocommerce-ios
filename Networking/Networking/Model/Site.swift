@@ -64,10 +64,6 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let gmtOffset: Double
 
-    /// Whether the site is launched and public.
-    ///
-    public let isPublic: Bool
-
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -89,7 +85,6 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let adminURL = try optionsContainer.decode(String.self, forKey: .adminURL)
         let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL)
         let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
-        let isPublic = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .isPublic) ?? false
 
         self.init(siteID: siteID,
                   name: name,
@@ -105,8 +100,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   isWordPressComStore: isWordPressComStore,
                   jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
                   timezone: timezone,
-                  gmtOffset: gmtOffset,
-                  isPublic: isPublic)
+                  gmtOffset: gmtOffset)
     }
 
     /// Designated Initializer.
@@ -125,8 +119,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 isWordPressComStore: Bool,
                 jetpackConnectionActivePlugins: [String],
                 timezone: String,
-                gmtOffset: Double,
-                isPublic: Bool) {
+                gmtOffset: Double) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -142,7 +135,6 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.jetpackConnectionActivePlugins = jetpackConnectionActivePlugins
         self.timezone = timezone
         self.gmtOffset = gmtOffset
-        self.isPublic = isPublic
     }
 }
 
@@ -186,7 +178,6 @@ private extension Site {
         case adminURL = "admin_url"
         case loginURL = "login_url"
         case frameNonce = "frame_nonce"
-        case isPublic = "blog_public"
     }
 
     enum PlanKeys: String, CodingKey {

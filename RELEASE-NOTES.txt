@@ -10,7 +10,6 @@
 - [*] Payments: Add account type field to receipts [https://github.com/woocommerce/woocommerce-ios/pull/9416]
 - [*] Products can now be filtered within Order creation [https://github.com/woocommerce/woocommerce-ios/pull/9258]
 - [*] Products: Adds read-only support for the Composite Products extension in the Products list, including a list of components in product details. [https://github.com/woocommerce/woocommerce-ios/pull/9455]
-- [Internal] Store onboarding: Mark "Launch your store" task as complete if the store is already public. This is a workaround for a backend issue which marks "Launch your store" task incomplete for already live stores. [https://github.com/woocommerce/woocommerce-ios/pull/9481]
 
 
 13.1

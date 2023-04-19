@@ -24,7 +24,6 @@ extension Storage.Site: ReadOnlyConvertible {
         jetpackConnectionActivePlugins = site.jetpackConnectionActivePlugins
         timezone = site.timezone
         gmtOffset = site.gmtOffset
-        isPublic = site.isPublic
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -44,7 +43,6 @@ extension Storage.Site: ReadOnlyConvertible {
                     isWordPressComStore: isWordPressStore?.boolValue ?? false,
                     jetpackConnectionActivePlugins: jetpackConnectionActivePlugins ?? [],
                     timezone: timezone ?? "",
-                    gmtOffset: gmtOffset,
-                    isPublic: isPublic)
+                    gmtOffset: gmtOffset)
     }
 }

@@ -660,7 +660,7 @@ private extension ProductSelectorViewModel {
             let action = ProductAction.retrievePopularCachedProducts(siteID: siteID,
                                                                      limit: Constants.topSectionsMaxLength,
                                                                      onCompletion: { products in
-                self.popularProducts = self.refineTopProducts(products)
+                self.popularProducts = self.removeNonPurchasableIfRequired(from: products)
                 continuation.resume(returning: ())
             })
 
@@ -679,7 +679,7 @@ private extension ProductSelectorViewModel {
             let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: siteID,
                                                                           limit: Constants.topSectionsMaxLength,
                                                                           onCompletion: { products in
-                self.lastSoldProducts = self.refineTopProducts(products)
+                self.lastSoldProducts = self.removeNonPurchasableIfRequired(from: products)
                 continuation.resume(returning: ())
             })
 
@@ -698,16 +698,14 @@ private extension ProductSelectorViewModel {
         }
     }
 
-    /// Refines the top showing products (popular and recently sold) by slicing and removing the non purchasable (if required)
+    /// Remove the non purchasable (if required)
     ///
-    func refineTopProducts(_ products: [Product]) -> [Product] {
-        var returningProducts = products
-
-        if purchasableItemsOnly {
-            returningProducts = returningProducts.filter { $0.purchasable }
+    func removeNonPurchasableIfRequired(from products: [Product]) -> [Product] {
+        guard purchasableItemsOnly else {
+            return products
         }
 
-        return Array(returningProducts.prefix(5))
+        return products.filter { $0.purchasable }
     }
 }
 

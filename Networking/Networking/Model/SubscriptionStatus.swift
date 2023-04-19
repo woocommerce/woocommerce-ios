@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents all possible subscription statuses
 ///
-public enum SubscriptionStatus: Codable, Equatable {
+public enum SubscriptionStatus: Codable, Equatable, GeneratedFakeable {
     case pending
     case active
     case onHold

@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents a Subscription entity
 ///
-public struct Subscription: Decodable, Equatable {
+public struct Subscription: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     public let siteID: Int64
 
     /// Unique identifier for the Subscription.

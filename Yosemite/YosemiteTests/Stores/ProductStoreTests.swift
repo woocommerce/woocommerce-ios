@@ -764,34 +764,37 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.retrieveMostPopularProductsInCache
 
-    func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_returns_them_sorted() {
-        let productIDs: [Int64] = [1, 2, 3]
-        preparePopularProductsSamples(with: productIDs)
+    func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_loads_them_remotely_with_the_limit() {
+        let productIDs: [Int64] = [1, 2, 3, 4, 5, 6]
+        let limit = 3
+        let expectedProducts: [Yosemite.Product] = .init(repeating: Product.fake(), count: 25)
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: productIDs)
+        let remote = MockProductsRemote()
 
-        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: Array(productIDs.prefix(limit)), thenReturn: .success(expectedProducts))
+
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
         let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrievePopularCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
+            let action = ProductAction.retrievePopularCachedProducts(siteID: self.sampleSiteID, limit: limit, onCompletion: { result in
                 promise(result)
             })
 
             store.onAction(action)
         }
 
-        XCTAssertEqual(cachedPopularProducts.first?.productID, productIDs.first)
-        XCTAssertEqual(cachedPopularProducts[1].productID, productIDs[1])
-        XCTAssertEqual(cachedPopularProducts.last?.productID, productIDs.last)
+        XCTAssertEqual(expectedProducts, cachedPopularProducts)
     }
 
     func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_orders_are_not_completed_returns_empty_array() {
-        preparePopularProductsSamples(with: [1, 2, 3], orderStatus: .pending)
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: [1, 2, 3], orderStatus: .pending)
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrievePopularCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
+            let action = ProductAction.retrievePopularCachedProducts(siteID: self.sampleSiteID, limit: 5, onCompletion: { result in
                 promise(result)
             })
 
@@ -802,13 +805,13 @@ final class ProductStoreTests: XCTestCase {
     }
 
     func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_siteID_is_different_returns_empty_array() {
-        preparePopularProductsSamples(with: [1, 2, 3])
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: [1, 2, 3])
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrievePopularCachedProducts(siteID: 555, onCompletion: { result in
+            let action = ProductAction.retrievePopularCachedProducts(siteID: 555, limit: 5, onCompletion: { result in
                 promise(result)
             })
 
@@ -820,34 +823,37 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.retrieveRecentlySoldCachedProducts
 
-    func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_returns_them_sorted() {
-        let productIDs: [Int64] = [1, 2, 3]
-        prepareRecentlySoldProductSamples(with: productIDs)
+    func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_loads_them_remotely_with_the_limit() {
+        let productIDs: [Int64] = [1, 2, 3, 4, 5, 6]
+        let limit = 3
+        let expectedProducts: [Yosemite.Product] = .init(repeating: Product.fake(), count: 25)
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: productIDs)
 
-        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remote = MockProductsRemote()
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: Array(productIDs.prefix(limit)), thenReturn: .success(expectedProducts))
+
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
+        let cachedLastSoldProducts: [Yosemite.Product] = waitFor { promise in
+            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.sampleSiteID, limit: limit, onCompletion: { result in
                 promise(result)
             })
 
             store.onAction(action)
         }
 
-        XCTAssertEqual(cachedPopularProducts.first?.productID, productIDs.first)
-        XCTAssertEqual(cachedPopularProducts[1].productID, productIDs[1])
-        XCTAssertEqual(cachedPopularProducts.last?.productID, productIDs.last)
+        XCTAssertEqual(expectedProducts, cachedLastSoldProducts)
     }
 
     func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_but_orders_are_not_completed_returns_empty_array() {
-        prepareRecentlySoldProductSamples(with: [1, 2, 3], orderStatus: .pending)
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: [1, 2, 3], orderStatus: .pending)
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
+            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.sampleSiteID, limit: 5, onCompletion: { result in
                 promise(result)
             })
 
@@ -858,13 +864,13 @@ final class ProductStoreTests: XCTestCase {
     }
 
     func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_but_siteID_is_different_returns_empty_array() {
-        prepareRecentlySoldProductSamples(with: [1, 2, 3])
+        preparePopularProductsSamples(with: sampleSiteID, productIDs: [1, 2, 3])
 
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: 555, onCompletion: { result in
+            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: 555, limit: 5, onCompletion: { result in
                 promise(result)
             })
 
@@ -2282,8 +2288,8 @@ private extension ProductStoreTests {
         return [topping, soda, delivery]
     }
 
-    func preparePopularProductsSamples(with productIDs: [Int64], orderStatus: OrderStatusEnum = .completed) {
-        productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: $0))}
+    func preparePopularProductsSamples(with siteID: Int64, productIDs: [Int64], orderStatus: OrderStatusEnum = .completed) {
+        productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, productID: $0))}
 
         let orderItems = productIDs.map { OrderItem.fake().copy(productID: $0) }
         let orders = (0 ..< 3).map { _ in Order.fake().copy(siteID: sampleSiteID, status: orderStatus) }

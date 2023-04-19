@@ -19,4 +19,11 @@ final class PaymentsTests: XCTestCase {
             .tapChipperManual()
             .verifyChipperManualLoadedOnWebView()
     }
+
+    func test_load_learn_more_link() throws {
+        try TabNavComponent().goToMenuScreen()
+            .goToPaymentsScreen()
+            .tapLearnMoreIPPLink()
+            .verifyIPPDocumentationLoadedOnWebView()
+    }
 }

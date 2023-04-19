@@ -1121,11 +1121,11 @@ lane :test_without_building do |options|
     e.include?(options[:name])
   end.first
 
-  unless !xctestrun_path.nil? && File.exist?((xctestrun_path))
+  unless !xctestrun_path.nil? && File.exist?(xctestrun_path)
     UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}")
   end
 
-  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
+  inject_buildkite_analytics_environment_if_needed(xctestrun_path: xctestrun_path)
 
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
@@ -1184,6 +1184,15 @@ def trigger_buildkite_release_build(branch:, beta:)
   )
 end
 
+def inject_buildkite_analytics_environment_if_needed(xctestrun_path:)
+  unless buildkite_ci?
+    UI.message('Skipping Buildkite envrionment injection for test analytics because not running in Buildkite CI')
+    return
+  end
+
+  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path)
+end
+
 def inject_buildkite_analytics_environment(xctestrun_path:)
   require 'plist'
 
@@ -1192,9 +1201,18 @@ def inject_buildkite_analytics_environment(xctestrun_path:)
     configuration['TestTargets'].each do |target|
       TEST_ANALYTICS_ENVIRONMENT.each do |key|
         value = ENV.fetch(key)
-        next if value.nil?
+        if value.nil?
+          UI.message("Skipping #{key} injection for Test Analytics because it is nil.")
+          next
+        end
 
         target['EnvironmentVariables'][key] = value
+
+        if key == 'BUILDKITE_ANALYTICS_TOKEN'
+          UI.message("Injected #{key} for Test Analytics with value redacted.")
+        else
+          UI.message("Injected #{key} for Test Analytics with value #{value}.")
+        end
       end
     end
   end

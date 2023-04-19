@@ -450,6 +450,15 @@ extension MainTabBarController {
     }
 }
 
+// MARK: - DeeplinkForwarder
+//
+extension MainTabBarController: DeepLinkForwarder {
+    func forwardHubMenuDeepLink(to destination: HubMenuCoordinator.DeepLinkDestination) {
+        Self.switchToHubMenuTab()
+        hubMenuTabCoordinator?.navigate(to: destination)
+    }
+}
+
 // MARK: - Site ID observation for updating tab view controllers
 //
 private extension MainTabBarController {

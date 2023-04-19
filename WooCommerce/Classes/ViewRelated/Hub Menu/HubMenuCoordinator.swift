@@ -117,6 +117,44 @@ final class HubMenuCoordinator: Coordinator {
     }
 }
 
+// MARK: - Deeplinks
+extension HubMenuCoordinator {
+    func navigate(to destination: DeepLinkDestination) {
+        guard let hubMenuController = hubMenuController else {
+            return
+        }
+        switch destination {
+        case .paymentsMenu:
+            _ = hubMenuController.showPaymentsMenu()
+        case .simplePayments:
+            let viewController = hubMenuController.showPaymentsMenu()
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                viewController.openSimplePaymentsAmountFlow()
+            }
+        case .tapToPayOnIPhone:
+            let viewController = hubMenuController.showPaymentsMenu()
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                viewController.presentSetUpTapToPayOnIPhoneViewController()
+            }
+        }
+    }
+
+    enum DeepLinkDestination {
+        case paymentsMenu
+        case simplePayments
+        case tapToPayOnIPhone
+    }
+}
+
+// MARK: - Constants
+private extension HubMenuCoordinator {
+    enum Constants {
+        // Used to delay a second navigation after the previous one is called,
+        // to ensure that the first transition is finished. Without this delay
+        // the second one might not happen.
+        static let screenTransitionsDelay = 0.3
+    }
+}
 // MARK: - Public Utils
 
 extension HubMenuCoordinator {

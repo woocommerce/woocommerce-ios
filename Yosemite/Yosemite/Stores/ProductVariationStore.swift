@@ -406,6 +406,7 @@ private extension ProductVariationStore {
             handleProductDimensions(readOnlyProductVariation, storageProductVariation, storage)
             handleProductVariationAttributes(readOnlyProductVariation, storageProductVariation, storage)
             handleProductImage(readOnlyProductVariation, storageProductVariation, storage)
+            handleProductSubscription(readOnlyProductVariation, storageProductVariation, storage)
         }
     }
 
@@ -460,6 +461,25 @@ private extension ProductVariationStore {
             let newStorageImage = storage.insertNewObject(ofType: Storage.ProductImage.self)
             newStorageImage.update(with: readOnlyImage)
             storageVariation.image = newStorageImage
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageProductVariation's subscription using the provided read-only ProductVariation's subscription
+    ///
+    func handleProductSubscription(_ readOnlyVariation: Networking.ProductVariation, _ storageVariation: Storage.ProductVariation, _ storage: StorageType) {
+        guard let readOnlySubscription = readOnlyVariation.subscription else {
+            if let existingStorageSubscription = storageVariation.subscription {
+                storage.deleteObject(existingStorageSubscription)
+            }
+            return
+        }
+
+        if let existingStorageSubscription = storageVariation.subscription {
+            existingStorageSubscription.update(with: readOnlySubscription)
+        } else {
+            let newStorageSubscription = storage.insertNewObject(ofType: Storage.ProductSubscription.self)
+            newStorageSubscription.update(with: readOnlySubscription)
+            storageVariation.subscription = newStorageSubscription
         }
     }
 

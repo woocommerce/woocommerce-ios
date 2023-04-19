@@ -17,231 +17,294 @@ struct HubMenu: View {
     @State private var showingReviews = false
     @State private var showingCoupons = false
     @State private var showingIAPDebug = false
-
-    /// State to disable multiple taps on menu items
-    /// Make sure to reset the value to false after dismissing sub-flows
-    @State private var shouldDisableItemTaps = false
-
-    /// A timer used as a fallback method for resetting disabled state of the menu
-    ///
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var showSettings = false
 
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        VStack {
-            TopBar(avatarURL: viewModel.avatarURL,
-                   storeTitle: viewModel.storeTitle,
-                   storeURL: viewModel.storeURL.absoluteString,
-                   switchStoreEnabled: viewModel.switchStoreEnabled) {
-                viewModel.presentSwitchStore()
-            }
-                   .padding([.leading, .trailing], Constants.padding)
+        List {
 
-            ScrollView {
-                let gridItemLayout = [GridItem(.adaptive(minimum: Constants.itemSize), spacing: Constants.itemSpacing)]
-
-                LazyVGrid(columns: gridItemLayout, spacing: Constants.itemSpacing) {
-                    ForEach(viewModel.menuElements, id: \.id) { menu in
-                        // Currently the badge is always zero, because we are not handling push notifications count
-                        // correctly due to the first behavior described here p91TBi-66O:
-                        // AppDelegate’s `application(_:didReceiveRemoteNotification:fetchCompletionHandler:)`
-                        // can be called twice for the same push notification when receiving it
-                        // and tapping on it to open the app. This means that some push notifications are incrementing the badge number by 2, and some by 1.
-                        HubMenuElement(image: menu.icon,
-                                       imageColor: menu.iconColor,
-                                       text: menu.title,
-                                       badge: menu.badge,
-                                       isDisabled: $shouldDisableItemTaps,
-                                       onTapGesture: {
-                            ServiceLocator.analytics.track(.hubMenuOptionTapped,
-                                                           withProperties: [
-                                                            Constants.trackingOptionKey: menu.trackingOption,
-                                                            Constants.trackingBadgeVisibleKey: menu.badge.shouldBeRendered
-                                                           ])
-                            switch type(of: menu).id {
-                            case HubMenuViewModel.Payments.id:
-                                showingPayments = true
-                            case HubMenuViewModel.WoocommerceAdmin.id:
-                                showingWooCommerceAdmin = true
-                            case HubMenuViewModel.ViewStore.id:
-                                showingViewStore = true
-                            case HubMenuViewModel.Inbox.id:
-                                showingInbox = true
-                            case HubMenuViewModel.Reviews.id:
-                                showingReviews = true
-                            case HubMenuViewModel.Coupons.id:
-                                showingCoupons = true
-                            case HubMenuViewModel.InAppPurchases.id:
-                                showingIAPDebug = true
-                            case HubMenuViewModel.Upgrades.id:
-                                viewModel.presentUpgrades()
-                            default:
-                                break
-                            }
-                        }).accessibilityIdentifier(menu.accessibilityIdentifier)
+            // Store Section
+            Section {
+                Button {
+                    if viewModel.switchStoreEnabled {
+                        viewModel.presentSwitchStore()
                     }
-                    .background(Color(.listForeground(modal: false)))
-                    .cornerRadius(Constants.cornerRadius)
-                    .padding([.bottom], Constants.padding)
-                }
-                .padding(Constants.padding)
-                .background(Color(.listBackground))
-            }
-            .sheet(isPresented: $showingWooCommerceAdmin, onDismiss: enableMenuItemTaps) {
-                WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
-                                                              navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
-                                                              authenticated: viewModel.shouldAuthenticateAdminPage)) {
-                    showingWooCommerceAdmin = false
+                } label: {
+                    Row(title: viewModel.storeTitle,
+                        badge: viewModel.planName,
+                        description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
+                        icon: .remote(viewModel.avatarURL),
+                        chevron: .down,
+                        titleAccessibilityID: "store-title",
+                        descriptionAccessibilityID: "store-url",
+                        chevronAccessibilityID: "switch-store-button")
+                    .lineLimit(1)
                 }
             }
-            .sheet(isPresented: $showingViewStore, onDismiss: enableMenuItemTaps) {
-                WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.storeURL,
-                                                              navigationTitle: HubMenuViewModel.Localization.viewStore,
-                                                              authenticated: false)) {
-                    showingViewStore = false
+
+            // Settings Section
+            Section(Localization.settings) {
+                ForEach(viewModel.settingsElements, id: \.id) { menu in
+                    Button {
+                        handleTap(menu: menu)
+                    } label: {
+                        Row(title: menu.title,
+                            badge: nil,
+                            description: menu.description,
+                            icon: .local(menu.icon),
+                            chevron: .leading)
+                        .foregroundColor(Color(menu.iconColor))
+                    }
+                    .accessibilityIdentifier(menu.accessibilityIdentifier)
                 }
             }
-            NavigationLink(destination:
-                            InPersonPaymentsMenu()
-                            .navigationTitle(InPersonPaymentsView.Localization.title),
-                           isActive: $showingPayments) {
-                EmptyView()
-            }.hidden()
-            NavigationLink(destination:
-                            Inbox(viewModel: .init(siteID: viewModel.siteID)),
-                           isActive: $showingInbox) {
-                EmptyView()
-            }.hidden()
-            NavigationLink(destination:
-                            ReviewsView(siteID: viewModel.siteID),
-                           isActive: $showingReviews) {
-                EmptyView()
-            }.hidden()
-            NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
-                EmptyView()
-            }.hidden()
-            NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
-                EmptyView()
-            }.hidden()
-            LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
-                EmptyView()
+
+            // General Section
+            Section(Localization.general) {
+                ForEach(viewModel.generalElements, id: \.id) { menu in
+                    Button {
+                        handleTap(menu: menu)
+                    } label: {
+                        Row(title: menu.title,
+                            badge: nil,
+                            description: menu.description,
+                            icon: .local(menu.icon),
+                            chevron: .leading)
+                        .foregroundColor(Color(menu.iconColor))
+                    }
+                    .accessibilityIdentifier(menu.accessibilityIdentifier)
+                }
             }
         }
-        .enableInjection()
+        .listStyle(.automatic)
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
         .onAppear {
             viewModel.setupMenuElements()
-            enableMenuItemTaps()
         }
-        .onReceive(timer) { _ in
-            // fall back method in case menu disabled state is not reset properly
-            enableMenuItemTaps()
+        .sheet(isPresented: $showingWooCommerceAdmin) {
+            WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
+                                                          navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
+                                                          authenticated: viewModel.shouldAuthenticateAdminPage)) {
+                showingWooCommerceAdmin = false
+            }
+        }
+        .sheet(isPresented: $showingViewStore) {
+            WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.storeURL,
+                                                          navigationTitle: HubMenuViewModel.Localization.viewStore,
+                                                          authenticated: false)) {
+                showingViewStore = false
+            }
+        }
+        NavigationLink(destination: SettingsView(), isActive: $showSettings) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination:
+                        InPersonPaymentsMenu()
+            .navigationTitle(InPersonPaymentsView.Localization.title),
+                       isActive: $showingPayments) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination:
+                        Inbox(viewModel: .init(siteID: viewModel.siteID)),
+                       isActive: $showingInbox) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination:
+                        ReviewsView(siteID: viewModel.siteID),
+                       isActive: $showingReviews) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination: CouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
+            EmptyView()
+        }.hidden()
+        NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
+            EmptyView()
+        }.hidden()
+        LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
+            EmptyView()
         }
     }
 
-    /// Reset state to make the menu items tappable
-    private func enableMenuItemTaps() {
-        shouldDisableItemTaps = false
+    /// Handle navigation when tapping a list menu row.
+    ///
+    private func handleTap(menu: HubMenuItem) {
+        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
+            Constants.trackingOptionKey: menu.trackingOption
+        ])
+
+        switch type(of: menu).id {
+        case HubMenuViewModel.Settings.id:
+            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
+            showSettings = true
+        case HubMenuViewModel.Payments.id:
+            showingPayments = true
+        case HubMenuViewModel.WoocommerceAdmin.id:
+            showingWooCommerceAdmin = true
+        case HubMenuViewModel.ViewStore.id:
+            showingViewStore = true
+        case HubMenuViewModel.Inbox.id:
+            showingInbox = true
+        case HubMenuViewModel.Reviews.id:
+            showingReviews = true
+        case HubMenuViewModel.Coupons.id:
+            showingCoupons = true
+        case HubMenuViewModel.InAppPurchases.id:
+            showingIAPDebug = true
+        case HubMenuViewModel.Upgrades.id:
+            viewModel.presentUpgrades()
+        default:
+            break
+        }
     }
+}
 
-    private struct TopBar: View {
-        let avatarURL: URL?
-        let storeTitle: String
-        let storeURL: String?
-        let switchStoreEnabled: Bool
-        var switchStoreHandler: (() -> Void)?
+// MARK: SubViews
+private extension HubMenu {
 
-        @State private var showSettings = false
-        @ScaledMetric var settingsSize: CGFloat = 28
-        @ScaledMetric var settingsIconSize: CGFloat = 20
+    /// Reusable List row for the hub menu
+    ///
+    struct Row: View {
+
+        /// Image source for the icon/avatar.
+        ///
+        enum Icon {
+            case local(UIImage)
+            case remote(URL?)
+        }
+
+        /// Style for the chevron indicator.
+        ///
+        enum Chevron {
+            case down
+            case leading
+
+            var asset: UIImage {
+                switch self {
+                case .down:
+                    return .chevronDownImage
+                case .leading:
+                    return .chevronImage.imageFlippedForRightToLeftLayoutDirection()
+                }
+            }
+        }
+
+        /// Row Title
+        ///
+        let title: String
+
+        /// Optional badge text. Render next to `title`
+        ///
+        let badge: String?
+
+        /// Row Description
+        ///
+        let description: String
+
+        /// Row Icon
+        ///
+        let icon: Icon
+
+        /// Row chevron indicator
+        ///
+        let chevron: Chevron
+
+        var titleAccessibilityID: String?
+        var descriptionAccessibilityID: String?
+        var chevronAccessibilityID: String?
+
+        @Environment(\.sizeCategory) private var sizeCategory
 
         var body: some View {
-            HStack(spacing: Constants.padding) {
-                if let avatarURL = avatarURL {
-                    VStack {
-                        KFImage(avatarURL)
-                            .resizable()
-                            .clipShape(Circle())
-                            .frame(width: Constants.avatarSize, height: Constants.avatarSize)
-                        Spacer()
-                    }
-                    .fixedSize()
-                }
+            HStack(spacing: HubMenu.Constants.padding) {
 
-                VStack(alignment: .leading,
-                       spacing: Constants.topBarSpacing) {
-                    Text(storeTitle)
-                        .headlineStyle()
-                        .lineLimit(1)
-                        .accessibilityIdentifier("store-title")
-                    if let storeURL = storeURL {
-                        Text(storeURL)
-                            .subheadlineStyle()
-                            .lineLimit(1)
-                            .accessibilityIdentifier("store-url")
-                    }
-                    Button(Localization.switchStore) {
-                        switchStoreHandler?()
-                    }
-                    .linkStyle()
-                    .accessibilityIdentifier("switch-store-button")
-                    .renderedIf(switchStoreEnabled)
-                }
-                Spacer()
-                VStack {
-                    Button {
-                        ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-                        showSettings = true
-                    } label: {
-                        ZStack {
+                HStack(spacing: .zero) {
+                    /// iOS 16, aligns the list dividers to the first text position.
+                    /// This tricks the system by rendering an empty text and forcing the list lo align the divider to it.
+                    /// Without this, the divider will be rendered from the title and will not cover the icon.
+                    /// Ideally we would want to use the `alignmentGuide` modifier but that is only available on iOS 16.
+                    ///
+                    Text("")
+
+                    // Icon
+                    Group {
+                        switch icon {
+                        case .local(let asset):
                             Circle()
-                                .fill(Color(UIColor(light: .white,
-                                                    dark: .secondaryButtonBackground)))
-                                .frame(width: settingsSize,
-                                       height: settingsSize)
-                            if let cogImage = UIImage.cogImage.imageWithTintColor(.accent) {
-                                Image(uiImage: cogImage)
-                                    .resizable()
-                                    .frame(width: settingsIconSize,
-                                           height: settingsIconSize)
-                            }
+                                .fill(Color(.init(light: .listBackground, dark: .secondaryButtonBackground)))
+                                .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+                                .overlay {
+                                    Image(uiImage: asset)
+                                        .resizable()
+                                        .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
+                                }
+
+                        case .remote(let url):
+                            KFImage(url)
+                                .resizable()
+                                .clipShape(Circle())
+                                .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
                         }
                     }
-                    .accessibilityLabel(Localization.settings)
-                    .accessibilityIdentifier("dashboard-settings-button")
-                    Spacer()
                 }
-                .fixedSize()
-            }
-            .padding([.top, .leading, .trailing], Constants.padding)
 
-            NavigationLink(destination:
-                            SettingsView(),
-                           isActive: $showSettings) {
-                EmptyView()
-            }.hidden()
+
+                // Title & Description
+                VStack(alignment: .leading, spacing: HubMenu.Constants.topBarSpacing) {
+
+                    AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.badgeSpacing(sizeCategory: sizeCategory)) {
+                        Text(title)
+                            .headlineStyle()
+                            .accessibilityIdentifier(titleAccessibilityID ?? "")
+
+                        if let badge, badge.isNotEmpty {
+                            BadgeView(text: badge)
+                        }
+                    }
+
+                    Text(description)
+                        .subheadlineStyle()
+                        .accessibilityIdentifier(descriptionAccessibilityID ?? "")
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                // Tap Indicator
+                Image(uiImage: chevron.asset)
+                    .resizable()
+                    .frame(width: HubMenu.Constants.chevronSize, height: HubMenu.Constants.chevronSize)
+                    .foregroundColor(Color(.textSubtle))
+                    .accessibilityIdentifier(chevronAccessibilityID ?? "")
+            }
+            .padding(.vertical, Constants.rowVerticalPadding)
+        }
+    }
+}
+
+// MARK: Definitions
+private extension HubMenu {
+    enum Constants {
+        static let cornerRadius: CGFloat = 10
+        static let padding: CGFloat = 16
+        static let rowVerticalPadding: CGFloat = 8
+        static let topBarSpacing: CGFloat = 2
+        static let avatarSize: CGFloat = 40
+        static let chevronSize: CGFloat = 20
+        static let iconSize: CGFloat = 20
+        static let trackingOptionKey = "option"
+
+        /// Spacing for the badge view in the avatar row.
+        ///
+        static func badgeSpacing(sizeCategory: ContentSizeCategory) -> CGFloat {
+            sizeCategory.isAccessibilityCategory ? .zero : 4
         }
     }
 
-    private enum Constants {
-        static let cornerRadius: CGFloat = 10
-        static let itemSpacing: CGFloat = 12
-        static let itemSize: CGFloat = 160
-        static let padding: CGFloat = 16
-        static let topBarSpacing: CGFloat = 2
-        static let avatarSize: CGFloat = 40
-        static let trackingOptionKey = "option"
-        static let trackingBadgeVisibleKey = "badge_visible"
-    }
-
-    private enum Localization {
-        static let switchStore = NSLocalizedString("Switch store",
-                                                   comment: "Switch store option in the hub menu")
+    enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
+        static let general = NSLocalizedString("General", comment: "General section title in the hub menu")
     }
 }
 

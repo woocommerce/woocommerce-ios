@@ -26,13 +26,18 @@ final class AccountCreationFormViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let analytics: Analytics
+    private let emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(debounceDuration: Double = Constants.fieldDebounceDuration,
+    init(email: String = "",
+         debounceDuration: Double = Constants.fieldDebounceDuration,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void)? = nil) {
         self.stores = stores
         self.analytics = analytics
+        self.email = email
+        self.emailSubmissionHandler = emailSubmissionHandler
 
         $email
             .removeDuplicates()
@@ -67,7 +72,16 @@ final class AccountCreationFormViewModel: ObservableObject {
 
             await handleSuccess(data: data)
         } catch let error as CreateAccountError {
-            analytics.track(event: .StoreCreation.signupFailed(error: error))
+            /// Skip tracking if the password field is yet to be presented.
+            let shouldSkipTrackingError: Bool = {
+                guard case .invalidPassword = error else {
+                    return false
+                }
+                return emailSubmissionHandler != nil
+            }()
+            if !shouldSkipTrackingError {
+                analytics.track(event: .StoreCreation.signupFailed(error: error))
+            }
             handleFailure(error: error)
 
             throw error
@@ -90,11 +104,15 @@ private extension AccountCreationFormViewModel {
     func handleFailure(error: CreateAccountError) {
         switch error {
         case .emailExists:
-            emailErrorMessage = Localization.emailExistsError
+            emailSubmissionHandler?(email, true)
         case .invalidEmail:
             emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
-            passwordErrorMessage = message ?? Localization.passwordError
+            if let handler = emailSubmissionHandler {
+                handler(email, false)
+            } else {
+                passwordErrorMessage = message ?? Localization.passwordError
+            }
         default:
             break
         }
@@ -119,8 +137,6 @@ private extension AccountCreationFormViewModel {
     }
 
     enum Localization {
-        static let emailExistsError = NSLocalizedString("An account with this email already exists.",
-                                                        comment: "Account creation error when the email is already associated with an existing WP.com account.")
         static let invalidEmailError = NSLocalizedString("Use a working email address, so you can receive our messages.",
                                                          comment: "Account creation error when the email is invalid.")
         static let passwordError = NSLocalizedString("Password must be at least 6 characters.",

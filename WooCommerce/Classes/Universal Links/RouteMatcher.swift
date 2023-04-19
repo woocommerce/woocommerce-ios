@@ -5,10 +5,11 @@ import Foundation
 /// 
 struct MatchedRoute {
     let route: Route
+    let subPath: String
     let parameters: [String: String]
 
     func performAction() -> Bool {
-        route.perform(with: parameters)
+        route.perform(for: subPath, with: parameters)
     }
 }
 
@@ -37,17 +38,19 @@ class RouteMatcher {
             return nil
         }
 
-        let routeSubPath = String(components.path.dropFirst(mobilePathSegment.count))
+        let routeSubPath = components.path.removingPrefix(mobilePathSegment)
+            .removingPrefix("/")
+            .removingSuffix("/")
 
-        guard let firstRoute = routes.first(where: { $0.subPath == routeSubPath }) else {
+        guard let firstRoute = routes.first(where: { $0.canHandle(subPath: routeSubPath) }) else {
             return nil
         }
 
         guard let queryItems = components.queryItems else {
-            return MatchedRoute(route: firstRoute, parameters: [:])
+            return MatchedRoute(route: firstRoute, subPath: routeSubPath, parameters: [:])
         }
 
-        return MatchedRoute(route: firstRoute, parameters: parameters(from: queryItems))
+        return MatchedRoute(route: firstRoute, subPath: routeSubPath, parameters: parameters(from: queryItems))
     }
 }
 

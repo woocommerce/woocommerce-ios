@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
-    private let universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter()
+    private var universalLinkRouter: UniversalLinkRouter?
 
     // MARK: - AppDelegate Methods
 
@@ -96,6 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupMainWindow()
         setupComponentsAppearance()
         setupNoticePresenter()
+        setupUniversalLinkRouter()
         disableAnimationsIfNeeded()
 
         // Start app navigation.
@@ -345,6 +346,11 @@ private extension AppDelegate {
         UNUserNotificationCenter.current().delegate = self
     }
 
+    func setupUniversalLinkRouter() {
+        guard let tabBarController = tabBarController else { return }
+        universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter(tabBarController: tabBarController)
+    }
+
     /// Set up app review prompt
     ///
     func setupAppRatingManager() {
@@ -499,6 +505,6 @@ private extension AppDelegate {
             return
         }
 
-        universalLinkRouter.handle(url: linkURL)
+        universalLinkRouter?.handle(url: linkURL)
     }
 }

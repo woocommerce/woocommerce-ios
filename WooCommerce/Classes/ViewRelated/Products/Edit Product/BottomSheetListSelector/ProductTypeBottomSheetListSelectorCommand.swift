@@ -145,9 +145,11 @@ public enum BottomSheetProductType: Hashable {
         case .grouped:
             self = .grouped
         case .subscription:
-            // We need to be aware of subscriptions for Payments
-            // but we don't handle them in the UI yet
+            // We do not yet support product editing or creation for subscriptions
             self = .custom("subscription")
+        case .variableSubscription:
+            // We do not yet support product editing or creation for variable subscriptions
+            self = .custom("variable-subscription")
         case .bundle:
             // We do not yet support product editing or creation for bundles
             self = .custom("bundle")

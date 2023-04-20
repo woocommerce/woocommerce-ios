@@ -123,7 +123,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
         case .completed(_):
             return .isFalse
         default:
-            return.isTrue
+            return .isTrue
         }
     }
 

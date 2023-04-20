@@ -42,14 +42,11 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
     @Published private(set) var selectedPlatforms: Set<Platform> = []
 
     private let onContinue: (StoreCreationSellingStatusAnswer?) -> Void
-    private let onSkip: () -> Void
 
     init(storeName: String,
-         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void,
-         onSkip: @escaping () -> Void) {
+         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void) {
         self.topHeader = storeName
         self.onContinue = onContinue
-        self.onSkip = onSkip
     }
 }
 
@@ -60,7 +57,7 @@ extension StoreCreationSellingPlatformsQuestionViewModel: OptionalStoreCreationP
     }
 
     func skipButtonTapped() {
-        onSkip()
+        onContinue(.init(sellingStatus: .alreadySellingOnline, sellingPlatforms: []))
     }
 }
 

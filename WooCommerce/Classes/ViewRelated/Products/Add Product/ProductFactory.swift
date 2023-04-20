@@ -98,6 +98,7 @@ private extension ProductFactory {
                 bundleStockStatus: nil,
                 bundleStockQuantity: nil,
                 bundledItems: [],
-                compositeComponents: [])
+                compositeComponents: [],
+                subscription: nil)
     }
 }

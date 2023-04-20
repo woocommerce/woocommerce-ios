@@ -65,9 +65,10 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] Reviews push notification opens the correct review
 7. Universal Links and Deeplinks
     - [x] Universal Link to Payments screen
-    - [ ] Universal Link to an Order
+    - [x] Universal Link to an Order
 8. Settings
-    - [ ] Contact support
+    - [x] Contact support - Validate buttons and text fields
+    - [ ] Contact support - Submit support ticket
 9. Payments
     - [ ] Make a Simple payment
     - [ ] Make a Tap to Pay on iPhone payment

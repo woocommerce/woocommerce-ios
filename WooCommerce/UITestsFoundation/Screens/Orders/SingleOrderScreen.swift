@@ -9,8 +9,12 @@ public final class SingleOrderScreen: ScreenObject {
         $0.buttons["order-details-edit-button"]
     }
 
-    private let summaryCellGetter: (XCUIApplication) -> XCUIElement = {
+    private let summaryCellTitleGetter: (XCUIApplication) -> XCUIElement = {
         $0.staticTexts["summary-table-view-cell-title-label"]
+    }
+
+    private let summaryCellPaymentStatusGetter: (XCUIApplication) -> XCUIElement = {
+        $0.staticTexts["summary-table-view-cell-payment-status-label"]
     }
 
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -25,7 +29,7 @@ public final class SingleOrderScreen: ScreenObject {
         tabBar = try TabNavComponent(app: app)
 
         try super.init(
-            expectedElementGetters: [ summaryCellGetter, editOrderButtonGetter ],
+            expectedElementGetters: [ summaryCellTitleGetter, summaryCellPaymentStatusGetter ],
             app: app
         )
     }
@@ -38,20 +42,23 @@ public final class SingleOrderScreen: ScreenObject {
 
     @discardableResult
     public func verifySingleOrder(order: OrderData) throws -> Self {
+        let orderTotalPredicate = NSPredicate(format: "label CONTAINS %@", order.total)
+
         // Check that navigation bar contains order number
         let navigationBarTitles = app.navigationBars.map { $0.staticTexts.element.label }
         let expectedTitle = "#\(order.number)"
         XCTAssertTrue(navigationBarTitles.contains(where: { $0.contains(expectedTitle) }), "No navigation bar found with title \(expectedTitle)")
 
+        // Check order status and total
         let orderDetailTableView = app.tables["order-details-table-view"]
         orderDetailTableView.assertTextVisibilityCount(textToFind: order.status, expectedCount: 1)
-        orderDetailTableView.assertTextVisibilityCount(textToFind: order.total, expectedCount: 1)
+        XCTAssertTrue(app.otherElements.containing(orderTotalPredicate).element.exists)
 
-        // Expects 2 instances of first_name - one in Summary and one in Shipping details
-        orderDetailTableView.assertTextVisibilityCount(textToFind: order.billing.first_name, expectedCount: 2)
+        // Check name on order summary
         orderDetailTableView.assertElement(matching: "summary-table-view-cell",
                                            existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
 
+        // Check product(s) on order
         for product in order.line_items {
             XCTAssertTrue(orderDetailTableView.staticTexts[product.name].isFullyVisibleOnScreen(), "'\(product.name)' is missing!")
         }

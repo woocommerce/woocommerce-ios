@@ -9,7 +9,8 @@ public final class ExternalAppScreen {
     }
 
     let universalLinks = [
-        "payments": "https://woocommerce.com/mobile/payments"
+        "payments": "https://woocommerce.com/mobile/payments",
+        "orders": "https://www.woocommerce.com/mobile/orders/details?blog_id=161477129&order_id=3337"
     ]
 
     // To open universal links listed in mocked HTML file
@@ -29,7 +30,10 @@ public final class ExternalAppScreen {
         safari.typeText("http://localhost:8282/links.html")
         safari.buttons["Go"].tap()
 
-        // Tap on the universal link
-        if safari.staticTexts["TESTING LINKS"].exists { safari.links[universalLink].tap() }
+        // Tap on the universal link and fail test immediately if link is not hittable
+        guard safari.links[universalLink].isHittable else {
+            return XCTFail("\(universalLink) is not displayed!")
+        }
+        safari.links[universalLink].tap()
     }
 }

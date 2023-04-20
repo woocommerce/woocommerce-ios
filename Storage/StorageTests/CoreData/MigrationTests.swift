@@ -1673,6 +1673,81 @@ final class MigrationTests: XCTestCase {
         // Product components attribute exists.
         XCTAssertEqual(migratedProduct.value(forKey: "compositeComponents") as? NSOrderedSet, NSOrderedSet(array: [component]))
     }
+
+    func test_migrating_from_82_to_83_enables_creating_new_ProductSubscription_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 82")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 82)
+        let productVariation = insertProductVariation(to: sourceContext)
+        try sourceContext.save()
+
+        // Confidence Checks. This entity and relationship should not exist in Model 82.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "ProductSubscription", in: sourceContext))
+        XCTAssertNil(product.entity.relationshipsByName["subscription"])
+        XCTAssertNil(productVariation.entity.relationshipsByName["subscription"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 83")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductVariation"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductSubscription"), 0)
+
+        // Migrated product has expected empty subscription attribute.
+        let migratedProduct = try XCTUnwrap(targetContext.firstObject(ofType: Product.self))
+        XCTAssertNil(migratedProduct.value(forKey: "subscription"))
+
+        // Migrated product variation has expected empty subscription attribute.
+        let migratedProductVariation = try XCTUnwrap(targetContext.firstObject(ofType: ProductVariation.self))
+        XCTAssertNil(migratedProductVariation.value(forKey: "subscription"))
+
+        // Insert a new ProductSubscription and add it to Product and ProductVariation.
+        let subscription = insertProductSubscription(to: targetContext)
+        migratedProduct.setValue(subscription, forKey: "subscription")
+        migratedProductVariation.setValue(subscription, forKey: "subscription")
+        try targetContext.save()
+
+        // ProductSubscription entity and attributes exist, including relationship with Product and ProductVariation.
+        XCTAssertEqual(try targetContext.count(entityName: "ProductSubscription"), 1)
+        XCTAssertNotNil(subscription.value(forKey: "length"))
+        XCTAssertNotNil(subscription.value(forKey: "period"))
+        XCTAssertNotNil(subscription.value(forKey: "periodInterval"))
+        XCTAssertNotNil(subscription.value(forKey: "price"))
+        XCTAssertNotNil(subscription.value(forKey: "signUpFee"))
+        XCTAssertNotNil(subscription.value(forKey: "trialLength"))
+        XCTAssertNotNil(subscription.value(forKey: "trialPeriod"))
+        XCTAssertEqual(subscription.value(forKey: "product") as? NSManagedObject, migratedProduct)
+        XCTAssertEqual(subscription.value(forKey: "productVariation") as? NSManagedObject, migratedProductVariation)
+
+        // Product and ProductVariation subscription relationship exists.
+        XCTAssertEqual(migratedProduct.value(forKey: "subscription") as? NSManagedObject, subscription)
+        XCTAssertEqual(migratedProductVariation.value(forKey: "subscription") as? NSManagedObject, subscription)
+    }
+
+    func test_migrating_from_83_to_84_adds_isPublic_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 83")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["isPublic"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 84")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let isPublic = try XCTUnwrap(migratedSite.value(forKey: "isPublic") as? Bool)
+        XCTAssertFalse(isPublic)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2310,6 +2385,19 @@ private extension MigrationTests {
             "imageURL": "https://example.com/woo.jpg",
             "optionType": "product_ids",
             "optionIDs": [413, 412]
+        ])
+    }
+
+    @discardableResult
+    func insertProductSubscription(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductSubscription", properties: [
+            "length": "2",
+            "period": "month",
+            "periodInterval": "1",
+            "price": "5",
+            "signUpFee": "",
+            "trialLength": "1",
+            "trialPeriod": "week"
         ])
     }
 }

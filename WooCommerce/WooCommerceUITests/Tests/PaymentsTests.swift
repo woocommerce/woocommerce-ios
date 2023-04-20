@@ -19,9 +19,4 @@ final class PaymentsTests: XCTestCase {
             .tapChipperManual()
             .verifyChipperManualLoadedOnWebView()
     }
-
-    func test_load_payments_universal_link() throws {
-        try ExternalAppScreen().openUniversalLinkFromSafariApp(linkedScreen: "payments")
-        try PaymentsScreen().verifyPaymentsScreenLoaded()
-    }
 }

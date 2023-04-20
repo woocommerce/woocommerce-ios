@@ -1056,7 +1056,8 @@ extension Networking.Product {
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
-        compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy
+        compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
+        subscription: NullableCopiableProp<ProductSubscription> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1125,6 +1126,7 @@ extension Networking.Product {
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
         let bundledItems = bundledItems ?? self.bundledItems
         let compositeComponents = compositeComponents ?? self.compositeComponents
+        let subscription = subscription ?? self.subscription
 
         return Networking.Product(
             siteID: siteID,
@@ -1193,7 +1195,8 @@ extension Networking.Product {
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
             bundledItems: bundledItems,
-            compositeComponents: compositeComponents
+            compositeComponents: compositeComponents,
+            subscription: subscription
         )
     }
 }
@@ -1429,6 +1432,36 @@ extension Networking.ProductReview {
     }
 }
 
+extension Networking.ProductSubscription {
+    public func copy(
+        length: CopiableProp<String> = .copy,
+        period: CopiableProp<SubscriptionPeriod> = .copy,
+        periodInterval: CopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
+        signUpFee: CopiableProp<String> = .copy,
+        trialLength: CopiableProp<String> = .copy,
+        trialPeriod: CopiableProp<SubscriptionPeriod> = .copy
+    ) -> Networking.ProductSubscription {
+        let length = length ?? self.length
+        let period = period ?? self.period
+        let periodInterval = periodInterval ?? self.periodInterval
+        let price = price ?? self.price
+        let signUpFee = signUpFee ?? self.signUpFee
+        let trialLength = trialLength ?? self.trialLength
+        let trialPeriod = trialPeriod ?? self.trialPeriod
+
+        return Networking.ProductSubscription(
+            length: length,
+            period: period,
+            periodInterval: periodInterval,
+            price: price,
+            signUpFee: signUpFee,
+            trialLength: trialLength,
+            trialPeriod: trialPeriod
+        )
+    }
+}
+
 extension Networking.ProductVariation {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1466,7 +1499,8 @@ extension Networking.ProductVariation {
         dimensions: CopiableProp<ProductDimensions> = .copy,
         shippingClass: NullableCopiableProp<String> = .copy,
         shippingClassID: CopiableProp<Int64> = .copy,
-        menuOrder: CopiableProp<Int64> = .copy
+        menuOrder: CopiableProp<Int64> = .copy,
+        subscription: NullableCopiableProp<ProductSubscription> = .copy
     ) -> Networking.ProductVariation {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1504,6 +1538,7 @@ extension Networking.ProductVariation {
         let shippingClass = shippingClass ?? self.shippingClass
         let shippingClassID = shippingClassID ?? self.shippingClassID
         let menuOrder = menuOrder ?? self.menuOrder
+        let subscription = subscription ?? self.subscription
 
         return Networking.ProductVariation(
             siteID: siteID,
@@ -1541,7 +1576,8 @@ extension Networking.ProductVariation {
             dimensions: dimensions,
             shippingClass: shippingClass,
             shippingClassID: shippingClassID,
-            menuOrder: menuOrder
+            menuOrder: menuOrder,
+            subscription: subscription
         )
     }
 }
@@ -1961,7 +1997,8 @@ extension Networking.Site {
         isWordPressComStore: CopiableProp<Bool> = .copy,
         jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
-        gmtOffset: CopiableProp<Double> = .copy
+        gmtOffset: CopiableProp<Double> = .copy,
+        isPublic: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -1978,6 +2015,7 @@ extension Networking.Site {
         let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
+        let isPublic = isPublic ?? self.isPublic
 
         return Networking.Site(
             siteID: siteID,
@@ -1994,7 +2032,8 @@ extension Networking.Site {
             isWordPressComStore: isWordPressComStore,
             jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
-            gmtOffset: gmtOffset
+            gmtOffset: gmtOffset,
+            isPublic: isPublic
         )
     }
 }

@@ -455,6 +455,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 ServiceLocator.analytics.track(event: .ProductDetail.componentsTapped())
                 showCompositeComponents()
+            case .subscription(_, let isActionable):
+                guard isActionable else {
+                    return
+                }
+                // TODO: Track row tapped
+                showSubscriptionSettings()
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]
@@ -1706,6 +1712,22 @@ private extension ProductFormViewController {
         }
         let viewModel = ComponentsListViewModel(siteID: product.siteID, components: product.compositeComponents)
         let viewController = ComponentsListViewController(viewModel: viewModel)
+        show(viewController, sender: self)
+    }
+}
+
+// MARK: Action - Show Subscription Settings
+//
+private extension ProductFormViewController {
+    func showSubscriptionSettings() {
+        guard let product = product as? EditableProductModel, let subscription = product.subscription else {
+            return
+        }
+        let viewModel = SubscriptionSettingsViewModel(price: subscription.priceDescription() ?? "",
+                                                      expiresAfter: subscription.expiryDescription,
+                                                      signupFee: subscription.signupFeeDescription(),
+                                                      freeTrial: subscription.trialDescription)
+        let viewController = SubscriptionSettingsViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }
 }

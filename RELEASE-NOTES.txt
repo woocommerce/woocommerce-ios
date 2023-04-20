@@ -2,7 +2,7 @@
 
 13.3
 -----
-
+- [Internal] Store onboarding: Mark "Launch your store" task as complete if the store is already public. This is a workaround for a backend issue which marks "Launch your store" task incomplete for already live stores. [https://github.com/woocommerce/woocommerce-ios/pull/9507]
 
 13.2
 -----

@@ -40,6 +40,7 @@ final class MockProductVariation {
                                                               height: ""),
                                 shippingClass: "",
                                 shippingClassID: 0,
-                                menuOrder: 1)
+                                menuOrder: 1,
+                                subscription: nil)
     }
 }

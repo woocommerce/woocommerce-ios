@@ -79,8 +79,10 @@ final class AccountRemoteTests: XCTestCase {
         // Sites in `sites.json` include one Jetpack CP site and one site with Jetpack-the-plugin.
         let jcpSites = sites.filter { $0.isJetpackCPConnected }
         let nonJCPSites = sites.filter { $0.isJetpackCPConnected == false }
+        let publicSites = sites.filter { $0.isPublic }
         XCTAssertEqual(jcpSites.count, 1)
         XCTAssertEqual(nonJCPSites.count, 1)
+        XCTAssertEqual(publicSites.count, 1)
     }
 
     // MARK: - `checkIfWooCommerceIsActive`

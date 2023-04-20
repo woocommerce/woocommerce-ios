@@ -116,4 +116,8 @@ public enum ProductAction: Action {
     /// Creates a product using the provided template type.
     ///
     case createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: (Result<Product, Error>) -> Void)
+
+    case generateProductName(siteID: Int64, image: ProductImage, completion: (Result<String, Error>) -> Void)
+
+    case generateProductDescription(siteID: Int64, image: ProductImage, completion: (Result<String, Error>) -> Void)
 }

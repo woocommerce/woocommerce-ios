@@ -6,6 +6,59 @@ enum DotcomRequestError: Error {
     case apiVersionCannotBeAccessedUsingRESTAPI
 }
 
+/// Represents an external request
+///
+struct ExternalRequest: Request {
+    /// HTTP Request Method
+    ///
+    let method: HTTPMethod
+
+    let url: String
+
+    /// Parameters
+    ///
+    let parameters: [String: Any]?
+
+    /// HTTP Headers
+    let headers: [String: String]
+
+    /// Initializer.
+    ///
+    /// - Parameters:
+    ///     - method: HTTP Method we should use.
+    ///     - url: Destination URL.
+    ///     - parameters: Collection of String parameters to be passed over to our target RPC.
+    ///     - headers: Headers used in the URLRequest.
+    ///
+    init(method: HTTPMethod,
+         url: String,
+         parameters: [String: Any]? = nil,
+         headers: [String: String]? = nil) {
+        self.method = method
+        self.url = url
+        self.parameters = parameters ?? [:]
+        self.headers = headers ?? [:]
+    }
+
+    /// Returns a URLRequest instance representing the current WordPress.com Request.
+    ///
+    func asURLRequest() throws -> URLRequest {
+        let dotcomURL = URL(string: url)!
+        var request = try URLRequest(url: dotcomURL, method: method, headers: headers)
+        request.setValue("Token 296dde100ba0fc9f5a4b421421c92851eec32489", forHTTPHeaderField: "Authorization")
+        switch method {
+        case .post, .put:
+            return try JSONEncoding.default.encode(request, with: parameters)
+        default:
+            return try URLEncoding.default.encode(request, with: parameters)
+        }
+    }
+
+    func responseDataValidator() -> ResponseDataValidator {
+        PlaceholderDataValidator()
+    }
+}
+
 /// Represents a WordPress.com Request
 ///
 struct DotcomRequest: Request, RESTRequestConvertible {

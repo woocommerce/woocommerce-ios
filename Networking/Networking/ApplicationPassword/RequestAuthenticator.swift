@@ -116,6 +116,11 @@ private extension DefaultRequestAuthenticator {
             return UnauthenticatedRequest(request: urlRequest).asURLRequest()
         }
 
+        // TODO-JC: better way to support external requests with custom auth header
+        guard urlRequest.value(forHTTPHeaderField: "Authorization") == nil else {
+            return urlRequest
+        }
+
         return AuthenticatedDotcomRequest(authToken: authToken, request: urlRequest).asURLRequest()
     }
 

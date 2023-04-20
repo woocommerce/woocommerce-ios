@@ -698,7 +698,121 @@ private extension ProductFormViewController {
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
+    @MainActor
+    func generateProductName(from images: [ProductImage]) async throws -> String {
+        guard let image = images.first else {
+            throw NSError(domain: "product name gen", code: 1, userInfo: ["reason": "no product images"])
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            ServiceLocator.stores.dispatch(ProductAction.generateProductName(siteID: product.siteID,
+                                                                             image: image) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func generateProductDescription(from images: [ProductImage]) async throws -> String {
+        guard let image = images.first else {
+            throw NSError(domain: "product name gen", code: 1, userInfo: ["reason": "no product images"])
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            ServiceLocator.stores.dispatch(ProductAction.generateProductDescription(siteID: product.siteID,
+                                                                                    image: image) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    func updateProductName(with name: String) {
+        onEditProductNameCompletion(newName: name)
+        // TODO-JC: refactor this
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
+    }
+
+    func updateProductDescription(with description: String) {
+        viewModel.updateDescription(description)
+        // TODO-JC: refactor this
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
+    }
+
+    func suggestProductName(with name: String) {
+        let alert = UIAlertController(title: "Product name suggestion",
+                                      message: name,
+                                      preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString(
+            "Cancel",
+            comment: "Dismiss button on the alert when there is an error updating the product"
+        ), style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        let useAction = UIAlertAction(title: NSLocalizedString(
+            "Use for product",
+            comment: "Action button on the alert to use the suggested name for the product"
+        ), style: .default, handler: { [weak self] _ in
+            self?.updateProductName(with: name)
+        })
+        alert.addAction(useAction)
+
+        present(alert, animated: true, completion: nil)
+    }
+
+    func suggestProductDescription(with description: String) {
+        let alert = UIAlertController(title: "Product description suggestion",
+                                      message: description,
+                                      preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString(
+            "Cancel",
+            comment: "Dismiss button on the alert when there is an error updating the product"
+        ), style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        let useAction = UIAlertAction(title: NSLocalizedString(
+            "Use for product",
+            comment: "Action button on the alert to use the suggested name for the product"
+        ), style: .default, handler: { [weak self] _ in
+            self?.updateProductDescription(with: description)
+        })
+        alert.addAction(useAction)
+
+        present(alert, animated: true, completion: nil)
+    }
+
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let generatedName = try await self.generateProductName(from: statuses.images)
+                if product.name.isEmpty {
+                    self.updateProductName(with: generatedName)
+                } else {
+                    self.suggestProductName(with: generatedName)
+                }
+            } catch {
+                print("Error generating product name from image: \(error)")
+            }
+        }
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let generatedDescription = try await self.generateProductDescription(from: statuses.images)
+                if product.trimmedFullDescription?.isEmpty == true {
+                    self.updateProductDescription(with: generatedDescription)
+                } else {
+                    self.suggestProductDescription(with: generatedDescription)
+                }
+            } catch {
+                print("Error generating product description from image: \(error)")
+            }
+        }
+
         ///
         /// Why are we recreating the `tableViewModel`?
         ///
@@ -1154,6 +1268,7 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Name
 //
 private extension ProductFormViewController {
+    @MainActor
     func onEditProductNameCompletion(newName: String) {
         viewModel.updateName(newName)
 

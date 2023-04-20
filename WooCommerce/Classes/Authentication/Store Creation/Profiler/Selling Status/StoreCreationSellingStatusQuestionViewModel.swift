@@ -14,7 +14,6 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
     let subtitle: String = Localization.subtitle
 
     /// Question content.
-    /// TODO: 8376 - update values when API is ready.
     let sellingStatuses: [SellingStatus] = [.justStarting, .alreadySellingButNotOnline, .alreadySellingOnline]
 
     @Published private(set) var selectedStatus: SellingStatus?

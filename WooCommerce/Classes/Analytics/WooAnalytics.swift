@@ -61,7 +61,11 @@ public extension WooAnalytics {
             return
         }
 
-        analyticsProvider.refreshUserData()
+        // Skips refreshing user data when user is authenticated without WPCom
+        // since they are still identified with anonymous ID.
+        if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
+            analyticsProvider.refreshUserData()
+        }
 
         // Refreshes A/B experiments since `ExPlat.shared` is reset after each `TracksProvider.refreshUserData` call
         // and any A/B test assignments that come back after the shared instance is reset won't be saved for later

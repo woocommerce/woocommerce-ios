@@ -21,11 +21,10 @@ extension StoreCreationCategoryQuestionViewModel {
         [
             .fashionApparelAccessories,
             .healthBeauty,
-            .electronicsComputers,
             .foodDrink,
             .homeFurnitureGarden,
-            .cbdOtherHempDerivedProducts,
             .educationAndLearning,
+            .electronicsComputers,
             .other
         ]
     }
@@ -35,7 +34,7 @@ extension StoreCreationCategoryQuestionViewModel.Category {
     var name: String {
         switch self {
         case .fashionApparelAccessories:
-            return NSLocalizedString("Fashion, apparel, and accessories", comment: "Industry option in the store creation category question.")
+            return NSLocalizedString("Clothing and accessories", comment: "Industry option in the store creation category question.")
         case .healthBeauty:
             return NSLocalizedString("Health and beauty", comment: "Industry option in the store creation category question.")
         case .electronicsComputers:

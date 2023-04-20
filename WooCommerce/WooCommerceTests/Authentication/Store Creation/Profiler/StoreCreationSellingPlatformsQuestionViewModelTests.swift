@@ -5,7 +5,7 @@ import XCTest
 final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
     func test_topHeader_is_set_to_store_name() throws {
         // Given
-        let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store 🌟") { _ in } onSkip: {}
+        let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store 🌟") { _ in }
 
         // Then
         XCTAssertEqual(viewModel.topHeader, "store 🌟")
@@ -13,7 +13,7 @@ final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
 
     func test_selecting_a_platform_adds_to_selectedPlatforms() throws {
         // Given
-        let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store") { _ in } onSkip: {}
+        let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store") { _ in }
         XCTAssertEqual(viewModel.selectedPlatforms, [])
 
         // When
@@ -31,7 +31,7 @@ final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
 
     func test_selecting_a_platform_twice_removes_platform_from_selectedPlatforms() throws {
         // Given
-        let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store") { _ in } onSkip: {}
+        let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store") { _ in }
         XCTAssertEqual(viewModel.selectedPlatforms, [])
 
         // When
@@ -52,7 +52,7 @@ final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
             // Given
             let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store") { answer in
                 promise(answer)
-            } onSkip: {}
+            }
 
             // When
             viewModel.selectPlatform(.wordPress)
@@ -71,7 +71,7 @@ final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
             // Given
             let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store") { answer in
                 promise(answer)
-            } onSkip: {}
+            }
             // When
             Task { @MainActor in
                 await viewModel.continueButtonTapped()
@@ -82,15 +82,18 @@ final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
         XCTAssertEqual(answer, .init(sellingStatus: .alreadySellingOnline, sellingPlatforms: []))
     }
 
-    func test_skipButtonTapped_invokes_onSkip() throws {
-        waitFor { promise in
+    func test_skipButtonTapped_invokes_onContinue_with_empty_platforms() throws {
+        let answer = waitFor { promise in
             // Given
-            let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store") { _ in } onSkip: {
-                // Then
-                promise(())
+            let viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: "store") { answer in
+                promise(answer)
             }
+
             // When
             viewModel.skipButtonTapped()
         }
+
+        // Then
+        XCTAssertEqual(answer, .init(sellingStatus: .alreadySellingOnline, sellingPlatforms: []))
     }
 }

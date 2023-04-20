@@ -29,20 +29,19 @@ struct HubMenu: View {
             // Store Section
             Section {
                 Button {
-                    if viewModel.switchStoreEnabled {
-                        viewModel.presentSwitchStore()
-                    }
+                    viewModel.presentSwitchStore()
                 } label: {
                     Row(title: viewModel.storeTitle,
                         badge: viewModel.planName,
                         description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
                         icon: .remote(viewModel.avatarURL),
-                        chevron: .down,
+                        chevron: viewModel.switchStoreEnabled ? .down : .none,
                         titleAccessibilityID: "store-title",
                         descriptionAccessibilityID: "store-url",
                         chevronAccessibilityID: "switch-store-button")
                     .lineLimit(1)
                 }
+                .disabled(!viewModel.switchStoreEnabled)
             }
 
             // Settings Section
@@ -179,11 +178,14 @@ private extension HubMenu {
         /// Style for the chevron indicator.
         ///
         enum Chevron {
+            case none
             case down
             case leading
 
             var asset: UIImage {
                 switch self {
+                case .none:
+                    return UIImage()
                 case .down:
                     return .chevronDownImage
                 case .leading:
@@ -244,9 +246,10 @@ private extension HubMenu {
 
                         case .remote(let url):
                             KFImage(url)
+                                .placeholder { Image(uiImage: .gravatarPlaceholderImage).resizable() }
                                 .resizable()
-                                .clipShape(Circle())
                                 .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+                                .clipShape(Circle())
                         }
                     }
                 }
@@ -277,6 +280,7 @@ private extension HubMenu {
                     .frame(width: HubMenu.Constants.chevronSize, height: HubMenu.Constants.chevronSize)
                     .foregroundColor(Color(.textSubtle))
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")
+                    .renderedIf(chevron != .none)
             }
             .padding(.vertical, Constants.rowVerticalPadding)
         }

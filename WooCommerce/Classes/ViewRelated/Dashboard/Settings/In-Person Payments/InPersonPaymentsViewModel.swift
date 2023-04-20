@@ -111,9 +111,8 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
 
         let didChange = newShouldShow != shouldShow
 
-        shouldShow = newShouldShow
-
         if didChange {
+            shouldShow = newShouldShow
             didChangeShouldShow?(shouldShow)
         }
     }

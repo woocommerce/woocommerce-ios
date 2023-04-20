@@ -11,6 +11,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
         let onboardingView = InPersonPaymentsView(viewModel: viewModel)
         super.init(rootView: SetUpTapToPayOnboardingView(onboardingView: onboardingView))
         rootView.cancelTapped = { [weak self] in
+            ServiceLocator.analytics.track(.tapToPaySetupOnboardingCancelTapped)
             self?.dismiss(animated: true)
         }
 

@@ -292,6 +292,7 @@ public enum WooAnalyticsStat: String {
     case tapToPaySummaryTryPaymentSkipTapped = "tap_to_pay_summary_try_payment_skip_tapped"
     case tapToPaySetupInformationSetUpTapped = "tap_to_pay_set_up_information_set_up_tapped"
     case tapToPaySetupInformationCancelTapped = "tap_to_pay_set_up_information_cancel_tapped"
+    case tapToPaySetupOnboardingCancelTapped = "tap_to_pay_set_up_onboarding_cancel_tapped"
     case tapToPaySetupSuccessDoneTapped = "tap_to_pay_set_up_success_done_tapped"
     case tapToPaySummaryShown = "tap_to_pay_summary_shown"
 

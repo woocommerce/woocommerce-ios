@@ -2,7 +2,7 @@
 
 13.3
 -----
-
+- [*] Payments: Added Universal Link support for Set up Tap to Pay on iPhone, and to open Universal Links from Just in Time Messages, to more easily navigate to app features. [https://github.com/woocommerce/woocommerce-ios/pull/9518]
 
 13.2
 -----

@@ -46,9 +46,9 @@ struct ProductTagListMapper: Mapper {
 
         case .delete:
             if hasDataEnvelope {
-                return try decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).data.tags
+                return (try? decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).data.tags) ?? []
             } else {
-                return try decoder.decode(ProductTagListBatchDeleteContainer.self, from: response).tags
+                return (try? decoder.decode(ProductTagListBatchDeleteContainer.self, from: response).tags) ?? []
             }
         }
     }

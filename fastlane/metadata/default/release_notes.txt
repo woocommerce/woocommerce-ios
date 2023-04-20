@@ -1,1 +1,1 @@
-More love for In-Person Payments and orders this time around. We made it easier for you to search & select multiple products when creating an order. It's also possible to install Jetpack from the app if you would like additional functionality such as push notifications and visitor stats.
+For this release, we focused on improving your experience when creating orders and collecting payments. It's now possible to filter products when searching for a product to add to your order. Please try it out and share your feedback.

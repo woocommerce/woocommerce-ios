@@ -2,7 +2,7 @@
 
 13.3
 -----
-
+- [*] Store creation free trial flow now includes 3 profiler questions again with updated options: store category, selling status, and store country. [https://github.com/woocommerce/woocommerce-ios/pull/9513]
 
 13.2
 -----

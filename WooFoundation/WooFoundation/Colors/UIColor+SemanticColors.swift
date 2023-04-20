@@ -240,33 +240,35 @@ public extension UIColor {
     /// Selectable Secondary Button Title.
     ///
     static var selectableSecondaryButtonTitle: UIColor {
-        .black
+        .text
     }
 
     /// Selectable Secondary Button Background.
     ///
     static var selectableSecondaryButtonBackground: UIColor {
-        .white
+        .init(light: .white,
+              dark: .tertiarySystemBackground)
     }
 
     /// Selectable Secondary Button Border.
     ///
     static var selectableSecondaryButtonBorder: UIColor {
-        .systemColor(.systemGray3)
+        .init(light: .systemColor(.systemGray3),
+              dark: .clear)
     }
 
     /// Selectable Secondary Button Selected Background.
     ///
     static var selectableSecondaryButtonSelectedBackground: UIColor {
         .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
-              dark: .withColorStudio(.wooCommercePurple, shade: .shade10))
+              dark: .tertiarySystemBackground)
     }
 
     /// Selectable Secondary Button Selected Border.
     ///
     static var selectableSecondaryButtonSelectedBorder: UIColor {
         .init(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
-              dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
+              dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
     }
 
     /// Secondary Light Button Background.

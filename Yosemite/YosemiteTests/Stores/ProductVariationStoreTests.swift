@@ -317,12 +317,13 @@ final class ProductVariationStoreTests: XCTestCase {
         let remote = MockProductVariationsRemote()
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
         let sampleProductVariationID: Int64 = 1275
-        let expectedProductVariation = sampleProductVariation(id: sampleProductVariationID)
+        let expectedProductVariation = sampleProductVariation(id: sampleProductVariationID).copy(subscription: .fake())
         remote.whenLoadingProductVariation(siteID: sampleSiteID,
                                            productID: sampleProductID,
                                            productVariationID: sampleProductVariationID,
                                            thenReturn: .success(expectedProductVariation))
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductSubscription.self), 0)
 
         // When
         let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
@@ -336,6 +337,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductSubscription.self), 1)
 
         XCTAssertTrue(result.isSuccess)
         XCTAssertNotNil(try result.get())

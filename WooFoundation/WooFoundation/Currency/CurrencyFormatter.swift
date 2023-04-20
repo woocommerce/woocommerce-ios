@@ -266,7 +266,7 @@ public class CurrencyFormatter {
     public func formatAmount(_ amount: NSDecimalNumber, with currency: String? = nil, locale: Locale = .current, numberOfDecimals: Int? = nil) -> String? {
         let currency = currency ?? currencySettings.currencyCode.rawValue
         // Get the currency code
-        let code = CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
+        let code = CurrencyCode(rawValue: currency.uppercased()) ?? currencySettings.currencyCode
         // Grab the read-only currency options. These are set by the user in Site > Settings.
         let symbol = currencySettings.symbol(from: code)
         let separator = currencySettings.decimalSeparator

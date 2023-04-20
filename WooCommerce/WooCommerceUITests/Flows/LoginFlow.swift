@@ -26,7 +26,7 @@ class LoginFlow {
     @discardableResult
     static func logInWithSiteAddress() throws -> MyStoreScreen {
         try PrologueScreen()
-            .tapSiteAddress()
+            .tapLogIn()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)

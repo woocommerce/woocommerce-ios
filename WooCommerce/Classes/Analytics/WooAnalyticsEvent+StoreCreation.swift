@@ -76,6 +76,12 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }
 
+        /// Tracked when the user skips a profiler question in the store creation flow.
+        static func siteCreationProfilerQuestionSkipped(step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationProfilerQuestionSkipped,
+                              properties: [Key.step: step.rawValue])
+        }
+
         /// Tracked when completing the last profiler question during the store creation flow when free trials are enabled.
         static func siteCreationProfilerData(_ profilerData: SiteProfilerData) -> WooAnalyticsEvent {
             let properties = [
@@ -167,6 +173,7 @@ extension WooAnalyticsEvent.StoreCreation {
         case storeName = "store_name"
         case profilerCategoryQuestion = "store_profiler_industries"
         case profilerSellingStatusQuestion = "store_profiler_commerce_journey"
+        case profilerSellingPlatformsQuestion = "store_profiler_ecommerce_platforms"
         case profilerCountryQuestion = "store_profiler_country"
         case domainPicker = "domain_picker"
         case storeSummary = "store_summary"

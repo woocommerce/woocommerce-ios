@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-10 18:54:24+0000 */
+/* Translation-Revision-Date: 2023-04-18 19:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -8,6 +8,9 @@
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
+
+/* Prefix for the subtitle text in the store creation loading screen */
+"#FunWooFact:" = "#FatoCuriosoDoWoo:";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% concluído";
@@ -282,9 +285,6 @@ which should be translated separately and considered part of this sentence. */
 /* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "A opção de pagamento presencial no seu checkout permite que você aceite pagamentos com cartão ou dinheiro na retirada ou entrega.";
 
-/* Industry option in the store creation category question. */
-"A C And Heating Contractors" = "Serviço de refrigeração e aquecimento";
-
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "Uma conta do WordPress.com está conectada às credenciais da sua loja. Para continuar, enviaremos um link de verificação para o endereço de e-mail acima.";
 
@@ -358,20 +358,11 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Tenha desconto nas tarifas de envio. Disponível para DHL e USPS, com mais por vir em breve.";
 
-/* Industry option in the store creation category question. */
-"Accessories" = "Acessórios";
-
-/* Industry option in the store creation category question. */
-"Accessories For Tobacco And Marijuana" = "Acessórios para tabaco e maconha";
-
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Tipo de conta";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Conta conectada";
-
-/* Industry option in the store creation category question. */
-"Accounting, Auditing, Or Tax Prep" = "Contabilidade, auditoria ou preparação de impostos";
 
 /* Title for the section related to actions inside In-Person Payments settings */
 "Actions" = "Ações";
@@ -623,9 +614,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "Adiciona variação ao pedido.";
 
-/* Industry option in the store creation category question. */
-"Adult Content Or Services" = "Conteúdo ou serviços adultos";
-
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Assinatura de um adulto necessária (+%1$@)";
 
@@ -635,17 +623,11 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Afghanistan" = "Afeganistão";
 
-/* Industry option in the store creation category question. */
-"Airlines And Air Carriers" = "Companhias e transportadoras aéreas";
-
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
 /* Country option for a site address. */
 "Albania" = "Albânia";
-
-/* Industry option in the store creation category question. */
-"Alcohol" = "Álcool";
 
 /* Country option for a site address. */
 "Algeria" = "Argélia";
@@ -739,9 +721,6 @@ which should be translated separately and considered part of this sentence. */
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "Quantia paga";
 
-/* Industry option in the store creation category question. */
-"Amusement Parks, Carnivals, Or Circuses" = "Parques de diversões, carnavais ou circos";
-
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "Um código de erro HTTP %i foi retornado.";
 
@@ -812,9 +791,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Antigua and Barbuda" = "Antígua e Barbuda";
 
-/* Industry option in the store creation category question. */
-"Antiques" = "Antiguidades";
-
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
    Label for one of the filters in order date range
@@ -852,6 +828,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon's product and category restrictions. */
 "Apply this coupon to" = "Aplicar este cupom a";
 
+/* Title text in the store creation loading screen */
+"Applying the finishing touches" = "Aplicando os toques finais";
+
 /* Approve a comment */
 "Approve" = "Aprovar";
 
@@ -862,8 +841,8 @@ which should be translated separately and considered part of this sentence. */
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "Aprova o comentário";
 
-/* Industry option in the store creation category question. */
-"Apps" = "Aplicativos";
+/* Subtitle text in the store creation loading screen */
+"Are you Team Cat or Team Dog? The Woo team is split 50\/50!" = "Você é do tipo que prefere gato ou cachorro? A equipe do Woo está dividida!";
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Tem certeza de que deseja alterar o tipo de produto?";
@@ -910,12 +889,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Aruba" = "Aruba";
 
-/* Industry option in the store creation category question. */
-"Assisted Living" = "Moradia assistida";
-
-/* Industry option in the store creation category question. */
-"Attorneys And Lawyers" = "Advocacia";
-
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Nome do atributo";
 
@@ -942,12 +915,6 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Autenticação requerida pelo host: %@";
 
-/* Industry option in the store creation category question. */
-"Auto Parts And Accessories" = "Peças e acessórios para automóveis";
-
-/* Industry option in the store creation category question. */
-"Auto Services" = "Serviços automotivos";
-
 /* Auto updates & backups title feature on the Free Trial Summary Screen */
 "Auto updates & backups" = "Backups e atualizações automáticas";
 
@@ -959,9 +926,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Família Automattic";
-
-/* Industry group option in the store creation category question. */
-"Autos (Sales and Service)" = "Automóveis (vendas e serviços)";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Valor médio por pedido";
@@ -1011,26 +975,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bahrain" = "Bahrein";
 
-/* Industry option in the store creation category question. */
-"Bail Bonds" = "Fiança";
-
 /* Country option for a site address. */
 "Bangladesh" = "Bangladesh";
-
-/* Industry option in the store creation category question. */
-"Bankruptcy Services" = "Serviços em caso de falência";
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Número da barra %1$i, %2$@, ";
 
 /* Country option for a site address. */
 "Barbados" = "Barbados";
-
-/* Industry option in the store creation category question. */
-"Bars And Nightclubs" = "Bares e baladas";
-
-/* Industry option in the store creation category question. */
-"Beauty Products" = "Produtos de beleza";
 
 /* Country option for a site address. */
 "Belarus" = "Bielorrússia";
@@ -1049,9 +1001,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Bermuda" = "Bermudas";
-
-/* Industry option in the store creation category question. */
-"Betting Or Fantasy Sports" = "Apostas ou esportes de fantasia";
 
 /* Country option for a site address. */
 "Bhutan" = "Butão";
@@ -1079,17 +1028,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the app's blog */
 "Blog" = "Blog";
 
-/* Industry option in the store creation category question. */
-"Blogs And Written Content" = "Blogs e conteúdo escrito";
-
 /* The button title on the reader type alert, for the user to choose a bluetooth reader. */
 "Bluetooth Reader" = "Leitor Bluetooth";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
 "Bluetooth permission required" = "Permissão de Bluetooth necessária";
-
-/* Industry option in the store creation category question. */
-"Boat Sales" = "Venda de barcos";
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Negrito";
@@ -1099,9 +1042,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "Países Baixos Caribenhos";
-
-/* Industry option in the store creation category question. */
-"Books" = "Livros";
 
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Envie descontos e ofertas especiais aos seus clientes para turbinar seus negócios.";
@@ -1136,8 +1076,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Adicione o que você quer vender para criar um catálogo.";
 
-/* Industry group option in the store creation category question. */
-"Building Services" = "Serviços de construção";
+/* Title text in the store creation loading screen */
+"Building the foundations" = "Construindo o alicerce";
 
 /* Country option for a site address. */
 "Bulgaria" = "Bulgária";
@@ -1163,9 +1103,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Burundi" = "Burundi";
-
-/* Industry option in the store creation category question. */
-"Business And Secretarial Schools" = "Escolas de negócios e secretariado";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Texto do botão";
@@ -1194,6 +1131,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Details on the store onboarding WCPay setup screen. */
 "By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "Ao usar o WooCommerce Payments, você concorda em aderir aos nossos [Termos de serviço](https:\/\/wordpress.com\/tos) e confirma que leu a nossa [Política de privacidade](https:\/\/automattic.com\/privacy\/).";
+
+/* Industry option in the store creation category question. */
+"CBD and other hemp-derived products" = "CBD e outros produtos derivados do cânhamo";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "PAÍSES";
@@ -1361,15 +1301,6 @@ which should be translated separately and considered part of this sentence. */
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Colete avaliações de alta qualidade do produto para sua loja.";
 
-/* Industry option in the store creation category question. */
-"Car Rentals" = "Aluguel de carros";
-
-/* Industry option in the store creation category question. */
-"Car Sales" = "Venda de carros";
-
-/* Industry option in the store creation category question. */
-"Car Washes" = "Lava jato";
-
 /* (External) card reader payment method title on the select payment method screen */
 "Card Reader" = "Leitor de cartão";
 
@@ -1391,9 +1322,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "O cartão foi removido muito cedo. Tente novamente.";
 
-/* Industry option in the store creation category question. */
-"Carpentry Contractors" = "Carpintaria";
-
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Transportadora e tarifas";
 
@@ -1413,9 +1341,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Categorias";
-
-/* Industry option in the store creation category question. */
-"Caterers" = "Fornecedores de alimentos";
 
 /* Country option for a site address. */
 "Cayman Islands" = "Ilhas Cayman";
@@ -1444,12 +1369,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the row that has a switch when creating a simple payment */
 "Charge Taxes" = "Cobrar impostos";
 
-/* Industry option in the store creation category question. */
-"Charities Or Social Service Organizations" = "Instituições de caridade ou organizações de serviço social";
-
-/* Industry option in the store creation category question. */
-"Check Cashing" = "Desconto de cheque";
-
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Verifique se a URL inserida é válida";
 
@@ -1469,17 +1388,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "Finalizar compra";
 
-/* Industry option in the store creation category question. */
-"Child Care Services" = "Serviços de cuidados infantis";
-
 /* Country option for a site address. */
 "Chile" = "Chile";
 
 /* Country option for a site address. */
 "China" = "China";
-
-/* Industry option in the store creation category question. */
-"Chiropractors" = "Quiropraxia";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Escolher o tamanho do papel";
@@ -1527,9 +1440,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "Informe a cidade";
 
-/* Industry option in the store creation category question. */
-"Civic, Fraternal, Or Social Associations" = "Associações cívicas, fraternas ou sociais";
-
 /* Title of button to redeem domain credit in the domain credit banner in domain settings. */
 "Claim Domain" = "Resgatar domínio";
 
@@ -1572,9 +1482,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Encerrando conta…";
 
-/* Industry option in the store creation category question. */
-"Clothing And Accessories" = "Roupas e acessórios";
-
 /* Country option for a site address. */
 "Cocos (Keeling) Islands" = "Ilhas Cocos (Keeling)";
 
@@ -1598,20 +1505,11 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "Receba pagamentos, configure o Tap to Pay, peça leitores de cartão e muito mais.";
 
-/* Industry option in the store creation category question. */
-"Collections Agencies" = "Agências de cobranças";
-
-/* Industry option in the store creation category question. */
-"Colleges Or Universities" = "Faculdades ou universidades";
-
 /* Country option for a site address. */
 "Colombia" = "Colômbia";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store" = "Volte mais tarde para ver outras dicas e informações de como ampliar sua loja";
-
-/* Industry option in the store creation category question. */
-"Commuter Transportation" = "Transporte intermunicipal";
 
 /* Country option for a site address. */
 "Comoros" = "Comores";
@@ -1641,9 +1539,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for composite product type. */
 "Composite" = "Composto";
-
-/* Industry option in the store creation category question. */
-"Computer Repair" = "Conserto de computador";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Configuração atualizada";
@@ -1752,9 +1647,6 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Conectando sua loja";
 
-/* Industry option in the store creation category question. */
-"Consulting" = "Consultoria";
-
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Entre em contato com o cliente";
 
@@ -1825,9 +1717,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Continuar com Apple";
 
-/* Industry option in the store creation category question. */
-"Convenience Stores" = "Lojas de conveniência";
-
 /* Conversion stat label on dashboard. */
 "Conversion" = "Conversão";
 
@@ -1888,16 +1777,10 @@ which should be translated separately and considered part of this sentence. */
 /* Error title displayed when unable to close user account. */
 "Couldn’t close account automatically" = "Não foi possível encerrar a conta automaticamente";
 
-/* Industry option in the store creation category question. */
-"Counseling Services" = "Serviços de aconselhamento";
-
 /* Text field country in Edit Address Form
    Text field country in Shipping Label Address Validation
    Title to select country from the edit address screen */
 "Country" = "País";
-
-/* Industry option in the store creation category question. */
-"Country Clubs" = "Clubes de campo";
 
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "Informe o país";
@@ -1946,9 +1829,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Cupons (%1$@)";
-
-/* Industry option in the store creation category question. */
-"Courier Services" = "Serviços de entrega";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Menu de depuração de falhas";
@@ -2034,9 +1914,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "Criando sua loja";
 
-/* Industry option in the store creation category question. */
-"Credit Counseling Or Credit Repair" = "Aconselhamento ou reparação de crédito";
-
 /* Credit card payment method for shipping label. */
 "Credit card" = "Cartão de crédito";
 
@@ -2053,20 +1930,11 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "Venda cruzada";
 
-/* Industry option in the store creation category question. */
-"Cruise Lines" = "Linhas de cruzeiro";
-
-/* Industry option in the store creation category question. */
-"Cryptocurrencies" = "Criptomoedas";
-
 /* Country option for a site address. */
 "Cuba" = "Cuba";
 
 /* Country option for a site address. */
 "Curacao" = "Curaçao";
-
-/* Industry option in the store creation category question. */
-"Currency Exchanges" = "Câmbios";
 
 /* Cell title: the current date. */
 "Current" = "Atual";
@@ -2189,12 +2057,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Data: Do mais antigo para o mais recente";
 
-/* Industry option in the store creation category question. */
-"Dating Services" = "Serviços de namoro";
-
-/* Industry option in the store creation category question. */
-"Debt Reduction Services" = "Serviços de redução de dívidas";
-
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Padrão";
 
@@ -2215,9 +2077,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "Dinamarca";
 
-/* Industry option in the store creation category question. */
-"Dentists And Orthodontists" = "Odontologia e ortodontia";
-
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Descreva o produto";
 
@@ -2230,23 +2089,17 @@ which should be translated separately and considered part of this sentence. */
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Descrição";
 
-/* Industry option in the store creation category question. */
-"Designer Products" = "Produtos de designer";
-
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Determina a posição dos produtos no catálogo. Quanto menor for o valor do número, maior será a posição do item na lista de produtos. Também é possível usar valores negativos.";
 
+/* Subtitle text in the store creation loading screen */
+"Did you know that Woo powers more than 3.5 million stores worldwide? You’re in good company." = "Você sabia que o Woo abriga mais de 3,5 milhões de lojas pelo mundo todo? Você está em boa companhia.";
+
+/* Subtitle text in the store creation loading screen */
+"Did you know that Woo was founded by two South Africans and a Norwegian? Here are three alternative ways to say “store” in those countries – Winkel, ivenkile, and butikk." = "Você sabia que o Woo foi fundado por dois sul-africanos e um norueguês? Confira três maneiras diferentes de dizer \"loja\" nesses países: Winkel, ivenkile e butikk.";
+
 /* Instructions after a Magic Link was sent, but email is incorrect. */
 "Didn't mean to create a new account? Go back to re-enter your email address." = "Não queria criar uma conta nova? Volte para reinserir seu endereço de e-mail.";
-
-/* Industry option in the store creation category question. */
-"Digital Marketing" = "Marketing digital";
-
-/* Industry group option in the store creation category question. */
-"Digital Products" = "Produtos digitais";
-
-/* Industry option in the store creation category question. */
-"Digital Wallets" = "Carteiras digitais";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "Dimensões: %1$@ x %2$@ %3$@";
@@ -2334,9 +2187,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Deseja mover este produto para a lixeira?";
-
-/* Industry option in the store creation category question. */
-"Doctors And Physicians" = "Medicina especializada e geral";
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Documentos";
@@ -2539,11 +2389,8 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Edite o status ou o preço de vários produtos de uma só vez";
 
-/* Industry group option in the store creation category question. */
-"Education" = "Educação";
-
 /* Industry option in the store creation category question. */
-"Educational Services" = "Serviços educacionais";
+"Education and learning" = "Educação e aprendizagem";
 
 /* Country option for a site address. */
 "Egypt" = "Egito";
@@ -2552,10 +2399,7 @@ which should be translated separately and considered part of this sentence. */
 "El Salvador" = "El Salvador";
 
 /* Industry option in the store creation category question. */
-"Electrical Contractors" = "Serviços elétricos";
-
-/* Industry option in the store creation category question. */
-"Elementary Or Secondary Schools" = "Escolas de ensino primário e fundamental";
+"Electronics and computers" = "Eletrônicos e computadores";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Elegível para retirada gratuita";
@@ -2593,9 +2437,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "E-mail: %@";
-
-/* Industry option in the store creation category question. */
-"Employment Agencies" = "Agências de emprego";
 
 /* Accessibility text for Unit Input cell */
 "Empty" = "Vazio";
@@ -2762,9 +2603,6 @@ which should be translated separately and considered part of this sentence. */
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "Insira as credenciais de sua loja para %@.";
 
-/* Industry group option in the store creation category question. */
-"Entertainment And Recreation" = "Entretenimentos e recreações";
-
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envelope";
 
@@ -2836,9 +2674,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option in the store creation selling platforms question. */
 "Etsy" = "Etsy";
-
-/* Industry option in the store creation category question. */
-"Event Ticketing" = "Venda de ingressos para eventos";
 
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
@@ -2945,7 +2780,7 @@ which should be translated separately and considered part of this sentence. */
 "Faroe Islands" = "Ilhas Faroé";
 
 /* Industry option in the store creation category question. */
-"Fast Food Restaurants" = "Restaurantes fast food";
+"Fashion, apparel, and accessories" = "Moda, vestuário e acessórios";
 
 /* Fast to launch title feature on the Free Trial Summary Screen */
 "Fast to launch" = "Lançamento rápido";
@@ -3020,12 +2855,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "Filtros (%ld)";
 
-/* Industry option in the store creation category question. */
-"Financial Information And Research" = "Informações e pesquisas financeiras";
-
-/* Industry group option in the store creation category question. */
-"Financial Services" = "Serviços financeiros";
-
 /* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
 "Find your connected email" = "Encontrar seu e-mail conectado";
 
@@ -3056,23 +2885,17 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Desconto fixo no produto";
 
-/* Industry option in the store creation category question. */
-"Flowers" = "Flores";
-
 /* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
 "Follow reader instructions to pay" = "Siga as instruções do leitor para pagar";
 
 /* User role badge */
 "Follower" = "Seguidor";
 
-/* Industry group option in the store creation category question. */
-"Food And Drink" = "Alimentação e bebidas";
+/* Industry option in the store creation category question. */
+"Food and drink" = "Alimentação e bebidas";
 
 /* Title in the error notice when a validation error occurs after submitting domain contact info. */
 "Form Validation Error" = "Erro de validação de formulário";
-
-/* Industry option in the store creation category question. */
-"Fortune Tellers" = "Adivinhação";
 
 /* Next web page */
 "Forward" = "Encaminhar";
@@ -3085,9 +2908,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "Gratuito no primeiro ano";
-
-/* Industry option in the store creation category question. */
-"Freight Forwarders" = "Agentes de carga";
 
 /* Country option for a site address. */
 "French Guiana" = "Guiana Francesa";
@@ -3113,26 +2933,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle displayed in the simplified prologue screen */
 "From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "Desde sua primeira venda até os milhões em receita, o Woo está com você. Veja por que os comerciantes confiam em nós para impulsionar 3,4 milhões de lojas online.";
 
-/* Industry option in the store creation category question. */
-"Fuel Dispensers" = "Dispensadores de combustível";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Conclua seus pedidos com o WooCommerce Shipping";
-
-/* Industry option in the store creation category question. */
-"Funeral Services" = "Serviços funerários";
 
 /* Country option for a site address. */
 "Gabon" = "Gabão";
 
 /* Country option for a site address. */
 "Gambia" = "Gâmbia";
-
-/* Industry option in the store creation category question. */
-"Games" = "Jogos";
-
-/* Industry option in the store creation category question. */
-"General Contractors" = "Empreitada";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "Gerar nova variação";
@@ -3252,9 +3060,6 @@ which should be translated separately and considered part of this sentence. */
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "Entendi!";
 
-/* Industry option in the store creation category question. */
-"Government Services" = "Serviços governamentais";
-
 /* Country option for a site address. */
 "Greece" = "Grécia";
 
@@ -3263,9 +3068,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Grenada" = "Granada";
-
-/* Industry option in the store creation category question. */
-"Grocery Stores" = "Mercearias";
 
 /* Display label for grouped product type. */
 "Grouped" = "Agrupado";
@@ -3323,9 +3125,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Haiti" = "Haiti";
 
-/* Industry option in the store creation category question. */
-"Hardware Stores" = "Lojas de ferragens";
-
 /* Subtitle of the store onboarding task to customize the store domain. */
 "Have a custom URL to host your store." = "Tenha uma URL personalizada para hospedar sua loja.";
 
@@ -3369,10 +3168,7 @@ which should be translated separately and considered part of this sentence. */
 "Heading 6" = "Título 6";
 
 /* Industry option in the store creation category question. */
-"Health And Beauty Spas" = "Spas de saúde e beleza";
-
-/* Industry option in the store creation category question. */
-"Health And Wellness Coaching" = "Coaching de saúde e bem-estar";
+"Health and beauty" = "Saúde e beleza";
 
 /* Country option for a site address. */
 "Heard Island and McDonald Islands" = "Ilha Heard e Ilhas McDonald";
@@ -3409,22 +3205,13 @@ which should be translated separately and considered part of this sentence. */
 "Hidden" = "Oculta";
 
 /* Industry option in the store creation category question. */
-"Home Electronics" = "Eletrodomésticos";
-
-/* Industry option in the store creation category question. */
-"Home Goods And Furniture" = "Artigos domésticos e móveis";
+"Home, furniture, and garden" = "Casa, mobília e jardim";
 
 /* Country option for a site address. */
 "Honduras" = "Honduras";
 
 /* Country option for a site address. */
 "Hong Kong" = "Hong Kong";
-
-/* Industry option in the store creation category question. */
-"Hospitals" = "Hospitais";
-
-/* Industry option in the store creation category question. */
-"Hotels, Inns, Or Motels" = "Hotéis, pousadas ou motéis";
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Como podemos melhorar?";
@@ -3633,9 +3420,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's inventory stock status */
 "Insufficient stock" = "Estoque insuficiente";
 
-/* Industry option in the store creation category question. */
-"Insurance" = "Seguro";
-
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "Seguro (%1$@)";
 
@@ -3685,9 +3469,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Estoque";
-
-/* Industry option in the store creation category question. */
-"Investment Services" = "Serviços de investimento";
 
 /* Country option for a site address. */
 "Iran" = "Irã";
@@ -3818,9 +3599,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "Opções de formato da etiqueta";
 
-/* Industry option in the store creation category question. */
-"Landscaping Services" = "Serviços de paisagismo";
-
 /* Country option for a site address. */
 "Laos" = "Laos";
 
@@ -3865,12 +3643,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Publique sua loja";
-
-/* Industry option in the store creation category question. */
-"Laundry Or Cleaning Services" = "Serviços de lavanderia ou limpeza";
-
-/* Industry option in the store creation category question. */
-"Lead Generation" = "Geração de leads";
 
 /* Title of the secondary button on the store onboarding payments setup screen. */
 "Learn More" = "Saiba Mais";
@@ -4004,9 +3776,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Loading. Verb */
 "Loading..." = "Carregando...";
 
-/* Industry option in the store creation category question. */
-"Loans Or Lending" = "Empréstimos";
-
 /* Button title.  Tapping takes the user to the login form.
    Button title. Takes the user to the login by store address flow.
    Log In button label.
@@ -4093,9 +3862,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button. */
 "Lost your password?" = "Esqueceu sua senha?";
 
-/* Industry option in the store creation category question. */
-"Lotteries" = "Loterias";
-
 /* Country option for a site address. */
 "Luxembourg" = "Luxemburgo";
 
@@ -4170,12 +3936,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domínio mapeado";
 
-/* Industry option in the store creation category question. */
-"Marijuana Dispensaries" = "Dispensários de maconha";
-
-/* Industry option in the store creation category question. */
-"Marijuana-related Products" = "Produtos relacionados à maconha";
-
 /* Title for the swipe order action to mark it as completed */
 "Mark Completed" = "Marcar como concluído";
 
@@ -4207,9 +3967,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Martinique" = "Martinica";
 
-/* Industry option in the store creation category question. */
-"Massage Parlors" = "Casas de massagens";
-
 /* Country option for a site address. */
 "Mauritania" = "Mauritânia";
 
@@ -4227,24 +3984,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "A mídia não tem um arquivo associado a ser enviado.";
-
-/* Industry option in the store creation category question. */
-"Medical Devices" = "Dispositivos médicos";
-
-/* Industry option in the store creation category question. */
-"Medical Laboratories" = "Laboratórios médicos";
-
-/* Industry option in the store creation category question. */
-"Medical Organizations" = "Organizações médicas";
-
-/* Industry group option in the store creation category question. */
-"Medical Services" = "Serviços médicos";
-
-/* Industry group option in the store creation category question. */
-"Membership Organizations" = "Associações";
-
-/* Industry option in the store creation category question. */
-"Mental Health Services" = "Serviços de saúde mental";
 
 /* Title of the Menu tab */
 "Menu" = "Menu";
@@ -4296,12 +4035,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Monaco" = "Mônaco";
 
-/* Industry option in the store creation category question. */
-"Money Orders" = "Ordens de pagamento";
-
-/* Industry option in the store creation category question. */
-"Money Services Or Transmission" = "Serviços monetários e transferência de fundos";
-
 /* Country option for a site address. */
 "Mongolia" = "Mongólia";
 
@@ -4331,9 +4064,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Morocco" = "Marrocos";
 
-/* Industry option in the store creation category question. */
-"Mortgage Consulting Services" = "Serviços de consultoria de hipoteca";
-
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "Mover";
 
@@ -4349,9 +4079,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Move o comentário para a lixeira";
 
-/* Industry option in the store creation category question. */
-"Movie Theaters" = "Cinemas";
-
 /* Country option for a site address. */
 "Mozambique" = "Moçambique";
 
@@ -4364,12 +4091,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Multiple payment options title feature on the Free Trial Summary Screen
    Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Várias opções de pagamento";
-
-/* Industry option in the store creation category question. */
-"Music Or Other Media" = "Música ou outras mídias";
-
-/* Industry option in the store creation category question. */
-"Musicians, Bands, Or Orchestras" = "Apresentações de músicos, bandas ou orquestras";
 
 /* Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
@@ -4637,9 +4358,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Agora que adicionou atributos, você pode criar sua primeira variação!";
 
-/* Industry option in the store creation category question. */
-"Nursing Or Personal Care Facilities" = "Instalações de enfermagem ou cuidados pessoais";
-
 /* Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
@@ -4697,9 +4415,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for on hold order status. */
 "On hold" = "Em espera";
 
-/* Industry option in the store creation category question. */
-"Online Gambling" = "Jogos de azar online";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Apenas uma foto pode ser exibida por variação";
 
@@ -4755,9 +4470,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility hint to open web page in Safari */
 "Opens the web page in Safari" = "Abrir a página no Safari";
 
-/* Industry option in the store creation category question. */
-"Opticians And Eyeglasses" = "Ótica e óculos";
-
 /* Placeholder of cell presenting the title of the new attribute option. */
 "Option name" = "Nome da opção";
 
@@ -4774,9 +4486,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Opções";
-
-/* Industry option in the store creation category question. */
-"Optometrists and Ophthalmologists" = "Optometria e oftalmologia";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Ou";
@@ -4837,6 +4546,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Organize os produtos nos grupos relacionados";
 
+/* Title text in the store creation loading screen */
+"Organizing the stock room" = "Organização do estoque";
+
 /* Title for the Origin Country row in Customs screen of Shipping Label flow */
 "Origin Country" = "País de origem";
 
@@ -4846,59 +4558,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Pacote original";
 
-/* Industry option in the store creation category question. */
-"Osteopaths" = "Osteopatia";
-
 /* Generic name of non-default discount types
+   Industry option in the store creation category question.
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Outros";
 
-/* Industry option in the store creation category question. */
-"Other Building Services" = "Outros serviços de construção";
-
-/* Industry option in the store creation category question. */
-"Other Business Services" = "Outros serviços de negócios";
-
-/* Industry option in the store creation category question. */
-"Other Digital Goods" = "Outros produtos digitais";
-
-/* Industry option in the store creation category question. */
-"Other Entertainment And Recreation" = "Outros entretenimentos e recreações";
-
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "Outra extensão\/plugin";
 
-/* Industry option in the store creation category question. */
-"Other Financial Institutions" = "Outras instituições financeiras";
-
-/* Industry option in the store creation category question. */
-"Other Food And Dining" = "Outros serviços alimentícios e de refeições";
-
-/* Industry option in the store creation category question. */
-"Other Marketing Services" = "Outros serviços de marketing";
-
-/* Industry option in the store creation category question. */
-"Other Medical Services" = "Outros serviços médicos";
-
-/* Industry option in the store creation category question. */
-"Other Membership Organizations" = "Outras associações";
-
-/* Industry option in the store creation category question. */
-"Other Merchandise" = "Outras mercadorias";
-
-/* Industry option in the store creation category question. */
-"Other Personal Services" = "Outros serviços pessoais";
-
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Outros sites";
-
-/* Industry option in the store creation category question. */
-"Other Transportation Services" = "Outros serviços de transporte";
-
-/* Industry option in the store creation category question. */
-"Other Travel And Lodging" = "Outras opções de viagem e hospedagem";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -4966,9 +4637,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Categoria mãe";
-
-/* Industry option in the store creation category question. */
-"Parking Lots" = "Estacionamentos";
 
 /* Title of the banner when the order is not editable */
 "Parts of this order are not currently editable" = "Partes deste pedido não podem ser editadas no momento";
@@ -5074,17 +4742,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Encerrar conta permanentemente";
 
-/* Industry option in the store creation category question. */
-"Personal Fundraising Or Crowdfunding" = "Captação de recursos pessoais ou financiamento coletivo";
-
-/* Industry group option in the store creation category question. */
-"Personal Services" = "Serviços pessoais";
-
 /* Country option for a site address. */
 "Peru" = "Peru";
-
-/* Industry option in the store creation category question. */
-"Pharmacies Or Pharmaceuticals" = "Farmácias ou farmacêuticas";
 
 /* Country option for a site address. */
 "Philippines" = "Filipinas";
@@ -5098,9 +4757,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Número de telefone: %@";
-
-/* Industry option in the store creation category question. */
-"Photography Studios" = "Estúdios de fotografia";
 
 /* Product images (Product images page title) */
 "Photos" = "Fotos";
@@ -5328,14 +4984,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Plugin List screen */
 "Plugins" = "Plugins";
 
-/* Industry option in the store creation category question. */
-"Podiatrists and Chiropodists" = "Podologia e quiropodia";
-
 /* Country option for a site address. */
 "Poland" = "Polônia";
-
-/* Industry option in the store creation category question. */
-"Political Organizations" = "Organizações políticas";
 
 /* Country option for a site address. */
 "Portugal" = "Portugal";
@@ -5434,9 +5084,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
 "Printing Labels" = "Imprimindo etiquetas";
-
-/* Industry option in the store creation category question. */
-"Printing and Publishing" = "Impressão e publicação";
 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Aviso de privacidade para usuários residentes da Califórnia";
@@ -5559,15 +5206,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Produtos divulgados em vez do produto visualizado no momento (isto é, produtos mais rentáveis)";
 
-/* Industry group option in the store creation category question. */
-"Professional Services" = "Serviços profissionais";
-
-/* Industry option in the store creation category question. */
-"Property Rentals" = "Aluguel de imóveis";
-
-/* Industry option in the store creation category question. */
-"Protective Or Security Services" = "Serviços de proteção ou segurança";
-
 /* One of the possible options in Product Visibility */
 "Public" = "Público";
 
@@ -5683,9 +5321,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Recibo de %1$@";
 
-/* Industry option in the store creation category question. */
-"Recreational Camps" = "Acampamentos recreativos";
-
 /* Button label to refresh a web page */
 "Refresh" = "Atualizar";
 
@@ -5768,12 +5403,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Preço normal: %@";
-
-/* Industry group option in the store creation category question. */
-"Regulated And Age-Restricted Products" = "Produtos controlados e com restrição de idade";
-
-/* Industry option in the store creation category question. */
-"Religious Organizations" = "Organizações religiosas";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
@@ -5873,9 +5502,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Redefinir sua senha";
 
-/* Industry option in the store creation category question. */
-"Restaurants And Nightlife" = "Restaurantes e vida noturna";
-
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "Restringido a clientes com e-mails: %1$@";
 
@@ -5884,9 +5510,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Restriction Type row in Customs screen of Shipping Label flow */
 "Restriction Type" = "Tipo de restrição";
-
-/* Industry group option in the store creation category question. */
-"Retail" = "Varejo";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search coupons. */
 "Retrieves a list of coupons that contain a given keyword." = "Recupera uma lista de cupons que contêm uma determinada palavra-chave.";
@@ -5908,6 +5531,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
    Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails
    Retry Action on the notice when loading product categories fails
+   Retry action title
    Retry button on the error notice for the upgrade view
    Retry the last action */
 "Retry" = "Tentar novamente";
@@ -5947,9 +5571,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Post Rich content */
 "Rich Content" = "Conteúdo avançado";
-
-/* Industry option in the store creation category question. */
-"Ridesharing" = "Transporte de passageiros por aplicativos";
 
 /* Country option for a site address. */
 "Romania" = "Romênia";
@@ -6036,9 +5657,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Sales channels" = "Canais de vendas";
-
-/* Industry option in the store creation category question. */
-"Salons Or Barbers" = "Salões de beleza ou barbearias";
 
 /* Country option for a site address. */
 "Samoa" = "Samoa";
@@ -6144,9 +5762,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Apenas resultados da busca";
-
-/* Industry option in the store creation category question. */
-"Security Brokers Or Dealers" = "Corretagem e assistência de compra e venda de títulos financeiros";
 
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
@@ -6390,9 +6005,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping method title for customer info section */
 "Shipping Method" = "Método de envio";
 
-/* Industry option in the store creation category question. */
-"Shipping Or Forwarding" = "Expedição ou entrega";
-
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Reembolso de envio";
 
@@ -6426,9 +6038,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Somente envio";
-
-/* Industry option in the store creation category question. */
-"Shoes" = "Sapatos";
 
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Resultados para compra e pesquisa";
@@ -6554,12 +6163,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "Publicidade social";
-
-/* Industry option in the store creation category question. */
-"Software" = "Software";
-
-/* Industry option in the store creation category question. */
-"Software As A Service" = "Software como serviço";
 
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "Software atualizado";
@@ -6697,12 +6300,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
 
-/* Industry option in the store creation category question. */
-"Special Trade Contractors" = "Serviços especializados para construção";
-
-/* Industry option in the store creation category question. */
-"Sports Forecasting Or Prediction Services" = "Serviços de previsão do tempo ou esportiva";
-
 /* Option in the store creation selling platforms question. */
 "Square" = "Square";
 
@@ -6833,9 +6430,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
 "Summary: Order #%1$@" = "Resumo: pedido #%1$@";
-
-/* Industry option in the store creation category question. */
-"Supplements Or Nutraceuticals" = "Suplementos ou nutracêuticos";
 
 /* Country option for a site address. */
 "Suriname" = "Suriname";
@@ -7059,21 +6653,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Os impostos são calculados automaticamente, de acordo com o endereço de sua loja.";
 
-/* Industry option in the store creation category question. */
-"Taxis And Limos" = "Táxis e limusines";
-
-/* Industry option in the store creation category question. */
-"Telecom Equipment" = "Equipamento de telecomunicações";
-
-/* Industry option in the store creation category question. */
-"Telecom Services" = "Serviços de telecomunicações";
-
-/* Industry option in the store creation category question. */
-"Telemarketing" = "Telemarketing";
-
-/* Industry option in the store creation category question. */
-"Telemedicine And Telehealth" = "Telemedicina e telessaúde";
-
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Tell us all about your experience with in-person payments." = "Conte-nos sobre sua experiência com pagamentos presenciais.";
 
@@ -7100,9 +6679,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Teste a visualização dos Complementos de pedidos enquanto nos preparamos para lançar";
-
-/* Industry option in the store creation category question. */
-"Testing Laboratories" = "Laboratórios de teste";
 
 /* Button title
    Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
@@ -7384,6 +6960,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Não foi possível gerar uma variação.";
 
+/* Subtitle text in the store creation loading screen */
+"There are more than 150 WooCommerce meetups held all over the world! A great way to meet fellow store owners." = "Acontecem mais de 150 encontros do WooCommerce no mundo todo! É uma ótima maneira de conhecer outros proprietários de lojas.";
+
 /* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
 "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "Há requisitos pendentes na sua conta. Para continuar aceitando pagamentos presenciais, regularize as pendências até %1$@.";
 
@@ -7540,9 +7119,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Isso marcará o seu pedido como concluído se você tiver recebido (o valor integral) fora do WooCommerce";
 
-/* Industry option in the store creation category question. */
-"Timeshares" = "Timeshare (tempo compartilhado)";
-
 /* Country option for a site address. */
 "Timor-Leste" = "Timor-Leste";
 
@@ -7605,9 +7181,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Para usar esse aplicativo para %@, é necessário ter o plugin do Jetpack conectado à sua loja.";
 
-/* Industry option in the store creation category question. */
-"Tobacco Or Cigars" = "Tabaco ou charutos";
-
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
    Title of the Analytics Hub Today's selection range
@@ -7654,12 +7227,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
 "Total package weight: %1$@" = "Peso total da embalagem: %1$@";
 
-/* Industry option in the store creation category question. */
-"Tourist Attractions" = "Atrações turísticas";
-
-/* Industry option in the store creation category question. */
-"Towing Services" = "Serviços de reboque";
-
 /* Track shipment button title */
 "Track Shipment" = "Rastrear envio";
 
@@ -7683,21 +7250,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Número de rastreamento %@";
 
-/* Industry option in the store creation category question. */
-"Trailer Parks and Campgrounds" = "Estacionamentos de trailers e acampamentos";
-
-/* Industry group option in the store creation category question. */
-"Transportation" = "Transporte";
-
 /* Display label for the review's trash status
    Move a comment to the trash */
 "Trash" = "Enviar para a lixeira";
-
-/* Industry option in the store creation category question. */
-"Travel Agencies" = "Agências de viagem";
-
-/* Industry group option in the store creation category question. */
-"Travel And Lodging" = "Viagem e hospedagem";
 
 /* Plan name for an expired free trial */
 "Trial ended" = "Teste terminado";
@@ -7707,9 +7262,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Solução de problemas";
-
-/* Industry option in the store creation category question. */
-"Truck Stop" = "Parada de caminhões";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Confiar";
@@ -7900,6 +7452,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "Não foi possível carregar as transportadoras";
+
+/* Error message when component options are not loaded on the component settings screen */
+"Unable to load all component options" = "Não foi possível carregar todas as opções de componentes";
 
 /* Load Attribute Options Action Failed */
 "Unable to load attribute options" = "Não foi possível carregar as opções de atributo";
@@ -8243,9 +7798,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "O nome de usuário deve ter pelo menos 4 caracteres.";
 
-/* Industry option in the store creation category question. */
-"Utilities" = "Serviços públicos";
-
 /* Country option for a site address. */
 "Uzbekistan" = "Uzbequistão";
 
@@ -8257,9 +7809,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Vanuatu" = "Vanuatu";
-
-/* Industry option in the store creation category question. */
-"Vapes, E-cigarettes, E-juice Or Related Products" = "Vapes, cigarros eletrônicos, essências ou produtos relacionados";
 
 /* Display label for variable product type. */
 "Variable" = "Variável";
@@ -8308,9 +7857,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displays the connected reader software version */
 "Version: %1$@" = "Versão: %1$@";
-
-/* Industry option in the store creation category question. */
-"Veterinary Services" = "Serviços veterinários";
 
 /* Country option for a site address. */
 "Vietnam" = "Vietnã";
@@ -8375,9 +7921,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple virtual product type. */
 "Virtual" = "Virtual";
 
-/* Industry option in the store creation category question. */
-"Virtual Currencies" = "Moedas virtuais";
-
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Produto virtual";
 
@@ -8390,9 +7933,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "Visitantes";
-
-/* Industry option in the store creation category question. */
-"Vocational Schools And Trade Schools" = "Escolas profissionalizantes e escolas técnicas";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "ESCREVER NOTA";
@@ -8408,9 +7948,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Wallis and Futuna" = "Wallis e Futuna";
-
-/* Industry option in the store creation category question. */
-"Warranty Services" = "Serviços de garantia";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "Estamos nos preparando para a criação da sua loja";
@@ -8533,9 +8070,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Enviamos por e-mail um link de registro para você criar uma nova conta no WordPress.com. Verifique seu e-mail neste dispositivo e toque no link que você recebeu do WordPress.com.";
 
-/* Industry option in the store creation category question. */
-"Weapons Or Munitions" = "Armas ou munições";
-
 /* Title of a button linking to the app's website */
 "Website" = "Site";
 
@@ -8616,11 +8150,11 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Shipping Settings > Width */
 "Width" = "Largura";
 
-/* Industry option in the store creation category question. */
-"Wire Transfers" = "Transferências bancárias";
-
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
+
+/* Title text in the store creation loading screen */
+"Woo! We are creating your store" = "Eba! Estamos criando sua loja.";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";

@@ -1,1 +1,1 @@
-Bu sefer Şahsen Ödemeler ve siparişlere daha fazla ilgi gösterdik. Sipariş oluştururken birden fazla ürünü aramanızı ve seçmenizi kolaylaştırdık. Anlık bildirimler ve ziyaretçi istatistikleri gibi ek işlevler istiyorsanız uygulamadan Jetpack'i de yükleyebilirsiniz.
+Bu sürümde, sipariş oluşturma ve ödeme alma deneyiminizi geliştirmeye odaklandık. Siparişinize ekleyeceğiniz bir ürünü ararken ürünleri filtrelemek artık mümkün. Lütfen deneyin ve geri bildiriminizi paylaşın.

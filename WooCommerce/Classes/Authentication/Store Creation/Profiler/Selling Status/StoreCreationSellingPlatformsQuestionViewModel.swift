@@ -10,17 +10,22 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
     /// Other online platforms that the user might be selling. Source of truth:
     /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
     enum Platform: String, CaseIterable {
+        case adobe = "adobe-commerce"
         case amazon
         case bigCartel = "big-cartel"
         case bigCommerce = "big-commerce"
         case eBay = "ebay"
+        case ecwid
         case etsy
         case facebookMarketplace = "facebook-marketplace"
         case googleShopping = "google-shopping"
+        case magento
         case pinterest
         case shopify
         case square
         case squarespace
+        case walmart
+        case wish
         case wix
         case wordPress
     }
@@ -32,20 +37,16 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
     let subtitle: String = Localization.subtitle
 
     /// Question content.
-    /// TODO: 8376 - update values when API is ready.
     let platforms: [Platform] = Platform.allCases
 
     @Published private(set) var selectedPlatforms: Set<Platform> = []
 
     private let onContinue: (StoreCreationSellingStatusAnswer?) -> Void
-    private let onSkip: () -> Void
 
     init(storeName: String,
-         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void,
-         onSkip: @escaping () -> Void) {
+         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void) {
         self.topHeader = storeName
         self.onContinue = onContinue
-        self.onSkip = onSkip
     }
 }
 
@@ -56,7 +57,7 @@ extension StoreCreationSellingPlatformsQuestionViewModel: OptionalStoreCreationP
     }
 
     func skipButtonTapped() {
-        onSkip()
+        onContinue(.init(sellingStatus: .alreadySellingOnline, sellingPlatforms: []))
     }
 }
 
@@ -74,6 +75,11 @@ extension StoreCreationSellingPlatformsQuestionViewModel {
 extension StoreCreationSellingPlatformsQuestionViewModel.Platform {
     var description: String {
         switch self {
+        case .adobe:
+            return NSLocalizedString(
+                "Adobe Commerce",
+                comment: "Option in the store creation selling platforms question."
+            )
         case .amazon:
             return NSLocalizedString(
                 "Amazon",
@@ -94,6 +100,11 @@ extension StoreCreationSellingPlatformsQuestionViewModel.Platform {
                 "Ebay",
                 comment: "Option in the store creation selling platforms question."
             )
+        case .ecwid:
+            return NSLocalizedString(
+                "Ecwid",
+                comment: "Option in the store creation selling platforms question."
+            )
         case .etsy:
             return NSLocalizedString(
                 "Etsy",
@@ -107,6 +118,11 @@ extension StoreCreationSellingPlatformsQuestionViewModel.Platform {
         case .googleShopping:
             return NSLocalizedString(
                 "Google Shopping",
+                comment: "Option in the store creation selling platforms question."
+            )
+        case .magento:
+            return NSLocalizedString(
+                "Magento",
                 comment: "Option in the store creation selling platforms question."
             )
         case .pinterest:
@@ -127,6 +143,16 @@ extension StoreCreationSellingPlatformsQuestionViewModel.Platform {
         case .squarespace:
             return NSLocalizedString(
                 "Squarespace",
+                comment: "Option in the store creation selling platforms question."
+            )
+        case .walmart:
+            return NSLocalizedString(
+                "Walmart",
+                comment: "Option in the store creation selling platforms question."
+            )
+        case .wish:
+            return NSLocalizedString(
+                "Wish",
                 comment: "Option in the store creation selling platforms question."
             )
         case .wix:

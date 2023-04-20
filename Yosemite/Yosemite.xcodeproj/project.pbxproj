@@ -326,6 +326,7 @@
 		B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */; };
 		B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */; };
 		B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */; };
+		B948088E29F13FA1003C2EA4 /* TopProductsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B948088D29F13FA1003C2EA4 /* TopProductsProvider.swift */; };
 		B9AECD3C2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */; };
 		B9AECD3E2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */; };
 		B9AECD402850FE4600E78584 /* Order+CardPresentPayment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */; };
@@ -772,6 +773,7 @@
 		B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerTests.swift; sourceTree = "<group>"; };
 		B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerDelegateWrapper.swift; sourceTree = "<group>"; };
+		B948088D29F13FA1003C2EA4 /* TopProductsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopProductsProvider.swift; sourceTree = "<group>"; };
 		B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStore.swift; sourceTree = "<group>"; };
 		B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityAction.swift; sourceTree = "<group>"; };
 		B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+CardPresentPayment.swift"; sourceTree = "<group>"; };
@@ -923,6 +925,7 @@
 			children = (
 				0212AC61242C68B600C51F6C /* ResultsController+SortProducts.swift */,
 				0248B3642459018100A271A4 /* ResultsController+FilterProducts.swift */,
+				B948088D29F13FA1003C2EA4 /* TopProductsProvider.swift */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -2151,6 +2154,7 @@
 				31799AFA27050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift in Sources */,
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
 				DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */,
+				B948088E29F13FA1003C2EA4 /* TopProductsProvider.swift in Sources */,
 				74858DB421C02B5A00754F3E /* OrderNote+ReadOnlyType.swift in Sources */,
 				0248B3652459018100A271A4 /* ResultsController+FilterProducts.swift in Sources */,
 				02E262C2238CF74D00B79588 /* StorageShippingSettingsService.swift in Sources */,

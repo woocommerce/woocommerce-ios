@@ -85,13 +85,17 @@ final class ProductSelectorViewModel: ObservableObject {
             .flatMap { $0 }
     }
 
+    private lazy var topProductsProvider: TopProductsProvider = {
+        TopProductsProvider(storageManager: ServiceLocator.storageManager)
+    }()
+
     /// Popular products, that is, most sold products in cache
     ///
-    private var popularProducts: [Product] = []
+    private var popularProductsIds: [Int64] = []
 
     /// Most recently sold products
     ///
-    private var lastSoldProducts: [Product] = []
+    private var lastSoldProductsIds: [Int64] = []
 
     private var shouldShowTopProducts: Bool {
         searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
@@ -228,9 +232,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
-        Task { @MainActor in
-            await loadTopProducts()
-        }
+        loadTopProducts()
 
         configureSyncingCoordinator()
         refreshDataAndSync()
@@ -267,9 +269,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
-        Task { @MainActor in
-            await loadTopProducts()
-        }
+        loadTopProducts()
 
         configureSyncingCoordinator()
         refreshDataAndSync()
@@ -566,6 +566,10 @@ private extension ProductSelectorViewModel {
     }
 
     func createSectionsAddingTopProductsIfRequired(from baseProducts: [Product]) {
+        debugPrint("highestPageBeingSynced", syncingCoordinator.highestPageBeingSynced)
+
+        let popularProducts = baseProducts.filter { popularProductsIds.contains($0.productID) }
+
         guard popularProducts.isNotEmpty,
               shouldShowTopProducts else {
             sections = [ProductsSection(type: .restOfProducts, products: baseProducts)]
@@ -573,7 +577,7 @@ private extension ProductSelectorViewModel {
         }
 
         sections = [ProductsSection(type: .mostPopular, products: popularProducts)]
-        appendSectionIfNotEmpty(type: .lastSold, products: removeAlreadyAddedProducts(from: lastSoldProducts))
+        appendSectionIfNotEmpty(type: .lastSold, products: baseProducts.filter { lastSoldProductsIds.contains($0.productID)})
         appendSectionIfNotEmpty(type: .restOfProducts, products: removeAlreadyAddedProducts(from: baseProducts))
     }
 
@@ -657,51 +661,11 @@ private extension ProductSelectorViewModel {
         }
     }
 
-    func loadPopularProducts() async {
-        return await withCheckedContinuation { [weak self]
-            continuation in
+    func loadTopProducts() {
+        let (popularProductsIds, lastSoldProductsIds) = topProductsProvider.provideTopProductsFromCachedOrders(siteID: siteID, limitPerType: 5)
 
-            guard let self = self else { return }
-
-            let action = ProductAction.retrievePopularCachedProducts(siteID: siteID,
-                                                                     limit: Constants.topSectionsMaxLength,
-                                                                     onCompletion: { products in
-                self.popularProducts = self.removeNonPurchasableIfRequired(from: products)
-                continuation.resume(returning: ())
-            })
-
-            Task { @MainActor in
-                self.stores.dispatch(action)
-            }
-        }
-    }
-
-    func loadMostRecentlySoldProducts() async {
-        return await withCheckedContinuation { [weak self]
-            continuation in
-
-            guard let self = self else { return }
-
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: siteID,
-                                                                          limit: Constants.topSectionsMaxLength,
-                                                                          onCompletion: { products in
-                self.lastSoldProducts = self.removeNonPurchasableIfRequired(from: products)
-                continuation.resume(returning: ())
-            })
-
-            Task { @MainActor in
-                self.stores.dispatch(action)
-            }
-        }
-    }
-
-    func loadTopProducts() async {
-        await self.loadPopularProducts()
-        await self.loadMostRecentlySoldProducts()
-
-        Task { @MainActor in
-            reloadData()
-        }
+        self.popularProductsIds = popularProductsIds
+        self.lastSoldProductsIds = lastSoldProductsIds
     }
 
     /// Remove the non purchasable (if required)

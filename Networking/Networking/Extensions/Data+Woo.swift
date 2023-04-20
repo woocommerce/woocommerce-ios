@@ -6,7 +6,7 @@ extension Data {
     var hasDataEnvelope: Bool {
         let decoder = JSONDecoder()
         do {
-            _ = try decoder.decode(ContentEnvelope<AnyDecodable>.self, from: self)
+            _ = try decoder.decode(ContentEnvelope.self, from: self)
             return true
         } catch {
             return false
@@ -16,8 +16,8 @@ extension Data {
 
 /// Helper struct to attempt parsing some JSON data with a `data` key at the root.
 ///
-private struct ContentEnvelope<Content: Decodable>: Decodable {
-    let content: Content
+private struct ContentEnvelope: Decodable {
+    let content: AnyDecodable
 
     private enum CodingKeys: String, CodingKey {
         case content = "data"

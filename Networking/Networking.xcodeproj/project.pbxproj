@@ -706,6 +706,7 @@
 		DE2095BD27956D7900171F1C /* CouponReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BC27956D7900171F1C /* CouponReport.swift */; };
 		DE2095BF279583A100171F1C /* CouponReportListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BE279583A100171F1C /* CouponReportListMapper.swift */; };
 		DE2095C127966EC800171F1C /* coupon-reports.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2095C027966EC800171F1C /* coupon-reports.json */; };
+		DE2D642829F0E85600F3659B /* Data+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2D642729F0E85600F3659B /* Data+Woo.swift */; };
 		DE2E8E9D29530EEF002E4B14 /* WordPressSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8E9C29530EEF002E4B14 /* WordPressSite.swift */; };
 		DE2E8E9F295310C5002E4B14 /* WordPressSiteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8E9E295310C5002E4B14 /* WordPressSiteMapper.swift */; };
 		DE2E8EA12953115C002E4B14 /* WordPressSiteRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA02953115C002E4B14 /* WordPressSiteRemote.swift */; };
@@ -1622,6 +1623,7 @@
 		DE2095BC27956D7900171F1C /* CouponReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReport.swift; sourceTree = "<group>"; };
 		DE2095BE279583A100171F1C /* CouponReportListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapper.swift; sourceTree = "<group>"; };
 		DE2095C027966EC800171F1C /* coupon-reports.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-reports.json"; sourceTree = "<group>"; };
+		DE2D642729F0E85600F3659B /* Data+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Woo.swift"; sourceTree = "<group>"; };
 		DE2E8E9C29530EEF002E4B14 /* WordPressSite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSite.swift; sourceTree = "<group>"; };
 		DE2E8E9E295310C5002E4B14 /* WordPressSiteMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteMapper.swift; sourceTree = "<group>"; };
 		DE2E8EA02953115C002E4B14 /* WordPressSiteRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteRemote.swift; sourceTree = "<group>"; };
@@ -2845,6 +2847,7 @@
 				265EFBDB285257950033BD33 /* Order+Fallbacks.swift */,
 				DE2E8EB0295464C5002E4B14 /* URLRequest+Request.swift */,
 				EE62EE62295AD45E009C965B /* String+URL.swift */,
+				DE2D642729F0E85600F3659B /* Data+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3657,6 +3660,7 @@
 				CE430670234B99F50073CBFF /* RefundsRemote.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B50A583921AD861700617455 /* APNSDevice.swift in Sources */,
+				DE2D642829F0E85600F3659B /* Data+Woo.swift in Sources */,
 				DEC51A95274CDA52009F3DF4 /* SitePluginMapper.swift in Sources */,
 				26455E2425F66982008A1D32 /* ProductAttributeTermRemote.swift in Sources */,
 				036563DD29069BE400D84BFD /* JustInTimeMessageListMapper.swift in Sources */,

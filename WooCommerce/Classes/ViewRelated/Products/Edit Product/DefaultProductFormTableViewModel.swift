@@ -118,6 +118,8 @@ private extension DefaultProductFormTableViewModel {
                 return .components(viewModel: componentsRow(product: product, isActionable: actionable), isActionable: actionable)
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: product, isActionable: actionable), isActionable: actionable)
+            case .noVariationsWarning:
+                return .noVariationsWarning(viewModel: noVariationsWarningRow())
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -581,6 +583,16 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details,
                                                         isActionable: isActionable)
     }
+
+    // MARK: Variable Subscription products only
+
+    func noVariationsWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
+        let icon = UIImage.infoOutlineImage
+        let title = Localization.noVariationsWarningTitle
+        return ProductFormSection.SettingsRow.WarningViewModel(icon: icon,
+                                                               title: title,
+                                                               isActionable: false)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -794,5 +806,10 @@ private extension DefaultProductFormTableViewModel {
                                                                comment: "Format of the regular price on the Subscription row")
         static let subscriptionExpiryFormat = NSLocalizedString("Expire after: %@",
                                                                 comment: "Format of the expiry details on the Subscription row")
+
+        // No variations warning row (read-only variable subscription)
+        static let noVariationsWarningTitle =
+            NSLocalizedString("You can only add variable subscriptions in the web dashboard",
+                              comment: "Title of the no variations warning row in the product form when a variable subscription product has no variations.")
     }
 }

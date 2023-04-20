@@ -39,6 +39,8 @@ enum ProductFormEditAction: Equatable {
     case components(actionable: Bool)
     // Subscription products only
     case subscription(actionable: Bool)
+    // Variable Subscription products only
+    case noVariationsWarning
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -167,6 +169,8 @@ private extension ProductFormActionsFactory {
             return allSettingsSectionActionsForCompositeProduct()
         case .subscription:
             return allSettingsSectionActionsForSubscriptionProduct()
+        case .variableSubscription:
+            return isSubscriptionProductsEnabled ? allSettingsSectionActionsForVariableSubscriptionProduct() : allSettingsSectionActionsForNonCoreProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()
         }
@@ -332,6 +336,26 @@ private extension ProductFormActionsFactory {
         return actions.compactMap { $0 }
     }
 
+    func allSettingsSectionActionsForVariableSubscriptionProduct() -> [ProductFormEditAction] {
+        let shouldShowNoVariationsWarning = product.product.variations.isEmpty
+        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
+        let shouldShowReviewsRow = product.reviewsAllowed
+
+        let actions: [ProductFormEditAction?] = [
+            shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
+            shouldShowAttributesRow ? .attributes(editable: editable) : nil,
+            shouldShowReviewsRow ? .reviews: nil,
+            .inventorySettings(editable: false),
+            .categories(editable: editable),
+            .addOns(editable: editable),
+            .tags(editable: editable),
+            .shortDescription(editable: editable),
+            .linkedProducts(editable: editable),
+            .productType(editable: false)
+        ]
+        return actions.compactMap { $0 }
+    }
+
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
@@ -424,6 +448,9 @@ private extension ProductFormActionsFactory {
             return true
         case .subscription:
             // The subscription row is always visible in the settings section for a subscription product.
+            return true
+        case .noVariationsWarning:
+            // Always visible when available
             return true
         default:
             return false

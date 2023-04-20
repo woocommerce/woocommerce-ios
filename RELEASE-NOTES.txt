@@ -2,6 +2,7 @@
 
 13.3
 -----
+- [***] Payments: UK-based stores merchants can take In-Person Payments. [https://github.com/woocommerce/woocommerce-ios/pull/9496]
 - [*] Store creation free trial flow now includes 3 profiler questions again with updated options: store category, selling status, and store country. [https://github.com/woocommerce/woocommerce-ios/pull/9513]
 - [Internal] Store onboarding: Mark "Launch your store" task as complete if the store is already public. This is a workaround for a backend issue which marks "Launch your store" task incomplete for already live stores. [https://github.com/woocommerce/woocommerce-ios/pull/9507]
 

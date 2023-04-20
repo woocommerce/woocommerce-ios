@@ -28,11 +28,22 @@ struct ProductTagListMapper: Mapper {
                 return try decoder.decode([ProductTag].self, from: response)
             }
         case .create:
-            if hasDataEnvelope {
-                return try decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).data.tags
-            } else {
-                return try decoder.decode(ProductTagListBatchCreateContainer.self, from: response).tags
-            }
+            let tags: [ProductTagFromBatchCreation] = {
+                if hasDataEnvelope {
+                    return (try? decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).data.tags) ?? []
+                } else {
+                    return (try? decoder.decode(ProductTagListBatchCreateContainer.self, from: response).tags) ?? []
+                }
+            }()
+            return tags
+                .filter { $0.error == nil }
+                .compactMap { (tagCreated) -> ProductTag? in
+                    if let name = tagCreated.name, let slug = tagCreated.slug {
+                        return ProductTag(siteID: tagCreated.siteID, tagID: tagCreated.tagID, name: name, slug: slug)
+                    }
+                    return nil
+                }
+
         case .delete:
             if hasDataEnvelope {
                 return try decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).data.tags
@@ -76,7 +87,7 @@ private struct ProductTagListBatchCreateEnvelope: Decodable {
 }
 
 private struct ProductTagListBatchCreateContainer: Decodable {
-    let tags: [ProductTag]
+    let tags: [ProductTagFromBatchCreation]
 
     private enum CodingKeys: String, CodingKey {
         case tags = "create"

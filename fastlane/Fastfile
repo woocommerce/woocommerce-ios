@@ -50,6 +50,8 @@ COMMON_EXPORT_OPTIONS = { manageAppVersionAndBuildNumber: false }.freeze
 
 TEST_SCHEME = 'WooCommerce'
 
+CONCURRENT_SIMULATORS = 2
+
 # List of `.strings` files manually maintained by developers (as opposed to being automatically extracted from the code)
 # which we will merge into the main `Localizable.strings` file imported by GlotPress, then extract back once we download the translations.
 #
@@ -1127,10 +1129,16 @@ lane :test_without_building do |options|
 
   inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
 
+  # Excluding unit tests from parallel testing
+  parallel_testing_value = options[:name] == "UnitTests" ? false : true
+
   run_tests(
     workspace: 'WooCommerce.xcworkspace',
     scheme: TEST_SCHEME,
     device: options[:device],
+    parallel_testing: parallel_testing_value,
+    concurrent_workers: CONCURRENT_SIMULATORS,
+    max_concurrent_simulators: CONCURRENT_SIMULATORS,
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,

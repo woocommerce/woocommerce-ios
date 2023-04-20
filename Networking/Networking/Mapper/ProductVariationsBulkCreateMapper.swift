@@ -24,7 +24,11 @@ struct ProductVariationsBulkCreateMapper: Mapper {
             .siteID: siteID,
             .productID: productID
         ]
-        return try decoder.decode(ProductVariationsEnvelope.self, from: response).createdProductVariations
+        if response.hasDataEnvelope {
+            return try decoder.decode(ProductVariationsEnvelope.self, from: response).data.createdProductVariations
+        } else {
+            return try decoder.decode(ProductVariationsContainer.self, from: response).createdProductVariations
+        }
     }
 }
 
@@ -34,21 +38,17 @@ struct ProductVariationsBulkCreateMapper: Mapper {
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductVariationsEnvelope: Decodable {
-    let createdProductVariations: [ProductVariation]
+    let data: ProductVariationsContainer
 
     private enum CodingKeys: String, CodingKey {
         case data
-        case create
     }
+}
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+private struct ProductVariationsContainer: Decodable {
+    let createdProductVariations: [ProductVariation]
 
-        do {
-            let nestedContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
-            createdProductVariations = try nestedContainer.decode([ProductVariation].self, forKey: .create)
-        } catch {
-            createdProductVariations = try container.decode([ProductVariation].self, forKey: .create)
-        }
+    private enum CodingKeys: String, CodingKey {
+        case createdProductVariations = "create"
     }
 }

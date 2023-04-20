@@ -48,7 +48,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
                                                      didChangeShouldShow: { [weak self] state in
                                                          self?.onDidChangeShouldShow(state)
                                                      }),
-                viewPresenter: InPersonPaymentsViewController.self))
+                viewPresenter: SetUpTapToPayOnboardingViewController.self))
         }
 
         viewModelsAndViews.append(contentsOf: [

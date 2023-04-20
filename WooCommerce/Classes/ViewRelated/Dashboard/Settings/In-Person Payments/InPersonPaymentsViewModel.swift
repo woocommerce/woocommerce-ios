@@ -9,6 +9,9 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
     private let useCase: CardPresentPaymentsOnboardingUseCase
     let stores: StoresManager
 
+    var showSupport: (() -> Void)? = nil
+    var showURL: ((URL) -> Void)? = nil
+
     /// Initializes the view model for a specific site
     ///
     init(stores: StoresManager = ServiceLocator.stores,

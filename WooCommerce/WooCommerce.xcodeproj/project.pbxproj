@@ -562,6 +562,7 @@
 		038BC38129C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */; };
 		038BC38329C4B8ED00EAF565 /* SetUpTapToPayTryPaymentPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC38229C4B8ED00EAF565 /* SetUpTapToPayTryPaymentPromptViewController.swift */; };
 		0396CFAD2981476900E91436 /* CardPresentModalBuiltInConnectingFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */; };
+		039B7E6329F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */; };
 		039D948D27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */; };
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
 		03A6C18428B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */; };
@@ -2796,6 +2797,7 @@
 		038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayTryPaymentPromptViewModel.swift; sourceTree = "<group>"; };
 		038BC38229C4B8ED00EAF565 /* SetUpTapToPayTryPaymentPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayTryPaymentPromptViewController.swift; sourceTree = "<group>"; };
 		0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingFailed.swift; sourceTree = "<group>"; };
+		039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayOnboardingViewController.swift; sourceTree = "<group>"; };
 		039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaConstraints.swift"; sourceTree = "<group>"; };
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
 		03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift; sourceTree = "<group>"; };
@@ -6324,6 +6326,7 @@
 				314DC4BE268D183600444C9E /* CardReaderSettingsKnownReaderStorage.swift */,
 				ABC353433EABC5F0EC796222 /* CardReaderSettingsSearchingViewController.swift */,
 				0365986A29AFB11E00F297D3 /* SetUpTapToPayInformationViewController.swift */,
+				039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */,
 				038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */,
 				038BC38229C4B8ED00EAF565 /* SetUpTapToPayTryPaymentPromptViewController.swift */,
 				31FC8CE627B47591004B9456 /* CardReaderSettingsDataSource.swift */,
@@ -11892,6 +11895,7 @@
 				2678897C270E6E8B00BD249E /* SimplePaymentsAmount.swift in Sources */,
 				09F5DE5D27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift in Sources */,
 				03076D36290C162E008EE839 /* WebViewSheet.swift in Sources */,
+				039B7E6329F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift in Sources */,
 				450C2CBA24D3127500D570DD /* ProductReviewsTableViewCell.swift in Sources */,
 				029D444922F13F8A00DEFA8A /* DashboardUI.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,

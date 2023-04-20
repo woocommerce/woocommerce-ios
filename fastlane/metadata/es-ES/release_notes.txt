@@ -1,1 +1,1 @@
-Esta vez, hemos prestado especial atención a los pedidos y pagos en persona. Te hemos puesto más fácil buscar y elegir varios productos al crear un pedido. También es posible instalar Jetpack desde la aplicación si quieres funciones adicionales como, por ejemplo, notificaciones push y estadísticas de visitantes.
+Para esta versión, nos hemos centrado en mejorar tu experiencia de creación de pedidos y cobro. Ahora es posible filtrar productos al buscar un producto que quieras añadir a tu pedido. Pruébalo y haznos llegar tus comentarios.

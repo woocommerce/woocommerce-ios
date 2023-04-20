@@ -343,8 +343,8 @@ private extension StoreCreationCoordinator {
                     guard let self else { return }
                     self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: category, planToPurchase: planToPurchase)
                 } onSkip: { [weak self] in
-                    // TODO: analytics
                     guard let self else { return }
+                    self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
                     self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil, planToPurchase: planToPurchase)
                 })
         navigationController.pushViewController(questionController, animated: true)
@@ -358,14 +358,17 @@ private extension StoreCreationCoordinator {
                                    planToPurchase: WPComPlanProduct) {
         let questionController = StoreCreationSellingStatusQuestionHostingController(storeName: storeName) { [weak self] sellingStatus in
             guard let self else { return }
+            if sellingStatus?.sellingStatus == .alreadySellingOnline && sellingStatus?.sellingPlatforms?.isEmpty == true {
+                self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
+            }
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,
                                           sellingStatus: sellingStatus,
                                           planToPurchase: planToPurchase)
         } onSkip: { [weak self] in
-            // TODO: analytics
             guard let self else { return }
+            self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,

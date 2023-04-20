@@ -33,18 +33,16 @@ struct StoreCreationSellingStatusQuestionContainerView: View {
     @StateObject private var viewModel: StoreCreationSellingStatusQuestionViewModel
     private let storeName: String
     private let onContinue: (StoreCreationSellingStatusAnswer?) -> Void
-    private let onSkip: () -> Void
 
     init(storeName: String, onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void, onSkip: @escaping () -> Void) {
         self._viewModel = StateObject(wrappedValue: StoreCreationSellingStatusQuestionViewModel(storeName: storeName, onContinue: onContinue, onSkip: onSkip))
         self.storeName = storeName
         self.onContinue = onContinue
-        self.onSkip = onSkip
     }
 
     var body: some View {
         if viewModel.isAlreadySellingOnline {
-            StoreCreationSellingPlatformsQuestionView(storeName: storeName, onContinue: onContinue, onSkip: onSkip)
+            StoreCreationSellingPlatformsQuestionView(storeName: storeName, onContinue: onContinue)
         } else {
             StoreCreationSellingStatusQuestionView(viewModel: viewModel)
         }

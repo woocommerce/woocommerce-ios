@@ -22,6 +22,7 @@ extension Site {
     @NSManaged public var isJetpackConnected: Bool
     @NSManaged public var isJetpackThePluginInstalled: Bool
     @NSManaged public var jetpackConnectionActivePlugins: [String]?
+    @NSManaged public var isPublic: Bool
 
 }
 

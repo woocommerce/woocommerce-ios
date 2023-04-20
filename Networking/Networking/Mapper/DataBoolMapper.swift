@@ -7,9 +7,9 @@ struct DataBoolMapper: Mapper {
     /// (Attempts) to extract the boolean flag from a given JSON Encoded response.
     ///
     func map(response: Data) throws -> Bool {
-        do {
+        if response.hasDataEnvelope {
             return try JSONDecoder().decode(DataBool.self, from: response).data
-        } catch {
+        } else {
             return try JSONDecoder().decode(Bool.self, from: response)
         }
     }

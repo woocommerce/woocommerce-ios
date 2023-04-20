@@ -18,9 +18,9 @@ struct ProductReviewListMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(ProductReviewListEnvelope.self, from: response).productReviews
-        } catch {
+        } else {
             return try decoder.decode([ProductReview].self, from: response)
         }
     }

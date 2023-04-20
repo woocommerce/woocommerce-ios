@@ -12,9 +12,9 @@ struct CustomerMapper: Mapper {
     func map(response: Data) throws -> Customer {
         let decoder = JSONDecoder()
         decoder.userInfo = [.siteID: siteID]
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(CustomerEnvelope.self, from: response).customer
-        } catch {
+        } else {
             return try decoder.decode(Customer.self, from: response)
         }
     }

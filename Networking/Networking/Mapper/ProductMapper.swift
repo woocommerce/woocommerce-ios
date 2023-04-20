@@ -21,9 +21,9 @@ struct ProductMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(ProductEnvelope.self, from: response).product
-        } catch {
+        } else {
             return try decoder.decode(Product.self, from: response)
         }
     }

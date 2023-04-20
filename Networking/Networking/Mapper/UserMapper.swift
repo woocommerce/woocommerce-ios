@@ -16,9 +16,9 @@ struct UserMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(UserEnvelope.self, from: response).user
-        } catch {
+        } else {
             return try decoder.decode(User.self, from: response)
         }
     }

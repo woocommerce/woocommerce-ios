@@ -17,9 +17,9 @@ struct SystemStatusMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(SystemStatusEnvelope.self, from: response).systemStatus
-        } catch {
+        } else {
             return try decoder.decode(SystemStatus.self, from: response)
         }
     }

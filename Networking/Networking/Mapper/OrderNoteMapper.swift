@@ -11,9 +11,9 @@ class OrderNoteMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(OrderNoteEnvelope.self, from: response).orderNote
-        } catch {
+        } else {
             return try decoder.decode(OrderNote.self, from: response)
         }
     }

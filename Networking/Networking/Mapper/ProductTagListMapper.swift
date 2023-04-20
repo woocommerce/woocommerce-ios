@@ -21,9 +21,9 @@ struct ProductTagListMapper: Mapper {
 
         switch responseType {
           case .load:
-            do {
+            if response.hasDataEnvelope {
                 return try decoder.decode(ProductTagListEnvelope.self, from: response).tags
-            } catch {
+            } else {
                 return try decoder.decode([ProductTag].self, from: response)
             }
           case .create:

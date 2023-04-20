@@ -10,9 +10,9 @@ struct ProductSkuMapper: Mapper {
     func map(response: Data) throws -> String {
         let decoder = JSONDecoder()
 
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(ProductSkuEnvelope.self, from: response).productsSkus.first?[Constants.skuKey] ?? ""
-        } catch {
+        } else {
             return try decoder.decode(ProductSkuEnvelope.ProductsSkus.self, from: response).first?[Constants.skuKey] ?? ""
         }
     }

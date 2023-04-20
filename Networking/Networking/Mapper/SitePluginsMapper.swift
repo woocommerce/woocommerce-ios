@@ -17,9 +17,9 @@ struct SitePluginsMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(SitePluginsEnvelope.self, from: response).plugins
-        } catch {
+        } else {
             return try decoder.decode([SitePlugin].self, from: response)
         }
     }

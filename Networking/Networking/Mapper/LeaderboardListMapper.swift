@@ -8,9 +8,9 @@ struct LeaderboardListMapper: Mapper {
     ///
     func map(response: Data) throws -> [Leaderboard] {
         let decoder = JSONDecoder()
-        do {
+        if response.hasDataEnvelope {
             return try decoder.decode(LeaderboardsEnvelope.self, from: response).data
-        } catch {
+        } else {
             return try decoder.decode([Leaderboard].self, from: response)
         }
     }

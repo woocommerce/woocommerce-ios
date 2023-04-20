@@ -9,9 +9,9 @@ struct ShippingLabelAddressValidationSuccessMapper: Mapper {
     func map(response: Data) throws -> ShippingLabelAddressValidationSuccess {
         let decoder = JSONDecoder()
         let data: ShippingLabelAddressValidationResponse = try {
-            do {
+            if response.hasDataEnvelope {
                 return try decoder.decode(ShippingLabelAddressValidationResponseEnvelope.self, from: response).data
-            } catch {
+            } else {
                 return try decoder.decode(ShippingLabelAddressValidationResponse.self, from: response)
             }
         }()

@@ -85,17 +85,13 @@ final class ProductSelectorViewModel: ObservableObject {
             .flatMap { $0 }
     }
 
-    private lazy var topProductsProvider: TopProductsProvider = {
-        TopProductsProvider(storageManager: ServiceLocator.storageManager)
-    }()
-
-    /// Popular products, that is, most sold products in cache
+    /// Provides the ids of those products that were most or last sold among the cached orders
     ///
-    private var popularProductsIds: [Int64] = []
+    private let topProductsProvider: TopProductsProvider
 
-    /// Most recently sold products
+    /// Ids of those products that were most or last sold among the cached orders
     ///
-    private var lastSoldProductsIds: [Int64] = []
+    private var topProductsFromCachedOrders: TopProductsFromCachedOrders = TopProductsFromCachedOrders.empty
 
     private var shouldShowTopProducts: Bool {
         searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
@@ -211,6 +207,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
+         topProductsProvider: TopProductsProvider = TopProductsProvider(storageManager: ServiceLocator.storageManager),
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -223,6 +220,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.analytics = analytics
         self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
+        self.topProductsProvider = topProductsProvider
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -250,6 +248,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
+         topProductsProvider: TopProductsProvider = TopProductsProvider(storageManager: ServiceLocator.storageManager),
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
@@ -260,6 +259,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.analytics = analytics
         self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
+        self.topProductsProvider = topProductsProvider
         self.onProductSelectionStateChanged = nil
         self.onVariationSelectionStateChanged = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -565,20 +565,20 @@ private extension ProductSelectorViewModel {
             }
     }
 
-    func createSectionsAddingTopProductsIfRequired(from baseProducts: [Product]) {
-        debugPrint("highestPageBeingSynced", syncingCoordinator.highestPageBeingSynced)
-
-        let popularProducts = baseProducts.filter { popularProductsIds.contains($0.productID) }
+    func createSectionsAddingTopProductsIfRequired(from newProducts: [Product]) {
+        let popularProducts = Array(newProducts
+            .prefix(syncingCoordinator.pageSize))
+            .filter { topProductsFromCachedOrders.popularProductsIds.contains($0.productID) }
 
         guard popularProducts.isNotEmpty,
               shouldShowTopProducts else {
-            sections = [ProductsSection(type: .restOfProducts, products: baseProducts)]
+            sections = [ProductsSection(type: .restOfProducts, products: newProducts)]
             return
         }
 
         sections = [ProductsSection(type: .mostPopular, products: popularProducts)]
-        appendSectionIfNotEmpty(type: .lastSold, products: baseProducts.filter { lastSoldProductsIds.contains($0.productID)})
-        appendSectionIfNotEmpty(type: .restOfProducts, products: removeAlreadyAddedProducts(from: baseProducts))
+        appendSectionIfNotEmpty(type: .lastSold, products: products.filter { topProductsFromCachedOrders.lastSoldProductsIds.contains($0.productID)})
+        appendSectionIfNotEmpty(type: .restOfProducts, products: removeAlreadyAddedProducts(from: newProducts))
     }
 
     func removeAlreadyAddedProducts(from newProducts: [Product]) -> [Product] {
@@ -662,10 +662,7 @@ private extension ProductSelectorViewModel {
     }
 
     func loadTopProducts() {
-        let (popularProductsIds, lastSoldProductsIds) = topProductsProvider.provideTopProductsFromCachedOrders(siteID: siteID, limitPerType: 5)
-
-        self.popularProductsIds = popularProductsIds
-        self.lastSoldProductsIds = lastSoldProductsIds
+        topProductsFromCachedOrders = topProductsProvider.provideTopProductsFromCachedOrders(siteID: siteID)
     }
 
     /// Remove the non purchasable (if required)

@@ -1,36 +1,42 @@
-//
-//  TopProductsProvider.swift
-//  Yosemite
-//
-//  Created by César Vargas Casaseca on 20/4/23.
-//  Copyright © 2023 Automattic. All rights reserved.
-//
-
 import Foundation
+import Yosemite
 import Storage
 
-public final class TopProductsProvider {
+/// Encapsulates the ids of those products that were most or last sold among the cached orders
+///
+struct TopProductsFromCachedOrders {
+    let popularProductsIds: [Int64]
+    let lastSoldProductsIds: [Int64]
+
+    static var empty: TopProductsFromCachedOrders {
+        TopProductsFromCachedOrders(popularProductsIds: [],
+                                    lastSoldProductsIds: [])
+    }
+}
+
+/// Provides the ids of those products that were most or last sold among the cached orders
+///
+final class TopProductsProvider {
     private let storageManager: StorageManagerType
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
+        return storageManager.viewStorage
     }()
 
-    public init(storageManager: StorageManagerType) {
+    init(storageManager: StorageManagerType) {
         self.storageManager = storageManager
     }
 
-    public func provideTopProductsFromCachedOrders(siteID: Int64, limitPerType: Int) -> ([Int64], [Int64]) {
-        let popularProductsIds = Array(popularProductsIds(from: siteID).prefix(limitPerType))
-        let lastSoldProductsIds = Array(lastSoldProductIds(from: siteID)
+    func provideTopProductsFromCachedOrders(siteID: Int64) -> TopProductsFromCachedOrders {
+        let popularProductsIds = popularProductsIds(from: siteID)
+        let lastSoldProductsIds = lastSoldProductIds(from: siteID)
             .filter { !popularProductsIds.contains($0) }
-            .prefix(limitPerType))
 
-        debugPrint("popular \(popularProductsIds) last sold \(lastSoldProductsIds)")
-
-        return (popularProductsIds, lastSoldProductsIds)
-
+        return TopProductsFromCachedOrders(popularProductsIds: popularProductsIds,
+                                           lastSoldProductsIds: lastSoldProductsIds)
     }
+}
 
+private extension TopProductsProvider {
     func popularProductsIds(from siteID: Int64) -> [Int64] {
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),

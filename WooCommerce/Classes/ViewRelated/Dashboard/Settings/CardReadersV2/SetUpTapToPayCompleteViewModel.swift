@@ -56,9 +56,8 @@ final class SetUpTapToPayCompleteViewModel: PaymentSettingsFlowPresentedViewMode
 
         let didChange = newShouldShow != shouldShow
 
-        shouldShow = newShouldShow
-
         if didChange {
+            shouldShow = newShouldShow
             didChangeShouldShow?(shouldShow)
         }
     }

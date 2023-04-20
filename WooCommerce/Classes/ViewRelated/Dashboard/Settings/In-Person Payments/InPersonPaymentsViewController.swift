@@ -2,18 +2,19 @@ import SwiftUI
 import Yosemite
 
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
+
     private let onWillDisappear: (() -> ())?
 
     init(viewModel: InPersonPaymentsViewModel,
-         onWillDisappear: (() -> ())? = nil) {
+         onWillDisappear: (() -> ())?) {
         self.onWillDisappear = onWillDisappear
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
-        rootView.showSupport = { [weak self] in
+        viewModel.showSupport = { [weak self] in
             guard let self = self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
             supportForm.show(from: self)
         }
-        rootView.showURL = { [weak self] url in
+        viewModel.showURL = { [weak self] url in
             guard let self = self else { return }
             WebviewHelper.launch(url, with: self)
         }
@@ -31,9 +32,6 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
 
 struct InPersonPaymentsView: View {
     @StateObject var viewModel: InPersonPaymentsViewModel
-
-    var showSupport: (() -> Void)? = nil
-    var showURL: ((URL) -> Void)? = nil
     var shouldShowMenuOnCompletion: Bool = true
 
     var body: some View {
@@ -90,13 +88,13 @@ struct InPersonPaymentsView: View {
         .customOpenURL(action: { url in
             switch url {
             case InPersonPaymentsSupportLink.supportURL:
-                showSupport?()
+                viewModel.showSupport?()
             case LearnMoreViewModel.learnMoreURL:
                 if let url = viewModel.learnMoreURL {
-                    showURL?(url)
+                    viewModel.showURL?(url)
                 }
             default:
-                showURL?(url)
+                viewModel.showURL?(url)
             }
         })
         .navigationTitle(Localization.title)

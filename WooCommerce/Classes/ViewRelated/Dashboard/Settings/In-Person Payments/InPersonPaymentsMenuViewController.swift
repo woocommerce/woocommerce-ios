@@ -34,6 +34,8 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         cardPresentPaymentsOnboardingUseCase.state.isCompleted
     }
 
+    private let setUpFlowOnlyEnabledAfterOnboardingComplete: Bool
+
     /// Main TableView
     ///
     private lazy var tableView: UITableView = {
@@ -64,6 +66,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
+        self.setUpFlowOnlyEnabledAfterOnboardingComplete = !featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2)
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -167,7 +170,8 @@ private extension InPersonPaymentsMenuViewController {
         // That way we avoid triggering the onboarding check again that comes with the presenter.
         let onboardingViewModel = InPersonPaymentsViewModel(useCase: cardPresentPaymentsOnboardingUseCase)
 
-        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel)
+        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel,
+                                                                      onWillDisappear: nil)
         show(onboardingViewController, sender: self)
     }
 
@@ -355,13 +359,15 @@ private extension InPersonPaymentsMenuViewController {
 
     func configureSetUpTapToPayOnIPhone(cell: LeftImageTableViewCell) {
         prepareForReuse(cell)
-        cell.accessoryType = enableSetUpTapToPayOnIPhoneCell ? .disclosureIndicator : .none
-        cell.selectionStyle = enableSetUpTapToPayOnIPhoneCell ? .default : .none
         cell.accessibilityIdentifier = "set-up-tap-to-pay"
         cell.configure(image: .tapToPayOnIPhoneIcon,
                        text: Localization.tapToPayOnIPhone)
 
-        updateEnabledState(in: cell, shouldBeEnabled: enableSetUpTapToPayOnIPhoneCell)
+        if setUpFlowOnlyEnabledAfterOnboardingComplete {
+            cell.accessoryType = enableSetUpTapToPayOnIPhoneCell ? .disclosureIndicator : .none
+            cell.selectionStyle = enableSetUpTapToPayOnIPhoneCell ? .default : .none
+            updateEnabledState(in: cell, shouldBeEnabled: enableSetUpTapToPayOnIPhoneCell)
+        }
     }
 
     func configureTapToPayOnIPhoneFeedback(cell: LeftImageTableViewCell) {
@@ -461,22 +467,26 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func presentSetUpTapToPayOnIPhoneViewController() {
-        if featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2) {
-            presentSetUpTapToPayOnIPhoneWithOnboarding()
-        } else {
+        if setUpFlowOnlyEnabledAfterOnboardingComplete {
+            guard enableSetUpTapToPayOnIPhoneCell else {
+                return
+            }
+
             presentSetUpTapToPayOnIPhoneWithoutOnboarding()
+        } else {
+            presentSetUpTapToPayOnIPhoneWithOnboarding()
         }
     }
 
     private func presentSetUpTapToPayOnIPhoneWithoutOnboarding() {
         guard let siteID = stores.sessionManager.defaultStoreID,
-              let activePaymentGateway = pluginState?.preferred else {
+              let _ = pluginState?.preferred else {
             return
         }
 
         let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
                                                                     configuration: viewModel.cardPresentPaymentsConfiguration,
-                                                                    activePaymentGateway: activePaymentGateway)
+                                                                    onboardingUseCase: cardPresentPaymentsOnboardingUseCase)
         let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
         let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
         controller.navigationBar.isHidden = true
@@ -489,11 +499,9 @@ extension InPersonPaymentsMenuViewController {
             return
         }
 
-        let activePaymentGateway = pluginState?.preferred ?? .wcPay
-
         let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
                                                                     configuration: viewModel.cardPresentPaymentsConfiguration,
-                                                                    activePaymentGateway: activePaymentGateway)
+                                                                    onboardingUseCase: cardPresentPaymentsOnboardingUseCase)
         let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
         let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
         controller.navigationBar.isHidden = true

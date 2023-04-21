@@ -16,7 +16,7 @@ struct TopProductsFromCachedOrders {
 
 /// Provides the ids of those products that were most or last sold among the cached orders
 ///
-final class TopProductsProvider {
+final class TopProductsFromCachedOrdersProvider {
     private let storageManager: StorageManagerType
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.viewStorage
@@ -36,7 +36,7 @@ final class TopProductsProvider {
     }
 }
 
-private extension TopProductsProvider {
+private extension TopProductsFromCachedOrdersProvider {
     func popularProductsIds(from siteID: Int64) -> [Int64] {
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),

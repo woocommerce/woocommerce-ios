@@ -4,7 +4,7 @@ import Storage
 
 /// Encapsulates the ids of those products that were most or last sold among the cached orders
 ///
-struct TopProductsFromCachedOrders {
+struct TopProductsFromCachedOrders: Equatable {
     let popularProductsIds: [Int64]
     let lastSoldProductsIds: [Int64]
 
@@ -27,12 +27,8 @@ final class TopProductsFromCachedOrdersProvider {
     }
 
     func provideTopProductsFromCachedOrders(siteID: Int64) -> TopProductsFromCachedOrders {
-        let popularProductsIds = popularProductsIds(from: siteID)
-        let lastSoldProductsIds = lastSoldProductIds(from: siteID)
-            .filter { !popularProductsIds.contains($0) }
-
-        return TopProductsFromCachedOrders(popularProductsIds: popularProductsIds,
-                                           lastSoldProductsIds: lastSoldProductsIds)
+        TopProductsFromCachedOrders(popularProductsIds: popularProductsIds(from: siteID),
+                                           lastSoldProductsIds: lastSoldProductIds(from: siteID))
     }
 }
 

@@ -1555,6 +1555,7 @@
 		B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */; };
 		B9DA154028103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */; };
 		B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DC770229F18A8C0013B191 /* TopProductsFromCachedOrdersProvider.swift */; };
+		B9DC770529F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DC770429F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift */; };
 		B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */; };
 		B9E4364E287589E200883CFA /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* BadgeView.swift */; };
 		B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */; };
@@ -3791,6 +3792,7 @@
 		B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
 		B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminerTests.swift; sourceTree = "<group>"; };
 		B9DC770229F18A8C0013B191 /* TopProductsFromCachedOrdersProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopProductsFromCachedOrdersProvider.swift; sourceTree = "<group>"; };
+		B9DC770429F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopProductsFromCachedOrdersProviderTests.swift; sourceTree = "<group>"; };
 		B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardView.swift; sourceTree = "<group>"; };
 		B9E4364D287589E200883CFA /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
@@ -8435,6 +8437,7 @@
 				AE7C957E27C417FA007E8E12 /* FeeLineDetailsViewModelTests.swift */,
 				2602A64027BD89B300B347F1 /* Synchronizer */,
 				EEB221A629B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift */,
+				B9DC770429F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift */,
 			);
 			path = "Order Creation";
 			sourceTree = "<group>";
@@ -12524,6 +12527,7 @@
 				023078FE25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift in Sources */,
 				027B8BBF23FE0F850040944E /* MockMediaStoresManager.swift in Sources */,
 				025A1246247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift in Sources */,
+				B9DC770529F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift in Sources */,
 				45A0E4D32566BF2A00D4E8C3 /* LinkedProductsViewModelTests.swift in Sources */,
 				D802547D26551EF2001B2CC1 /* CardPresentModalSuccessTests.swift in Sources */,
 				02ECD1E124FF496200735BE5 /* PaginationTrackerTests.swift in Sources */,

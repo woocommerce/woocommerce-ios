@@ -121,6 +121,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
 
+    /// Free trial banner presentation handler.
+    ///
+    private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
+
 
     // MARK: - View Lifecycle
 
@@ -159,6 +163,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
+
+        configureFreeTrialBannerPresenter()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -177,6 +183,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         tableView.reloadData()
 
         viewModel.updateBannerVisibility()
+        freeTrialBannerPresenter?.reloadBannerVisibility()
     }
 
     override func viewDidLayoutSubviews() {
@@ -297,6 +304,14 @@ private extension OrderListViewController {
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
+    }
+
+    func configureFreeTrialBannerPresenter() {
+        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
+                                                                  containerView: view,
+                                                                  siteID: siteID) { [weak self] _, bannerHeight in
+            self?.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
+        }
     }
 }
 
@@ -557,6 +572,9 @@ private extension OrderListViewController {
             childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
         childController.didMove(toParent: self)
+
+        // Make sure the banner is on top of the empty state view
+        freeTrialBannerPresenter?.reloadBannerVisibility()
     }
 
     func removeEmptyViewController() {

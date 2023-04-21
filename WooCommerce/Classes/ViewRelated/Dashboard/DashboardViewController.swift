@@ -131,7 +131,7 @@ final class DashboardViewController: UIViewController {
     private var subscriptions = Set<AnyCancellable>()
     private var navbarObserverSubscription: AnyCancellable?
 
-    /// Free trial banner presentation handler
+    /// Free trial banner presentation handler.
     ///
     private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
 
@@ -350,8 +350,10 @@ private extension DashboardViewController {
     }
 
     func configureFreeTrialBannerPresenter() {
-        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self, containerView: stackView, siteID: siteID) { [weak self] _, height in
-            self?.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: height, right: 0)
+        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
+                                                                  containerView: stackView,
+                                                                  siteID: siteID) { [weak self] _, bannerHeight in
+            self?.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
         }
     }
 

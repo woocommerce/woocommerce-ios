@@ -35,8 +35,8 @@ protocol AuthenticatedWebViewModel {
     func didFailProvisionalNavigation(with error: Error)
 }
 
-/// MARK: Default implementation for the optional methods
-///
+// MARK: Default implementation for the optional methods
+//
 extension AuthenticatedWebViewModel {
     func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy {
         return .allow

@@ -87,7 +87,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Provides the ids of those products that were most or last sold among the cached orders
     ///
-    private let topProductsProvider: TopProductsProvider
+    private let topProductsProvider: TopProductsFromCachedOrdersProvider
 
     /// Ids of those products that were most or last sold among the cached orders
     ///
@@ -207,7 +207,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: TopProductsProvider = TopProductsProvider(storageManager: ServiceLocator.storageManager),
+         topProductsProvider: TopProductsFromCachedOrdersProvider = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -248,7 +248,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: TopProductsProvider = TopProductsProvider(storageManager: ServiceLocator.storageManager),
+         topProductsProvider: TopProductsFromCachedOrdersProvider = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
@@ -565,20 +565,27 @@ private extension ProductSelectorViewModel {
             }
     }
 
-    func createSectionsAddingTopProductsIfRequired(from newProducts: [Product]) {
-        let popularProducts = Array(newProducts
-            .prefix(syncingCoordinator.pageSize))
-            .filter { topProductsFromCachedOrders.popularProductsIds.contains($0.productID) }
+    func createSectionsAddingTopProductsIfRequired(from loadedProducts: [Product]) {
+        let popularProducts = Array(loadedProducts
+            .filter {
+                topProductsFromCachedOrders.popularProductsIds.contains($0.productID)
+            }
+            .prefix(Constants.topSectionsMaxLength)
+        )
 
         guard popularProducts.isNotEmpty,
               shouldShowTopProducts else {
-            sections = [ProductsSection(type: .restOfProducts, products: newProducts)]
+            sections = [ProductsSection(type: .restOfProducts, products: loadedProducts)]
             return
         }
 
         sections = [ProductsSection(type: .mostPopular, products: popularProducts)]
-        appendSectionIfNotEmpty(type: .lastSold, products: products.filter { topProductsFromCachedOrders.lastSoldProductsIds.contains($0.productID)})
-        appendSectionIfNotEmpty(type: .restOfProducts, products: removeAlreadyAddedProducts(from: newProducts))
+
+        let lastSoldProducts = products.filter { topProductsFromCachedOrders.lastSoldProductsIds.contains($0.productID) }
+        let filteredLastSoldProducts = Array(removeAlreadyAddedProducts(from: lastSoldProducts).prefix(Constants.topSectionsMaxLength))
+
+        appendSectionIfNotEmpty(type: .lastSold, products: filteredLastSoldProducts)
+        appendSectionIfNotEmpty(type: .restOfProducts, products: loadedProducts)
     }
 
     func removeAlreadyAddedProducts(from newProducts: [Product]) -> [Product] {

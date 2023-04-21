@@ -1997,7 +1997,8 @@ extension Networking.Site {
         isWordPressComStore: CopiableProp<Bool> = .copy,
         jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
-        gmtOffset: CopiableProp<Double> = .copy
+        gmtOffset: CopiableProp<Double> = .copy,
+        isPublic: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -2014,6 +2015,7 @@ extension Networking.Site {
         let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
+        let isPublic = isPublic ?? self.isPublic
 
         return Networking.Site(
             siteID: siteID,
@@ -2030,7 +2032,8 @@ extension Networking.Site {
             isWordPressComStore: isWordPressComStore,
             jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
-            gmtOffset: gmtOffset
+            gmtOffset: gmtOffset,
+            isPublic: isPublic
         )
     }
 }

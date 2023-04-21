@@ -14,9 +14,9 @@ struct StripeAccountMapper: Mapper {
         /// can cross that bridge when we need those decoded.
         decoder.dateDecodingStrategy = .secondsSince1970
 
-        do {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(StripeAccountEnvelope.self, from: response).account
-        } catch {
+        } else {
             return try decoder.decode(StripeAccount.self, from: response)
         }
     }

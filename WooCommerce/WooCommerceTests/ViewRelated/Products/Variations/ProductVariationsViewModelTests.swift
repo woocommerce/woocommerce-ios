@@ -114,4 +114,14 @@ final class ProductVariationsViewModelTests: XCTestCase {
         XCTAssertTrue(product.existsRemotely)
         XCTAssertEqual(viewModel.formType, .readonly)
     }
+
+    func test_generating_and_bulk_editing_variations_not_allowed_for_variable_subscription_products() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.variableSubscription.rawValue)
+        let viewModel = ProductVariationsViewModel(formType: .edit)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldAllowGeneration(for: product))
+        XCTAssertFalse(viewModel.shouldAllowBulkEditing(for: product))
+    }
 }

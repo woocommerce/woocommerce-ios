@@ -118,6 +118,8 @@ private extension DefaultProductFormTableViewModel {
                 return .components(viewModel: componentsRow(product: product, isActionable: actionable), isActionable: actionable)
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: product, isActionable: actionable), isActionable: actionable)
+            case .noVariationsWarning:
+                return .noVariationsWarning(viewModel: noVariationsWarningRow())
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -141,6 +143,8 @@ private extension DefaultProductFormTableViewModel {
                 return .status(viewModel: variationStatusRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .noPriceWarning:
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: false))
+            case .subscription(let actionable):
+                return .subscription(viewModel: subscriptionRow(product: productVariation, isActionable: actionable), isActionable: actionable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -558,28 +562,41 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isActionable)
     }
 
-    // MARK: Subscription products only
+    // MARK: Subscription products and variations only
 
     func subscriptionRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.priceImage
         let title = Localization.subscriptionTitle
 
-        var subscriptionDetails = [String]()
+        var subscriptionDetails = [String?]()
 
-        if let priceDescription = product.subscription?.priceDescription() {
-            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, priceDescription))
+        if let subscription = product.subscription {
+            let priceDescription = Localization.subscriptionPriceDescription(price: subscription.price,
+                                                                             period: subscription.period,
+                                                                             periodInterval: subscription.periodInterval,
+                                                                             currencyFormatter: currencyFormatter)
+            subscriptionDetails.append(priceDescription)
+
+            let expiryDescription = Localization.subscriptionExpiryDescription(length: subscription.length, period: subscription.period)
+            subscriptionDetails.append(expiryDescription)
         }
 
-        if let expiryDescription = product.subscription?.expiryDescription {
-            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, expiryDescription))
-        }
-
-        let details = subscriptionDetails.isEmpty ? nil: subscriptionDetails.joined(separator: "\n")
+        let details = subscriptionDetails.isEmpty ? nil : subscriptionDetails.compacted().joined(separator: "\n")
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
                                                         isActionable: isActionable)
+    }
+
+    // MARK: Variable Subscription products only
+
+    func noVariationsWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
+        let icon = UIImage.infoOutlineImage
+        let title = Localization.noVariationsWarningTitle
+        return ProductFormSection.SettingsRow.WarningViewModel(icon: icon,
+                                                               title: title,
+                                                               isActionable: false)
     }
 }
 
@@ -790,9 +807,50 @@ private extension DefaultProductFormTableViewModel {
 
         // Subscription
         static let subscriptionTitle = NSLocalizedString("Subscription", comment: "Title for Subscription row in the product form screen.")
-        static let subscriptionPriceFormat = NSLocalizedString("Regular price: %@",
-                                                               comment: "Format of the regular price on the Subscription row")
-        static let subscriptionExpiryFormat = NSLocalizedString("Expire after: %@",
-                                                                comment: "Format of the expiry details on the Subscription row")
+        static func subscriptionPriceDescription(price: String,
+                                                 period: SubscriptionPeriod,
+                                                 periodInterval: String,
+                                                 currencyFormatter: CurrencyFormatter) -> String? {
+            guard let formattedPrice = currencyFormatter.formatAmount(price) else {
+                return nil
+            }
+
+            let billingFrequency = {
+                switch periodInterval {
+                case "1":
+                    return period.descriptionSingular
+                default:
+                    return "\(periodInterval) \(period.descriptionPlural)"
+                }
+            }()
+
+            let format = NSLocalizedString("Regular price: %1$@ every %2$@",
+                                           comment: "Description of the subscription price for a product, with the price and billing frequency. " +
+                                           "Reads like: 'Regular price: $60.00 every 2 months'.")
+
+            return String.localizedStringWithFormat(format, formattedPrice, billingFrequency)
+        }
+        static func subscriptionExpiryDescription(length: String, period: SubscriptionPeriod) -> String {
+            let expiry = {
+                switch length {
+                case "", "0":
+                    return NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
+                case "1":
+                    return "1 \(period.descriptionSingular)"
+                default:
+                    return "\(length) \(period.descriptionPlural)"
+                }
+            }()
+
+            let format = NSLocalizedString("Expire after: %@",
+                                           comment: "Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'.")
+
+            return String.localizedStringWithFormat(format, expiry)
+        }
+
+        // No variations warning row (read-only variable subscription)
+        static let noVariationsWarningTitle =
+            NSLocalizedString("You can only add variable subscriptions in the web dashboard",
+                              comment: "Title of the no variations warning row in the product form when a variable subscription product has no variations.")
     }
 }

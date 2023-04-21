@@ -23,9 +23,9 @@ struct NewShipmentTrackingMapper: Mapper {
             .orderID: orderID
         ]
 
-        do {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
-        } catch {
+        } else {
             return try decoder.decode(ShipmentTracking.self, from: response)
         }
     }

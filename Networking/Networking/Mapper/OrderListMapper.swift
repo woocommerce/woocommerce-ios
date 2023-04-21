@@ -21,9 +21,9 @@ struct OrderListMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(OrderListEnvelope.self, from: response).orders
-        } catch {
+        } else {
             return try decoder.decode([Order].self, from: response)
         }
     }

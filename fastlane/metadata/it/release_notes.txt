@@ -1,1 +1,1 @@
-Più attenzione per Pagamenti di persona e ordini questa volta. Abbiamo semplificato la ricerca e la selezione di più prodotti durante la creazione di un ordine. È anche possibile installare Jetpack dall'app se desideri funzionalità aggiuntive come notifiche push e statistiche dei visitatori.
+Per questa versione, ci siamo concentrati sul miglioramento della tua esperienza durante la creazione di ordini e la riscossione dei pagamenti. Ora è possibile filtrare gli elementi durante la ricerca di un prodotto da aggiungere all'ordine. Provala e condividi il tuo feedback.

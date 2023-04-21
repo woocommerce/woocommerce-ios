@@ -33,9 +33,9 @@ struct OrderShippingLabelListMapper: Mapper {
         ]
 
         let data: OrderShippingLabelListData = try {
-            do {
+            if hasDataEnvelope(in: response) {
                 return try decoder.decode(OrderShippingLabelListEnvelope.self, from: response).data
-            } catch {
+            } else {
                 return try decoder.decode(OrderShippingLabelListData.self, from: response)
             }
         }()

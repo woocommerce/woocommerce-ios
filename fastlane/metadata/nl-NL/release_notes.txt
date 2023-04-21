@@ -1,1 +1,1 @@
-Meer aandacht voor fysieke betalingen en analyses deze keer. We hebben het makkelijker gemaakt voor jou om meerdere producten op te zoeken en te selecteren bij het creëren van een bestelling. Het is ook mogelijk om vanuit de app, Jetpack te installeren als je aanvullende functies wilt zoals pushberichten en bezoekersstatistieken.
+For this release, we focused on improving your experience when creating orders and collecting payments. It's now possible to filter products when searching for a product to add to your order. Probeer het uit en laat weten wat je ervan denkt!

@@ -141,6 +141,31 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
+
+    func test_actions_for_a_subscription_ProductVariation() {
+        // Arrange
+        let productVariation = Fixtures.subscriptionProductVariation
+        let model = EditableProductVariationModel(productVariation: productVariation)
+
+        // Action
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [
+            .subscription(actionable: true),
+            .attributes(editable: true),
+            .status(editable: true),
+            .shippingSettings(editable: true),
+            .inventorySettings(editable: true)
+        ]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
 }
 
 private extension ProductVariationFormActionsFactoryTests {
@@ -177,5 +202,7 @@ private extension ProductVariationFormActionsFactoryTests {
         static let physicalProductVariationEnabledAndMissingPrice = MockProductVariation().productVariation()
             .copy(image: nil, status: .published, sku: "uks", regularPrice: nil, virtual: false, downloadable: false,
                   weight: "2", dimensions: ProductDimensions(length: "", width: "", height: ""))
+        // downloadable: false, virtual: false, with subscription settings, with inventory/shipping
+        static let subscriptionProductVariation = physicalProductVariationWithImages.copy(subscription: .fake())
     }
 }

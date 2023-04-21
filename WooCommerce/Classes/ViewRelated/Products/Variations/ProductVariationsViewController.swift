@@ -171,8 +171,9 @@ private extension ProductVariationsViewController {
     /// Shows or hides the "more" navigation bar button.
     ///
     func showOrHideMoreActionsNavigationBarButton() {
-        guard resultsController.fetchedObjects.isNotEmpty else {
+        guard resultsController.fetchedObjects.isNotEmpty && viewModel.shouldAllowBulkEditing(for: product) else {
             // Do not display the "more" button with the bulk update option if we do not have any variations
+            // or if the view model does not allow it
             hideMoreActionsNavigationBarButton()
             return
         }
@@ -284,6 +285,14 @@ private extension ProductVariationsViewController {
 //
 private extension ProductVariationsViewController {
     func configureTopStackView() {
+        guard viewModel.shouldAllowGeneration(for: product) else {
+            // Hide top stack view by reducing its height to 0.
+            // Otherwise, a blank space is shown where the "Generate Variation" button would be.
+            let zeroHeight = topStackView.heightAnchor.constraint(equalToConstant: 0)
+            topStackView.addConstraint(zeroHeight)
+            return
+        }
+
         addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,

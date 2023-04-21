@@ -48,7 +48,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationM2WithInAppPurchasesEnabled:
             return false
         case .storeCreationM3Profiler:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .justInTimeMessagesOnDashboard:
             return true
         case .IPPInAppFeedbackBanner:
@@ -66,7 +66,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
         case .tapToPayOnIPhoneMilestone2:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .domainSettings:
             return true
         case .simplifyProductEditing:
@@ -88,7 +88,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .compositeProducts:
             return true
         case .IPPUKExpansion:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .subscriptionProducts:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

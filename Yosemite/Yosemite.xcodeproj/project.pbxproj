@@ -341,6 +341,9 @@
 		CC6A054628773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */; };
 		CC80E40C294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC80E40B294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift */; };
 		CCCF3A8129C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCF3A8029C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift */; };
+		CCE24F8829F025BB00B416BC /* SubscriptionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE24F8729F025BB00B416BC /* SubscriptionStoreTests.swift */; };
+		CCE5F39B29F015BD00087332 /* SubscriptionAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE5F39A29F015BD00087332 /* SubscriptionAction.swift */; };
+		CCE5F39D29F0165900087332 /* SubscriptionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE5F39C29F0165900087332 /* SubscriptionStore.swift */; };
 		CE01014F2368C41600783459 /* Refund+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE01014E2368C41600783459 /* Refund+ReadOnlyType.swift */; };
 		CE0DB6C0233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0DB6BF233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift */; };
 		CE12FBDB221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBDA221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift */; };
@@ -788,6 +791,9 @@
 		CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderMetaData+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CC80E40B294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiteSummaryStats+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CCCF3A8029C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductBundleItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		CCE24F8729F025BB00B416BC /* SubscriptionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionStoreTests.swift; sourceTree = "<group>"; };
+		CCE5F39A29F015BD00087332 /* SubscriptionAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionAction.swift; sourceTree = "<group>"; };
+		CCE5F39C29F0165900087332 /* SubscriptionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionStore.swift; sourceTree = "<group>"; };
 		CE01014E2368C41600783459 /* Refund+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		CE0DB6BF233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE12FBDA221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1445,6 +1451,7 @@
 				D4CBAE6126D4460800BBE6D1 /* AnnouncementsStore.swift */,
 				74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */,
 				D8C11A4F22DF2D9400D4A88D /* StatsStoreV4.swift */,
+				CCE5F39C29F0165900087332 /* SubscriptionStore.swift */,
 				025CA2C9238F515600B05C81 /* ProductShippingClassStore.swift */,
 				026CF625237D8EFB009563D4 /* ProductVariationStore.swift */,
 				45010692239A6C9F00E24722 /* TaxClassStore.swift */,
@@ -1505,6 +1512,7 @@
 				453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */,
 				028BCE2322DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift */,
 				D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */,
+				CCE24F8729F025BB00B416BC /* SubscriptionStoreTests.swift */,
 				026D52BF238235930092AE05 /* ProductVariationStoreTests.swift */,
 				025CA2CF238F54E800B05C81 /* ProductShippingClassStoreTests.swift */,
 				45ED4F15239E939A004F1BE3 /* TaxClassStoreTests.swift */,
@@ -1701,6 +1709,7 @@
 				7492FADE217FB11D00ED2C69 /* SettingAction.swift */,
 				74643EE0221F567E00EDC51A /* ShipmentAction.swift */,
 				D8C11A5122DF2DA200D4A88D /* StatsActionV4.swift */,
+				CCE5F39A29F015BD00087332 /* SubscriptionAction.swift */,
 				026CF627237D8F30009563D4 /* ProductVariationAction.swift */,
 				025CA2CB238F518600B05C81 /* ProductShippingClassAction.swift */,
 				029BA55A255E0D39006171FD /* ShippingLabelAction.swift */,
@@ -2016,6 +2025,7 @@
 				03FBDA222631521100ACE257 /* CouponAction.swift in Sources */,
 				CE4FD4562350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift in Sources */,
 				CE3B7AD92229C3570050FE4B /* OrderStatus+ReadOnlyType.swift in Sources */,
+				CCE5F39B29F015BD00087332 /* SubscriptionAction.swift in Sources */,
 				CC80E40C294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift in Sources */,
 				026CF62C237D92DC009563D4 /* ProductVariationAttribute+ReadOnlyConvertible.swift in Sources */,
 				247CE7AB2582DB9300F9D9D1 /* String+Extensions.swift in Sources */,
@@ -2221,6 +2231,7 @@
 				03FBDA3E2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift in Sources */,
 				02E4F5E423CD5628003B0010 /* NSOrderedSet+Array.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,
+				CCE5F39D29F0165900087332 /* SubscriptionStore.swift in Sources */,
 				7493751222498B2C007D85D1 /* ProductTag+ReadOnlyConvertible.swift in Sources */,
 				E109876C284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift in Sources */,
 				03FBDA26263296A100ACE257 /* CouponStore.swift in Sources */,
@@ -2365,6 +2376,7 @@
 				02F2722D292F18BF00C36419 /* PaymentStoreTests.swift in Sources */,
 				02FF056923DECD5B0058E6E7 /* MediaImageExporterTests.swift in Sources */,
 				0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */,
+				CCE24F8829F025BB00B416BC /* SubscriptionStoreTests.swift in Sources */,
 				028BCE2422DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift in Sources */,
 				5758EB3324DC9631009ED8A6 /* InAppFeedbackCardVisibilityUseCaseTests.swift in Sources */,
 				B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */,

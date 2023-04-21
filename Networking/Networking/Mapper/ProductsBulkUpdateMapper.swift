@@ -18,7 +18,7 @@ struct ProductsBulkUpdateMapper: Mapper {
             .siteID: siteID
         ]
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ProductsEnvelope.self, from: response).data.updatedProducts
+            return try decoder.decode(ProductsContainerEnvelope.self, from: response).data.updatedProducts
         } else {
             return try decoder.decode(ProductsContainer.self, from: response).updatedProducts
         }
@@ -30,7 +30,7 @@ struct ProductsBulkUpdateMapper: Mapper {
 /// `products/batch` endpoint returns the requested updated products in a `update` key, nested in a `data` key.
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
-private struct ProductsEnvelope: Decodable {
+private struct ProductsContainerEnvelope: Decodable {
     let data: ProductsContainer
 
     private enum CodingKeys: String, CodingKey {

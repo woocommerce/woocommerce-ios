@@ -44,7 +44,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // When
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: address,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
 
         // Then
         let originAddress = shippingLabelFormViewModel.originAddress
@@ -64,7 +65,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
                                                            name: "Skylar Ferry",
                                                            phone: "12345",
@@ -86,7 +88,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
                                                            name: "Skylar Ferry",
                                                            phone: "12345",
@@ -144,7 +147,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
                                                            name: "Skylar Ferry",
                                                            phone: "12345",
@@ -166,7 +170,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
                                                            name: "Skylar Ferry",
                                                            phone: "12345",
@@ -200,7 +205,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedPackageResponse = ShippingLabelPackagesResponse.fake()
 
         // When
@@ -214,7 +220,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
         let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, items: [])
@@ -230,7 +237,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
         let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, items: [])
@@ -261,7 +269,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedPackageWeight = "55"
         let selectedPackage = ShippingLabelPackageAttributes(packageID: "my-package-id", totalWeight: expectedPackageWeight, items: [])
 
@@ -300,7 +309,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
 
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"),
                                                                    validated: true)
@@ -330,7 +340,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isEmpty)
 
         // When
@@ -351,7 +362,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedShippingAddress = MockShippingLabelAddress.sampleAddress()
         let currentRows = shippingLabelFormViewModel.state.sections.first?.rows
         XCTAssertEqual(currentRows?[0].type, .shipFrom)
@@ -385,7 +397,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
         let expectedShippingAddress = MockShippingLabelAddress.sampleAddress()
 
         // When
@@ -423,7 +436,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: originAddress,
                                                                     destinationAddress: nil,
-                                                                    stores: storesManager)
+                                                                    stores: storesManager,
+                                                                    userDefaults: userDefaults)
 
         // When
         shippingLabelFormViewModel.validateAddress(type: .origin) { validationState, validationSuccess in
@@ -465,7 +479,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: originAddress,
                                                                     destinationAddress: nil,
-                                                                    stores: storesManager)
+                                                                    stores: storesManager,
+                                                                    userDefaults: userDefaults)
 
         // When
         shippingLabelFormViewModel.validateAddress(type: .origin) { _, _ in }
@@ -487,8 +502,9 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
     func test_handlePaymentMethodValueChanges_returns_updated_data_and_state_with_no_selected_payment_method() {
         // Given
         let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
-                                                                    originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                   originAddress: nil,
+                                                   destinationAddress: nil,
+                                                   userDefaults: userDefaults)
         let expectedPaymentMethodID: Int64 = 0
         let expectedEmailReceiptsSetting = true
         let settings = ShippingLabelAccountSettings.fake().copy(selectedPaymentMethodID: expectedPaymentMethodID,
@@ -508,8 +524,9 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
     func test_handlePaymentMethodValueChanges_returns_updated_data_and_state_with_selected_payment_method() {
         // Given
         let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
-                                                                    originAddress: nil,
-                                                                    destinationAddress: nil)
+                                                   originAddress: nil,
+                                                   destinationAddress: nil,
+                                                   userDefaults: userDefaults)
         let expectedPaymentMethodID: Int64 = 12345
         let expectedEmailReceiptsSetting = false
         let settings = ShippingLabelAccountSettings.fake().copy(selectedPaymentMethodID: expectedPaymentMethodID,
@@ -530,7 +547,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                    originAddress: nil,
-                                                   destinationAddress: nil)
+                                                   destinationAddress: nil,
+                                                   userDefaults: userDefaults)
         let settings = ShippingLabelAccountSettings.fake().copy()
 
         // When
@@ -545,7 +563,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                    originAddress: nil,
-                                                   destinationAddress: nil)
+                                                   destinationAddress: nil,
+                                                   userDefaults: userDefaults)
         let paymentMethod = ShippingLabelPaymentMethod.fake().copy(paymentMethodID: 12345, cardDigits: "4242")
         let settings = ShippingLabelAccountSettings.fake().copy(paymentMethods: [paymentMethod], selectedPaymentMethodID: 12345)
 
@@ -564,7 +583,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         insert(country1)
         insert(country2)
 
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil, storageManager: storageManager)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: nil,
+                                                   destinationAddress: nil,
+                                                   storageManager: storageManager,
+                                                   userDefaults: userDefaults)
 
         // When
         let filteredCountries = viewModel.filteredCountries(for: .origin)
@@ -580,7 +603,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         insert(country1)
         insert(country2)
 
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil, storageManager: storageManager)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: nil,
+                                                   destinationAddress: nil,
+                                                   storageManager: storageManager,
+                                                   userDefaults: userDefaults)
 
         // When
         let filteredCountries = viewModel.filteredCountries(for: .destination)
@@ -615,7 +642,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                          email: nil)
 
         // When
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   userDefaults: userDefaults)
 
         // Then
         XCTAssertFalse(viewModel.customsFormRequired)
@@ -647,7 +677,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                          email: nil)
 
         // When
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   userDefaults: userDefaults)
 
         // Then
         XCTAssertTrue(viewModel.customsFormRequired)
@@ -679,7 +712,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                          email: nil)
 
         // When
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   userDefaults: userDefaults)
 
         // Then
         XCTAssertTrue(viewModel.customsFormRequired)
@@ -711,7 +747,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                          email: nil)
 
         // When
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   userDefaults: userDefaults)
 
         // Then
         XCTAssertTrue(viewModel.customsFormRequired)
@@ -743,7 +782,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                          email: nil)
 
         // When
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   userDefaults: userDefaults)
 
         // Then
         let firstSection = viewModel.state.sections.first
@@ -777,7 +819,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                          email: nil)
 
         // When
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   userDefaults: userDefaults)
 
         // Then
         let firstSection = viewModel.state.sections.first
@@ -810,7 +855,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                          email: nil)
 
         // When
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   userDefaults: userDefaults)
         let newAddress = MockShippingLabelAddress.sampleAddress(country: "US", state: "NY")
         viewModel.handleDestinationAddressValueChanges(address: newAddress, validated: true)
 
@@ -844,7 +892,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                          email: nil)
 
         // When
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   userDefaults: userDefaults)
         let newAddress = MockShippingLabelAddress.sampleAddress(country: "VN", state: "")
         viewModel.handleDestinationAddressValueChanges(address: newAddress, validated: true)
 
@@ -854,7 +905,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
     func test_updateRowsForCustomsIfNeeded_updates_row_states_correctly_when_phone_number_is_missing_in_both_origin_address_only() {
         // Given
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: nil,
+                                                   destinationAddress: nil,
+                                                   userDefaults: userDefaults)
         viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "CA"), validated: true)
         viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "NY"), validated: true)
 
@@ -882,7 +936,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
     func test_updateRowsForCustomsIfNeeded_updates_row_states_correctly_when_phone_number_is_missing_in_both_origin_and_destination_addresses() {
         // Given
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: nil,
+                                                   destinationAddress: nil,
+                                                   userDefaults: userDefaults)
         viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "CA"), validated: true)
         viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "NY"), validated: true)
 
@@ -912,7 +969,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let expectedProductID: Int64 = 123
         let orderItem = OrderItem.fake().copy(productID: expectedProductID)
         let order = MockOrders().makeOrder(items: [orderItem])
-        let viewModel = ShippingLabelFormViewModel(order: order, originAddress: nil, destinationAddress: nil)
+        let viewModel = ShippingLabelFormViewModel(order: order,
+                                                   originAddress: nil,
+                                                   destinationAddress: nil,
+                                                   userDefaults: userDefaults)
 
         // When
         viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"), validated: true)
@@ -931,7 +991,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(defaultForms.first?.items.first?.description, item.name)
         XCTAssertEqual(defaultForms.first?.items.first?.hsTariffNumber, "")
         XCTAssertEqual(defaultForms.first?.items.first?.value, item.value)
-        XCTAssertEqual(defaultForms.first?.items.first?.originCountry, "")
+        XCTAssertEqual(defaultForms.first?.items.first?.originCountry, "US")
     }
 
     func test_getDestinationAddress_uses_shipping_phone_if_available() {
@@ -942,7 +1002,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // When
         let viewModel = ShippingLabelFormViewModel(order: Order.fake().copy(billingAddress: billingAddress),
                                                    originAddress: nil,
-                                                   destinationAddress: shippingAddress)
+                                                   destinationAddress: shippingAddress,
+                                                   userDefaults: userDefaults)
 
         // Then
         XCTAssertEqual(viewModel.destinationAddress?.phone, shippingAddress.phone)
@@ -955,7 +1016,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // When
         let viewModel = ShippingLabelFormViewModel(order: Order.fake().copy(billingAddress: billingAddress),
                                                    originAddress: nil,
-                                                   destinationAddress: Address.fake())
+                                                   destinationAddress: Address.fake(),
+                                                   userDefaults: userDefaults)
 
         // Then
         XCTAssertEqual(viewModel.destinationAddress?.phone, billingAddress.phone)

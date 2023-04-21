@@ -230,8 +230,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             self.removeGhostContent()
             self.displayGhostContent(over: tableView)
         }
-
-        freeTrialBannerPresenter?.reloadBannerVisibility()
     }
 
     override func viewWillDisappear(_ animated: Bool) {

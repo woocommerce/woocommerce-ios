@@ -4,11 +4,6 @@ import Yosemite
 
 /// Displays a grid view of all available menu in the "Menu" tab (eg. View Store, Reviews, Coupons, etc...)
 final class HubMenuViewController: UIHostingController<HubMenu> {
-
-    /// Free trial banner presentation handler.
-    ///
-    private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
-
     private let viewModel: HubMenuViewModel
 
     init(siteID: Int64, navigationController: UINavigationController?) {
@@ -25,11 +20,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         super.viewDidAppear(animated)
 
         viewModel.viewDidAppear()
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureFreeTrialBannerPresenter()
     }
 
     /// Present the specific Review Details View from a push notification
@@ -61,16 +51,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
         if #available(iOS 16.0, *) {
             self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        }
-
-        freeTrialBannerPresenter?.reloadBannerVisibility()
-    }
-
-    private func configureFreeTrialBannerPresenter() {
-        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
-                                                                  containerView: view,
-                                                                  siteID: viewModel.siteID) { [weak self] _, bannerHeight in
-            self?.viewModel.bottomInset = bannerHeight
         }
     }
 }

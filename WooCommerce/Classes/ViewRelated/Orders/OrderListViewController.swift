@@ -183,7 +183,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         tableView.reloadData()
 
         viewModel.updateBannerVisibility()
-        freeTrialBannerPresenter?.reloadBannerVisibility()
     }
 
     override func viewDidLayoutSubviews() {

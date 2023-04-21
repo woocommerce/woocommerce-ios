@@ -667,6 +667,7 @@
 		26309F17277D0AEA0012797F /* SafeAreaInsetsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26309F16277D0AEA0012797F /* SafeAreaInsetsKey.swift */; };
 		2631D4F829ED0B5C00F13F20 /* WPComPlanNameSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2631D4F729ED0B5C00F13F20 /* WPComPlanNameSanitizer.swift */; };
 		2631D4FA29ED108400F13F20 /* WPComPlanNameSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2631D4F929ED108400F13F20 /* WPComPlanNameSanitizer.swift */; };
+		2631D4FE29F2141D00F13F20 /* FreeTrialBannerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2631D4FD29F2141D00F13F20 /* FreeTrialBannerPresenter.swift */; };
 		263491D5299C923400594566 /* SupportFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263491D4299C923300594566 /* SupportFormViewModelTests.swift */; };
 		263C4CC02963784900CA7E05 /* ProductVariationGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263C4CBF2963784900CA7E05 /* ProductVariationGenerator.swift */; };
 		263E37E12641AD8300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37E02641AD8300260D3B /* Codegen */; };
@@ -2898,6 +2899,7 @@
 		26309F16277D0AEA0012797F /* SafeAreaInsetsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeAreaInsetsKey.swift; sourceTree = "<group>"; };
 		2631D4F729ED0B5C00F13F20 /* WPComPlanNameSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPlanNameSanitizer.swift; sourceTree = "<group>"; };
 		2631D4F929ED108400F13F20 /* WPComPlanNameSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComPlanNameSanitizer.swift; sourceTree = "<group>"; };
+		2631D4FD29F2141D00F13F20 /* FreeTrialBannerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerPresenter.swift; sourceTree = "<group>"; };
 		263491D4299C923300594566 /* SupportFormViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupportFormViewModelTests.swift; sourceTree = "<group>"; };
 		263C4CBF2963784900CA7E05 /* ProductVariationGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationGenerator.swift; sourceTree = "<group>"; };
 		263EB408242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormActionsFactoryTests.swift; sourceTree = "<group>"; };
@@ -6199,6 +6201,7 @@
 			isa = PBXGroup;
 			children = (
 				26C98F9A29C18ACE00F96503 /* FreeTrialBanner.swift */,
+				2631D4FD29F2141D00F13F20 /* FreeTrialBannerPresenter.swift */,
 				261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */,
 			);
 			path = "Free Trial";
@@ -12082,6 +12085,7 @@
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,
 				B94403C9289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift in Sources */,
 				7E7C5F872719A93C00315B61 /* ProductCategoryListViewController.swift in Sources */,
+				2631D4FE29F2141D00F13F20 /* FreeTrialBannerPresenter.swift in Sources */,
 				DEC51B06276B3F3C009F3DF4 /* Int64+Helpers.swift in Sources */,
 				02BE9CC029C05CFD00292333 /* SitePreviewView.swift in Sources */,
 				D8B4D5EE26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift in Sources */,

@@ -22,7 +22,7 @@ struct WCPayAccountMapper: Mapper {
             return WCPayAccount.noAccount
         }
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(WCPayAccountEnvelope.self, from: response).account
         } else {
             return try decoder.decode(WCPayAccount.self, from: response)

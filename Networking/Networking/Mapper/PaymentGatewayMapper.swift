@@ -17,7 +17,7 @@ struct PaymentGatewayMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID,
         ]
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(PaymentGatewayEnvelope.self, from: response).paymentGateway
         } else {
             return try decoder.decode(PaymentGateway.self, from: response)

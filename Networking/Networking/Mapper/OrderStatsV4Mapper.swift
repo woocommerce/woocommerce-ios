@@ -24,7 +24,7 @@ struct OrderStatsV4Mapper: Mapper {
             .siteID: siteID,
             .granularity: granularity
         ]
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(OrderStatsV4Envelope.self, from: response).orderStats
         } else {
             return try decoder.decode(OrderStatsV4.self, from: response)

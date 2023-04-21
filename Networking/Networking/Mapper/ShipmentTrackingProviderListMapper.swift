@@ -12,7 +12,7 @@ struct ShipmentTrackingProviderListMapper: Mapper {
     func map(response: Data) throws -> [ShipmentTrackingProviderGroup] {
         let decoder = JSONDecoder()
         let rawDictionary: ShipmentTrackingProviderListEnvelope.RawData
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             rawDictionary = try decoder.decode(ShipmentTrackingProviderListEnvelope.self, from: response).rawData
         } else {
             rawDictionary = try decoder.decode(ShipmentTrackingProviderListEnvelope.RawData.self, from: response)

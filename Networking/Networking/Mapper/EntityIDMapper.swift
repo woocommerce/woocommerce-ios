@@ -9,7 +9,7 @@ struct EntityIDMapper: Mapper {
     func map(response: Data) throws -> Int64 {
         let decoder = JSONDecoder()
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(EntityIDEnvelope.self, from: response).id
         } else {
             let idDictionary = try decoder.decode(EntityIDEnvelope.EntityIDDictionaryType.self, from: response)

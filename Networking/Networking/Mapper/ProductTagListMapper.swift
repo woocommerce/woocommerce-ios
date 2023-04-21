@@ -18,7 +18,7 @@ struct ProductTagListMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        let hasDataEnvelope = response.hasDataEnvelope
+        let hasDataEnvelope = hasDataEnvelope(in: response)
 
         switch responseType {
         case .load:

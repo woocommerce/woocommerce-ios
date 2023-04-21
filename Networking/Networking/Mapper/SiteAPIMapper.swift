@@ -19,7 +19,7 @@ struct SiteAPIMapper: Mapper {
             .siteID: siteID
         ]
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(SiteAPIEnvelope.self, from: response).siteAPI
         } else {
             return try decoder.decode(SiteAPI.self, from: response)

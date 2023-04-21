@@ -24,7 +24,7 @@ struct ProductVariationsBulkCreateMapper: Mapper {
             .siteID: siteID,
             .productID: productID
         ]
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ProductVariationsEnvelope.self, from: response).data.createdProductVariations
         } else {
             return try decoder.decode(ProductVariationsContainer.self, from: response).createdProductVariations

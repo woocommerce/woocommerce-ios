@@ -20,7 +20,7 @@ struct ProductCategoryMapper: Mapper {
             .siteID: siteID
         ]
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ProductCategoryEnvelope.self, from: response).productCategory
         } else {
             return try decoder.decode(ProductCategory.self, from: response)

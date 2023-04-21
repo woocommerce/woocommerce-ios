@@ -26,7 +26,7 @@ struct SiteSettingsMapper: Mapper {
             .settingGroupKey: settingsGroup.rawValue
         ]
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(SiteSettingsEnvelope.self, from: response).settings
         } else {
             return try decoder.decode([SiteSetting].self, from: response)

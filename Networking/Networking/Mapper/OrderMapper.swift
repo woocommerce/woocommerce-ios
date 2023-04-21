@@ -20,7 +20,7 @@ struct OrderMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(OrderEnvelope.self, from: response).order
         } else {
             return try decoder.decode(Order.self, from: response)

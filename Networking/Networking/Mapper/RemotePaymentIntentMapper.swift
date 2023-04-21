@@ -9,7 +9,7 @@ struct RemotePaymentIntentMapper: Mapper {
     func map(response: Data) throws -> RemotePaymentIntent {
         let decoder = JSONDecoder()
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(WCPayPaymentIntentEnvelope.self, from: response).paymentIntent
         } else {
             return try decoder.decode(RemotePaymentIntent.self, from: response)

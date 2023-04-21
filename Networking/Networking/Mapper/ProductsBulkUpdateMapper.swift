@@ -17,7 +17,7 @@ struct ProductsBulkUpdateMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ProductsEnvelope.self, from: response).data.updatedProducts
         } else {
             return try decoder.decode(ProductsContainer.self, from: response).updatedProducts

@@ -27,7 +27,7 @@ struct ShipmentTrackingListMapper: Mapper {
             .orderID: orderID
         ]
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ShipmentTrackingListEnvelope.self, from: response).shipmentTrackings
         } else {
             return try decoder.decode([ShipmentTracking].self, from: response)

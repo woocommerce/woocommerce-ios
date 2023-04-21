@@ -9,7 +9,7 @@ struct RemoteReaderLocationMapper: Mapper {
     func map(response: Data) throws -> RemoteReaderLocation {
         let decoder = JSONDecoder()
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(RemoteReaderLocationEnvelope.self, from: response).location
         } else {
             return try decoder.decode(RemoteReaderLocation.self, from: response)

@@ -7,7 +7,7 @@ struct StoreOnboardingTaskListMapper: Mapper {
         let decoder = JSONDecoder()
         let taskGroup: [StoreOnboardingTaskGroup]
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             taskGroup = try decoder
                 .decode(StoreOnboardingTaskEnvelope.self, from: response)
                 .group

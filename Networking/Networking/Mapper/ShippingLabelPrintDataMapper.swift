@@ -8,7 +8,7 @@ struct ShippingLabelPrintDataMapper: Mapper {
     ///
     func map(response: Data) throws -> ShippingLabelPrintData {
         let decoder = JSONDecoder()
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ShippingLabelPrintDataEnvelope.self, from: response).printData
         } else {
             return try decoder.decode(ShippingLabelPrintData.self, from: response)

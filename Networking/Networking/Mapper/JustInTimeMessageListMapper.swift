@@ -16,7 +16,7 @@ struct JustInTimeMessageListMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(JustInTimeMessageListEnvelope.self, from: response).data
         } else {
             return try decoder.decode([JustInTimeMessage].self, from: response)

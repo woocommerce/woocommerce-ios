@@ -17,7 +17,7 @@ struct InboxNoteMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(InboxNoteEnvelope.self, from: response).data
         } else {
             return try decoder.decode(InboxNote.self, from: response)

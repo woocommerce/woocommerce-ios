@@ -9,7 +9,7 @@ struct ProductIDMapper: Mapper {
     func map(response: Data) throws -> [Int64] {
         let decoder = JSONDecoder()
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ProductIDEnvelope.self, from: response).productIDs.compactMap { $0[Constants.idKey] }
         } else {
             return try decoder.decode(ProductIDEnvelope.ProductIDs.self, from: response).compactMap { $0[Constants.idKey] }

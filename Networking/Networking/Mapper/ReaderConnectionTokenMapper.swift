@@ -7,7 +7,7 @@ struct ReaderConnectionTokenMapper: Mapper {
     func map(response: Data) throws -> ReaderConnectionToken {
         let decoder = JSONDecoder()
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ReaderConnectionTokenEnvelope.self, from: response).token
         } else {
             return try decoder.decode(ReaderConnectionToken.self, from: response)

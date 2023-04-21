@@ -17,7 +17,7 @@ struct ProductShippingClassMapper: Mapper {
             .siteID: siteID
         ]
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ProductShippingClassEnvelope.self, from: response).productShippingClass
         } else {
             return try decoder.decode(ProductShippingClass.self, from: response)

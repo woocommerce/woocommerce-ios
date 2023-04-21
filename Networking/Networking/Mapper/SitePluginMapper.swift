@@ -25,7 +25,7 @@ struct SitePluginMapper: Mapper {
             .siteID: siteID
         ]
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(SitePluginEnvelope.self, from: response).plugin
         } else {
             return try decoder.decode(SitePlugin.self, from: response)

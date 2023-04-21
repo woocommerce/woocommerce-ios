@@ -7,7 +7,7 @@ struct ShippingLabelCreationEligibilityMapper: Mapper {
     ///
     func map(response: Data) throws -> ShippingLabelCreationEligibilityResponse {
         let decoder = JSONDecoder()
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ShippingLabelCreationEligibilityMapperEnvelope.self, from: response).eligibility
         } else {
             return try decoder.decode(ShippingLabelCreationEligibilityResponse.self, from: response)

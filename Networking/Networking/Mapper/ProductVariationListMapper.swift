@@ -26,7 +26,7 @@ struct ProductVariationListMapper: Mapper {
             .productID: productID
         ]
 
-        if response.hasDataEnvelope {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ProductVariationsEnvelope.self, from: response).productVariations
         } else {
             return try decoder.decode([ProductVariation].self, from: response)

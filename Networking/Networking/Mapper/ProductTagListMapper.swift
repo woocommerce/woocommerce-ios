@@ -28,11 +28,11 @@ struct ProductTagListMapper: Mapper {
                 return try decoder.decode([ProductTag].self, from: response)
             }
         case .create:
-            let tags: [ProductTagFromBatchCreation] = {
+            let tags: [ProductTagFromBatchCreation] = try {
                 if hasDataEnvelope {
-                    return (try? decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).data.tags) ?? []
+                    return try decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).data.tags
                 } else {
-                    return (try? decoder.decode(ProductTagListBatchCreateContainer.self, from: response).tags) ?? []
+                    return try decoder.decode(ProductTagListBatchCreateContainer.self, from: response).tags
                 }
             }()
             return tags
@@ -46,9 +46,9 @@ struct ProductTagListMapper: Mapper {
 
         case .delete:
             if hasDataEnvelope {
-                return (try? decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).data.tags) ?? []
+                return try decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).data.tags
             } else {
-                return (try? decoder.decode(ProductTagListBatchDeleteContainer.self, from: response).tags) ?? []
+                return try decoder.decode(ProductTagListBatchDeleteContainer.self, from: response).tags
             }
         }
     }

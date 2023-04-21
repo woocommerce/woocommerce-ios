@@ -6,14 +6,16 @@ import UIKit
 /// Internally uses the `storePlanSynchronizer` to know when to present or hide the banner.
 ///
 final class FreeTrialBannerPresenter {
-
     /// View controller used to present any action needed by the free trial banner.
     ///
-    private weak var viewController : UIViewController?
+    private weak var viewController: UIViewController?
 
     /// View that will contain the banner.
     ///
-    private weak var containerView : UIView?
+    private weak var containerView: UIView?
+
+    /// Current site ID. Needed to present the upgrades web view.
+    private let siteID: Int64
 
     /// Closure invoked when the banner is added or removed.
     ///
@@ -31,11 +33,18 @@ final class FreeTrialBannerPresenter {
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
     ///   - onLayoutUpdated: Closure invoked when the banner is added or removed.
-    init(viewController : UIViewController, containerView: UIView, onLayoutUpdated: @escaping (UIView, CGFloat) -> Void) {
+    init(viewController: UIViewController, containerView: UIView, siteID: Int64, onLayoutUpdated: @escaping (UIView, CGFloat) -> Void) {
         self.viewController = viewController
         self.containerView = containerView
+        self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
-        observeStorePlan()
+        observeStorePlan() // TODO: hide banner when no internet connection
+    }
+
+    /// Reloads the site plan and the banner visibility.
+    ///
+    func reloadBannerVisibility() {
+        ServiceLocator.storePlanSynchronizer.reloadPlan()
     }
 }
 
@@ -69,7 +78,7 @@ private extension FreeTrialBannerPresenter {
         freeTrialBanner?.removeFromSuperview()
 
         let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
-            // self?.showUpgradePlanWebView() TODO: restore this
+            self?.showUpgradePlanWebView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -96,5 +105,16 @@ private extension FreeTrialBannerPresenter {
         freeTrialBanner.removeFromSuperview()
         onLayoutUpdated(containerView, .zero)
         self.freeTrialBanner = nil
+    }
+
+    /// Shows a web view for the merchant to update their site plan.
+    ///
+    func showUpgradePlanWebView() {
+        guard let viewController else { return }
+        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
+            self?.removeBanner() // Removes the banner immediately.
+            self?.reloadBannerVisibility() // Reloads the plan again in case the plan didn't update as expected.
+        })
+        viewController.present(upgradeController, animated: true)
     }
 }

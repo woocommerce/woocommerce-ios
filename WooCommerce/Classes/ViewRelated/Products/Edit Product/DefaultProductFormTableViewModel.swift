@@ -143,6 +143,8 @@ private extension DefaultProductFormTableViewModel {
                 return .status(viewModel: variationStatusRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .noPriceWarning:
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: false))
+            case .subscription(let actionable):
+                return .subscription(viewModel: subscriptionRow(product: productVariation, isActionable: actionable), isActionable: actionable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -560,7 +562,7 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isActionable)
     }
 
-    // MARK: Subscription products only
+    // MARK: Subscription products and variations only
 
     func subscriptionRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.priceImage
@@ -568,12 +570,9 @@ private extension DefaultProductFormTableViewModel {
 
         var subscriptionDetails = [String]()
 
-        if let priceDescription = product.subscription?.priceDescription() {
-            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, priceDescription))
-        }
-
-        if let expiryDescription = product.subscription?.expiryDescription {
-            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, expiryDescription))
+        if let subscription = product.subscription {
+            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, subscription.priceDescription()))
+            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, subscription.expiryDescription))
         }
 
         let details = subscriptionDetails.isEmpty ? nil: subscriptionDetails.joined(separator: "\n")

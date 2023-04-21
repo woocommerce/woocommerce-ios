@@ -137,4 +137,44 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
+
+    func test_syncSubscriptions_loads_subscription_into_dataSource() throws {
+        // Given
+
+        // Make sure the are plugins synced
+        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: SitePlugin.SupportedPlugin.WCSubscriptions, active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        waitForExpectation { exp in
+
+            // Return the active WCExtensions plugin.
+            storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                switch action {
+                case .fetchSystemPlugin(_, _, let onCompletion):
+                    onCompletion(plugin)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            // Return the synced subscription.
+            storesManager.whenReceivingAction(ofType: SubscriptionAction.self) { action in
+                switch action {
+                case .loadSubscriptions(_, let onCompletion):
+                    onCompletion(.success([Subscription.fake()]))
+                    exp.fulfill()
+                }
+            }
+
+            viewModel.syncSubscriptions()
+        }
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
+        XCTAssertEqual(viewModel.dataSource.orderSubscriptions.count, 1)
+    }
 }

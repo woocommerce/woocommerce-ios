@@ -205,6 +205,12 @@ extension OrderDetailsViewModel {
             self.syncProductVariations { _ in
                 group.leave()
             }
+
+            // Subscriptions require order.renewalSubscriptionID, so sync them only after the order is loaded
+            group.enter()
+            syncSubscriptions { _ in
+                group.leave()
+            }
         }
 
         group.enter()
@@ -582,6 +588,29 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
         stores.dispatch(action)
+    }
+
+    func syncSubscriptions(onCompletion: ((Error?) -> ())? = nil) {
+        // If the plugin is not active, there is no point in continuing with a request that will fail.
+        isPluginActive(SitePlugin.SupportedPlugin.WCSubscriptions) { [weak self] isActive in
+
+            guard let self, isActive else {
+                onCompletion?(nil)
+                return
+            }
+
+            let action = SubscriptionAction.loadSubscriptions(for: order) { [weak self] result in
+                switch result {
+                case .success(let subscriptions):
+                    self?.dataSource.orderSubscriptions = subscriptions
+                    // TODO: 9238 - Add analytics
+                case .failure(let error):
+                    DDLogError("⛔️ Error synchronizing subscriptions: \(error)")
+                }
+                onCompletion?(nil)
+            }
+            stores.dispatch(action)
+        }
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {

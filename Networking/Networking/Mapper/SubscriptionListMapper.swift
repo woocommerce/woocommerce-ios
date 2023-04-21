@@ -17,9 +17,9 @@ struct SubscriptionListMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(SubscriptionListEnvelope.self, from: response).subscriptions
-        } catch {
+        } else {
             return try decoder.decode([Subscription].self, from: response)
         }
     }

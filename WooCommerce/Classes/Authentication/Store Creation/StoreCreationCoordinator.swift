@@ -270,6 +270,19 @@ private extension StoreCreationCoordinator {
         case .failure(let error):
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .web, isFreeTrial: false))
             DDLogError("Store creation error: \(error)")
+
+            // Dismiss store creation webview before showing error alert
+            navigationController.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+
+                // Show error alert
+                let alertController = UIAlertController(title: Localization.StoreCreationErrorAlert.title,
+                                                        message: Localization.StoreCreationErrorAlert.defaultErrorMessage,
+                                                        preferredStyle: .alert)
+                alertController.view.tintColor = .text
+                _ = alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
+                self.navigationController.present(alertController, animated: true)
+            }
         }
     }
 

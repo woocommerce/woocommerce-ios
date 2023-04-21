@@ -171,7 +171,7 @@ final class ShippingLabelFormViewModel {
          destinationAddress: Address?,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults) {
 
         self.siteID = order.siteID
         self.order = order

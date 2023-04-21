@@ -691,7 +691,7 @@ private extension ShippingLabelFormViewModel {
                       value: item.value,
                       weight: item.weight,
                       hsTariffNumber: "",
-                      originCountry: SiteAddress().countryCode,
+                      originCountry: originAddress?.country ?? SiteAddress().countryCode,
                       productID: item.productOrVariationID)
             }
             return ShippingLabelCustomsForm(packageID: package.id, packageName: packageName, items: items)

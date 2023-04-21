@@ -152,6 +152,8 @@ final class ShippingLabelFormViewModel {
 
     private let storageManager: StorageManagerType
 
+    private let userDefaults: UserDefaults
+
     /// Closure to notify the `ViewController` when the view model properties change.
     ///
     var onChange: (() -> (Void))?
@@ -168,7 +170,8 @@ final class ShippingLabelFormViewModel {
          originAddress: Address?,
          destinationAddress: Address?,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         userDefaults: UserDefaults) {
 
         self.siteID = order.siteID
         self.order = order
@@ -181,11 +184,13 @@ final class ShippingLabelFormViewModel {
             ShippingLabelFormViewModel.getDefaultOriginAddress(accountSettings: accountSettings,
                                                                company: company,
                                                                siteAddress: SiteAddress(),
-                                                               account: defaultAccount)
+                                                               account: defaultAccount,
+                                                               userDefaults: userDefaults)
         self.destinationAddress = ShippingLabelFormViewModel.getDestinationAddress(order: order, address: destinationAddress)
 
         self.stores = stores
         self.storageManager = storageManager
+        self.userDefaults = userDefaults
 
         state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
@@ -196,8 +201,8 @@ final class ShippingLabelFormViewModel {
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
         originAddress = address
-        let dateState: ShippingLabelFormViewController.DataState = validated ? .validated : .pending
-        updateRowState(type: .shipFrom, dataState: dateState, displayMode: .editable)
+        let dataState: ShippingLabelFormViewController.DataState = validated ? .validated : .pending
+        updateRowState(type: .shipFrom, dataState: dataState, displayMode: .editable)
 
         // We reset the carrier and rates selected because if the address change
         // the carrier and rate change accordingly
@@ -205,7 +210,8 @@ final class ShippingLabelFormViewModel {
 
         updateRowsForCustomsIfNeeded()
 
-        if dateState == .validated {
+        if dataState == .validated, let address {
+            userDefaults[.storePhoneNumber] = address.phone
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_complete"])
         }
     }
@@ -557,7 +563,8 @@ private extension ShippingLabelFormViewModel {
     static func getDefaultOriginAddress(accountSettings: AccountSettings?,
                                         company: String?,
                                         siteAddress: SiteAddress,
-                                        account: Account?) -> ShippingLabelAddress? {
+                                        account: Account?,
+                                        userDefaults: UserDefaults) -> ShippingLabelAddress? {
         let address = Address(firstName: accountSettings?.firstName ?? "",
                               lastName: accountSettings?.lastName ?? "",
                               company: company ?? "",
@@ -567,7 +574,7 @@ private extension ShippingLabelFormViewModel {
                               state: siteAddress.state,
                               postcode: siteAddress.postalCode,
                               country: siteAddress.countryCode,
-                              phone: "",
+                              phone: userDefaults[.storePhoneNumber] ?? "",
                               email: account?.email)
         return fromAddressToShippingLabelAddress(address: address)
     }
@@ -684,7 +691,7 @@ private extension ShippingLabelFormViewModel {
                       value: item.value,
                       weight: item.weight,
                       hsTariffNumber: "",
-                      originCountry: SiteAddress().countryCode,
+                      originCountry: originAddress?.country ?? SiteAddress().countryCode,
                       productID: item.productOrVariationID)
             }
             return ShippingLabelCustomsForm(packageID: package.id, packageName: packageName, items: items)

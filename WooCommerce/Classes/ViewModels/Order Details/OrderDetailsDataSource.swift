@@ -439,7 +439,7 @@ private extension OrderDetailsDataSource {
             configureIssueRefundButton(cell: cell)
         case let cell as WooBasicTableViewCell where row == .customFields:
             configureCustomFields(cell: cell)
-        case let cell as WooBasicTableViewCell where row == .subscriptions:
+        case let cell as OrderSubscriptionTableViewCell where row == .subscriptions:
             configureSubscriptions(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
@@ -854,13 +854,13 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    private func configureSubscriptions(cell: WooBasicTableViewCell, at indexPath: IndexPath) {
+    private func configureSubscriptions(cell: OrderSubscriptionTableViewCell, at indexPath: IndexPath) {
         guard let subscription = orderSubscriptions(at: indexPath) else {
             return
         }
 
-        cell.bodyLabel.text = "Subscription #\(subscription.subscriptionID)"
-        cell.applyPlainTextStyle()
+        let cellViewModel = OrderSubscriptionTableViewCellViewModel(subscription: subscription)
+        cell.configure(cellViewModel)
     }
 
     private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
@@ -1640,7 +1640,7 @@ extension OrderDetailsDataSource {
             case .customFields:
                 return WooBasicTableViewCell.reuseIdentifier
             case .subscriptions:
-                return WooBasicTableViewCell.reuseIdentifier
+                return OrderSubscriptionTableViewCell.reuseIdentifier
             }
         }
     }

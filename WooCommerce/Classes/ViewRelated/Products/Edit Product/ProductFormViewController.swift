@@ -1725,10 +1725,7 @@ private extension ProductFormViewController {
         guard let subscription = product.subscription else {
             return
         }
-        let viewModel = SubscriptionSettingsViewModel(price: subscription.priceDescription(),
-                                                      expiresAfter: subscription.expiryDescription,
-                                                      signupFee: subscription.signupFeeDescription(),
-                                                      freeTrial: subscription.trialDescription)
+        let viewModel = SubscriptionSettingsViewModel(subscription: subscription)
         let viewController = SubscriptionSettingsViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

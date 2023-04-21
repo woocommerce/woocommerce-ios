@@ -568,14 +568,20 @@ private extension DefaultProductFormTableViewModel {
         let icon = UIImage.priceImage
         let title = Localization.subscriptionTitle
 
-        var subscriptionDetails = [String]()
+        var subscriptionDetails = [String?]()
 
         if let subscription = product.subscription {
-            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionPriceFormat, subscription.priceDescription()))
-            subscriptionDetails.append(String.localizedStringWithFormat(Localization.subscriptionExpiryFormat, subscription.expiryDescription))
+            let priceDescription = Localization.subscriptionPriceDescription(price: subscription.price,
+                                                                             period: subscription.period,
+                                                                             periodInterval: subscription.periodInterval,
+                                                                             currencyFormatter: currencyFormatter)
+            subscriptionDetails.append(priceDescription)
+
+            let expiryDescription = Localization.subscriptionExpiryDescription(length: subscription.length, period: subscription.period)
+            subscriptionDetails.append(expiryDescription)
         }
 
-        let details = subscriptionDetails.isEmpty ? nil: subscriptionDetails.joined(separator: "\n")
+        let details = subscriptionDetails.isEmpty ? nil : subscriptionDetails.compacted().joined(separator: "\n")
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -801,10 +807,46 @@ private extension DefaultProductFormTableViewModel {
 
         // Subscription
         static let subscriptionTitle = NSLocalizedString("Subscription", comment: "Title for Subscription row in the product form screen.")
-        static let subscriptionPriceFormat = NSLocalizedString("Regular price: %@",
-                                                               comment: "Format of the regular price on the Subscription row")
-        static let subscriptionExpiryFormat = NSLocalizedString("Expire after: %@",
-                                                                comment: "Format of the expiry details on the Subscription row")
+        static func subscriptionPriceDescription(price: String,
+                                                 period: SubscriptionPeriod,
+                                                 periodInterval: String,
+                                                 currencyFormatter: CurrencyFormatter) -> String? {
+            guard let formattedPrice = currencyFormatter.formatAmount(price) else {
+                return nil
+            }
+
+            let billingFrequency = {
+                switch periodInterval {
+                case "1":
+                    return period.descriptionSingular
+                default:
+                    return "\(periodInterval) \(period.descriptionPlural)"
+                }
+            }()
+
+            let format = NSLocalizedString("Regular price: %1$@ every %2$@",
+                                           comment: "Description of the subscription price for a product, with the price and billing frequency. " +
+                                           "Reads like: 'Regular price: $60.00 every 2 months'.")
+
+            return String.localizedStringWithFormat(format, formattedPrice, billingFrequency)
+        }
+        static func subscriptionExpiryDescription(length: String, period: SubscriptionPeriod) -> String {
+            let expiry = {
+                switch length {
+                case "", "0":
+                    return NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
+                case "1":
+                    return "1 \(period.descriptionSingular)"
+                default:
+                    return "\(length) \(period.descriptionPlural)"
+                }
+            }()
+
+            let format = NSLocalizedString("Expire after: %@",
+                                           comment: "Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'.")
+
+            return String.localizedStringWithFormat(format, expiry)
+        }
 
         // No variations warning row (read-only variable subscription)
         static let noVariationsWarningTitle =

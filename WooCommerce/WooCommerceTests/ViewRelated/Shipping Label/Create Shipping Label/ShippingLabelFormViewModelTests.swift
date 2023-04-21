@@ -6,18 +6,22 @@ import Yosemite
 final class ShippingLabelFormViewModelTests: XCTestCase {
 
     private var storageManager: StorageManagerType!
+    private var userDefaults: UserDefaults!
 
     private var storage: StorageType {
         storageManager.viewStorage
     }
 
-    override func setUp() {
+    override func setUpWithError() throws {
         super.setUp()
         storageManager = MockStorageManager()
+        userDefaults = try XCTUnwrap(UserDefaults(suiteName: "ShippingLabelFormViewModelTests"))
     }
 
     override func tearDown() {
         storageManager = nil
+        userDefaults.removeObject(forKey: .storePhoneNumber)
+        userDefaults = nil
         super.tearDown()
     }
 
@@ -110,6 +114,30 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let row = rows?.first { $0.type == .shippingCarrierAndRates }
         XCTAssertEqual(row?.dataState, .pending)
         XCTAssertEqual(row?.displayMode, .disabled)
+    }
+
+    func test_handleOriginAddressValueChanges_saves_phone_number_to_user_defaults() {
+        // Given
+        XCTAssertNil(userDefaults[.storePhoneNumber])
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
+        let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                           name: "Skylar Ferry",
+                                                           phone: "12345",
+                                                           country: "United States",
+                                                           state: "CA",
+                                                           address1: "60 29th",
+                                                           address2: "Street #343",
+                                                           city: "San Francisco",
+                                                           postcode: "94121-2303")
+
+        // When
+        shippingLabelFormViewModel.handleOriginAddressValueChanges(address: expectedShippingAddress, validated: true)
+
+        // Then
+        XCTAssertEqual(userDefaults[.storePhoneNumber], expectedShippingAddress.phone)
     }
 
     func test_handleDestinationAddressValueChanges_returns_updated_ShippingLabelAddress() {

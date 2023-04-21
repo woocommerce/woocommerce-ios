@@ -85,7 +85,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 XCTAssertTrue(viewModel.shouldShowScrollIndicator, "Scroll indicator is not enabled during sync")
                 onCompletion(.success(true))
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -105,7 +105,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
                 onCompletion(.success(true))
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -139,7 +139,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 product.update(with: readOnlyProduct)
                 onCompletion(.success(true))
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -170,7 +170,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 XCTAssertEqual(viewModel.syncStatus, .results)
                 onCompletion(.success(true))
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -190,7 +190,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case .synchronizeProducts:
                 timesSynced += 1
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -216,7 +216,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case .searchProductsInCache:
                 break
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -242,7 +242,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 onCompletion(true)
                 expectation.fulfill()
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -268,7 +268,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 onCompletion(false)
                 expectation.fulfill()
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -297,7 +297,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case .searchProductsInCache:
                 break
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -348,7 +348,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 onCompletion(.success(true))
                 expectation.fulfill()
             default:
-                break
+                XCTFail("Unsupported Action")
             }
         }
 
@@ -383,7 +383,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
-                break
+                XCTFail("Received unsupported action: \(action)")
             }
         }
 
@@ -414,7 +414,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 case .searchProductsInCache:
                     break
                 default:
-                    break
+                    XCTFail("Received unsupported action: \(action)")
                 }
             }
             viewModel.searchTerm = "shirt"
@@ -828,7 +828,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 filteredProductCategory = category
                 onCompletion(.success(true))
             default:
-                break
+                XCTFail("Received unsupported action: \(action)")
             }
         }
 
@@ -867,7 +867,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 filteredProductCategory = category
                 onCompletion(.success(Void()))
             default:
-                break
+                XCTFail("Received unsupported action: \(action)")
             }
         }
 
@@ -959,96 +959,142 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedProduct, products[0].productID)
     }
 
-    func test_productRows_when_we_have_popular_and_most_recently_sold_products_then_it_includes_them_with_a_limit() {
+    func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_then_it_includes_them_with_a_limit() {
         let maxTopProductGroupCount = 5
-        let mostPopularProducts = Array(1...6).map { index in Product.fake().copy(siteID: sampleSiteID,
-                                                                                  productID: index,
-                                                                                  purchasable: true) }
-        let mostRecentlySoldProducts = Array(7...12).map { index in
-            Product.fake().copy(siteID: sampleSiteID, productID: index, purchasable: true)
+        let mostPopularProductIds: [Int64] = Array(1...6)
+        let lastSoldProductIds: [Int64] = Array(7...10)
+
+        let topProducts = (mostPopularProductIds + lastSoldProductIds).map {
+            Product.fake().copy(siteID: sampleSiteID, productID: $0, purchasable: true)
         }
 
         let extraProducts = [
             Product.fake().copy(siteID: sampleSiteID, productID: 123, purchasable: true),
             Product.fake().copy(siteID: sampleSiteID, productID: 12345, purchasable: true)
         ]
-        insert(extraProducts)
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .retrievePopularCachedProducts(_, _, let onCompletion):
-                onCompletion(mostPopularProducts)
-            case .retrieveRecentlySoldCachedProducts(_, _, let onCompletion):
-                onCompletion(mostRecentlySoldProducts)
-            default:
-                break
-            }
-        }
+        let totalProducts = topProducts + extraProducts
+        insert(totalProducts)
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
+                                                                            TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
+                                                                                                        lastSoldProductsIds: lastSoldProductIds))
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
         waitUntil {
-            viewModel.productRows.count == maxTopProductGroupCount*2 + extraProducts.count
+            viewModel.productsSectionViewModels.isNotEmpty
         }
+
+        XCTAssertEqual(viewModel.productsSectionViewModels.count, 3)
+        XCTAssertEqual(viewModel.productsSectionViewModels.first?.productRows.count, min(topProducts.count, maxTopProductGroupCount))
+        XCTAssertEqual(viewModel.productsSectionViewModels[safe: 1]?.productRows.count, min(lastSoldProductIds.count, maxTopProductGroupCount))
+        XCTAssertEqual(viewModel.productsSectionViewModels.last?.productRows.count, totalProducts.count)
     }
 
-    func test_productRows_when_we_have_popular_and_most_recently_sold_products_with_duplicates_then_it_includes_them_without_duplicates() {
-        let duplicatedProducts = Array(1...3).map { index in Product.fake().copy(siteID: sampleSiteID, productID: index) }
+    func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_with_duplicates_then_it_removes_limit() {
+        let maxTopProductGroupCount = 5
+        let mostPopularProductIds: [Int64] = Array(1...6)
+        let lastSoldProductIds: [Int64] = Array(5...8)
+        let filteredLastSoldProductIds = lastSoldProductIds.filter { !mostPopularProductIds.contains($0) }
+
+        let topProducts = (mostPopularProductIds + lastSoldProductIds).map {
+            Product.fake().copy(siteID: sampleSiteID, productID: $0, purchasable: true)
+        }
 
         let extraProducts = [
             Product.fake().copy(siteID: sampleSiteID, productID: 123, purchasable: true),
             Product.fake().copy(siteID: sampleSiteID, productID: 12345, purchasable: true)
         ]
-        insert(extraProducts)
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .retrievePopularCachedProducts(_, _, let onCompletion):
-                onCompletion(duplicatedProducts)
-            case .retrieveRecentlySoldCachedProducts(_, _, let onCompletion):
-                onCompletion(duplicatedProducts)
-            default:
-                break
-            }
-        }
+        let totalProducts = topProducts + extraProducts
+        insert(totalProducts)
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
+                                                                            TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
+                                                                                                        lastSoldProductsIds: lastSoldProductIds))
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
         waitUntil {
-            viewModel.productRows.count == duplicatedProducts.count + extraProducts.count
+            viewModel.productsSectionViewModels.isNotEmpty
         }
+
+        XCTAssertEqual(viewModel.productsSectionViewModels[safe: 1]?.productRows.map { $0.productOrVariationID }, filteredLastSoldProductIds)
     }
 
-    func test_productRows_when_we_have_popular_and_most_recently_sold_products_then_it_includes_them_removing_non_purchasable() {
-        let mostPopularPurchasableProducts = Array(1...4).map { index in Product.fake().copy(siteID: sampleSiteID,
-                                                                                             productID: index,
-                                                                                             purchasable: true) }
-        let mostRecentlySoldButNonPurchasableProducts = Array(7...12).map { index in
-            Product.fake().copy(siteID: sampleSiteID, productID: index, purchasable: false)
-        }
+    func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_with_a_search_term_it_ignores_them() {
+        // Given
+        let mostPopularProductIds: [Int64] = Array(1...6)
+        let lastSoldProductIds: [Int64] = Array(7...10)
 
-        let extraProducts = [
-            Product.fake().copy(siteID: sampleSiteID, productID: 123, purchasable: true),
-            Product.fake().copy(siteID: sampleSiteID, productID: 12345, purchasable: true)
-        ]
-        insert(extraProducts)
+        let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
+                                                                            TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
+                                                                                                        lastSoldProductsIds: lastSoldProductIds))
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
+
+        let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .retrievePopularCachedProducts(_, _, let onCompletion):
-                onCompletion(mostPopularPurchasableProducts)
-            case .retrieveRecentlySoldCachedProducts(_, _, let onCompletion):
-                onCompletion(mostRecentlySoldButNonPurchasableProducts)
-            default:
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                self.insert(product, withSearchTerm: "shirt")
+                onCompletion(.success(()))
+                expectation.fulfill()
+            case .searchProductsInCache:
                 break
+            default:
+                XCTFail("Unsupported Action")
             }
         }
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, purchasableItemsOnly: true, storageManager: storageManager, stores: stores)
+        // When
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
-        waitUntil {
-            viewModel.productRows.count == mostPopularPurchasableProducts.count + extraProducts.count
-        }
+        // Then
+        XCTAssertEqual(viewModel.productsSectionViewModels.count, 1)
+
+    }
+
+    func test_productsSectionViewModels_when_we_have_top_products_and_filters_it_shows_one_section() async throws {
+        // Given
+        let popularProductId: Int64 = 1
+        let lastSoldProductId: Int64 = 10
+
+        let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
+                                                                            TopProductsFromCachedOrders(popularProductsIds: [popularProductId],
+                                                                                                        lastSoldProductsIds: [lastSoldProductId]))
+
+
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                productID: popularProductId,
+                                                productTypeKey: ProductType.simple.rawValue,
+                                                purchasable: true)
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                  productID: lastSoldProductId,
+                                                  productTypeKey: ProductType.variable.rawValue,
+                                                  purchasable: true)
+        insert(variableProduct)
+        insert(simpleProduct)
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+
+        // When
+        let filters = FilterProductListViewModel.Filters(
+            stockStatus: nil,
+            productStatus: nil,
+            productType: ProductType.simple,
+            productCategory: nil,
+            numberOfActiveFilters: 1
+        )
+        viewModel.updateFilters(filters)
+        viewModel.searchTerm = ""
+        try await Task.sleep(nanoseconds: searchDebounceTime)
+
+        // Then
+        XCTAssertEqual(viewModel.productsSectionViewModels.count, 1)
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productRows.first?.productOrVariationID, simpleProduct.productID)
     }
 }
 

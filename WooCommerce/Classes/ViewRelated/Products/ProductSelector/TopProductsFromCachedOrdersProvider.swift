@@ -14,9 +14,13 @@ struct TopProductsFromCachedOrders: Equatable {
     }
 }
 
+protocol TopProductsFromCachedOrdersProviderProtocol {
+    func provideTopProductsFromCachedOrders(siteID: Int64) -> TopProductsFromCachedOrders
+}
+
 /// Provides the ids of those products that were most or last sold among the cached orders
 ///
-final class TopProductsFromCachedOrdersProvider {
+final class TopProductsFromCachedOrdersProvider: TopProductsFromCachedOrdersProviderProtocol {
     private let storageManager: StorageManagerType
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.viewStorage

@@ -87,7 +87,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Provides the ids of those products that were most or last sold among the cached orders
     ///
-    private let topProductsProvider: TopProductsFromCachedOrdersProvider
+    private let topProductsProvider: TopProductsFromCachedOrdersProviderProtocol
 
     /// Ids of those products that were most or last sold among the cached orders
     ///
@@ -207,7 +207,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: TopProductsFromCachedOrdersProvider = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
+         topProductsProvider: TopProductsFromCachedOrdersProviderProtocol = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -248,7 +248,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: TopProductsFromCachedOrdersProvider = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
+         topProductsProvider: TopProductsFromCachedOrdersProviderProtocol = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
@@ -581,7 +581,7 @@ private extension ProductSelectorViewModel {
 
         sections = [ProductsSection(type: .mostPopular, products: popularProducts)]
 
-        let lastSoldProducts = products.filter { topProductsFromCachedOrders.lastSoldProductsIds.contains($0.productID) }
+        let lastSoldProducts = loadedProducts.filter { topProductsFromCachedOrders.lastSoldProductsIds.contains($0.productID) }
         let filteredLastSoldProducts = Array(removeAlreadyAddedProducts(from: lastSoldProducts).prefix(Constants.topSectionsMaxLength))
 
         appendSectionIfNotEmpty(type: .lastSold, products: filteredLastSoldProducts)

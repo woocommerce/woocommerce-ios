@@ -1006,7 +1006,7 @@ private extension ProductsViewController {
         emptyStateViewController.configure(config)
 
         // Make sure the banner is on top of the empty state view
-        freeTrialBannerPresenter?.reloadBannerVisibility()
+        freeTrialBannerPresenter?.bringBannerToFront()
     }
 
     func createFilterConfig() ->  EmptyStateViewController.Config {

@@ -46,6 +46,13 @@ final class FreeTrialBannerPresenter {
     func reloadBannerVisibility() {
         ServiceLocator.storePlanSynchronizer.reloadPlan()
     }
+
+    /// Bring banner (if visible) to the front. Useful when some content has hidden it.
+    ///
+    func bringBannerToFront() {
+        guard let containerView, let freeTrialBanner else { return }
+        containerView.bringSubviewToFront(freeTrialBanner)
+    }
 }
 
 private extension FreeTrialBannerPresenter {

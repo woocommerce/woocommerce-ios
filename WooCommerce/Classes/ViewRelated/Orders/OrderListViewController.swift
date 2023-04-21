@@ -574,7 +574,7 @@ private extension OrderListViewController {
         childController.didMove(toParent: self)
 
         // Make sure the banner is on top of the empty state view
-        freeTrialBannerPresenter?.reloadBannerVisibility()
+        freeTrialBannerPresenter?.bringBannerToFront()
     }
 
     func removeEmptyViewController() {

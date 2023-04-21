@@ -61,6 +61,21 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(originAddress?.postcode, "94121-2303")
     }
 
+    func test_store_phone_number_is_pre_populated_in_origin_address_if_saved_locally() {
+        // Given
+        let expectedPhoneNumber = "0123456789"
+        userDefaults[.storePhoneNumber] = expectedPhoneNumber
+
+        // When
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.originAddress?.phone, expectedPhoneNumber)
+    }
+
     func test_handleOriginAddressValueChanges_returns_updated_ShippingLabelAddress() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

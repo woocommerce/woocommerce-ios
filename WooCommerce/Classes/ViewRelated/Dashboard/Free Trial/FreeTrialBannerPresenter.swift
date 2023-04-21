@@ -19,7 +19,7 @@ final class FreeTrialBannerPresenter {
 
     /// Closure invoked when the banner is added or removed.
     ///
-    private var onLayoutUpdated: (_ containerView: UIView, _ bannerHeight: CGFloat) -> Void
+    private var onLayoutUpdated: (_ bannerHeight: CGFloat) -> Void
 
     /// Holds a reference to the Free Trial Banner view, Needed to be able to remove it when required.
     ///
@@ -33,7 +33,7 @@ final class FreeTrialBannerPresenter {
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
     ///   - onLayoutUpdated: Closure invoked when the banner is added or removed.
-    init(viewController: UIViewController, containerView: UIView, siteID: Int64, onLayoutUpdated: @escaping (UIView, CGFloat) -> Void) {
+    init(viewController: UIViewController, containerView: UIView, siteID: Int64, onLayoutUpdated: @escaping (CGFloat) -> Void) {
         self.viewController = viewController
         self.containerView = containerView
         self.siteID = siteID
@@ -98,7 +98,7 @@ private extension FreeTrialBannerPresenter {
 
         // Let consumers know that the layout has been updated so their content is not hidden by the `freeTrialViewController`.
         DispatchQueue.main.async {
-            self.onLayoutUpdated(containerView, freeTrialViewController.view.frame.size.height)
+            self.onLayoutUpdated(freeTrialViewController.view.frame.size.height)
         }
 
         // Store a reference to it to manipulate it later in `removeFreeTrialBanner`.
@@ -108,9 +108,9 @@ private extension FreeTrialBannerPresenter {
     /// Removes the Free Trial Banner from the container view..
     ///
     func removeBanner() {
-        guard let freeTrialBanner, let containerView else { return }
+        guard let freeTrialBanner else { return }
         freeTrialBanner.removeFromSuperview()
-        onLayoutUpdated(containerView, .zero)
+        onLayoutUpdated(.zero)
         self.freeTrialBanner = nil
     }
 

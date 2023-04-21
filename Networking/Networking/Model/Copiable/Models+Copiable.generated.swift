@@ -2179,6 +2179,45 @@ extension Networking.SiteVisitStatsItem {
     }
 }
 
+extension Networking.Subscription {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        subscriptionID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
+        status: CopiableProp<SubscriptionStatus> = .copy,
+        currency: CopiableProp<String> = .copy,
+        billingPeriod: CopiableProp<SubscriptionPeriod> = .copy,
+        billingInterval: CopiableProp<String> = .copy,
+        total: CopiableProp<String> = .copy,
+        startDate: CopiableProp<Date> = .copy,
+        endDate: CopiableProp<Date> = .copy
+    ) -> Networking.Subscription {
+        let siteID = siteID ?? self.siteID
+        let subscriptionID = subscriptionID ?? self.subscriptionID
+        let parentID = parentID ?? self.parentID
+        let status = status ?? self.status
+        let currency = currency ?? self.currency
+        let billingPeriod = billingPeriod ?? self.billingPeriod
+        let billingInterval = billingInterval ?? self.billingInterval
+        let total = total ?? self.total
+        let startDate = startDate ?? self.startDate
+        let endDate = endDate ?? self.endDate
+
+        return Networking.Subscription(
+            siteID: siteID,
+            subscriptionID: subscriptionID,
+            parentID: parentID,
+            status: status,
+            currency: currency,
+            billingPeriod: billingPeriod,
+            billingInterval: billingInterval,
+            total: total,
+            startDate: startDate,
+            endDate: endDate
+        )
+    }
+}
+
 extension Networking.SystemPlugin {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

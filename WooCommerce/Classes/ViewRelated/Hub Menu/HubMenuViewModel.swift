@@ -53,6 +53,10 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var shouldAuthenticateAdminPage = false
 
+    /// Defines the gap to leave at the bottom of the screen. Useful for showing banners or extra content.
+    ///
+    @Published var bottomInset: CGFloat = 0
+
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage

@@ -79,6 +79,7 @@ struct HubMenu: View {
                 }
             }
         }
+        .padding(.bottom, viewModel.bottomInset)
         .listStyle(.automatic)
         .navigationBarHidden(true)
         .background(Color(.listBackground).edgesIgnoringSafeArea(.all))

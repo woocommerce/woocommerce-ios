@@ -38,7 +38,8 @@ final class FreeTrialBannerPresenter {
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
-        observeStorePlan() // TODO: hide banner when no internet connection
+        observeStorePlan()
+        observeConnectivity()
     }
 
     /// Reloads the site plan and the banner visibility.
@@ -71,6 +72,23 @@ private extension FreeTrialBannerPresenter {
                 break // `.loading` and `.failed` should not change the banner visibility
             default:
                 self.removeBanner() // All other states should remove the banner
+            }
+        }
+        .store(in: &subscriptions)
+    }
+
+    /// Hide the banner when there is no internet connection.
+    /// Reload banner visibility when internet is reachable again.
+    ///
+    private func observeConnectivity() {
+        ServiceLocator.connectivityObserver.statusPublisher.sink { [weak self] status in
+            switch status {
+            case .reachable:
+                self?.reloadBannerVisibility()
+            case .notReachable:
+                self?.removeBanner()
+            case .unknown:
+                break // No-op
             }
         }
         .store(in: &subscriptions)

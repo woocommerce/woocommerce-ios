@@ -21,7 +21,6 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
     let subtitle: String = Localization.subtitle
 
     /// Question content.
-    /// TODO: 8376 - update values when API is ready.
     @Published private(set) var selectedCategory: Category?
 
     private let onContinue: (Answer) -> Void

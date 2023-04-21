@@ -1727,6 +1727,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProduct.value(forKey: "subscription") as? NSManagedObject, subscription)
         XCTAssertEqual(migratedProductVariation.value(forKey: "subscription") as? NSManagedObject, subscription)
     }
+
+    func test_migrating_from_83_to_84_adds_isPublic_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 83")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["isPublic"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 84")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSite = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let isPublic = try XCTUnwrap(migratedSite.value(forKey: "isPublic") as? Bool)
+        XCTAssertFalse(isPublic)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

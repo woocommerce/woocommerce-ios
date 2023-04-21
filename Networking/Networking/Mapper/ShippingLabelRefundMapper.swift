@@ -9,9 +9,9 @@ struct ShippingLabelRefundMapper: Mapper {
     func map(response: Data) throws -> ShippingLabelRefund {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
-        do {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ShippingLabelRefundResponse.self, from: response).data.refund
-        } catch {
+        } else {
             return try decoder.decode(ShippingLabelRefundEnvelope.self, from: response).refund
         }
     }

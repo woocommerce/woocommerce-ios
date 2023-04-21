@@ -12,10 +12,10 @@ struct CouponListMapper: Mapper {
     ///
     func map(response: Data) throws -> [Coupon] {
         let decoder = Coupon.decoder
-        do {
+        if hasDataEnvelope(in: response) {
             let coupons = try decoder.decode(CouponListEnvelope.self, from: response).coupons
             return coupons.map { $0.copy(siteID: siteID) }
-        } catch {
+        } else {
             return try decoder.decode([Coupon].self, from: response)
                 .map { $0.copy(siteID: siteID) }
         }

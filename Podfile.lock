@@ -39,15 +39,15 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (6.1.0-beta.1):
+  - WordPressAuthenticator (6.1.0):
     - GoogleSignIn (~> 6.0.1)
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
     - SVProgressHUD (~> 2.2.5)
-    - WordPressKit (~> 7.0-beta)
+    - WordPressKit (~> 8.0-beta)
     - WordPressShared (~> 2.1-beta)
     - WordPressUI (~> 1.7-beta)
-  - WordPressKit (7.1.0):
+  - WordPressKit (8.0.0):
     - Alamofire (~> 4.8.0)
     - NSObject-SafeExpectations (~> 0.0.4)
     - UIDeviceIdentifier (~> 2.0)
@@ -134,7 +134,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: eba1abd0e7755cca4f0e9064a104cada657cd3b3
+    :commit: 1ebe6f64508658370b25014185105fd6fb7a3617
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -158,8 +158,8 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: f33af270ba9045ea18b31d9aab88e42a0082ea67
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: e632aa8afeb4583d0c7c0818e2add2bffce47ef2
-  WordPressKit: 47e8e0fc39df87d0b8f84c1a4a67868414e9a925
+  WordPressAuthenticator: 9956582dabc0e98fc6f22ef960c52d8a3480b2d8
+  WordPressKit: b65a51863982d8166897bea8b753f1fc51732aad
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
   WordPressUI: c5be816f6c7b3392224ac21de9e521e89fa108ac
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068

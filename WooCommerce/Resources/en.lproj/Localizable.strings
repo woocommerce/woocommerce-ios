@@ -60,6 +60,9 @@ which should be translated separately and considered part of this sentence. */
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ Copy";
 
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
+"%1$@ every %2$@" = "%1$@ every %2$@";
+
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ excl. %2$@";
 
@@ -613,6 +616,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "Adds variation to order.";
 
+/* Option in the store creation selling platforms question. */
+"Adobe Commerce" = "Adobe Commerce";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Adult signature required (+%1$@)";
 
@@ -688,9 +694,6 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Almost there! Please enter the verification code from your authenticator app.";
 
-/* Subtitle for the login button on the account creation form. */
-"Already registered?" = "Already registered?";
-
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "Alternatively, you may enter the password for this account.";
 
@@ -722,9 +725,6 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "Amount Paid";
-
-/* Account creation error when the email is already associated with an existing WP.com account. */
-"An account with this email already exists." = "An account with this email already exists.";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "An error occured while closing account.";
@@ -1054,6 +1054,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "Bonaire, Saint Eustatius and Saba";
 
+/* Description of the Coupons menu in the hub menu */
+"Boost sales with special offers" = "Boost sales with special offers";
+
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Boost your business by sending customers special offers and discounts.";
 
@@ -1230,6 +1233,7 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
@@ -1299,6 +1303,9 @@ which should be translated separately and considered part of this sentence. */
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Capture high-quality product reviews for your store.";
+
+/* Description of one of the hub menu options */
+"Capture reviews for your store" = "Capture reviews for your store";
 
 /* (External) card reader payment method title on the select payment method screen */
 "Card Reader" = "Card Reader";
@@ -1513,6 +1520,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Closing account...";
 
+/* Industry option in the store creation category question. */
+"Clothing and accessories" = "Clothing and accessories";
+
 /* Country option for a site address. */
 "Cocos (Keeling) Islands" = "Cocos (Keeling) Islands";
 
@@ -1721,7 +1731,8 @@ which should be translated separately and considered part of this sentence. */
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
    Title of the button on the store creation store name form to continue.
    Title of the button to continue with a profiler question.
-   Title of the button to continue with a selected domain. */
+   Title of the button to continue with a selected domain.
+   Title of the submit button on the account creation form. */
 "Continue" = "Continue";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
@@ -1933,6 +1944,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Create your first variation";
 
+/* Title for the account creation form to create new password. */
+"Create your password" = "Create your password";
+
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "Create, edit, and publish products.";
 
@@ -2093,6 +2107,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Date: Oldest to Newest";
+
+/* Display label for a product's subscription period when it is a single day. */
+"day" = "day";
+
+/* Display label for a product's subscription period, e.g. '7 days'. */
+"days" = "days";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Default";
@@ -2381,6 +2401,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Ecuador" = "Ecuador";
+
+/* Option in the store creation selling platforms question. */
+"Ecwid" = "Ecwid";
 
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
@@ -2775,6 +2798,12 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "Experimental Features";
 
+/* Label for the expiry setting in the subscription settings screen. */
+"Expire after" = "Expire after";
+
+/* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
+"Expire after: %@" = "Expire after: %@";
+
 /* Status of coupons that are expired */
 "Expired" = "Expired";
 
@@ -2825,9 +2854,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Faroe Islands" = "Faroe Islands";
-
-/* Industry option in the store creation category question. */
-"Fashion, apparel, and accessories" = "Fashion, apparel, and accessories";
 
 /* Fast to launch title feature on the Free Trial Summary Screen */
 "Fast to launch" = "Fast to launch";
@@ -2941,6 +2967,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Food and drink" = "Food and drink";
 
+/* Button to see instructions for resetting password of a WPCom account. */
+"Forgot password?" = "Forgot password?";
+
 /* Title in the error notice when a validation error occurs after submitting domain contact info. */
 "Form Validation Error" = "Form Validation Error";
 
@@ -2952,6 +2981,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "Free for the first year";
+
+/* Label for the free trial setting in the subscription settings screen. */
+"Free trial" = "Free trial";
 
 /* Plan name for an active free trial */
 "Free Trial" = "Free Trial";
@@ -2988,6 +3020,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Gambia" = "Gambia";
+
+/* General section title in the hub menu */
+"General" = "General";
 
 /* Title for the option to generate all possible variations */
 "Generate all variations" = "Generate all variations";
@@ -3038,9 +3073,6 @@ which should be translated separately and considered part of this sentence. */
    Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Get Started";
-
-/* Title of the submit button on the account creation form. */
-"Get started" = "Get started";
 
 /* Title for the account creation form. */
 "Get started in minutes" = "Get started in minutes";
@@ -3616,6 +3648,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Join from anywhere";
 
+/* Description of the hub menu payments button */
+"Join the mobile payments" = "Join the mobile payments";
+
 /* Country option for a site address. */
 "Jordan" = "Jordan";
 
@@ -3930,6 +3965,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>" = "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>";
 
+/* Option in the store creation selling platforms question. */
+"Magento" = "Magento";
+
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "Mail (Default)";
 
@@ -3974,11 +4012,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the action sheet displayed from the Coupon Details screen */
 "Manage Coupon" = "Manage Coupon";
 
+/* Description of one of the hub menu options */
+"Manage more on admin" = "Manage more on admin";
+
 /* Title of the primary button on the store creation success screen to continue to the newly created store. */
 "Manage My Store" = "Manage My Store";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Manage stock";
+
+/* Description of one of the hub menu options */
+"Manage your plans" = "Manage your plans";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Manual Offsets";
@@ -4100,8 +4144,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Montenegro" = "Montenegro";
 
+/* Display label for a product's subscription period when it is a single month. */
+"month" = "month";
+
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "Month to Date";
+
+/* Display label for a product's subscription period, e.g. '12 months'. */
+"months" = "months";
 
 /* Country option for a site address. */
 "Montserrat" = "Montserrat";
@@ -4215,6 +4265,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Network Active Plugins";
 
+/* Display label when a subscription never expires. */
+"Never expire" = "Never expire";
+
 /* Title of the badge shown when advertising a new feature */
 "New" = "New";
 
@@ -4326,7 +4379,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "no previous period";
 
-/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Display label when a subscription has no price.
+   Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "No price set";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -4358,6 +4412,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "No shipping rates available";
 
+/* Display label when a subscription has no signup fee. */
+"No signup fee" = "No signup fee";
+
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "No supported contact method on this device.";
 
@@ -4366,6 +4423,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "No tax classes yet";
+
+/* Display label when a subscription has no trial period. */
+"No trial period" = "No trial period";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "No variations to generate";
@@ -4506,6 +4566,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "Open wp-admin";
 
+/* Title text in the store creation loading screen */
+"Opening the doors" = "Opening the doors";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Opens a list of available statuses.";
 
@@ -4629,6 +4692,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Other Sites";
+
+/* Subtitle text in the store creation loading screen */
+"Our favorite color is purple." = "Our favorite color is purple.";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5472,6 +5538,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "Regular Price";
 
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: 'Regular price: $60.00 every 2 months'. */
+"Regular price: %1$@ every %2$@" = "Regular price: %1$@ every %2$@";
+
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Regular price: %@";
 
@@ -5954,7 +6023,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Set up the package you'll be using to ship your products. We'll save it for future orders.";
 
 /* Settings button in the hub menu
-   Settings navigation title */
+   Settings navigation title
+   Title of the hub menu settings button */
 "Settings" = "Settings";
 
 /* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
@@ -6171,6 +6241,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Signed in as @%1$@";
+
+/* Label for the signup fee setting in the subscription settings screen. */
+"Signup fee" = "Signup fee";
 
 /* Display label for simple product type. */
 "Simple" = "Simple";
@@ -6421,6 +6494,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the notice when a user updated status for selected products */
 "Status updated" = "Status updated";
 
+/* Description of the Inbox menu in the hub menu */
+"Stay up-to-date" = "Stay up-to-date";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "Still need help? Contact us";
 
@@ -6521,8 +6597,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Submit Support Request";
 
-/* Display label for subscription product type. */
+/* Display label for simple subscription product type.
+   Title for Subscription row in the product form screen.
+   Title for the subscription settings in a subscription product. */
 "Subscription" = "Subscription";
+
+/* Label for the subscription price setting in the subscription settings screen. */
+"Subscription price" = "Subscription price";
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "SUBSCRIPTION STATUS" = "SUBSCRIPTION STATUS";
@@ -6580,9 +6661,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Switch Store";
-
-/* Switch store option in the hub menu */
-"Switch store" = "Switch store";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "Switched to %1$@.";
@@ -7087,6 +7165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The variation couldn't be generated." = "The variation couldn't be generated.";
 
 /* Subtitle text in the store creation loading screen */
+"The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "The Woo team is made up of over 350 talented individuals, distributed across 30+ countries.";
+
+/* Subtitle text in the store creation loading screen */
 "There are more than 150 WooCommerce meetups held all over the world! A great way to meet fellow store owners." = "There are more than 150 WooCommerce meetups held all over the world! A great way to meet fellow store owners.";
 
 /* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
@@ -7496,6 +7577,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale.";
 
+/* Title text in the store creation loading screen */
+"Turning on the lights" = "Turning on the lights";
+
 /* Country option for a site address. */
 "Tuvalu" = "Tuvalu";
 
@@ -7826,6 +7910,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
 
+/* Description of the hub menu settings button */
+"Update your preferences" = "Update your preferences";
+
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Updated %ld hour ago";
 
@@ -7951,6 +8038,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Variable product";
 
+/* Display label for variable subscription product type. */
+"Variable Subscription" = "Variable Subscription";
+
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Variation #%1$@";
 
@@ -8047,6 +8137,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of one of the hub menu options */
 "View Store" = "View Store";
 
+/* Description of one of the hub menu options */
+"View your store" = "View your store";
+
 /* User role badge */
 "Viewer" = "Viewer";
 
@@ -8080,6 +8173,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Wallis and Futuna" = "Wallis and Futuna";
+
+/* Option in the store creation selling platforms question. */
+"Walmart" = "Walmart";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "We are getting ready for your store creation";
@@ -8208,8 +8304,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the app's website */
 "Website" = "Website";
 
+/* Display label for a product's subscription period when it is a single week. */
+"week" = "week";
+
 /* Title of the Analytics Hub Week to Date selection range */
 "Week to Date" = "Week to Date";
+
+/* Display label for a product's subscription period, e.g. '4 weeks'. */
+"weeks" = "weeks";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Weight";
@@ -8286,6 +8388,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Width" = "Width";
 
 /* Option in the store creation selling platforms question. */
+"Wish" = "Wish";
+
+/* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
 /* Title text in the store creation loading screen */
@@ -8354,8 +8459,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
+/* Display label for a product's subscription period when it is a single year. */
+"year" = "year";
+
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "Year to Date";
+
+/* Display label for a product's subscription period, e.g. '2 years'. */
+"years" = "years";
 
 /* Country option for a site address. */
 "Yemen" = "Yemen";
@@ -8394,6 +8505,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
 
+/* Info notice at the bottom of the subscription settings screen. */
+"You can edit subscription settings in the web dashboard" = "You can edit subscription settings in the web dashboard";
+
 /* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
 "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method.";
 
@@ -8405,6 +8519,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!";
+
+/* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
+"You can only add variable subscriptions in the web dashboard" = "You can only add variable subscriptions in the web dashboard";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
 "You can refund fees in your store admin" = "You can refund fees in your store admin";

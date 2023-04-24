@@ -560,9 +560,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_subscriptions_section_is_visible_when_order_has_associated_subscriptions() throws {
         // Given
         let order = MockOrders().makeOrder()
-        let dataSource = OrderDetailsDataSource(
-            order: order, storageManager: storageManager,
-            cardPresentPaymentsConfiguration: Mocks.configuration
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
         )
 
         // When
@@ -576,9 +577,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_subscriptions_section_is_hidden_when_order_has_no_associated_subscriptions() throws {
         // Given
         let order = MockOrders().makeOrder()
-        let dataSource = OrderDetailsDataSource(
-            order: order, storageManager: storageManager,
-            cardPresentPaymentsConfiguration: Mocks.configuration
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
         )
 
         // When

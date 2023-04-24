@@ -170,7 +170,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
                 }
             }
 
-            self.viewModel.syncSubscriptions()
+            self.viewModel.syncSubscriptions(isFeatureFlagEnabled: true)
         }
 
         // Then

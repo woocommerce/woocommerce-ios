@@ -100,7 +100,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private var topProductsFromCachedOrders: TopProductsFromCachedOrders = TopProductsFromCachedOrders.empty
 
-    /// Wether we should the popular and last sold products on top on default mode (no search or filters)
+    /// Whether we should the popular and last sold products on top on default mode (no search or filters)
     ///
     private let shouldShowTopProductsOnDefaultMode: Bool
 
@@ -696,16 +696,6 @@ private extension ProductSelectorViewModel {
 
     func loadTopProducts() {
         topProductsFromCachedOrders = topProductsProvider.provideTopProductsFromCachedOrders(siteID: siteID)
-    }
-
-    /// Remove the non purchasable (if required)
-    ///
-    func removeNonPurchasableIfRequired(from products: [Product]) -> [Product] {
-        guard purchasableItemsOnly else {
-            return products
-        }
-
-        return products.filter { $0.purchasable }
     }
 }
 

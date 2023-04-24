@@ -208,7 +208,7 @@ extension OrderDetailsViewModel {
 
             // Subscriptions require order.renewalSubscriptionID, so sync them only after the order is loaded
             group.enter()
-            syncSubscriptions { _ in
+            self.syncSubscriptions { _ in
                 group.leave()
             }
         }
@@ -606,7 +606,7 @@ extension OrderDetailsViewModel {
                 return
             }
 
-            let action = SubscriptionAction.loadSubscriptions(for: order) { [weak self] result in
+            let action = SubscriptionAction.loadSubscriptions(for: self.order) { [weak self] result in
                 switch result {
                 case .success(let subscriptions):
                     self?.dataSource.orderSubscriptions = subscriptions
@@ -616,7 +616,7 @@ extension OrderDetailsViewModel {
                 }
                 onCompletion?(nil)
             }
-            stores.dispatch(action)
+            self.stores.dispatch(action)
         }
     }
 

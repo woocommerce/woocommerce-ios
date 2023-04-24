@@ -31,21 +31,15 @@ final class TopProductsFromCachedOrdersProvider: TopProductsFromCachedOrdersProv
     }
 
     func provideTopProductsFromCachedOrders(siteID: Int64) -> TopProductsFromCachedOrders {
-        TopProductsFromCachedOrders(popularProductsIds: popularProductsIds(from: siteID),
-                                           lastSoldProductsIds: lastSoldProductIds(from: siteID))
+        TopProductsFromCachedOrders(popularProductsIds: retrievePopularProductsIds(from: siteID),
+                                           lastSoldProductsIds: retrieveLastSoldProductIds(from: siteID))
     }
 }
 
 private extension TopProductsFromCachedOrdersProvider {
-    func popularProductsIds(from siteID: Int64) -> [Int64] {
-        let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
-                                                      matching: completedOrdersPredicate(from: siteID),
-                                                      sortedBy: nil)
-
-        let completedOrders = completedStorageOrders.map { $0.toReadOnly() }
-
+    func retrievePopularProductsIds(from siteID: Int64) -> [Int64] {
         // Get product ids sorted by occurence
-        let completedOrdersItems = completedOrders.flatMap { $0.items }
+        let completedOrdersItems = retrieveCompletedOrders(from: siteID).flatMap { $0.items }
         let productIDCountDictionary = completedOrdersItems.reduce(into: [:]) { counts, orderItem in counts[orderItem.productID, default: 0] += 1 }
 
         return productIDCountDictionary
@@ -62,17 +56,19 @@ private extension TopProductsFromCachedOrdersProvider {
             .uniqued()
     }
 
-    func lastSoldProductIds(from siteID: Int64) -> [Int64] {
+    func retrieveLastSoldProductIds(from siteID: Int64) -> [Int64] {
+        retrieveCompletedOrders(from: siteID)
+            .flatMap { $0.items }
+            .map { $0.productID }
+            .uniqued()
+    }
+
+    func retrieveCompletedOrders(from siteID: Int64) -> [Yosemite.Order] {
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),
                                                       sortedBy: [NSSortDescriptor(key: #keyPath(StorageOrder.datePaid), ascending: false)])
 
-        let completedOrders = completedStorageOrders.map { $0.toReadOnly() }
-
-        return completedOrders
-            .flatMap { $0.items }
-            .map { $0.productID }
-            .uniqued()
+        return completedStorageOrders.map { $0.toReadOnly() }
     }
 
     func completedOrdersPredicate(from siteID: Int64) -> NSPredicate {

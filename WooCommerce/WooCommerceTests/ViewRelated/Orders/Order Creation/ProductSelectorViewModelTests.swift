@@ -976,8 +976,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let totalProducts = topProducts + extraProducts
         insert(totalProducts)
 
-        let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
-                                                                            TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
@@ -1010,8 +1010,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let totalProducts = topProducts + extraProducts
         insert(totalProducts)
 
-        let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
-                                                                            TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
@@ -1039,8 +1039,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let mostPopularProductIds: [Int64] = Array(1...6)
         let lastSoldProductIds: [Int64] = Array(7...10)
 
-        let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
-                                                                            TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
@@ -1074,8 +1074,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let popularProductId: Int64 = 1
         let lastSoldProductId: Int64 = 10
 
-        let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
-                                                                            TopProductsFromCachedOrders(popularProductsIds: [popularProductId],
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: [popularProductId],
                                                                                                         lastSoldProductsIds: [lastSoldProductId]))
 
 

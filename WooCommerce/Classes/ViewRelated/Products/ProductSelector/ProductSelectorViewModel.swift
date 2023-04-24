@@ -94,7 +94,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Ids of those products that were most or last sold among the cached orders
     ///
-    private var topProductsFromCachedOrders: TopProductsFromCachedOrders = TopProductsFromCachedOrders.empty
+    private var topProductsFromCachedOrders: ProductSelectorTopProducts = ProductSelectorTopProducts.empty
 
     /// Whether we should show the products split by sections
     ///
@@ -212,7 +212,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: TopProductsFromCachedOrdersProviderProtocol? = nil,
+         topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -234,7 +234,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
-        topProductsFromCachedOrders = topProductsProvider?.provideTopProductsFromCachedOrders(siteID: siteID) ?? .empty
+        topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
 
         configureSyncingCoordinator()
         refreshDataAndSync()
@@ -252,7 +252,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: TopProductsFromCachedOrdersProviderProtocol? = nil,
+         topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
@@ -272,7 +272,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
-        topProductsFromCachedOrders = topProductsProvider?.provideTopProductsFromCachedOrders(siteID: siteID) ?? .empty
+        topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
 
         configureSyncingCoordinator()
         refreshDataAndSync()

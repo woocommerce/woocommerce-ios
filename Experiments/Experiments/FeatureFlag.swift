@@ -188,7 +188,7 @@ public enum FeatureFlag: Int {
     ///
     case IPPUKExpansion
 
-    /// Enables subscription product settings in product details
+    /// Enables read-only support for the Subscriptions extension in product and order details
     ///
-    case subscriptionProducts
+    case readOnlySubscriptions
 }

@@ -590,9 +590,10 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func syncSubscriptions(onCompletion: ((Error?) -> ())? = nil) {
+    func syncSubscriptions(isFeatureFlagEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
+                           onCompletion: ((Error?) -> ())? = nil) {
         // Only sync subscriptions if the feature flag is enabled.
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions) else {
+        guard isFeatureFlagEnabled else {
             onCompletion?(nil)
             return
         }

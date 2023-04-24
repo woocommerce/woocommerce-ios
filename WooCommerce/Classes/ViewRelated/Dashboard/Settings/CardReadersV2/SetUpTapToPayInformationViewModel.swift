@@ -6,7 +6,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
-    let learnMoreURL: URL
+    private(set) var learnMoreURL: URL
     var dismiss: (() -> Void)?
 
     private let stores: StoresManager
@@ -19,6 +19,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     let connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
     let connectivityObserver: ConnectivityObserver
 
+    private let onboardingStatePublisher: Published<CardPresentPaymentOnboardingState>.Publisher
     private let analytics: Analytics = ServiceLocator.analytics
 
     var connectionController: BuiltInCardReaderConnectionController? = nil
@@ -35,7 +36,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
          didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
-         activePaymentGateway: CardPresentPaymentsPlugin,
+         onboardingStatePublisher: Published<CardPresentPaymentOnboardingState>.Publisher,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
          stores: StoresManager = ServiceLocator.stores) {
@@ -45,14 +46,26 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
         self.stores = stores
         self.connectionAnalyticsTracker = connectionAnalyticsTracker
         self.connectivityObserver = connectivityObserver
-        self.learnMoreURL = Self.learnMoreURL(for: activePaymentGateway)
+        self.onboardingStatePublisher = onboardingStatePublisher
+        self.learnMoreURL = Self.learnMoreURL(for: .wcPay) // this will be updated when the onboarding state is known
 
+        beginOnboardingStateObservation()
         beginConnectedReaderObservation()
         beginConnectivityObservation()
     }
 
     deinit {
         subscriptions.removeAll()
+    }
+
+    // this is only used for the learn more url...
+    private func beginOnboardingStateObservation() {
+        self.onboardingStatePublisher.share().sink { [weak self] onboardingState in
+            guard case .completed(let plugin) = onboardingState else {
+                return
+            }
+            self?.learnMoreURL = Self.learnMoreURL(for: plugin.preferred)
+        }.store(in: &subscriptions)
     }
 
     /// Set up to observe readers connecting / disconnecting
@@ -124,9 +137,8 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
         let didChange = newShouldShow != shouldShow
 
-        shouldShow = newShouldShow
-
         if didChange {
+            shouldShow = newShouldShow
             didChangeShouldShow?(shouldShow)
         }
     }

@@ -11,6 +11,13 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     private let stores: StoresManager
 
+    private lazy var urlRouter: UniversalLinkRouter = {
+        return UniversalLinkRouter.justInTimeMessagesUniversalLinkRouter(
+            tabBarController: AppDelegate.shared.tabBarController,
+            urlOpener: JustInTimeMessagesURLOpener(navigationTitle: justInTimeMessage.title,
+                                                   showWebViewSheetSubject: showWebViewSheetSubject))
+    }()
+
     private let justInTimeMessage: JustInTimeMessage
 
     // MARK: - Message properties
@@ -27,6 +34,8 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     private let featureClass: String
 
     private let screenName: String
+
+    private var cancellables: Set<AnyCancellable> = []
 
     init(justInTimeMessage: JustInTimeMessage,
          screenName: String,
@@ -49,10 +58,18 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         self.title = justInTimeMessage.title
         self.message = justInTimeMessage.detail
         self.buttonTitle = justInTimeMessage.buttonTitle
+        bindWebViewSheet()
     }
 
     // MARK: - output streams
-    @Published private(set) var showWebViewSheet: WebViewSheetViewModel?
+    @Published var showWebViewSheet: WebViewSheetViewModel?
+    private let showWebViewSheetSubject = PassthroughSubject<WebViewSheetViewModel?, Never>()
+
+    private func bindWebViewSheet() {
+        showWebViewSheetSubject.sink { [weak self] webViewSheetViewModel in
+            self?.showWebViewSheet = webViewSheetViewModel
+        }.store(in: &cancellables)
+    }
 
     // MARK: - default AnnouncementCardViewModelProtocol conformance
     let showDividers: Bool = false
@@ -82,18 +99,8 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         guard let url = url else {
             return
         }
-        let webViewModel = WebViewSheetViewModel(
-            url: url,
-            navigationTitle: title,
-            authenticated: needsAuthenticatedWebView(url: url))
-        showWebViewSheet = webViewModel
-    }
 
-    private func needsAuthenticatedWebView(url: URL) -> Bool {
-        guard let host = url.host else {
-            return false
-        }
-        return Constants.trustedDomains.contains(host)
+        urlRouter.handle(url: url)
     }
 
     func dontShowAgainTapped() {
@@ -125,11 +132,5 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     func remindLaterTapped() {
         // No-op
-    }
-}
-
-extension JustInTimeMessageAnnouncementCardViewModel {
-    enum Constants {
-        static let trustedDomains = ["woocommerce.com", "wordpress.com"]
     }
 }

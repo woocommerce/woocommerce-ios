@@ -461,6 +461,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 // TODO: Track row tapped
                 showSubscriptionSettings()
+            case .noVariationsWarning:
+                return // This warning is not actionable.
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]
@@ -1720,13 +1722,10 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showSubscriptionSettings() {
-        guard let product = product as? EditableProductModel, let subscription = product.subscription else {
+        guard let subscription = product.subscription else {
             return
         }
-        let viewModel = SubscriptionSettingsViewModel(price: subscription.priceDescription() ?? "",
-                                                      expiresAfter: subscription.expiryDescription,
-                                                      signupFee: subscription.signupFeeDescription(),
-                                                      freeTrial: subscription.trialDescription)
+        let viewModel = SubscriptionSettingsViewModel(subscription: subscription)
         let viewController = SubscriptionSettingsViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

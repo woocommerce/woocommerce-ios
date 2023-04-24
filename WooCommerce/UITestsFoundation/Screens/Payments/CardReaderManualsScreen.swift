@@ -33,7 +33,7 @@ public final class CardReaderManualsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func verifyChipperManualLoadedOnWebView() throws -> Self {
+    public func verifyChipperManualLoadedInWebView() throws -> Self {
         let chipperManualPredicate = NSPredicate(format: "label CONTAINS[c] %@", "ChipperTM 2X BT")
         let chipperManualText = app.webViews.textViews.containing(chipperManualPredicate).element
 

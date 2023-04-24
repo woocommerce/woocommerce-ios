@@ -18,18 +18,38 @@ struct ProductTagListMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
+        let hasDataEnvelope = hasDataEnvelope(in: response)
 
         switch responseType {
-          case .load:
-            do {
+        case .load:
+            if hasDataEnvelope {
                 return try decoder.decode(ProductTagListEnvelope.self, from: response).tags
-            } catch {
+            } else {
                 return try decoder.decode([ProductTag].self, from: response)
             }
-          case .create:
-            return try decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).tags
-          case .delete:
-            return try decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).tags
+        case .create:
+            let tags: [ProductTagFromBatchCreation] = try {
+                if hasDataEnvelope {
+                    return try decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).data.tags
+                } else {
+                    return try decoder.decode(ProductTagListBatchCreateContainer.self, from: response).tags
+                }
+            }()
+            return tags
+                .filter { $0.error == nil }
+                .compactMap { (tagCreated) -> ProductTag? in
+                    if let name = tagCreated.name, let slug = tagCreated.slug {
+                        return ProductTag(siteID: tagCreated.siteID, tagID: tagCreated.tagID, name: name, slug: slug)
+                    }
+                    return nil
+                }
+
+        case .delete:
+            if hasDataEnvelope {
+                return try decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).data.tags
+            } else {
+                return try decoder.decode(ProductTagListBatchDeleteContainer.self, from: response).tags
+            }
         }
     }
 
@@ -59,33 +79,18 @@ private struct ProductTagListEnvelope: Decodable {
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductTagListBatchCreateEnvelope: Decodable {
-    let tags: [ProductTag]
-
-    init(from decoder: Decoder) throws {
-        let container = try? decoder.container(keyedBy: CodingKeys.self)
-
-        let productTagsCreated: [ProductTagFromBatchCreation]?
-        do {
-            let nestedContainer = try container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
-            productTagsCreated = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTagFromBatchCreation>.self,
-                                                                          forKey: .create)
-        } catch {
-            productTagsCreated = container?.failsafeDecodeIfPresent(Array<ProductTagFromBatchCreation>.self,
-                                                                    forKey: .create)
-        }
-        tags = productTagsCreated?
-            .filter { $0.error == nil }
-            .compactMap { (tagCreated) -> ProductTag? in
-                if let name = tagCreated.name, let slug = tagCreated.slug {
-                    return ProductTag(siteID: tagCreated.siteID, tagID: tagCreated.tagID, name: name, slug: slug)
-                }
-                return nil
-            } ?? []
-    }
+    let data: ProductTagListBatchCreateContainer
 
     private enum CodingKeys: String, CodingKey {
         case data
-        case create
+    }
+}
+
+private struct ProductTagListBatchCreateContainer: Decodable {
+    let tags: [ProductTagFromBatchCreation]
+
+    private enum CodingKeys: String, CodingKey {
+        case tags = "create"
     }
 }
 
@@ -94,20 +99,17 @@ private struct ProductTagListBatchCreateEnvelope: Decodable {
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductTagListBatchDeleteEnvelope: Decodable {
-    let tags: [ProductTag]
-
-    init(from decoder: Decoder) throws {
-        let container = try? decoder.container(keyedBy: CodingKeys.self)
-        do {
-            let nestedContainer = try container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
-            tags = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .delete) ?? []
-        } catch {
-            tags = container?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .delete) ?? []
-        }
-    }
+    let data: ProductTagListBatchDeleteContainer
 
     private enum CodingKeys: String, CodingKey {
         case data
-        case delete
+    }
+}
+
+private struct ProductTagListBatchDeleteContainer: Decodable {
+    let tags: [ProductTag]
+
+    private enum CodingKeys: String, CodingKey {
+        case tags = "delete"
     }
 }

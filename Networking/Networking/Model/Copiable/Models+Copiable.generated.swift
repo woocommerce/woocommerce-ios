@@ -525,7 +525,8 @@ extension Networking.Order {
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
         fees: CopiableProp<[OrderFeeLine]> = .copy,
         taxes: CopiableProp<[OrderTaxLine]> = .copy,
-        customFields: CopiableProp<[OrderMetaData]> = .copy
+        customFields: CopiableProp<[OrderMetaData]> = .copy,
+        renewalSubscriptionID: NullableCopiableProp<String> = .copy
     ) -> Networking.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -561,6 +562,7 @@ extension Networking.Order {
         let fees = fees ?? self.fees
         let taxes = taxes ?? self.taxes
         let customFields = customFields ?? self.customFields
+        let renewalSubscriptionID = renewalSubscriptionID ?? self.renewalSubscriptionID
 
         return Networking.Order(
             siteID: siteID,
@@ -596,7 +598,8 @@ extension Networking.Order {
             refunds: refunds,
             fees: fees,
             taxes: taxes,
-            customFields: customFields
+            customFields: customFields,
+            renewalSubscriptionID: renewalSubscriptionID
         )
     }
 }
@@ -2175,6 +2178,45 @@ extension Networking.SiteVisitStatsItem {
             period: period,
             visitors: visitors,
             views: views
+        )
+    }
+}
+
+extension Networking.Subscription {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        subscriptionID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
+        status: CopiableProp<SubscriptionStatus> = .copy,
+        currency: CopiableProp<String> = .copy,
+        billingPeriod: CopiableProp<SubscriptionPeriod> = .copy,
+        billingInterval: CopiableProp<String> = .copy,
+        total: CopiableProp<String> = .copy,
+        startDate: CopiableProp<Date> = .copy,
+        endDate: CopiableProp<Date> = .copy
+    ) -> Networking.Subscription {
+        let siteID = siteID ?? self.siteID
+        let subscriptionID = subscriptionID ?? self.subscriptionID
+        let parentID = parentID ?? self.parentID
+        let status = status ?? self.status
+        let currency = currency ?? self.currency
+        let billingPeriod = billingPeriod ?? self.billingPeriod
+        let billingInterval = billingInterval ?? self.billingInterval
+        let total = total ?? self.total
+        let startDate = startDate ?? self.startDate
+        let endDate = endDate ?? self.endDate
+
+        return Networking.Subscription(
+            siteID: siteID,
+            subscriptionID: subscriptionID,
+            parentID: parentID,
+            status: status,
+            currency: currency,
+            billingPeriod: billingPeriod,
+            billingInterval: billingInterval,
+            total: total,
+            startDate: startDate,
+            endDate: endDate
         )
     }
 }

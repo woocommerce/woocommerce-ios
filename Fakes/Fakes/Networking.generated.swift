@@ -496,7 +496,8 @@ extension Networking.Order {
             refunds: .fake(),
             fees: .fake(),
             taxes: .fake(),
-            customFields: .fake()
+            customFields: .fake(),
+            renewalSubscriptionID: .fake()
         )
     }
 }
@@ -1789,11 +1790,36 @@ extension Networking.StoredProductSettings {
         )
     }
 }
+extension Networking.Subscription {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Subscription {
+        .init(
+            siteID: .fake(),
+            subscriptionID: .fake(),
+            parentID: .fake(),
+            status: .fake(),
+            currency: .fake(),
+            billingPeriod: .fake(),
+            billingInterval: .fake(),
+            total: .fake(),
+            startDate: .fake(),
+            endDate: .fake()
+        )
+    }
+}
 extension SubscriptionPeriod {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> SubscriptionPeriod {
         .day
+    }
+}
+extension SubscriptionStatus {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> SubscriptionStatus {
+        .pending
     }
 }
 extension Networking.SystemPlugin {

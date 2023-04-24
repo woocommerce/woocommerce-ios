@@ -1,1 +1,1 @@
-For this release, we focused on improving your experience when creating orders and collecting payments. It's now possible to filter products when searching for a product to add to your order. Probeer het uit en laat weten wat je ervan denkt!
+Bij deze release hebben we ons gericht op het verbeteren van je ervaring bij het aanmaken van bestellingen en het innen van betalingen. Je kunt nu producten filteren wanneer je zoekt naar een product dat je wilt toevoegen aan je bestelling. Probeer het uit en laat weten wat je ervan denkt.

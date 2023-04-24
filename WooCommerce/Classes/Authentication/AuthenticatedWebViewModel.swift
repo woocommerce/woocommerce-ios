@@ -29,11 +29,20 @@ protocol AuthenticatedWebViewModel {
 
     /// Handler after receiving response for a navigation
     func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy
+
+    /// Triggered when provisional navigation fails
+    ///
+    func didFailProvisionalNavigation(with error: Error)
 }
 
+// MARK: Default implementation for the optional methods
+//
 extension AuthenticatedWebViewModel {
-    /// Default implementation for the optional method
     func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy {
         return .allow
+    }
+
+    func didFailProvisionalNavigation(with error: Error) {
+        // NO-OP
     }
 }

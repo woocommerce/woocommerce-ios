@@ -10,13 +10,19 @@ final class PaymentsTests: XCTestCase {
         app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
         try LoginFlow.login()
+
+        try TabNavComponent().goToMenuScreen()
+            .goToPaymentsScreen()
     }
 
     func test_load_chipper_card_reader_manual() throws {
-        try TabNavComponent().goToMenuScreen()
-            .goToPaymentsScreen()
-            .tapCardReaderManuals()
+        try PaymentsScreen().tapCardReaderManuals()
             .tapChipperManual()
-            .verifyChipperManualLoadedOnWebView()
+            .verifyChipperManualLoadedInWebView()
+    }
+
+    func test_load_learn_more_link() throws {
+        try PaymentsScreen().tapLearnMoreIPPLink()
+            .verifyIPPDocumentationLoadedInWebView()
     }
 }

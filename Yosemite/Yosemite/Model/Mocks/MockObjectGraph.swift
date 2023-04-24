@@ -363,7 +363,8 @@ extension MockObjectGraph {
             refunds: [],
             fees: [],
             taxes: [],
-            customFields: []
+            customFields: [],
+            renewalSubscriptionID: nil
         )
     }
 }

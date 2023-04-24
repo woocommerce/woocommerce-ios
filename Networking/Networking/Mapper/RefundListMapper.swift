@@ -27,9 +27,9 @@ struct RefundListMapper: Mapper {
             .orderID: orderID
         ]
 
-        do {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(RefundsEnvelope.self, from: response).refunds
-        } catch {
+        } else {
             return try decoder.decode([Refund].self, from: response)
         }
     }

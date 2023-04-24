@@ -53,7 +53,9 @@ A protocol that abstracts the different parsers.
 
 There are several implementations of this protocol, roughly one per `Remote`, although in some cases there is more than one implementation per remote (roughly, one for a single model object, and another for a collection of the same model object). 
 
-Mappers receive an instance of `Data` and return  the result of parsing that data as a model object or a collection of model objects.
+Mappers receive an instance of `Data` and return the result of parsing that data as a model object or a collection of model objects.
+
+If a model is used in both Jetpack and non-Jetpack requests, please use the extension method `hasDataEnvelope` to check if the JSON response contains the `data` key at the root and parse the wrapped content if necessary. This envelope is only available in the response of Jetpack-tunneled requests, so when we communicate directly with sites through REST API, we should decode model objects without the envelope.
 
 ## Model objects
 Model objects declared in `Networking` are immutable, and modelled as value types (structs) that typically implement `Decodable`.

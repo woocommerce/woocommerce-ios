@@ -18,9 +18,9 @@ struct TaxClassListMapper: Mapper {
             .siteID: siteID
         ]
 
-        do {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(TaxClassListEnvelope.self, from: response).taxClasses
-        } catch {
+        } else {
             return try decoder.decode([TaxClass].self, from: response)
         }
     }

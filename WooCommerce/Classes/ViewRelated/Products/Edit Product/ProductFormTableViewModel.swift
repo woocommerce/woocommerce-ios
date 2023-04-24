@@ -47,6 +47,7 @@ enum ProductFormSection: Equatable {
         case bundledProducts(viewModel: ViewModel, isActionable: Bool)
         case components(viewModel: ViewModel, isActionable: Bool)
         case subscription(viewModel: ViewModel, isActionable: Bool)
+        case noVariationsWarning(viewModel: WarningViewModel)
 
         struct ViewModel {
             let icon: UIImage

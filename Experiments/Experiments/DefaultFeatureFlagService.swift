@@ -66,7 +66,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
         case .tapToPayOnIPhoneMilestone2:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .domainSettings:
             return true
         case .simplifyProductEditing:
@@ -90,6 +90,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .IPPUKExpansion:
             return true
         case .subscriptionProducts:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .productDescriptionAI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

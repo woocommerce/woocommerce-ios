@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.3
+UK, say hello to in-person payments! We are thrilled to announce that in-person payments are now available to UK merchants currently using WooCommerce Payments. This release also includes a few minor improvements to your store management experience. Thank you all again for your amazing feedback. Keep it coming!
+
 ## 13.2
 For this release, we focused on improving your experience when creating orders and collecting payments. It's now possible to filter products when searching for a product to add to your order. Please try it out and share your feedback.
 

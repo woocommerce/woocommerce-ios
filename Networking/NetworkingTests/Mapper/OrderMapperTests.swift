@@ -379,6 +379,12 @@ final class OrderMapperTests: XCTestCase {
         let expectedCustomField = OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")
         XCTAssertEqual(customField, expectedCustomField)
     }
+
+    func test_order_renewal_subscription_id_is_parsed_successfully() throws {
+        let order = try XCTUnwrap(mapLoadOrderWithSubscriptionRenewal())
+
+        XCTAssertEqual(order.renewalSubscriptionID, "282")
+    }
 }
 
 
@@ -455,6 +461,12 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithChargeResponse() -> Order? {
         return mapOrder(from: "order-with-charge")
+    }
+
+    /// Returns the Order output upon receiving `order-with-subscription-renewal`
+    ///
+    func mapLoadOrderWithSubscriptionRenewal() -> Order? {
+        return mapOrder(from: "order-with-subscription-renewal")
     }
 
 }

@@ -959,12 +959,12 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedProduct, products[0].productID)
     }
 
-    func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_then_it_includes_them_with_a_limit() {
+    func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_then_it_includes_them_with_a_limit_and_with_the_given_order() {
         let maxTopProductGroupCount = 5
         let mostPopularProductIds: [Int64] = Array(1...6)
         let lastSoldProductIds: [Int64] = Array(7...10)
 
-        let topProducts = (mostPopularProductIds + lastSoldProductIds).map {
+        let topProducts = (mostPopularProductIds.reversed() + lastSoldProductIds).map {
             Product.fake().copy(siteID: sampleSiteID, productID: $0, purchasable: true)
         }
 
@@ -985,17 +985,18 @@ final class ProductSelectorViewModelTests: XCTestCase {
             viewModel.productsSectionViewModels.isNotEmpty
         }
 
+        let displayingPopularIds = viewModel.productsSectionViewModels.first?.productRows.map { $0.productOrVariationID }
+        let displayingLastSoldIds = viewModel.productsSectionViewModels[safe: 1]?.productRows.map { $0.productOrVariationID }
+
         XCTAssertEqual(viewModel.productsSectionViewModels.count, 3)
-        XCTAssertEqual(viewModel.productsSectionViewModels.first?.productRows.count, min(topProducts.count, maxTopProductGroupCount))
-        XCTAssertEqual(viewModel.productsSectionViewModels[safe: 1]?.productRows.count, min(lastSoldProductIds.count, maxTopProductGroupCount))
+        XCTAssertEqual(displayingPopularIds, Array(mostPopularProductIds.prefix(maxTopProductGroupCount)))
+        XCTAssertEqual(displayingLastSoldIds, Array(lastSoldProductIds.prefix(maxTopProductGroupCount)))
         XCTAssertEqual(viewModel.productsSectionViewModels.last?.productRows.count, totalProducts.count)
     }
 
     func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_with_duplicates_then_it_removes_limit() {
-        let maxTopProductGroupCount = 5
         let mostPopularProductIds: [Int64] = Array(1...6)
         let lastSoldProductIds: [Int64] = Array(5...8)
-        let filteredLastSoldProductIds = lastSoldProductIds.filter { !mostPopularProductIds.contains($0) }
 
         let topProducts = (mostPopularProductIds + lastSoldProductIds).map {
             Product.fake().copy(siteID: sampleSiteID, productID: $0, purchasable: true)
@@ -1018,7 +1019,19 @@ final class ProductSelectorViewModelTests: XCTestCase {
             viewModel.productsSectionViewModels.isNotEmpty
         }
 
-        XCTAssertEqual(viewModel.productsSectionViewModels[safe: 1]?.productRows.map { $0.productOrVariationID }, filteredLastSoldProductIds)
+        let displayingPopularIds = viewModel.productsSectionViewModels.first?.productRows.map { $0.productOrVariationID }
+        let displayingLastSoldIds = viewModel.productsSectionViewModels[safe: 1]?.productRows.map { $0.productOrVariationID }
+
+        guard let displayingPopularIds = displayingPopularIds,
+              displayingPopularIds.isNotEmpty,
+              let displayingLastSoldIds = displayingLastSoldIds,
+              displayingLastSoldIds.isNotEmpty else {
+            XCTFail()
+
+            return
+        }
+
+        XCTAssertTrue(Set(displayingPopularIds).intersection(Set(displayingLastSoldIds)).isEmpty)
     }
 
     func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_with_a_search_term_it_ignores_them() {

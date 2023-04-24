@@ -191,4 +191,8 @@ public enum FeatureFlag: Int {
     /// Enables subscription product settings in product details
     ///
     case subscriptionProducts
+
+    /// Enables generating product description using AI.
+    ///
+    case productDescriptionAI
 }

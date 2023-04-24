@@ -104,7 +104,7 @@ final class StoreCreationCoordinator: Coordinator {
                 }
 
                 startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: product)
-            } catch {
+            } catch let error as PlanPurchaseError {
                 let isWebviewFallbackAllowed = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) == false
                 navigationController.dismiss(animated: true) { [weak self] in
                     guard let self else { return }
@@ -113,6 +113,18 @@ final class StoreCreationCoordinator: Coordinator {
                     } else {
                         self.showIneligibleUI(from: self.navigationController, error: error)
                     }
+                }
+            } catch {
+                navigationController.dismiss(animated: true) { [weak self] in
+                    guard let self else { return }
+
+                    // Show error alert
+                    let alertController = UIAlertController(title: Localization.StoreCreationErrorAlert.title,
+                                                            message: Localization.StoreCreationErrorAlert.defaultErrorMessage,
+                                                            preferredStyle: .alert)
+                    alertController.view.tintColor = .text
+                    alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
+                    self.navigationController.present(alertController, animated: true)
                 }
             }
         }

@@ -18,11 +18,11 @@ final class PaymentsTests: XCTestCase {
     func test_load_chipper_card_reader_manual() throws {
         try PaymentsScreen().tapCardReaderManuals()
             .tapChipperManual()
-            .verifyChipperManualLoadedOnWebView()
+            .verifyChipperManualLoadedInWebView()
     }
 
     func test_load_learn_more_link() throws {
         try PaymentsScreen().tapLearnMoreIPPLink()
-            .verifyIPPDocumentationLoadedOnWebView()
+            .verifyIPPDocumentationLoadedInWebView()
     }
 }

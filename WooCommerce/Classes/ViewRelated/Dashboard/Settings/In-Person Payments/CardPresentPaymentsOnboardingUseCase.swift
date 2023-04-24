@@ -26,6 +26,15 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     /// Update the onboarding state with the latest synced values.
     ///
     func updateState()
+
+    /// Pending requirements can be skipped so the merchant can continue to collect payments.
+    /// Eventually, these become overdue requirements, which cannot be skipped
+    ///
+    func skipPendingRequirements()
+
+    func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin)
+
+    func clearPluginSelection()
 }
 
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {

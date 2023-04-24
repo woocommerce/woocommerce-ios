@@ -71,12 +71,14 @@ struct ProductSelectorView: View {
                                        loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productsSectionViewModels) {
                             section in
-                        Text(section.title.uppercased())
-                        .foregroundColor(Color(.text))
-                        .footnoteStyle()
-                        .padding(.top)
-                        .padding(.leading)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                            if let title = section.title {
+                                Text(title.uppercased())
+                                .foregroundColor(Color(.text))
+                                .footnoteStyle()
+                                .padding(.top)
+                                .padding(.leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         ForEach(section.productRows) { rowViewModel in
                             createProductRow(rowViewModel: rowViewModel)
                             .padding(Constants.defaultPadding)

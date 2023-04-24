@@ -182,6 +182,7 @@ final class EditableOrderViewModel: ObservableObject {
             stores: stores,
             supportsMultipleSelection: isProductMultiSelectionEnabled,
             toggleAllVariationsOnSelection: false,
+            shouldShowTopProductsOnDefaultMode: true,
             onProductSelectionStateChanged: { [weak self] product in
                 guard let self = self else { return }
                 self.addOrRemoveProductToOrder(product)

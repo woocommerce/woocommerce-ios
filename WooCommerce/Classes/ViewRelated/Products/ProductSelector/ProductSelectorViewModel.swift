@@ -7,7 +7,7 @@ import WooFoundation
 struct ProductsSectionViewModel: Identifiable {
     let id = UUID()
 
-    let title: String
+    let title: String?
     let productRows: [ProductRowViewModel]
 }
 
@@ -17,11 +17,16 @@ private struct ProductsSection {
 }
 
 private enum ProductsSectionType {
+    // Show most popular products, that is, most sold
     case mostPopular
+    // Show last sold
     case lastSold
+    // Show products that are not popular or last sold
     case restOfProducts
+    // Show all products in one section without title
+    case allProducts
 
-    var title: String {
+    var title: String? {
         switch self {
         case .mostPopular:
             return ProductSelectorViewModel.Localization.popularProductsSectionTitle
@@ -29,6 +34,8 @@ private enum ProductsSectionType {
             return ProductSelectorViewModel.Localization.lastSoldProductsSectionTitle
         case .restOfProducts:
             return ProductSelectorViewModel.Localization.productsSectionTitle
+        case .allProducts:
+            return nil
         }
     }
 }
@@ -93,8 +100,14 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private var topProductsFromCachedOrders: TopProductsFromCachedOrders = TopProductsFromCachedOrders.empty
 
-    private var shouldShowTopProducts: Bool {
-        searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
+    /// Wether we should the popular and last sold products on top on default mode (no search or filters)
+    ///
+    private let shouldShowTopProductsOnDefaultMode: Bool
+
+    /// Whether we should show the products split by sections
+    ///
+    private var shouldShowSections: Bool {
+        shouldShowTopProductsOnDefaultMode && searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
     }
 
     /// Sections containing products
@@ -208,6 +221,7 @@ final class ProductSelectorViewModel: ObservableObject {
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: TopProductsFromCachedOrdersProviderProtocol = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
+         shouldShowTopProductsOnDefaultMode: Bool = false,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -221,6 +235,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.topProductsProvider = topProductsProvider
+        self.shouldShowTopProductsOnDefaultMode = shouldShowTopProductsOnDefaultMode
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -230,7 +245,9 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
-        loadTopProducts()
+        if shouldShowTopProductsOnDefaultMode {
+            loadTopProducts()
+        }
 
         configureSyncingCoordinator()
         refreshDataAndSync()
@@ -249,6 +266,7 @@ final class ProductSelectorViewModel: ObservableObject {
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: TopProductsFromCachedOrdersProviderProtocol = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
+         shouldShowTopProductsOnDefaultMode: Bool = false,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
@@ -260,6 +278,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.topProductsProvider = topProductsProvider
+        self.shouldShowTopProductsOnDefaultMode = shouldShowTopProductsOnDefaultMode
         self.onProductSelectionStateChanged = nil
         self.onVariationSelectionStateChanged = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -269,7 +288,9 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
-        loadTopProducts()
+        if shouldShowTopProductsOnDefaultMode {
+            loadTopProducts()
+        }
 
         configureSyncingCoordinator()
         refreshDataAndSync()
@@ -569,8 +590,8 @@ private extension ProductSelectorViewModel {
         let popularProducts = filterProductsFromSortedIdsArray(originalProducts: loadedProducts, productsIds: topProductsFromCachedOrders.popularProductsIds)
 
         guard popularProducts.isNotEmpty,
-              shouldShowTopProducts else {
-            sections = [ProductsSection(type: .restOfProducts, products: loadedProducts)]
+              shouldShowSections else {
+            sections = [ProductsSection(type: .allProducts, products: loadedProducts)]
             return
         }
 

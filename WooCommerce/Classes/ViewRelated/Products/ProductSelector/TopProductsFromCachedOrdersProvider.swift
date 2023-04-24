@@ -27,13 +27,13 @@ final class TopProductsFromCachedOrdersProvider {
     }
 
     func provideTopProductsFromCachedOrders(siteID: Int64) -> TopProductsFromCachedOrders {
-        TopProductsFromCachedOrders(popularProductsIds: popularProductsIds(from: siteID),
-                                           lastSoldProductsIds: lastSoldProductIds(from: siteID))
+        TopProductsFromCachedOrders(popularProductsIds: retrievePopularProductsIds(from: siteID),
+                                           lastSoldProductsIds: retrieveLastSoldProductIds(from: siteID))
     }
 }
 
 private extension TopProductsFromCachedOrdersProvider {
-    func popularProductsIds(from siteID: Int64) -> [Int64] {
+    func retrievePopularProductsIds(from siteID: Int64) -> [Int64] {
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),
                                                       sortedBy: nil)
@@ -58,7 +58,7 @@ private extension TopProductsFromCachedOrdersProvider {
             .uniqued()
     }
 
-    func lastSoldProductIds(from siteID: Int64) -> [Int64] {
+    func retrieveLastSoldProductIds(from siteID: Int64) -> [Int64] {
         let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
                                                       matching: completedOrdersPredicate(from: siteID),
                                                       sortedBy: [NSSortDescriptor(key: #keyPath(StorageOrder.datePaid), ascending: false)])

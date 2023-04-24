@@ -628,6 +628,12 @@ extension WooAnalyticsEvent {
         static func pluginsNotSyncedYet() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
         }
+
+        /// Tracked when subscriptions are displayed in order details.
+        ///
+        static func subscriptionsShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailsSubscriptionsShown, properties: [:])
+        }
     }
 }
 

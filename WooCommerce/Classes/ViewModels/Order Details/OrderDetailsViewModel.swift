@@ -610,7 +610,9 @@ extension OrderDetailsViewModel {
                 switch result {
                 case .success(let subscriptions):
                     self?.dataSource.orderSubscriptions = subscriptions
-                    // TODO: 9238 - Add analytics
+                    if subscriptions.isNotEmpty {
+                        ServiceLocator.analytics.track(event: .Orders.subscriptionsShown())
+                    }
                 case .failure(let error):
                     DDLogError("⛔️ Error synchronizing subscriptions: \(error)")
                 }

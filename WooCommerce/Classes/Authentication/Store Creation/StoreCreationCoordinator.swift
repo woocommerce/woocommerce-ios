@@ -108,7 +108,8 @@ final class StoreCreationCoordinator: Coordinator {
                 let isWebviewFallbackAllowed = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) == false
                 navigationController.dismiss(animated: true) { [weak self] in
                     guard let self else { return }
-                    if isWebviewFallbackAllowed {
+                    if error is PlanPurchaseError,
+                       isWebviewFallbackAllowed {
                         self.startStoreCreationM1()
                     } else {
                         self.showIneligibleUI(from: self.navigationController, error: error)

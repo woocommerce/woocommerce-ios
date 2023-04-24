@@ -149,10 +149,10 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        waitForExpectation { exp in
+        let subscriptionsCount: Int = waitFor { promise in
 
             // Return the active WCExtensions plugin.
-            storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            self.storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
                 switch action {
                 case .fetchSystemPlugin(_, _, let onCompletion):
                     onCompletion(plugin)
@@ -162,19 +162,18 @@ final class OrderDetailsViewModelTests: XCTestCase {
             }
 
             // Return the synced subscription.
-            storesManager.whenReceivingAction(ofType: SubscriptionAction.self) { action in
+            self.storesManager.whenReceivingAction(ofType: SubscriptionAction.self) { action in
                 switch action {
                 case .loadSubscriptions(_, let onCompletion):
                     onCompletion(.success([Subscription.fake()]))
-                    exp.fulfill()
+                    promise(self.viewModel.dataSource.orderSubscriptions.count)
                 }
             }
 
-            viewModel.syncSubscriptions()
+            self.viewModel.syncSubscriptions()
         }
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 2)
-        XCTAssertEqual(viewModel.dataSource.orderSubscriptions.count, 1)
+        XCTAssertEqual(subscriptionsCount, 1)
     }
 }

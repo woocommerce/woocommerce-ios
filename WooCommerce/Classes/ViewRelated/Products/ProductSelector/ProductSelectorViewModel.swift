@@ -92,22 +92,14 @@ final class ProductSelectorViewModel: ObservableObject {
             .flatMap { $0 }
     }
 
-    /// Provides the ids of those products that were most or last sold among the cached orders
-    ///
-    private let topProductsProvider: TopProductsFromCachedOrdersProviderProtocol
-
     /// Ids of those products that were most or last sold among the cached orders
     ///
     private var topProductsFromCachedOrders: TopProductsFromCachedOrders = TopProductsFromCachedOrders.empty
 
-    /// Whether we should the popular and last sold products on top on default mode (no search or filters)
-    ///
-    private let shouldShowTopProductsOnDefaultMode: Bool
-
     /// Whether we should show the products split by sections
     ///
     private var shouldShowSections: Bool {
-        shouldShowTopProductsOnDefaultMode && searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
+        searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
     }
 
     /// Sections containing products
@@ -220,8 +212,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: TopProductsFromCachedOrdersProviderProtocol = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
-         shouldShowTopProductsOnDefaultMode: Bool = false,
+         topProductsProvider: TopProductsFromCachedOrdersProviderProtocol? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -234,8 +225,6 @@ final class ProductSelectorViewModel: ObservableObject {
         self.analytics = analytics
         self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
-        self.topProductsProvider = topProductsProvider
-        self.shouldShowTopProductsOnDefaultMode = shouldShowTopProductsOnDefaultMode
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -245,9 +234,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
-        if shouldShowTopProductsOnDefaultMode {
-            loadTopProducts()
-        }
+        topProductsFromCachedOrders = topProductsProvider?.provideTopProductsFromCachedOrders(siteID: siteID) ?? .empty
 
         configureSyncingCoordinator()
         refreshDataAndSync()
@@ -265,8 +252,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: TopProductsFromCachedOrdersProviderProtocol = TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
-         shouldShowTopProductsOnDefaultMode: Bool = false,
+         topProductsProvider: TopProductsFromCachedOrdersProviderProtocol? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
@@ -277,8 +263,6 @@ final class ProductSelectorViewModel: ObservableObject {
         self.analytics = analytics
         self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
-        self.topProductsProvider = topProductsProvider
-        self.shouldShowTopProductsOnDefaultMode = shouldShowTopProductsOnDefaultMode
         self.onProductSelectionStateChanged = nil
         self.onVariationSelectionStateChanged = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
@@ -288,9 +272,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
-        if shouldShowTopProductsOnDefaultMode {
-            loadTopProducts()
-        }
+        topProductsFromCachedOrders = topProductsProvider?.provideTopProductsFromCachedOrders(siteID: siteID) ?? .empty
 
         configureSyncingCoordinator()
         refreshDataAndSync()
@@ -692,10 +674,6 @@ private extension ProductSelectorViewModel {
         } else {
             filterButtonTitle = String.localizedStringWithFormat(Localization.filterButtonWithActiveFilters, activeFiltersCount)
         }
-    }
-
-    func loadTopProducts() {
-        topProductsFromCachedOrders = topProductsProvider.provideTopProductsFromCachedOrders(siteID: siteID)
     }
 }
 

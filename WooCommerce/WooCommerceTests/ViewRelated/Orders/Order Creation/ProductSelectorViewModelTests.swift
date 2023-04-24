@@ -979,11 +979,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
                                                                             TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 stores: stores,
-                                                 topProductsProvider: topProductsProvider,
-                                                 shouldShowTopProductsOnDefaultMode: true)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
         waitUntil {
             viewModel.productsSectionViewModels.isNotEmpty
@@ -1017,11 +1013,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
                                                                             TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 stores: stores,
-                                                 topProductsProvider: topProductsProvider,
-                                                 shouldShowTopProductsOnDefaultMode: true)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
         waitUntil {
             viewModel.productsSectionViewModels.isNotEmpty
@@ -1050,11 +1042,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let topProductsProvider = MockTopProductsFromCachedOrdersProvider(provideTopProductsFromCachedOrders:
                                                                             TopProductsFromCachedOrders(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 stores: stores,
-                                                 topProductsProvider: topProductsProvider,
-                                                 shouldShowTopProductsOnDefaultMode: true)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
 
         let expectation = expectation(description: "Completed product search")
@@ -1102,11 +1090,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(variableProduct)
         insert(simpleProduct)
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 stores: stores,
-                                                 topProductsProvider: topProductsProvider,
-                                                 shouldShowTopProductsOnDefaultMode: true)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
 
         // When
         let filters = FilterProductListViewModel.Filters(

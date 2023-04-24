@@ -82,7 +82,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .attributes,
              .bundledProducts,
              .components,
-             .subscription:
+             .subscription,
+             .noVariationsWarning:
             return [ImageAndTitleAndTextTableViewCell.self]
         case .reviews:
             return [ProductReviewsTableViewCell.self]
@@ -114,7 +115,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .attributes,
              .bundledProducts,
              .components,
-             .subscription:
+             .subscription,
+             .noVariationsWarning:
             return ImageAndTitleAndTextTableViewCell.self
         case .reviews:
             return ProductReviewsTableViewCell.self

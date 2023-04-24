@@ -1,8 +1,18 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.4
+-----
+
+
 13.3
 -----
+- [***] Payments: UK-based stores merchants can take In-Person Payments. [https://github.com/woocommerce/woocommerce-ios/pull/9496]
+- [*] Store creation free trial flow now includes 3 profiler questions again with updated options: store category, selling status, and store country. [https://github.com/woocommerce/woocommerce-ios/pull/9513]
+- [*] Shipping Labels: Origin address's phone number is now saved locally and pre-populated in the creation form. [https://github.com/woocommerce/woocommerce-ios/pull/9520]
+- [Internal] Almost all mappers have been updated to only decode without the data envelope if it's not available. Please do a smoke test to ensure that all features still work as before. [https://github.com/woocommerce/woocommerce-ios/pull/9510]
 - [Internal] Store onboarding: Mark "Launch your store" task as complete if the store is already public. This is a workaround for a backend issue which marks "Launch your store" task incomplete for already live stores. [https://github.com/woocommerce/woocommerce-ios/pull/9507]
+- [*] Payments: Added Universal Link support for Set up Tap to Pay on iPhone, and to open Universal Links from Just in Time Messages, to more easily navigate to app features. [https://github.com/woocommerce/woocommerce-ios/pull/9518]
+- [*] Login: Potentially fixed the crash on the onboarding screen. [https://github.com/woocommerce/woocommerce-ios/pull/9523]
 
 13.2
 -----

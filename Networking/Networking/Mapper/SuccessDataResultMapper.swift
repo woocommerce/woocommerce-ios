@@ -10,9 +10,9 @@ struct SuccessDataResultMapper: Mapper {
     func map(response: Data) throws -> Bool {
         let decoder = JSONDecoder()
         let rawData: [String: Bool] = try {
-            do {
+            if hasDataEnvelope(in: response) {
                 return try decoder.decode(SuccessDataResultEnvelope.self, from: response).rawData
-            } catch {
+            } else {
                 return try decoder.decode([String: Bool].self, from: response)
             }
         }()

@@ -265,7 +265,8 @@ private extension ProductFormTableViewDataSource {
             configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
         case .status(let viewModel, _):
             configureSettingsRowWithASwitch(cell: cell, viewModel: viewModel)
-        case .noPriceWarning(let viewModel):
+        case .noPriceWarning(let viewModel),
+             .noVariationsWarning(let viewModel):
             configureWarningRow(cell: cell, viewModel: viewModel)
         }
     }

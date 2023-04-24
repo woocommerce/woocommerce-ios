@@ -24,7 +24,11 @@ struct ProductVariationsBulkUpdateMapper: Mapper {
             .siteID: siteID,
             .productID: productID
         ]
-        return try decoder.decode(ProductVariationsEnvelope.self, from: response).updatedProductVariations
+        if hasDataEnvelope(in: response) {
+            return try decoder.decode(ProductVariationsContainerEnvelope.self, from: response).data.updatedProductVariations
+        } else {
+            return try decoder.decode(ProductVariationsContainer.self, from: response).updatedProductVariations
+        }
     }
 }
 
@@ -33,22 +37,18 @@ struct ProductVariationsBulkUpdateMapper: Mapper {
 /// `Variations/batch` endpoint returns the requested update product variations document in a `update` key, nested in a `data` key.
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
-private struct ProductVariationsEnvelope: Decodable {
+private struct ProductVariationsContainerEnvelope: Decodable {
+    let data: ProductVariationsContainer
+
+    private enum CodingKeys: String, CodingKey {
+        case data
+    }
+}
+
+private struct ProductVariationsContainer: Decodable {
     let updatedProductVariations: [ProductVariation]
 
     private enum CodingKeys: String, CodingKey {
-        case update
-        case data
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        do {
-            let nestedContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
-            updatedProductVariations = try nestedContainer.decode([ProductVariation].self, forKey: .update)
-        } catch {
-            updatedProductVariations = try container.decode([ProductVariation].self, forKey: .update)
-        }
+        case updatedProductVariations = "update"
     }
 }

@@ -25,9 +25,9 @@ struct ShippingLabelStatusMapper: Mapper {
             .orderID: orderID
         ]
 
-        do {
+        if hasDataEnvelope(in: response) {
             return try decoder.decode(ShippingLabelStatusResponse.self, from: response).data.labels
-        } catch {
+        } else {
             return try decoder.decode(ShippingLabelStatusEnvelope.self, from: response).labels
         }
     }

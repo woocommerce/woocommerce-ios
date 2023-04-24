@@ -19,6 +19,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let jetpackSetupWithApplicationPassword: Bool
     private let isTapToPayOnIPhoneMilestone2On: Bool
     private let isIPPUKExpansionEnabled: Bool
+    private let isProductDescriptionAIEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -36,7 +37,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isFreeTrial: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isTapToPayOnIPhoneMilestone2On: Bool = false,
-         isIPPUKExpansionEnabled: Bool = false) {
+         isIPPUKExpansionEnabled: Bool = false,
+         isProductDescriptionAIEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -54,6 +56,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
         self.isIPPUKExpansionEnabled = isIPPUKExpansionEnabled
+        self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -92,6 +95,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isTapToPayOnIPhoneMilestone2On
         case .IPPUKExpansion:
             return isIPPUKExpansionEnabled
+        case .productDescriptionAI:
+            return isProductDescriptionAIEnabled
         default:
             return false
         }

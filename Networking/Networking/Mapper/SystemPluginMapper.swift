@@ -18,9 +18,9 @@ struct SystemPluginMapper: Mapper {
         ]
 
         let systemStatus: SystemStatus = try {
-            do {
+            if hasDataEnvelope(in: response) {
                 return try decoder.decode(SystemStatusEnvelope.self, from: response).systemStatus
-            } catch {
+            } else {
                 return try decoder.decode(SystemStatus.self, from: response)
             }
         }()

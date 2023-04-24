@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-11 16:54:04+0000 */
+/* Translation-Revision-Date: 2023-04-20 17:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -8,6 +8,9 @@
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
+
+/* Prefix for the subtitle text in the store creation loading screen */
+"#FunWooFact:" = "#FunWooFact:";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% voltooid";
@@ -825,6 +828,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon's product and category restrictions. */
 "Apply this coupon to" = "Deze coupon toepassen op";
 
+/* Title text in the store creation loading screen */
+"Applying the finishing touches" = "De laatste hand leggen";
+
 /* Approve a comment */
 "Approve" = "Goedkeuren";
 
@@ -834,6 +840,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "De reactie wordt goedgekeurd";
+
+/* Subtitle text in the store creation loading screen */
+"Are you Team Cat or Team Dog? The Woo team is split 50\/50!" = "Zit jij in team Kat of team Hond? Het Woo-team is gelijk verdeeld!";
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Weet je zeker dat je het producttype wilt wijzigen?";
@@ -1067,6 +1076,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Breid je catalogus uit door toe te voegen wat je wilt verkopen.";
 
+/* Title text in the store creation loading screen */
+"Building the foundations" = "De basis leggen";
+
 /* Country option for a site address. */
 "Bulgaria" = "Bulgarije";
 
@@ -1119,6 +1131,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Details on the store onboarding WCPay setup screen. */
 "By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "Door WooCommerce Payments te gebruiken, ga je ermee akkoord dat je bent gebonden aan onze [Servicevoorwaarden] (https:\/\/wordpress.com\/tos) en bevestig je dat je ons [Privacybeleid] (https:\/\/automattic.com\/privacy\/) hebt gelezen.";
+
+/* Industry option in the store creation category question. */
+"CBD and other hemp-derived products" = "CBD en andere hennep-afgeleide producten";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "LANDEN";
@@ -2077,6 +2092,12 @@ which should be translated separately and considered part of this sentence. */
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Bepaalt de positie van de producten in de catalogus. Hoe lager de waarde van het cijfer, hoe hoger het artikel in de productlijst wordt weergegeven. Je kunt ook negatieve waarden gebruiken";
 
+/* Subtitle text in the store creation loading screen */
+"Did you know that Woo powers more than 3.5 million stores worldwide? You’re in good company." = "Wist je dat Woo meer dan 3,5 miljoen winkels wereldwijd mogelijk maakt? Je bent in goed gezelschap.";
+
+/* Subtitle text in the store creation loading screen */
+"Did you know that Woo was founded by two South Africans and a Norwegian? Here are three alternative ways to say “store” in those countries – Winkel, ivenkile, and butikk." = "Wist je dat Woo is gesticht door twee Zuid-Afrikanen en een Noor? Hier zijn drie manieren om winkel te zeggen in die landen: winkel, ivenkile en butikk.";
+
 /* Instructions after a Magic Link was sent, but email is incorrect. */
 "Didn't mean to create a new account? Go back to re-enter your email address." = "Heb je per ongeluk een nieuw account aangemaakt? Ga terug om je e-mailadres opnieuw in te voeren.";
 
@@ -2368,11 +2389,17 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Status of prijs voor meerdere producten tegelijk bijwerken";
 
+/* Industry option in the store creation category question. */
+"Education and learning" = "Onderwijs en leren";
+
 /* Country option for a site address. */
 "Egypt" = "Egypte";
 
 /* Country option for a site address. */
 "El Salvador" = "El Salvador";
+
+/* Industry option in the store creation category question. */
+"Electronics and computers" = "Elektronica en computers";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Geschikt voor gratis afhalen";
@@ -2751,6 +2778,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Faroe Islands" = "Faeröer";
+
+/* Industry option in the store creation category question. */
+"Fashion, apparel, and accessories" = "Mode, kleding en accessoires";
 
 /* Fast to launch title feature on the Free Trial Summary Screen */
 "Fast to launch" = "Snelle lancering";
@@ -3173,6 +3203,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "Verborgen";
+
+/* Industry option in the store creation category question. */
+"Home, furniture, and garden" = "Huis, meubilair en tuin";
 
 /* Country option for a site address. */
 "Honduras" = "Honduras";
@@ -4512,6 +4545,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Organiseer je producten in gerelateerde groepen";
+
+/* Title text in the store creation loading screen */
+"Organizing the stock room" = "De voorraadkamer opruimen";
 
 /* Title for the Origin Country row in Customs screen of Shipping Label flow */
 "Origin Country" = "Land van herkomst";
@@ -6924,6 +6960,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "De variatie kon niet worden gegenereerd .";
 
+/* Subtitle text in the store creation loading screen */
+"There are more than 150 WooCommerce meetups held all over the world! A great way to meet fellow store owners." = "Er worden wereldwijd meer dan 150 WooCommerce-evenementen georganiseerd! Deze zijn een geweldige manier om je collega-winkeleigenaren te ontmoeten.";
+
 /* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
 "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "Er zijn openstaande verplichtingen voor je account. Voltooi deze verplichtingen vóór %1$@ om fysieke betalingen te kunnen blijven aannemen.";
 
@@ -7413,6 +7452,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "Kan bezorgservices niet laden";
+
+/* Error message when component options are not loaded on the component settings screen */
+"Unable to load all component options" = "Kon niet alle componentopties laden";
 
 /* Load Attribute Options Action Failed */
 "Unable to load attribute options" = "Kon opties van eigenschappen niet laden";
@@ -8110,6 +8152,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
+
+/* Title text in the store creation loading screen */
+"Woo! We are creating your store" = "Woo! We maken je winkel aan";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";

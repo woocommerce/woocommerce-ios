@@ -26,7 +26,8 @@ final class ShippingLabelFormViewController: UIViewController {
     init(order: Order) {
         viewModel = ShippingLabelFormViewModel(order: order,
                                                originAddress: nil,
-                                               destinationAddress: order.shippingAddress)
+                                               destinationAddress: order.shippingAddress,
+                                               userDefaults: .standard)
         super.init(nibName: nil, bundle: nil)
         ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "started"])
     }

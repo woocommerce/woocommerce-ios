@@ -65,4 +65,25 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
             viewModel.skipButtonTapped()
         }
     }
+
+    func test_categories_are_in_the_expected_order() throws {
+        // Given
+        let viewModel = StoreCreationCategoryQuestionViewModel(storeName: "store",
+                                                               onContinue: { _ in },
+                                                               onSkip: {})
+
+        // When
+        let categories = viewModel.categories
+
+        // Then
+        XCTAssertEqual(categories,
+                       [.fashionApparelAccessories,
+                        .healthBeauty,
+                        .foodDrink,
+                        .homeFurnitureGarden,
+                        .educationAndLearning,
+                        .electronicsComputers,
+                        .other
+                       ])
+    }
 }

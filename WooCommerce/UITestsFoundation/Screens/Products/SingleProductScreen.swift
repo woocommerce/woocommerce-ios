@@ -43,7 +43,7 @@ public final class SingleProductScreen: ScreenObject {
 
     public func verifyPublishedProductScreenLoaded(productType: String, productName: String) {
         // common fields on a published product screen
-        XCTAssertTrue(app.buttons["save-product-button"].exists)
+        XCTAssertTrue(app.buttons["save-product-button"].waitForExistence(timeout: 10), "Save button is not displayed!")
         XCTAssertTrue(app.staticTexts["TIP"].exists)
         XCTAssertTrue(app.textViews[productName].exists)
 

@@ -292,7 +292,7 @@ private extension StoreCreationCoordinator {
                                                         message: Localization.StoreCreationErrorAlert.defaultErrorMessage,
                                                         preferredStyle: .alert)
                 alertController.view.tintColor = .text
-                _ = alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
+                alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
                 self.navigationController.present(alertController, animated: true)
             }
         }

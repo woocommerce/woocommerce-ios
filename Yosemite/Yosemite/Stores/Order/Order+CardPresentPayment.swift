@@ -26,9 +26,9 @@ import protocol Storage.StorageManagerType
 
     private var isAmountEligibleForCardPayment: Bool {
         // If the order is paid, it is not eligible.
-        guard datePaid == nil else {
-            return false
-        }
+//        guard datePaid == nil else {
+//            return false
+//        }
 
         guard let totalAmount = currencyFormatter.convertToDecimal(total), totalAmount.decimalValue > 0 else {
             return false
@@ -45,7 +45,7 @@ import protocol Storage.StorageManagerType
 
 
     private var isStatusEligibleForCardPayment: Bool {
-        (status == .pending || status == .onHold || status == .processing)
+        return true //(status == .pending || status == .onHold || status == .processing)
     }
 
     private var isPaymentMethodEligibleForCardPayment: Bool {

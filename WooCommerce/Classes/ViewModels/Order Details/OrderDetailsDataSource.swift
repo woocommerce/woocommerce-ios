@@ -47,7 +47,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
-        return order.datePaid == nil
+        return true //order.datePaid == nil
     }
 
     var isEligibleForRefund: Bool {

@@ -402,6 +402,12 @@ extension WooAnalyticsEvent {
         static func componentsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewComponentsTapped, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Subscriptions row (applicable for subscription-type products only).
+        ///
+        static func subscriptionsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionsTapped, properties: [:])
+        }
     }
 }
 

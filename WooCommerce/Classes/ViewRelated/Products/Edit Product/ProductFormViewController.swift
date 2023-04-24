@@ -459,7 +459,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isActionable else {
                     return
                 }
-                // TODO: Track row tapped
+                ServiceLocator.analytics.track(event: .ProductDetail.subscriptionsTapped())
                 showSubscriptionSettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.

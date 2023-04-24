@@ -574,6 +574,7 @@ public enum WooAnalyticsStat: String {
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
     case productDetailViewComponentsTapped = "product_details_view_components_tapped"
+    case productDetailsViewSubscriptionsTapped = "product_details_view_subscriptions_tapped"
 
     // MARK: Edit Product Variation Events
     //

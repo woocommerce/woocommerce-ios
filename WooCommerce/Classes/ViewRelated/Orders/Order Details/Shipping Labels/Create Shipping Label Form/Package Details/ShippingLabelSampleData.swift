@@ -40,7 +40,8 @@ enum ShippingLabelSampleData {
                      fees: [],
                      taxes: [],
                      customFields: [],
-                     renewalSubscriptionID: nil)
+                     renewalSubscriptionID: nil,
+                     appliedGiftCards: [])
     }
 
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {

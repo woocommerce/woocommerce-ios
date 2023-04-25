@@ -1,0 +1,278 @@
+{
+    "data": {
+        "id": 459,
+        "parent_id": 0,
+        "status": "processing",
+        "currency": "USD",
+        "version": "7.5.1",
+        "prices_include_tax": false,
+        "date_created": "2023-03-29T04:21:20",
+        "date_modified": "2023-03-29T04:23:02",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "10.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "4.00",
+        "total_tax": "0.00",
+        "customer_id": 27375286,
+        "order_key": "wc_order_boLXJYDMOOhSp",
+        "billing": {
+            "first_name": "Tyrel",
+            "last_name": "Senger",
+            "company": "",
+            "address_1": "8412 Dicki Creek",
+            "address_2": "481 General Crossroad",
+            "city": "Denesikton",
+            "state": "Louisiana",
+            "postcode": "903851780",
+            "country": "BB",
+            "email": "your.email+fakedata99085@gmail.com",
+            "phone": "724-024-2595"
+        },
+        "shipping": {
+            "first_name": "Tyrel",
+            "last_name": "Senger",
+            "company": "",
+            "address_1": "8412 Dicki Creek",
+            "address_2": "481 General Crossroad",
+            "city": "Denesikton",
+            "state": "Louisiana",
+            "postcode": "903851780",
+            "country": "BB",
+            "phone": "1234567898"
+        },
+        "payment_method": "woocommerce_payments",
+        "payment_method_title": "Visa credit card",
+        "transaction_id": "pi_3MqpbEFmpgWy4Lrl0vJo4TIn",
+        "customer_ip_address": "189.147.41.13",
+        "customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
+        "created_via": "store-api",
+        "customer_note": "",
+        "date_completed": null,
+        "date_paid": "2023-03-29T04:23:02",
+        "cart_hash": "dde03e176e78380de9549352abdfbe4a",
+        "number": "459",
+        "meta_data": [
+            {
+                "id": 12849,
+                "key": "_shipping_hash",
+                "value": "9d4568c009d203ab10e33ea9953a0264"
+            },
+            {
+                "id": 12850,
+                "key": "_coupons_hash",
+                "value": "d751713988987e9331980363e24189ce"
+            },
+            {
+                "id": 12851,
+                "key": "_fees_hash",
+                "value": "d751713988987e9331980363e24189ce"
+            },
+            {
+                "id": 12852,
+                "key": "_taxes_hash",
+                "value": "d751713988987e9331980363e24189ce"
+            },
+            {
+                "id": 12853,
+                "key": "is_vat_exempt",
+                "value": "no"
+            },
+            {
+                "id": 12855,
+                "key": "_customer_ip_country",
+                "value": "MX"
+            },
+            {
+                "id": 12856,
+                "key": "_customer_self_declared_country",
+                "value": "false"
+            },
+            {
+                "id": 12858,
+                "key": "_payment_method_id",
+                "value": "pm_1MU8TnFmpgWy4LrlAwUzFd6t"
+            },
+            {
+                "id": 12859,
+                "key": "_stripe_customer_id",
+                "value": "cus_NEbhgaeylNVXDP"
+            },
+            {
+                "id": 12861,
+                "key": "_wcpay_mode",
+                "value": "test"
+            },
+            {
+                "id": 12862,
+                "key": "_intent_id",
+                "value": "pi_3MqpbEFmpgWy4Lrl0vJo4TIn"
+            },
+            {
+                "id": 12863,
+                "key": "_charge_id",
+                "value": "ch_3MqpbEFmpgWy4Lrl0XY98kur"
+            },
+            {
+                "id": 12864,
+                "key": "_intention_status",
+                "value": "succeeded"
+            },
+            {
+                "id": 12865,
+                "key": "_wcpay_intent_currency",
+                "value": "usd"
+            },
+            {
+                "id": 12869,
+                "key": "_wc_points_earned",
+                "value": "36"
+            },
+            {
+                "id": 12871,
+                "key": "_automatewoo_order_created",
+                "value": "1"
+            },
+            {
+                "id": 12872,
+                "key": "_new_order_tracking_complete",
+                "value": "yes"
+            },
+            {
+                "id": 12873,
+                "key": "_wc_connect_destination_normalized",
+                "value": "1"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 921,
+                "name": "Beanie with Logo",
+                "product_id": 36,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "clothing-20010",
+                "subtotal": "18.00",
+                "subtotal_tax": "0.00",
+                "total": "18.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 8166,
+                        "key": "As a Gift",
+                        "value": "No",
+                        "display_key": "As a Gift",
+                        "display_value": "No"
+                    },
+                    {
+                        "id": 8167,
+                        "key": "_pao_ids",
+                        "value": [
+                            {
+                                "key": "As a Gift",
+                                "value": "No"
+                            }
+                        ],
+                        "display_key": "_pao_ids",
+                        "display_value": [
+                            {
+                                "key": "As a Gift",
+                                "value": "No"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 8168,
+                        "key": "_wcsatt_scheme",
+                        "value": "0",
+                        "display_key": "_wcsatt_scheme",
+                        "display_value": "0"
+                    },
+                    {
+                        "id": 8189,
+                        "key": "_reduced_stock",
+                        "value": "1",
+                        "display_key": "_reduced_stock",
+                        "display_value": "1"
+                    }
+                ],
+                "sku": "Woo-beanie-logo",
+                "price": 18,
+                "image": {
+                    "id": "59",
+                    "src": "https://example.com/wp-content/uploads/2023/01/beanie-with-logo-1.jpg"
+                },
+                "parent_name": null,
+                "composite_parent": "",
+                "composite_children": [],
+                "bundled_by": "",
+                "bundled_item_title": "",
+                "bundled_items": []
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [
+            {
+                "id": 923,
+                "method_title": "Flat rate",
+                "method_id": "flat_rate",
+                "instance_id": "3",
+                "total": "10.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 8180,
+                        "key": "Items",
+                        "value": "Beanie with Logo &times; 1",
+                        "display_key": "Items",
+                        "display_value": "Beanie with Logo &times; 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "payment_url": "https://example.com/checkout/order-pay/459/?pay_for_order=true&key=wc_order_boLXJYDMOOhSp",
+        "is_editable": false,
+        "needs_payment": false,
+        "needs_processing": true,
+        "date_created_gmt": "2023-03-29T03:21:20",
+        "date_modified_gmt": "2023-03-29T03:23:02",
+        "date_completed_gmt": null,
+        "date_paid_gmt": "2023-03-29T03:23:02",
+        "gift_cards": [
+            {
+                "id": 2,
+                "code": "SU9F-MGB5-KS5V-EZFT",
+                "amount": 20
+            },
+            {
+                "id": 4,
+                "code": "NZR8-BMP8-XJZ2-ZKS9",
+                "amount": 4
+            }
+        ],
+        "currency_symbol": "$",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders/459"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/customers/27375286"
+                }
+            ]
+        }
+    }
+}

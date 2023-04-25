@@ -385,6 +385,19 @@ final class OrderMapperTests: XCTestCase {
 
         XCTAssertEqual(order.renewalSubscriptionID, "282")
     }
+
+    func test_order_applied_gift_cards_are_parsed_successfully() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithGiftCards())
+
+        // When
+        let giftCard = try XCTUnwrap(order.appliedGiftCards.first)
+
+        // Then
+        XCTAssertEqual(giftCard.giftCardID, 2)
+        XCTAssertEqual(giftCard.code, "SU9F-MGB5-KS5V-EZFT")
+        XCTAssertEqual(giftCard.amount, 20)
+    }
 }
 
 
@@ -467,6 +480,12 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithSubscriptionRenewal() -> Order? {
         return mapOrder(from: "order-with-subscription-renewal")
+    }
+
+    /// Returns the Order output upon receiving `order-with-gift-cards`
+    ///
+    func mapLoadOrderWithGiftCards() -> Order? {
+        return mapOrder(from: "order-with-gift-cards")
     }
 
 }

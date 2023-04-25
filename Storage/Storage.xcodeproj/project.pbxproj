@@ -472,6 +472,7 @@
 		CE4FD4442350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemTaxRefund+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE4FD4452350EB7600A16B31 /* Refund+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 85.xcdatamodel"; sourceTree = "<group>"; };
 		CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0FEE3A91785B0F2C3641C27 /* Pods-Storage.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -1858,6 +1859,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */,
 				EE94345329F038DF002B1900 /* Model 84.xcdatamodel */,
 				CC24A4EB29ED416E0009D6DA /* Model 83.xcdatamodel */,
 				CC379B0C29C8A688009747B4 /* Model 82.xcdatamodel */,
@@ -1943,7 +1945,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = EE94345329F038DF002B1900 /* Model 84.xcdatamodel */;
+			currentVersion = CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -1730,6 +1730,8 @@
 		CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */; };
 		CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */; };
 		CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */; };
+		CE29A63029F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29A62F29F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift */; };
+		CE29A63C29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE29A63B29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib */; };
 		CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */; };
 		CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */; };
 		CE2A9FC623BFFADE002BEC1C /* RefundedProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */; };
@@ -3978,6 +3980,8 @@
 		CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewController.swift; sourceTree = "<group>"; };
 		CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueOneTableViewCell.swift; sourceTree = "<group>"; };
 		CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ValueOneTableViewCell.xib; sourceTree = "<group>"; };
+		CE29A62F29F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSubscriptionTableViewCell.swift; sourceTree = "<group>"; };
+		CE29A63B29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
 		CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LedgerTableViewCell.swift; sourceTree = "<group>"; };
 		CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LedgerTableViewCell.xib; sourceTree = "<group>"; };
 		CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewModel.swift; sourceTree = "<group>"; };
@@ -8916,6 +8920,15 @@
 			path = Help;
 			sourceTree = "<group>";
 		};
+		CE29A62E29F2DA62003D2A00 /* Subscriptions section */ = {
+			isa = PBXGroup;
+			children = (
+				CE29A62F29F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift */,
+				CE29A63B29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib */,
+			);
+			path = "Subscriptions section";
+			sourceTree = "<group>";
+		};
 		CE35F1042343DCAC007B2A6B /* Refunds */ = {
 			isa = PBXGroup;
 			children = (
@@ -8950,6 +8963,7 @@
 				CE35F10A2343E4E6007B2A6B /* Order Notes Section */,
 				021A84DD257DFBDA00BC71D1 /* Shipping Labels */,
 				45B4F0242860BCCA00F3B16E /* WCShip Installation Process */,
+				CE29A62E29F2DA62003D2A00 /* Subscriptions section */,
 				57A25C7525ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift */,
 				57A25C7B25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift */,
 			);
@@ -10543,6 +10557,7 @@
 				B92FF9AE27FC7217005C34E3 /* OrderListViewController.xib in Resources */,
 				023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */,
 				0304E36428BE1EDE00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.xib in Resources */,
+				CE29A63C29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib in Resources */,
 				026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */,
 				3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */,
 				4515C88E25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.xib in Resources */,
@@ -11422,6 +11437,7 @@
 				DE0A2EAF281BA278007A8015 /* ProductCategorySelectorViewModel.swift in Sources */,
 				45B9C64323A91CB6007FC4C5 /* PriceInputFormatter.swift in Sources */,
 				E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */,
+				CE29A63029F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift in Sources */,
 				DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
 				0262DA5B23A244830029AF30 /* Product+ShippingSettingsViewModels.swift in Sources */,

@@ -526,7 +526,8 @@ extension Networking.Order {
         fees: CopiableProp<[OrderFeeLine]> = .copy,
         taxes: CopiableProp<[OrderTaxLine]> = .copy,
         customFields: CopiableProp<[OrderMetaData]> = .copy,
-        renewalSubscriptionID: NullableCopiableProp<String> = .copy
+        renewalSubscriptionID: NullableCopiableProp<String> = .copy,
+        appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy
     ) -> Networking.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -563,6 +564,7 @@ extension Networking.Order {
         let taxes = taxes ?? self.taxes
         let customFields = customFields ?? self.customFields
         let renewalSubscriptionID = renewalSubscriptionID ?? self.renewalSubscriptionID
+        let appliedGiftCards = appliedGiftCards ?? self.appliedGiftCards
 
         return Networking.Order(
             siteID: siteID,
@@ -599,7 +601,8 @@ extension Networking.Order {
             fees: fees,
             taxes: taxes,
             customFields: customFields,
-            renewalSubscriptionID: renewalSubscriptionID
+            renewalSubscriptionID: renewalSubscriptionID,
+            appliedGiftCards: appliedGiftCards
         )
     }
 }
@@ -654,6 +657,24 @@ extension Networking.OrderFeeLine {
             totalTax: totalTax,
             taxes: taxes,
             attributes: attributes
+        )
+    }
+}
+
+extension Networking.OrderGiftCard {
+    public func copy(
+        giftCardID: CopiableProp<Int64> = .copy,
+        code: CopiableProp<String> = .copy,
+        amount: CopiableProp<Int64> = .copy
+    ) -> Networking.OrderGiftCard {
+        let giftCardID = giftCardID ?? self.giftCardID
+        let code = code ?? self.code
+        let amount = amount ?? self.amount
+
+        return Networking.OrderGiftCard(
+            giftCardID: giftCardID,
+            code: code,
+            amount: amount
         )
     }
 }
@@ -2193,7 +2214,7 @@ extension Networking.Subscription {
         billingInterval: CopiableProp<String> = .copy,
         total: CopiableProp<String> = .copy,
         startDate: CopiableProp<Date> = .copy,
-        endDate: CopiableProp<Date> = .copy
+        endDate: NullableCopiableProp<Date> = .copy
     ) -> Networking.Subscription {
         let siteID = siteID ?? self.siteID
         let subscriptionID = subscriptionID ?? self.subscriptionID

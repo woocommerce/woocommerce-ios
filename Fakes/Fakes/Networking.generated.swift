@@ -497,7 +497,8 @@ extension Networking.Order {
             fees: .fake(),
             taxes: .fake(),
             customFields: .fake(),
-            renewalSubscriptionID: .fake()
+            renewalSubscriptionID: .fake(),
+            appliedGiftCards: .fake()
         )
     }
 }
@@ -534,6 +535,17 @@ extension OrderFeeTaxStatus {
     ///
     public static func fake() -> OrderFeeTaxStatus {
         .taxable
+    }
+}
+extension Networking.OrderGiftCard {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderGiftCard {
+        .init(
+            giftCardID: .fake(),
+            code: .fake(),
+            amount: .fake()
+        )
     }
 }
 extension Networking.OrderItem {

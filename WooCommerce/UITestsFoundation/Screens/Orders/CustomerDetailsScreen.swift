@@ -4,7 +4,7 @@ import XCTest
 public final class CustomerDetailsScreen: ScreenObject {
 
     private let addressToggleGetter: (XCUIApplication) -> XCUIElement = {
-        $0.switches["order-creation-customer-details-shipping-address-toggle"].switches.firstMatch
+        $0.switches["order-creation-customer-details-shipping-address-toggle"]
     }
 
     private let doneButtonGetter: (XCUIApplication) -> XCUIElement = {

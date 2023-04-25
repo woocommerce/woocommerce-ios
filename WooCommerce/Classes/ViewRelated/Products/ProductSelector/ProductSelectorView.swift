@@ -92,7 +92,6 @@ struct ProductSelectorView: View {
                         LazyNavigationLink(destination: ProductVariationSelector(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
-                            multipleSelectionsEnabled: multipleSelectionsEnabled,
                             onMultipleSelections: { selectedIDs in
                                 viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
                             }), isActive: $isShowingVariationList) {

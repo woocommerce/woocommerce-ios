@@ -13,10 +13,6 @@ struct ProductVariationSelector: View {
     ///
     @ObservedObject private var viewModel: ProductVariationSelectorViewModel
 
-    /// Whether more than one row can be selected.
-    ///
-    private let multipleSelectionsEnabled: Bool
-
     private let onMultipleSelections: (([Int64]) -> Void)?
 
     ///   Environment safe areas
@@ -25,11 +21,9 @@ struct ProductVariationSelector: View {
 
     init(isPresented: Binding<Bool>,
          viewModel: ProductVariationSelectorViewModel,
-         multipleSelectionsEnabled: Bool = false,
          onMultipleSelections: (([Int64]) -> Void)? = nil) {
         self._isPresented = isPresented
         self.viewModel = viewModel
-        self.multipleSelectionsEnabled = multipleSelectionsEnabled
         self.onMultipleSelections = onMultipleSelections
     }
 
@@ -49,15 +43,12 @@ struct ProductVariationSelector: View {
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
                         ForEach(viewModel.productVariationRows) { rowViewModel in
-                            ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
+                            ProductRow(multipleSelectionsEnabled: true,
                                        viewModel: rowViewModel)
                                 .accessibilityHint(Localization.productRowAccessibilityHint)
                                 .padding(Constants.defaultPadding)
                                 .onTapGesture {
                                     viewModel.changeSelectionStateForVariation(with: rowViewModel.productOrVariationID)
-                                    if !multipleSelectionsEnabled {
-                                        isPresented.toggle()
-                                    }
                                 }
                             Divider().frame(height: Constants.dividerHeight)
                                 .padding(.leading, Constants.defaultPadding)
@@ -103,9 +94,6 @@ struct ProductVariationSelector: View {
             viewModel.onLoadTrigger.send()
         }
         .onDisappear {
-            guard multipleSelectionsEnabled else {
-                return
-            }
             onMultipleSelections?(viewModel.selectedProductVariationIDs)
         }
         .notice($viewModel.notice, autoDismiss: false)
@@ -143,6 +131,6 @@ struct AddProductVariationToOrder_Previews: PreviewProvider {
             supportsMultipleSelection: true
         )
 
-        ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel, multipleSelectionsEnabled: true)
+        ProductVariationSelector(isPresented: .constant(true), viewModel: viewModel)
     }
 }

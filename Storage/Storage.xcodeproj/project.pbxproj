@@ -202,6 +202,8 @@
 		CE4FD44C2350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4442350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift */; };
 		CE4FD44D2350EB7600A16B31 /* Refund+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4452350EB7600A16B31 /* Refund+CoreDataClass.swift */; };
 		CE4FD44E2350EB7600A16B31 /* Refund+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */; };
+		CEE9188929F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188729F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift */; };
+		CEE9188A29F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188829F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift */; };
 		CEF88DB2233EAAF100BED485 /* OrderRefundCondensed+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */; };
 		CEF88DB3233EAAF100BED485 /* OrderRefundCondensed+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */; };
 		D4466F5626D524FC003E931B /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4466F5526D524FC003E931B /* Feature.swift */; };
@@ -472,6 +474,9 @@
 		CE4FD4442350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemTaxRefund+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE4FD4452350EB7600A16B31 /* Refund+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 85.xcdatamodel"; sourceTree = "<group>"; };
+		CEE9188729F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CEE9188829F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0FEE3A91785B0F2C3641C27 /* Pods-Storage.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -915,6 +920,8 @@
 				7426A04F20F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift */,
 				D88E233A25AE08C90023F3B1 /* OrderFeeLine+CoreDataClass.swift */,
 				D88E234025AE08F10023F3B1 /* OrderFeeLine+CoreDataProperties.swift */,
+				CEE9188729F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift */,
+				CEE9188829F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift */,
 				7426A05220F69DA4002A4E07 /* OrderItem+CoreDataClass.swift */,
 				7426A05320F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift */,
 				021EAA4525493A1600AA8CCD /* OrderItemAttribute+CoreDataClass.swift */,
@@ -1330,6 +1337,7 @@
 				031C1EA127AD3AFE00298699 /* WCPayCharge+CoreDataClass.swift in Sources */,
 				023FA29623316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
+				CEE9188929F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift in Sources */,
 				023FA29523316A4D008C1769 /* Product+CoreDataProperties.swift in Sources */,
 				CC2C030C262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift in Sources */,
 				261CF1C5255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift in Sources */,
@@ -1374,6 +1382,7 @@
 				029DE81025BAD9E10046EFF5 /* WooCommerceModelV42toV43.xcmappingmodel in Sources */,
 				455C0C9025DD6D93007B6F38 /* AccountSettings+CoreDataClass.swift in Sources */,
 				450106892399AC7400E24722 /* TaxClass+CoreDataClass.swift in Sources */,
+				CEE9188A29F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift in Sources */,
 				45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */,
 				CE4FD44C2350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift in Sources */,
 				DE26B5262775C5F000A2EA0A /* Coupon+CoreDataClass.swift in Sources */,
@@ -1858,6 +1867,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */,
 				EE94345329F038DF002B1900 /* Model 84.xcdatamodel */,
 				CC24A4EB29ED416E0009D6DA /* Model 83.xcdatamodel */,
 				CC379B0C29C8A688009747B4 /* Model 82.xcdatamodel */,
@@ -1943,7 +1953,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = EE94345329F038DF002B1900 /* Model 84.xcdatamodel */;
+			currentVersion = CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 85 (Release 13.4.0.0)
+- @rachelmcr 2023-04-25
+    - Added `renewalSubscriptionID` attribute to `Order` entity.
+    - Added `OrderGiftCard` entity.
+    - Added `appliedGiftCards` to-many relationship from `Order` to `OrderGiftCard`.
+
 ## Model 84 (Release 13.3.0.0)
 - @selanthiraiyan 2023-04-20
     - Added `isPublic` attribute to `Site` entity.

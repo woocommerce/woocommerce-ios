@@ -66,6 +66,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let showGroupedTableViewAppearance: Bool
 
+    private let aiEligibilityChecker: ProductFormAIEligibilityChecker
+
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
@@ -88,6 +90,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
         self.showGroupedTableViewAppearance = showGroupedTableViewAppearance
+        self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -1167,7 +1170,9 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editProductDescription() {
-        let editorViewController = EditorFactory().productDescriptionEditor(product: product) { [weak self] content in
+        let isAIGenerationEnabled = aiEligibilityChecker.isFeatureEnabled(.description)
+        let editorViewController = EditorFactory().productDescriptionEditor(product: product,
+                                                                            isAIGenerationEnabled: isAIGenerationEnabled) { [weak self] content in
             self?.onEditProductDescriptionCompletion(newDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)

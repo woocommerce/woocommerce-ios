@@ -12,11 +12,14 @@ final class EditorFactory {
     // MARK: - Editor: Instantiation
 
     func productDescriptionEditor(product: ProductFormDataModel,
+                                  isAIGenerationEnabled: Bool,
                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let viewProperties = EditorViewProperties(navigationTitle: Localization.productDescriptionTitle,
                                                   placeholderText: Localization.placeholderText(product: product),
                                                   showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.description, viewProperties: viewProperties)
+        let editor = AztecEditorViewController(content: product.description,
+                                               viewProperties: viewProperties,
+                                               isAIGenerationEnabled: isAIGenerationEnabled)
         editor.onContentSave = onContentSave
         return editor
     }
@@ -26,7 +29,9 @@ final class EditorFactory {
         let viewProperties = EditorViewProperties(navigationTitle: Localization.productShortDescriptionTitle,
                                                   placeholderText: Localization.placeholderText(product: product),
                                                   showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.shortDescription, viewProperties: viewProperties)
+        let editor = AztecEditorViewController(content: product.shortDescription,
+                                               viewProperties: viewProperties,
+                                               isAIGenerationEnabled: false)
         editor.onContentSave = onContentSave
         return editor
     }

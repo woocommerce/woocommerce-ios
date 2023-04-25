@@ -21,12 +21,6 @@ final class DashboardViewModel {
 
     @Published private(set) var showOnboarding: Bool = false
 
-    @Published private(set) var freeTrialBannerViewModel: FreeTrialBannerViewModel? = nil
-
-    /// Observable subscription store.
-    ///
-    private var subscriptions: Set<AnyCancellable> = []
-
     /// Trigger to start the Add Product flow
     ///
     let addProductTrigger = PassthroughSubject<Void, Never>()
@@ -47,7 +41,6 @@ final class DashboardViewModel {
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         setupObserverForShowOnboarding()
-        observeFreeTrialStorePlan()
     }
 
     /// Reloads store onboarding tasks
@@ -174,28 +167,6 @@ final class DashboardViewModel {
         } catch {
             await syncJustInTimeMessages(for: siteID)
         }
-    }
-
-    /// Fetches the current site plan.
-    ///
-    func syncFreeTrialBannerState() {
-        ServiceLocator.storePlanSynchronizer.reloadPlan()
-    }
-
-    /// Observe for any store plan changes.
-    ///
-    func observeFreeTrialStorePlan() {
-        ServiceLocator.storePlanSynchronizer.$planState.sink { [weak self] planState in
-            switch planState {
-            case .loaded(let plan) where plan.isFreeTrial:
-                self?.freeTrialBannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
-            case .loading, .failed:
-                break // No-op
-            default:
-                self?.freeTrialBannerViewModel = nil
-            }
-        }
-        .store(in: &subscriptions)
     }
 
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.

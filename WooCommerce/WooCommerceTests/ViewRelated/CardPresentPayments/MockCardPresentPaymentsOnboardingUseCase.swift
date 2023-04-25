@@ -22,6 +22,23 @@ final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboard
         // No op
     }
 
+    var skipPendingRequirementsWasCalled = false
+    func skipPendingRequirements() {
+        skipPendingRequirementsWasCalled = true
+    }
+
+    var selectPluginWasCalled = false
+    var spySelectedPlugin: CardPresentPaymentsPlugin? = nil
+    func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {
+        selectPluginWasCalled = true
+        spySelectedPlugin = selectedPlugin
+    }
+
+    var clearPluginSelectionWasCalled = false
+    func clearPluginSelection() {
+        clearPluginSelectionWasCalled = true
+    }
+
     // MARK: Convenience Initializer
     init(initial: CardPresentPaymentOnboardingState, publisher: AnyPublisher<CardPresentPaymentOnboardingState, Never>? = nil) {
         self.state = initial

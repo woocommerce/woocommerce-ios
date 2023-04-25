@@ -104,7 +104,7 @@ final class StoreCreationCoordinator: Coordinator {
                 }
 
                 startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: product)
-            } catch {
+            } catch let error as PlanPurchaseError {
                 let isWebviewFallbackAllowed = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) == false
                 navigationController.dismiss(animated: true) { [weak self] in
                     guard let self else { return }
@@ -113,6 +113,13 @@ final class StoreCreationCoordinator: Coordinator {
                     } else {
                         self.showIneligibleUI(from: self.navigationController, error: error)
                     }
+                }
+            } catch {
+                navigationController.dismiss(animated: true) { [weak self] in
+                    guard let self else { return }
+
+                    // Show error alert
+                    self.showStoreCreationDefaultErrorAlert(from: self.navigationController)
                 }
             }
         }
@@ -225,6 +232,16 @@ private extension StoreCreationCoordinator {
 
         navigationController.present(alert, animated: true)
     }
+
+    /// Shows an alert with default error message
+    func showStoreCreationDefaultErrorAlert(from navigationController: UINavigationController) {
+        let alertController = UIAlertController(title: Localization.StoreCreationErrorAlert.title,
+                                                message: Localization.StoreCreationErrorAlert.defaultErrorMessage,
+                                                preferredStyle: .alert)
+        alertController.view.tintColor = .text
+        alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
+        navigationController.present(alertController, animated: true)
+    }
 }
 
 // MARK: - Store creation M1
@@ -270,6 +287,14 @@ private extension StoreCreationCoordinator {
         case .failure(let error):
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .web, isFreeTrial: false))
             DDLogError("Store creation error: \(error)")
+
+            // Dismiss store creation webview before showing error alert
+            navigationController.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+
+                // Show error alert
+                self.showStoreCreationDefaultErrorAlert(from: self.navigationController)
+            }
         }
     }
 

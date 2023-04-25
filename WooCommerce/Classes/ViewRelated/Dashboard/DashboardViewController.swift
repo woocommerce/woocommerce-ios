@@ -104,10 +104,6 @@ final class DashboardViewController: UIViewController {
 
     private var announcementView: UIView?
 
-    /// Holds a reference to the Free Trial Banner view, Needed to be able to hide it when needed.
-    ///
-    private var freeTrialBanner: UIView?
-
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
@@ -134,6 +130,10 @@ final class DashboardViewController: UIViewController {
 
     private var subscriptions = Set<AnyCancellable>()
     private var navbarObserverSubscription: AnyCancellable?
+
+    /// Free trial banner presentation handler.
+    ///
+    private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
 
     // MARK: View Lifecycle
 
@@ -163,7 +163,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
-        observeFreeTrialBannerVisibility()
+        configureFreeTrialBannerPresenter()
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
@@ -176,8 +176,7 @@ final class DashboardViewController: UIViewController {
         // Reset title to prevent it from being empty right after login
         configureTitle()
 
-        // Proactively update the free trial banner every time we navigate to the dashboard.
-        viewModel.syncFreeTrialBannerState()
+        freeTrialBannerPresenter?.reloadBannerVisibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -350,49 +349,12 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(stackView)
     }
 
-    /// Adds a Free Trial bar at the bottom of the screen.
-    ///
-    func addFreeTrialBar(contentText: String) {
-        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
-            self?.showUpgradePlanWebView()
+    func configureFreeTrialBannerPresenter() {
+        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
+                                                                  containerView: stackView,
+                                                                  siteID: siteID) { [weak self] bannerHeight in
+            self?.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
         }
-        freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
-
-        self.stackView.addSubview(freeTrialViewController.view)
-        NSLayoutConstraint.activate([
-            freeTrialViewController.view.leadingAnchor.constraint(equalTo: self.stackView.leadingAnchor),
-            freeTrialViewController.view.trailingAnchor.constraint(equalTo: self.stackView.trailingAnchor),
-            freeTrialViewController.view.bottomAnchor.constraint(equalTo: self.stackView.bottomAnchor)
-
-        ])
-
-        // Adjust the main container content inset to prevent it from being hidden by the `freeTrialViewController`
-        DispatchQueue.main.async {
-            self.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: freeTrialViewController.view.frame.size.height, right: 0)
-        }
-
-        // Store a reference to it to manipulate it later in `removeFreeTrialBanner`.
-        freeTrialBanner = freeTrialViewController.view
-    }
-
-    /// Removes the Free Trial Banner when possible.
-    ///
-    func removeFreeTrialBanner() {
-        guard let banner = freeTrialBanner else {
-            return
-        }
-
-        banner.removeFromSuperview()
-        containerView.contentInset = .zero // Resets the content offset of main scroll view. Was adjusted previously in `addFreeTrialBar`
-    }
-
-    /// Shows a web view for the merchant to update their site plan.
-    ///
-    func showUpgradePlanWebView() {
-        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
-            self?.removeFreeTrialBanner()
-        })
-        present(upgradeController, animated: true)
     }
 
     func configureDashboardUIContainer() {
@@ -591,17 +553,6 @@ private extension DashboardViewController {
         storeNameLabel.isHidden = false
         storeNameLabel.text = siteName
     }
-
-    /// Shows or hides the free trial banner.
-    ///
-    func observeFreeTrialBannerVisibility() {
-        viewModel.$freeTrialBannerViewModel.sink { [weak self] viewModel in
-            self?.removeFreeTrialBanner()
-            if let viewModel {
-                self?.addFreeTrialBar(contentText: viewModel.message)
-            }
-        }.store(in: &subscriptions)
-    }
 }
 
 private extension DashboardViewController {
@@ -642,7 +593,7 @@ private extension DashboardViewController {
                                                                      site: site,
                                                                      onUpgradePlan: { [weak self] in
             guard let self else { return }
-            self.viewModel.syncFreeTrialBannerState()
+            self.freeTrialBannerPresenter?.reloadBannerVisibility()
         },
                                                                      shareFeedbackAction: { [weak self] in
             // Present survey

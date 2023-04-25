@@ -6,7 +6,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
-    private let useCase: CardPresentPaymentsOnboardingUseCase
+    private let useCase: CardPresentPaymentsOnboardingUseCaseProtocol
     let stores: StoresManager
 
     var showSupport: (() -> Void)? = nil
@@ -16,7 +16,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
     ///
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         useCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase(),
+         useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)? = nil) {
         self.stores = stores
         self.useCase = useCase
@@ -24,7 +24,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
 
-        useCase.$state
+        useCase.statePublisher
             .share()
             // Debounce values to prevent the loading screen flashing when there is no connection
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
@@ -132,7 +132,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
 
 private extension InPersonPaymentsViewModel {
     var countryCode: String {
-        useCase.configurationLoader.configuration.countryCode
+        CardPresentConfigurationLoader().configuration.countryCode
     }
 
     func trackState(_ state: CardPresentPaymentOnboardingState) {

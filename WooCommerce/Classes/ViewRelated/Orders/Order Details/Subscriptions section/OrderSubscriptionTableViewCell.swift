@@ -7,7 +7,7 @@ import SwiftUI
 ///
 struct OrderSubscriptionTableViewCellViewModel {
     struct SubscriptionStatusPresentation {
-        let style: SubscriptionStatus
+        let backgroundColor: UIColor
         let title: String
     }
 
@@ -72,7 +72,7 @@ struct OrderSubscriptionTableViewCellViewModel {
     /// The status badge color and text
     ///
     var statusPresentation: SubscriptionStatusPresentation {
-        .init(style: subscription.status, title: Localization.statusLabel(for: subscription.status))
+        .init(backgroundColor: Constants.backgroundColor(for: subscription.status), title: Localization.statusLabel(for: subscription.status))
     }
 }
 
@@ -104,10 +104,10 @@ final class OrderSubscriptionTableViewCell: UITableViewCell {
         display(presentation: viewModel.statusPresentation)
     }
 
-    /// Displays the specified `SubscriptionStatus` description, and applies the right label style.
+    /// Displays the correct title and background color for the specified `SubscriptionStatus`.
     ///
     private func display(presentation: OrderSubscriptionTableViewCellViewModel.SubscriptionStatusPresentation) {
-        statusLabel.applyStyle(for: presentation.style)
+        statusLabel.backgroundColor = presentation.backgroundColor
         statusLabel.text = presentation.title
     }
 
@@ -140,8 +140,21 @@ private extension OrderSubscriptionTableViewCell {
     func configureLabels() {
         titleLabel.applyBodyStyle()
         dateLabel.applyFootnoteStyle()
-        statusLabel.applyPaddedLabelDefaultStyles()
         priceLabel.applyBodyStyle()
+        configureStatusLabel()
+    }
+
+    func configureStatusLabel() {
+        statusLabel.applyPaddedLabelDefaultStyles()
+        statusLabel.textColor = .black
+        statusLabel.layer.masksToBounds = true
+        statusLabel.layer.borderWidth = Constants.StatusLabel.borderWidth
+    }
+
+    enum Constants {
+        enum StatusLabel {
+            static let borderWidth = CGFloat(0.0)
+        }
     }
 }
 
@@ -171,6 +184,20 @@ private extension OrderSubscriptionTableViewCellViewModel {
                 return NSLocalizedString("Pending Cancel", comment: "Display label for the subscription status type")
             case .custom(let payload):
                 return payload
+            }
+        }
+    }
+    enum Constants {
+        static func backgroundColor(for status: SubscriptionStatus) -> UIColor {
+            switch status {
+            case .pending, .pendingCancel, .custom:
+                return .gray(.shade5)
+            case .onHold:
+                return .withColorStudio(.orange, shade: .shade5)
+            case .active:
+                return .withColorStudio(.green, shade: .shade5)
+            case .cancelled, .expired:
+                return .withColorStudio(.red, shade: .shade5)
             }
         }
     }

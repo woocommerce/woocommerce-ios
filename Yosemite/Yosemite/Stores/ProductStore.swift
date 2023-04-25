@@ -6,6 +6,7 @@ import Storage
 //
 public class ProductStore: Store {
     private let remote: ProductsRemoteProtocol
+    private let generativeContentRemote: GenerativeContentRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
@@ -13,11 +14,17 @@ public class ProductStore: Store {
 
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
-        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let generativeContentRemote = GenerativeContentRemote(network: network)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, generativeContentRemote: generativeContentRemote)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
+    public init(dispatcher: Dispatcher,
+                storageManager: StorageManagerType,
+                network: Network,
+                remote: ProductsRemoteProtocol,
+                generativeContentRemote: GenerativeContentRemoteProtocol) {
         self.remote = remote
+        self.generativeContentRemote = generativeContentRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -109,6 +116,8 @@ public class ProductStore: Store {
             checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion)
         case let .createTemplateProduct(siteID, template, onCompletion):
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
+        case let .generateProductDescription(siteID, name, features, languageCode, completion):
+            generateProductDescription(siteID: siteID, name: name, features: features, languageCode: languageCode, completion: completion)
         }
     }
 }
@@ -475,6 +484,22 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             }
+        }
+    }
+
+    func generateProductDescription(siteID: Int64,
+                                    name: String,
+                                    features: String,
+                                    languageCode: String,
+                                    completion: @escaping (Result<String, Error>) -> Void) {
+        let prompt = "Perform in-depth keyword research for a product on an e-commerce store and return a product description " +
+        "that includes as many keywords as possible and at least 200 words. " +
+        "The tone should be professional and without many questions. " +
+        "Try to make shorter sentences, using less difficult words to improve readability. " +
+        "Product name: \(name)\nFeatures: \(features)\nLanguage: \(languageCode)"
+        Task {
+            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }
+            completion(result)
         }
     }
 }

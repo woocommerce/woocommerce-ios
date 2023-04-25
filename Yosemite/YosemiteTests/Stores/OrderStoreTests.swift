@@ -343,6 +343,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
@@ -351,6 +352,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
         let storageOrder1 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated().orderID)
@@ -361,6 +363,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
         let storageOrder2 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated2().orderID)
@@ -371,6 +374,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
     }
 
     /// Verifies that `upsertStoredOrder` effectively inserts a new Order, with the specified payload.
@@ -735,12 +739,14 @@ final class OrderStoreTests: XCTestCase {
     ///
     func testResetStoredOrdersEffectivelyNukesTheOrdersCache() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = sampleOrder().copy(appliedGiftCards: [.fake()])
 
-        orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
+        orderStore.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 1)
 
         let expectation = self.expectation(description: "Stored Orders Reset")
         let action = OrderAction.resetStoredOrders {
@@ -748,6 +754,7 @@ final class OrderStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
             expectation.fulfill()
         }
@@ -1282,7 +1289,8 @@ private extension OrderStoreTests {
                                   items: sampleItemsMutated(),
                                   coupons: sampleCouponsMutated(),
                                   taxes: sampleOrderTaxLinesMutated(),
-                                  customFields: sampleCustomFieldsMutated())
+                                  customFields: sampleCustomFieldsMutated(),
+                                  appliedGiftCards: sampleAppliedGiftCards())
     }
 
     func sampleOrderMutated2() -> Networking.Order {
@@ -1292,7 +1300,8 @@ private extension OrderStoreTests {
                                   items: sampleItemsMutated2(),
                                   coupons: [],
                                   taxes: [],
-                                  customFields: [])
+                                  customFields: [],
+                                  appliedGiftCards: [])
     }
 
     func sampleAddress() -> Networking.Address {
@@ -1478,5 +1487,9 @@ private extension OrderStoreTests {
     func sampleCustomFieldsMutated() -> [Networking.OrderMetaData] {
         return [Networking.OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "GBP"),
                 Networking.OrderMetaData(metadataID: 18149, key: "Converted Order Total", value: "223.71 GBP")]
+    }
+
+    func sampleAppliedGiftCards() -> [Networking.OrderGiftCard] {
+        return [Networking.OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)]
     }
 }

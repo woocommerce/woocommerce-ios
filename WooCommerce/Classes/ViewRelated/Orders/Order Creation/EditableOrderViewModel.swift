@@ -182,7 +182,7 @@ final class EditableOrderViewModel: ObservableObject {
             stores: stores,
             supportsMultipleSelection: isProductMultiSelectionEnabled,
             toggleAllVariationsOnSelection: false,
-            topProductsProvider: TopProductsFromCachedOrdersProvider(storageManager: ServiceLocator.storageManager),
+            topProductsProvider: ProductSelectorTopProductsProviderFactory.productSelectorTopProductsProvider(),
             onProductSelectionStateChanged: { [weak self] product in
                 guard let self = self else { return }
                 self.addOrRemoveProductToOrder(product)

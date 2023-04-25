@@ -566,6 +566,7 @@
 		0396CFAD2981476900E91436 /* CardPresentModalBuiltInConnectingFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */; };
 		039B7E6329F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */; };
 		039B7E6529F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6429F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift */; };
+		039B7E6729F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */; };
 		039D948D27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */; };
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
 		03A6C18428B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */; };
@@ -1559,6 +1560,8 @@
 		B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */; };
 		B9DA153E28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */; };
 		B9DA154028103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */; };
+		B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DC770229F18A8C0013B191 /* TopProductsFromCachedOrdersProvider.swift */; };
+		B9DC770529F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DC770429F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift */; };
 		B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */; };
 		B9E4364E287589E200883CFA /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* BadgeView.swift */; };
 		B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */; };
@@ -2805,6 +2808,7 @@
 		0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingFailed.swift; sourceTree = "<group>"; };
 		039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayOnboardingViewController.swift; sourceTree = "<group>"; };
 		039B7E6429F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UniversalLinkRouter+JustInTimeMessages.swift"; sourceTree = "<group>"; };
+		039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewModelTests.swift; sourceTree = "<group>"; };
 		039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaConstraints.swift"; sourceTree = "<group>"; };
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
 		03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift; sourceTree = "<group>"; };
@@ -3799,6 +3803,8 @@
 		B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
 		B9DA153D28101BE100FC67DD /* MockOrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
 		B9DA153F28103ABE00FC67DD /* OrderRefundsOptionsDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminerTests.swift; sourceTree = "<group>"; };
+		B9DC770229F18A8C0013B191 /* TopProductsFromCachedOrdersProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopProductsFromCachedOrdersProvider.swift; sourceTree = "<group>"; };
+		B9DC770429F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopProductsFromCachedOrdersProviderTests.swift; sourceTree = "<group>"; };
 		B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardView.swift; sourceTree = "<group>"; };
 		B9E4364D287589E200883CFA /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
@@ -5762,6 +5768,7 @@
 				03A6C18228B52ADB00AADF23 /* Onboarding Errors */,
 				03EF24FF28C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift */,
 				03EF250328C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift */,
+				039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -8448,6 +8455,7 @@
 				AE7C957E27C417FA007E8E12 /* FeeLineDetailsViewModelTests.swift */,
 				2602A64027BD89B300B347F1 /* Synchronizer */,
 				EEB221A629B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift */,
+				B9DC770429F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift */,
 			);
 			path = "Order Creation";
 			sourceTree = "<group>";
@@ -9667,6 +9675,7 @@
 		DE4FB771280E758D003D20D6 /* ProductSelector */ = {
 			isa = PBXGroup;
 			children = (
+				B9DC770229F18A8C0013B191 /* TopProductsFromCachedOrdersProvider.swift */,
 				CC53FB372755213900C4CA4F /* ProductSelectorView.swift */,
 				CC53FB3B2757EC7200C4CA4F /* ProductSelectorViewModel.swift */,
 				022CE91929BB143000F210E0 /* ProductSelectorNavigationView.swift */,
@@ -11482,6 +11491,7 @@
 				023453F22579DA1A00A6BB20 /* ShippingLabelPrintingInstructionsViewController.swift in Sources */,
 				024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */,
 				02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */,
+				B9DC770329F18A8D0013B191 /* TopProductsFromCachedOrdersProvider.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
 				3142663F2645E2AB00500598 /* PaymentSettingsFlowViewModelPresenter.swift in Sources */,
 				DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */,
@@ -12540,6 +12550,7 @@
 				023078FE25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift in Sources */,
 				027B8BBF23FE0F850040944E /* MockMediaStoresManager.swift in Sources */,
 				025A1246247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift in Sources */,
+				B9DC770529F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift in Sources */,
 				45A0E4D32566BF2A00D4E8C3 /* LinkedProductsViewModelTests.swift in Sources */,
 				D802547D26551EF2001B2CC1 /* CardPresentModalSuccessTests.swift in Sources */,
 				02ECD1E124FF496200735BE5 /* PaginationTrackerTests.swift in Sources */,
@@ -12560,6 +12571,7 @@
 				02279590237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift in Sources */,
 				B958A7D128B5281800823EEF /* UniversalLinkRouterTests.swift in Sources */,
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
+				039B7E6729F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift in Sources */,
 				03EF250428C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift in Sources */,
 				45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */,
 				CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */,

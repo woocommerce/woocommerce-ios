@@ -496,7 +496,8 @@ extension Networking.Order {
             refunds: .fake(),
             fees: .fake(),
             taxes: .fake(),
-            customFields: .fake()
+            customFields: .fake(),
+            renewalSubscriptionID: .fake()
         )
     }
 }

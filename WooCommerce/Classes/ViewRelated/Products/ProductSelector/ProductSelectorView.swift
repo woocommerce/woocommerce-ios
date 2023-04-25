@@ -6,6 +6,10 @@ struct ProductSelectorView: View {
 
     let configuration: Configuration
 
+    /// Whether more than one row can be selected.
+    ///
+    private let multipleSelectionsEnabled: Bool = true
+
     /// Defines whether the view is presented.
     ///
     @Binding var isPresented: Bool
@@ -75,7 +79,7 @@ struct ProductSelectorView: View {
                                 .padding(.leading, Constants.defaultPadding)
                         }
                     }
-                    if configuration.multipleSelectionsEnabled {
+                    if multipleSelectionsEnabled {
                         Button(doneButtonTitle) {
                             viewModel.completeMultipleSelection()
                             isPresented.toggle()
@@ -88,7 +92,7 @@ struct ProductSelectorView: View {
                         LazyNavigationLink(destination: ProductVariationSelector(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
-                            multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                            multipleSelectionsEnabled: multipleSelectionsEnabled,
                             onMultipleSelections: { selectedIDs in
                                 viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
                             }), isActive: $isShowingVariationList) {
@@ -153,7 +157,7 @@ struct ProductSelectorView: View {
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             HStack {
-                ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
                     viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
@@ -173,12 +177,12 @@ struct ProductSelectorView: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+            ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
                        viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
-                    if !configuration.multipleSelectionsEnabled {
+                    if !multipleSelectionsEnabled {
                         isPresented.toggle()
                     }
                 }
@@ -188,7 +192,6 @@ struct ProductSelectorView: View {
 
 extension ProductSelectorView {
     struct Configuration {
-        var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""
@@ -223,7 +226,6 @@ struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
         let configuration = ProductSelectorView.Configuration(
-            multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",

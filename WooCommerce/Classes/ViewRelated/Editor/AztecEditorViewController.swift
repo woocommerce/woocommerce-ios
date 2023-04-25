@@ -50,7 +50,7 @@ final class AztecEditorViewController: UIViewController, Editor {
         return AztecFormatBarFactory()
     }()
 
-    private lazy var generatorActionView: UIView = AztecAIViewFactory().aiButtonNextToFormatBar { [weak self] in
+    private lazy var aiActionView: UIView = AztecAIViewFactory().aiButtonNextToFormatBar { [weak self] in
         self?.showProductGeneratorBottomSheet()
     }
 
@@ -201,7 +201,7 @@ private extension AztecEditorViewController {
             return formatBar
         }
 
-        let stackView = UIStackView(arrangedSubviews: [generatorActionView, formatBar])
+        let stackView = UIStackView(arrangedSubviews: [aiActionView, formatBar])
         stackView.spacing = 0
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false

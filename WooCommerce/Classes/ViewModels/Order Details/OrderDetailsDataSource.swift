@@ -233,6 +233,10 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
+    /// Subscriptions for an Order
+    ///
+    var orderSubscriptions: [Subscription] = []
+
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService

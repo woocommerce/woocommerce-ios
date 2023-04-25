@@ -59,7 +59,6 @@ struct ProductSelectorView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .renderedIf(configuration.showsFilters)
             }
             .padding(.horizontal, insets: safeAreaInsets)
 
@@ -189,7 +188,6 @@ struct ProductSelectorView: View {
 
 extension ProductSelectorView {
     struct Configuration {
-        var showsFilters: Bool = false
         var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
@@ -225,7 +223,6 @@ struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
         let configuration = ProductSelectorView.Configuration(
-            showsFilters: true,
             multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",

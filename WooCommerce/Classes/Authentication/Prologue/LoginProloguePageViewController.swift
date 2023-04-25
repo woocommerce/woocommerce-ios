@@ -37,7 +37,7 @@ final class LoginProloguePageViewController: UIPageViewController {
             return false
         }
         pageControl.currentPage = currentPage + 1
-        handlePageControlValueChanged(sender: pageControl)
+        setViewControllers([pages[pageControl.currentPage]], direction: .forward, animated: true)
         return true
     }
 }

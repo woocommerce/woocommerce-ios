@@ -449,7 +449,7 @@
             "next_payment_date_gmt": "",
             "last_payment_date_gmt": "2023-04-18T17:16:08",
             "cancelled_date_gmt": "",
-            "end_date_gmt": "2023-04-25T16:29:46",
+            "end_date_gmt": "",
             "resubscribed_from": "",
             "resubscribed_subscription": "",
             "removed_line_items": [],

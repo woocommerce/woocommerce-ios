@@ -191,4 +191,8 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Subscriptions extension in product and order details
     ///
     case readOnlySubscriptions
+
+    /// Enables generating product description using AI.
+    ///
+    case productDescriptionAI
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="21G419" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -168,6 +168,7 @@
         <attribute name="paymentMethodID" optional="YES" attributeType="String"/>
         <attribute name="paymentMethodTitle" optional="YES" attributeType="String"/>
         <attribute name="paymentURL" optional="YES" attributeType="URI"/>
+        <attribute name="renewalSubscriptionID" optional="YES" attributeType="String"/>
         <attribute name="shippingAddress1" optional="YES" attributeType="String"/>
         <attribute name="shippingAddress2" optional="YES" attributeType="String"/>
         <attribute name="shippingCity" optional="YES" attributeType="String"/>

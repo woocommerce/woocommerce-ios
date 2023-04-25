@@ -1,6 +1,4 @@
-import Aztec
-import Gridicons
-import WordPressEditor
+import UIKit
 
 /// Creates Jetpack AI CTAs in Aztec editor.
 struct AztecAIViewFactory {

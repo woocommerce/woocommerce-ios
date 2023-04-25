@@ -810,13 +810,11 @@ private extension GetStartedViewController {
                                             accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier,
                                             onTap: handleSubmitButtonTapped)
 
-        if configuration.enableSiteCredentialLoginForJetpackSites {
-            // Setup Sign in with site credentials button
-            buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
-                                                   isPrimary: false,
-                                                   accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier,
-                                                   onTap: handleSiteCredentialsButtonTapped)
-        }
+        // Setup Sign in with site credentials button
+        buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
+                                               isPrimary: false,
+                                               accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier,
+                                               onTap: handleSiteCredentialsButtonTapped)
     }
 
     func configureButtonViewControllerWithoutSocialLogin() {

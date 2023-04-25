@@ -59,6 +59,7 @@ extension Order {
     @NSManaged public var statusKey: String
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
+    @NSManaged public var appliedGiftCards: Set<OrderGiftCard>?
     @NSManaged public var coupons: Set<OrderCoupon>?
     @NSManaged public var customFields: Set<OrderMetaData>?
     @NSManaged public var items: NSOrderedSet?
@@ -255,5 +256,22 @@ extension Order {
 
     @objc(removeTaxes:)
     @NSManaged public func removeFromTaxes(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for appliedGiftCards
+extension Order {
+
+    @objc(addAppliedGiftCardsObject:)
+    @NSManaged public func addToAppliedGiftCards(_ value: OrderGiftCard)
+
+    @objc(removeAppliedGiftCardsObject:)
+    @NSManaged public func removeFromAppliedGiftCards(_ value: OrderGiftCard)
+
+    @objc(addAppliedGiftCards:)
+    @NSManaged public func addToAppliedGiftCards(_ values: NSSet)
+
+    @objc(removeAppliedGiftCards:)
+    @NSManaged public func removeFromAppliedGiftCards(_ values: NSSet)
 
 }

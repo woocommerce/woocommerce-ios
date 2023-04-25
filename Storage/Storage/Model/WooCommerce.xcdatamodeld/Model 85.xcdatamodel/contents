@@ -186,6 +186,7 @@
         <attribute name="statusKey" attributeType="String"/>
         <attribute name="total" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
+        <relationship name="appliedGiftCards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderGiftCard" inverseName="order" inverseEntity="OrderGiftCard"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon"/>
         <relationship name="customFields" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderMetaData" inverseName="order" inverseEntity="OrderMetaData"/>
         <relationship name="fees" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderFeeLine" inverseName="order" inverseEntity="OrderFeeLine"/>
@@ -215,6 +216,12 @@
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemAttribute" inverseName="orderFeeLine" inverseEntity="OrderItemAttribute"/>
         <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="fees" inverseEntity="Order"/>
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItemTax" inverseName="feeLine" inverseEntity="OrderItemTax"/>
+    </entity>
+    <entity name="OrderGiftCard" representedClassName="OrderGiftCard" syncable="YES">
+        <attribute name="amount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="code" attributeType="String" defaultValueString=""/>
+        <attribute name="giftCardID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="appliedGiftCards" inverseEntity="Order"/>
     </entity>
     <entity name="OrderItem" representedClassName="OrderItem" syncable="YES">
         <attribute name="itemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

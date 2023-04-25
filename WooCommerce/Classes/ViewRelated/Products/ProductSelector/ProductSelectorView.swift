@@ -6,10 +6,6 @@ struct ProductSelectorView: View {
 
     let configuration: Configuration
 
-    /// Whether more than one row can be selected.
-    ///
-    private let multipleSelectionsEnabled: Bool = true
-
     /// Defines whether the view is presented.
     ///
     @Binding var isPresented: Bool
@@ -79,15 +75,14 @@ struct ProductSelectorView: View {
                                 .padding(.leading, Constants.defaultPadding)
                         }
                     }
-                    if multipleSelectionsEnabled {
-                        Button(doneButtonTitle) {
-                            viewModel.completeMultipleSelection()
-                            isPresented.toggle()
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-                        .padding(Constants.defaultPadding)
-                        .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
+                    Button(doneButtonTitle) {
+                        viewModel.completeMultipleSelection()
+                        isPresented.toggle()
                     }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(Constants.defaultPadding)
+                    .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
+
                     if let variationListViewModel = variationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelector(
                             isPresented: $isPresented,
@@ -156,7 +151,7 @@ struct ProductSelectorView: View {
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             HStack {
-                ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
+                ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
                     viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
@@ -176,14 +171,11 @@ struct ProductSelectorView: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(multipleSelectionsEnabled: multipleSelectionsEnabled,
+            ProductRow(multipleSelectionsEnabled: true,
                        viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
-                    if !multipleSelectionsEnabled {
-                        isPresented.toggle()
-                    }
                 }
         }
     }

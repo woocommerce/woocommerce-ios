@@ -111,7 +111,8 @@ extension Storage.Order: ReadOnlyConvertible {
                      refunds: orderRefunds,
                      fees: orderFeeLines,
                      taxes: orderTaxLines,
-                     customFields: orderCustomFields)
+                     customFields: orderCustomFields,
+                     renewalSubscriptionID: nil)
 
     }
 

@@ -525,7 +525,8 @@ extension Networking.Order {
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
         fees: CopiableProp<[OrderFeeLine]> = .copy,
         taxes: CopiableProp<[OrderTaxLine]> = .copy,
-        customFields: CopiableProp<[OrderMetaData]> = .copy
+        customFields: CopiableProp<[OrderMetaData]> = .copy,
+        renewalSubscriptionID: NullableCopiableProp<String> = .copy
     ) -> Networking.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -561,6 +562,7 @@ extension Networking.Order {
         let fees = fees ?? self.fees
         let taxes = taxes ?? self.taxes
         let customFields = customFields ?? self.customFields
+        let renewalSubscriptionID = renewalSubscriptionID ?? self.renewalSubscriptionID
 
         return Networking.Order(
             siteID: siteID,
@@ -596,7 +598,8 @@ extension Networking.Order {
             refunds: refunds,
             fees: fees,
             taxes: taxes,
-            customFields: customFields
+            customFields: customFields,
+            renewalSubscriptionID: renewalSubscriptionID
         )
     }
 }

@@ -492,7 +492,8 @@ struct EditAddressForm_Previews: PreviewProvider {
                                    refunds: [],
                                    fees: [],
                                    taxes: [],
-                                   customFields: [])
+                                   customFields: [],
+                                   renewalSubscriptionID: nil)
 
     static let sampleAddress = Address(firstName: "Johnny",
                                        lastName: "Appleseed",

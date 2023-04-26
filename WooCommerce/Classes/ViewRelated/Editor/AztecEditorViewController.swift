@@ -349,12 +349,12 @@ private extension AztecEditorViewController {
         controller.view.backgroundColor = .primaryButtonBackground
 
         view.endEditing(true)
-        presenter.present(controller, from: self) { [weak self] in
+        presenter.present(controller, from: self, onDismiss: { [weak self] in
             self?.richTextView.becomeFirstResponder()
-        }
+        })
     }
 
     func dismissDescriptionGenerationBottomSheetIfNeeded() {
-        bottomSheetPresenter?.dismiss()
+        bottomSheetPresenter?.dismiss(onDismiss: {})
     }
 }

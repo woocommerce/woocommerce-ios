@@ -23,7 +23,7 @@ final class BottomSheetPresenterTests: XCTestCase {
         XCTAssertEqual(viewController.sheetPresentationController?.detents, [.large()])
     }
 
-    func test_dismiss_sheet_invokes_onDismiss() throws {
+    func test_dismiss_sheet_invokes_onDismiss_from_present() throws {
         // Given
         let presenter = BottomSheetPresenter()
         let viewController = UIViewController()
@@ -35,6 +35,23 @@ final class BottomSheetPresenterTests: XCTestCase {
                 promise(())
             }
             presenter.dismiss()
+        }
+    }
+
+    func test_dismiss_sheet_invokes_onDismiss_from_dismiss() throws {
+        // Given
+        let presenter = BottomSheetPresenter()
+        let viewController = UIViewController()
+
+        // When
+        waitFor { promise in
+            presenter.present(viewController, from: .init(), onDismiss: {
+                XCTFail("The onDismiss of the present call should not be invoked.")
+            })
+            presenter.dismiss(onDismiss: {
+                // Then
+                promise(())
+            })
         }
     }
 

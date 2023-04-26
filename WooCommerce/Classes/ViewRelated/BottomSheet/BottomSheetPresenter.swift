@@ -46,7 +46,12 @@ final class BottomSheetPresenter: NSObject {
     }
 
     /// Dismisses the previously presented bottom sheet.
-    func dismiss() {
+    /// - Parameter onDismiss: Called when the bottom sheet is dismissed. If non-nil, the `onDismiss` from the `present` call is
+    ///   replaced by the new callback.
+    func dismiss(onDismiss: (() -> Void)? = nil) {
+        if let onDismiss {
+            self.onDismiss = onDismiss
+        }
         viewController?.dismiss(animated: true) { [weak self] in
             self?.onDismissCompletion()
         }

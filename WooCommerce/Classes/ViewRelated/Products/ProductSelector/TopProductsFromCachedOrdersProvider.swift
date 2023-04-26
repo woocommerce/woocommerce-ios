@@ -26,7 +26,7 @@ final class TopProductsFromCachedOrdersProvider: ProductSelectorTopProductsProvi
         return storageManager.viewStorage
     }()
 
-    init(storageManager: StorageManagerType) {
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.storageManager = storageManager
     }
 

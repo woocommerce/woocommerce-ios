@@ -107,4 +107,8 @@ public enum ProductAction: Action {
     /// Creates a product using the provided template type.
     ///
     case createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: (Result<Product, Error>) -> Void)
+
+    /// Generates a product description with Jetpack AI given the name, features, and language code.
+    ///
+    case generateProductDescription(siteID: Int64, name: String, features: String, languageCode: String, completion: (Result<String, Error>) -> Void)
 }

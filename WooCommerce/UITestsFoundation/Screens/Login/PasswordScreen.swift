@@ -33,16 +33,15 @@ public final class PasswordScreen: ScreenObject {
         _ = try tryProceed(password: password)
     }
 
-    public func tryProceed(password: String) throws -> PasswordScreen {
+    public func tryProceed(password: String) throws {
         passwordField.enterText(text: password)
         continueButton.tap()
         if continueButton.exists && !continueButton.isHittable {
             waitFor(element: continueButton, predicate: "isEnabled == true")
         }
-
-        return self
     }
 
+    @discardableResult
     public func verifyLoginError() throws -> PasswordScreen {
         _ = passwordErrorLabel.waitForExistence(timeout: 2)
         XCTAssertTrue(passwordErrorLabel.exists)

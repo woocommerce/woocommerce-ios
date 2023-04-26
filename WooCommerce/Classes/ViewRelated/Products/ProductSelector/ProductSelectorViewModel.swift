@@ -566,7 +566,9 @@ private extension ProductSelectorViewModel {
     }
 
     func createSectionsAddingTopProductsIfRequired(from loadedProducts: [Product]) {
-        let popularProducts = filterProductsFromSortedIdsArray(originalProducts: loadedProducts, productsIds: topProductsFromCachedOrders.popularProductsIds)
+        let popularProducts = Array(filterProductsFromSortedIdsArray(originalProducts: loadedProducts,
+                                                                     productsIds: topProductsFromCachedOrders.popularProductsIds)
+            .prefix(Constants.topSectionsMaxLength))
 
         guard popularProducts.isNotEmpty,
               shouldShowSections else {
@@ -584,13 +586,12 @@ private extension ProductSelectorViewModel {
     }
 
     func filterProductsFromSortedIdsArray(originalProducts: [Product], productsIds: [Int64]) -> [Product] {
-        Array(productsIds
+        productsIds
             .compactMap { productId in
                 originalProducts.first(where: {
                     $0.productID == productId
                 })
             }
-            .prefix(Constants.topSectionsMaxLength))
     }
 
     func removeAlreadyAddedProducts(from newProducts: [Product]) -> [Product] {

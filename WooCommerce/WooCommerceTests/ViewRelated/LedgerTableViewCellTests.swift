@@ -9,7 +9,7 @@ final class LedgerTableViewCellTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        order = MockOrders().orderWithFees()
+        order = MockOrders().orderWithFeesAndGiftCards()
         viewModel = OrderPaymentDetailsViewModel(order: order)
 
         let nib = Bundle.main.loadNibNamed("LedgerTableViewCell", owner: self, options: nil)
@@ -78,6 +78,16 @@ final class LedgerTableViewCellTests: XCTestCase {
     func test_total_value_contains_expected_text() {
         let label = cell.getTotalValue()
         XCTAssertEqual(label.text, viewModel.totalValue)
+    }
+
+    func test_giftCards_label_contains_expected_text() {
+        let label = cell.getGiftCardsLabel()
+        XCTAssertEqual(label.text, viewModel.giftCardsText)
+    }
+
+    func test_giftCards_value_contains_expected_text() {
+        let label = cell.getGiftCardsValue()
+        XCTAssertEqual(label.text, viewModel.giftCardsValue)
     }
 }
 

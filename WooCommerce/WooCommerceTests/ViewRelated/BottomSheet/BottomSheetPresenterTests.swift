@@ -17,10 +17,11 @@ final class BottomSheetPresenterTests: XCTestCase {
         presenter.present(viewController, from: .init())
 
         // Then
-        XCTAssertTrue(viewController.sheetPresentationController?.prefersEdgeAttachedInCompactHeight == false)
-        XCTAssertNil(viewController.sheetPresentationController?.largestUndimmedDetentIdentifier)
-        XCTAssertTrue(viewController.sheetPresentationController?.prefersGrabberVisible == false)
-        XCTAssertEqual(viewController.sheetPresentationController?.detents, [.large()])
+        let sheetPresentationController = try XCTUnwrap(viewController.sheetPresentationController)
+        XCTAssertTrue(sheetPresentationController.prefersEdgeAttachedInCompactHeight == false)
+        XCTAssertNil(sheetPresentationController.largestUndimmedDetentIdentifier)
+        XCTAssertTrue(sheetPresentationController.prefersGrabberVisible == false)
+        XCTAssertEqual(sheetPresentationController.detents, [.large()])
     }
 
     func test_dismiss_sheet_invokes_onDismiss_from_present() throws {

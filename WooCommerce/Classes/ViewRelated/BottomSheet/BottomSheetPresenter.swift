@@ -12,19 +12,15 @@ extension UISheetPresentationController: BottomSheetConfigurable {}
 
 /// Handles presentation and dismissal of a bottom sheet natively.
 final class BottomSheetPresenter: NSObject {
+    typealias ConfigureBottomSheet = (BottomSheetConfigurable) -> Void
+
     private var viewController: UIViewController?
     private var onDismiss: (() -> Void)?
 
-    private let configure: ((BottomSheetConfigurable) -> Void)
+    private let configure: ConfigureBottomSheet
 
     /// - Parameter configure: Customizations of the bottom sheet with a default implementation.
-    init(configure: @escaping ((BottomSheetConfigurable) -> Void) = { bottomSheet in
-        var sheet = bottomSheet
-        sheet.prefersEdgeAttachedInCompactHeight = true
-        sheet.largestUndimmedDetentIdentifier = .large
-        sheet.prefersGrabberVisible = false
-        sheet.detents = [.medium()]
-    }) {
+    init(configure: @escaping ConfigureBottomSheet = Defaults.config) {
         self.configure = configure
     }
 
@@ -69,5 +65,17 @@ private extension BottomSheetPresenter {
         onDismiss?()
         onDismiss = nil
         viewController = nil
+    }
+}
+
+private extension BottomSheetPresenter {
+    enum Defaults {
+        static let config: ConfigureBottomSheet = { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .large
+            sheet.prefersGrabberVisible = false
+            sheet.detents = [.medium()]
+        }
     }
 }

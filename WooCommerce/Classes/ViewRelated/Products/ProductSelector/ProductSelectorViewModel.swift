@@ -505,11 +505,8 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync next page of products from remote.
     ///
     func syncNextPage() {
-        let numberOfLoadedObjects = productsResultsController.numberOfObjects
-        let extraLoadedObjectsFromTopProducts = numberOfLoadedObjects % syncingCoordinator.pageSize
-
-        let lastRequestedIndex = numberOfLoadedObjects - extraLoadedObjectsFromTopProducts - 1
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastRequestedIndex)
+        let lastIndex = productsResultsController.numberOfObjects - 1
+                syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
     }
 
     /// Updates the selected filters for the product list

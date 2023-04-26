@@ -328,6 +328,7 @@ extension AztecEditorViewController: UITextViewDelegate {
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        dismissDescriptionGenerationBottomSheetIfNeeded()
         textView.inputAccessoryView = createInputAccessoryView()
         return true
     }

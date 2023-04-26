@@ -590,6 +590,36 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let subscriptionSection = section(withCategory: .subscriptions, from: dataSource)
         XCTAssertNil(subscriptionSection)
     }
+
+    func test_giftCards_section_is_visible_when_order_has_gift_cards() throws {
+        // Given
+        let order = Order.fake().copy(appliedGiftCards: [.init(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)])
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let giftCardsSection = section(withCategory: .giftCards, from: dataSource)
+        XCTAssertNotNil(giftCardsSection)
+    }
+
+    func test_giftCards_section_is_hidden_when_order_has_no_gift_cards() throws {
+        // Given
+        let order = Order.fake()
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let giftCardsSection = section(withCategory: .giftCards, from: dataSource)
+        XCTAssertNil(giftCardsSection)
+    }
 }
 
 // MARK: - Test Data

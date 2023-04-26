@@ -46,18 +46,23 @@ final class BottomSheetPresenter: NSObject {
     }
 
     /// Dismisses the previously presented bottom sheet.
-    func dismiss(onDismiss: (() -> Void)? = nil) {
+    func dismiss() {
         viewController?.dismiss(animated: true) { [weak self] in
-            guard let self else { return }
-            self.viewController = nil
-            onDismiss?()
+            self?.onDismissCompletion()
         }
     }
 }
 
 extension BottomSheetPresenter: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        onDismissCompletion()
+    }
+}
+
+private extension BottomSheetPresenter {
+    func onDismissCompletion() {
         onDismiss?()
         onDismiss = nil
+        viewController = nil
     }
 }

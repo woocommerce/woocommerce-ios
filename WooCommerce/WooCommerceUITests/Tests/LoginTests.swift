@@ -56,9 +56,10 @@ final class LoginTests: XCTestCase {
         guard try PrologueScreen().isWPComLoginAvailable() else {
             return
         }
-        _ = try PrologueScreen().tapContinueWithWordPress()
+        try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")
-            .verifyLoginError()
+
+        try PasswordScreen().verifyLoginError()
     }
 }

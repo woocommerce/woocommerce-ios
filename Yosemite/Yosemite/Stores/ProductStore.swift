@@ -499,7 +499,9 @@ private extension ProductStore {
         "Product name: \(name)\nFeatures: \(features)\nLanguage: \(languageCode)"
         Task {
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }
-            completion(result)
+            await MainActor.run {
+                completion(result)
+            }
         }
     }
 }

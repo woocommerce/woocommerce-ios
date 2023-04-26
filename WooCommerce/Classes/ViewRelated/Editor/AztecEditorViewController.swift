@@ -51,7 +51,7 @@ final class AztecEditorViewController: UIViewController, Editor {
     }()
 
     private lazy var aiActionView: UIView = AztecAIViewFactory().aiButtonNextToFormatBar { [weak self] in
-        self?.showProductGeneratorBottomSheet()
+        self?.showDescriptionGenerationBottomSheet()
     }
 
     /// Aztec's Format Bar (toolbar above the keyboard)
@@ -102,6 +102,7 @@ final class AztecEditorViewController: UIViewController, Editor {
     private let textViewAttachmentDelegate: TextViewAttachmentDelegate
 
     private let isAIGenerationEnabled: Bool
+    private var bottomSheetPresenter: BottomSheetPresenter?
 
     required init(content: String?,
                   viewProperties: EditorViewProperties,
@@ -150,6 +151,11 @@ final class AztecEditorViewController: UIViewController, Editor {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         richTextView.becomeFirstResponder()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        dismissDescriptionGenerationBottomSheetIfNeeded()
     }
 }
 
@@ -328,7 +334,27 @@ extension AztecEditorViewController: UITextViewDelegate {
 }
 
 private extension AztecEditorViewController {
-    func showProductGeneratorBottomSheet() {
-        // TODO: 9465 - show bottom sheet
+    func showDescriptionGenerationBottomSheet() {
+        let presenter = BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .large
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
+        bottomSheetPresenter = presenter
+
+        // TODO: 9465 - show product description generation in the bottom sheet
+        let controller = UIViewController()
+        controller.view.backgroundColor = .primaryButtonBackground
+
+        view.endEditing(true)
+        presenter.present(controller, from: self) { [weak self] in
+            self?.richTextView.becomeFirstResponder()
+        }
+    }
+
+    func dismissDescriptionGenerationBottomSheetIfNeeded() {
+        bottomSheetPresenter?.dismiss()
     }
 }

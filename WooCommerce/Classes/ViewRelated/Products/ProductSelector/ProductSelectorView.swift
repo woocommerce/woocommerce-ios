@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 
 /// View showing a list of products to select.
 ///

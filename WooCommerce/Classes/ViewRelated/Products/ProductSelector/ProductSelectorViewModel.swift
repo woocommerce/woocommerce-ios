@@ -816,9 +816,9 @@ private extension ProductSelectorViewModel {
                 "Filter (%ld)",
                 comment: "Title of the button to filter products with filters applied on the Select Product screen"
         )
-        static let popularProductsSectionTitle = "Popular"
-        static let lastSoldProductsSectionTitle = "Last Sold"
-        static let productsSectionTitle = "Products"
+        static let popularProductsSectionTitle = NSLocalizedString("Popular", comment: "Section title for popular products on the Select Product screen.")
+        static let lastSoldProductsSectionTitle = NSLocalizedString("Last Sold", comment: "Section title for last sold products on the Select Product screen.")
+        static let productsSectionTitle = NSLocalizedString("Products", comment: "Section title for products on the Select Product screen.")
     }
 }
 

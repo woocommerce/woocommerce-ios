@@ -60,7 +60,7 @@ final class LoginTests: XCTestCase {
         try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")
-        
+
         try PasswordScreen().verifyLoginError()
     }
 }

@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Enables generating product description using AI.
     ///
     case productDescriptionAI
+
+    /// Enables read-only support for the Gift Cards extension
+    ///
+    case readOnlyGiftCards
 }

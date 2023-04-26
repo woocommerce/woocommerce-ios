@@ -1210,7 +1210,7 @@ extension OrderDetailsDataSource {
 
         let giftCards: Section? = {
             // Gift Cards section is hidden if there are no gift cards for the order.
-            guard appliedGiftCards.isNotEmpty else {
+            guard appliedGiftCards.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlyGiftCards) else {
                 return nil
             }
 

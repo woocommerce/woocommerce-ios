@@ -8,22 +8,14 @@ struct AztecAIViewFactory {
     func aiButtonNextToFormatBar(onTap: @escaping () -> Void) -> UIView {
         let configuration: UIButton.Configuration = {
             var configuration = UIButton.Configuration.filled()
-            configuration.image = .magicWandIcon(size: .init(width: 16, height: 20))
+            configuration.image = .magicWandIcon(size: Layout.AIButton.imageSize)
             configuration.imagePadding = 0
             configuration.background.backgroundColor = .tertiaryLabel
-            configuration.contentInsets = .init(
-                top: 0,
-                leading: 4,
-                bottom: 0,
-                trailing: 4
-            )
+            configuration.contentInsets = Layout.AIButton.contentInsets
             return configuration
         }()
         let button = UIButton(type: .system)
-        button.accessibilityLabel = NSLocalizedString(
-            "Generate product description with AI",
-            comment: "Accessibility label to generate product description with Jetpack AI from the Aztec editor."
-        )
+        button.accessibilityLabel = Localization.aiButtonAccessibilityLabel
         button.configuration = configuration
         button.on(.touchUpInside) { _ in
             onTap()
@@ -34,16 +26,16 @@ struct AztecAIViewFactory {
         containerView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: 24),
-            button.heightAnchor.constraint(equalToConstant: 24),
+            button.widthAnchor.constraint(equalToConstant: Layout.AIButton.size.width),
+            button.heightAnchor.constraint(equalToConstant: Layout.AIButton.size.height),
             button.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            button.leadingAnchor.constraint(equalTo: containerView.safeLeadingAnchor, constant: 20),
-            button.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-            containerView.heightAnchor.constraint(equalToConstant: 44)
+            button.leadingAnchor.constraint(equalTo: containerView.safeLeadingAnchor, constant: Layout.AIButton.horizontalMargin),
+            button.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Layout.AIButton.horizontalMargin),
+            containerView.heightAnchor.constraint(equalToConstant: Layout.AIButton.containerHeight)
         ])
 
-        let topBorder = UIView.createBorderView(height: 1, color: .divider)
-        let bottomBorder = UIView.createBorderView(height: 1, color: .divider)
+        let topBorder = UIView.createBorderView(height: Layout.borderWidth, color: .divider)
+        let bottomBorder = UIView.createBorderView(height: Layout.borderWidth, color: .divider)
         [topBorder, bottomBorder].forEach {
             containerView.addSubview($0)
             NSLayoutConstraint.activate([
@@ -57,8 +49,8 @@ struct AztecAIViewFactory {
             containerView.bottomAnchor.constraint(equalTo: bottomBorder.bottomAnchor)
         ])
 
-        let verticalBorder = UIView.createSeparatorView(height: 24,
-                                                        width: 1,
+        let verticalBorder = UIView.createSeparatorView(height: Layout.AIButton.size.height,
+                                                        width: Layout.borderWidth,
                                                         color: .divider)
         containerView.addSubview(verticalBorder)
         NSLayoutConstraint.activate([
@@ -67,5 +59,26 @@ struct AztecAIViewFactory {
         ])
 
         return containerView
+    }
+}
+
+private extension AztecAIViewFactory {
+    enum Localization {
+        static let aiButtonAccessibilityLabel = NSLocalizedString(
+            "Generate product description with AI",
+            comment: "Accessibility label to generate product description with Jetpack AI from the Aztec editor."
+        )
+    }
+
+    enum Layout {
+        enum AIButton {
+            static let contentInsets: NSDirectionalEdgeInsets = .init(top: 0, leading: 4, bottom: 0, trailing: 4)
+            static let imageSize: CGSize = .init(width: 16, height: 20)
+            static let size: CGSize = .init(width: 24, height: 24)
+            static let horizontalMargin: CGFloat = 20
+            static let containerHeight: CGFloat = 44
+        }
+
+        static let borderWidth: CGFloat = 1
     }
 }

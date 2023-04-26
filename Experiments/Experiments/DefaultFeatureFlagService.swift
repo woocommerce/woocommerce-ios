@@ -94,7 +94,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productDescriptionAI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .readOnlyGiftCards:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

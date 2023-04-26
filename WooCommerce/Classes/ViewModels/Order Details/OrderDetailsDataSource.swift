@@ -247,6 +247,10 @@ final class OrderDetailsDataSource: NSObject {
         order.appliedGiftCards
     }
 
+    var shouldShowGiftCards: Bool {
+        appliedGiftCards.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlyGiftCards)
+    }
+
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService
@@ -1209,8 +1213,7 @@ extension OrderDetailsDataSource {
         }()
 
         let giftCards: Section? = {
-            // Gift Cards section is hidden if there are no gift cards for the order.
-            guard appliedGiftCards.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlyGiftCards) else {
+            guard shouldShowGiftCards else {
                 return nil
             }
 

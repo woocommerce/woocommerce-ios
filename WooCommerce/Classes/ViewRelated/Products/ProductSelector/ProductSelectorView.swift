@@ -68,7 +68,7 @@ struct ProductSelectorView: View {
                 VStack(spacing: 0) {
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
-                        ForEach(viewModel.productsSectionViewModels) {
+                        ForEach(viewModel.productsSectionViewModels, id: \.title) {
                             section in
                             if let title = section.title {
                                 Text(title.uppercased())

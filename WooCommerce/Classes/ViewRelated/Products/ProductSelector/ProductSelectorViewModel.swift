@@ -4,9 +4,7 @@ import Combine
 import Foundation
 import WooFoundation
 
-struct ProductsSectionViewModel: Identifiable {
-    let id = UUID()
-
+struct ProductsSectionViewModel {
     let title: String?
     let productRows: [ProductRowViewModel]
 }

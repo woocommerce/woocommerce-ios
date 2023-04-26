@@ -1748,6 +1748,76 @@ final class MigrationTests: XCTestCase {
         let isPublic = try XCTUnwrap(migratedSite.value(forKey: "isPublic") as? Bool)
         XCTAssertFalse(isPublic)
     }
+
+    func test_migrating_from_84_to_85_adds_renewalSubscriptionID_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 84")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(order.entity.attributesByName["renewalSubscriptionID"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 85")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // Migrated order has expected default nil renewalSubscriptionID attribute.
+        XCTAssertNil(migratedOrder.value(forKey: "renewalSubscriptionID"))
+
+        // Set value for renewalSubscriptionID attribute.
+        let renewalSubscriptionID = "123"
+        migratedOrder.setValue(renewalSubscriptionID, forKey: "renewalSubscriptionID")
+        try targetContext.save()
+
+        // New value is set correctly for renewalSubscriptionID attribute.
+        let newRenewalSubscriptionID = try XCTUnwrap(migratedOrder.value(forKey: "renewalSubscriptionID") as? String)
+        XCTAssertEqual(newRenewalSubscriptionID, renewalSubscriptionID)
+    }
+
+    func test_migrating_from_84_to_85_enables_creating_new_OrderGiftCard_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 84")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        // Confidence Checks. This entity and relationship should not exist in Model 84.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "OrderGiftCard", in: sourceContext))
+        XCTAssertNil(order.entity.relationshipsByName["appliedGiftCards"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 85")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderGiftCard"), 0)
+
+        // Migrated order has expected empty appliedGiftCards attribute.
+        let migratedOrder = try XCTUnwrap(targetContext.firstObject(ofType: Order.self))
+        XCTAssertEqual(migratedOrder.mutableSetValue(forKey: "appliedGiftCards").count, 0)
+
+        // Insert a new OrderGiftCard and add it to Order.
+        let giftCard = insertOrderGiftCard(to: targetContext)
+        migratedOrder.setValue(NSSet(array: [giftCard]), forKey: "appliedGiftCards")
+        try targetContext.save()
+
+        // OrderGiftCard entity and attributes exist, including relationship with Order.
+        XCTAssertEqual(try targetContext.count(entityName: "OrderGiftCard"), 1)
+        XCTAssertNotNil(giftCard.value(forKey: "giftCardID"))
+        XCTAssertNotNil(giftCard.value(forKey: "code"))
+        XCTAssertNotNil(giftCard.value(forKey: "amount"))
+        XCTAssertEqual(giftCard.value(forKey: "order") as? NSManagedObject, migratedOrder)
+
+        // Order appliedGiftCards relationship exists.
+        XCTAssertEqual(migratedOrder.value(forKey: "appliedGiftCards") as? NSSet, NSSet(array: [giftCard]))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2398,6 +2468,15 @@ private extension MigrationTests {
             "signUpFee": "",
             "trialLength": "1",
             "trialPeriod": "week"
+        ])
+    }
+
+    @discardableResult
+    func insertOrderGiftCard(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderGiftCard", properties: [
+            "giftCardID": 2,
+            "code": "SU9F-MGB5-KS5V-EZFT",
+            "amount": 20
         ])
     }
 }

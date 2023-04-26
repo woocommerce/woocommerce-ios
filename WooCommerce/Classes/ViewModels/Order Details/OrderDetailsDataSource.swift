@@ -233,6 +233,14 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
+    /// Subscriptions for an Order
+    ///
+    var orderSubscriptions: [Subscription] = [] {
+        didSet {
+            reloadSections()
+        }
+    }
+
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService
@@ -431,6 +439,8 @@ private extension OrderDetailsDataSource {
             configureIssueRefundButton(cell: cell)
         case let cell as WooBasicTableViewCell where row == .customFields:
             configureCustomFields(cell: cell)
+        case let cell as OrderSubscriptionTableViewCell where row == .subscriptions:
+            configureSubscriptions(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -844,6 +854,15 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    private func configureSubscriptions(cell: OrderSubscriptionTableViewCell, at indexPath: IndexPath) {
+        guard let subscription = orderSubscriptions(at: indexPath) else {
+            return
+        }
+
+        let cellViewModel = OrderSubscriptionTableViewCellViewModel(subscription: subscription)
+        cell.configure(cellViewModel)
+    }
+
     private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
         guard let tracking = orderTracking(at: indexPath) else {
             return
@@ -1160,6 +1179,16 @@ extension OrderDetailsDataSource {
             return Section(category: .payment, title: Title.payment, rows: rows)
         }()
 
+        let subscriptions: Section? = {
+            // Subscriptions section is hidden if there are no subscriptions for the order.
+            guard orderSubscriptions.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlySubscriptions) else {
+                return nil
+            }
+
+            let rows: [Row] = Array(repeating: .subscriptions, count: orderSubscriptions.count)
+            return Section(category: .subscriptions, title: Title.subscriptions, rows: rows)
+        }()
+
         let tracking: Section? = {
             // Tracking section is hidden if there are non-empty non-refunded shipping labels.
             guard shippingLabels.nonRefunded.isEmpty else {
@@ -1206,6 +1235,7 @@ extension OrderDetailsDataSource {
                     shippingLabelSections +
                     [payment,
                      customerInformation,
+                     subscriptions,
                      tracking,
                      addTracking,
                      notes]).compactMap { $0 }
@@ -1265,6 +1295,15 @@ extension OrderDetailsDataSource {
         }
 
         return orderNotesSections[noteIndex].orderNote
+    }
+
+    func orderSubscriptions(at indexPath: IndexPath) -> Subscription? {
+        let orderIndex = indexPath.row
+        guard orderSubscriptions.indices.contains(orderIndex) else {
+            return nil
+        }
+
+        return orderSubscriptions[orderIndex]
     }
 
     func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
@@ -1384,6 +1423,7 @@ extension OrderDetailsDataSource {
         static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
         static let product = NSLocalizedString("Product", comment: "Product section title if there is only one product.")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
+        static let subscriptions = NSLocalizedString("Subscriptions", comment: "Subscriptions section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
         static let shippingAddress = NSLocalizedString("Shipping Details",
@@ -1429,6 +1469,7 @@ extension OrderDetailsDataSource {
             case refundedProducts
             case payment
             case customerInformation
+            case subscriptions
             case tracking
             case addTracking
             case notes
@@ -1517,6 +1558,7 @@ extension OrderDetailsDataSource {
         case seeReceipt
         case refund
         case netAmount
+        case subscriptions
         case tracking
         case trackingAdd
         case collectCardPaymentButton
@@ -1597,6 +1639,8 @@ extension OrderDetailsDataSource {
                 return OrderNoteTableViewCell.reuseIdentifier
             case .customFields:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .subscriptions:
+                return OrderSubscriptionTableViewCell.reuseIdentifier
             }
         }
     }

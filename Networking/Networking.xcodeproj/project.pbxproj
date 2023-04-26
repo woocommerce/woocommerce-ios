@@ -626,6 +626,10 @@
 		CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */; };
 		CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CE0A0F1E223998A00075ED8D /* products-load-all.json */; };
 		CE12AE9529F29F4F0056DD17 /* order-with-subscription-renewal.json in Resources */ = {isa = PBXBuildFile; fileRef = CE12AE9429F29F4F0056DD17 /* order-with-subscription-renewal.json */; };
+		CE12AE9729F2AB3F0056DD17 /* SubscriptionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12AE9629F2AB3F0056DD17 /* SubscriptionMapper.swift */; };
+		CE12AE9929F2AC2F0056DD17 /* subscription.json in Resources */ = {isa = PBXBuildFile; fileRef = CE12AE9829F2AC2F0056DD17 /* subscription.json */; };
+		CE12AE9B29F2AC3C0056DD17 /* subscription-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE12AE9A29F2AC3C0056DD17 /* subscription-without-data.json */; };
+		CE12AE9D29F2AD1C0056DD17 /* SubscriptionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12AE9C29F2AD1C0056DD17 /* SubscriptionMapperTests.swift */; };
 		CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */; };
 		CE132BBA223851F80029DB6C /* ProductCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BB9223851F80029DB6C /* ProductCategory.swift */; };
 		CE132BBC223859710029DB6C /* ProductTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BBB223859710029DB6C /* ProductTag.swift */; };
@@ -655,6 +659,8 @@
 		CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CEC4BF92234E7EE0008D9195 /* refunds-all.json */; };
 		CEC4BF95234E7F34008D9195 /* RefundListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4BF94234E7F34008D9195 /* RefundListMapperTests.swift */; };
 		CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = CECC759D23D6231900486676 /* order-560-all-refunds.json */; };
+		CEE9187D29F7D636004B23FF /* OrderGiftCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */; };
+		CEE9188129F7DC23004B23FF /* order-with-gift-cards.json in Resources */ = {isa = PBXBuildFile; fileRef = CEE9188029F7DC23004B23FF /* order-with-gift-cards.json */; };
 		CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAA233E911A00BED485 /* order-fully-refunded.json */; };
 		CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */; };
 		CEF88DAF233E9F7E00BED485 /* order-details-partially-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */; };
@@ -1552,6 +1558,10 @@
 		CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMapperTests.swift; sourceTree = "<group>"; };
 		CE0A0F1E223998A00075ED8D /* products-load-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-load-all.json"; sourceTree = "<group>"; };
 		CE12AE9429F29F4F0056DD17 /* order-with-subscription-renewal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-subscription-renewal.json"; sourceTree = "<group>"; };
+		CE12AE9629F2AB3F0056DD17 /* SubscriptionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionMapper.swift; sourceTree = "<group>"; };
+		CE12AE9829F2AC2F0056DD17 /* subscription.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = subscription.json; sourceTree = "<group>"; };
+		CE12AE9A29F2AC3C0056DD17 /* subscription-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "subscription-without-data.json"; sourceTree = "<group>"; };
+		CE12AE9C29F2AD1C0056DD17 /* SubscriptionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionMapperTests.swift; sourceTree = "<group>"; };
 		CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
 		CE132BB9223851F80029DB6C /* ProductCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategory.swift; sourceTree = "<group>"; };
 		CE132BBB223859710029DB6C /* ProductTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTag.swift; sourceTree = "<group>"; };
@@ -1581,6 +1591,8 @@
 		CEC4BF92234E7EE0008D9195 /* refunds-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "refunds-all.json"; sourceTree = "<group>"; };
 		CEC4BF94234E7F34008D9195 /* RefundListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundListMapperTests.swift; sourceTree = "<group>"; };
 		CECC759D23D6231900486676 /* order-560-all-refunds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-560-all-refunds.json"; sourceTree = "<group>"; };
+		CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderGiftCard.swift; sourceTree = "<group>"; };
+		CEE9188029F7DC23004B23FF /* order-with-gift-cards.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-gift-cards.json"; sourceTree = "<group>"; };
 		CEF88DAA233E911A00BED485 /* order-fully-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-fully-refunded.json"; sourceTree = "<group>"; };
 		CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensed.swift; sourceTree = "<group>"; };
 		CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-details-partially-refunded.json"; sourceTree = "<group>"; };
@@ -2313,6 +2325,7 @@
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
 				D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */,
 				D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */,
+				CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
 				021EAA5525493B3600AA8CCD /* OrderItemAttribute.swift */,
 				CE430671234B9EB20073CBFF /* OrderItemTax.swift */,
@@ -2538,6 +2551,7 @@
 				0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */,
 				A69FE19C2588D70E0059A96B /* order-with-deleted-refunds.json */,
 				CE12AE9429F29F4F0056DD17 /* order-with-subscription-renewal.json */,
+				CEE9188029F7DC23004B23FF /* order-with-gift-cards.json */,
 				261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */,
 				0313651A28AE60E000EEE571 /* payment-gateway-cod.json */,
 				261CF2CA255C50010090D8D3 /* payment-gateway-list-half.json */,
@@ -2655,6 +2669,8 @@
 				74E30950216E8DCE00ABCE4C /* site-visits-alt.json */,
 				CCA1D6072943804C00B40560 /* site-summary-stats.json */,
 				022902D122E2436300059692 /* stats_module_disabled_error.json */,
+				CE12AE9829F2AC2F0056DD17 /* subscription.json */,
+				CE12AE9A29F2AC3C0056DD17 /* subscription-without-data.json */,
 				CCE5F38E29EFFE3800087332 /* subscription-list.json */,
 				CCE5F39429F0034400087332 /* subscription-list-without-data.json */,
 				45ED4F11239E8C57004F1BE3 /* taxes-classes.json */,
@@ -2789,6 +2805,7 @@
 				DEC51A94274CDA52009F3DF4 /* SitePluginMapper.swift */,
 				74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */,
 				DE74F29927E08F5A0002FE59 /* SiteSettingMapper.swift */,
+				CE12AE9629F2AB3F0056DD17 /* SubscriptionMapper.swift */,
 				CCE5F38C29EFFBC400087332 /* SubscriptionListMapper.swift */,
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
@@ -2952,6 +2969,7 @@
 				74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */,
 				CCA1D6092943809700B40560 /* SiteSummaryStatsMapperTests.swift */,
 				CCE5F39029F000AC00087332 /* SubscriptionListMapperTests.swift */,
+				CE12AE9C29F2AD1C0056DD17 /* SubscriptionMapperTests.swift */,
 				45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */,
 				74ABA1D4213F26B300FFAD30 /* TopEarnerStatsMapperTests.swift */,
 				D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */,
@@ -3292,6 +3310,7 @@
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
 				3158A4A32729F42500C3CFA8 /* wcpay-account-dev-test.json in Resources */,
 				DE50296328C609DE00551736 /* jetpack-user-not-connected.json in Resources */,
+				CE12AE9929F2AC2F0056DD17 /* subscription.json in Resources */,
 				31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */,
 				3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */,
 				DE34051B28BDF12C00CF0D97 /* jetpack-connection-url.json in Resources */,
@@ -3379,6 +3398,7 @@
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
 				D865CE63278CA1DA002C8520 /* stripe-payment-intent-requires-capture.json in Resources */,
 				02A26F1B2744F5FC008E4EDB /* wc-site-settings-partial.json in Resources */,
+				CE12AE9B29F2AC3C0056DD17 /* subscription-without-data.json in Resources */,
 				028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */,
 				DE74F29C27E0A1D00002FE59 /* setting-coupon.json in Resources */,
 				EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */,
@@ -3542,6 +3562,7 @@
 				CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */,
 				02E7FFCF25621C7900C53030 /* shipping-label-print.json in Resources */,
 				CE12AE9529F29F4F0056DD17 /* order-with-subscription-renewal.json in Resources */,
+				CEE9188129F7DC23004B23FF /* order-with-gift-cards.json in Resources */,
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
 				456930AD2652AF00009ED69D /* shipping-label-carriers-and-rates-success.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,
@@ -3764,6 +3785,7 @@
 				740CF89921937A030023ED3A /* CommentRemote.swift in Sources */,
 				31054702262E04F700C5C02B /* RemotePaymentIntentMapper.swift in Sources */,
 				EE62EE63295AD45E009C965B /* String+URL.swift in Sources */,
+				CE12AE9729F2AB3F0056DD17 /* SubscriptionMapper.swift in Sources */,
 				025CA2C2238EBBAA00B05C81 /* ProductShippingClassListMapper.swift in Sources */,
 				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,
 				CCAAD10F2683974000909664 /* ShippingLabelPackagePurchase.swift in Sources */,
@@ -3933,6 +3955,7 @@
 				74046E1B217A684D007DD7BF /* SiteSettingsRemote.swift in Sources */,
 				0359EA1D27AADE000048DE2D /* WCPayChargeMapper.swift in Sources */,
 				B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */,
+				CEE9187D29F7D636004B23FF /* OrderGiftCard.swift in Sources */,
 				02C254A025636F6900A04423 /* ShippingLabelRefund.swift in Sources */,
 				26B2F74124C1F2C10065CCC8 /* LeaderboardsRemote.swift in Sources */,
 				CCF48B24262890BB0034EA83 /* ShippingLabelPaymentCardType.swift in Sources */,
@@ -4178,6 +4201,7 @@
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
 				EEA658422966C41A00112DF0 /* ProductIDMapperTests.swift in Sources */,
+				CE12AE9D29F2AD1C0056DD17 /* SubscriptionMapperTests.swift in Sources */,
 				D8FBFF1E22D51F39006E3336 /* OrderStatsMapperV4Tests.swift in Sources */,
 				02E7FFCB256218F600C53030 /* ShippingLabelRemoteTests.swift in Sources */,
 				DE50296528C60A8000551736 /* JetpackUserMapperTests.swift in Sources */,

@@ -52,6 +52,10 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let renewalSubscriptionID: String?
 
+    /// Gift cards applied to an order (Gift Cards extension only)
+    ///
+    public let appliedGiftCards: [OrderGiftCard]
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -88,7 +92,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 fees: [OrderFeeLine],
                 taxes: [OrderTaxLine],
                 customFields: [OrderMetaData],
-                renewalSubscriptionID: String?) {
+                renewalSubscriptionID: String?,
+                appliedGiftCards: [OrderGiftCard]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -130,6 +135,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
 
         self.customFields = customFields
         self.renewalSubscriptionID = renewalSubscriptionID
+        self.appliedGiftCards = appliedGiftCards
     }
 
 
@@ -211,6 +217,9 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         // Subscriptions extension
         let renewalSubscriptionID = allOrderMetaData?.first(where: { $0.key == "_subscription_renewal" })?.value
 
+        // Gift Cards extension
+        let appliedGiftCards = try container.decodeIfPresent([OrderGiftCard].self, forKey: .giftCards) ?? []
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
@@ -245,7 +254,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   fees: fees,
                   taxes: taxes,
                   customFields: customFields,
-                  renewalSubscriptionID: renewalSubscriptionID)
+                  renewalSubscriptionID: renewalSubscriptionID,
+                  appliedGiftCards: appliedGiftCards)
     }
 
     public static var empty: Order {
@@ -283,7 +293,8 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                   fees: [],
                   taxes: [],
                   customFields: [],
-                  renewalSubscriptionID: nil)
+                  renewalSubscriptionID: nil,
+                  appliedGiftCards: [])
     }
 }
 
@@ -329,6 +340,7 @@ internal extension Order {
         case feeLines           = "fee_lines"
         case taxLines           = "tax_lines"
         case metadata           = "meta_data"
+        case giftCards          = "gift_cards"
     }
 }
 

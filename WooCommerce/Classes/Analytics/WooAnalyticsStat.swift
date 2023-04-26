@@ -392,6 +392,7 @@ public enum WooAnalyticsStat: String {
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
+    case orderDetailsSubscriptionsShown = "order_details_subscriptions_shown"
 
     // MARK: Order List Sorting/Filtering
     //
@@ -574,6 +575,7 @@ public enum WooAnalyticsStat: String {
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
     case productDetailViewComponentsTapped = "product_details_view_components_tapped"
+    case productDetailsViewSubscriptionsTapped = "product_details_view_subscriptions_tapped"
 
     // MARK: Edit Product Variation Events
     //

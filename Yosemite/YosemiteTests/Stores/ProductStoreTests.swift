@@ -1707,6 +1707,86 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertNotNil(try? result.get())
     }
+
+    // MARK: - ProductAction.generateProductDescription
+
+    func test_generateProductDescription_returns_text_on_success() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success("Trendy product"))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product",
+                                                                           features: "Trendy",
+                                                                           languageCode: "en-US") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let generatedText = try XCTUnwrap(result.get())
+        XCTAssertEqual(generatedText, "Trendy product")
+    }
+
+    func test_generateProductDescription_returns_error_on_failure() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product",
+                                                                           features: "Trendy",
+                                                                           languageCode: "en-US") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+    }
+
+    func test_generateProductDescription_includes_parameters_in_remote_base_parameter() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product name",
+                                                                           features: "Trendy, cool, fun",
+                                                                           languageCode: "en-US") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
+        XCTAssertTrue(base.contains("Product name: A product name"))
+        XCTAssertTrue(base.contains("Features: Trendy, cool, fun"))
+        XCTAssertTrue(base.contains("Language: en-US"))
+    }
 }
 
 // MARK: - Private Helpers
@@ -2168,5 +2248,18 @@ private extension ProductStoreTests {
                                                             Networking.ProductAddOnOption.fake().copy(label: "No", price: "", priceType: .flatFee)
                                                            ])
         return [topping, soda, delivery]
+    }
+}
+
+private extension ProductStore {
+    convenience init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: ProductsRemoteProtocol) {
+        self.init(dispatcher: dispatcher,
+                  storageManager: storageManager,
+                  network: network,
+                  remote: remote,
+                  generativeContentRemote: MockGenerativeContentRemote())
     }
 }

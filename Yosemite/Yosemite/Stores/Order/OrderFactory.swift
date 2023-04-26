@@ -42,7 +42,8 @@ public enum OrderFactory {
               fees: [simplePaymentFee(feeID: 0, amount: amount, taxable: taxable)],
               taxes: [],
               customFields: [],
-              renewalSubscriptionID: nil)
+              renewalSubscriptionID: nil,
+              appliedGiftCards: [])
     }
 
     /// Creates a fee line suitable to be used within a simple payments order.

@@ -402,6 +402,12 @@ extension WooAnalyticsEvent {
         static func componentsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewComponentsTapped, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Subscriptions row (applicable for subscription-type products only).
+        ///
+        static func subscriptionsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionsTapped, properties: [:])
+        }
     }
 }
 
@@ -621,6 +627,12 @@ extension WooAnalyticsEvent {
         ///
         static func pluginsNotSyncedYet() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
+        }
+
+        /// Tracked when subscriptions are displayed in order details.
+        ///
+        static func subscriptionsShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailsSubscriptionsShown, properties: [:])
         }
     }
 }

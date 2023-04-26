@@ -50,6 +50,10 @@ final class AztecEditorViewController: UIViewController, Editor {
         return AztecFormatBarFactory()
     }()
 
+    private lazy var aiActionView: UIView = AztecAIViewFactory().aiButtonNextToFormatBar { [weak self] in
+        self?.showProductGeneratorBottomSheet()
+    }
+
     /// Aztec's Format Bar (toolbar above the keyboard)
     ///
     private lazy var formatBar: Aztec.FormatBar = {
@@ -97,12 +101,16 @@ final class AztecEditorViewController: UIViewController, Editor {
 
     private let textViewAttachmentDelegate: TextViewAttachmentDelegate
 
+    private let isAIGenerationEnabled: Bool
+
     required init(content: String?,
                   viewProperties: EditorViewProperties,
-                  textViewAttachmentDelegate: TextViewAttachmentDelegate = AztecTextViewAttachmentHandler()) {
+                  textViewAttachmentDelegate: TextViewAttachmentDelegate = AztecTextViewAttachmentHandler(),
+                  isAIGenerationEnabled: Bool) {
         self.content = content ?? ""
         self.textViewAttachmentDelegate = textViewAttachmentDelegate
         self.viewProperties = viewProperties
+        self.isAIGenerationEnabled = isAIGenerationEnabled
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -186,6 +194,26 @@ private extension AztecEditorViewController {
             return
         }
         recognizer.isEnabled = false
+    }
+
+    func createInputAccessoryView() -> UIView {
+        guard isAIGenerationEnabled else {
+            return formatBar
+        }
+
+        let stackView = UIStackView(arrangedSubviews: [aiActionView, formatBar])
+        stackView.spacing = 0
+        stackView.axis = .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        let accessoryView = InputAccessoryView()
+        accessoryView.addSubview(stackView)
+        accessoryView.pinSubviewToAllEdges(stackView)
+        accessoryView.translatesAutoresizingMaskIntoConstraints = false
+
+        accessoryView.sizeToFit()
+
+        return accessoryView
     }
 }
 
@@ -294,7 +322,13 @@ extension AztecEditorViewController: UITextViewDelegate {
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        textView.inputAccessoryView = formatBar
+        textView.inputAccessoryView = createInputAccessoryView()
         return true
+    }
+}
+
+private extension AztecEditorViewController {
+    func showProductGeneratorBottomSheet() {
+        // TODO: 9465 - show bottom sheet
     }
 }

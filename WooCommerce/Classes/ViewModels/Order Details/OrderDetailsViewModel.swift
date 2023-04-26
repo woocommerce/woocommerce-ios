@@ -205,6 +205,12 @@ extension OrderDetailsViewModel {
             self.syncProductVariations { _ in
                 group.leave()
             }
+
+            // Subscriptions require order.renewalSubscriptionID, so sync them only after the order is loaded
+            group.enter()
+            self.syncSubscriptions { _ in
+                group.leave()
+            }
         }
 
         group.enter()
@@ -315,7 +321,8 @@ extension OrderDetailsViewModel {
             ButtonTableViewCell.self,
             IssueRefundTableViewCell.self,
             ImageAndTitleAndTextTableViewCell.self,
-            WCShipInstallTableViewCell.self
+            WCShipInstallTableViewCell.self,
+            OrderSubscriptionTableViewCell.self
         ]
 
         for cellClass in cells {
@@ -582,6 +589,38 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
         stores.dispatch(action)
+    }
+
+    func syncSubscriptions(isFeatureFlagEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
+                           onCompletion: ((Error?) -> ())? = nil) {
+        // Only sync subscriptions if the feature flag is enabled.
+        guard isFeatureFlagEnabled else {
+            onCompletion?(nil)
+            return
+        }
+
+        // If the plugin is not active, there is no point in continuing with a request that will fail.
+        isPluginActive(SitePlugin.SupportedPlugin.WCSubscriptions) { [weak self] isActive in
+
+            guard let self, isActive else {
+                onCompletion?(nil)
+                return
+            }
+
+            let action = SubscriptionAction.loadSubscriptions(for: self.order) { [weak self] result in
+                switch result {
+                case .success(let subscriptions):
+                    self?.dataSource.orderSubscriptions = subscriptions
+                    if subscriptions.isNotEmpty {
+                        ServiceLocator.analytics.track(event: .Orders.subscriptionsShown())
+                    }
+                case .failure(let error):
+                    DDLogError("⛔️ Error synchronizing subscriptions: \(error)")
+                }
+                onCompletion?(nil)
+            }
+            self.stores.dispatch(action)
+        }
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {

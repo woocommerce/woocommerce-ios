@@ -9,7 +9,7 @@ extension UITabBar {
     class func applyWooAppearance() {
         let appearance = Self.appearance()
         appearance.barTintColor = .appTabBar
-        appearance.tintColor = .text
+        appearance.tintColor = .accent
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             // tab bar needs to be translucent to get rid of the extra space at the bottom of
             // the view controllers embedded in split view.

@@ -59,7 +59,6 @@ struct ProductSelectorView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
-                .renderedIf(configuration.showsFilters)
             }
             .padding(.horizontal, insets: safeAreaInsets)
 
@@ -87,21 +86,18 @@ struct ProductSelectorView: View {
                             }
                         }
                     }
-
-                    if configuration.multipleSelectionsEnabled {
-                        Button(doneButtonTitle) {
-                            viewModel.completeMultipleSelection()
-                            isPresented.toggle()
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-                        .padding(Constants.defaultPadding)
-                        .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
+                    Button(doneButtonTitle) {
+                        viewModel.completeMultipleSelection()
+                        isPresented.toggle()
                     }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(Constants.defaultPadding)
+                    .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
+
                     if let variationListViewModel = variationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelector(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
-                            multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
                             onMultipleSelections: { selectedIDs in
                                 viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
                             }), isActive: $isShowingVariationList) {
@@ -166,7 +162,7 @@ struct ProductSelectorView: View {
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID) {
             HStack {
-                ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+                ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
                     viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
@@ -186,14 +182,11 @@ struct ProductSelectorView: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(multipleSelectionsEnabled: configuration.multipleSelectionsEnabled,
+            ProductRow(multipleSelectionsEnabled: true,
                        viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
-                    if !configuration.multipleSelectionsEnabled {
-                        isPresented.toggle()
-                    }
                 }
         }
     }
@@ -201,8 +194,6 @@ struct ProductSelectorView: View {
 
 extension ProductSelectorView {
     struct Configuration {
-        var showsFilters: Bool = false
-        var multipleSelectionsEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""
@@ -237,8 +228,6 @@ struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
         let configuration = ProductSelectorView.Configuration(
-            showsFilters: true,
-            multipleSelectionsEnabled: true,
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",

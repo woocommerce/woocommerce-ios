@@ -4,6 +4,7 @@
 -----
 - [*] Payments: Popular and last sold products are displayed on top of the products selection screen when creating or editing an order. [https://github.com/woocommerce/woocommerce-ios/pull/9539]
 
+- [Internal] Payments: Update StripeTerminal pod to 2.19.1 [https://github.com/woocommerce/woocommerce-ios/pull/9537]
 
 13.3
 -----

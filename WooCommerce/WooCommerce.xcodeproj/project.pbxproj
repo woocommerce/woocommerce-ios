@@ -450,6 +450,9 @@
 		02CEBB8024C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB7F24C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift */; };
 		02CEBB8224C98861002EDF35 /* ProductFormDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */; };
 		02CEBB8424C99A10002EDF35 /* Product+ShippingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */; };
+		02D29A8E29F7C26000473D6D /* InputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A8D29F7C26000473D6D /* InputAccessoryView.swift */; };
+		02D29A9029F7C2DA00473D6D /* AztecAIViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A8F29F7C2DA00473D6D /* AztecAIViewFactory.swift */; };
+		02D29A9229F7C39200473D6D /* UIImage+Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D29A9129F7C39200473D6D /* UIImage+Text.swift */; };
 		02D3B68529657061009BF0BC /* SupportButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3B68429657061009BF0BC /* SupportButton.swift */; };
 		02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */; };
 		02D681A929C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D681A829C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift */; };
@@ -566,6 +569,7 @@
 		0396CFAD2981476900E91436 /* CardPresentModalBuiltInConnectingFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */; };
 		039B7E6329F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */; };
 		039B7E6529F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6429F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift */; };
+		039B7E6729F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */; };
 		039D948D27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */; };
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
 		03A6C18428B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */; };
@@ -1730,6 +1734,8 @@
 		CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */; };
 		CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */; };
 		CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */; };
+		CE29A63029F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29A62F29F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift */; };
+		CE29A63C29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE29A63B29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib */; };
 		CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */; };
 		CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */; };
 		CE2A9FC623BFFADE002BEC1C /* RefundedProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */; };
@@ -2689,6 +2695,9 @@
 		02CEBB7F24C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormActionsFactoryProtocol.swift; sourceTree = "<group>"; };
 		02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormDataModel.swift; sourceTree = "<group>"; };
 		02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ShippingTests.swift"; sourceTree = "<group>"; };
+		02D29A8D29F7C26000473D6D /* InputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryView.swift; sourceTree = "<group>"; };
+		02D29A8F29F7C2DA00473D6D /* AztecAIViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecAIViewFactory.swift; sourceTree = "<group>"; };
+		02D29A9129F7C39200473D6D /* UIImage+Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Text.swift"; sourceTree = "<group>"; };
 		02D3B68429657061009BF0BC /* SupportButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportButton.swift; sourceTree = "<group>"; };
 		02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Dot.swift"; sourceTree = "<group>"; };
 		02D681A829C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingPaymentsSetupView.swift; sourceTree = "<group>"; };
@@ -2808,6 +2817,7 @@
 		0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingFailed.swift; sourceTree = "<group>"; };
 		039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayOnboardingViewController.swift; sourceTree = "<group>"; };
 		039B7E6429F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UniversalLinkRouter+JustInTimeMessages.swift"; sourceTree = "<group>"; };
+		039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewModelTests.swift; sourceTree = "<group>"; };
 		039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaConstraints.swift"; sourceTree = "<group>"; };
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
 		03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift; sourceTree = "<group>"; };
@@ -3978,6 +3988,8 @@
 		CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewController.swift; sourceTree = "<group>"; };
 		CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueOneTableViewCell.swift; sourceTree = "<group>"; };
 		CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ValueOneTableViewCell.xib; sourceTree = "<group>"; };
+		CE29A62F29F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSubscriptionTableViewCell.swift; sourceTree = "<group>"; };
+		CE29A63B29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
 		CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LedgerTableViewCell.swift; sourceTree = "<group>"; };
 		CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LedgerTableViewCell.xib; sourceTree = "<group>"; };
 		CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewModel.swift; sourceTree = "<group>"; };
@@ -5052,6 +5064,7 @@
 				0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */,
 				024DF3062372C18D006658FE /* AztecUIConfigurator.swift */,
 				024DF3082372CA00006658FE /* EditorViewProperties.swift */,
+				02D29A8F29F7C2DA00473D6D /* AztecAIViewFactory.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -5147,6 +5160,7 @@
 				024DF3042372ADCD006658FE /* KeyboardScrollable.swift */,
 				6856D3846BBF078CB5D955B9 /* KeyboardFrameAdjustmentProvider.swift */,
 				6856D02484A69911F2B91714 /* KeyboardStateProvider.swift */,
+				02D29A8D29F7C26000473D6D /* InputAccessoryView.swift */,
 			);
 			path = Keyboard;
 			sourceTree = "<group>";
@@ -5768,6 +5782,7 @@
 				03A6C18228B52ADB00AADF23 /* Onboarding Errors */,
 				03EF24FF28C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift */,
 				03EF250328C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift */,
+				039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";
@@ -8891,6 +8906,7 @@
 				028CB70E290138EF00331C09 /* Publisher+Concurrency.swift */,
 				DE4D239729ADF8E3003A4B5D /* WordPressAuthenticator+Woo.swift */,
 				EE2A57D629E399CC009F61E1 /* CaseIterable+Helpers.swift */,
+				02D29A9129F7C39200473D6D /* UIImage+Text.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -8914,6 +8930,15 @@
 				DEC51AFE276AEE79009F3DF4 /* SystemStatusReport */,
 			);
 			path = Help;
+			sourceTree = "<group>";
+		};
+		CE29A62E29F2DA62003D2A00 /* Subscriptions section */ = {
+			isa = PBXGroup;
+			children = (
+				CE29A62F29F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift */,
+				CE29A63B29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib */,
+			);
+			path = "Subscriptions section";
 			sourceTree = "<group>";
 		};
 		CE35F1042343DCAC007B2A6B /* Refunds */ = {
@@ -8950,6 +8975,7 @@
 				CE35F10A2343E4E6007B2A6B /* Order Notes Section */,
 				021A84DD257DFBDA00BC71D1 /* Shipping Labels */,
 				45B4F0242860BCCA00F3B16E /* WCShip Installation Process */,
+				CE29A62E29F2DA62003D2A00 /* Subscriptions section */,
 				57A25C7525ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift */,
 				57A25C7B25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift */,
 			);
@@ -10543,6 +10569,7 @@
 				B92FF9AE27FC7217005C34E3 /* OrderListViewController.xib in Resources */,
 				023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */,
 				0304E36428BE1EDE00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.xib in Resources */,
+				CE29A63C29F3221D003D2A00 /* OrderSubscriptionTableViewCell.xib in Resources */,
 				026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */,
 				3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */,
 				4515C88E25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.xib in Resources */,
@@ -11422,9 +11449,11 @@
 				DE0A2EAF281BA278007A8015 /* ProductCategorySelectorViewModel.swift in Sources */,
 				45B9C64323A91CB6007FC4C5 /* PriceInputFormatter.swift in Sources */,
 				E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */,
+				CE29A63029F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift in Sources */,
 				DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
 				0262DA5B23A244830029AF30 /* Product+ShippingSettingsViewModels.swift in Sources */,
+				02D29A8E29F7C26000473D6D /* InputAccessoryView.swift in Sources */,
 				0201E42D2946C23600C793C7 /* OptionalStoreCreationProfilerQuestionView.swift in Sources */,
 				0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */,
 				45E9A6E424DAE1EA00A600E8 /* ProductReviewsViewController.swift in Sources */,
@@ -11916,6 +11945,7 @@
 				027F83ED29B046D2002688C6 /* DashboardTopPerformersViewModel.swift in Sources */,
 				260C32BE2527A2DE00157BC2 /* IssueRefundViewModel.swift in Sources */,
 				2678897C270E6E8B00BD249E /* SimplePaymentsAmount.swift in Sources */,
+				02D29A9229F7C39200473D6D /* UIImage+Text.swift in Sources */,
 				09F5DE5D27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift in Sources */,
 				03076D36290C162E008EE839 /* WebViewSheet.swift in Sources */,
 				039B7E6329F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift in Sources */,
@@ -11997,6 +12027,7 @@
 				3178C1F726409216000D771A /* BluetoothCardReaderSettingsConnectedViewModel.swift in Sources */,
 				DEF8CF1D29AC84BC00800A60 /* WPComEmailLoginView.swift in Sources */,
 				CC6923AC26010D8D002FB669 /* LoginProloguePageViewController.swift in Sources */,
+				02D29A9029F7C2DA00473D6D /* AztecAIViewFactory.swift in Sources */,
 				4515C88D25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift in Sources */,
 				CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */,
 				02162726237963AF000208D2 /* ProductFormViewController.swift in Sources */,
@@ -12572,6 +12603,7 @@
 				02279590237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift in Sources */,
 				B958A7D128B5281800823EEF /* UniversalLinkRouterTests.swift in Sources */,
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
+				039B7E6729F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift in Sources */,
 				03EF250428C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift in Sources */,
 				45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */,
 				CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */,

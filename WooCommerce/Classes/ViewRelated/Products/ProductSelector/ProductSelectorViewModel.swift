@@ -387,7 +387,6 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
-        
         trackConfirmButtonTapped(with: allIDs.count)
         onMultipleSelectionCompleted?(allIDs)
     }

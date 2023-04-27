@@ -820,7 +820,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let selectedVariationId: Int64 = 12
 
         let simplePopularProduct = Product.fake().copy(siteID: sampleSiteID, productID: mostPopularProductId, purchasable: true)
-        let variableLastSoldProduct = Product.fake().copy(siteID: sampleSiteID, productID: lastSoldProductId, purchasable: true, variations: [selectedVariationId, 20])
+        let variableLastSoldProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                          productID: lastSoldProductId,
+                                                          purchasable: true,
+                                                          variations: [selectedVariationId, 20])
         let otherSimpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: otherProductId, purchasable: true)
         insert(simplePopularProduct)
         insert(variableLastSoldProduct)

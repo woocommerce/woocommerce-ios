@@ -17,15 +17,19 @@ final class SettingsViewModelTests: XCTestCase {
     ///
     private var stores: MockStoresManager!
 
+    private var defaults: UserDefaults!
+
     private var sessionManager: SessionManager!
 
     private var appleIDCredentialChecker: AppleIDCredentialCheckerProtocol!
 
-    override func setUp() {
+    override func setUpWithError() throws {
         super.setUp()
         storageManager = MockStorageManager()
         sessionManager = .makeForTesting(authenticated: true)
         stores = MockStoresManager(sessionManager: sessionManager)
+        let uuid = UUID().uuidString
+        defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
     }
 
@@ -34,6 +38,7 @@ final class SettingsViewModelTests: XCTestCase {
         storageManager = nil
         stores = nil
         sessionManager = nil
+        defaults = nil
         super.tearDown()
     }
 
@@ -251,6 +256,91 @@ final class SettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
+    }
+
+    // MARK: - `Store Setup List` row
+
+    func test_store_setup_list_row_is_shown_when_there_are_pending_onboarding_tasks() {
+        // Given
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = false
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker,
+                                          defaults: defaults)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.storeSetupList) })
+    }
+
+    func test_store_setup_list_row_is_hidden_when_there_are_no_pending_onboarding_tasks() {
+        // Given
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker,
+                                          defaults: defaults)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.storeSetupList) })
+    }
+
+    // MARK: - `isStoreSetupSettingSwitchOn`
+
+    func test_isStoreSetupSettingSwitchOn_is_true_when_shouldHideStoreOnboardingTaskList_is_false() {
+        // Given
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker,
+                                          defaults: defaults)
+
+        // When
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = false
+
+        // Then
+        XCTAssertTrue(viewModel.isStoreSetupSettingSwitchOn)
+    }
+
+    func test_isStoreSetupSettingSwitchOn_is_false_when_shouldHideStoreOnboardingTaskList_is_true() {
+        // Given
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker,
+                                          defaults: defaults)
+
+        // When
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = true
+
+        // Then
+        XCTAssertFalse(viewModel.isStoreSetupSettingSwitchOn)
+    }
+
+    // MARK: - `updateStoreSetupListVisibility` method
+
+    func test_updateStoreSetupListVisibility_updates_user_defaults() {
+        // Given
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker,
+                                          defaults: defaults)
+
+        // When
+        viewModel.updateStoreSetupListVisibility(false)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
+
+        // When
+        viewModel.updateStoreSetupListVisibility(true)
+
+        // Then
+        XCTAssertFalse(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
     }
 }
 

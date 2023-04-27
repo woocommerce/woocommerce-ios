@@ -106,6 +106,21 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// Subscription settings. Applicable to subscription-type products only.
     public let subscription: ProductSubscription?
 
+    // MARK: Min/Max Quantities properties
+
+    /// Minimum allowed quantity for the product. Applicable with Min/Max Quantities extension only.
+    public let minAllowedQuantity: String?
+
+    /// Maximum allowed quantity for the product. Applicable with Min/Max Quantities extension only.
+    public let maxAllowedQuantity: String?
+
+    /// "Group of" quantity, requiring customers to purchase the product in multiples. Applicable with Min/Max Quantities extension only.
+    public let groupOfQuantity: String?
+
+    /// Combines the quantities of all purchased variations when checking quantity rules.
+    /// Applicable with variable products and Min/Max Quantities extension only.
+    public let combineVariationQuantities: String?
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -225,7 +240,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 bundleStockQuantity: Int64?,
                 bundledItems: [ProductBundleItem],
                 compositeComponents: [ProductCompositeComponent],
-                subscription: ProductSubscription?) {
+                subscription: ProductSubscription?,
+                minAllowedQuantity: String?,
+                maxAllowedQuantity: String?,
+                groupOfQuantity: String?,
+                combineVariationQuantities: String?) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -294,6 +313,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.bundledItems = bundledItems
         self.compositeComponents = compositeComponents
         self.subscription = subscription
+        self.minAllowedQuantity = minAllowedQuantity
+        self.maxAllowedQuantity = maxAllowedQuantity
+        self.groupOfQuantity = groupOfQuantity
+        self.combineVariationQuantities = combineVariationQuantities
     }
 
     /// The public initializer for Product.
@@ -462,6 +485,16 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // Subscription properties
         let subscription = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?.extractProductSubscription()
 
+        // Min/Max Quantities properties
+        let minAllowedQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+            .extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
+        let maxAllowedQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+            .extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
+        let groupOfQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+            .extractStringValue(forKey: MetadataKeys.groupOfQuantity)
+        let combineVariationQuantities = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+            .extractStringValue(forKey: MetadataKeys.allowCombination)
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -529,7 +562,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   bundleStockQuantity: bundleStockQuantity,
                   bundledItems: bundledItems,
                   compositeComponents: compositeComponents,
-                  subscription: subscription)
+                  subscription: subscription,
+                  minAllowedQuantity: minAllowedQuantity,
+                  maxAllowedQuantity: maxAllowedQuantity,
+                  groupOfQuantity: groupOfQuantity,
+                  combineVariationQuantities: combineVariationQuantities)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -721,6 +758,13 @@ private extension Product {
         case bundledItems                   = "bundled_items"
 
         case compositeComponents    = "composite_components"
+    }
+
+    enum MetadataKeys {
+        static let minAllowedQuantity = "minimum_allowed_quantity"
+        static let maxAllowedQuantity = "maximum_allowed_quantity"
+        static let groupOfQuantity    = "group_of_quantity"
+        static let allowCombination   = "allow_combination"
     }
 }
 

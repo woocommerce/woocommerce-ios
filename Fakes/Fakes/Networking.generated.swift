@@ -856,7 +856,11 @@ extension Networking.Product {
             bundleStockQuantity: .fake(),
             bundledItems: .fake(),
             compositeComponents: .fake(),
-            subscription: .fake()
+            subscription: .fake(),
+            minAllowedQuantity: .fake(),
+            maxAllowedQuantity: .fake(),
+            groupOfQuantity: .fake(),
+            combineVariationQuantities: .fake()
         )
     }
 }

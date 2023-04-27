@@ -110,7 +110,11 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
                                       compositeComponents: [],
-                                      subscription: nil)
+                                      subscription: nil,
+                                      minAllowedQuantity: nil,
+                                      maxAllowedQuantity: nil,
+                                      groupOfQuantity: nil,
+                                      combineVariationQuantities: nil)
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
@@ -218,7 +222,11 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
                                       compositeComponents: [],
-                                      subscription: nil)
+                                      subscription: nil,
+                                      minAllowedQuantity: nil,
+                                      maxAllowedQuantity: nil,
+                                      groupOfQuantity: nil,
+                                      combineVariationQuantities: nil)
         XCTAssertEqual(deletedProduct, expectedProduct)
     }
 
@@ -752,7 +760,11 @@ private extension ProductsRemoteTests {
                        bundleStockQuantity: nil,
                        bundledItems: [],
                        compositeComponents: [],
-                       subscription: nil)
+                       subscription: nil,
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {

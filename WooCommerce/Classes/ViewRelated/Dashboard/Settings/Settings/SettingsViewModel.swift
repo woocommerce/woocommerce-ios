@@ -26,6 +26,10 @@ protocol SettingsViewModelOutput {
     /// Main Site's URL
     ///
     var siteUrl: String? { get }
+
+    /// For Store Setup List Setting Switch value
+    ///
+    var isStoreSetupSettingSwitchOn: Bool { get }
 }
 
 protocol SettingsViewModelActionsHandler {
@@ -46,6 +50,10 @@ protocol SettingsViewModelActionsHandler {
     /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
     ///
     func reloadSettings()
+
+    /// Updates store setup list visibility setting in user defaults
+    ///
+    func updateStoreSetupListVisibility(_ value: Bool)
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -85,6 +93,12 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         return urlString?.removingPrefix("https://").removingPrefix("http://")
     }
 
+    /// For Store Setup List Setting Switch value
+    ///
+    var isStoreSetupSettingSwitchOn: Bool {
+        !defaults.shouldHideStoreOnboardingTaskList
+    }
+
     /// Sites pulled from the results controlelr
     ///
     private var sites = [Yosemite.Site]()
@@ -102,6 +116,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let defaults: UserDefaults
 
     /// Reference to the Zendesk shared instance
     ///
@@ -110,11 +125,13 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker()) {
+         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
+         defaults: UserDefaults = .standard) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.appleIDCredentialChecker = appleIDCredentialChecker
+        self.defaults = defaults
 
         /// Initialize Sites Results Controller
         ///
@@ -178,6 +195,12 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         configureSections()
         presenter?.refreshViewContent()
     }
+
+    /// Updates store setup list visibility setting in user defaults
+    ///
+    func updateStoreSetupListVisibility(_ value: Bool) {
+        defaults[.shouldHideStoreOnboardingTaskList] = !value
+    }
 }
 
 private extension SettingsViewModel {
@@ -238,6 +261,10 @@ private extension SettingsViewModel {
                 (site?.isNonJetpackSite == true &&
                  featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
                 rows.append(.installJetpack)
+            }
+
+            if !defaults.completedAllStoreOnboardingTasks {
+                rows.append(.storeSetupList)
             }
 
             guard rows.isNotEmpty else {

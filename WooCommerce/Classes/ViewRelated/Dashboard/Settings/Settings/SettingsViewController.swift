@@ -211,6 +211,10 @@ private extension SettingsViewController {
 
     func configureStoreSetupList(cell: SwitchTableViewCell) {
         cell.title = Localization.storeSetupList
+        cell.isOn = viewModel.isStoreSetupSettingSwitchOn
+        cell.onChange = { [weak self] value in
+            self?.viewModel.updateStoreSetupListVisibility(value)
+        }
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {

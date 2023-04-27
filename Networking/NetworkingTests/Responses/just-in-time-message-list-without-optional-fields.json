@@ -28,11 +28,9 @@
       "is_dismissible": true,
       "is_user_created_by_partner": null,
       "message_expiration": null,
-      "assets": {
-          "background_image_url": "https:\/\/example.net\/images\/background-light@2x.png"
-      },
       "url": "https:\/\/jetpack.com\/redirect\/?source=jitm-woomobile_ipp_barcode_users&#038;site=store.example.com&#038;u=1",
       "jitm_stats_url": "https:\/\/pixel.wp.com\/b.gif?v=wpcom2&rand=b8ec47eefac4b8f64b70cd379dc573dd&x_jetpack-jitm=woomobile_ipp_barcode_users"
     }
   ]
 }
+

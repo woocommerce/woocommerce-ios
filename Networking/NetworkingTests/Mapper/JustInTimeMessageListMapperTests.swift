@@ -30,6 +30,28 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
         let justInTimeMessage = try XCTUnwrap(mapLoadJustInTimeMessageListResponse()).first
 
         // Then
+        let expectedJustInTimeMessage = JustInTimeMessage(
+            siteID: dummySiteID,
+            messageID: "woomobile_ipp_barcode_users",
+            featureClass: "woomobile_ipp",
+            ttl: 300,
+            content: JustInTimeMessage.Content(
+                message: "In-person card payments",
+                description: "Sell anywhere, and take card payments using a mobile card reader."),
+            cta: JustInTimeMessage.CTA(
+                message: "Purchase Card Reader",
+                link: "https://woocommerce.com/products/hardware/US"),
+            assets: ["background_image_url": URL(string: "https://example.net/images/background-light@2x.png")!])
+        assertEqual(expectedJustInTimeMessage, justInTimeMessage)
+    }
+
+    /// Verifies that the fields are all parsed correctly.
+    ///
+    func test_JustInTimeMessageListMapper_parses_correctly_when_optional_fields_are_missing() throws {
+        // Given, When
+        let justInTimeMessage = try XCTUnwrap(mapLoadJustInTimeMessageListWithoutOptionalsResponse()).first
+
+        // Then
         let expectedJustInTimeMessage = JustInTimeMessage(siteID: dummySiteID,
                                                           messageID: "woomobile_ipp_barcode_users",
                                                           featureClass: "woomobile_ipp",
@@ -39,7 +61,8 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
                                                             description: "Sell anywhere, and take card payments using a mobile card reader."),
                                                           cta: JustInTimeMessage.CTA(
                                                             message: "Purchase Card Reader",
-                                                            link: "https://woocommerce.com/products/hardware/US"))
+                                                            link: "https://woocommerce.com/products/hardware/US"),
+                                                          assets: [:])
         assertEqual(expectedJustInTimeMessage, justInTimeMessage)
     }
 }
@@ -62,6 +85,10 @@ private extension JustInTimeMessageListMapperTests {
     ///
     func mapLoadJustInTimeMessageListResponse() throws -> [JustInTimeMessage]? {
         return try mapJustInTimeMessageList(from: "just-in-time-message-list")
+    }
+
+    func mapLoadJustInTimeMessageListWithoutOptionalsResponse() throws -> [JustInTimeMessage]? {
+        return try mapJustInTimeMessageList(from: "just-in-time-message-list-without-optional-fields")
     }
 
     /// Returns the JustInTimeMessageListMapper output from `just-in-time-message-list-without-data.json`

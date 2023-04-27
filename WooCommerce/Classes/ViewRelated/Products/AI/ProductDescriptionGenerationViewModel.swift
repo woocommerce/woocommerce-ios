@@ -25,17 +25,20 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let onApply: (_ output: ProductDescriptionGenerationOutput) -> Void
 
     private var task: Task<Void, Error>?
 
     init(siteID: Int64,
          name: String,
          description: String,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         onApply: @escaping (ProductDescriptionGenerationOutput) -> Void) {
         self.name = name
         self.features = description
         self.siteID = siteID
         self.stores = stores
+        self.onApply = onApply
     }
 
     /// Generates product description async.
@@ -58,6 +61,11 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         } else {
             generateDescription()
         }
+    }
+
+    /// Applies the generated product description and product name to the product.
+    func applyToProduct() {
+        onApply(.init(name: name, description: suggestedText ?? ""))
     }
 }
 

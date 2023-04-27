@@ -12,10 +12,8 @@ struct ProductDescriptionGenerationOutput {
 /// Hosting controller for `ProductDescriptionGenerationView`.
 ///
 final class ProductDescriptionGenerationHostingController: UIHostingController<ProductDescriptionGenerationView> {
-    init(viewModel: ProductDescriptionGenerationViewModel,
-         onUpdate: @escaping (ProductDescriptionGenerationOutput) -> Void) {
-        super.init(rootView: ProductDescriptionGenerationView(viewModel: viewModel,
-                                                              onUpdate: onUpdate))
+    init(viewModel: ProductDescriptionGenerationViewModel) {
+        super.init(rootView: ProductDescriptionGenerationView(viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -28,12 +26,8 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
 
-    private let onUpdate: (_ output: ProductDescriptionGenerationOutput) -> Void
-
-    init(viewModel: ProductDescriptionGenerationViewModel,
-         onUpdate: @escaping (_ output: ProductDescriptionGenerationOutput) -> Void) {
+    init(viewModel: ProductDescriptionGenerationViewModel) {
         self.viewModel = viewModel
-        self.onUpdate = onUpdate
     }
 
     var body: some View {
@@ -101,7 +95,7 @@ struct ProductDescriptionGenerationView: View {
 
                         // CTA to apply the generated text.
                         Button(Localization.insertGeneratedText) {
-                            onUpdate(.init(name: viewModel.name, description: suggestedText))
+                            viewModel.applyToProduct()
                         }
                         .buttonStyle(PrimaryButtonStyle())
                         .fixedSize(horizontal: true, vertical: false)
@@ -193,8 +187,8 @@ struct ProductDescriptionGenerationView_Previews: PreviewProvider {
                       name: "Potted cactus",
                       description: "low-maintenance, decorative plant that improves indoor air quality and provides health benefits",
                       stores: ProductDescriptionGenerationPreviewStores(result:
-                            .success("These unique plants thrive in harsh environments and require very little care."))),
-                                         onUpdate: { _ in })
+                            .success("These unique plants thrive in harsh environments and require very little care.")),
+                      onApply: { _ in }))
         .previewDisplayName("Pre-filled name and features with success")
 
         ProductDescriptionGenerationView(viewModel:
@@ -202,8 +196,8 @@ struct ProductDescriptionGenerationView_Previews: PreviewProvider {
                       name: "",
                       description: "",
                       stores: ProductDescriptionGenerationPreviewStores(result:
-                            .failure(ProductDownloadFileError.emptyFileName))),
-                                         onUpdate: { _ in })
+                            .failure(ProductDownloadFileError.emptyFileName)),
+                      onApply: { _ in }))
         .previewDisplayName("Empty name and features with failure")
     }
 }

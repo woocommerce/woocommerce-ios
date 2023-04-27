@@ -349,13 +349,14 @@ private extension AztecEditorViewController {
         let controller = ProductDescriptionGenerationHostingController(viewModel:
                 .init(siteID: product.siteID,
                       name: product.name,
-                      description: product.description ?? "")) { [weak self] output in
+                      description: product.description ?? "",
+                      onApply: { [weak self] output in
             guard let self else { return }
             self.content = output.description
             self.productName = output.name
             self.updateContent()
             self.dismissDescriptionGenerationBottomSheetIfNeeded()
-        }
+        }))
 
         view.endEditing(true)
         presenter.present(controller, from: self, onDismiss: { [weak self] in

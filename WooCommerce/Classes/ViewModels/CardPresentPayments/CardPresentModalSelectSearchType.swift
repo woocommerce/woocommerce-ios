@@ -84,7 +84,7 @@ private extension CardReaderDiscoveryMethod {
         case .localMobile:
             return NSLocalizedString(
                 "Tap to Pay on iPhone",
-                comment: "The button title on the reader type alert, for the user to choose the built-in reader.")
+                comment: "The button title on the reader type alert, for the user to choose Tap to Pay on iPhone.")
         }
     }
 }

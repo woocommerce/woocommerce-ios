@@ -9,7 +9,8 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     var amount: String = ""
 
     func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalPreparingReader(cancelAction: onCancel)
+        CardPresentModalPreparingReader(bottomTitle: Localization.preparingReaderBottomTitle,
+                                        cancelAction: onCancel)
     }
 
     func tapOrInsertCard(title: String,
@@ -118,5 +119,10 @@ private extension BuiltInCardReaderPaymentAlertsProvider {
                 return underlyingError.errorDescription
             }
         }
+
+        static let preparingReaderBottomTitle = NSLocalizedString(
+            "Preparing Tap to Pay on iPhone ",
+            comment: "Bottom title of the alert presented with a spinner while Tap to Pay on iPhone is being prepared"
+        )
     }
 }

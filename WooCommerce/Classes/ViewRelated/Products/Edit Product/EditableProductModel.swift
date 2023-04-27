@@ -179,6 +179,23 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.subscription
     }
 
+    var hasQuantityRules: Bool {
+        let hasNoRules = minAllowedQuantity.isNilOrEmpty && maxAllowedQuantity.isNilOrEmpty && groupOfQuantity.isNilOrEmpty
+        return !hasNoRules
+    }
+
+    var minAllowedQuantity: String? {
+        product.minAllowedQuantity
+    }
+
+    var maxAllowedQuantity: String? {
+        product.maxAllowedQuantity
+    }
+
+    var groupOfQuantity: String? {
+        product.groupOfQuantity
+    }
+
     func isStockStatusEnabled() -> Bool {
         // Only a variable product's stock status is not editable.
         productType != .variable

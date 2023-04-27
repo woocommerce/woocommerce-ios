@@ -608,9 +608,13 @@
         <attribute name="downloadExpiry" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="downloadLimit" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="fullDescription" optional="YES" attributeType="String"/>
+        <attribute name="groupOfQuantity" optional="YES" attributeType="String"/>
         <attribute name="manageStock" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="maxAllowedQuantity" optional="YES" attributeType="String"/>
         <attribute name="menuOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="minAllowedQuantity" optional="YES" attributeType="String"/>
         <attribute name="onSale" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="overrideProductQuantities" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="permalink" attributeType="String"/>
         <attribute name="price" attributeType="String"/>
         <attribute name="productID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

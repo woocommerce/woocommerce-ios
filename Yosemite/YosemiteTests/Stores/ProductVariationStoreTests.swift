@@ -430,6 +430,40 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? ProductVariationLoadError, expectedError)
     }
 
+    /// Verifies that `ProductVariationAction.retrieveProductVariation` effectively persists the fields added by the Min/Max Quantities extension.
+    ///
+    func test_retrieve_product_variation_effectively_persists_mix_max_quantity_fields() throws {
+        let remote = MockProductVariationsRemote()
+        let sampleVariationID: Int64 = 12
+        let expectedProductVariation = sampleProductVariation(id: sampleVariationID).copy(siteID: sampleSiteID,
+                                                                                          productID: sampleProductID,
+                                                                                          productVariationID: sampleVariationID,
+                                                                                          minAllowedQuantity: "6",
+                                                                                          maxAllowedQuantity: "30",
+                                                                                          groupOfQuantity: "3",
+                                                                                          overrideProductQuantities: true)
+        remote.whenLoadingProductVariation(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariationID: sampleVariationID,
+                                           thenReturn: .success(expectedProductVariation))
+        let productVariationStore = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        let storedVariation: Yosemite.ProductVariation? = waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleVariationID) { _ in
+                let storedVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID, productVariationID: sampleVariationID)
+                let readOnlyStoredVariation = storedVariation?.toReadOnly()
+                promise(readOnlyStoredVariation)
+            }
+            productVariationStore.onAction(action)
+        }
+
+        XCTAssertNotNil(storedVariation)
+        assertEqual(expectedProductVariation, storedVariation)
+    }
+
     // MARK: - ProductVariationAction.createProductVariation
 
     /// Verifies that `ProductVariationAction.createProductVariation` returns the expected `ProductVariation`.

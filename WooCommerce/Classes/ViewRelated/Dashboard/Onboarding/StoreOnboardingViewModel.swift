@@ -80,9 +80,10 @@ class StoreOnboardingViewModel: ObservableObject {
         self.state = .loading
         self.defaults = defaults
 
-        Publishers.CombineLatest($noTasksAvailableForDisplay,
-                                 defaults.publisher(for: \.completedAllStoreOnboardingTasks))
-        .map { !($0 || $1) }
+        Publishers.CombineLatest3($noTasksAvailableForDisplay,
+                                  defaults.publisher(for: \.completedAllStoreOnboardingTasks),
+                                  defaults.publisher(for: \.shouldHideStoreOnboardingTaskList))
+        .map { !($0 || $1 || $2) }
         .assign(to: &$shouldShowInDashboard)
     }
 
@@ -245,4 +246,8 @@ extension UserDefaults {
      @objc dynamic var completedAllStoreOnboardingTasks: Bool {
          bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
      }
+
+    @objc dynamic var shouldHideStoreOnboardingTaskList: Bool {
+        bool(forKey: Key.shouldHideStoreOnboardingTaskList.rawValue)
+    }
  }

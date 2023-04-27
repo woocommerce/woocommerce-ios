@@ -59,6 +59,7 @@ struct OrdersUpsertUseCase {
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
         handleOrderTaxes(readOnlyOrder, storageOrder, storage)
         handleOrderCustomFields(readOnlyOrder, storageOrder, storage)
+        handleOrderGiftCards(readOnlyOrder, storageOrder, storage)
 
         return storageOrder
     }
@@ -303,6 +304,29 @@ struct OrdersUpsertUseCase {
             if readOnlyOrder.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
                 storageOrder.removeFromCustomFields(storageCustomField)
                 storage.deleteObject(storageCustomField)
+            }
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided `storageOrder`'s applied gift cards using the provided `readOnlyOrder`'s custom fields
+    ///
+    private func handleOrderGiftCards(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the `appliedGiftCards` from the `readOnlyOrder`
+        readOnlyOrder.appliedGiftCards.forEach { readOnlyGiftCard in
+            if let existingStorageGiftCard = storage.loadOrderGiftCard(siteID: readOnlyOrder.siteID, giftCardID: readOnlyGiftCard.giftCardID) {
+                existingStorageGiftCard.update(with: readOnlyGiftCard)
+            } else {
+                let newStorageGiftCard = storage.insertNewObject(ofType: Storage.OrderGiftCard.self)
+                newStorageGiftCard.update(with: readOnlyGiftCard)
+                storageOrder.addToAppliedGiftCards(newStorageGiftCard)
+            }
+        }
+
+        // Now, remove any objects that exist in `storageOrder.appliedGiftCards` but not in `readOnlyOrder.appliedGiftCards`
+        storageOrder.appliedGiftCards?.forEach { storageGiftCard in
+            if readOnlyOrder.appliedGiftCards.first(where: { $0.giftCardID == storageGiftCard.giftCardID } ) == nil {
+                storageOrder.removeFromAppliedGiftCards(storageGiftCard)
+                storage.deleteObject(storageGiftCard)
             }
         }
     }

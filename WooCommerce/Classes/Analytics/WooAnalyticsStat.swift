@@ -173,6 +173,7 @@ public enum WooAnalyticsStat: String {
     case storeOnboardingTaskTapped = "store_onboarding_task_tapped"
     case storeOnboardingTaskCompleted = "store_onboarding_task_completed"
     case storeOnboardingCompleted = "store_onboarding_completed"
+    case storeOnboardingHideList = "store_onboarding_hide_list"
 
     // MARK: Site picker. Can be triggered by login epilogue or settings.
     //

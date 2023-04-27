@@ -2,9 +2,11 @@ import struct Yosemite.StoreOnboardingTask
 
 extension WooAnalyticsEvent {
     enum StoreOnboarding {
-        /// Event property keys.
-        private enum Keys {
+        /// Event property Key.
+        private enum Key {
             static let task = "task"
+            static let pendingTasks = "pending_tasks"
+            static let source = "source"
         }
 
         static func storeOnboardingShown() -> WooAnalyticsEvent {
@@ -12,16 +14,29 @@ extension WooAnalyticsEvent {
         }
 
         static func storeOnboardingTaskTapped(task: StoreOnboardingTask.TaskType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .storeOnboardingTaskTapped, properties: [Keys.task: task.analyticsValue])
+            WooAnalyticsEvent(statName: .storeOnboardingTaskTapped, properties: [Key.task: task.analyticsValue])
         }
 
         static func storeOnboardingTaskCompleted(task: StoreOnboardingTask.TaskType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .storeOnboardingTaskCompleted, properties: [Keys.task: task.analyticsValue])
+            WooAnalyticsEvent(statName: .storeOnboardingTaskCompleted, properties: [Key.task: task.analyticsValue])
         }
 
         static func storeOnboardingCompleted() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .storeOnboardingCompleted, properties: [:])
         }
+
+        static func storeOnboardingHideList(source: Source, pendingTasks: [StoreOnboardingTask.TaskType]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .storeOnboardingHideList,
+                              properties: [Key.source: source.rawValue,
+                                           Key.pendingTasks: pendingTasks.map({ $0.analyticsValue }).sorted().joined(separator: ",")])
+        }
+    }
+}
+
+extension WooAnalyticsEvent.StoreOnboarding {
+    enum Source: String {
+        case onboardingList = "onboarding_list"
+        case settings = "settings"
     }
 }
 

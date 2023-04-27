@@ -1182,7 +1182,11 @@ extension Networking.ProductVariation {
             shippingClass: .fake(),
             shippingClassID: .fake(),
             menuOrder: .fake(),
-            subscription: .fake()
+            subscription: .fake(),
+            minAllowedQuantity: .fake(),
+            maxAllowedQuantity: .fake(),
+            groupOfQuantity: .fake(),
+            overrideProductQuantities: .fake()
         )
     }
 }

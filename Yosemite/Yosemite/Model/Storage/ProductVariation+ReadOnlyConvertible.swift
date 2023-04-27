@@ -105,7 +105,11 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 shippingClass: shippingClass,
                                 shippingClassID: shippingClassID,
                                 menuOrder: menuOrder,
-                                subscription: subscription?.toReadOnly())
+                                subscription: subscription?.toReadOnly(),
+                                minAllowedQuantity: nil,
+                                maxAllowedQuantity: nil,
+                                groupOfQuantity: nil,
+                                overrideProductQuantities: nil) // TODO: 8959 - Replace with real quantity settings
     }
 }
 

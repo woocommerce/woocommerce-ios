@@ -59,6 +59,20 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
     /// Subscription settings. Applicable to variations in variable subscription-type products only.
     public let subscription: ProductSubscription?
 
+    // MARK: Min/Max Quantities properties
+
+    /// Minimum allowed quantity for the variation. Applicable with Min/Max Quantities extension only.
+    public let minAllowedQuantity: String?
+
+    /// Maximum allowed quantity for the variation. Applicable with Min/Max Quantities extension only.
+    public let maxAllowedQuantity: String?
+
+    /// "Group of" quantity, requiring customers to purchase the variation in multiples. Applicable with Min/Max Quantities extension only.
+    public let groupOfQuantity: String?
+
+    /// Overrides the product-level quantity rules with the variation rules. Applicable with Min/Max Quantities extension only.
+    public let overrideProductQuantities: Bool?
+
     /// Computed Properties
     ///
     /// Whether the product variation has an integer (or nil) stock quantity.
@@ -110,7 +124,11 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                 shippingClass: String?,
                 shippingClassID: Int64,
                 menuOrder: Int64,
-                subscription: ProductSubscription?) {
+                subscription: ProductSubscription?,
+                minAllowedQuantity: String?,
+                maxAllowedQuantity: String?,
+                groupOfQuantity: String?,
+                overrideProductQuantities: Bool?) {
         self.siteID = siteID
         self.productID = productID
         self.productVariationID = productVariationID
@@ -148,6 +166,10 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         self.shippingClassID = shippingClassID
         self.menuOrder = menuOrder
         self.subscription = subscription
+        self.minAllowedQuantity = minAllowedQuantity
+        self.maxAllowedQuantity = maxAllowedQuantity
+        self.groupOfQuantity = groupOfQuantity
+        self.overrideProductQuantities = overrideProductQuantities
     }
 
     /// The public initializer for ProductVariation.
@@ -257,6 +279,21 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         // Subscription settings for subscription variations
         let subscription = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?.extractProductSubscription()
 
+        // Min/Max Quantities properties
+        let minAllowedQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+            .extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
+        let maxAllowedQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+            .extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
+        let groupOfQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+            .extractStringValue(forKey: MetadataKeys.groupOfQuantity)
+        let overrideProductQuantities: Bool? = {
+            guard let minMaxRules = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+                .extractStringValue(forKey: MetadataKeys.minMaxRules) else {
+                return nil
+            }
+            return (minMaxRules as NSString).boolValue
+        }()
+
         self.init(siteID: siteID,
                   productID: productID,
                   productVariationID: productVariationID,
@@ -293,7 +330,11 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                   shippingClass: shippingClass,
                   shippingClassID: shippingClassID,
                   menuOrder: menuOrder,
-                  subscription: subscription)
+                  subscription: subscription,
+                  minAllowedQuantity: minAllowedQuantity,
+                  maxAllowedQuantity: maxAllowedQuantity,
+                  groupOfQuantity: groupOfQuantity,
+                  overrideProductQuantities: overrideProductQuantities)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -404,6 +445,13 @@ private extension ProductVariation {
         case menuOrder          = "menu_order"
 
         case metadata           = "meta_data"
+    }
+
+    enum MetadataKeys {
+        static let minAllowedQuantity = "variation_minimum_allowed_quantity"
+        static let maxAllowedQuantity = "variation_maximum_allowed_quantity"
+        static let groupOfQuantity    = "variation_group_of_quantity"
+        static let minMaxRules        = "min_max_rules"
     }
 }
 

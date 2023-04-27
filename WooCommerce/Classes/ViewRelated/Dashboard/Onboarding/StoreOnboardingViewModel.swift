@@ -102,6 +102,10 @@ class StoreOnboardingViewModel: ObservableObject {
             await update(state: .failed)
         }
     }
+
+    func hideTaskList() {
+        defaults[.shouldHideStoreOnboardingTaskList] = true
+    }
 }
 
 private extension StoreOnboardingViewModel {

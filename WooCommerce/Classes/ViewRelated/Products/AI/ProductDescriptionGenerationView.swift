@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Output data from the AI-generated product description flow.
-struct ProductDescriptionGenerationOutput {
+struct ProductDescriptionGenerationOutput: Equatable {
     /// The user can enter or update the product name when polishing the AI-generated product generation.
     let name: String
 

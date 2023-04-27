@@ -499,6 +499,7 @@
 		02EAA4CA2911004B00918DAB /* TextFieldStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAA4C92911004B00918DAB /* TextFieldStyles.swift */; };
 		02EAF5BE29FA04750058071C /* ProductDescriptionGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAF5BD29FA04750058071C /* ProductDescriptionGenerationView.swift */; };
 		02EAF5C029FA04850058071C /* ProductDescriptionGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAF5BF29FA04850058071C /* ProductDescriptionGenerationViewModel.swift */; };
+		02EAF5C329FA30FF0058071C /* ProductDescriptionGenerationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAF5C229FA30FF0058071C /* ProductDescriptionGenerationViewModelTests.swift */; };
 		02ECD1DF24FF48D000735BE5 /* PaginationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ECD1DE24FF48D000735BE5 /* PaginationTracker.swift */; };
 		02ECD1E124FF496200735BE5 /* PaginationTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ECD1E024FF496200735BE5 /* PaginationTrackerTests.swift */; };
 		02ECD1E424FF5E0B00735BE5 /* AddProductCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ECD1E324FF5E0B00735BE5 /* AddProductCoordinator.swift */; };
@@ -2747,6 +2748,7 @@
 		02EAA4C92911004B00918DAB /* TextFieldStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldStyles.swift; sourceTree = "<group>"; };
 		02EAF5BD29FA04750058071C /* ProductDescriptionGenerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationView.swift; sourceTree = "<group>"; };
 		02EAF5BF29FA04850058071C /* ProductDescriptionGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationViewModel.swift; sourceTree = "<group>"; };
+		02EAF5C229FA30FF0058071C /* ProductDescriptionGenerationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationViewModelTests.swift; sourceTree = "<group>"; };
 		02ECD1DE24FF48D000735BE5 /* PaginationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationTracker.swift; sourceTree = "<group>"; };
 		02ECD1E024FF496200735BE5 /* PaginationTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationTrackerTests.swift; sourceTree = "<group>"; };
 		02ECD1E324FF5E0B00735BE5 /* AddProductCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductCoordinator.swift; sourceTree = "<group>"; };
@@ -5138,6 +5140,7 @@
 				26F94E32267AA3DD00DB6CCF /* Addons */,
 				02077F70253816B1005A78EF /* Actions Factory */,
 				024F1450250B658F0003030A /* Add Product */,
+				02EAF5C129FA30D70058071C /* AI */,
 				02A9A494244D848F00757B99 /* BottomSheetListSelector */,
 				7E7C5F892719AEAF00315B61 /* Categories */,
 				0248B3522457CF1500A271A4 /* Filters */,
@@ -5686,6 +5689,14 @@
 			children = (
 				02EAF5BD29FA04750058071C /* ProductDescriptionGenerationView.swift */,
 				02EAF5BF29FA04850058071C /* ProductDescriptionGenerationViewModel.swift */,
+			);
+			path = AI;
+			sourceTree = "<group>";
+		};
+		02EAF5C129FA30D70058071C /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				02EAF5C229FA30FF0058071C /* ProductDescriptionGenerationViewModelTests.swift */,
 			);
 			path = AI;
 			sourceTree = "<group>";
@@ -12462,6 +12473,7 @@
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
 				CC4B252D27CFE443008D2E6E /* OrderTotalsCalculatorTests.swift in Sources */,
 				DEF8CF1A29AC6E5900800A60 /* AdminRoleRequiredViewModelTests.swift in Sources */,
+				02EAF5C329FA30FF0058071C /* ProductDescriptionGenerationViewModelTests.swift in Sources */,
 				B57C5C9A21B80E7100FF82B2 /* DataWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
 				2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */,

@@ -1085,7 +1085,7 @@ extension Networking.Product {
         minAllowedQuantity: NullableCopiableProp<String> = .copy,
         maxAllowedQuantity: NullableCopiableProp<String> = .copy,
         groupOfQuantity: NullableCopiableProp<String> = .copy,
-        combineVariationQuantities: NullableCopiableProp<String> = .copy
+        combineVariationQuantities: NullableCopiableProp<Bool> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID

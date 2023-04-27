@@ -370,7 +370,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.minAllowedQuantity, "4")
         XCTAssertEqual(product.maxAllowedQuantity, "200")
         XCTAssertEqual(product.groupOfQuantity, "2")
-        XCTAssertEqual(product.combineVariationQuantities, "no")
+        XCTAssertEqual(product.combineVariationQuantities, false)
     }
 }
 

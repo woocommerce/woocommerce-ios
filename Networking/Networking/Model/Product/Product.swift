@@ -119,7 +119,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     /// Combines the quantities of all purchased variations when checking quantity rules.
     /// Applicable with variable products and Min/Max Quantities extension only.
-    public let combineVariationQuantities: String?
+    public let combineVariationQuantities: Bool?
 
     /// Computed Properties
     ///
@@ -244,7 +244,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 minAllowedQuantity: String?,
                 maxAllowedQuantity: String?,
                 groupOfQuantity: String?,
-                combineVariationQuantities: String?) {
+                combineVariationQuantities: Bool?) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -492,8 +492,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
             .extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
         let groupOfQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
             .extractStringValue(forKey: MetadataKeys.groupOfQuantity)
-        let combineVariationQuantities = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-            .extractStringValue(forKey: MetadataKeys.allowCombination)
+        let combineVariationQuantities: Bool? = {
+            guard let allowCombination = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
+                .extractStringValue(forKey: MetadataKeys.allowCombination) else {
+                return nil
+            }
+            return (allowCombination as NSString).boolValue
+        }()
 
         self.init(siteID: siteID,
                   productID: productID,

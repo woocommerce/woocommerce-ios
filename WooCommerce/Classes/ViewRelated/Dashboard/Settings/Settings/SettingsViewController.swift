@@ -213,7 +213,9 @@ private extension SettingsViewController {
         cell.title = Localization.storeSetupList
         cell.isOn = viewModel.isStoreSetupSettingSwitchOn
         cell.onChange = { [weak self] value in
-            self?.viewModel.updateStoreSetupListVisibility(value)
+            Task {
+                await self?.viewModel.updateStoreSetupListVisibility(value)
+            }
         }
     }
 

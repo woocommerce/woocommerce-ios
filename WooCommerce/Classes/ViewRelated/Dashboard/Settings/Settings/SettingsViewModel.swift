@@ -53,7 +53,7 @@ protocol SettingsViewModelActionsHandler {
 
     /// Updates store setup list visibility setting in user defaults
     ///
-    func updateStoreSetupListVisibility(_ value: Bool)
+    func updateStoreSetupListVisibility(_ switchValue: Bool) async
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -117,6 +117,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let featureFlagService: FeatureFlagService
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let defaults: UserDefaults
+    private let analytics: Analytics
 
     /// Reference to the Zendesk shared instance
     ///
@@ -126,12 +127,14 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
-         defaults: UserDefaults = .standard) {
+         defaults: UserDefaults = .standard,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.appleIDCredentialChecker = appleIDCredentialChecker
         self.defaults = defaults
+        self.analytics = analytics
 
         /// Initialize Sites Results Controller
         ///
@@ -198,12 +201,36 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
 
     /// Updates store setup list visibility setting in user defaults
     ///
-    func updateStoreSetupListVisibility(_ value: Bool) {
-        defaults[.shouldHideStoreOnboardingTaskList] = !value
+    @MainActor
+    func updateStoreSetupListVisibility(_ switchValue: Bool) async {
+        defaults[.shouldHideStoreOnboardingTaskList] = !switchValue
+
+        if defaults.shouldHideStoreOnboardingTaskList {
+            await trackHideStoreOnboardingListEvent()
+        }
     }
 }
 
 private extension SettingsViewModel {
+    func trackHideStoreOnboardingListEvent() async {
+        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+            return
+        }
+
+        let viewModel = StoreOnboardingViewModel(siteID: siteID,
+                                                 isExpanded: false,
+                                                 stores: stores,
+                                                 defaults: defaults,
+                                                 analytics: analytics)
+        await viewModel.reloadTasks()
+
+        let pending = viewModel.taskViewModels
+            .filter { !$0.isComplete }
+            .map { $0.task.type }
+        analytics.track(event: .StoreOnboarding.storeOnboardingHideList(source: .settings,
+                                                                        pendingTasks: pending))
+    }
+
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }

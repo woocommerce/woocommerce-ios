@@ -90,7 +90,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .IPPUKExpansion:
             return true
         case .readOnlySubscriptions:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .productDescriptionAI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .readOnlyGiftCards:

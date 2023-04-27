@@ -4,6 +4,7 @@
 -----
 - [Internal] Payments: Update StripeTerminal pod to 2.19.1 [https://github.com/woocommerce/woocommerce-ios/pull/9537]
 - [**] Adds read-only support for the Gift Cards extension in order details. [https://github.com/woocommerce/woocommerce-ios/pull/9558]
+- [**] Adds read-only support for the Subscriptions extension in order and product details. [https://github.com/woocommerce/woocommerce-ios/pull/9541]
 
 13.3
 -----

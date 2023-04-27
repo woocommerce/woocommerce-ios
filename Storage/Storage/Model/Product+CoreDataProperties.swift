@@ -67,7 +67,7 @@ extension Product {
     @NSManaged public var minAllowedQuantity: String?
     @NSManaged public var maxAllowedQuantity: String?
     @NSManaged public var groupOfQuantity: String?
-    @NSManaged public var combineVariationQuantities: Bool
+    @NSManaged public var combineVariationQuantities: NSNumber?
     @NSManaged public var attributes: Set<ProductAttribute>?
     @NSManaged public var categories: Set<ProductCategory>?
     @NSManaged public var defaultAttributes: Set<ProductDefaultAttribute>?

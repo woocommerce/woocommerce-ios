@@ -43,7 +43,7 @@ extension ProductVariation {
     @NSManaged public var minAllowedQuantity: String?
     @NSManaged public var maxAllowedQuantity: String?
     @NSManaged public var groupOfQuantity: String?
-    @NSManaged public var overrideProductQuantities: Bool
+    @NSManaged public var overrideProductQuantities: NSNumber?
     @NSManaged public var dimensions: ProductDimensions?
     @NSManaged public var image: ProductImage?
     @NSManaged public var downloads: Set<ProductDownload>?

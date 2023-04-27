@@ -28,6 +28,9 @@ final class LoginPrologueViewController: UIViewController {
     /// Button for users who are new to WooCommerce to learn more about WooCommerce.
     @IBOutlet private weak var newToWooCommerceButton: UIButton!
 
+    /// The WooCommerce logo on top of the screen
+    @IBOutlet private weak var topLogoImageView: UIImageView!
+
     // MARK: - Overridden Properties
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -106,17 +109,19 @@ private extension LoginPrologueViewController {
 
         addChild(carousel)
         view.addSubview(carousel.view)
-        if isNewToWooCommerceButtonShown {
-            NSLayoutConstraint.activate([
-                carousel.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                carousel.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                carousel.view.topAnchor.constraint(equalTo: view.topAnchor),
-                carousel.view.bottomAnchor.constraint(equalTo: newToWooCommerceButton.topAnchor,
-                                                      constant: -Constants.spacingBetweenCarouselAndNewToWooCommerceButton),
-            ])
-        } else {
-            view.pinSubviewToAllEdges(carousel.view)
-        }
+        let bottomConstraint: NSLayoutConstraint = {
+            guard isNewToWooCommerceButtonShown else {
+                return carousel.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            }
+            return carousel.view.bottomAnchor.constraint(equalTo: newToWooCommerceButton.topAnchor,
+                                                         constant: -Constants.spacingBetweenCarouselAndNewToWooCommerceButton)
+        }()
+        NSLayoutConstraint.activate([
+            carousel.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            carousel.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            carousel.view.topAnchor.constraint(equalTo: topLogoImageView.bottomAnchor, constant: Constants.spacingBetweenTopLogoAndCarousel),
+            bottomConstraint
+        ])
     }
 
     func setupNewToWooCommerceButton(isNewToWooCommerceButtonShown: Bool) {
@@ -145,6 +150,7 @@ private extension LoginPrologueViewController {
 private extension LoginPrologueViewController {
     enum Constants {
         static let spacingBetweenCarouselAndNewToWooCommerceButton: CGFloat = 20
+        static let spacingBetweenTopLogoAndCarousel: CGFloat = 16
         static let newToWooCommerceURL = "https://woocommerce.com/woocommerce-features"
     }
 

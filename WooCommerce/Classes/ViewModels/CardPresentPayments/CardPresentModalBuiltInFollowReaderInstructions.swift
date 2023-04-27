@@ -64,14 +64,15 @@ final class CardPresentModalBuiltInFollowReaderInstructions: CardPresentPayments
 private extension CardPresentModalBuiltInFollowReaderInstructions {
     enum Localization {
         static let readerIsReady = NSLocalizedString(
-            "iPhone reader is ready",
-            comment: "Indicates the status of a built in card reader. Presented to users when payment collection starts"
+            "Tap to Pay on iPhone is ready",
+            comment: "Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts"
         )
 
         static let followReaderInstructions = NSLocalizedString(
-            "Follow reader instructions to pay",
-            comment: "Label asking users to follow the built in reader instruction. Presented to users when a " +
-            "payment is going to be collected using the iPhone's built in reader"
+            "Follow the on-screen instructions to pay",
+            comment: "Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when " +
+            "a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided " +
+            "screen being shown with instructions for payment."
         )
     }
 }

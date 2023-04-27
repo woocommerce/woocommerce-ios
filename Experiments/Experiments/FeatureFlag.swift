@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Enables generating product description using AI.
     ///
     case productDescriptionAI
+
+    /// Ability to hide store onboarding task list
+    ///
+    case hideStoreOnboardingTaskList
 }

@@ -136,7 +136,8 @@ struct StoreOnboardingView: View {
                                        numberOfTasksCompleted: viewModel.numberOfTasksCompleted,
                                        shareFeedbackAction: shareFeedbackAction,
                                        hideTaskListAction: viewModel.hideTaskList,
-                                       isRedacted: viewModel.isRedacted)
+                                       isRedacted: viewModel.isRedacted,
+                                       isHideStoreOnboardingTaskListFeatureEnabled: viewModel.isHideStoreOnboardingTaskListFeatureEnabled)
 
                 // Task list
                 VStack(alignment: .leading, spacing: 0) {

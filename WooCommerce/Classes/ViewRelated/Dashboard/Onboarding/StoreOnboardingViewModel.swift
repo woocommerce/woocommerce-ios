@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 import Combine
+import Experiments
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {
@@ -48,6 +49,8 @@ class StoreOnboardingViewModel: ObservableObject {
         !isExpanded && !isRedacted && (taskViewModels.count > tasksForDisplay.count)
     }
 
+    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
+
     let isExpanded: Bool
 
     private let siteID: Int64
@@ -76,13 +79,15 @@ class StoreOnboardingViewModel: ObservableObject {
          isExpanded: Bool,
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.isExpanded = isExpanded
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
         self.analytics = analytics
+        isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
 
         Publishers.CombineLatest3($noTasksAvailableForDisplay,
                                   defaults.publisher(for: \.completedAllStoreOnboardingTasks),

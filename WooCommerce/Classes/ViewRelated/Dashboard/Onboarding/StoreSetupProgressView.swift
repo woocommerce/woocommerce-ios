@@ -9,9 +9,11 @@ struct StoreSetupProgressView: View {
 
     let shareFeedbackAction: (() -> Void)?
 
-    let hideTaskListAction: (() -> Void)?
+    let hideTaskListAction: (() -> Void)
 
     let isRedacted: Bool
+
+    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
 
     @State private var showingTaskHideListConfirmAlert: Bool = false
 
@@ -54,6 +56,7 @@ struct StoreSetupProgressView: View {
                 Button(Localization.hideStoreSetupListButton) {
                     showingTaskHideListConfirmAlert = true
                 }
+                .renderedIf(isHideStoreOnboardingTaskListFeatureEnabled)
             } label: {
                 Image(uiImage: .ellipsisImage)
                     .flipsForRightToLeftLayoutDirection(true)
@@ -140,14 +143,16 @@ struct StoreSetupProgressView_Previews: PreviewProvider {
                                totalNumberOfTasks: 5,
                                numberOfTasksCompleted: 1,
                                shareFeedbackAction: nil,
-                               hideTaskListAction: nil,
-                               isRedacted: false)
+                               hideTaskListAction: {},
+                               isRedacted: false,
+                               isHideStoreOnboardingTaskListFeatureEnabled: true)
 
         StoreSetupProgressView(isExpanded: true,
                                totalNumberOfTasks: 5,
                                numberOfTasksCompleted: 1,
                                shareFeedbackAction: nil,
-                               hideTaskListAction: nil,
-                               isRedacted: false)
+                               hideTaskListAction: {},
+                               isRedacted: false,
+                               isHideStoreOnboardingTaskListFeatureEnabled: true)
     }
 }

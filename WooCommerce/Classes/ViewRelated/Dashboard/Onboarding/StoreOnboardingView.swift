@@ -135,6 +135,7 @@ struct StoreOnboardingView: View {
                                        totalNumberOfTasks: viewModel.taskViewModels.count,
                                        numberOfTasksCompleted: viewModel.numberOfTasksCompleted,
                                        shareFeedbackAction: shareFeedbackAction,
+                                       hideTaskListAction: viewModel.hideTaskList,
                                        isRedacted: viewModel.isRedacted)
 
                 // Task list

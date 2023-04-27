@@ -199,4 +199,8 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Gift Cards extension
     ///
     case readOnlyGiftCards
+
+    /// Enables read-only support for the Min/Max Quantities extension
+    ///
+    case readOnlyMinMaxQuantities
 }

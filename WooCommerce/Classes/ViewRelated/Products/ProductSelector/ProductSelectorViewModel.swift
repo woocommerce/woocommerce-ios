@@ -387,12 +387,8 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
-        let trackingSources = Array(productIDTrackingSources.values.map { $0.rawValue })
-        let areFiltersActive = filtersSubject.value.numberOfActiveFilters > 0
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: allIDs.count,
-                                                                                                        sources: trackingSources,
-                                                                                                        isFilterActive: areFiltersActive))
-
+        
+        trackConfirmButtonTapped(with: allIDs.count)
         onMultipleSelectionCompleted?(allIDs)
     }
 
@@ -818,6 +814,14 @@ extension ProductSelectorViewModel {
 
 // MARK: - Tracking
 private extension ProductSelectorViewModel {
+    func trackConfirmButtonTapped(with productsCount: Int) {
+        let trackingSources = Array(productIDTrackingSources.values.map { $0.rawValue })
+        let areFiltersActive = filtersSubject.value.numberOfActiveFilters > 0
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productsCount,
+                                                                                                        sources: trackingSources,
+                                                                                                        isFilterActive: areFiltersActive))
+    }
+
     func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64) {
         guard productIDTrackingSources[productID] == nil else {
             productIDTrackingSources.removeValue(forKey: productID)

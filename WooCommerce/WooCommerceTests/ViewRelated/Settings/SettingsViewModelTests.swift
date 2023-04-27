@@ -23,6 +23,10 @@ final class SettingsViewModelTests: XCTestCase {
 
     private var appleIDCredentialChecker: AppleIDCredentialCheckerProtocol!
 
+    private var analyticsProvider: MockAnalyticsProvider!
+
+    private var analytics: WooAnalytics!
+
     override func setUpWithError() throws {
         super.setUp()
         storageManager = MockStorageManager()
@@ -31,6 +35,8 @@ final class SettingsViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
@@ -39,6 +45,8 @@ final class SettingsViewModelTests: XCTestCase {
         stores = nil
         sessionManager = nil
         defaults = nil
+        analytics = nil
+        analyticsProvider = nil
         super.tearDown()
     }
 
@@ -322,7 +330,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     // MARK: - `updateStoreSetupListVisibility` method
 
-    func test_updateStoreSetupListVisibility_updates_user_defaults() {
+    func test_updateStoreSetupListVisibility_updates_user_defaults() async {
         // Given
         defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
         let viewModel = SettingsViewModel(stores: stores,
@@ -331,16 +339,79 @@ final class SettingsViewModelTests: XCTestCase {
                                           defaults: defaults)
 
         // When
-        viewModel.updateStoreSetupListVisibility(false)
+        await viewModel.updateStoreSetupListVisibility(false)
 
         // Then
         XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
 
         // When
-        viewModel.updateStoreSetupListVisibility(true)
+        await viewModel.updateStoreSetupListVisibility(true)
 
         // Then
         XCTAssertFalse(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
+    }
+
+    func test_updateStoreSetupListVisibility_tracks_hide_list_event_upon_hiding_list() async throws {
+        // Given
+        sessionManager.defaultSite = Site.fake()
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: true, type: .storeDetails),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker,
+                                          defaults: defaults,
+                                          analytics: analytics)
+
+        stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
+            guard case let .loadOnboardingTasks(_, completion) = action else {
+                return XCTFail()
+            }
+            completion(.success(tasks))
+        }
+
+        // When
+        await viewModel.updateStoreSetupListVisibility(false)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "store_onboarding_hide_list"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["source"] as? String, "settings")
+        XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
+    }
+
+    func test_updateStoreSetupListVisibility_does_not_track_hide_list_event_upon_showing_list() async throws {
+        // Given
+        sessionManager.defaultSite = Site.fake()
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: true, type: .storeDetails),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          appleIDCredentialChecker: appleIDCredentialChecker,
+                                          defaults: defaults,
+                                          analytics: analytics)
+
+        stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
+            guard case let .loadOnboardingTasks(_, completion) = action else {
+                return XCTFail()
+            }
+            completion(.success(tasks))
+        }
+
+        // When
+        await viewModel.updateStoreSetupListVisibility(true)
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(where: { $0 == "store_onboarding_hide_list"}))
     }
 }
 

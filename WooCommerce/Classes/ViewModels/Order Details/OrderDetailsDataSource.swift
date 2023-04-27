@@ -241,6 +241,12 @@ final class OrderDetailsDataSource: NSObject {
         }
     }
 
+    /// Gift Cards applied to an Order
+    ///
+    private var appliedGiftCards: [OrderGiftCard] {
+        order.appliedGiftCards
+    }
+
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService
@@ -441,6 +447,8 @@ private extension OrderDetailsDataSource {
             configureCustomFields(cell: cell)
         case let cell as OrderSubscriptionTableViewCell where row == .subscriptions:
             configureSubscriptions(cell: cell, at: indexPath)
+        case let cell as TitleAndValueTableViewCell where row == .giftCards:
+            configureGiftCards(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -863,6 +871,17 @@ private extension OrderDetailsDataSource {
         cell.configure(cellViewModel)
     }
 
+    private func configureGiftCards(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
+        guard let giftCard = giftCard(at: indexPath) else {
+            return
+        }
+
+        let negativeAmount = -giftCard.amount
+        let formattedAmount = currencyFormatter.formatAmount(negativeAmount.description)
+        cell.updateUI(title: giftCard.code, value: formattedAmount)
+        cell.apply(style: .boldValue)
+    }
+
     private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
         guard let tracking = orderTracking(at: indexPath) else {
             return
@@ -1189,6 +1208,16 @@ extension OrderDetailsDataSource {
             return Section(category: .subscriptions, title: Title.subscriptions, rows: rows)
         }()
 
+        let giftCards: Section? = {
+            // Gift Cards section is hidden if there are no gift cards for the order.
+            guard appliedGiftCards.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlyGiftCards) else {
+                return nil
+            }
+
+            let rows: [Row] = Array(repeating: .giftCards, count: appliedGiftCards.count)
+            return Section(category: .giftCards, title: Title.giftCards, rows: rows)
+        }()
+
         let tracking: Section? = {
             // Tracking section is hidden if there are non-empty non-refunded shipping labels.
             guard shippingLabels.nonRefunded.isEmpty else {
@@ -1236,6 +1265,7 @@ extension OrderDetailsDataSource {
                     [payment,
                      customerInformation,
                      subscriptions,
+                     giftCards,
                      tracking,
                      addTracking,
                      notes]).compactMap { $0 }
@@ -1304,6 +1334,15 @@ extension OrderDetailsDataSource {
         }
 
         return orderSubscriptions[orderIndex]
+    }
+
+    func giftCard(at indexPath: IndexPath) -> OrderGiftCard? {
+        let orderIndex = indexPath.row
+        guard appliedGiftCards.indices.contains(orderIndex) else {
+            return nil
+        }
+
+        return appliedGiftCards[orderIndex]
     }
 
     func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
@@ -1424,6 +1463,7 @@ extension OrderDetailsDataSource {
         static let product = NSLocalizedString("Product", comment: "Product section title if there is only one product.")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let subscriptions = NSLocalizedString("Subscriptions", comment: "Subscriptions section title")
+        static let giftCards = NSLocalizedString("Gift Cards", comment: "Gift Cards section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
         static let shippingAddress = NSLocalizedString("Shipping Details",
@@ -1470,6 +1510,7 @@ extension OrderDetailsDataSource {
             case payment
             case customerInformation
             case subscriptions
+            case giftCards
             case tracking
             case addTracking
             case notes
@@ -1559,6 +1600,7 @@ extension OrderDetailsDataSource {
         case refund
         case netAmount
         case subscriptions
+        case giftCards
         case tracking
         case trackingAdd
         case collectCardPaymentButton
@@ -1641,6 +1683,8 @@ extension OrderDetailsDataSource {
                 return WooBasicTableViewCell.reuseIdentifier
             case .subscriptions:
                 return OrderSubscriptionTableViewCell.reuseIdentifier
+            case .giftCards:
+                return TitleAndValueTableViewCell.reuseIdentifier
             }
         }
     }

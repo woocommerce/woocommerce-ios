@@ -27,6 +27,7 @@ extension UserDefaults {
         case notificationsMarkAsReadCount
         case completedAllStoreOnboardingTasks
         case storePhoneNumber
+        case shouldHideStoreOnboardingTaskList
     }
 }
 

@@ -154,6 +154,7 @@
 		03EB998A2906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB99892906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift */; };
 		03EB99962907F03000F06A39 /* empty-data-array.json in Resources */ = {isa = PBXBuildFile; fileRef = 03EB99952907F03000F06A39 /* empty-data-array.json */; };
 		03EB99982907F4AA00F06A39 /* just-in-time-message-list-multiple.json in Resources */ = {isa = PBXBuildFile; fileRef = 03EB99972907F4AA00F06A39 /* just-in-time-message-list-multiple.json */; };
+		03F6A7E829FAC49F00C10106 /* just-in-time-message-list-without-optional-fields.json in Resources */ = {isa = PBXBuildFile; fileRef = 03F6A7E729FAC49F00C10106 /* just-in-time-message-list-without-optional-fields.json */; };
 		077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */; };
 		077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */; };
 		077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */; };
@@ -1084,6 +1085,7 @@
 		03EB99892906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessagesRemoteTests.swift; sourceTree = "<group>"; };
 		03EB99952907F03000F06A39 /* empty-data-array.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "empty-data-array.json"; sourceTree = "<group>"; };
 		03EB99972907F4AA00F06A39 /* just-in-time-message-list-multiple.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "just-in-time-message-list-multiple.json"; sourceTree = "<group>"; };
+		03F6A7E729FAC49F00C10106 /* just-in-time-message-list-without-optional-fields.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "just-in-time-message-list-without-optional-fields.json"; sourceTree = "<group>"; };
 		077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlugin.swift; sourceTree = "<group>"; };
 		077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapper.swift; sourceTree = "<group>"; };
 		077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemote.swift; sourceTree = "<group>"; };
@@ -2734,6 +2736,7 @@
 				0205021B27C86B9700FB1C6B /* inbox-note-without-isRead.json */,
 				036563E029069D3500D84BFD /* just-in-time-message-list.json */,
 				03EB99972907F4AA00F06A39 /* just-in-time-message-list-multiple.json */,
+				03F6A7E729FAC49F00C10106 /* just-in-time-message-list-without-optional-fields.json */,
 				68C87B332862D40E00A99054 /* setting-all-except-countries.json */,
 				68CB801528D8A39700E169F8 /* customer.json */,
 				68F48B1228E3E5750045C15B /* wc-analytics-customers.json */,
@@ -3382,6 +3385,7 @@
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,
 				EE71CC412951CE700074D908 /* generate-application-password-using-wporg-creds-success.json in Resources */,
 				3158FE6C26129D2E00E566B9 /* wcpay-account-rejected-terms-of-service.json in Resources */,
+				03F6A7E829FAC49F00C10106 /* just-in-time-message-list-without-optional-fields.json in Resources */,
 				0286981929ED324900853B88 /* generative-text-success.json in Resources */,
 				E16C59B928F927CA007D55BB /* iap-order-create.json in Resources */,
 				31054728262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json in Resources */,

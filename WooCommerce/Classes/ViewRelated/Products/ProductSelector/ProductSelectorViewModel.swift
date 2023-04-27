@@ -293,6 +293,9 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
+
+        updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
+
         guard let onProductSelectionStateChanged else {
             toggleSelection(productID: productID)
             return
@@ -305,7 +308,6 @@ final class ProductSelectorViewModel: ObservableObject {
         // The selector supports multiple selection. Toggles the item, and triggers the selection
         toggleSelection(productID: productID)
         onProductSelectionStateChanged(selectedProduct)
-        updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
     }
 
     func changeSelectionStateForVariation(with id: Int64, productID: Int64) {

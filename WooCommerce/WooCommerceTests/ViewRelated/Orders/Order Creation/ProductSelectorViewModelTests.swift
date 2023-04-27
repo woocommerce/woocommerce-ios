@@ -667,7 +667,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedItems, [simpleProduct.productID, 12])
     }
 
-    func test_analytics_when_completeMultipleSelection_closure_is_invoked_then_event_and_properties_are_logged_correctly() throws {
+    func test_analytics_when_completeMultipleSelection_closure_is_invoked_then_event_and_products_are_logged_correctly() throws {
         // Given
         let simpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, purchasable: true, variations: [12, 20])
@@ -692,6 +692,170 @@ final class ProductSelectorViewModelTests: XCTestCase {
             return XCTFail("No property received")
         }
         XCTAssertEqual(property.value as? Int64, 3)
+    }
+
+    func test_analytics_when_completeMultipleSelection_closure_is_invoked_and_filters_are_enabled_then_event_and_properties_are_logged_correctly() throws {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 selectedItemIDs: [1, 10, 20],
+                                                 storageManager: storageManager,
+                                                 analytics: analytics,
+                                                 supportsMultipleSelection: true)
+
+        // When
+        let filters = FilterProductListViewModel.Filters(
+            stockStatus: ProductStockStatus.outOfStock,
+            productStatus: ProductStatus.draft,
+            productType: ProductType.simple,
+            productCategory: nil,
+            numberOfActiveFilters: 3
+        )
+        viewModel.searchTerm = ""
+        viewModel.updateFilters(filters)
+
+        viewModel.completeMultipleSelection()
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+        guard let property = eventProperties.first(where: { $0.key as? String == "is_filter_active"}) else {
+            return XCTFail("No property received")
+        }
+        XCTAssertTrue((property.value as? Bool) ?? false)
+    }
+
+    func test_analytics_when_completeMultipleSelection_closure_is_invoked_with_different_sources_then_event_and_source_are_logged_correctly() throws {
+        // Given
+        let mostPopularProductId: Int64 = 1
+        let lastSoldProductId: Int64 = 10
+        let otherProductId: Int64 = 50
+        let selectedVariationId: Int64 = 12
+
+        let simplePopularProduct = Product.fake().copy(siteID: sampleSiteID, productID: mostPopularProductId, purchasable: true)
+        let variableLastSoldProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                          productID: lastSoldProductId,
+                                                          purchasable: true,
+                                                          variations: [selectedVariationId, 20])
+        let otherSimpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: otherProductId, purchasable: true)
+        insert(simplePopularProduct)
+        insert(variableLastSoldProduct)
+        insert(otherSimpleProduct)
+
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: [mostPopularProductId],
+                                                                                                        lastSoldProductsIds: [lastSoldProductId]))
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 analytics: analytics,
+                                                 supportsMultipleSelection: true,
+                                                 topProductsProvider: topProductsProvider)
+
+        // When
+        viewModel.changeSelectionStateForProduct(with: mostPopularProductId)
+        viewModel.updateSelectedVariations(productID: lastSoldProductId, selectedVariationIDs: [selectedVariationId])
+        viewModel.changeSelectionStateForProduct(with: otherProductId)
+        viewModel.completeMultipleSelection()
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+        guard let property = eventProperties.first(where: { $0.key as? String == "source"}),
+        let propertyValue = property.value as? String else {
+            return XCTFail("No property received")
+        }
+
+        XCTAssertTrue(propertyValue.contains("popular"))
+        XCTAssertTrue(propertyValue.contains("recent"))
+        XCTAssertTrue(propertyValue.contains("alphabetical"))
+    }
+
+    func test_analytics_when_completeMultipleSelection_closure_is_invoked_with_search_then_event_and_source_are_logged_correctly() throws {
+        // Given
+        let searchProductId: Int64 = 50
+
+        let searchSimpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: searchProductId, purchasable: true)
+        insert(searchSimpleProduct)
+
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: [1],
+                                                                                                        lastSoldProductsIds: [2]))
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 analytics: analytics,
+                                                 supportsMultipleSelection: true,
+                                                 topProductsProvider: topProductsProvider)
+
+        // When
+        viewModel.searchTerm = "test"
+        viewModel.changeSelectionStateForProduct(with: searchProductId)
+        viewModel.completeMultipleSelection()
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+        guard let property = eventProperties.first(where: { $0.key as? String == "source"}),
+        let propertyValue = property.value as? String else {
+            return XCTFail("No property received")
+        }
+
+        XCTAssertEqual(propertyValue, "search")
+    }
+
+    func test_analytics_when_completeMultipleSelection_closure_is_invoked_then_event_and_source_are_logged_correctly() throws {
+        // Given
+        let mostPopularProductId: Int64 = 1
+        let lastSoldProductId: Int64 = 10
+        let otherProductId: Int64 = 50
+        let selectedVariationId: Int64 = 12
+
+        let simplePopularProduct = Product.fake().copy(siteID: sampleSiteID, productID: mostPopularProductId, purchasable: true)
+        let variableLastSoldProduct = Product.fake().copy(siteID: sampleSiteID, productID: lastSoldProductId, purchasable: true, variations: [selectedVariationId, 20])
+        let otherSimpleProduct = Product.fake().copy(siteID: sampleSiteID, productID: otherProductId, purchasable: true)
+        insert(simplePopularProduct)
+        insert(variableLastSoldProduct)
+        insert(otherSimpleProduct)
+
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: [mostPopularProductId],
+                                                                                                        lastSoldProductsIds: [lastSoldProductId]))
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 analytics: analytics,
+                                                 supportsMultipleSelection: true,
+                                                 topProductsProvider: topProductsProvider)
+
+        // When
+        viewModel.changeSelectionStateForProduct(with: mostPopularProductId)
+        viewModel.updateSelectedVariations(productID: lastSoldProductId, selectedVariationIDs: [selectedVariationId])
+        viewModel.changeSelectionStateForProduct(with: otherProductId)
+        viewModel.completeMultipleSelection()
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(where: { $0 == "order_creation_product_selector_confirm_button_tapped"}) else {
+            return XCTFail("No event received")
+        }
+
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+        guard let property = eventProperties.first(where: { $0.key as? String == "source"}),
+        let propertyValue = property.value as? String else {
+            return XCTFail("No property received")
+        }
+
+        XCTAssertTrue(propertyValue.contains("popular"))
+        XCTAssertTrue(propertyValue.contains("recent"))
+        XCTAssertTrue(propertyValue.contains("alphabetical"))
     }
 
     func test_filter_button_title_shows_correct_number_of_active_filters() async throws {

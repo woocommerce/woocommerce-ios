@@ -290,7 +290,8 @@ private extension SettingsViewModel {
                 rows.append(.installJetpack)
             }
 
-            if !defaults.completedAllStoreOnboardingTasks {
+            if !defaults.completedAllStoreOnboardingTasks,
+                featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList) {
                 rows.append(.storeSetupList)
             }
 

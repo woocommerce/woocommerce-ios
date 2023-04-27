@@ -268,11 +268,13 @@ final class SettingsViewModelTests: XCTestCase {
 
     // MARK: - `Store Setup List` row
 
-    func test_store_setup_list_row_is_shown_when_there_are_pending_onboarding_tasks() {
+    func test_store_setup_list_row_is_shown_when_there_are_pending_onboarding_tasks_and_feature_flag_on() {
         // Given
+        let featureFlagService = MockFeatureFlagService(isHideStoreOnboardingTaskListFeatureEnabled: true)
         defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = false
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
                                           appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults)
 
@@ -283,11 +285,30 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.storeSetupList) })
     }
 
-    func test_store_setup_list_row_is_hidden_when_there_are_no_pending_onboarding_tasks() {
+    func test_store_setup_list_row_is_hidden_when_there_are_pending_onboarding_tasks_and_feature_flag_off() {
         // Given
+        let featureFlagService = MockFeatureFlagService(isHideStoreOnboardingTaskListFeatureEnabled: false)
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = false
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          appleIDCredentialChecker: appleIDCredentialChecker,
+                                          defaults: defaults)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.storeSetupList) })
+    }
+
+    func test_store_setup_list_row_is_hidden_when_there_are_no_pending_onboarding_tasks_and_feature_flag_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isHideStoreOnboardingTaskListFeatureEnabled: true)
         defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
                                           appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults)
 

@@ -888,7 +888,7 @@ private extension EditableOrderViewModel {
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
-        
+
         if !allProductVariations.contains(variation) {
             allProductVariations.append(variation)
         }

@@ -466,6 +466,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 showSubscriptionSettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.
+            case .quantityRules:
+                // TODO: 9252 - Add analytics
+                // TODO: 8960 - Navigate to quantity rules view
+                return
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]

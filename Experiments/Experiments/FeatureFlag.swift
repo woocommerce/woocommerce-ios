@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Ability to hide store onboarding task list
     ///
     case hideStoreOnboardingTaskList
+
+    /// Enables read-only support for the Min/Max Quantities extension
+    ///
+    case readOnlyMinMaxQuantities
 }

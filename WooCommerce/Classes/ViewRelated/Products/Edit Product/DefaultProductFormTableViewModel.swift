@@ -120,6 +120,8 @@ private extension DefaultProductFormTableViewModel {
                 return .subscription(viewModel: subscriptionRow(product: product, isActionable: actionable), isActionable: actionable)
             case .noVariationsWarning:
                 return .noVariationsWarning(viewModel: noVariationsWarningRow())
+            case .quantityRules:
+                return .quantityRules(viewModel: quantityRulesRow(product: product))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -598,6 +600,33 @@ private extension DefaultProductFormTableViewModel {
                                                                title: title,
                                                                isActionable: false)
     }
+
+    func quantityRulesRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.productImage
+        let title = Localization.quantityRulesTitle
+
+        var quantityDetails = [String]()
+
+        if let minQuantity = product.minAllowedQuantity, minQuantity.isNotEmpty {
+            let minQuantityDescription = String.localizedStringWithFormat(Localization.minQuantityFormat, minQuantity)
+            quantityDetails.append(minQuantityDescription)
+        }
+        if let maxQuantity = product.maxAllowedQuantity, maxQuantity.isNotEmpty {
+            let maxQuantityDescription = String.localizedStringWithFormat(Localization.maxQuantityFormat, maxQuantity)
+            quantityDetails.append(maxQuantityDescription)
+        }
+        if !quantityDetails.containsMoreThanOne, let groupOf = product.groupOfQuantity, groupOf.isNotEmpty {
+            let groupOfDescription = String.localizedStringWithFormat(Localization.groupOfFormat, groupOf)
+            quantityDetails.append(groupOfDescription)
+        }
+
+        let details = quantityDetails.isEmpty ? nil : quantityDetails.joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: true)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -852,5 +881,14 @@ private extension DefaultProductFormTableViewModel {
         static let noVariationsWarningTitle =
             NSLocalizedString("You can only add variable subscriptions in the web dashboard",
                               comment: "Title of the no variations warning row in the product form when a variable subscription product has no variations.")
+
+        // Quantity Rules
+        static let quantityRulesTitle = NSLocalizedString("Quantity Rules", comment: "Title for Quantity Rules row in the product form screen.")
+        static let minQuantityFormat = NSLocalizedString("Minimum quantity: %@",
+                                                          comment: "Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row")
+        static let maxQuantityFormat = NSLocalizedString("Maximum quantity: %@",
+                                                       comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
+        static let groupOfFormat = NSLocalizedString("Group of: %@",
+                                                       comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
     }
 }

@@ -97,6 +97,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .hideStoreOnboardingTaskList:
             return true
+        case .readOnlyMinMaxQuantities:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

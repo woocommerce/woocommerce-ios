@@ -173,7 +173,10 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
                                                                                 maxAllowedQuantity: "200",
                                                                                 groupOfQuantity: "4",
                                                                                 overrideProductQuantities: true)
-        let model = EditableProductVariationModel(productVariation: productVariation)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: false)
 
         // Action
         let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, isMinMaxQuantitiesEnabled: true)

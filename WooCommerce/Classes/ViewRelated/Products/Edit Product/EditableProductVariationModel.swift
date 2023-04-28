@@ -5,8 +5,9 @@ final class EditableProductVariationModel {
     let productVariation: ProductVariation
 
     let allAttributes: [ProductAttribute]
+    let parentProductDisablesQuantityRules: Bool?
 
-    init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?) {
+    init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?, parentProductDisablesQuantityRules: Bool?) {
         self.allAttributes = allAttributes
 
         // API sets a variation's SKU to be its parent product's SKU by default.
@@ -14,6 +15,8 @@ final class EditableProductVariationModel {
         // As a workaround, we set a variation's SKU to nil if it has the same SKU as its parent product during initialization.
         let sku = parentProductSKU == productVariation.sku ? nil: productVariation.sku
         self.productVariation = productVariation.copy(sku: sku)
+
+        self.parentProductDisablesQuantityRules = parentProductDisablesQuantityRules
     }
 }
 
@@ -191,7 +194,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var hasQuantityRules: Bool {
-        let enabled = productVariation.overrideProductQuantities == true
+        let enabled = productVariation.overrideProductQuantities == true && parentProductDisablesQuantityRules == false
         let hasNoRules = minAllowedQuantity.isNilOrEmpty && maxAllowedQuantity.isNilOrEmpty && groupOfQuantity.isNilOrEmpty
         return enabled && !hasNoRules
     }

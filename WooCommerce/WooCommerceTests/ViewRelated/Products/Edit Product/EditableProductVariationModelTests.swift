@@ -21,7 +21,10 @@ final class EditableProductVariationModelTests: XCTestCase {
         let variation = MockProductVariation().productVariation().copy(attributes: variationAttributes)
 
         // Action
-        let name = EditableProductVariationModel(productVariation: variation, allAttributes: allAttributes, parentProductSKU: nil).name
+        let name = EditableProductVariationModel(productVariation: variation,
+                                                 allAttributes: allAttributes,
+                                                 parentProductSKU: nil,
+                                                 parentProductDisablesQuantityRules: nil).name
 
         // Assert
         let expectedName = [
@@ -45,7 +48,10 @@ final class EditableProductVariationModelTests: XCTestCase {
         let variation = MockProductVariation().productVariation().copy(attributes: variationAttributes)
 
         // Action
-        let name = EditableProductVariationModel(productVariation: variation, allAttributes: allAttributes, parentProductSKU: nil).name
+        let name = EditableProductVariationModel(productVariation: variation,
+                                                 allAttributes: allAttributes,
+                                                 parentProductSKU: nil,
+                                                 parentProductDisablesQuantityRules: nil).name
 
         // Assert
         let expectedName = ["Orange", "House"].joined(separator: " - ")
@@ -130,7 +136,10 @@ final class EditableProductVariationModelTests: XCTestCase {
         let variation = MockProductVariation().productVariation().copy(sku: sku)
 
         // Action
-        let model = EditableProductVariationModel(productVariation: variation, allAttributes: [], parentProductSKU: sku)
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  allAttributes: [],
+                                                  parentProductSKU: sku,
+                                                  parentProductDisablesQuantityRules: nil)
 
         // Assert
         XCTAssertNil(model.sku)
@@ -143,7 +152,10 @@ final class EditableProductVariationModelTests: XCTestCase {
         let variation = MockProductVariation().productVariation().copy(sku: sku)
 
         // Action
-        let model = EditableProductVariationModel(productVariation: variation, allAttributes: [], parentProductSKU: "")
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  allAttributes: [],
+                                                  parentProductSKU: "",
+                                                  parentProductDisablesQuantityRules: nil)
 
         // Assert
         XCTAssertEqual(model.sku, sku)
@@ -168,7 +180,10 @@ final class EditableProductVariationModelTests: XCTestCase {
         let variation = ProductVariation.fake().copy(minAllowedQuantity: "", maxAllowedQuantity: "", groupOfQuantity: "", overrideProductQuantities: true)
 
         // Action
-        let model = EditableProductVariationModel(productVariation: variation)
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: false)
 
         // Assert
         XCTAssertFalse(model.hasQuantityRules)
@@ -179,7 +194,10 @@ final class EditableProductVariationModelTests: XCTestCase {
         let variation = ProductVariation.fake().copy(minAllowedQuantity: "4", maxAllowedQuantity: "30", groupOfQuantity: "2", overrideProductQuantities: false)
 
         // Action
-        let model = EditableProductVariationModel(productVariation: variation)
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: false)
 
         // Assert
         XCTAssertFalse(model.hasQuantityRules)
@@ -190,9 +208,26 @@ final class EditableProductVariationModelTests: XCTestCase {
         let variation = ProductVariation.fake().copy(minAllowedQuantity: "4", maxAllowedQuantity: "30", groupOfQuantity: "2", overrideProductQuantities: true)
 
         // Action
-        let model = EditableProductVariationModel(productVariation: variation)
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: false)
 
         // Assert
         XCTAssertTrue(model.hasQuantityRules)
+    }
+
+    func test_hasQuantityRules_is_false_when_parent_product_disables_quantity_rules() {
+        // Arrange
+        let variation = ProductVariation.fake().copy(minAllowedQuantity: "4", maxAllowedQuantity: "30", groupOfQuantity: "2", overrideProductQuantities: true)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: true)
+
+        // Assert
+        XCTAssertFalse(model.hasQuantityRules)
     }
 }

@@ -306,6 +306,26 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
     }
 
+    func test_updating_default_storeID_sets_storePhoneNumber_to_nil() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let mockSessionManager = MockSessionManager()
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager, defaults: defaults)
+
+        // When
+        defaults[.storePhoneNumber] = "0123456789"
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.storePhoneNumber] as? String), "0123456789")
+
+        // When
+        sut.updateDefaultStore(storeID: 0)
+
+        // Then
+        XCTAssertNil(defaults[.storePhoneNumber])
+    }
+
     func test_updating_default_storeID_sets_completedAllStoreOnboardingTasks_to_nil() throws {
         // Given
         let uuid = UUID().uuidString

@@ -21,7 +21,7 @@ final class ProductSelectorViewModelTracker {
     }
 
     func trackConfirmButtonTapped(with productCount: Int) {
-        let trackingSources = Array(productIDTrackingSources.values.map { $0.rawValue })
+        let trackingSources = productIDTrackingSources.values.map { $0.rawValue }
         let filtersAreActive = (viewModel?.filterListViewModel.criteria.numberOfActiveFilters ?? 0 > 0)
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productCount,
                                                                                                         sources: trackingSources,
@@ -47,7 +47,7 @@ final class ProductSelectorViewModelTracker {
             return
         }
 
-        productIDTrackingSources[productID] =  retrieveTrackingSource(for: productID)
+        productIDTrackingSources[productID] = retrieveTrackingSource(for: productID)
     }
 }
 

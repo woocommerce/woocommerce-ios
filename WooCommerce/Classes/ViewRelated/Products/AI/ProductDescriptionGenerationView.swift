@@ -85,6 +85,7 @@ struct ProductDescriptionGenerationView: View {
                         // CTA to copy the generated text.
                         Button {
                             UIPasteboard.general.string = suggestedText
+                            ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
                         } label: {
                             Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
                         }.buttonStyle(PlainButtonStyle())

@@ -7,6 +7,7 @@
 - [Internal] Payments: Update StripeTerminal pod to 2.19.1 [https://github.com/woocommerce/woocommerce-ios/pull/9537]
 - [**] Adds read-only support for the Gift Cards extension in order details. [https://github.com/woocommerce/woocommerce-ios/pull/9558]
 - [**] Adds read-only support for the Subscriptions extension in order and product details. [https://github.com/woocommerce/woocommerce-ios/pull/9541]
+- [*] Product form > description editor: a magic wand button is added to the keyboard toolbar to auto-generate a product description using Jetpack AI for WPCOM stores. [https://github.com/woocommerce/woocommerce-ios/pull/9577]
 - [Internal] Payments: Upate Tap to Pay connection flow strings to avoid mentioning "reader" [https://github.com/woocommerce/woocommerce-ios/pull/9563]
 - [*] Store onboarding: Now the onboarding task list can be shown/hidden from settings and also from the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/9572, https://github.com/woocommerce/woocommerce-ios/pull/9573]
 

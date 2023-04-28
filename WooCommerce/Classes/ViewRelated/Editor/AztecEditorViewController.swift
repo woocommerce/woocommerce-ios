@@ -362,6 +362,7 @@ private extension AztecEditorViewController {
         presenter.present(controller, from: self, onDismiss: { [weak self] in
             self?.richTextView.becomeFirstResponder()
         })
+        ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAIButtonTapped(source: .aztecEditor))
     }
 
     func dismissDescriptionGenerationBottomSheetIfNeeded() {

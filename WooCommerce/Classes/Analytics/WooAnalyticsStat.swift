@@ -692,6 +692,16 @@ public enum WooAnalyticsStat: String {
     //
     case aztecEditorDoneButtonTapped = "aztec_editor_done_button_tapped"
 
+    // MARK: Product description AI
+    //
+    case productDescriptionAIButtonTapped = "product_description_ai_button_tapped"
+    case productDescriptionAIGenerateButtonTapped = "product_description_ai_generate_button_tapped"
+    case productDescriptionAIPauseButtonTapped = "product_description_ai_pause_button_tapped"
+    case productDescriptionAIApplyButtonTapped = "product_description_ai_apply_button_tapped"
+    case productDescriptionAICopyButtonTapped = "product_description_ai_copy_button_tapped"
+    case productDescriptionAIGenerationSuccess = "product_description_ai_generation_success"
+    case productDescriptionAIGenerationFailed = "product_description_ai_generation_failed"
+
     // MARK: Jetpack Tunnel Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"

@@ -340,7 +340,7 @@ private extension AztecEditorViewController {
         let presenter = BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .large
+            sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
             sheet.detents = [.medium(), .large()]
         })

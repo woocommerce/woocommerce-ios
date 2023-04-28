@@ -15,7 +15,7 @@ struct StoreSetupProgressView: View {
 
     let isHideStoreOnboardingTaskListFeatureEnabled: Bool
 
-    @State private var showingTaskHideListConfirmAlert: Bool = false
+    @State private var showingHideStoreSetupListAlert: Bool = false
 
     var body: some View {
         HStack(alignment: .top) {
@@ -54,7 +54,7 @@ struct StoreSetupProgressView: View {
                 }
 
                 Button(Localization.hideStoreSetupListButton) {
-                    showingTaskHideListConfirmAlert = true
+                    showingHideStoreSetupListAlert = true
                 }
                 .renderedIf(isHideStoreOnboardingTaskListFeatureEnabled)
             } label: {
@@ -64,7 +64,7 @@ struct StoreSetupProgressView: View {
             }
             .renderedIf(!isExpanded)
         }
-        .alert(isPresented: $showingTaskHideListConfirmAlert, content: {
+        .alert(isPresented: $showingHideStoreSetupListAlert, content: {
             Alert(title: Text(Localization.HideStoreSetupListAlert.title),
                   message: Text(Localization.HideStoreSetupListAlert.message),
                   primaryButton: .destructive(Text(Localization.HideStoreSetupListAlert.removeButton), action: hideTaskListAction),

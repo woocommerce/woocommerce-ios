@@ -42,7 +42,6 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     }
 
     /// Generates product description async.
-    @MainActor
     func generateDescription() {
         isGenerationInProgress = true
         errorMessage = nil
@@ -53,7 +52,6 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     }
 
     /// Stops or starts product description generation, depending on whether it is in progress.
-    @MainActor
     func toggleDescriptionGeneration() {
         if isGenerationInProgress {
             task?.cancel()

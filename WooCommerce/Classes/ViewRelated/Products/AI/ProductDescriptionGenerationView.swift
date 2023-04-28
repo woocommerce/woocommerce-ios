@@ -37,8 +37,13 @@ struct ProductDescriptionGenerationView: View {
                     Text(Localization.title)
                         .headlineStyle()
 
-                    TextField(Localization.productNamePlaceholder, text: $viewModel.name)
-                        .subheadlineStyle()
+                    if #available(iOS 16.0, *) {
+                        TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
+                            .subheadlineStyle()
+                    } else {
+                        TextField(Localization.productNamePlaceholder, text: $viewModel.name)
+                            .subheadlineStyle()
+                    }
                 }
 
                 // Since there is no placeholder support in `TextEditor`, a workaround is to
@@ -56,7 +61,7 @@ struct ProductDescriptionGenerationView: View {
 
                     if viewModel.features.isEmpty {
                         Text(Localization.productDescriptionPlaceholder)
-                            .foregroundColor(Color(.textSubtle))
+                            .foregroundColor(Color(.placeholderText))
                             .bodyStyle()
                             .padding(insets: Layout.productFeaturesPlaceholderInsets)
                             // Allows gestures to pass through to the `TextEditor`.

@@ -505,7 +505,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.productRows[0].incrementQuantity()
-        viewModel.productSelectorViewModel.completeMultipleSelection()
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£17.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")
     }

@@ -2,8 +2,12 @@
 
 13.4
 -----
+- [*] Payments: Popular and last sold products are displayed on top of the products selection screen when creating or editing an order. [https://github.com/woocommerce/woocommerce-ios/pull/9539]
+
 - [Internal] Payments: Update StripeTerminal pod to 2.19.1 [https://github.com/woocommerce/woocommerce-ios/pull/9537]
+- [**] Adds read-only support for the Gift Cards extension in order details. [https://github.com/woocommerce/woocommerce-ios/pull/9558]
 - [**] Adds read-only support for the Subscriptions extension in order and product details. [https://github.com/woocommerce/woocommerce-ios/pull/9541]
+- [Internal] Payments: Upate Tap to Pay connection flow strings to avoid mentioning "reader" [https://github.com/woocommerce/woocommerce-ios/pull/9563]
 
 13.3
 -----

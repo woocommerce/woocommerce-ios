@@ -360,6 +360,7 @@
 		CE4FD4562350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4552350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift */; };
 		CE5F9A7A22B2D455001755E8 /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F9A7922B2D455001755E8 /* Array+Helpers.swift */; };
 		CECC504023675DF4004540EA /* RefundStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC503F23675DF4004540EA /* RefundStoreTests.swift */; };
+		CEE9188C29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */; };
 		D4CBAE5C26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CBAE5B26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift */; };
 		D4CBAE6026D440FA00BBE6D1 /* MockAnnouncementsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CBAE5F26D440FA00BBE6D1 /* MockAnnouncementsRemote.swift */; };
 		D4CBAE6226D4460900BBE6D1 /* AnnouncementsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CBAE6126D4460800BBE6D1 /* AnnouncementsStore.swift */; };
@@ -811,6 +812,7 @@
 		CE4FD4552350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE5F9A7922B2D455001755E8 /* Array+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
 		CECC503F23675DF4004540EA /* RefundStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundStoreTests.swift; sourceTree = "<group>"; };
+		CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D4CBAE5B26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsStoreTests.swift; sourceTree = "<group>"; };
 		D4CBAE5F26D440FA00BBE6D1 /* MockAnnouncementsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnnouncementsRemote.swift; sourceTree = "<group>"; };
 		D4CBAE6126D4460800BBE6D1 /* AnnouncementsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsStore.swift; sourceTree = "<group>"; };
@@ -1295,6 +1297,7 @@
 				74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */,
 				74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */,
 				D88E234425AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift */,
+				CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */,
 				74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */,
 				021EAA5B25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift */,
 				CE4FD44F2350F27C00A16B31 /* OrderItemTax+ReadOnlyConvertible.swift */,
@@ -2141,6 +2144,7 @@
 				B9AECD3C2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift in Sources */,
 				45AB8B1724AA4B3D00B5B36E /* ProductTagStore.swift in Sources */,
 				02137903270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift in Sources */,
+				CEE9188C29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift in Sources */,
 				247CE8342582F20100F9D9D1 /* MockAppSettingsActionHandler.swift in Sources */,
 				025CA2CA238F515600B05C81 /* ProductShippingClassStore.swift in Sources */,
 				0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */,

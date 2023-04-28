@@ -154,7 +154,7 @@ extension StripeCardReaderService: CardReaderService {
 
     // If we're using the simulated reader, we don't want to check for Bluetooth permissions
     // as the simulator won't have Bluetooth available.
-    // If we're using the built-in reader, bluetooth is not required.
+    // If we're using Tap to Pay on iPhone, bluetooth is not required.
     private func shouldSkipBluetoothCheck(discoveryConfiguration: DiscoveryConfiguration) -> Bool {
         shouldUseSimulatedCardReader || discoveryConfiguration.discoveryMethod == .localMobile
     }

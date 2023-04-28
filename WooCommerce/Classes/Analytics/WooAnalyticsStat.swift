@@ -394,6 +394,7 @@ public enum WooAnalyticsStat: String {
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
     case orderDetailsSubscriptionsShown = "order_details_subscriptions_shown"
+    case orderDetailsGiftCardShown = "order_details_gift_card_shown"
 
     // MARK: Order List Sorting/Filtering
     //

@@ -148,7 +148,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     }
 
     /// This screen is only used for managing Bluetooth card readers.
-    /// If we're connected to the built-in reader, we should disconnect, as users are unlikely to consider
+    /// If we're connected to Tap to Pay on iPhone, we should disconnect, as users are unlikely to consider
     /// another part of their phone as something they connect to and manage.
     private func disconnectFromBuiltInReader(in readers: [CardReader]) {
         if readers.includesBuiltInReader() {
@@ -268,7 +268,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
             newShouldShow = .isFalse
         } else if connectedReaders.includesBuiltInReader() {
             /// This screen only supports management of Bluetooth readers, and will have started disconnection
-            /// the built-in reader in this instance.
+            /// from Tap to Pay on iPhone in this instance.
             newShouldShow = .isFalse
         } else {
             newShouldShow = .isTrue

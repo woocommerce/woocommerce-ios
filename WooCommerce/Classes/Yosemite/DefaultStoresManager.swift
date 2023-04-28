@@ -235,6 +235,7 @@ class DefaultStoresManager: StoresManager {
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
+        defaults[.shouldHideStoreOnboardingTaskList] = nil
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 

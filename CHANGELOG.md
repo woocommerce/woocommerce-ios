@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.4
+This release includes several bug fixes and improvements to make your experience smoother. We're committed to continuously improving the WooCommerce app, and we have some exciting updates coming in the next few weeks. Stay tuned!
+
 ## 13.3
 UK, say hello to in-person payments! We are thrilled to announce that in-person payments are now available to UK merchants currently using WooCommerce Payments. This release also includes a few minor improvements to your store management experience. Thank you all again for your amazing feedback. Keep it coming!
 

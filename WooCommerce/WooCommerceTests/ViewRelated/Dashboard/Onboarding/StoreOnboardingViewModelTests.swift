@@ -820,6 +820,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "store_onboarding_hide_list"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["source"] as? String, "onboarding_list")
+        XCTAssertTrue(try XCTUnwrap(eventProperties["hide"] as? Bool))
         XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
     }
 }

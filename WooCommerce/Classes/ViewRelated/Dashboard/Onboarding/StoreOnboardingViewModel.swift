@@ -117,8 +117,9 @@ class StoreOnboardingViewModel: ObservableObject {
         let pending = taskViewModels
             .filter { !$0.isComplete }
             .map { $0.task.type }
-        analytics.track(event: .StoreOnboarding.storeOnboardingHideList(source: .onboardingList,
-                                                                        pendingTasks: pending))
+        analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: true,
+                                                                              source: .onboardingList,
+                                                                              pendingTasks: pending))
         defaults[.shouldHideStoreOnboardingTaskList] = true
     }
 }

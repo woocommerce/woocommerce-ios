@@ -7,6 +7,7 @@ extension WooAnalyticsEvent {
             static let task = "task"
             static let pendingTasks = "pending_tasks"
             static let source = "source"
+            static let hide = "hide"
         }
 
         static func storeOnboardingShown() -> WooAnalyticsEvent {
@@ -25,9 +26,12 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .storeOnboardingCompleted, properties: [:])
         }
 
-        static func storeOnboardingHideList(source: Source, pendingTasks: [StoreOnboardingTask.TaskType]) -> WooAnalyticsEvent {
+        static func storeOnboardingShowOrHideList(isHiding: Bool,
+                                                  source: Source,
+                                                  pendingTasks: [StoreOnboardingTask.TaskType]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .storeOnboardingHideList,
-                              properties: [Key.source: source.rawValue,
+                              properties: [Key.hide: isHiding,
+                                           Key.source: source.rawValue,
                                            Key.pendingTasks: pendingTasks.map({ $0.analyticsValue }).sorted().joined(separator: ",")])
         }
     }

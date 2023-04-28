@@ -345,6 +345,12 @@ extension WooAnalyticsEvent {
         static func productVariationGenerationFailure() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationGenerationFailure, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Quantity Rules row for a product variation.
+        ///
+        static func quantityRulesTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationDetailViewQuantityRulesTapped, properties: [:])
+        }
     }
 }
 
@@ -407,6 +413,12 @@ extension WooAnalyticsEvent {
         ///
         static func subscriptionsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailsViewSubscriptionsTapped, properties: [:])
+        }
+
+        /// Tracks when the merchant taps the Quantity Rules row.
+        ///
+        static func quantityRulesTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailViewQuantityRulesTapped, properties: [:])
         }
     }
 }

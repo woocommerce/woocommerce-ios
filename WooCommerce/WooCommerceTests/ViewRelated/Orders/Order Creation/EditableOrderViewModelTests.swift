@@ -7,7 +7,6 @@ final class EditableOrderViewModelTests: XCTestCase {
     var viewModel: EditableOrderViewModel!
     var stores: MockStoresManager!
     var storageManager: MockStorageManager!
-    var featureFlagService: MockFeatureFlagService!
 
     let sampleSiteID: Int64 = 123
     let sampleOrderID: Int64 = 1234
@@ -17,19 +16,14 @@ final class EditableOrderViewModelTests: XCTestCase {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
-        featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                            stores: stores,
-                                           storageManager: storageManager,
-                                           featureFlagService: featureFlagService)
+                                           storageManager: storageManager)
     }
 
     // MARK: - Initialization
 
     func test_view_model_inits_with_expected_values() {
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
-
         // Then
         XCTAssertEqual(viewModel.flow, .creation)
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
@@ -38,10 +32,6 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_view_model_product_list_is_initialized_with_expected_values() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
-
         // Then
         XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
@@ -268,15 +258,12 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_order_details_are_updated_when_product_quantity_changes() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         let anotherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 123456, purchasable: true)
 
         storageManager.insertSampleProduct(readOnlyProduct: product)
         storageManager.insertSampleProduct(readOnlyProduct: anotherProduct)
-
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager, featureFlagService: featureFlagService)
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -508,8 +495,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               currencySettings: currencySettings,
-                                               featureFlagService: featureFlagService)
+                                               currencySettings: currencySettings)
 
         // When & Then
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -532,8 +518,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               currencySettings: currencySettings,
-                                               featureFlagService: featureFlagService)
+                                               currencySettings: currencySettings)
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -571,8 +556,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               currencySettings: currencySettings,
-                                               featureFlagService: featureFlagService)
+                                               currencySettings: currencySettings)
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -612,8 +596,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               currencySettings: currencySettings,
-                                               featureFlagService: featureFlagService)
+                                               currencySettings: currencySettings)
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -641,8 +624,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               currencySettings: currencySettings,
-                                               featureFlagService: featureFlagService)
+                                               currencySettings: currencySettings)
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -680,8 +662,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               currencySettings: currencySettings,
-                                               featureFlagService: featureFlagService)
+                                               currencySettings: currencySettings)
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -721,8 +702,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               currencySettings: currencySettings,
-                                               featureFlagService: featureFlagService)
+                                               currencySettings: currencySettings)
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -960,8 +940,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                flow: .editing(initialOrder: .fake()),
                                                storageManager: storageManager,
-                                               analytics: WooAnalytics(analyticsProvider: analytics),
-                                               featureFlagService: featureFlagService)
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -986,8 +965,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               analytics: WooAnalytics(analyticsProvider: analytics),
-                                               featureFlagService: featureFlagService)
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // Given products are added to order
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)

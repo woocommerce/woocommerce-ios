@@ -56,7 +56,7 @@ extension CardPresentModalBuiltInConnectingFailedNonRetryable: ReaderConnectionU
         case .internalServiceError:
             return NSLocalizedString(
                 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again.",
-                comment: "Error message when the built-in reader connection experiences an unexpected internal service error."
+                comment: "Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error."
             )
         default:
             return underlyingError.errorDescription

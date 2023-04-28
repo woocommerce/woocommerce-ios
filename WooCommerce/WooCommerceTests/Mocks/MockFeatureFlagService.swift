@@ -21,6 +21,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isIPPUKExpansionEnabled: Bool
     private let isReadOnlySubscriptionsEnabled: Bool
     private let isProductDescriptionAIEnabled: Bool
+    private let isReadOnlyGiftCardsEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -40,7 +41,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isTapToPayOnIPhoneMilestone2On: Bool = false,
          isIPPUKExpansionEnabled: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
-         isProductDescriptionAIEnabled: Bool = false) {
+         isProductDescriptionAIEnabled: Bool = false,
+         isReadOnlyGiftCardsEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -60,6 +62,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isIPPUKExpansionEnabled = isIPPUKExpansionEnabled
         self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
         self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
+        self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -102,6 +105,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isReadOnlySubscriptionsEnabled
         case .productDescriptionAI:
             return isProductDescriptionAIEnabled
+        case .readOnlyGiftCards:
+            return isReadOnlyGiftCardsEnabled
         default:
             return false
         }

@@ -219,6 +219,36 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, metadataID: 1))
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
+
+    func test_it_persists_order_gift_card_in_storage() throws {
+        // Given
+        let giftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
+        let order = makeOrder().copy(siteID: 3, appliedGiftCards: [giftCard])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageGiftCard = try XCTUnwrap(viewStorage.loadOrderGiftCard(siteID: 3, giftCardID: 2))
+        XCTAssertEqual(storageGiftCard.toReadOnly(), giftCard)
+    }
+
+    func test_it_replaces_existing_order_gift_card_in_storage() throws {
+        // Given
+        let originalGiftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
+        let order = makeOrder().copy(siteID: 3, appliedGiftCards: [originalGiftCard])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        let giftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 25)
+        useCase.upsert([order.copy(appliedGiftCards: [giftCard])])
+
+        // Then
+        let storageGiftCard = try XCTUnwrap(viewStorage.loadOrderGiftCard(siteID: 3, giftCardID: 2))
+        XCTAssertEqual(storageGiftCard.toReadOnly(), giftCard)
+    }
 }
 
 private extension OrdersUpsertUseCaseTests {

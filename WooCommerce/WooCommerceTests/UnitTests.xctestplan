@@ -59,9 +59,6 @@
       }
     },
     {
-      "skippedTests" : [
-        "ProductStoreTests\/test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_returns_them_sorted()"
-      ],
       "target" : {
         "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
         "identifier" : "B5C9DDFD2087FEC0006B910A",

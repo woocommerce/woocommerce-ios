@@ -93,6 +93,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productDescriptionAI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .readOnlyGiftCards:
+            return true
         case .hideStoreOnboardingTaskList:
             return false
         default:

@@ -634,6 +634,12 @@ extension WooAnalyticsEvent {
         static func subscriptionsShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailsSubscriptionsShown, properties: [:])
         }
+
+        /// Tracked when gift cards are displayed in order details.
+        ///
+        static func giftCardsShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailsGiftCardShown, properties: [:])
+        }
     }
 }
 

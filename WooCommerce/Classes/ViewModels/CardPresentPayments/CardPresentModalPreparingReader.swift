@@ -1,6 +1,7 @@
 import UIKit
 
-/// Modal presented when an error occurs while connecting to a reader due to problems with the address
+/// Modal presented when the reader is being prepared to take payment.
+/// In practice, this is shown while the PaymentIntent is being created.
 ///
 final class CardPresentModalPreparingReader: CardPresentPaymentsModalViewModel {
     let cancelAction: (() -> Void)
@@ -22,7 +23,7 @@ final class CardPresentModalPreparingReader: CardPresentPaymentsModalViewModel {
 
     let auxiliaryButtonTitle: String? = nil
 
-    var bottomTitle: String? = Localization.bottomTitle
+    var bottomTitle: String?
 
     let bottomSubtitle: String? = Localization.bottomSubitle
 
@@ -30,8 +31,10 @@ final class CardPresentModalPreparingReader: CardPresentPaymentsModalViewModel {
         return topTitle
     }
 
-    init(cancelAction: @escaping () -> Void) {
+    init(bottomTitle: String = Localization.bottomTitle,
+         cancelAction: @escaping () -> Void) {
         self.cancelAction = cancelAction
+        self.bottomTitle = bottomTitle
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -53,7 +56,7 @@ private extension CardPresentModalPreparingReader {
         )
 
         static let bottomTitle = NSLocalizedString(
-            "Connecting to reader",
+            "Preparing reader",
             comment: "Bottom title of the alert presented with a spinner while the reader is being prepared"
         )
 

@@ -59,6 +59,13 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
         shippingClassID = productVariation.shippingClassID
 
         menuOrder = productVariation.menuOrder
+
+        minAllowedQuantity = productVariation.minAllowedQuantity
+        maxAllowedQuantity = productVariation.maxAllowedQuantity
+        groupOfQuantity = productVariation.groupOfQuantity
+        if let override = productVariation.overrideProductQuantities {
+            overrideProductQuantities = NSNumber(booleanLiteral: override)
+        }
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -106,10 +113,10 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
                                 shippingClassID: shippingClassID,
                                 menuOrder: menuOrder,
                                 subscription: subscription?.toReadOnly(),
-                                minAllowedQuantity: nil,
-                                maxAllowedQuantity: nil,
-                                groupOfQuantity: nil,
-                                overrideProductQuantities: nil) // TODO: 8959 - Replace with real quantity settings
+                                minAllowedQuantity: minAllowedQuantity,
+                                maxAllowedQuantity: maxAllowedQuantity,
+                                groupOfQuantity: groupOfQuantity,
+                                overrideProductQuantities: overrideProductQuantities?.boolValue)
     }
 }
 

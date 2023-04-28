@@ -468,7 +468,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 return // This warning is not actionable.
             case .quantityRules:
                 // TODO: 9252 - Add analytics
-                // TODO: 8960 - Navigate to quantity rules view
+                showQuantityRules()
                 return
             }
         case .optionsCTA(let rows):
@@ -1736,6 +1736,16 @@ private extension ProductFormViewController {
         }
         let viewModel = SubscriptionSettingsViewModel(subscription: subscription)
         let viewController = SubscriptionSettingsViewController(viewModel: viewModel)
+        show(viewController, sender: self)
+    }
+}
+
+// MARK: Action - Show Quantity Rules
+//
+private extension ProductFormViewController {
+    func showQuantityRules() {
+        let viewModel = QuantityRulesViewModel(product: product)
+        let viewController = QuantityRulesViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }
 }

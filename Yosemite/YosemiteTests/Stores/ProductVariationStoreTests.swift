@@ -1015,7 +1015,11 @@ private extension ProductVariationStoreTests {
                                 shippingClass: "",
                                 shippingClassID: 0,
                                 menuOrder: 8,
-                                subscription: nil)
+                                subscription: nil,
+                                minAllowedQuantity: nil,
+                                maxAllowedQuantity: nil,
+                                groupOfQuantity: nil,
+                                overrideProductQuantities: nil)
     }
 
     func sampleOrder(items: [Yosemite.OrderItem]) -> Yosemite.Order {

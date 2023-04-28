@@ -171,7 +171,8 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         // Arrange
         let productVariation = Fixtures.physicalProductVariationWithImages.copy(minAllowedQuantity: "4",
                                                                                 maxAllowedQuantity: "200",
-                                                                                groupOfQuantity: "4")
+                                                                                groupOfQuantity: "4",
+                                                                                overrideProductQuantities: true)
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action

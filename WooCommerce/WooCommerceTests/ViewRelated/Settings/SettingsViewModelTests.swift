@@ -402,10 +402,11 @@ final class SettingsViewModelTests: XCTestCase {
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "store_onboarding_hide_list"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["source"] as? String, "settings")
+        XCTAssertTrue(try XCTUnwrap(eventProperties["hide"] as? Bool))
         XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
     }
 
-    func test_updateStoreSetupListVisibility_does_not_track_hide_list_event_upon_showing_list() async throws {
+    func test_updateStoreSetupListVisibility_tracks_hide_list_event_upon_showing_list() async throws {
         // Given
         sessionManager.defaultSite = Site.fake()
         let tasks: [StoreOnboardingTask] = [
@@ -432,7 +433,11 @@ final class SettingsViewModelTests: XCTestCase {
         await viewModel.updateStoreSetupListVisibility(true)
 
         // Then
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains(where: { $0 == "store_onboarding_hide_list"}))
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "store_onboarding_hide_list"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["source"] as? String, "settings")
+        XCTAssertFalse(try XCTUnwrap(eventProperties["hide"] as? Bool))
+        XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
     }
 }
 

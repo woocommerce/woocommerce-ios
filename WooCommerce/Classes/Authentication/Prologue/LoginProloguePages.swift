@@ -110,12 +110,7 @@ private extension LoginProloguePageTypeViewController {
         let scrollView = UIScrollView()
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: Constants.stackBottomMargin),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-        ])
+        view.pinSubviewToAllEdges(scrollView, insets: .init(top: 0, left: 0, bottom: -Constants.stackBottomMargin, right: 0))
         scrollView.addSubview(stackView)
 
         // Stack view layout
@@ -126,12 +121,9 @@ private extension LoginProloguePageTypeViewController {
 
         // Set constraints
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.pinSubviewToAllEdges(stackView)
         NSLayoutConstraint.activate([
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
     }
 

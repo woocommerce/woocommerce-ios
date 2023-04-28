@@ -705,6 +705,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        viewModel.productSelectorViewModel.completeMultipleSelection()
 
         let testShippingLine = ShippingLine(shippingID: 0,
                                             methodTitle: "Flat Rate",
@@ -723,7 +724,6 @@ final class EditableOrderViewModelTests: XCTestCase {
                                        taxes: [],
                                        attributes: [])
         viewModel.saveFeeLine(testFeeLine)
-        viewModel.productSelectorViewModel.completeMultipleSelection()
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)

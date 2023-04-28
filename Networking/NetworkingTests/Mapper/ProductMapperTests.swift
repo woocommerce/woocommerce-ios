@@ -359,6 +359,19 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.trialLength, "1")
         XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
     }
+
+    /// Test that products with properties from the Min/Max Quantities extension are properly parsed.
+    ///
+    func test_min_max_quantities_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadMinMaxQuantitiesProductResponse())
+
+        // Then
+        XCTAssertEqual(product.minAllowedQuantity, "4")
+        XCTAssertEqual(product.maxAllowedQuantity, "200")
+        XCTAssertEqual(product.groupOfQuantity, "2")
+        XCTAssertEqual(product.combineVariationQuantities, false)
+    }
 }
 
 
@@ -424,5 +437,11 @@ private extension ProductMapperTests {
     ///
     func mapLoadSubscriptionProductResponse() -> Product? {
         return mapProduct(from: "product-subscription")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product-min-max-quantities`
+    ///
+    func mapLoadMinMaxQuantitiesProductResponse() -> Product? {
+        return mapProduct(from: "product-min-max-quantities")
     }
 }

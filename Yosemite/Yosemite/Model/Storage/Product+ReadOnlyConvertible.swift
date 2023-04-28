@@ -175,7 +175,11 @@ extension Storage.Product: ReadOnlyConvertible {
                        bundleStockQuantity: bundleStockQuantity as? Int64,
                        bundledItems: bundledItemsArray.map { $0.toReadOnly() },
                        compositeComponents: compositeComponentsArray.map { $0.toReadOnly() },
-                       subscription: subscription?.toReadOnly())
+                       subscription: subscription?.toReadOnly(),
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil) // TODO: 8959 - Replace with real quantity settings
     }
 
     // MARK: - Private Helpers

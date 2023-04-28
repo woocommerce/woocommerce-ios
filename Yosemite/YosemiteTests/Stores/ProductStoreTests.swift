@@ -1874,7 +1874,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: nil,
                        bundledItems: [],
                        compositeComponents: [],
-                       subscription: nil)
+                       subscription: nil,
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -2035,7 +2039,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: 0,
                        bundledItems: [.fake(), .fake()],
                        compositeComponents: [.fake(), .fake()],
-                       subscription: .fake())
+                       subscription: .fake(),
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -2170,7 +2178,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: nil,
                        bundledItems: [],
                        compositeComponents: [],
-                       subscription: nil)
+                       subscription: nil,
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

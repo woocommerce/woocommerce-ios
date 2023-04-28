@@ -8,7 +8,7 @@ private enum ProductTrackingSource: String {
 }
 
 /// This helper class takes care of tracking the events of `ProductSelectorViewModelTracker`
-/// 
+///
 final class ProductSelectorViewModelTracker {
     private let analytics: Analytics
     private var productIDTrackingSources: [Int64: ProductTrackingSource] = [:]
@@ -20,10 +20,10 @@ final class ProductSelectorViewModelTracker {
         self.trackProductsSource = trackProductsSource
     }
 
-    func trackConfirmButtonTapped(with productsCount: Int) {
+    func trackConfirmButtonTapped(with productCount: Int) {
         let trackingSources = Array(productIDTrackingSources.values.map { $0.rawValue })
         let filtersAreActive = (viewModel?.filterListViewModel.criteria.numberOfActiveFilters ?? 0 > 0)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productsCount,
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productCount,
                                                                                                         sources: trackingSources,
                                                                                                         isFilterActive: filtersAreActive))
     }

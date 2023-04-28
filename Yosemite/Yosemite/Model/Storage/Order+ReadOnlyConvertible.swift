@@ -37,6 +37,7 @@ extension Storage.Order: ReadOnlyConvertible {
         paymentMethodTitle = order.paymentMethodTitle
         paymentURL = order.paymentURL as NSURL?
         chargeID = order.chargeID
+        renewalSubscriptionID = order.renewalSubscriptionID
 
         if let billingAddress = order.billingAddress {
             billingFirstName = billingAddress.firstName
@@ -77,6 +78,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderFeeLines = fees?.map { $0.toReadOnly() } ?? [Yosemite.OrderFeeLine]()
         let orderTaxLines = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderTaxLine]()
         let orderCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.OrderMetaData]()
+        let orderGiftCards = appliedGiftCards?.map { $0.toReadOnly() } ?? [Yosemite.OrderGiftCard]()
 
         return Order(siteID: siteID,
                      orderID: orderID,
@@ -112,8 +114,8 @@ extension Storage.Order: ReadOnlyConvertible {
                      fees: orderFeeLines,
                      taxes: orderTaxLines,
                      customFields: orderCustomFields,
-                     renewalSubscriptionID: nil,
-                     appliedGiftCards: [])
+                     renewalSubscriptionID: renewalSubscriptionID,
+                     appliedGiftCards: orderGiftCards)
 
     }
 

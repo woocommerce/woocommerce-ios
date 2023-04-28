@@ -173,6 +173,7 @@ public enum WooAnalyticsStat: String {
     case storeOnboardingTaskTapped = "store_onboarding_task_tapped"
     case storeOnboardingTaskCompleted = "store_onboarding_task_completed"
     case storeOnboardingCompleted = "store_onboarding_completed"
+    case storeOnboardingHideList = "store_onboarding_hide_list"
 
     // MARK: Site picker. Can be triggered by login epilogue or settings.
     //
@@ -393,6 +394,7 @@ public enum WooAnalyticsStat: String {
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
     case orderDetailsSubscriptionsShown = "order_details_subscriptions_shown"
+    case orderDetailsGiftCardShown = "order_details_gift_card_shown"
 
     // MARK: Order List Sorting/Filtering
     //

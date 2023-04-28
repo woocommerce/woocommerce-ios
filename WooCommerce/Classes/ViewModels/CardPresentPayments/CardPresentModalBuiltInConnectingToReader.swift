@@ -38,13 +38,13 @@ final class CardPresentModalBuiltInConnectingToReader: CardPresentPaymentsModalV
 private extension CardPresentModalBuiltInConnectingToReader {
     enum Localization {
         static let title = NSLocalizedString(
-            "Preparing iPhone card reader",
+            "Preparing Tap to Pay on iPhone",
             comment: "Title label for modal dialog that appears when connecting to a built in card reader"
         )
 
         static let instruction = NSLocalizedString(
-            "The first time you connect, you may be prompted to accept Apple's Terms of Service.",
-            comment: "Label within the modal dialog that appears when connecting to a built in card reader"
+            "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service.",
+            comment: "Label within the modal dialog that appears when starting Tap to Pay on iPhone"
         )
     }
 }

@@ -27,6 +27,11 @@ final class LedgerTableViewCell: UITableViewCell {
     @IBOutlet private weak var taxesValue: UILabel!
     private lazy var taxesViews = RowGroup(containerView: taxesView, label: taxesLabel, value: taxesValue)
 
+    @IBOutlet weak var giftCardsView: UIView!
+    @IBOutlet weak var giftCardsLabel: UILabel!
+    @IBOutlet weak var giftCardsValue: UILabel!
+    private lazy var giftCardsViews = RowGroup(containerView: giftCardsView, label: giftCardsLabel, value: giftCardsValue)
+
     @IBOutlet private var totalView: UIView!
     @IBOutlet private weak var totalLabel: UILabel!
     @IBOutlet private weak var totalValue: UILabel!
@@ -60,6 +65,7 @@ final class LedgerTableViewCell: UITableViewCell {
         feesViews.configure(title: Titles.feesLabel, amount: viewModel.feesValue, hidden: viewModel.shouldHideFees)
         shippingViews.configure(title: Titles.shippingLabel, amount: viewModel.shippingValue, hidden: false)
         taxesViews.configure(title: Titles.taxesLabel, amount: viewModel.taxesValue, hidden: viewModel.shouldHideTaxes)
+        giftCardsViews.configure(title: viewModel.giftCardsText, amount: viewModel.giftCardsValue, hidden: viewModel.shouldHideGiftCards)
         totalViews.configure(title: Titles.totalLabel, amount: viewModel.totalValue, hidden: false)
         configureAccessibility()
     }
@@ -72,6 +78,7 @@ final class LedgerTableViewCell: UITableViewCell {
         feesViews.configure(title: nil, amount: nil, hidden: true)
         shippingViews.configure(title: nil, amount: nil, hidden: true)
         taxesViews.configure(title: Titles.tax, amount: viewModel.taxSubtotal, hidden: taxesValue == nil)
+        giftCardsViews.configure(title: nil, amount: nil, hidden: true)
         totalViews.configure(title: Titles.productsRefund, amount: viewModel.productsRefund, hidden: false)
         configureAccessibility()
     }
@@ -82,6 +89,7 @@ final class LedgerTableViewCell: UITableViewCell {
                             feesView,
                             shippingView,
                             taxesView,
+                            giftCardsView,
                             totalView].filter({
                                 $0?.isHidden == false
                             })
@@ -159,6 +167,14 @@ extension LedgerTableViewCell {
         return taxesValue
     }
 
+    func getGiftCardsLabel() -> UILabel {
+        return giftCardsLabel
+    }
+
+    func getGiftCardsValue() -> UILabel {
+        return giftCardsValue
+    }
+
     func getTotalLabel() -> UILabel {
         return totalLabel
     }
@@ -190,6 +206,8 @@ private extension LedgerTableViewCell {
         shippingValue.applyBodyStyle()
         taxesLabel.applyBodyStyle()
         taxesValue.applyBodyStyle()
+        giftCardsLabel.applyBodyStyle()
+        giftCardsValue.applyBodyStyle()
         totalLabel.applyHeadlineStyle()
         totalValue.applyHeadlineStyle()
     }

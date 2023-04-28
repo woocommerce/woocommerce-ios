@@ -74,6 +74,7 @@ final class OrderDetailsViewController: UIViewController {
         configureEntityListener()
         configureViewModel()
         updateTopBannerView()
+        trackGiftCardsShown()
 
         // FIXME: this is a hack. https://github.com/woocommerce/woocommerce-ios/issues/1779
         reloadTableViewSectionsAndData()
@@ -579,6 +580,15 @@ private extension OrderDetailsViewController {
         let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)
+    }
+
+    /// Tracks when the Gift Cards section will be shown.
+    ///
+    func trackGiftCardsShown() {
+        guard viewModel.dataSource.shouldShowGiftCards else {
+            return
+        }
+        ServiceLocator.analytics.track(event: .Orders.giftCardsShown())
     }
 }
 

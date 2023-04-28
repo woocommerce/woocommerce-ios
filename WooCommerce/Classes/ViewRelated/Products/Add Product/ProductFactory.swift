@@ -99,6 +99,10 @@ private extension ProductFactory {
                 bundleStockQuantity: nil,
                 bundledItems: [],
                 compositeComponents: [],
-                subscription: nil)
+                subscription: nil,
+                minAllowedQuantity: nil,
+                maxAllowedQuantity: nil,
+                groupOfQuantity: nil,
+                combineVariationQuantities: nil)
     }
 }

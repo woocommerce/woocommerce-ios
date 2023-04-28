@@ -127,6 +127,27 @@ class SessionManagerTests: XCTestCase {
         }
     }
 
+    /// Verifies that `storePhoneNumber` is set to `nil` upon reset
+    ///
+    func test_storePhoneNumber_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.storePhoneNumber] = "0123456789"
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.storePhoneNumber] as? String), "0123456789")
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.storePhoneNumber])
+    }
+
     /// Verifies that `completedAllStoreOnboardingTasks` is set to `nil` upon reset
     ///
     func test_completedAllStoreOnboardingTasks_is_set_to_nil_upon_reset() throws {
@@ -146,6 +167,27 @@ class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+    }
+
+    /// Verifies that `shouldHideStoreOnboardingTaskList` is set to `nil` upon reset
+    ///
+    func test_shouldHideStoreOnboardingTaskList_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList])
     }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain

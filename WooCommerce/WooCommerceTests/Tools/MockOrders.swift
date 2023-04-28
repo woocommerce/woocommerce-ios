@@ -16,7 +16,8 @@ final class MockOrders {
                    refunds: [OrderRefundCondensed] = [],
                    fees: [OrderFeeLine] = [],
                    taxes: [OrderTaxLine] = [],
-                   customFields: [OrderMetaData] = []) -> Order {
+                   customFields: [OrderMetaData] = [],
+                   giftCards: [OrderGiftCard] = []) -> Order {
         return Order.fake().copy(siteID: siteID,
                                  orderID: orderID,
                                  customerID: 11,
@@ -43,7 +44,8 @@ final class MockOrders {
                                  refunds: refunds,
                                  fees: fees,
                                  taxes: taxes,
-                                 customFields: customFields)
+                                 customFields: customFields,
+                                 appliedGiftCards: giftCards)
     }
 
     func sampleOrder() -> Order {
@@ -52,6 +54,11 @@ final class MockOrders {
 
     func orderWithFees() -> Order {
         makeOrder(fees: sampleFeeLines())
+    }
+
+    func orderWithFeesAndGiftCards() -> Order {
+        makeOrder(fees: sampleFeeLines(),
+                  giftCards: sampleGiftCards())
     }
 
     func orderPaidWithNoPaymentMethod() -> Order {
@@ -116,6 +123,11 @@ final class MockOrders {
                             totalTax: "",
                             taxes: [],
                             attributes: [])
+    }
+
+    func sampleGiftCards() -> [OrderGiftCard] {
+        let giftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
+        return [giftCard]
     }
 
     func sampleAddress() -> Address {

@@ -1601,6 +1601,33 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
+    /// Verifies that `ProductAction.retrieveProducts` effectively persists the fields added by the Min/Max Quantities extension.
+    ///
+    func test_retrieve_products_effectively_persists_mix_max_quantity_fields() throws {
+        let remote = MockProductsRemote()
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                  productID: sampleProductID,
+                                                  minAllowedQuantity: "4",
+                                                  maxAllowedQuantity: "200",
+                                                  groupOfQuantity: "2",
+                                                  combineVariationQuantities: false)
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success([expectedProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        let storedProduct: Yosemite.Product? = waitFor { promise in
+            let action = ProductAction.retrieveProducts(siteID: self.sampleSiteID, productIDs: [self.sampleProductID]) { _ in
+                let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
+                let readOnlyStoredProduct = storedProduct?.toReadOnly()
+                promise(readOnlyStoredProduct)
+            }
+            productStore.onAction(action)
+        }
+
+        XCTAssertNotNil(storedProduct)
+        XCTAssertEqual(storedProduct, expectedProduct)
+    }
+
     func test_calling_replaceProductLocally_replaces_product_locally() throws {
         // Given
         let product = sampleProduct()
@@ -1874,7 +1901,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: nil,
                        bundledItems: [],
                        compositeComponents: [],
-                       subscription: nil)
+                       subscription: nil,
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -2035,7 +2066,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: 0,
                        bundledItems: [.fake(), .fake()],
                        compositeComponents: [.fake(), .fake()],
-                       subscription: .fake())
+                       subscription: .fake(),
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -2170,7 +2205,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: nil,
                        bundledItems: [],
                        compositeComponents: [],
-                       subscription: nil)
+                       subscription: nil,
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

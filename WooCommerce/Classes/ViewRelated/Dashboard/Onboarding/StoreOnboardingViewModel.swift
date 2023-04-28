@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 import Combine
+import Experiments
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {
@@ -48,6 +49,8 @@ class StoreOnboardingViewModel: ObservableObject {
         !isExpanded && !isRedacted && (taskViewModels.count > tasksForDisplay.count)
     }
 
+    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
+
     let isExpanded: Bool
 
     private let siteID: Int64
@@ -59,6 +62,8 @@ class StoreOnboardingViewModel: ObservableObject {
     private let placeholderTasks: [StoreOnboardingTaskViewModel] = [.placeHolder(), .placeHolder(), .placeHolder()]
 
     private let defaults: UserDefaults
+
+    private let analytics: Analytics
 
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
@@ -73,16 +78,21 @@ class StoreOnboardingViewModel: ObservableObject {
     init(siteID: Int64,
          isExpanded: Bool,
          stores: StoresManager = ServiceLocator.stores,
-         defaults: UserDefaults = .standard) {
+         defaults: UserDefaults = .standard,
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.isExpanded = isExpanded
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
+        self.analytics = analytics
+        isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
 
-        Publishers.CombineLatest($noTasksAvailableForDisplay,
-                                 defaults.publisher(for: \.completedAllStoreOnboardingTasks))
-        .map { !($0 || $1) }
+        Publishers.CombineLatest3($noTasksAvailableForDisplay,
+                                  defaults.publisher(for: \.completedAllStoreOnboardingTasks),
+                                  defaults.publisher(for: \.shouldHideStoreOnboardingTaskList))
+        .map { !($0 || $1 || $2) }
         .assign(to: &$shouldShowInDashboard)
     }
 
@@ -101,6 +111,15 @@ class StoreOnboardingViewModel: ObservableObject {
         } else {
             await update(state: .failed)
         }
+    }
+
+    func hideTaskList() {
+        let pending = taskViewModels
+            .filter { !$0.isComplete }
+            .map { $0.task.type }
+        analytics.track(event: .StoreOnboarding.storeOnboardingHideList(source: .onboardingList,
+                                                                        pendingTasks: pending))
+        defaults[.shouldHideStoreOnboardingTaskList] = true
     }
 }
 
@@ -129,7 +148,7 @@ private extension StoreOnboardingViewModel {
             isRedacted = false
             taskViewModels = items
             if hasPendingTasks(items) {
-                ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingShown())
+                analytics.track(event: .StoreOnboarding.storeOnboardingShown())
             }
         case .failed:
             isRedacted = false
@@ -153,7 +172,7 @@ private extension StoreOnboardingViewModel {
         if hasPendingTasks(taskViewModels) {
             // Tracks the onboarding completion event only when there are any pending tasks before and
             // now all tasks are complete.
-            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingCompleted())
+            analytics.track(event: .StoreOnboarding.storeOnboardingCompleted())
         }
 
         // This will be reset to `nil` when session resets
@@ -241,4 +260,8 @@ extension UserDefaults {
      @objc dynamic var completedAllStoreOnboardingTasks: Bool {
          bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
      }
+
+    @objc dynamic var shouldHideStoreOnboardingTaskList: Bool {
+        bool(forKey: Key.shouldHideStoreOnboardingTaskList.rawValue)
+    }
  }

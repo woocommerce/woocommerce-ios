@@ -322,7 +322,8 @@ extension OrderDetailsViewModel {
             IssueRefundTableViewCell.self,
             ImageAndTitleAndTextTableViewCell.self,
             WCShipInstallTableViewCell.self,
-            OrderSubscriptionTableViewCell.self
+            OrderSubscriptionTableViewCell.self,
+            TitleAndValueTableViewCell.self
         ]
 
         for cellClass in cells {

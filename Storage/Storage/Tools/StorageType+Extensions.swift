@@ -119,6 +119,13 @@ public extension StorageType {
         return firstObject(ofType: OrderMetaData.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Gift Cards.
+    ///
+    func loadOrderGiftCard(siteID: Int64, giftCardID: Int64) -> OrderGiftCard? {
+        let predicate = \OrderGiftCard.order?.siteID == siteID && \OrderGiftCard.giftCardID == giftCardID
+        return firstObject(ofType: OrderGiftCard.self, matching: predicate)
+    }
+
     // MARK: - Stats
 
     /// Retrieves the Stored TopEarnerStats.

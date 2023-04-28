@@ -85,6 +85,7 @@ struct ProductDescriptionGenerationView: View {
                         // CTA to copy the generated text.
                         Button {
                             UIPasteboard.general.string = suggestedText
+                            ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
                         } label: {
                             Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
                         }.buttonStyle(PlainButtonStyle())
@@ -94,7 +95,6 @@ struct ProductDescriptionGenerationView: View {
                         // CTA to start or stop text generation based on the current state.
                         Button {
                             viewModel.toggleDescriptionGeneration()
-                            ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
                         } label: {
                             Image(systemName: viewModel.isGenerationInProgress ? "pause.circle": "arrow.counterclockwise")
                         }.buttonStyle(PlainButtonStyle())

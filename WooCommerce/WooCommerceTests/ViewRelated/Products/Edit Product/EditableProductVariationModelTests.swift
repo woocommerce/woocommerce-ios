@@ -149,4 +149,50 @@ final class EditableProductVariationModelTests: XCTestCase {
         XCTAssertEqual(model.sku, sku)
         XCTAssertEqual(model.productVariation.sku, sku)
     }
+
+    // MARK: - `hasQuantityRules`
+
+    func test_hasQuantityRules_is_false_for_a_variation_with_nil_quantity_rules() {
+        // Arrange
+        let variation = ProductVariation.fake()
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertFalse(model.hasQuantityRules)
+    }
+
+    func test_hasQuantityRules_is_false_for_a_variation_with_empty_quantity_rules() {
+        // Arrange
+        let variation = ProductVariation.fake().copy(minAllowedQuantity: "", maxAllowedQuantity: "", groupOfQuantity: "", overrideProductQuantities: true)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertFalse(model.hasQuantityRules)
+    }
+
+    func test_hasQuantityRules_is_false_for_a_variation_that_does_not_override_product_quantities() {
+        // Arrange
+        let variation = ProductVariation.fake().copy(minAllowedQuantity: "4", maxAllowedQuantity: "30", groupOfQuantity: "2", overrideProductQuantities: false)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertFalse(model.hasQuantityRules)
+    }
+
+    func test_hasQuantityRules_is_true_for_a_variation_that_does_override_product_quantities_and_has_quantity_rules() {
+        // Arrange
+        let variation = ProductVariation.fake().copy(minAllowedQuantity: "4", maxAllowedQuantity: "30", groupOfQuantity: "2", overrideProductQuantities: true)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertTrue(model.hasQuantityRules)
+    }
 }

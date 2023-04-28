@@ -205,14 +205,12 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     func updateStoreSetupListVisibility(_ switchValue: Bool) async {
         defaults[.shouldHideStoreOnboardingTaskList] = !switchValue
 
-        if defaults.shouldHideStoreOnboardingTaskList {
-            await trackHideStoreOnboardingListEvent()
-        }
+        await trackShowOrHideStoreOnboardingListEvent()
     }
 }
 
 private extension SettingsViewModel {
-    func trackHideStoreOnboardingListEvent() async {
+    func trackShowOrHideStoreOnboardingListEvent() async {
         guard let siteID = stores.sessionManager.defaultSite?.siteID else {
             return
         }
@@ -227,7 +225,8 @@ private extension SettingsViewModel {
         let pending = viewModel.taskViewModels
             .filter { !$0.isComplete }
             .map { $0.task.type }
-        analytics.track(event: .StoreOnboarding.storeOnboardingHideList(source: .settings,
+        analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: defaults.shouldHideStoreOnboardingTaskList,
+                                                                        source: .settings,
                                                                         pendingTasks: pending))
     }
 

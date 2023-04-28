@@ -9,7 +9,13 @@ struct StoreSetupProgressView: View {
 
     let shareFeedbackAction: (() -> Void)?
 
+    let hideTaskListAction: (() -> Void)
+
     let isRedacted: Bool
+
+    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
+
+    @State private var showingHideStoreSetupListAlert: Bool = false
 
     var body: some View {
         HStack(alignment: .top) {
@@ -46,6 +52,11 @@ struct StoreSetupProgressView: View {
                 Button(Localization.shareFeedbackButton) {
                     shareFeedbackAction?()
                 }
+
+                Button(Localization.hideStoreSetupListButton) {
+                    showingHideStoreSetupListAlert = true
+                }
+                .renderedIf(isHideStoreOnboardingTaskListFeatureEnabled)
             } label: {
                 Image(uiImage: .ellipsisImage)
                     .flipsForRightToLeftLayoutDirection(true)
@@ -53,6 +64,12 @@ struct StoreSetupProgressView: View {
             }
             .renderedIf(!isExpanded)
         }
+        .alert(isPresented: $showingHideStoreSetupListAlert, content: {
+            Alert(title: Text(Localization.HideStoreSetupListAlert.title),
+                  message: Text(Localization.HideStoreSetupListAlert.message),
+                  primaryButton: .destructive(Text(Localization.HideStoreSetupListAlert.removeButton), action: hideTaskListAction),
+                  secondaryButton: .cancel())
+        })
     }
 }
 
@@ -94,14 +111,48 @@ private extension StoreSetupProgressView {
             "Share feedback",
             comment: "Title of the feedback button in the action sheet."
         )
+
+        static let hideStoreSetupListButton = NSLocalizedString(
+            "Hide store setup list",
+            comment: "Title of the Hide store setup list button in the action sheet."
+        )
+
+        enum HideStoreSetupListAlert {
+            static let title = NSLocalizedString(
+                "Hide store setup list",
+                comment: "Action title for hiding store onboarding task list"
+            )
+
+            static let message = NSLocalizedString(
+                "You can show it when you need it by going to Menu > Settings > Store",
+                comment: "Confirm message for hiding store onboarding task list"
+            )
+
+            static let removeButton = NSLocalizedString(
+                "Remove",
+                comment: "Title for the action button on the confirm alert for hiding store onboarding task list"
+            )
+        }
     }
 }
 
 
 struct StoreSetupProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreSetupProgressView(isExpanded: false, totalNumberOfTasks: 5, numberOfTasksCompleted: 1, shareFeedbackAction: nil, isRedacted: false)
+        StoreSetupProgressView(isExpanded: false,
+                               totalNumberOfTasks: 5,
+                               numberOfTasksCompleted: 1,
+                               shareFeedbackAction: nil,
+                               hideTaskListAction: {},
+                               isRedacted: false,
+                               isHideStoreOnboardingTaskListFeatureEnabled: true)
 
-        StoreSetupProgressView(isExpanded: true, totalNumberOfTasks: 5, numberOfTasksCompleted: 1, shareFeedbackAction: nil, isRedacted: false)
+        StoreSetupProgressView(isExpanded: true,
+                               totalNumberOfTasks: 5,
+                               numberOfTasksCompleted: 1,
+                               shareFeedbackAction: nil,
+                               hideTaskListAction: {},
+                               isRedacted: false,
+                               isHideStoreOnboardingTaskListFeatureEnabled: true)
     }
 }

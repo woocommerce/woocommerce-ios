@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 import Combine
+import Experiments
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {
@@ -48,6 +49,8 @@ class StoreOnboardingViewModel: ObservableObject {
         !isExpanded && !isRedacted && (taskViewModels.count > tasksForDisplay.count)
     }
 
+    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
+
     let isExpanded: Bool
 
     private let siteID: Int64
@@ -73,16 +76,19 @@ class StoreOnboardingViewModel: ObservableObject {
     init(siteID: Int64,
          isExpanded: Bool,
          stores: StoresManager = ServiceLocator.stores,
-         defaults: UserDefaults = .standard) {
+         defaults: UserDefaults = .standard,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.isExpanded = isExpanded
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
+        isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
 
-        Publishers.CombineLatest($noTasksAvailableForDisplay,
-                                 defaults.publisher(for: \.completedAllStoreOnboardingTasks))
-        .map { !($0 || $1) }
+        Publishers.CombineLatest3($noTasksAvailableForDisplay,
+                                  defaults.publisher(for: \.completedAllStoreOnboardingTasks),
+                                  defaults.publisher(for: \.shouldHideStoreOnboardingTaskList))
+        .map { !($0 || $1 || $2) }
         .assign(to: &$shouldShowInDashboard)
     }
 
@@ -101,6 +107,10 @@ class StoreOnboardingViewModel: ObservableObject {
         } else {
             await update(state: .failed)
         }
+    }
+
+    func hideTaskList() {
+        defaults[.shouldHideStoreOnboardingTaskList] = true
     }
 }
 
@@ -241,4 +251,8 @@ extension UserDefaults {
      @objc dynamic var completedAllStoreOnboardingTasks: Bool {
          bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
      }
+
+    @objc dynamic var shouldHideStoreOnboardingTaskList: Bool {
+        bool(forKey: Key.shouldHideStoreOnboardingTaskList.rawValue)
+    }
  }

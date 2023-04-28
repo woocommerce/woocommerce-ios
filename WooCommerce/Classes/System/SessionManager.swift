@@ -168,6 +168,7 @@ final class SessionManager: SessionManagerProtocol {
         defaultStoreID = nil
         defaultSite = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
+        defaults[.shouldHideStoreOnboardingTaskList] = nil
     }
 
     /// Deletes application password

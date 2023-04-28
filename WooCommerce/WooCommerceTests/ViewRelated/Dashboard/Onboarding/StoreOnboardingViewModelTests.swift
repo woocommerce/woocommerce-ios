@@ -757,6 +757,37 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(sut.shouldShowInDashboard)
     }
+
+    func test_shouldShowInDashboard_is_false_when_user_has_opted_to_hide_the_list() async {
+        // Given
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+
+        // When
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = true
+
+        // Then
+        XCTAssertFalse(sut.shouldShowInDashboard)
+    }
+
+    // MARK: - hideTaskList
+
+    func test_hideTaskList_updates_userdefaults() async {
+        // Given
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+
+        // When
+        sut.hideTaskList()
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
+    }
 }
 
 private extension StoreOnboardingViewModelTests {

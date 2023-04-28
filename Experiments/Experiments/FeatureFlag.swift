@@ -199,4 +199,8 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Gift Cards extension
     ///
     case readOnlyGiftCards
+
+    /// Ability to hide store onboarding task list
+    ///
+    case hideStoreOnboardingTaskList
 }

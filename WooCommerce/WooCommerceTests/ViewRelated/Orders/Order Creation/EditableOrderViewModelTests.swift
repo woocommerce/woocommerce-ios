@@ -904,14 +904,12 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_product_is_tracked_when_added() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               analytics: WooAnalytics(analyticsProvider: analytics),
-                                               featureFlagService: featureFlagService)
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -988,12 +986,10 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_product_selector_source_is_tracked_when_product_selector_clear_selection_button_is_tapped() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               analytics: WooAnalytics(analyticsProvider: analytics),
-                                               featureFlagService: featureFlagService)
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.productSelectorViewModel.clearSelection()

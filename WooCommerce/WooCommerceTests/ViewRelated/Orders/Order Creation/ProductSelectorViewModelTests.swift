@@ -958,6 +958,157 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(selectedProduct, products[0].productID)
     }
+
+    func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_then_it_includes_them_with_a_limit_and_with_the_given_order() {
+        let maxTopProductGroupCount = 5
+        let mostPopularProductIds: [Int64] = Array(1...6)
+        let lastSoldProductIds: [Int64] = Array(7...10)
+
+        let topProducts = (mostPopularProductIds.reversed() + lastSoldProductIds).map {
+            Product.fake().copy(siteID: sampleSiteID, productID: $0, purchasable: true)
+        }
+
+        let extraProducts = [
+            Product.fake().copy(siteID: sampleSiteID, productID: 123, purchasable: true),
+            Product.fake().copy(siteID: sampleSiteID, productID: 12345, purchasable: true)
+        ]
+
+        let totalProducts = topProducts + extraProducts
+        insert(totalProducts)
+
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
+                                                                                                        lastSoldProductsIds: lastSoldProductIds))
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+
+        waitUntil {
+            viewModel.productsSectionViewModels.isNotEmpty
+        }
+
+        let displayingPopularIds = viewModel.productsSectionViewModels.first?.productRows.map { $0.productOrVariationID }
+        let displayingLastSoldIds = viewModel.productsSectionViewModels[safe: 1]?.productRows.map { $0.productOrVariationID }
+
+        XCTAssertEqual(viewModel.productsSectionViewModels.count, 3)
+        XCTAssertEqual(displayingPopularIds, Array(mostPopularProductIds.prefix(maxTopProductGroupCount)))
+        XCTAssertEqual(displayingLastSoldIds, Array(lastSoldProductIds.prefix(maxTopProductGroupCount)))
+        XCTAssertEqual(viewModel.productsSectionViewModels.last?.productRows.count, totalProducts.count)
+    }
+
+    func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_with_duplicates_then_it_removes_limit() {
+        let mostPopularProductIds: [Int64] = Array(1...6)
+        let lastSoldProductIds: [Int64] = Array(5...8)
+
+        let topProducts = (mostPopularProductIds + lastSoldProductIds).map {
+            Product.fake().copy(siteID: sampleSiteID, productID: $0, purchasable: true)
+        }
+
+        let extraProducts = [
+            Product.fake().copy(siteID: sampleSiteID, productID: 123, purchasable: true),
+            Product.fake().copy(siteID: sampleSiteID, productID: 12345, purchasable: true)
+        ]
+
+        let totalProducts = topProducts + extraProducts
+        insert(totalProducts)
+
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
+                                                                                                        lastSoldProductsIds: lastSoldProductIds))
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+
+        waitUntil {
+            viewModel.productsSectionViewModels.isNotEmpty
+        }
+
+        let displayingPopularIds = viewModel.productsSectionViewModels.first?.productRows.map { $0.productOrVariationID }
+        let displayingLastSoldIds = viewModel.productsSectionViewModels[safe: 1]?.productRows.map { $0.productOrVariationID }
+
+        guard let displayingPopularIds = displayingPopularIds,
+              displayingPopularIds.isNotEmpty,
+              let displayingLastSoldIds = displayingLastSoldIds,
+              displayingLastSoldIds.isNotEmpty else {
+            XCTFail()
+
+            return
+        }
+
+        XCTAssertTrue(Set(displayingPopularIds).intersection(Set(displayingLastSoldIds)).isEmpty)
+    }
+
+    func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_with_a_search_term_it_ignores_them() {
+        // Given
+        let mostPopularProductIds: [Int64] = Array(1...6)
+        let lastSoldProductIds: [Int64] = Array(7...10)
+
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
+                                                                                                        lastSoldProductsIds: lastSoldProductIds))
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+
+
+        let expectation = expectation(description: "Completed product search")
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
+                self.insert(product, withSearchTerm: "shirt")
+                onCompletion(.success(()))
+                expectation.fulfill()
+            case .searchProductsInCache:
+                break
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productsSectionViewModels.count, 1)
+
+    }
+
+    func test_productsSectionViewModels_when_we_have_top_products_and_filters_it_shows_one_section() async throws {
+        // Given
+        let popularProductId: Int64 = 1
+        let lastSoldProductId: Int64 = 10
+
+        let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
+                                                                            ProductSelectorTopProducts(popularProductsIds: [popularProductId],
+                                                                                                        lastSoldProductsIds: [lastSoldProductId]))
+
+
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                productID: popularProductId,
+                                                productTypeKey: ProductType.simple.rawValue,
+                                                purchasable: true)
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                  productID: lastSoldProductId,
+                                                  productTypeKey: ProductType.variable.rawValue,
+                                                  purchasable: true)
+        insert(variableProduct)
+        insert(simpleProduct)
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+
+        // When
+        let filters = FilterProductListViewModel.Filters(
+            stockStatus: nil,
+            productStatus: nil,
+            productType: ProductType.simple,
+            productCategory: nil,
+            numberOfActiveFilters: 1
+        )
+        viewModel.updateFilters(filters)
+        viewModel.searchTerm = ""
+        try await Task.sleep(nanoseconds: searchDebounceTime)
+
+        // Then
+        XCTAssertEqual(viewModel.productsSectionViewModels.count, 1)
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productRows.first?.productOrVariationID, simpleProduct.productID)
+    }
 }
 
 // MARK: - Utils
@@ -983,5 +1134,11 @@ private extension ProductSelectorViewModelTests {
         if let storedProduct = storage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID) {
             searchResult.addToProducts(storedProduct)
         }
+    }
+}
+
+private extension ProductSelectorViewModel {
+    var productRows: [ProductRowViewModel] {
+        productsSectionViewModels.flatMap { $0.productRows }
     }
 }

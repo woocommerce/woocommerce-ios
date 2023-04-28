@@ -26,6 +26,10 @@ protocol SettingsViewModelOutput {
     /// Main Site's URL
     ///
     var siteUrl: String? { get }
+
+    /// For Store Setup List Setting Switch value
+    ///
+    var isStoreSetupSettingSwitchOn: Bool { get }
 }
 
 protocol SettingsViewModelActionsHandler {
@@ -46,6 +50,10 @@ protocol SettingsViewModelActionsHandler {
     /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
     ///
     func reloadSettings()
+
+    /// Updates store setup list visibility setting in user defaults
+    ///
+    func updateStoreSetupListVisibility(_ switchValue: Bool) async
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -85,6 +93,12 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         return urlString?.removingPrefix("https://").removingPrefix("http://")
     }
 
+    /// For Store Setup List Setting Switch value
+    ///
+    var isStoreSetupSettingSwitchOn: Bool {
+        !defaults.shouldHideStoreOnboardingTaskList
+    }
+
     /// Sites pulled from the results controlelr
     ///
     private var sites = [Yosemite.Site]()
@@ -102,6 +116,8 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
+    private let defaults: UserDefaults
+    private let analytics: Analytics
 
     /// Reference to the Zendesk shared instance
     ///
@@ -110,11 +126,15 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker()) {
+         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
+         defaults: UserDefaults = .standard,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.appleIDCredentialChecker = appleIDCredentialChecker
+        self.defaults = defaults
+        self.analytics = analytics
 
         /// Initialize Sites Results Controller
         ///
@@ -178,9 +198,39 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         configureSections()
         presenter?.refreshViewContent()
     }
+
+    /// Updates store setup list visibility setting in user defaults
+    ///
+    @MainActor
+    func updateStoreSetupListVisibility(_ switchValue: Bool) async {
+        defaults[.shouldHideStoreOnboardingTaskList] = !switchValue
+
+        if defaults.shouldHideStoreOnboardingTaskList {
+            await trackHideStoreOnboardingListEvent()
+        }
+    }
 }
 
 private extension SettingsViewModel {
+    func trackHideStoreOnboardingListEvent() async {
+        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+            return
+        }
+
+        let viewModel = StoreOnboardingViewModel(siteID: siteID,
+                                                 isExpanded: false,
+                                                 stores: stores,
+                                                 defaults: defaults,
+                                                 analytics: analytics)
+        await viewModel.reloadTasks()
+
+        let pending = viewModel.taskViewModels
+            .filter { !$0.isComplete }
+            .map { $0.task.type }
+        analytics.track(event: .StoreOnboarding.storeOnboardingHideList(source: .settings,
+                                                                        pendingTasks: pending))
+    }
+
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -238,6 +288,11 @@ private extension SettingsViewModel {
                 (site?.isNonJetpackSite == true &&
                  featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
                 rows.append(.installJetpack)
+            }
+
+            if !defaults.completedAllStoreOnboardingTasks,
+                featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList) {
+                rows.append(.storeSetupList)
             }
 
             guard rows.isNotEmpty else {

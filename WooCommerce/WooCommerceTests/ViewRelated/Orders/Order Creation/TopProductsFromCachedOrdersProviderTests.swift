@@ -24,9 +24,9 @@ final class TopProductsFromCachedOrdersProviderTests: XCTestCase {
     func test_provideTopProductsFromCachedOrders_when_there_are_no_orders_return_empty() {
         let provider = TopProductsFromCachedOrdersProvider(storageManager: storageManager)
 
-        let topProducts = provider.provideTopProductsFromCachedOrders(siteID: sampleSiteID)
+        let topProducts = provider.provideTopProducts(siteID: sampleSiteID)
 
-        XCTAssertEqual(topProducts, TopProductsFromCachedOrders.empty)
+        XCTAssertEqual(topProducts, ProductSelectorTopProducts.empty)
     }
 
     func test_provideTopProductsFromCachedOrders_when_there_are_orders_return_popular_products_sorted() {
@@ -35,7 +35,7 @@ final class TopProductsFromCachedOrdersProviderTests: XCTestCase {
 
         let provider = TopProductsFromCachedOrdersProvider(storageManager: storageManager)
 
-        let topProducts = provider.provideTopProductsFromCachedOrders(siteID: sampleSiteID)
+        let topProducts = provider.provideTopProducts(siteID: sampleSiteID)
 
         XCTAssertEqual(topProducts.popularProductsIds, expectedProductIDs)
     }
@@ -46,9 +46,9 @@ final class TopProductsFromCachedOrdersProviderTests: XCTestCase {
 
         let provider = TopProductsFromCachedOrdersProvider(storageManager: storageManager)
 
-        let topProducts = provider.provideTopProductsFromCachedOrders(siteID: sampleSiteID)
+        let topProducts = provider.provideTopProducts(siteID: sampleSiteID)
 
-        XCTAssertEqual(topProducts, TopProductsFromCachedOrders.empty)
+        XCTAssertEqual(topProducts, ProductSelectorTopProducts.empty)
     }
 
     func test_provideTopProductsFromCachedOrders_when_there_are_popular_products_but_site_id_is_different_returns_empty() {
@@ -57,9 +57,9 @@ final class TopProductsFromCachedOrdersProviderTests: XCTestCase {
 
         let provider = TopProductsFromCachedOrdersProvider(storageManager: storageManager)
 
-        let topProducts = provider.provideTopProductsFromCachedOrders(siteID: 956)
+        let topProducts = provider.provideTopProducts(siteID: 956)
 
-        XCTAssertEqual(topProducts, TopProductsFromCachedOrders.empty)
+        XCTAssertEqual(topProducts, ProductSelectorTopProducts.empty)
     }
 
     func test_provideTopProductsFromCachedOrders_when_there_are_orders_return_last_sold_sorted() {
@@ -68,7 +68,7 @@ final class TopProductsFromCachedOrdersProviderTests: XCTestCase {
 
         let provider = TopProductsFromCachedOrdersProvider(storageManager: storageManager)
 
-        let topProducts = provider.provideTopProductsFromCachedOrders(siteID: sampleSiteID)
+        let topProducts = provider.provideTopProducts(siteID: sampleSiteID)
 
         XCTAssertEqual(topProducts.lastSoldProductsIds, expectedProductIDs)
     }
@@ -79,9 +79,9 @@ final class TopProductsFromCachedOrdersProviderTests: XCTestCase {
 
         let provider = TopProductsFromCachedOrdersProvider(storageManager: storageManager)
 
-        let topProducts = provider.provideTopProductsFromCachedOrders(siteID: sampleSiteID)
+        let topProducts = provider.provideTopProducts(siteID: sampleSiteID)
 
-        XCTAssertEqual(topProducts, TopProductsFromCachedOrders.empty)
+        XCTAssertEqual(topProducts, ProductSelectorTopProducts.empty)
     }
 
     func test_provideTopProductsFromCachedOrders_when_there_are_last_sold_products_but_site_id_is_different_returns_empty() {
@@ -90,9 +90,9 @@ final class TopProductsFromCachedOrdersProviderTests: XCTestCase {
 
         let provider = TopProductsFromCachedOrdersProvider(storageManager: storageManager)
 
-        let topProducts = provider.provideTopProductsFromCachedOrders(siteID: 956)
+        let topProducts = provider.provideTopProducts(siteID: 956)
 
-        XCTAssertEqual(topProducts, TopProductsFromCachedOrders.empty)
+        XCTAssertEqual(topProducts, ProductSelectorTopProducts.empty)
     }
 }
 

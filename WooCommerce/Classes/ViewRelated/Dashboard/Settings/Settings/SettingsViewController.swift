@@ -142,6 +142,8 @@ private extension SettingsViewController {
             configureDomain(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
+        case let cell as SwitchTableViewCell where row == .storeSetupList:
+            configureStoreSetupList(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -205,6 +207,16 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.installJetpack
+    }
+
+    func configureStoreSetupList(cell: SwitchTableViewCell) {
+        cell.title = Localization.storeSetupList
+        cell.isOn = viewModel.isStoreSetupSettingSwitchOn
+        cell.onChange = { [weak self] value in
+            Task {
+                await self?.viewModel.updateStoreSetupListVisibility(value)
+            }
+        }
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -632,6 +644,7 @@ extension SettingsViewController {
         // Store settings
         case domain
         case installJetpack
+        case storeSetupList
 
         // Help & Feedback
         case support
@@ -680,6 +693,8 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
+            case .storeSetupList:
+                return SwitchTableViewCell.self
             case .logout, .closeAccount:
                 return BasicTableViewCell.self
             case .privacy:
@@ -751,6 +766,11 @@ private extension SettingsViewController {
         static let installJetpack = NSLocalizedString(
             "Install Jetpack",
             comment: "Navigates to Install Jetpack screen."
+        )
+
+        static let storeSetupList = NSLocalizedString(
+            "Store Setup List",
+            comment: "Controls store onboarding setup list visibility."
         )
 
         static let privacySettings = NSLocalizedString(

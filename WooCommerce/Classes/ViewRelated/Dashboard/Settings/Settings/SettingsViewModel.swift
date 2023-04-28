@@ -226,8 +226,8 @@ private extension SettingsViewModel {
             .filter { !$0.isComplete }
             .map { $0.task.type }
         analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: defaults.shouldHideStoreOnboardingTaskList,
-                                                                        source: .settings,
-                                                                        pendingTasks: pending))
+                                                                              source: .settings,
+                                                                              pendingTasks: pending))
     }
 
     func loadWhatsNewOnWooCommerce() {

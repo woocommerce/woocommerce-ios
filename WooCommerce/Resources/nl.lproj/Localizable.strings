@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-20 17:54:03+0000 */
+/* Translation-Revision-Date: 2023-04-25 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -63,6 +63,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ eindigt op %2$@";
+
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
+"%1$@ every %2$@" = "%1$@ elke %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ excl. %2$@";
@@ -614,6 +617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "Voegt variatie toe aan bestelling.";
 
+/* Option in the store creation selling platforms question. */
+"Adobe Commerce" = "Adobe Commerce";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Handtekening volwassene vereist (+%1$@)";
 
@@ -686,9 +692,6 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Bijna klaar. Voer de verificatiecode in van je authenticatie-app.";
 
-/* Subtitle for the login button on the account creation form. */
-"Already registered?" = "Ben je al geregistreerd?";
-
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "Je kunt ook het wachtwoord voor dit account invoeren.";
 
@@ -726,9 +729,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "Er is een HTTP-foutcode gegeven.";
-
-/* Account creation error when the email is already associated with an existing WP.com account. */
-"An account with this email already exists." = "Er bestaat al een account met dit e-mailadres.";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "Fout bij het sluiten van account.";
@@ -1043,6 +1043,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "Caribisch Nederland";
 
+/* Description of the Coupons menu in the hub menu */
+"Boost sales with special offers" = "Geef je verkopen een boost met speciale aanbiedingen";
+
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "Geef je bedrijf een boost door klanten speciale aanbiedingen en kortingen te geven";
 
@@ -1231,6 +1234,7 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
@@ -1300,6 +1304,9 @@ which should be translated separately and considered part of this sentence. */
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Ontvang hoogwaardige productbeoordelingen voor je winkel.";
+
+/* Description of one of the hub menu options */
+"Capture reviews for your store" = "Krijg beoordelingen voor je winkel";
 
 /* (External) card reader payment method title on the select payment method screen */
 "Card Reader" = "Kaartlezer";
@@ -1481,6 +1488,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Account aan het sluiten…";
+
+/* Industry option in the store creation category question. */
+"Clothing and accessories" = "Kleding en accessoires";
 
 /* Country option for a site address. */
 "Cocos (Keeling) Islands" = "Cocoseilanden";
@@ -1690,7 +1700,8 @@ which should be translated separately and considered part of this sentence. */
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
    Title of the button on the store creation store name form to continue.
    Title of the button to continue with a profiler question.
-   Title of the button to continue with a selected domain. */
+   Title of the button to continue with a selected domain.
+   Title of the submit button on the account creation form. */
 "Continue" = "Doorgaan";
 
 /* Title of the primary button on the store onboarding payments setup screen. */
@@ -1898,6 +1909,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Je eerste variatie maken";
+
+/* Title for the account creation form to create new password. */
+"Create your password" = "Maak je wachtwoord aan";
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "Maak, bewerk en publiceer producten.";
@@ -2339,6 +2353,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Ecuador" = "Ecuador";
 
+/* Option in the store creation selling platforms question. */
+"Ecwid" = "Ecwid";
+
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
@@ -2728,6 +2745,12 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "Experimentele functies";
 
+/* Label for the expiry setting in the subscription settings screen. */
+"Expire after" = "Verlopen na";
+
+/* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
+"Expire after: %@" = "Verlopen na: %@";
+
 /* Status of coupons that are expired */
 "Expired" = "Verlopen";
 
@@ -2778,9 +2801,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Faroe Islands" = "Faeröer";
-
-/* Industry option in the store creation category question. */
-"Fashion, apparel, and accessories" = "Mode, kleding en accessoires";
 
 /* Fast to launch title feature on the Free Trial Summary Screen */
 "Fast to launch" = "Snelle lancering";
@@ -2894,6 +2914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Food and drink" = "Eten en drinken";
 
+/* Button to see instructions for resetting password of a WPCom account. */
+"Forgot password?" = "Wachtwoord vergeten?";
+
 /* Title in the error notice when a validation error occurs after submitting domain contact info. */
 "Form Validation Error" = "Validatiefoutformulier";
 
@@ -2908,6 +2931,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "Het eerste jaar gratis";
+
+/* Label for the free trial setting in the subscription settings screen. */
+"Free trial" = "Gratis proefabonnement";
 
 /* Country option for a site address. */
 "French Guiana" = "Frans-Guyana";
@@ -2941,6 +2967,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Gambia" = "Gambia";
+
+/* General section title in the hub menu */
+"General" = "Algemeen";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "Nieuwe variatie genereren";
@@ -2994,9 +3023,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Local notification body when the user encounters an error logging in with site address. */
 "Get some help!" = "Vraag om hulp!";
-
-/* Title of the submit button on the account creation form. */
-"Get started" = "Aan de slag";
 
 /* Title for the account creation form. */
 "Get started in minutes" = "Ga binnen enkele minuten al aan de slag";
@@ -3566,6 +3592,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Deelnemen vanaf elke locatie";
 
+/* Description of the hub menu payments button */
+"Join the mobile payments" = "Start ook met mobiele betalingen";
+
 /* Country option for a site address. */
 "Jordan" = "Jordanië";
 
@@ -3877,6 +3906,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Met liefde gemaakt door Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">Wij zijn op zoek naar nieuwe collega's!<\/a>";
 
+/* Option in the store creation selling platforms question. */
+"Magento" = "Magento";
+
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "Mail (Standaard)";
 
@@ -3924,8 +3956,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "Kaartlezer beheren";
 
+/* Description of one of the hub menu options */
+"Manage more on admin" = "Beheer meer bij beheer";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Voorraad beheren";
+
+/* Description of one of the hub menu options */
+"Manage your plans" = "Beheer je abonnementen";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Handmatige offsets";
@@ -4159,6 +4197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Netwerk actieve plug-ins";
 
+/* Display label when a subscription never expires. */
+"Never expire" = "Verlopen nooit";
+
 /* Title of the badge shown when advertising a new feature */
 "New" = "Nieuw";
 
@@ -4270,7 +4311,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "Geen bestelling geselecteerd";
 
-/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Display label when a subscription has no price.
+   Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Geen prijs ingesteld";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -4299,6 +4341,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "Geen verzendkosten beschikbaar";
 
+/* Display label when a subscription has no signup fee. */
+"No signup fee" = "Geen aanmeldkosten";
+
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "Geen ondersteunde contactmethode op dit apparaat.";
 
@@ -4307,6 +4352,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Nog geen belastinggroepen";
+
+/* Display label when a subscription has no trial period. */
+"No trial period" = "Geen proefperiode";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Geen variaties om te genereren";
@@ -4453,6 +4501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "Wp-admin openen";
 
+/* Title text in the store creation loading screen */
+"Opening the doors" = "De deuren openen";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Opent een lijst met beschikbare statussen.";
 
@@ -4570,6 +4621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Andere sites";
+
+/* Subtitle text in the store creation loading screen */
+"Our favorite color is purple." = "Onze lievelingskleur is paars.";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5401,6 +5455,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "Reguliere prijs";
 
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: 'Regular price: $60.00 every 2 months'. */
+"Regular price: %1$@ every %2$@" = "Reguliere prijs: %1$@ elke %2$@";
+
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Reguliere prijs: %@";
 
@@ -5906,7 +5963,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Configureer het pakket dat je gaat gebruiken voor de verzending van je producten. We slaan het dan op voor toekomstige bestellingen.";
 
 /* Settings button in the hub menu
-   Settings navigation title */
+   Settings navigation title
+   Title of the hub menu settings button */
 "Settings" = "Instellingen";
 
 /* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
@@ -6116,6 +6174,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Aangemeld als @%1$@";
+
+/* Label for the signup fee setting in the subscription settings screen. */
+"Signup fee" = "Aanmeldkosten";
 
 /* Display label for simple product type. */
 "Simple" = "Simpel";
@@ -6346,6 +6407,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the notice when a user updated status for selected products */
 "Status updated" = "Status bijgewerkt";
 
+/* Description of the Inbox menu in the hub menu */
+"Stay up-to-date" = "Blijf up-to-date";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "Meer hulp nodig? Contact";
 
@@ -6395,8 +6459,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Ondersteuningsverzoek indienen";
 
-/* Display label for subscription product type. */
+/* Display label for simple subscription product type.
+   Title for Subscription row in the product form screen.
+   Title for the subscription settings in a subscription product. */
 "Subscription" = "Abonnement";
+
+/* Label for the subscription price setting in the subscription settings screen. */
+"Subscription price" = "Abonnementsprijs";
 
 /* Title for the Subscriptions / Upgrades view */
 "Subscriptions" = "Abonnementen";
@@ -6448,9 +6517,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Winkel wijzigen";
-
-/* Switch store option in the hub menu */
-"Switch store" = "Winkel wijzigen";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "Overgeschakeld naar %1$@.";
@@ -6738,6 +6804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "De URL heeft geen geldige host.";
+
+/* Subtitle text in the store creation loading screen */
+"The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "Het team van Woo bestaat uit meer dan 350 getalenteerde personen, die over meer dan 30 landen zijn verspreid.";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Het bedrag wordt niet ondersteund voor Tap to Pay on iPhone. Probeer het met een fysieke lezer of een andere betaalmethode.";
@@ -7367,6 +7436,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Schakel deze optie in als de coupon niet van toepassing is op afgeprijsde artikelen. Artikel-specifieke coupons werken alleen als het artikel niet is afgeprijsd. Winkelwagen-specifieke coupons werken alleen wanneer er geen afgeprijsde artikelen in de winkelwagen staan.";
 
+/* Title text in the store creation loading screen */
+"Turning on the lights" = "De lichten aandoen";
+
 /* Country option for a site address. */
 "Tuvalu" = "Tuvalu";
 
@@ -7695,6 +7767,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Werk WooCommerce bij naar 3.5 om deze app te blijven gebruiken";
 
+/* Description of the hub menu settings button */
+"Update your preferences" = "Werk je voorkeuren bij";
+
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld uur geleden bijgewerkt";
 
@@ -7813,6 +7888,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable product type. */
 "Variable" = "Variabele";
 
+/* Display label for variable subscription product type. */
+"Variable Subscription" = "Variabel abonnement";
+
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Variabel product";
 
@@ -7912,6 +7990,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the '<number> Products' button */
 "View refunded order items" = "Bekijk terugbetaalde bestelde artikelen";
 
+/* Description of one of the hub menu options */
+"View your store" = "Bekijk je winkel";
+
 /* User role badge */
 "Viewer" = "Lezer";
 
@@ -7948,6 +8029,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Wallis and Futuna" = "Wallis en Futuna";
+
+/* Option in the store creation selling platforms question. */
+"Walmart" = "Walmart";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "We zijn klaar om je winkel aan te maken";
@@ -8151,6 +8235,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Width" = "Breedte";
 
 /* Option in the store creation selling platforms question. */
+"Wish" = "Wish";
+
+/* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
 /* Title text in the store creation loading screen */
@@ -8247,6 +8334,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Je kunt deze productaddons bewerken vanaf je webdashboard.";
 
+/* Info notice at the bottom of the subscription settings screen. */
+"You can edit subscription settings in the web dashboard" = "Je kan de instellingen van abonnement bewerken in het nieuwe webdashboard";
+
 /* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
 "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "Je vindt Tap to Pay voor iPhone via Menu > Betalingen > Betalingen ontvangen, of in Bestellingsgegevens. Kies Tap to Pay voor iPhone als de betalingsmethode.";
 
@@ -8258,6 +8348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Je kunt nu verzendlabels rechtstreeks vanaf je apparaat aanmaken voor alle fysieke bestellingen met de gratis WooCommerce Shipping-plugin. Tik op 'Verzendlabel aanmaken' om onze bètafunctie te proberen!";
+
+/* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
+"You can only add variable subscriptions in the web dashboard" = "Je kan alleen variabele abonnementen toevoegen in het online dashboard";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
 "You can refund fees in your store admin" = "Je kunt bedragen terugstorten via je winkelbeheer";
@@ -8426,6 +8519,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Scannen op lezer";
 
+/* Display label for a product's subscription period when it is a single day. */
+"day" = "dag";
+
+/* Display label for a product's subscription period, e.g. '7 days'. */
+"days" = "dagen";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
@@ -8456,6 +8555,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "handmatige restitutie";
+
+/* Display label for a product's subscription period when it is a single month. */
+"month" = "Maand";
+
+/* Display label for a product's subscription period, e.g. '12 months'. */
+"months" = "Maanden";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "geen vorige periode";
@@ -8539,6 +8644,12 @@ which should be translated separately and considered part of this sentence. */
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Negeren";
 
+/* Display label for a product's subscription period when it is a single week. */
+"week" = "week";
+
+/* Display label for a product's subscription period, e.g. '4 weeks'. */
+"weeks" = "Weken";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mijn winkel, vandaag, deze week, deze maand, dit jaar, bestellingen, bezoekers, conversie, topconversie, verkochte artikelen";
 
@@ -8547,6 +8658,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, producten, categorieën, nieuw product, producten zoeken.";
+
+/* Display label for a product's subscription period when it is a single year. */
+"year" = "jaar";
+
+/* Display label for a product's subscription period, e.g. '2 years'. */
+"years" = "Jaren";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

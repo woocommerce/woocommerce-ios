@@ -1707,6 +1707,7 @@
 		CE0F17D022A8105800964A63 /* ReadMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE0F17CE22A8105800964A63 /* ReadMoreTableViewCell.xib */; };
 		CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0F17D122A8308900964A63 /* FancyAlertController+PurchaseNote.swift */; };
 		CE13681529FBD42100EBF43C /* QuantityRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13681429FBD42100EBF43C /* QuantityRules.swift */; };
+		CE13681729FBD94300EBF43C /* QuantityRulesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13681629FBD94300EBF43C /* QuantityRulesViewModel.swift */; };
 		CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14452D2188C11700A991D8 /* ZendeskManager.swift */; };
 		CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */; };
 		CE16177A21B7192A00B82A47 /* AuthenticationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */; };
@@ -1773,6 +1774,7 @@
 		CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5B20F7A7740080B73E /* TableFooterView.xib */; };
 		CE8CCD43239AC06E009DBD22 /* RefundDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8CCD41239AC06E009DBD22 /* RefundDetailsViewController.swift */; };
 		CE8CCD44239AC06E009DBD22 /* RefundDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CCD42239AC06E009DBD22 /* RefundDetailsViewController.xib */; };
+		CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */; };
 		CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */; };
 		CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758523D21AC200486676 /* AggregateOrderItem.swift */; };
 		CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */; };
@@ -3964,6 +3966,7 @@
 		CE0F17CE22A8105800964A63 /* ReadMoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReadMoreTableViewCell.xib; sourceTree = "<group>"; };
 		CE0F17D122A8308900964A63 /* FancyAlertController+PurchaseNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertController+PurchaseNote.swift"; sourceTree = "<group>"; };
 		CE13681429FBD42100EBF43C /* QuantityRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRules.swift; sourceTree = "<group>"; };
+		CE13681629FBD94300EBF43C /* QuantityRulesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRulesViewModel.swift; sourceTree = "<group>"; };
 		CE14452D2188C11700A991D8 /* ZendeskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskManager.swift; sourceTree = "<group>"; };
 		CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewController.swift; sourceTree = "<group>"; };
 		CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationConstants.swift; sourceTree = "<group>"; };
@@ -4030,6 +4033,7 @@
 		CE85FD5B20F7A7740080B73E /* TableFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableFooterView.xib; sourceTree = "<group>"; };
 		CE8CCD41239AC06E009DBD22 /* RefundDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsViewController.swift; sourceTree = "<group>"; };
 		CE8CCD42239AC06E009DBD22 /* RefundDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundDetailsViewController.xib; sourceTree = "<group>"; };
+		CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRulesViewModelTests.swift; sourceTree = "<group>"; };
 		CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalytics.swift; sourceTree = "<group>"; };
 		CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WooCommerce-Bridging-Header.h"; sourceTree = "<group>"; };
 		CECC758523D21AC200486676 /* AggregateOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregateOrderItem.swift; sourceTree = "<group>"; };
@@ -4638,6 +4642,7 @@
 		020B2F9723BDF2D000BD79AD /* Edit Product */ = {
 			isa = PBXGroup;
 			children = (
+				CE91BE9E29FBE9BD00B6E1AF /* Quantity Rules */,
 				CCE64E3C29EEA9C500C1C937 /* Subscription */,
 				CC09A91029CB1AB700D6C4AD /* Composite Products */,
 				CCE785C629C1E80D0003977F /* Bundled Products */,
@@ -8800,6 +8805,7 @@
 			isa = PBXGroup;
 			children = (
 				CE13681429FBD42100EBF43C /* QuantityRules.swift */,
+				CE13681629FBD94300EBF43C /* QuantityRulesViewModel.swift */,
 			);
 			path = "Quantity Rules";
 			sourceTree = "<group>";
@@ -9165,6 +9171,14 @@
 				03191AE828E20C9200670723 /* PluginDetailsRowView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		CE91BE9E29FBE9BD00B6E1AF /* Quantity Rules */ = {
+			isa = PBXGroup;
+			children = (
+				CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */,
+			);
+			path = "Quantity Rules";
 			sourceTree = "<group>";
 		};
 		CECC758D23D2260E00486676 /* Refunded Products */ = {
@@ -12093,6 +12107,7 @@
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
 				4572641927F1EB27004E1F95 /* AddEditCouponViewModel.swift in Sources */,
 				31E6F21F26B3577800227E6F /* LegacyCardReaderConnectionController.swift in Sources */,
+				CE13681729FBD94300EBF43C /* QuantityRulesViewModel.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
 				0388E1A829E04687007DF84D /* DeepLinkForwarder.swift in Sources */,
@@ -12288,6 +12303,7 @@
 				B622BC74289CF19400B10CEC /* WaitingTimeTrackerTests.swift in Sources */,
 				023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */,
 				26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */,
+				CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */,
 				0277AEAB256CAA5300F45C4A /* MockShippingLabelAddress.swift in Sources */,
 				D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */,
 				CC53FB402759042600C4CA4F /* ProductSelectorViewModelTests.swift in Sources */,

@@ -5,8 +5,8 @@ import SwiftUI
 /// Hosting controller that wraps a `QuantityRules` view.
 ///
 final class QuantityRulesViewController: UIHostingController<QuantityRules> {
-    init() {
-        super.init(rootView: QuantityRules())
+    init(viewModel: QuantityRulesViewModel) {
+        super.init(rootView: QuantityRules(viewModel: viewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -16,6 +16,10 @@ final class QuantityRulesViewController: UIHostingController<QuantityRules> {
 
 struct QuantityRules: View {
 
+    /// View model that directs the view content.
+    ///
+    let viewModel: QuantityRulesViewModel
+
     /// Environment safe areas
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
@@ -24,19 +28,19 @@ struct QuantityRules: View {
         ScrollView {
             VStack(alignment: .leading) {
                 // Minimum quantity
-                TitleAndSubtitleRow(title: Localization.minQuantity, subtitle: "4")
+                TitleAndSubtitleRow(title: Localization.minQuantity, subtitle: viewModel.minQuantity)
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)
 
                 // Maximum quantity
-                TitleAndSubtitleRow(title: Localization.maxQuantity, subtitle: "400")
+                TitleAndSubtitleRow(title: Localization.maxQuantity, subtitle: viewModel.maxQuantity)
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)
 
                 // Group of
-                TitleAndSubtitleRow(title: Localization.groupOf, subtitle: "2")
+                TitleAndSubtitleRow(title: Localization.groupOf, subtitle: viewModel.groupOf)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
@@ -66,7 +70,14 @@ private extension QuantityRules {
 }
 
 struct QuantityRules_Previews: PreviewProvider {
+
+    static let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2")
+    static let noQuantityRules = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "")
+
     static var previews: some View {
-        QuantityRules()
+        QuantityRules(viewModel: viewModel)
+
+        QuantityRules(viewModel: noQuantityRules)
+            .previewDisplayName("No Quantity Rules")
     }
 }

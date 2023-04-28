@@ -4,6 +4,7 @@
 -----
 - [Internal] Payments: Update StripeTerminal pod to 2.19.1 [https://github.com/woocommerce/woocommerce-ios/pull/9537]
 - [**] Adds read-only support for the Subscriptions extension in order and product details. [https://github.com/woocommerce/woocommerce-ios/pull/9541]
+- [*] Product form > description editor: a magic wand button is added to the keyboard toolbar to auto-generate a product description using Jetpack AI for WPCOM stores. [https://github.com/woocommerce/woocommerce-ios/pull/9577]
 
 13.3
 -----

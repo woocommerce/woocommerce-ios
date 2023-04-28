@@ -25,6 +25,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let analytics: Analytics
     private let onApply: (_ output: ProductDescriptionGenerationOutput) -> Void
 
     private var task: Task<Void, Error>?
@@ -33,16 +34,20 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
          name: String,
          description: String,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onApply: @escaping (ProductDescriptionGenerationOutput) -> Void) {
         self.name = name
         self.features = description
         self.siteID = siteID
         self.stores = stores
+        self.analytics = analytics
         self.onApply = onApply
     }
 
     /// Generates product description async.
     func generateDescription() {
+        analytics.track(event: .ProductFormAI.productDescriptionAIGenerateButtonTapped(isRetry: suggestedText?.isNotEmpty == true))
+
         isGenerationInProgress = true
         errorMessage = nil
         task = Task { @MainActor in
@@ -54,6 +59,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Stops or starts product description generation, depending on whether it is in progress.
     func toggleDescriptionGeneration() {
         if isGenerationInProgress {
+            analytics.track(event: .ProductFormAI.productDescriptionAIPauseButtonTapped())
             task?.cancel()
             isGenerationInProgress = false
         } else {
@@ -63,6 +69,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
 
     /// Applies the generated product description and product name to the product.
     func applyToProduct() {
+        analytics.track(event: .ProductFormAI.productDescriptionAIApplyButtonTapped())
         onApply(.init(name: name, description: suggestedText ?? ""))
     }
 }
@@ -85,9 +92,11 @@ private extension ProductDescriptionGenerationViewModel {
         switch result {
         case let .success(text):
             suggestedText = text
+            analytics.track(event: .ProductFormAI.productDescriptionAIGenerationSuccess())
         case let .failure(error):
             errorMessage = error.localizedDescription
             DDLogError("Error generating product description: \(error)")
+            analytics.track(event: .ProductFormAI.productDescriptionAIGenerationFailed(error: error))
         }
         isGenerationInProgress = false
     }

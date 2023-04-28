@@ -96,7 +96,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .readOnlyGiftCards:
             return true
         case .hideStoreOnboardingTaskList:
-            return false
+            return true
         default:
             return true
         }

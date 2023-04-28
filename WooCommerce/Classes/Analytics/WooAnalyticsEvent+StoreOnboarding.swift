@@ -36,7 +36,7 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent.StoreOnboarding {
     enum Source: String {
         case onboardingList = "onboarding_list"
-        case settings = "settings"
+        case settings
     }
 }
 

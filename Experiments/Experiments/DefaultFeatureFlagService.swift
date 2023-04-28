@@ -33,8 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .loginMagicLinkEmphasisM2:
             return true
-        case .productMultiSelectionM1:
-            return true
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:

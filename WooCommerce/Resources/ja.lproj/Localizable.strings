@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-19 12:54:25+0000 */
+/* Translation-Revision-Date: 2023-04-26 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -63,6 +63,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "最後の4桁が%2$@の %1$@ カード";
+
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
+"%1$@ every %2$@" = "%2$@毎に %1$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ (%2$@ を除く)";
@@ -614,6 +617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "注文にバリエーションを追加します。";
 
+/* Option in the store creation selling platforms question. */
+"Adobe Commerce" = "Adobe Commerce";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "成人の方の署名が必要 (+%1$@)";
 
@@ -686,9 +692,6 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "もう少しで完了です。認証アプリから認証コードを入力してください。";
 
-/* Subtitle for the login button on the account creation form. */
-"Already registered?" = "すでに登録されていますか ?";
-
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "または、このアカウントのパスワードを入力することもできます。";
 
@@ -726,9 +729,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "HTTP エラーコードが返されました。";
-
-/* Account creation error when the email is already associated with an existing WP.com account. */
-"An account with this email already exists." = "このメールアドレスのアカウントはすでにあります。";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "アカウントの閉鎖中にエラーが発生しました。";
@@ -1043,6 +1043,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "ボネール、シント・ユースタティウスおよびサバ";
 
+/* Description of the Coupons menu in the hub menu */
+"Boost sales with special offers" = "特別オファーで売上を伸ばす";
+
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "顧客に特別オファーや割引を提供して売上を向上";
 
@@ -1231,6 +1234,7 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
@@ -1300,6 +1304,9 @@ which should be translated separately and considered part of this sentence. */
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "ストアに対する高品質な製品レビューを取得しましょう。";
+
+/* Description of one of the hub menu options */
+"Capture reviews for your store" = "ストアに対するレビューを取得する";
 
 /* (External) card reader payment method title on the select payment method screen */
 "Card Reader" = "カードリーダー";
@@ -1481,6 +1488,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "アカウントを閉鎖しています…";
+
+/* Industry option in the store creation category question. */
+"Clothing and accessories" = "服飾雑貨";
 
 /* Country option for a site address. */
 "Cocos (Keeling) Islands" = "ココス (キーリング) 諸島";
@@ -1690,7 +1700,8 @@ which should be translated separately and considered part of this sentence. */
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
    Title of the button on the store creation store name form to continue.
    Title of the button to continue with a profiler question.
-   Title of the button to continue with a selected domain. */
+   Title of the button to continue with a selected domain.
+   Title of the submit button on the account creation form. */
 "Continue" = "次へ";
 
 /* Title of the primary button on the store onboarding payments setup screen. */
@@ -1898,6 +1909,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "最初のバリエーションを作成";
+
+/* Title for the account creation form to create new password. */
+"Create your password" = "パスワードを作成";
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "商品を作成、編集、公開します。";
@@ -2339,6 +2353,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Ecuador" = "エクアドル";
 
+/* Option in the store creation selling platforms question. */
+"Ecwid" = "Ecwid";
+
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
@@ -2728,6 +2745,12 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "試験用の機能";
 
+/* Label for the expiry setting in the subscription settings screen. */
+"Expire after" = "有効期限";
+
+/* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
+"Expire after: %@" = "有効期限: %@";
+
 /* Status of coupons that are expired */
 "Expired" = "期限切れ";
 
@@ -2778,9 +2801,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Faroe Islands" = "フェロー諸島";
-
-/* Industry option in the store creation category question. */
-"Fashion, apparel, and accessories" = "ファッション、アパレル、アクセサリー";
 
 /* Fast to launch title feature on the Free Trial Summary Screen */
 "Fast to launch" = "公開までが速い";
@@ -2894,6 +2914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Food and drink" = "食品・飲料";
 
+/* Button to see instructions for resetting password of a WPCom account. */
+"Forgot password?" = "パスワードをお忘れですか ?";
+
 /* Title in the error notice when a validation error occurs after submitting domain contact info. */
 "Form Validation Error" = "フォーム検証エラー";
 
@@ -2908,6 +2931,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "1年目は無料";
+
+/* Label for the free trial setting in the subscription settings screen. */
+"Free trial" = "無料お試し";
 
 /* Country option for a site address. */
 "French Guiana" = "フランス領ギアナ";
@@ -2941,6 +2967,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Gambia" = "ガンビア";
+
+/* General section title in the hub menu */
+"General" = "一般";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "新しいバリエーションを生成";
@@ -2994,9 +3023,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Local notification body when the user encounters an error logging in with site address. */
 "Get some help!" = "サポートを利用する";
-
-/* Title of the submit button on the account creation form. */
-"Get started" = "新規登録";
 
 /* Title for the account creation form. */
 "Get started in minutes" = "すぐに始められます";
@@ -3566,6 +3592,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "どこからでも参加可能";
 
+/* Description of the hub menu payments button */
+"Join the mobile payments" = "モバイル決済を利用する";
+
 /* Country option for a site address. */
 "Jordan" = "ヨルダン";
 
@@ -3877,6 +3906,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Automattic が思いを込めて作りました。<a href=\"https:\/\/automattic.com\/work-with-us\/\">社員を募集中です。<\/a>";
 
+/* Option in the store creation selling platforms question. */
+"Magento" = "Magento";
+
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "メールアドレス (デフォルト)";
 
@@ -3924,8 +3956,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "カードリーダーを管理";
 
+/* Description of one of the hub menu options */
+"Manage more on admin" = "管理画面でさらに管理する";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "在庫管理";
+
+/* Description of one of the hub menu options */
+"Manage your plans" = "プランを管理する";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "マニュアルオフセット";
@@ -4159,6 +4197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "ネットワークが有効なプラグイン";
 
+/* Display label when a subscription never expires. */
+"Never expire" = "期限なし";
+
 /* Title of the badge shown when advertising a new feature */
 "New" = "新規";
 
@@ -4270,7 +4311,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "注文が選択されていません";
 
-/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Display label when a subscription has no price.
+   Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "価格未設定";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -4299,6 +4341,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "利用できる配送料金がありません";
 
+/* Display label when a subscription has no signup fee. */
+"No signup fee" = "登録費用なし";
+
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "この端末で対応している連絡方法はありません。";
 
@@ -4307,6 +4352,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "税区分がまだありません";
+
+/* Display label when a subscription has no trial period. */
+"No trial period" = "無料お試しなし";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "生成するバリエーションはありません";
@@ -4453,6 +4501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "WP 管理画面を開く";
 
+/* Title text in the store creation loading screen */
+"Opening the doors" = "扉を開いています";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "利用可能なステータスのリストを開きます。";
 
@@ -4570,6 +4621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "他のサイト";
+
+/* Subtitle text in the store creation loading screen */
+"Our favorite color is purple." = "私たちの好きな色は紫色です。";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5401,6 +5455,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "標準価格";
 
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: 'Regular price: $60.00 every 2 months'. */
+"Regular price: %1$@ every %2$@" = "標準価格: %2$@毎に %1$@";
+
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "標準価格 :%@";
 
@@ -5906,7 +5963,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "商品の配送に使用する荷物を設定します。 今後の注文用に保存されます。";
 
 /* Settings button in the hub menu
-   Settings navigation title */
+   Settings navigation title
+   Title of the hub menu settings button */
 "Settings" = "設定";
 
 /* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
@@ -6116,6 +6174,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "@%1$@ にログイン中";
+
+/* Label for the signup fee setting in the subscription settings screen. */
+"Signup fee" = "登録費用";
 
 /* Display label for simple product type. */
 "Simple" = "シンプル";
@@ -6346,6 +6407,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the notice when a user updated status for selected products */
 "Status updated" = "ステータスを更新しました";
 
+/* Description of the Inbox menu in the hub menu */
+"Stay up-to-date" = "最新の状態に保つ";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "さらにサポートが必要ですか ? お問い合わせ";
 
@@ -6395,8 +6459,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "サポートリクエストを送信";
 
-/* Display label for subscription product type. */
+/* Display label for simple subscription product type.
+   Title for Subscription row in the product form screen.
+   Title for the subscription settings in a subscription product. */
 "Subscription" = "定期購入";
+
+/* Label for the subscription price setting in the subscription settings screen. */
+"Subscription price" = "購読価格";
 
 /* Title for the Subscriptions / Upgrades view */
 "Subscriptions" = "サブスクリプション";
@@ -6448,9 +6517,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "ストアを切り替える";
-
-/* Switch store option in the hub menu */
-"Switch store" = "ストアを切り替える";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "%1$@ に切り替えました。";
@@ -6738,6 +6804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "この URL には有効なホストがありません。";
+
+/* Subtitle text in the store creation loading screen */
+"The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "Woo チームは30を超える国に分散する350人以上の優れた人材で構成されています。";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone ではその金額に対応していません。ハードウェアリーダーか、別の支払い方法をお試しください。";
@@ -7367,6 +7436,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "セール価格商品へのクーポンの適用を禁止する場合は、この機能をオンにします。 商品単位で適用されるクーポンは、その商品がセール価格商品でない場合にのみ有効になります。 お買い物カゴ単位で適用されるクーポンは、お買い物カゴにセール価格商品ではない商品が含まれる場合にのみ有効になります。";
 
+/* Title text in the store creation loading screen */
+"Turning on the lights" = "明かりを点けています";
+
 /* Country option for a site address. */
 "Tuvalu" = "ツバル";
 
@@ -7695,6 +7767,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "WooCommerce 3.5に更新して引き続きアプリを使用";
 
+/* Description of the hub menu settings button */
+"Update your preferences" = "設定を更新する";
+
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld時間前に更新";
 
@@ -7813,6 +7888,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable product type. */
 "Variable" = "変数";
 
+/* Display label for variable subscription product type. */
+"Variable Subscription" = "バリエーションのある定期購入";
+
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "バリエーションのある商品";
 
@@ -7912,6 +7990,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the '<number> Products' button */
 "View refunded order items" = "返金された注文アイテムを表示";
 
+/* Description of one of the hub menu options */
+"View your store" = "ストアを表示する";
+
 /* User role badge */
 "Viewer" = "読者";
 
@@ -7948,6 +8029,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Wallis and Futuna" = "ウォリス・フツナ";
+
+/* Option in the store creation selling platforms question. */
+"Walmart" = "Walmart";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "ストア作成の準備を進めています";
@@ -8151,6 +8235,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Width" = "横幅";
 
 /* Option in the store creation selling platforms question. */
+"Wish" = "ほしいもの";
+
+/* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
 /* Title text in the store creation loading screen */
@@ -8247,6 +8334,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "ウェブダッシュボードで製品アドオンを編集できます。";
 
+/* Info notice at the bottom of the subscription settings screen. */
+"You can edit subscription settings in the web dashboard" = "ウェブダッシュボードでサブスクリプションの設定を編集できます";
+
 /* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
 "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "Tap to Pay on iPhone は「メニュー → 支払い → 支払いを受け取る」または注文詳細からアクセスできます。 支払い方法として Tap to Pay on iPhone を選択します。";
 
@@ -8258,6 +8348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "無料の WooCommerce Shipping プラグインを使用して、お使いの端末から直接、すべての物理的な注文の配送ラベルを作成できるようになりました。 「配送ラベルを作成」をタップしてベータ機能をお試しください !";
+
+/* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
+"You can only add variable subscriptions in the web dashboard" = "ウェブダッシュボードではバリエーションのあるサブスクリプションのみを追加できます";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
 "You can refund fees in your store admin" = "ストア管理で料金の払い戻しを受けられます";
@@ -8426,6 +8519,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Reader をスキャンしています";
 
+/* Display label for a product's subscription period when it is a single day. */
+"day" = "日";
+
+/* Display label for a product's subscription period, e.g. '7 days'. */
+"days" = "日";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eコマース";
 
@@ -8456,6 +8555,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "手動返金";
+
+/* Display label for a product's subscription period when it is a single month. */
+"month" = "月";
+
+/* Display label for a product's subscription period, e.g. '12 months'. */
+"months" = "月";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "前の期間はありません";
@@ -8539,6 +8644,12 @@ which should be translated separately and considered part of this sentence. */
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "削除";
 
+/* Display label for a product's subscription period when it is a single week. */
+"week" = "週";
+
+/* Display label for a product's subscription period, e.g. '4 weeks'. */
+"weeks" = "週";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 自分のストア, 今日, 今週, 今月, 今年, 注文, 訪問者, コンバージョン, 上位コンバージョン, 販売済み商品";
 
@@ -8547,6 +8658,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, 商品, カテゴリー, 新商品, 商品を検索";
+
+/* Display label for a product's subscription period when it is a single year. */
+"year" = "年";
+
+/* Display label for a product's subscription period, e.g. '2 years'. */
+"years" = "年";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

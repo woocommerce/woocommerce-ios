@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-18 13:54:04+0000 */
+/* Translation-Revision-Date: 2023-04-25 13:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -63,6 +63,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%2$@(으)로 끝나는 %1$@ 카드";
+
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
+"%1$@ every %2$@" = "%2$@당 %1$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@(%2$@ 제외)";
@@ -614,6 +617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "주문에 변형을 추가합니다.";
 
+/* Option in the store creation selling platforms question. */
+"Adobe Commerce" = "Adobe Commerce";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "성인 서명 필수(+%1$@)";
 
@@ -686,9 +692,6 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "마지막 부분입니다! 인증 앱의 확인 코드를 입력하세요.";
 
-/* Subtitle for the login button on the account creation form. */
-"Already registered?" = "이미 등록하셨나요?";
-
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "또는 이 계정에 대한 비밀번호를 입력하셔도 됩니다.";
 
@@ -726,9 +729,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "HTTP 오류 코드가 반환되었습니다.";
-
-/* Account creation error when the email is already associated with an existing WP.com account. */
-"An account with this email already exists." = "이 이메일이 포함된 계정이 이미 있습니다.";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "계정을 종료하는 동안 오류가 발생했습니다.";
@@ -1043,6 +1043,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "보나이러, 세인트 유스타티우스 및 사바";
 
+/* Description of the Coupons menu in the hub menu */
+"Boost sales with special offers" = "특별 행사로 판매 촉진";
+
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "고객에게 특별한 혜택과 할인을 발송하여 비즈니스를 증진하세요.";
 
@@ -1231,6 +1234,7 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
@@ -1300,6 +1304,9 @@ which should be translated separately and considered part of this sentence. */
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "스토어에 대한 수준 높은 제품 리뷰 캡처";
+
+/* Description of one of the hub menu options */
+"Capture reviews for your store" = "스토어에 대한 리뷰 캡처";
 
 /* (External) card reader payment method title on the select payment method screen */
 "Card Reader" = "카드 리더";
@@ -1481,6 +1488,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "계정 종료 중…";
+
+/* Industry option in the store creation category question. */
+"Clothing and accessories" = "의류 및 액세서리";
 
 /* Country option for a site address. */
 "Cocos (Keeling) Islands" = "코코스(킬링) 제도";
@@ -1690,7 +1700,8 @@ which should be translated separately and considered part of this sentence. */
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
    Title of the button on the store creation store name form to continue.
    Title of the button to continue with a profiler question.
-   Title of the button to continue with a selected domain. */
+   Title of the button to continue with a selected domain.
+   Title of the submit button on the account creation form. */
 "Continue" = "계속";
 
 /* Title of the primary button on the store onboarding payments setup screen. */
@@ -1898,6 +1909,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "첫 번째 변형 생성";
+
+/* Title for the account creation form to create new password. */
+"Create your password" = "비밀번호 생성";
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "제품을 생성하고 편집하고 게시하세요.";
@@ -2339,6 +2353,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Ecuador" = "에콰도르";
 
+/* Option in the store creation selling platforms question. */
+"Ecwid" = "Ecwid";
+
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
@@ -2728,6 +2745,12 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "실험 특성";
 
+/* Label for the expiry setting in the subscription settings screen. */
+"Expire after" = "만료까지 남은 시간";
+
+/* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
+"Expire after: %@" = "만료까지 남은 시간: %@";
+
 /* Status of coupons that are expired */
 "Expired" = "만료됨";
 
@@ -2778,9 +2801,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Faroe Islands" = "페로 제도";
-
-/* Industry option in the store creation category question. */
-"Fashion, apparel, and accessories" = "패션, 의류 및 액세서리";
 
 /* Fast to launch title feature on the Free Trial Summary Screen */
 "Fast to launch" = "빠르게 시작";
@@ -2894,6 +2914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Food and drink" = "음식 및 음료";
 
+/* Button to see instructions for resetting password of a WPCom account. */
+"Forgot password?" = "비밀번호를 잊으셨나요?";
+
 /* Title in the error notice when a validation error occurs after submitting domain contact info. */
 "Form Validation Error" = "양식 유효성 검사 오류";
 
@@ -2908,6 +2931,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "첫해 무료";
+
+/* Label for the free trial setting in the subscription settings screen. */
+"Free trial" = "무료 평가판";
 
 /* Country option for a site address. */
 "French Guiana" = "프랑스령 기아나";
@@ -2941,6 +2967,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Gambia" = "감비아";
+
+/* General section title in the hub menu */
+"General" = "일반";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "새 변형 생성";
@@ -2994,9 +3023,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Local notification body when the user encounters an error logging in with site address. */
 "Get some help!" = "약간의 도움말을 이용하세요!";
-
-/* Title of the submit button on the account creation form. */
-"Get started" = "시작하기";
 
 /* Title for the account creation form. */
 "Get started in minutes" = "몇 분 만에 시작하기";
@@ -3566,6 +3592,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "어디서나 참여";
 
+/* Description of the hub menu payments button */
+"Join the mobile payments" = "모바일 결제 가입";
+
 /* Country option for a site address. */
 "Jordan" = "요르단";
 
@@ -3877,6 +3906,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "많은 사랑을 받는 Automattic 제품 <a href=\"https:\/\/automattic.com\/work-with-us\/\">함께할 직원을 채용 중입니다!<\/a>";
 
+/* Option in the store creation selling platforms question. */
+"Magento" = "Magento";
+
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "메일(기본값)";
 
@@ -3924,8 +3956,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "카드 판독기 관리";
 
+/* Description of one of the hub menu options */
+"Manage more on admin" = "관리자에서 자세히 관리";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "재고 관리";
+
+/* Description of one of the hub menu options */
+"Manage your plans" = "요금제 관리";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "수동 오프셋";
@@ -4159,6 +4197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "네트워크 활성화 플러그인";
 
+/* Display label when a subscription never expires. */
+"Never expire" = "만료 기간 없음";
+
 /* Title of the badge shown when advertising a new feature */
 "New" = "신규";
 
@@ -4270,7 +4311,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "선택된 주문이 없습니다.";
 
-/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Display label when a subscription has no price.
+   Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "가격이 설정되지 않음";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -4299,6 +4341,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "사용 가능한 배송비 없음";
 
+/* Display label when a subscription has no signup fee. */
+"No signup fee" = "등록 수수료 없음";
+
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "이 기기에서 지원되는 연락 방법이 없습니다.";
 
@@ -4307,6 +4352,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "아직 세금 클래스가 없음";
+
+/* Display label when a subscription has no trial period. */
+"No trial period" = "무료 평가판 없음";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "생성할 변형 없음";
@@ -4453,6 +4501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "WP 관리자 열기";
 
+/* Title text in the store creation loading screen */
+"Opening the doors" = "문 열기";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "사용 가능한 상태 목록을 엽니다.";
 
@@ -4570,6 +4621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "기타 사이트";
+
+/* Subtitle text in the store creation loading screen */
+"Our favorite color is purple." = "좋아하는 색상은 자주색입니다.";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5401,6 +5455,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "정상 가격";
 
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: 'Regular price: $60.00 every 2 months'. */
+"Regular price: %1$@ every %2$@" = "정가: %2$@당 %1$@";
+
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "정상 가격: %@";
 
@@ -5906,7 +5963,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "상품 배송에 사용할 패키지를 설정하세요. 향후 주문을 위해 저장됩니다.";
 
 /* Settings button in the hub menu
-   Settings navigation title */
+   Settings navigation title
+   Title of the hub menu settings button */
 "Settings" = "설정";
 
 /* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
@@ -6116,6 +6174,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "@%1$@(으)로 로그인됨";
+
+/* Label for the signup fee setting in the subscription settings screen. */
+"Signup fee" = "등록 수수료";
 
 /* Display label for simple product type. */
 "Simple" = "심플";
@@ -6346,6 +6407,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the notice when a user updated status for selected products */
 "Status updated" = "상태 업데이트됨";
 
+/* Description of the Inbox menu in the hub menu */
+"Stay up-to-date" = "최신 상태로 유지";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "도움이 더 필요하세요? 문의하기";
 
@@ -6395,8 +6459,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "지원 요청 제출";
 
-/* Display label for subscription product type. */
+/* Display label for simple subscription product type.
+   Title for Subscription row in the product form screen.
+   Title for the subscription settings in a subscription product. */
 "Subscription" = "구독";
+
+/* Label for the subscription price setting in the subscription settings screen. */
+"Subscription price" = "구독 가격";
 
 /* Title for the Subscriptions / Upgrades view */
 "Subscriptions" = "구독";
@@ -6448,9 +6517,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "스토어 전환";
-
-/* Switch store option in the hub menu */
-"Switch store" = "스토어 전환";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "%1$@(으)로 전환되었습니다.";
@@ -6738,6 +6804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL에 올바른 호스트가 없습니다.";
+
+/* Subtitle text in the store creation loading screen */
+"The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "Woo 팀에서는 350명이 넘는 유능한 인재가 30개국 이상에서 근무하고 있습니다.";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "금액이 기본 제공 리더에서 지원되지 않습니다. 하드웨어 리더 또는 다른 결제 수단을 시도하세요.";
@@ -7367,6 +7436,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "쿠폰을 세일 아이템에 적용하지 않으려면 이 기능을 사용하세요. 세일 아이템이 아닌 경우에만 아이템당 쿠폰이 적용됩니다. 장바구니에 있는 아이템이 세일 아이템이 아닌 경우에만 장바구니당 쿠폰이 적용됩니다.";
 
+/* Title text in the store creation loading screen */
+"Turning on the lights" = "조명 켜기";
+
 /* Country option for a site address. */
 "Tuvalu" = "투발루";
 
@@ -7695,6 +7767,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "이 앱을 계속 사용하려면 WooCommerce 3.5로 업데이트하세요.";
 
+/* Description of the hub menu settings button */
+"Update your preferences" = "기본 설정 업데이트";
+
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld시간 전에 업데이트됨";
 
@@ -7813,6 +7888,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable product type. */
 "Variable" = "옵션";
 
+/* Display label for variable subscription product type. */
+"Variable Subscription" = "가변 구독";
+
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "옵션 상품";
 
@@ -7912,6 +7990,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the '<number> Products' button */
 "View refunded order items" = "환불된 주문 항목 보기";
 
+/* Description of one of the hub menu options */
+"View your store" = "스토어 보기";
+
 /* User role badge */
 "Viewer" = "독자";
 
@@ -7948,6 +8029,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Wallis and Futuna" = "월리스푸투나 제도";
+
+/* Option in the store creation selling platforms question. */
+"Walmart" = "Walmart";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "스토어 생성을 준비 중입니다.";
@@ -8151,6 +8235,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Width" = "가로";
 
 /* Option in the store creation selling platforms question. */
+"Wish" = "Wish";
+
+/* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
 /* Title text in the store creation loading screen */
@@ -8247,6 +8334,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "웹 대시보드에서 상품 애드온을 편집하실 수 있습니다.";
 
+/* Info notice at the bottom of the subscription settings screen. */
+"You can edit subscription settings in the web dashboard" = "웹 알림판에서 구독 설정을 편집할 수 있습니다.";
+
 /* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
 "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "메뉴 > 결제 > 결제받기나 주문 상세 정보에서 iPhone의 Tap to Pay를 찾을 수 있습니다. iPhone의 Tap to Pay를 결제 수단으로 선택하세요.";
 
@@ -8258,6 +8348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "이제 무료 WooCommerce 배송 플러그인이 있는 기기에서 바로 모든 실물 주문의 배송 레이블을 만들 수 있습니다. \"배송 레이블 만들기\"를 눌러 베타 기능을 사용해 보세요!";
+
+/* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
+"You can only add variable subscriptions in the web dashboard" = "웹 알림판에서 가변 구독만 추가할 수 있습니다.";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
 "You can refund fees in your store admin" = "스토어 관리자에서 수수료를 환불할 수 있습니다.";
@@ -8426,6 +8519,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "리더 스캔 중";
 
+/* Display label for a product's subscription period when it is a single day. */
+"day" = "일";
+
+/* Display label for a product's subscription period, e.g. '7 days'. */
+"days" = "일";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "전자상거래";
 
@@ -8456,6 +8555,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "수동 환불";
+
+/* Display label for a product's subscription period when it is a single month. */
+"month" = "월";
+
+/* Display label for a product's subscription period, e.g. '12 months'. */
+"months" = "월";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "이전 기간 없음";
@@ -8539,6 +8644,12 @@ which should be translated separately and considered part of this sentence. */
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "무시";
 
+/* Display label for a product's subscription period when it is a single week. */
+"week" = "주";
+
+/* Display label for a product's subscription period, e.g. '4 weeks'. */
+"weeks" = "주";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "우커머스, 내 스토어, 오늘, 이번 주, 이번 달, 이번 해, 주문수, 방문자, 전환, 상위 전환, 판매된 제품";
 
@@ -8547,6 +8658,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "우커머스, 우, 제품, 카테고리, 신규 제품, 제품 검색";
+
+/* Display label for a product's subscription period when it is a single year. */
+"year" = "연";
+
+/* Display label for a product's subscription period, e.g. '2 years'. */
+"years" = "연도";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

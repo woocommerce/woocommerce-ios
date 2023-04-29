@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.5
+-----
+
+
 13.4
 -----
 - [*] Payments: Popular and last sold products are displayed on top of the products selection screen when creating or editing an order. [https://github.com/woocommerce/woocommerce-ios/pull/9539]

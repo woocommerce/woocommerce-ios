@@ -1,1 +1,1 @@
-Bu sürümde, sipariş oluşturma ve ödeme alma deneyiminizi geliştirmeye odaklandık. Siparişinize ekleyeceğiniz bir ürünü ararken ürünleri filtrelemek artık mümkün. Lütfen deneyin ve geri bildiriminizi paylaşın.
+İngiltereliler, şahsen ödemelere merhaba deyin! Şu anda WooCommerce Payments'ı kullanan İngiltereli satıcıların artık şahsen ödemeleri de kabul edebileceğini duyurmaktan heyecan duyuyoruz. Bu sürüm, mağaza yönetimi deneyiminiz için birkaç küçük iyileştirme de içerir. Harika geri bildirimleriniz için herkese tekrar teşekkür ederim. Devam edin!

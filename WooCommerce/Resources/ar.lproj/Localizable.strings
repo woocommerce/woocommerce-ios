@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-18 15:54:21+0000 */
+/* Translation-Revision-Date: 2023-04-24 21:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -63,6 +63,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "بطاقة %1$@ تنتهي بـ %2$@";
+
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
+"%1$@ every %2$@" = "%1$@ كل %2$@";
 
 /* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
 "%1$@ excl. %2$@" = "%1$@ باستثناء %2$@";
@@ -614,6 +617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "يضيف مجموعة إلى الطلب.";
 
+/* Option in the store creation selling platforms question. */
+"Adobe Commerce" = "Adobe Commerce";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "يلزم توقيع شخص بالغ (+%1$@)";
 
@@ -686,9 +692,6 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "تقريبًا هناك! يرجى إدخال رمز التحقق من تطبيق الموثق الخاص بك.";
 
-/* Subtitle for the login button on the account creation form. */
-"Already registered?" = "هل تم التسجيل بالفعل.";
-
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "بدلاً من ذلك، قد تقوم بإدخال كلمة مرور هذا الحساب.";
 
@@ -726,9 +729,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A failure reason for when an error HTTP status code was returned from the site. */
 "An HTTP error code was returned." = "تم إرجاع رمز خطأ HTTP.";
-
-/* Account creation error when the email is already associated with an existing WP.com account. */
-"An account with this email already exists." = "يوجد حساب موجود لهذا البريد الإلكتروني بالفعل.";
 
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "حدث خطأ في أثناء إغلاق الحساب.";
@@ -1043,6 +1043,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "جزر المملكة الهولندية الكاريبية";
 
+/* Description of the Coupons menu in the hub menu */
+"Boost sales with special offers" = "زيادة المبيعات من خلال العروض الخاصة";
+
 /* The details text on the placeholder overlay when there are no coupons on the coupon list screen. */
 "Boost your business by sending customers special offers and discounts." = "قم بتعزيز أعمالك عن طريق إرسال عروض وخصومات خاصة إلى العملاء.";
 
@@ -1231,6 +1234,7 @@ which should be translated separately and considered part of this sentence. */
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
+   Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
@@ -1300,6 +1304,9 @@ which should be translated separately and considered part of this sentence. */
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "احصل على مراجعات منتج ذات جودة عالية لمخزنك.";
+
+/* Description of one of the hub menu options */
+"Capture reviews for your store" = "الحصول على مراجعات لمتجرك";
 
 /* (External) card reader payment method title on the select payment method screen */
 "Card Reader" = "قارئ البطاقة";
@@ -1481,6 +1488,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "جارٍ إغلاق الحساب…";
+
+/* Industry option in the store creation category question. */
+"Clothing and accessories" = "الملابس والإكسسوارات";
 
 /* Country option for a site address. */
 "Cocos (Keeling) Islands" = "جزر كوكوس (كيلينغ)";
@@ -1690,7 +1700,8 @@ which should be translated separately and considered part of this sentence. */
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
    Title of the button on the store creation store name form to continue.
    Title of the button to continue with a profiler question.
-   Title of the button to continue with a selected domain. */
+   Title of the button to continue with a selected domain.
+   Title of the submit button on the account creation form. */
 "Continue" = "المتابعة";
 
 /* Title of the primary button on the store onboarding payments setup screen. */
@@ -1898,6 +1909,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "إنشاء مجموعتك المتنوعة الأولى";
+
+/* Title for the account creation form to create new password. */
+"Create your password" = "إنشاء كلمة المرور الخاصة بك";
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "أنشئ المنتجات وحررها وانشرها.";
@@ -2339,6 +2353,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Ecuador" = "الاكوادور";
 
+/* Option in the store creation selling platforms question. */
+"Ecwid" = "Ecwid";
+
 /* Button to edit a customer on the New Order screen
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
@@ -2728,6 +2745,12 @@ which should be translated separately and considered part of this sentence. */
    Navigates to experimental features screen */
 "Experimental Features" = "الميزات التجريبية";
 
+/* Label for the expiry setting in the subscription settings screen. */
+"Expire after" = "تنتهي الصلاحية بعد";
+
+/* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
+"Expire after: %@" = "تنتهي الصلاحية بعد: %@";
+
 /* Status of coupons that are expired */
 "Expired" = "منتهي الصلاحية";
 
@@ -2778,9 +2801,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Faroe Islands" = "جزر فارو";
-
-/* Industry option in the store creation category question. */
-"Fashion, apparel, and accessories" = "الأزياء والملابس والإكسسوارات";
 
 /* Fast to launch title feature on the Free Trial Summary Screen */
 "Fast to launch" = "سرعة في البدء";
@@ -2894,6 +2914,9 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Food and drink" = "الطعام والشراب";
 
+/* Button to see instructions for resetting password of a WPCom account. */
+"Forgot password?" = "هل نسيت كلمة المرور؟";
+
 /* Title in the error notice when a validation error occurs after submitting domain contact info. */
 "Form Validation Error" = "خطأ في التحقق من النموذج";
 
@@ -2908,6 +2931,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown for domains that are free for the first year with available domain credit. */
 "Free for the first year" = "مجاني للسنة الأولى";
+
+/* Label for the free trial setting in the subscription settings screen. */
+"Free trial" = "تجربة مجانية";
 
 /* Country option for a site address. */
 "French Guiana" = "جويانا الفرنسية";
@@ -2941,6 +2967,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Gambia" = "غامبيا";
+
+/* General section title in the hub menu */
+"General" = "عام";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "إنشاء مجموعة متنوعة جديدة";
@@ -2994,9 +3023,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Local notification body when the user encounters an error logging in with site address. */
 "Get some help!" = "احصل على بعض المساعدة!";
-
-/* Title of the submit button on the account creation form. */
-"Get started" = "بدء";
 
 /* Title for the account creation form. */
 "Get started in minutes" = "البدء في غضون دقائق";
@@ -3566,6 +3592,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "الانضمام من أي مكان";
 
+/* Description of the hub menu payments button */
+"Join the mobile payments" = "الانضمام إلى المدفوعات عبر الهاتف المحمول";
+
 /* Country option for a site address. */
 "Jordan" = "الأردن";
 
@@ -3877,6 +3906,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "صُمم بشغف من قِبل Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">باب التوظيف مفتوح!<\/a>";
 
+/* Option in the store creation selling platforms question. */
+"Magento" = "Magento";
+
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "البريد (افتراضي)";
 
@@ -3924,8 +3956,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigates to Card Reader management screen */
 "Manage card reader" = "إدارة قارئ البطاقة";
 
+/* Description of one of the hub menu options */
+"Manage more on admin" = "إدارة المزيد على المسؤول";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "إدارة المخزون";
+
+/* Description of one of the hub menu options */
+"Manage your plans" = "إدارة خططي";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "تعديلات يدويّة";
@@ -4159,6 +4197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "الإضافات النشطة الخاصة بالشبكة";
 
+/* Display label when a subscription never expires. */
+"Never expire" = "عدم انتهاء الصلاحية";
+
 /* Title of the badge shown when advertising a new feature */
 "New" = "جديد";
 
@@ -4270,7 +4311,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "لم يتم تحديد أي طلب";
 
-/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
+/* Display label when a subscription has no price.
+   Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "لم يتم تعيين أي سعر";
 
 /* Message on the empty view when the category list or its search result is empty. */
@@ -4299,6 +4341,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error state title in shipping label carrier and rates screen */
 "No shipping rates available" = "لا توجد أسعار شحن متاحة";
 
+/* Display label when a subscription has no signup fee. */
+"No signup fee" = "لا توجد رسوم تسجيل";
+
 /* Error in identifying supported contact methods in the Shipping Label Address Validation */
 "No supported contact method on this device." = "لا توجد طريقة اتصال مدعومة على هذا الجهاز.";
 
@@ -4307,6 +4352,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "لا توجد فئات للضريبة حتى الآن";
+
+/* Display label when a subscription has no trial period. */
+"No trial period" = "لا توجد فترة تشغيل تجريبي";
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "لا توجد تباينات مطلوب إنشائها";
@@ -4453,6 +4501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "فتح مسؤول ووردبريس";
 
+/* Title text in the store creation loading screen */
+"Opening the doors" = "فتح الأبواب";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "يفتح قائمة بالحالات المتاحة.";
 
@@ -4570,6 +4621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "مواقع أخرى";
+
+/* Subtitle text in the store creation loading screen */
+"Our favorite color is purple." = "اللون المفضّل لدينا هو أرجواني.";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5401,6 +5455,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "السعر العادي";
 
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: 'Regular price: $60.00 every 2 months'. */
+"Regular price: %1$@ every %2$@" = "السعر العادي: %1$@ كل %2$@";
+
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "السعر العادي: %@";
 
@@ -5906,7 +5963,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "قم بإعداد الحزمة التي ستستخدمها لشحن منتجاتك. سنقوم بحفظها للطلبات المستقبلية.";
 
 /* Settings button in the hub menu
-   Settings navigation title */
+   Settings navigation title
+   Title of the hub menu settings button */
 "Settings" = "إعدادات";
 
 /* Settings > Set up Tap to Pay on iPhone > Complete > Inform user that Tap to Pay on iPhone is ready */
@@ -6116,6 +6174,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "تم تسجيل الدخول بصفتك @%1$@";
+
+/* Label for the signup fee setting in the subscription settings screen. */
+"Signup fee" = "رسوم التسجيل";
 
 /* Display label for simple product type. */
 "Simple" = "بسيط";
@@ -6346,6 +6407,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the notice when a user updated status for selected products */
 "Status updated" = "تم تحديث الحالة";
 
+/* Description of the Inbox menu in the hub menu */
+"Stay up-to-date" = "البقاء على اطلاع";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "هل لا تزال تحتاج إلى المساعدة؟ اتصل بنا";
 
@@ -6395,8 +6459,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "إرسال طلب الدعم";
 
-/* Display label for subscription product type. */
+/* Display label for simple subscription product type.
+   Title for Subscription row in the product form screen.
+   Title for the subscription settings in a subscription product. */
 "Subscription" = "الاشتراك";
+
+/* Label for the subscription price setting in the subscription settings screen. */
+"Subscription price" = "سعر الاشتراك";
 
 /* Title for the Subscriptions / Upgrades view */
 "Subscriptions" = "الاشتراكات";
@@ -6448,9 +6517,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "تحويل المتجر";
-
-/* Switch store option in the hub menu */
-"Switch store" = "تبديل المخزن";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
 "Switched to %1$@." = "تم التبديل إلى %1$@.";
@@ -6738,6 +6804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "يفتقد عنوان URL إلى مضيف صالح.";
+
+/* Subtitle text in the store creation loading screen */
+"The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "يتشكّل فريق Woo من أكثر من 350 فردًا موهوبًا، ويتم توزيعهم عبر أكثر من 30 بلدًا.";
 
 /* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "المبلغ غير مدعوم لميزة \"الضغط للدفع على iPhone\" - ترجى تجربة قارئ الأجهزة أو طريقة دفع أخرى.";
@@ -7367,6 +7436,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "قم بتشغيل هذا الخيار إذا كان ينبغي عدم تطبيق القسيمة على العناصر المعروضة للبيع بسعر مُخفَّض. لن تعمل القسائم لكل عنصر إلا في حالة أن العنصر ليس معروضًا للبيع بسعر مُخفَّض. لن تعمل القسائم لكل عربة تسوق إلا في حالة وجود عناصر في عربة التسوق ليست معروضة للبيع بسعر مُخفَّض.";
 
+/* Title text in the store creation loading screen */
+"Turning on the lights" = "تشغيل المصابيح";
+
 /* Country option for a site address. */
 "Tuvalu" = "توفالو";
 
@@ -7695,6 +7767,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "التحديث إلى WooCommerce 3.5 للاستمرار في استخدام هذا التطبيق";
 
+/* Description of the hub menu settings button */
+"Update your preferences" = "تحديث تفضيلاتك";
+
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "تم التحديث منذ %ld مضت من الساعات";
 
@@ -7813,6 +7888,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable product type. */
 "Variable" = "متغيِّر";
 
+/* Display label for variable subscription product type. */
+"Variable Subscription" = "اشتراك متغيِّر";
+
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "منتج متعدد الأنواع";
 
@@ -7912,6 +7990,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for the '<number> Products' button */
 "View refunded order items" = "عرض عناصر الطلب المستردة";
 
+/* Description of one of the hub menu options */
+"View your store" = "عرض متجرك";
+
 /* User role badge */
 "Viewer" = "المشاهد";
 
@@ -7948,6 +8029,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Wallis and Futuna" = "واليس وفوتونا";
+
+/* Option in the store creation selling platforms question. */
+"Walmart" = "Walmart";
 
 /* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
 "We are getting ready for your store creation" = "إننا على استعداد لإنشاء متجرك";
@@ -8151,6 +8235,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Width" = "العرض";
 
 /* Option in the store creation selling platforms question. */
+"Wish" = "الرغبة";
+
+/* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
 /* Title text in the store creation loading screen */
@@ -8247,6 +8334,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "يمكنك تحرير وظائف المنتج الإضافية في لوحة تحكم الويب.";
 
+/* Info notice at the bottom of the subscription settings screen. */
+"You can edit subscription settings in the web dashboard" = "يمكنك تحرير إعدادات الاشتراكات في لوحة تحكم الويب";
+
 /* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
 "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "يمكنك العثور على ميزة Tap to Pay على iPhone ضمن القائمة > المدفوعات > تحصيل المدفوعات، أو من تفاصيل الطلب. اختر Tap to Pay على iPhone كطريقة للدفع.";
 
@@ -8258,6 +8348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "يمكنك الآن إنشاء ملصقات شحن لجميع الطلبات المادية مباشرةً من جهازك باستخدام إضافة الشحن المجانية عبر WooCommerce. اضغط على \"إنشاء ملصق شحن\" لتجربة ميزة بيتا الخاصة بنا في المستقبل!";
+
+/* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
+"You can only add variable subscriptions in the web dashboard" = "يمكن فقط إضافة اشتراكات متغيرة في لوحة تحكم الويب";
 
 /* Shown in Refunds screen. Refunding fees are currently not supported. */
 "You can refund fees in your store admin" = "يمكنك استرداد الرسوم في مسؤول مخزنك";
@@ -8426,6 +8519,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "الفحص بحثًا عن قارئ";
 
+/* Display label for a product's subscription period when it is a single day. */
+"day" = "يوم";
+
+/* Display label for a product's subscription period, e.g. '7 days'. */
+"days" = "أيام";
+
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "التجارة الإلكترونية";
 
@@ -8456,6 +8555,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "عملية استرداد الأموال اليدوية";
+
+/* Display label for a product's subscription period when it is a single month. */
+"month" = "شهر";
+
+/* Display label for a product's subscription period, e.g. '12 months'. */
+"months" = "أشهر";
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "لا توجد فترة سابقة";
@@ -8539,6 +8644,12 @@ which should be translated separately and considered part of this sentence. */
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "تجاهُل";
 
+/* Display label for a product's subscription period when it is a single week. */
+"week" = "أسبوع";
+
+/* Display label for a product's subscription period, e.g. '4 weeks'. */
+"weeks" = "أسابيع";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce، متجري، اليوم، هذا الأسبوع، هذا الشهر، هذا العام، الطلبات، الزائرون، التحويل، أهم تحويل، العناصر المبيعة";
 
@@ -8547,6 +8658,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce، woo، المنتجات، التصنيفات، المنتج الجديد، البحث عن المنتجات";
+
+/* Display label for a product's subscription period when it is a single year. */
+"year" = "سنة";
+
+/* Display label for a product's subscription period, e.g. '2 years'. */
+"years" = "سنوات";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
    Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */

@@ -7,6 +7,9 @@ final class AztecEditorViewController: UIViewController, Editor {
     var onContentSave: OnContentSave?
 
     private var content: String
+    private var productName: String?
+
+    private let product: ProductFormDataModel
 
     private let viewProperties: EditorViewProperties
 
@@ -105,10 +108,12 @@ final class AztecEditorViewController: UIViewController, Editor {
     private var bottomSheetPresenter: BottomSheetPresenter?
 
     required init(content: String?,
+                  product: ProductFormDataModel,
                   viewProperties: EditorViewProperties,
                   textViewAttachmentDelegate: TextViewAttachmentDelegate = AztecTextViewAttachmentHandler(),
                   isAIGenerationEnabled: Bool) {
         self.content = content ?? ""
+        self.product = product
         self.textViewAttachmentDelegate = textViewAttachmentDelegate
         self.viewProperties = viewProperties
         self.isAIGenerationEnabled = isAIGenerationEnabled
@@ -133,11 +138,7 @@ final class AztecEditorViewController: UIViewController, Editor {
                                                  placeholderView: placeholderLabel)
         disableLinkTapRecognizer(from: editorView.richTextView)
 
-        setHTML(content)
-
-        // getHTML() from the Rich Text View removes the HTML tags
-        // so we align the original content to the value of the Rich Text View
-        content = getHTML()
+        updateContent()
 
         refreshPlaceholderVisibility()
         handleSwipeBackGesture()
@@ -282,7 +283,7 @@ extension AztecEditorViewController {
     @objc private func saveButtonTapped() {
         let content = getHTML()
         ServiceLocator.analytics.track(.aztecEditorDoneButtonTapped)
-        onContentSave?(content)
+        onContentSave?(content, productName)
     }
 
     override func shouldPopOnBackButton() -> Bool {
@@ -339,23 +340,40 @@ private extension AztecEditorViewController {
         let presenter = BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .large
+            sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
             sheet.detents = [.medium(), .large()]
         })
         bottomSheetPresenter = presenter
 
-        // TODO: 9465 - show product description generation in the bottom sheet
-        let controller = UIViewController()
-        controller.view.backgroundColor = .primaryButtonBackground
+        let controller = ProductDescriptionGenerationHostingController(viewModel:
+                .init(siteID: product.siteID,
+                      name: product.name,
+                      description: product.description ?? "",
+                      onApply: { [weak self] output in
+            guard let self else { return }
+            self.content = output.description
+            self.productName = output.name
+            self.updateContent()
+            self.dismissDescriptionGenerationBottomSheetIfNeeded()
+        }))
 
         view.endEditing(true)
         presenter.present(controller, from: self, onDismiss: { [weak self] in
             self?.richTextView.becomeFirstResponder()
         })
+        ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAIButtonTapped(source: .aztecEditor))
     }
 
     func dismissDescriptionGenerationBottomSheetIfNeeded() {
         bottomSheetPresenter?.dismiss(onDismiss: {})
+    }
+
+    func updateContent() {
+        setHTML(content)
+
+        // getHTML() from the Rich Text View removes the HTML tags
+        // so we align the original content to the value of the Rich Text View
+        content = getHTML()
     }
 }

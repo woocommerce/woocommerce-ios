@@ -63,6 +63,8 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let defaults: UserDefaults
 
+    private let analytics: Analytics
+
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
     ///
@@ -77,12 +79,14 @@ class StoreOnboardingViewModel: ObservableObject {
          isExpanded: Bool,
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard,
+         analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.isExpanded = isExpanded
         self.stores = stores
         self.state = .loading
         self.defaults = defaults
+        self.analytics = analytics
         isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
 
         Publishers.CombineLatest3($noTasksAvailableForDisplay,
@@ -110,6 +114,12 @@ class StoreOnboardingViewModel: ObservableObject {
     }
 
     func hideTaskList() {
+        let pending = taskViewModels
+            .filter { !$0.isComplete }
+            .map { $0.task.type }
+        analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: true,
+                                                                              source: .onboardingList,
+                                                                              pendingTasks: pending))
         defaults[.shouldHideStoreOnboardingTaskList] = true
     }
 }
@@ -139,7 +149,7 @@ private extension StoreOnboardingViewModel {
             isRedacted = false
             taskViewModels = items
             if hasPendingTasks(items) {
-                ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingShown())
+                analytics.track(event: .StoreOnboarding.storeOnboardingShown())
             }
         case .failed:
             isRedacted = false
@@ -163,7 +173,7 @@ private extension StoreOnboardingViewModel {
         if hasPendingTasks(taskViewModels) {
             // Tracks the onboarding completion event only when there are any pending tasks before and
             // now all tasks are complete.
-            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingCompleted())
+            analytics.track(event: .StoreOnboarding.storeOnboardingCompleted())
         }
 
         // This will be reset to `nil` when session resets

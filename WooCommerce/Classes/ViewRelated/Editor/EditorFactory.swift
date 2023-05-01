@@ -1,7 +1,7 @@
 import Yosemite
 
 protocol Editor {
-    typealias OnContentSave = (_ content: String) -> Void
+    typealias OnContentSave = (_ content: String, _ productName: String?) -> Void
     var onContentSave: OnContentSave? { get }
 }
 
@@ -18,6 +18,7 @@ final class EditorFactory {
                                                   placeholderText: Localization.placeholderText(product: product),
                                                   showSaveChangesActionSheet: true)
         let editor = AztecEditorViewController(content: product.description,
+                                               product: product,
                                                viewProperties: viewProperties,
                                                isAIGenerationEnabled: isAIGenerationEnabled)
         editor.onContentSave = onContentSave
@@ -30,6 +31,7 @@ final class EditorFactory {
                                                   placeholderText: Localization.placeholderText(product: product),
                                                   showSaveChangesActionSheet: true)
         let editor = AztecEditorViewController(content: product.shortDescription,
+                                               product: product,
                                                viewProperties: viewProperties,
                                                isAIGenerationEnabled: false)
         editor.onContentSave = onContentSave

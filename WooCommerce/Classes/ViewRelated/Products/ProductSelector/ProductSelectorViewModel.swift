@@ -38,6 +38,13 @@ private enum ProductsSectionType {
     }
 }
 
+private enum ProductTrackingSource: String {
+    case popular
+    case recent
+    case alphabetical
+    case search
+}
+
 /// View model for `ProductSelectorView`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
@@ -93,6 +100,8 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Ids of those products that were most or last sold among the cached orders
     ///
     private var topProductsFromCachedOrders: ProductSelectorTopProducts = ProductSelectorTopProducts.empty
+
+    private var productIDTrackingSources: [Int64: ProductTrackingSource] = [:]
 
     /// Whether we should show the products split by sections
     ///
@@ -284,6 +293,9 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
+
+        updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
+
         guard let onProductSelectionStateChanged else {
             toggleSelection(productID: productID)
             return
@@ -344,6 +356,8 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
         // append new selected IDs
         selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+
+        updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID, selectedVariationIDs: selectedVariationIDs)
     }
 
     /// Select all variations for a given product
@@ -373,7 +387,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: allIDs.count))
+        trackConfirmButtonTapped(with: allIDs.count)
         onMultipleSelectionCompleted?(allIDs)
     }
 
@@ -794,6 +808,65 @@ extension ProductSelectorViewModel {
                 retryAction()
             }
         }
+    }
+}
+
+// MARK: - Tracking
+private extension ProductSelectorViewModel {
+    func trackConfirmButtonTapped(with productsCount: Int) {
+        let trackingSources = Array(productIDTrackingSources.values.map { $0.rawValue })
+        let areFiltersActive = filtersSubject.value.numberOfActiveFilters > 0
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productsCount,
+                                                                                                        sources: trackingSources,
+                                                                                                        isFilterActive: areFiltersActive))
+    }
+
+    func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64) {
+        guard productIDTrackingSources[productID] == nil else {
+            productIDTrackingSources.removeValue(forKey: productID)
+
+            return
+        }
+
+        if let trackingSource = retrieveTrackingSource(for: productID) {
+            productIDTrackingSources[productID] = trackingSource
+        }
+    }
+
+    func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64, selectedVariationIDs: [Int64]) {
+        guard selectedVariationIDs.isNotEmpty else {
+            productIDTrackingSources.removeValue(forKey: productID)
+
+            return
+        }
+
+        productIDTrackingSources[productID] =  retrieveTrackingSource(for: productID)
+    }
+
+    func retrieveTrackingSource(for productID: Int64) -> ProductTrackingSource? {
+        guard topProductsFromCachedOrders != .empty else {
+            return nil
+        }
+
+        guard searchTerm.isEmpty else {
+            return .search
+        }
+
+        guard !sectionContainsProductID(sectionType: .mostPopular, productID: productID) else {
+            return .popular
+        }
+
+        guard !sectionContainsProductID(sectionType: .lastSold, productID: productID) else {
+            return .recent
+        }
+
+        return .alphabetical
+    }
+
+    func sectionContainsProductID(sectionType: ProductsSectionType, productID: Int64) -> Bool {
+        let section = sections.first(where: { $0.type == sectionType })
+
+        return section?.products.first(where: { $0.productID == productID}) != nil
     }
 }
 

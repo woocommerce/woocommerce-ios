@@ -834,6 +834,36 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
+
+    func test_viewModel_for_product_with_min_max_quantities_shows_quantity_rules_row_in_settings_section() {
+        // Arrange
+        let product = Fixtures.physicalSimpleProductWithImages.copy(minAllowedQuantity: "4",
+                                                                    maxAllowedQuantity: "200",
+                                                                    groupOfQuantity: "4")
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isMinMaxQuantitiesEnabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .reviews,
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true),
+                                                                       .quantityRules,
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .shortDescription(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
 }
 
 private extension ProductFormActionsFactoryTests {
@@ -913,6 +943,7 @@ private extension ProductFormActionsFactoryTests {
                                    isBundledProductsEnabled: Bool = false,
                                    isCompositeProductsEnabled: Bool = false,
                                    isSubscriptionProductsEnabled: Bool = false,
+                                   isMinMaxQuantitiesEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
@@ -927,6 +958,7 @@ private extension ProductFormActionsFactoryTests {
                                       isBundledProductsEnabled: isBundledProductsEnabled,
                                       isCompositeProductsEnabled: isCompositeProductsEnabled,
                                       isSubscriptionProductsEnabled: isSubscriptionProductsEnabled,
+                                      isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
                                       variationsPrice: variationsPrice)
         }
     }

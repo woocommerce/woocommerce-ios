@@ -90,11 +90,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .readOnlySubscriptions:
             return true
         case .productDescriptionAI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .readOnlyGiftCards:
             return true
         case .hideStoreOnboardingTaskList:
-            return false
+            return true
+        case .readOnlyMinMaxQuantities:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

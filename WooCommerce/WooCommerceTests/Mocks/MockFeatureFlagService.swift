@@ -21,6 +21,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isReadOnlySubscriptionsEnabled: Bool
     private let isProductDescriptionAIEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
+    private let isHideStoreOnboardingTaskListFeatureEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -40,7 +41,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isIPPUKExpansionEnabled: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
          isProductDescriptionAIEnabled: Bool = false,
-         isReadOnlyGiftCardsEnabled: Bool = false) {
+         isReadOnlyGiftCardsEnabled: Bool = false,
+         isHideStoreOnboardingTaskListFeatureEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -60,6 +62,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
         self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
+        self.isHideStoreOnboardingTaskListFeatureEnabled = isHideStoreOnboardingTaskListFeatureEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -102,6 +105,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isProductDescriptionAIEnabled
         case .readOnlyGiftCards:
             return isReadOnlyGiftCardsEnabled
+        case .hideStoreOnboardingTaskList:
+            return isHideStoreOnboardingTaskListFeatureEnabled
         default:
             return false
         }

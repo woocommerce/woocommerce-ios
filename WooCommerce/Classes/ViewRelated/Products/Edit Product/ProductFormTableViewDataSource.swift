@@ -259,7 +259,8 @@ private extension ProductFormTableViewDataSource {
              .attributes(let viewModel, _),
              .bundledProducts(let viewModel, _),
              .components(let viewModel, _),
-             .subscription(let viewModel, _):
+             .subscription(let viewModel, _),
+             .quantityRules(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         case .reviews(let viewModel, let ratingCount, let averageRating):
             configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)

@@ -16,10 +16,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    /// Determines if multiple item selection is supported
-    ///
-    let supportsMultipleSelection: Bool
-
     /// Store for publishers subscriptions
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -120,7 +116,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         supportsMultipleSelection: Bool = false,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onSelectionsCleared: (() -> Void)? = nil) {
         self.siteID = siteID
@@ -129,7 +124,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.productAttributes = productAttributes
         self.storageManager = storageManager
         self.stores = stores
-        self.supportsMultipleSelection = supportsMultipleSelection
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.purchasableItemsOnly = purchasableItemsOnly
@@ -146,7 +140,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      purchasableItemsOnly: Bool = false,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
-                     supportsMultipleSelection: Bool = false,
                      onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
                      onSelectionsCleared: (() -> Void)? = nil) {
         self.init(siteID: siteID,
@@ -157,7 +150,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   purchasableItemsOnly: purchasableItemsOnly,
                   storageManager: storageManager,
                   stores: stores,
-                  supportsMultipleSelection: supportsMultipleSelection,
                   onVariationSelectionStateChanged: onVariationSelectionStateChanged,
                   onSelectionsCleared: onSelectionsCleared)
     }
@@ -165,7 +157,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     /// Select a product variation to add to the order
     ///
     func changeSelectionStateForVariation(with variationID: Int64) {
-
+        let supportsMultipleSelection = true
         // Fetch parent product
         // Needed because the parent product contains the product name & attributes.
         try? productResultsController.performFetch()

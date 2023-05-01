@@ -30,14 +30,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_ProductSelectorViewModel_toggleAllVariationsOnSelection_is_true_on_initialization() {
-        // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
-        // Then
-        XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
-    }
-
     func test_view_model_is_initialized_with_default_values() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)

@@ -209,8 +209,6 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onCloseButtonTapped: (() -> Void)?
 
-    /// Initializer for single selection
-    ///
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
@@ -234,44 +232,6 @@ final class ProductSelectorViewModel: ObservableObject {
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
-        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
-        self.initialSelectedItems = selectedItemIDs
-        self.purchasableItemsOnly = purchasableItemsOnly
-        self.onAllSelectionsCleared = onAllSelectionsCleared
-        self.onSelectedVariationsCleared = onSelectedVariationsCleared
-        self.onCloseButtonTapped = onCloseButtonTapped
-
-        topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
-
-        configureSyncingCoordinator()
-        refreshDataAndSync()
-        configureFirstPageLoad()
-        synchronizeProductFilterSearch()
-    }
-
-    /// Initializer for multiple selections
-    ///
-    init(siteID: Int64,
-         selectedItemIDs: [Int64],
-         purchasableItemsOnly: Bool = false,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics,
-         supportsMultipleSelection: Bool = false,
-         toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
-         onAllSelectionsCleared: (() -> Void)? = nil,
-         onSelectedVariationsCleared: (() -> Void)? = nil,
-         onCloseButtonTapped: (() -> Void)? = nil) {
-        self.siteID = siteID
-        self.storageManager = storageManager
-        self.stores = stores
-        self.analytics = analytics
-        self.supportsMultipleSelection = supportsMultipleSelection
-        self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
-        self.onProductSelectionStateChanged = nil
-        self.onVariationSelectionStateChanged = nil
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.initialSelectedItems = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly

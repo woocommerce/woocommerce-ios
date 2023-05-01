@@ -270,7 +270,7 @@ private struct ProductsSection: View {
                     Divider()
                 }
 
-                Button(OrderForm.Localization.addProductsButtonTitle) {
+                Button(OrderForm.Localization.addProducts) {
                     showAddProduct.toggle()
                 }
                 .id(addProductButton)
@@ -311,14 +311,10 @@ private extension OrderForm {
         static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the Order Editing screen")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
-        static let addProduct = NSLocalizedString("Add Product", comment: "Title text of the button that adds a product when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
-
-        static let addProductsButtonTitle = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1) ?
-        Localization.addProducts : Localization.addProduct
     }
 
     enum Accessibility {

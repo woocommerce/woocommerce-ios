@@ -37,18 +37,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
-    func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_disabled() {
-        XCTAssertFalse(viewModel.productSelectorViewModel.supportsMultipleSelection)
-        XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
-    }
-
-    func test_view_model_product_list_is_initialized_with_expected_values_given_product_multiselection_is_enabled() {
+    func test_view_model_product_list_is_initialized_with_expected_values() {
         // Given
         let featureFlagService = MockFeatureFlagService(isProductMultiSelectionM1Enabled: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
 
         // Then
-        XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 

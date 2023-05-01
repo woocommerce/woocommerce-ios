@@ -30,14 +30,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_ProductSelectorViewModel_supportsMultipleSelection_is_false_on_initialization() {
-        // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
-
-        // Then
-        XCTAssertFalse(viewModel.supportsMultipleSelection)
-    }
-
     func test_ProductSelectorViewModel_toggleAllVariationsOnSelection_is_true_on_initialization() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -51,7 +43,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
 
         // Then
-        XCTAssertFalse(viewModel.supportsMultipleSelection)
         XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
         XCTAssertEqual(viewModel.filterButtonTitle, "Filter")
         XCTAssertNil(viewModel.notice)
@@ -447,7 +438,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelection: true,
                                                  onProductSelectionStateChanged: { selectedProduct = $0.productID })
 
         // When
@@ -492,7 +482,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelection: true,
                                                  onProductSelectionStateChanged: { _ in })
 
         // When
@@ -527,7 +516,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelection: false,
                                                  onProductSelectionStateChanged: { _ in })
 
         // When
@@ -545,8 +533,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 supportsMultipleSelection: true)
+                                                 storageManager: storageManager)
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID)
@@ -653,7 +640,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  selectedItemIDs: [],
                                                  storageManager: storageManager,
-                                                 supportsMultipleSelection: true,
                                                  onMultipleSelectionCompleted: {
             selectedItems = $0
         })
@@ -676,8 +662,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  selectedItemIDs: [1, 10, 20],
                                                  storageManager: storageManager,
-                                                 analytics: analytics,
-                                                 supportsMultipleSelection: true)
+                                                 analytics: analytics)
 
         // When
         viewModel.completeMultipleSelection()
@@ -699,8 +684,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  selectedItemIDs: [1, 10, 20],
                                                  storageManager: storageManager,
-                                                 analytics: analytics,
-                                                 supportsMultipleSelection: true)
+                                                 analytics: analytics)
 
         // When
         let filters = FilterProductListViewModel.Filters(
@@ -751,7 +735,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  analytics: analytics,
-                                                 supportsMultipleSelection: true,
                                                  topProductsProvider: topProductsProvider)
 
         // When
@@ -790,7 +773,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  analytics: analytics,
-                                                 supportsMultipleSelection: true,
                                                  topProductsProvider: topProductsProvider)
 
         // When
@@ -836,7 +818,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  storageManager: storageManager,
                                                  analytics: analytics,
-                                                 supportsMultipleSelection: true,
                                                  topProductsProvider: topProductsProvider)
 
         // When
@@ -914,8 +895,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 storageManager: storageManager,
-                                                 supportsMultipleSelection: true)
+                                                 storageManager: storageManager)
 
         // When
         viewModel.changeSelectionStateForProduct(with: product.productID)

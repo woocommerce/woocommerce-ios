@@ -157,7 +157,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     /// Select a product variation to add to the order
     ///
     func changeSelectionStateForVariation(with variationID: Int64) {
-        let supportsMultipleSelection = true
         // Fetch parent product
         // Needed because the parent product contains the product name & attributes.
         try? productResultsController.performFetch()
@@ -168,11 +167,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         }
         guard let onVariationSelectionStateChanged else {
             toggleSelection(productVariationID: variationID)
-            return
-        }
-        guard supportsMultipleSelection else {
-            // The selector supports single selection only
-            onVariationSelectionStateChanged(selectedVariation, parentProduct)
             return
         }
         // The selector supports multiple selection. Toggles the item, and triggers the selection

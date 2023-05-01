@@ -244,8 +244,6 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Selects or unselects a product to add to the order
     ///
     func changeSelectionStateForProduct(with productID: Int64) {
-        let supportsMultipleSelection: Bool = true
-
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
@@ -254,11 +252,6 @@ final class ProductSelectorViewModel: ObservableObject {
 
         guard let onProductSelectionStateChanged else {
             toggleSelection(productID: productID)
-            return
-        }
-        guard supportsMultipleSelection else {
-            // The selector supports single selection only
-            onProductSelectionStateChanged(selectedProduct)
             return
         }
         // The selector supports multiple selection. Toggles the item, and triggers the selection

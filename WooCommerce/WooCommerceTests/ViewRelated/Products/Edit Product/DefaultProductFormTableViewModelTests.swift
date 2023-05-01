@@ -245,6 +245,121 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let expectedDetails = String.localizedStringWithFormat(Localization.expiryFormat, Localization.neverExpire)
         XCTAssertEqual(subscriptionViewModel?.details, expectedDetails)
     }
+
+    func test_quantity_rules_row_returns_expected_details_for_product_with_min_and_max_quantity() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, minAllowedQuantity: "4", maxAllowedQuantity: "200", groupOfQuantity: "2")
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "", currencyFormatter: currencyFormatter)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var quantityRulesViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .quantityRules(viewModel) = row {
+                quantityRulesViewModel = viewModel
+                break
+            }
+        }
+        let expectedDetails = [String.localizedStringWithFormat(Localization.minQuantityFormat, "4"),
+                               String.localizedStringWithFormat(Localization.maxQuantityFormat, "200")].joined(separator: "\n")
+        XCTAssertEqual(quantityRulesViewModel?.details, expectedDetails)
+    }
+
+    func test_quantity_rules_row_returns_expected_details_for_product_with_min_and_groupOf_but_no_max_quantity() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, minAllowedQuantity: "4", maxAllowedQuantity: "", groupOfQuantity: "2")
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "", currencyFormatter: currencyFormatter)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var quantityRulesViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .quantityRules(viewModel) = row {
+                quantityRulesViewModel = viewModel
+                break
+            }
+        }
+        let expectedDetails = [String.localizedStringWithFormat(Localization.minQuantityFormat, "4"),
+                               String.localizedStringWithFormat(Localization.groupOfFormat, "2")].joined(separator: "\n")
+        XCTAssertEqual(quantityRulesViewModel?.details, expectedDetails)
+    }
+
+    func test_quantity_rules_row_returns_expected_details_for_product_with_max_and_groupOf_but_no_min_quantity() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, minAllowedQuantity: "", maxAllowedQuantity: "200", groupOfQuantity: "2")
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "", currencyFormatter: currencyFormatter)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var quantityRulesViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .quantityRules(viewModel) = row {
+                quantityRulesViewModel = viewModel
+                break
+            }
+        }
+        let expectedDetails = [String.localizedStringWithFormat(Localization.maxQuantityFormat, "200"),
+                               String.localizedStringWithFormat(Localization.groupOfFormat, "2")].joined(separator: "\n")
+        XCTAssertEqual(quantityRulesViewModel?.details, expectedDetails)
+    }
+
+    func test_quantity_rules_row_returns_expected_details_for_product_with_only_groupOf_quantity() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, minAllowedQuantity: "", maxAllowedQuantity: "", groupOfQuantity: "2")
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "", currencyFormatter: currencyFormatter)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var quantityRulesViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .quantityRules(viewModel) = row {
+                quantityRulesViewModel = viewModel
+                break
+            }
+        }
+        let expectedDetails = String.localizedStringWithFormat(Localization.groupOfFormat, "2")
+        XCTAssertEqual(quantityRulesViewModel?.details, expectedDetails)
+    }
 }
 
 private extension DefaultProductFormTableViewModelTests {
@@ -255,5 +370,11 @@ private extension DefaultProductFormTableViewModelTests {
         static let expiryFormat = NSLocalizedString("Expire after: %@",
                                                     comment: "Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'.")
         static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
+        static let minQuantityFormat = NSLocalizedString("Minimum quantity: %@",
+                                                          comment: "Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row")
+        static let maxQuantityFormat = NSLocalizedString("Maximum quantity: %@",
+                                                       comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
+        static let groupOfFormat = NSLocalizedString("Group of: %@",
+                                                       comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
     }
 }

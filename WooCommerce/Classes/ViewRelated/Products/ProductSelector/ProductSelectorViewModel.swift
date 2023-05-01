@@ -4,6 +4,47 @@ import Combine
 import Foundation
 import WooFoundation
 
+struct ProductsSectionViewModel {
+    let title: String?
+    let productRows: [ProductRowViewModel]
+}
+
+private struct ProductsSection {
+    let type: ProductsSectionType
+    let products: [Product]
+}
+
+private enum ProductsSectionType {
+    // Show most popular products, that is, most sold
+    case mostPopular
+    // Show last sold
+    case lastSold
+    // Show products that are not popular or last sold
+    case restOfProducts
+    // Show all products in one section without title
+    case allProducts
+
+    var title: String? {
+        switch self {
+        case .mostPopular:
+            return ProductSelectorViewModel.Localization.popularProductsSectionTitle
+        case .lastSold:
+            return ProductSelectorViewModel.Localization.lastSoldProductsSectionTitle
+        case .restOfProducts:
+            return ProductSelectorViewModel.Localization.productsSectionTitle
+        case .allProducts:
+            return nil
+        }
+    }
+}
+
+private enum ProductTrackingSource: String {
+    case popular
+    case recent
+    case alphabetical
+    case search
+}
+
 /// View model for `ProductSelectorView`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
@@ -50,11 +91,31 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// All products that can be added to an order.
     ///
-    @Published private var products: [Product] = []
+    private var products: [Product] {
+        sections
+            .map { $0.products }
+            .flatMap { $0 }
+    }
 
-    /// View models for each product row
+    /// Ids of those products that were most or last sold among the cached orders
     ///
-    @Published private(set) var productRows: [ProductRowViewModel] = []
+    private var topProductsFromCachedOrders: ProductSelectorTopProducts = ProductSelectorTopProducts.empty
+
+    private var productIDTrackingSources: [Int64: ProductTrackingSource] = [:]
+
+    /// Whether we should show the products split by sections
+    ///
+    private var shouldShowSections: Bool {
+        searchTerm.isEmpty && filtersSubject.value.numberOfActiveFilters == 0
+    }
+
+    /// Sections containing products
+    ///
+    @Published private var sections: [ProductsSection] = []
+
+    /// View Models for the sections
+    /// 
+    @Published var productsSectionViewModels: [ProductsSectionViewModel] = []
 
     /// Determines if multiple item selection is supported.
     ///
@@ -102,7 +163,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
         return resultsController
     }()
@@ -158,6 +219,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
+         topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -179,8 +241,10 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
+        topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
+
         configureSyncingCoordinator()
-        configureProductsResultsController()
+        refreshDataAndSync()
         configureFirstPageLoad()
         synchronizeProductFilterSearch()
     }
@@ -195,6 +259,7 @@ final class ProductSelectorViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
+         topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
@@ -214,8 +279,10 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
 
+        topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
+
         configureSyncingCoordinator()
-        configureProductsResultsController()
+        refreshDataAndSync()
         configureFirstPageLoad()
         synchronizeProductFilterSearch()
     }
@@ -226,6 +293,9 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
+
+        updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
+
         guard let onProductSelectionStateChanged else {
             toggleSelection(productID: productID)
             return
@@ -286,6 +356,8 @@ final class ProductSelectorViewModel: ObservableObject {
         selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
         // append new selected IDs
         selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+
+        updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID, selectedVariationIDs: selectedVariationIDs)
     }
 
     /// Select all variations for a given product
@@ -315,7 +387,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: allIDs.count))
+        trackConfirmButtonTapped(with: allIDs.count)
         onMultipleSelectionCompleted?(allIDs)
     }
 
@@ -366,7 +438,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             switch result {
             case .success:
-                self.updateProductsResultsController()
+                self.reloadData()
             case .failure(let error):
                 self.notice = NoticeFactory.productSyncNotice() { [weak self] in
                     self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
@@ -400,7 +472,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             switch result {
             case .success:
-                self.updateProductsResultsController()
+                self.reloadData()
             case .failure(let error):
                 self.notice = NoticeFactory.productSearchNotice() { [weak self] in
                     self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
@@ -428,7 +500,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                 return
             }
             if thereAreCachedResults {
-                self.updateProductsResultsController()
+                self.reloadData()
                 self.transitionToResultsUpdatedState()
             }
         }
@@ -446,7 +518,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     ///
     func syncNextPage() {
         let lastIndex = productsResultsController.numberOfObjects - 1
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
+                syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
     }
 
     /// Updates the selected filters for the product list
@@ -478,28 +550,78 @@ private extension ProductSelectorViewModel {
 
 // MARK: - Configuration
 private extension ProductSelectorViewModel {
-    /// Performs initial fetch from storage and updates sync status accordingly.
+    /// Reloads data and triggers the UI load
     ///
-    func configureProductsResultsController() {
-        updateProductsResultsController()
+    func refreshDataAndSync() {
+        reloadData()
         transitionToResultsUpdatedState()
     }
 
-    /// Fetches products from storage.
+    /// Reloads the data from the storage and composes sections and selections.
     ///
-    func updateProductsResultsController() {
-        do {
-            try productsResultsController.performFetch()
-            if purchasableItemsOnly {
-                products = productsResultsController.fetchedObjects.filter { $0.purchasable }
-            } else {
-                products = productsResultsController.fetchedObjects
+    func reloadData() {
+            do {
+                try productsResultsController.performFetch()
+                var loadedProducts: [Product] = []
+                if purchasableItemsOnly {
+                    loadedProducts = productsResultsController.fetchedObjects.filter { $0.purchasable }
+                } else {
+                    loadedProducts = productsResultsController.fetchedObjects
+                }
+
+                createSectionsAddingTopProductsIfRequired(from: loadedProducts)
+                updateSelectionsFromInitialSelectedItems()
+                observeSelections()
+            } catch {
+                DDLogError("⛔️ Error fetching products for new order: \(error)")
             }
-            updateSelectionsFromInitialSelectedItems()
-            observeSelections()
-        } catch {
-            DDLogError("⛔️ Error fetching products for new order: \(error)")
+    }
+
+    func createSectionsAddingTopProductsIfRequired(from loadedProducts: [Product]) {
+        let popularProducts = Array(filterProductsFromSortedIdsArray(originalProducts: loadedProducts,
+                                                                     productsIds: topProductsFromCachedOrders.popularProductsIds)
+            .prefix(Constants.topSectionsMaxLength))
+
+        guard popularProducts.isNotEmpty,
+              shouldShowSections else {
+            sections = [ProductsSection(type: .allProducts, products: loadedProducts)]
+            return
         }
+
+        sections = [ProductsSection(type: .mostPopular, products: popularProducts)]
+
+        let lastSoldProducts = filterProductsFromSortedIdsArray(originalProducts: loadedProducts, productsIds: topProductsFromCachedOrders.lastSoldProductsIds)
+        let filteredLastSoldProducts = Array(removeAlreadyAddedProducts(from: lastSoldProducts).prefix(Constants.topSectionsMaxLength))
+
+        appendSectionIfNotEmpty(type: .lastSold, products: filteredLastSoldProducts)
+        appendSectionIfNotEmpty(type: .restOfProducts, products: loadedProducts)
+    }
+
+    func filterProductsFromSortedIdsArray(originalProducts: [Product], productsIds: [Int64]) -> [Product] {
+        productsIds
+            .compactMap { productId in
+                originalProducts.first(where: {
+                    $0.productID == productId
+                })
+            }
+    }
+
+    func removeAlreadyAddedProducts(from newProducts: [Product]) -> [Product] {
+        newProducts
+            .filter { product in
+                // We don't use `contains` here because of performance reasons,
+                // as we don't need to check all the Product properties as the Equatable synthesized function would do.
+                // Furthermore, with the latter can get different properties (e.g arrays from set that have different order) from the same product.
+                products.first(where: { $0.productID == product.productID }) == nil
+        }
+    }
+
+    func appendSectionIfNotEmpty(type: ProductsSectionType, products: [Product]) {
+        guard products.isNotEmpty else {
+            return
+        }
+
+        sections.append(ProductsSection(type: type, products: products))
     }
 
     func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters) {
@@ -550,7 +672,7 @@ private extension ProductSelectorViewModel {
                 guard let self = self else { return }
                 self.updateFilterButtonTitle(with: filtersSubject)
                 self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject)
-                self.updateProductsResultsController()
+                self.reloadData()
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
     }
@@ -602,15 +724,24 @@ private extension ProductSelectorViewModel {
     /// Observes changes in selections to update product rows
     ///
     func observeSelections() {
-        $products.combineLatest($selectedProductIDs, $selectedProductVariationIDs) {
-            [weak self] products, selectedProductIDs, selectedVariationIDs -> [ProductRowViewModel] in
+        $sections.combineLatest($selectedProductIDs, $selectedProductVariationIDs) {
+            [weak self] sections, selectedProductIDs, selectedVariationIDs -> [ProductsSectionViewModel] in
             guard let self = self else {
                 return []
             }
-            return self.generateProductRows(products: products,
+            return self.generateProductsSectionViewModels(sections: sections,
                                             selectedProductIDs: selectedProductIDs,
                                             selectedProductVariationIDs: selectedVariationIDs)
-        }.assign(to: &$productRows)
+        }.assign(to: &$productsSectionViewModels)
+    }
+
+    func generateProductsSectionViewModels(sections: [ProductsSection],
+                                           selectedProductIDs: [Int64],
+                                           selectedProductVariationIDs: [Int64]) -> [ProductsSectionViewModel] {
+        sections.map { ProductsSectionViewModel(title: $0.type.title,
+                                                productRows: generateProductRows(products: $0.products,
+                                                                                 selectedProductIDs: selectedProductIDs,
+                                                                                 selectedProductVariationIDs: selectedProductVariationIDs)) }
     }
 
     /// Generates product rows based on products and selected product/variation IDs
@@ -680,6 +811,65 @@ extension ProductSelectorViewModel {
     }
 }
 
+// MARK: - Tracking
+private extension ProductSelectorViewModel {
+    func trackConfirmButtonTapped(with productsCount: Int) {
+        let trackingSources = Array(productIDTrackingSources.values.map { $0.rawValue })
+        let areFiltersActive = filtersSubject.value.numberOfActiveFilters > 0
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productsCount,
+                                                                                                        sources: trackingSources,
+                                                                                                        isFilterActive: areFiltersActive))
+    }
+
+    func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64) {
+        guard productIDTrackingSources[productID] == nil else {
+            productIDTrackingSources.removeValue(forKey: productID)
+
+            return
+        }
+
+        if let trackingSource = retrieveTrackingSource(for: productID) {
+            productIDTrackingSources[productID] = trackingSource
+        }
+    }
+
+    func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64, selectedVariationIDs: [Int64]) {
+        guard selectedVariationIDs.isNotEmpty else {
+            productIDTrackingSources.removeValue(forKey: productID)
+
+            return
+        }
+
+        productIDTrackingSources[productID] =  retrieveTrackingSource(for: productID)
+    }
+
+    func retrieveTrackingSource(for productID: Int64) -> ProductTrackingSource? {
+        guard topProductsFromCachedOrders != .empty else {
+            return nil
+        }
+
+        guard searchTerm.isEmpty else {
+            return .search
+        }
+
+        guard !sectionContainsProductID(sectionType: .mostPopular, productID: productID) else {
+            return .popular
+        }
+
+        guard !sectionContainsProductID(sectionType: .lastSold, productID: productID) else {
+            return .recent
+        }
+
+        return .alphabetical
+    }
+
+    func sectionContainsProductID(sectionType: ProductsSectionType, productID: Int64) -> Bool {
+        let section = sections.first(where: { $0.type == sectionType })
+
+        return section?.products.first(where: { $0.productID == productID}) != nil
+    }
+}
+
 private extension ProductSelectorViewModel {
     enum Localization {
         static let syncErrorMessage = NSLocalizedString("There was an error syncing products",
@@ -695,5 +885,14 @@ private extension ProductSelectorViewModel {
                 "Filter (%ld)",
                 comment: "Title of the button to filter products with filters applied on the Select Product screen"
         )
+        static let popularProductsSectionTitle = NSLocalizedString("Popular", comment: "Section title for popular products on the Select Product screen.")
+        static let lastSoldProductsSectionTitle = NSLocalizedString("Last Sold", comment: "Section title for last sold products on the Select Product screen.")
+        static let productsSectionTitle = NSLocalizedString("Products", comment: "Section title for products on the Select Product screen.")
+    }
+}
+
+private extension ProductSelectorViewModel {
+    enum Constants {
+        static let topSectionsMaxLength = 5
     }
 }

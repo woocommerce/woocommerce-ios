@@ -67,12 +67,23 @@ struct ProductSelectorView: View {
                 VStack(spacing: 0) {
                     InfiniteScrollList(isLoading: viewModel.shouldShowScrollIndicator,
                                        loadAction: viewModel.syncNextPage) {
-                        ForEach(viewModel.productRows) { rowViewModel in
+                        ForEach(viewModel.productsSectionViewModels, id: \.title) {
+                            section in
+                            if let title = section.title {
+                                Text(title.uppercased())
+                                .foregroundColor(Color(.text))
+                                .footnoteStyle()
+                                .padding(.top)
+                                .padding(.leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        ForEach(section.productRows) { rowViewModel in
                             createProductRow(rowViewModel: rowViewModel)
-                                .padding(Constants.defaultPadding)
-                                .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
+                            .padding(Constants.defaultPadding)
+                            .accessibilityIdentifier(Constants.productRowAccessibilityIdentifier)
                             Divider().frame(height: Constants.dividerHeight)
-                                .padding(.leading, Constants.defaultPadding)
+                                        .padding(.leading, Constants.defaultPadding)
+                            }
                         }
                     }
                     Button(doneButtonTitle) {

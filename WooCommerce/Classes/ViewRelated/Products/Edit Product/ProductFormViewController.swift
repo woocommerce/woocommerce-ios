@@ -466,6 +466,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 showSubscriptionSettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.
+            case .quantityRules:
+                // TODO: 9252 - Add analytics
+                // TODO: 8960 - Navigate to quantity rules view
+                return
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]
@@ -1172,8 +1176,12 @@ private extension ProductFormViewController {
     func editProductDescription() {
         let isAIGenerationEnabled = aiEligibilityChecker.isFeatureEnabled(.description)
         let editorViewController = EditorFactory().productDescriptionEditor(product: product,
-                                                                            isAIGenerationEnabled: isAIGenerationEnabled) { [weak self] content in
-            self?.onEditProductDescriptionCompletion(newDescription: content)
+                                                                            isAIGenerationEnabled: isAIGenerationEnabled) { [weak self] content, productName in
+            guard let self else { return }
+            if let productName {
+                self.onEditProductNameCompletion(newName: productName)
+            }
+            self.onEditProductDescriptionCompletion(newDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)
     }
@@ -1363,7 +1371,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editShortDescription() {
-        let editorViewController = EditorFactory().productShortDescriptionEditor(product: product) { [weak self] content in
+        let editorViewController = EditorFactory().productShortDescriptionEditor(product: product) { [weak self] content, _ in
             self?.onEditShortDescriptionCompletion(newShortDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)

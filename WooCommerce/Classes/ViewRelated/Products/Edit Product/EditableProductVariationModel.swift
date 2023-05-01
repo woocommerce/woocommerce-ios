@@ -190,6 +190,22 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.subscription
     }
 
+    var hasQuantityRules: Bool {
+        false // TODO: 8960 - Quantity rules in variation details
+    }
+
+    var minAllowedQuantity: String? {
+        nil // TODO: 8960 - Quantity rules in variation details
+    }
+
+    var maxAllowedQuantity: String? {
+        nil // TODO: 8960 - Quantity rules in variation details
+    }
+
+    var groupOfQuantity: String? {
+        nil // TODO: 8960 - Quantity rules in variation details
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

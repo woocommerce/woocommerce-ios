@@ -1,1 +1,1 @@
-Untuk rilis kali ini, kami berfokus untuk meningkatkan pengalaman Anda saat membuat pesanan dan menerima pembayaran. Sekarang Anda dapat menyaring produk saat mencari produk untuk ditambahkan ke pesanan Anda. Cobalah dan berikan feedback Anda!
+Inggris, sambutlah pembayaran langsung! Kami umumkan bahwa fitur pembayaran langsung kini hadir bagi penjual di Inggris yang menggunakan sistem Pembayaran WooCommerce. Rilis ini juga meliputi beberapa perbaikan kecil pada proses pengelolaan toko Anda. Sekali lagi, terima kasih atas feedback Anda. Terus kirimkan feedback Anda!

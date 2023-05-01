@@ -175,6 +175,32 @@ final class OrderPaymentDetailsViewModel {
         return order.coupons
     }
 
+    /// Gift Cards
+    /// - returns: 'Gift Cards' label and a list of gift card codes, or nil if there are none.
+    ///
+    var giftCardsText: String? {
+        guard order.appliedGiftCards.isNotEmpty else {
+            return nil
+        }
+
+        let codes = order.appliedGiftCards.map { $0.code }.joined(separator: ", ")
+
+        return NSLocalizedString("Gift Cards", comment: "Gift Cards label for payment view") + " (" + codes + ")"
+    }
+
+    /// Gift cards total
+    ///  - returns: Total amount of gift cards applied to the order, expressed in a negative amount.
+    ///
+    var giftCardsValue: String? {
+        let giftCardsTotal = -order.appliedGiftCards.map { $0.amount }.reduce(0, +)
+
+        return currencyFormatter.formatAmount(giftCardsTotal.description, with: order.currency)
+    }
+
+    var shouldHideGiftCards: Bool {
+        giftCardsText == nil
+    }
+
     init(order: Order, refund: Refund? = nil, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.order = order
         self.refund = refund

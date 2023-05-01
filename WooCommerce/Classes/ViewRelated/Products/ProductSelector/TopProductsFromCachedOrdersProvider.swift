@@ -4,30 +4,34 @@ import Storage
 
 /// Encapsulates the ids of those products that were most or last sold among the cached orders
 ///
-struct TopProductsFromCachedOrders: Equatable {
+struct ProductSelectorTopProducts: Equatable {
     let popularProductsIds: [Int64]
     let lastSoldProductsIds: [Int64]
 
-    static var empty: TopProductsFromCachedOrders {
-        TopProductsFromCachedOrders(popularProductsIds: [],
+    static var empty: ProductSelectorTopProducts {
+        ProductSelectorTopProducts(popularProductsIds: [],
                                     lastSoldProductsIds: [])
     }
 }
 
+protocol ProductSelectorTopProductsProviderProtocol {
+    func provideTopProducts(siteID: Int64) -> ProductSelectorTopProducts
+}
+
 /// Provides the ids of those products that were most or last sold among the cached orders
 ///
-final class TopProductsFromCachedOrdersProvider {
+final class TopProductsFromCachedOrdersProvider: ProductSelectorTopProductsProviderProtocol {
     private let storageManager: StorageManagerType
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.viewStorage
     }()
 
-    init(storageManager: StorageManagerType) {
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.storageManager = storageManager
     }
 
-    func provideTopProductsFromCachedOrders(siteID: Int64) -> TopProductsFromCachedOrders {
-        TopProductsFromCachedOrders(popularProductsIds: retrievePopularProductsIds(from: siteID),
+    func provideTopProducts(siteID: Int64) -> ProductSelectorTopProducts {
+        ProductSelectorTopProducts(popularProductsIds: retrievePopularProductsIds(from: siteID),
                                            lastSoldProductsIds: retrieveLastSoldProductIds(from: siteID))
     }
 }

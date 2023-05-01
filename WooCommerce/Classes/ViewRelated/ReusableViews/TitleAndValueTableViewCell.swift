@@ -15,6 +15,8 @@ final class TitleAndValueTableViewCell: UITableViewCell {
         case nonSelectable
         /// Title and value will use headline (bold) styles.
         case headline
+        /// Title uses body style and value uses headline (bold) style.
+        case boldValue
 
         fileprivate static let `default` = Self.regular
     }
@@ -57,6 +59,9 @@ extension TitleAndValueTableViewCell {
             valueLabel.textColor = .textTertiary
         case .headline:
             titleLabel.applyHeadlineStyle()
+            valueLabel.applyHeadlineStyle()
+        case .boldValue:
+            titleLabel.applyBodyStyle()
             valueLabel.applyHeadlineStyle()
         }
     }

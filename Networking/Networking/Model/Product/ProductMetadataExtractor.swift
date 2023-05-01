@@ -51,6 +51,14 @@ internal struct ProductMetadataExtractor: Decodable {
         return try decoder.decode(ProductSubscription.self, from: jsonData)
     }
 
+    /// Extracts a `String` metadata value for the provided key.
+    ///
+    internal func extractStringValue(forKey key: String) -> String? {
+        let metaData = filterMetadata(with: key)
+        let keyValueMetadata = getKeyValueDictionary(from: metaData)
+        return keyValueMetadata.valueAsString(forKey: key)
+    }
+
     /// Filters product metadata using the provided prefix.
     ///
     private func filterMetadata(with prefix: String) -> [DecodableDictionary] {

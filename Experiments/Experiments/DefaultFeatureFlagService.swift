@@ -33,8 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .loginMagicLinkEmphasisM2:
             return true
-        case .productMultiSelectionM1:
-            return true
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
@@ -92,6 +90,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .readOnlySubscriptions:
             return true
         case .productDescriptionAI:
+            return true
+        case .readOnlyGiftCards:
+            return true
+        case .hideStoreOnboardingTaskList:
+            return true
+        case .readOnlyMinMaxQuantities:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

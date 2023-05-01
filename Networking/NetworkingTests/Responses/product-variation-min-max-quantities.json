@@ -1,0 +1,159 @@
+{
+    "data": {
+        "id": 488,
+        "name": "Min Max Variable Product - Blue",
+        "slug": "min-max-variable-product-blue",
+        "permalink": "https://example.com/product/min-max-variable-product/?attribute_pa_color=blue",
+        "date_created": "2023-04-01T18:21:06",
+        "date_created_gmt": "2023-04-01T17:21:06",
+        "date_modified": "2023-04-19T22:23:12",
+        "date_modified_gmt": "2023-04-19T21:23:12",
+        "type": "variation",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>testing</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "5",
+        "regular_price": "5",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "on_sale": false,
+        "purchasable": true,
+        "total_sales": "0",
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "low_stock_amount": null,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": false,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 487,
+        "purchase_note": "",
+        "categories": [],
+        "tags": [],
+        "images": [],
+        "attributes": [
+            {
+                "id": 1,
+                "name": "Color",
+                "option": "Blue"
+            }
+        ],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 1,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><bdi><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>5.00</bdi></span><small class=\"wcsatt-sub-options\"> <span class=\"wcsatt-dash\">&mdash;</span> or subscribe and save up to</small> <span class=\"wcsatt-sub-discount\">30&#37;</span><small></small>",
+        "related_ids": [],
+        "meta_data": [
+            {
+                "id": 14244,
+                "key": "min_max_rules",
+                "value": "yes"
+            },
+            {
+                "id": 14245,
+                "key": "variation_group_of_quantity",
+                "value": "3"
+            },
+            {
+                "id": 14246,
+                "key": "variation_minimum_allowed_quantity",
+                "value": "6"
+            },
+            {
+                "id": 14247,
+                "key": "variation_maximum_allowed_quantity",
+                "value": "30"
+            },
+            {
+                "id": 14248,
+                "key": "variation_minmax_do_not_count",
+                "value": "no"
+            },
+            {
+                "id": 14249,
+                "key": "variation_minmax_cart_exclude",
+                "value": "no"
+            },
+            {
+                "id": 14250,
+                "key": "variation_minmax_category_group_of_exclude",
+                "value": "no"
+            }
+        ],
+        "stock_status": "instock",
+        "has_options": true,
+        "composite_virtual": false,
+        "composite_layout": "",
+        "composite_add_to_cart_form_location": "",
+        "composite_editable_in_cart": false,
+        "composite_sold_individually_context": "",
+        "composite_shop_price_calc": "",
+        "composite_components": [],
+        "composite_scenarios": [],
+        "bundled_by": [],
+        "bundle_stock_status": "instock",
+        "bundle_stock_quantity": null,
+        "bundle_virtual": false,
+        "bundle_layout": "",
+        "bundle_add_to_cart_form_location": "",
+        "bundle_editable_in_cart": false,
+        "bundle_sold_individually_context": "",
+        "bundle_item_grouping": "",
+        "bundle_min_size": "",
+        "bundle_max_size": "",
+        "bundled_items": [],
+        "bundle_sell_ids": [],
+        "jetpack_publicize_connections": [],
+        "jetpack_sharing_enabled": true,
+        "jetpack_likes_enabled": true,
+        "brands": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/488"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/487"
+                }
+            ]
+        }
+    }
+}

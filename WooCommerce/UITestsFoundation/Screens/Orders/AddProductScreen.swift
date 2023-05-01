@@ -24,7 +24,8 @@ public final class AddProductScreen: ScreenObject {
     /// - Returns: Unified Order screen object.
     @discardableResult
     public func tapProduct(byName name: String) throws -> UnifiedOrderScreen {
-        app.buttons.staticTexts[name].tap()
+        app.buttons.staticTexts[name].firstMatch.tap()
+        tapDoneButton()
         return try UnifiedOrderScreen()
     }
 
@@ -36,9 +37,13 @@ public final class AddProductScreen: ScreenObject {
             let products = app.buttons.matching(identifier: "product-item")
             products.element(boundBy: product).tap()
         }
+        tapDoneButton()
+        return try UnifiedOrderScreen()
+    }
+
+    public func tapDoneButton() {
         if doneButton.exists {
             doneButton.tap()
         }
-        return try UnifiedOrderScreen()
     }
 }

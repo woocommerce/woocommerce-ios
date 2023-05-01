@@ -117,10 +117,6 @@ final class ProductSelectorViewModel: ObservableObject {
     /// 
     @Published var productsSectionViewModels: [ProductsSectionViewModel] = []
 
-    /// Determines if multiple item selection is supported.
-    ///
-    let supportsMultipleSelection: Bool
-
     /// Determines if it is possible to toggle all variation items upon selection
     ///
     let toggleAllVariationsOnSelection: Bool
@@ -215,7 +211,6 @@ final class ProductSelectorViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
@@ -228,7 +223,6 @@ final class ProductSelectorViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
-        self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
@@ -250,6 +244,8 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Selects or unselects a product to add to the order
     ///
     func changeSelectionStateForProduct(with productID: Int64) {
+        let supportsMultipleSelection: Bool = true
+
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
@@ -291,7 +287,7 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
-                                                 supportsMultipleSelection: supportsMultipleSelection,
+                                                 supportsMultipleSelection: true,
                                                  onVariationSelectionStateChanged: onVariationSelectionStateChanged,
                                                  onSelectionsCleared: onSelectedVariationsCleared)
     }

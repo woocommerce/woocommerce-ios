@@ -61,7 +61,6 @@ final class CouponRestrictionsViewModel: ObservableObject {
     lazy var productSelectorViewModel = {
         ProductSelectorViewModel(siteID: siteID,
                                  selectedItemIDs: excludedProductOrVariationIDs,
-                                 supportsMultipleSelection: true,
                                  onMultipleSelectionCompleted: { [weak self] ids in
             self?.excludedProductOrVariationIDs = ids
         })

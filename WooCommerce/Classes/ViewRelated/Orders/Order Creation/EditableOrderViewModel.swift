@@ -180,7 +180,6 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: isProductMultiSelectionEnabled,
             toggleAllVariationsOnSelection: false,
             topProductsProvider: TopProductsFromCachedOrdersProvider(),
             onProductSelectionStateChanged: { [weak self] product in

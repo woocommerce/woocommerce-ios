@@ -1,0 +1,25 @@
+{
+    "request": {
+        "method": "POST",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "bodyPatterns": [
+            {
+                "contains": "/wc/v3/payments/connection_tokens%26_method%3Dpost"
+            }
+        ]
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "object": "terminal.connection_token",
+                "secret": "(.*)",
+                "test_mode": true
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

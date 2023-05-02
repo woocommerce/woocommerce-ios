@@ -27,6 +27,8 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
 
     let buttonTitle: String?
 
+    let image: UIImage
+
     private let url: URL?
 
     private let messageID: String
@@ -58,6 +60,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         self.title = justInTimeMessage.title
         self.message = justInTimeMessage.detail
         self.buttonTitle = justInTimeMessage.buttonTitle
+        self.image = justInTimeMessage.background?.image(with: .current) ?? .paymentsFeatureBannerImage
         bindWebViewSheet()
     }
 
@@ -75,8 +78,6 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     let showDividers: Bool = false
 
     let badgeType: BadgeView.BadgeType = .tip
-
-    let image: UIImage = .paymentsFeatureBannerImage
 
     var showDismissConfirmation: Bool = false
 

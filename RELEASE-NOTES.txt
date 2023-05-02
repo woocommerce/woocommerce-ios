@@ -2,7 +2,7 @@
 
 13.5
 -----
-
+[Internal] Products: Simplify Product Editing experiment is removed; there should be no changes to the existing product creation/editing behavior. [https://github.com/woocommerce/woocommerce-ios/pull/9602]
 
 13.4
 -----

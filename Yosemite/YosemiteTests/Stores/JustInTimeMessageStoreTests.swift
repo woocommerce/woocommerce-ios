@@ -3,6 +3,7 @@ import TestKit
 
 @testable import Yosemite
 @testable import Networking
+@testable import WooFoundation
 
 final class JustInTimeMessageStoreTests: XCTestCase {
 
@@ -14,6 +15,8 @@ final class JustInTimeMessageStoreTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
+    private var imageService: MockImageService!
+
     /// Testing SiteID
     ///
     private let sampleSiteID: Int64 = 123
@@ -23,7 +26,11 @@ final class JustInTimeMessageStoreTests: XCTestCase {
     override func setUp() {
         network = MockNetwork(useResponseQueue: true)
         storageManager = MockStorageManager()
-        sut = JustInTimeMessageStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
+        imageService = MockImageService()
+        sut = JustInTimeMessageStore(dispatcher: Dispatcher(),
+                                     storageManager: storageManager,
+                                     network: network,
+                                     imageService: imageService)
     }
 
     func test_loadMessage_then_it_returns_empty_array_upon_successful_empty_response() throws {
@@ -68,7 +75,9 @@ final class JustInTimeMessageStoreTests: XCTestCase {
             title: "In-person card payments",
             detail: "Sell anywhere, and take card payments using a mobile card reader.",
             buttonTitle: "Purchase Card Reader",
-            url: "https://woocommerce.com/products/hardware/US")
+            url: "https://woocommerce.com/products/hardware/US",
+            background: nil,
+            badge: nil)
 
         // Then
         XCTAssert(result.isSuccess)

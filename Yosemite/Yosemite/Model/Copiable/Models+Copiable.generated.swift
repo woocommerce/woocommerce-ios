@@ -3,6 +3,7 @@
 import Codegen
 import Foundation
 import Networking
+import UIKit
 
 
 extension Yosemite.JustInTimeMessage {
@@ -13,7 +14,9 @@ extension Yosemite.JustInTimeMessage {
         title: CopiableProp<String> = .copy,
         detail: CopiableProp<String> = .copy,
         buttonTitle: CopiableProp<String> = .copy,
-        url: CopiableProp<String> = .copy
+        url: CopiableProp<String> = .copy,
+        background: NullableCopiableProp<UIImageAsset> = .copy,
+        badge: NullableCopiableProp<UIImageAsset> = .copy
     ) -> Yosemite.JustInTimeMessage {
         let siteID = siteID ?? self.siteID
         let messageID = messageID ?? self.messageID
@@ -22,6 +25,8 @@ extension Yosemite.JustInTimeMessage {
         let detail = detail ?? self.detail
         let buttonTitle = buttonTitle ?? self.buttonTitle
         let url = url ?? self.url
+        let background = background ?? self.background
+        let badge = badge ?? self.badge
 
         return Yosemite.JustInTimeMessage(
             siteID: siteID,
@@ -30,7 +35,9 @@ extension Yosemite.JustInTimeMessage {
             title: title,
             detail: detail,
             buttonTitle: buttonTitle,
-            url: url
+            url: url,
+            background: background,
+            badge: badge
         )
     }
 }

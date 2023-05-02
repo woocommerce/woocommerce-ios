@@ -31,13 +31,25 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
     ///
     public let url: String
 
+    /// The background for the JITM, if specified.
+    /// May include dark mode where available.
+    ///
+    public let background: UIImageAsset?
+
+    /// The badge for the JITM, if specified.
+    /// May include dark mode where available.
+    ///
+    public let badge: UIImageAsset?
+
     public init(siteID: Int64,
                 messageID: String,
                 featureClass: String,
                 title: String,
                 detail: String,
                 buttonTitle: String,
-                url: String) {
+                url: String,
+                background: UIImageAsset?,
+                badge: UIImageAsset?) {
         self.siteID = siteID
         self.messageID = messageID
         self.featureClass = featureClass
@@ -45,15 +57,21 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
         self.detail = detail
         self.buttonTitle = buttonTitle
         self.url = url
+        self.background = background
+        self.badge = badge
     }
 
-    init(message: Networking.JustInTimeMessage) {
+    init(message: Networking.JustInTimeMessage,
+         background: UIImageAsset?,
+         badge: UIImageAsset?) {
         self.init(siteID: message.siteID,
                   messageID: message.messageID,
                   featureClass: message.featureClass,
                   title: message.content.message,
                   detail: message.content.description,
                   buttonTitle: message.cta.message,
-                  url: message.cta.link)
+                  url: message.cta.link,
+                  background: background,
+                  badge: badge)
     }
 }

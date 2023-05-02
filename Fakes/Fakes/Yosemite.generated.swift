@@ -16,7 +16,9 @@ extension Yosemite.JustInTimeMessage {
             title: .fake(),
             detail: .fake(),
             buttonTitle: .fake(),
-            url: .fake()
+            url: .fake(),
+            background: .fake(),
+            badge: .fake()
         )
     }
 }

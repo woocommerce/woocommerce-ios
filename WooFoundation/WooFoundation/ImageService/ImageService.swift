@@ -39,4 +39,5 @@ public protocol ImageService {
 //
 public enum ImageServiceError: Error {
     case other(error: Error)
+    case failedToDownloadImage
 }

@@ -277,7 +277,8 @@ final class OrderMapperTests: XCTestCase {
         // Attributes with `_` prefix in the name are skipped.
         let expectedAttributes: [OrderItemAttribute] = [
             .init(metaID: 6377, name: "Color", value: "Orange"),
-            .init(metaID: 6378, name: "Brand", value: "Woo")
+            .init(metaID: 6378, name: "Brand", value: "Woo"),
+            .init(metaID: 6743, name: "Amount", value: "$22.00")
         ]
         XCTAssertEqual(variationLineItem.attributes, expectedAttributes)
         // `parent_name` is used instead of `name` in the API line item response.

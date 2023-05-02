@@ -24,7 +24,7 @@ public struct OrderItemAttribute: Decodable, Hashable, Equatable, GeneratedFakea
 
         /// Some extensions send the `value` field with non-string format.
         /// We don't support those, but we also don't want the whole decoding to fail.
-        let value = container.failsafeDecodeIfPresent(String.self, forKey: .value) ?? ""
+        let value = container.failsafeDecodeIfPresent(String.self, forKey: .value)?.strippedHTML ?? ""
 
         // initialize the struct
         self.init(metaID: metaID, name: name, value: value)

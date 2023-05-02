@@ -147,6 +147,8 @@ private extension DefaultProductFormTableViewModel {
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: false))
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: productVariation, isActionable: actionable), isActionable: actionable)
+            case .quantityRules:
+                return .quantityRules(viewModel: quantityRulesRow(product: productVariation))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil

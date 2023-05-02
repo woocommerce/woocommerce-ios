@@ -191,19 +191,21 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var hasQuantityRules: Bool {
-        false // TODO: 8960 - Quantity rules in variation details
+        let enabled = productVariation.overrideProductQuantities == true
+        let hasNoRules = minAllowedQuantity.isNilOrEmpty && maxAllowedQuantity.isNilOrEmpty && groupOfQuantity.isNilOrEmpty
+        return enabled && !hasNoRules
     }
 
     var minAllowedQuantity: String? {
-        nil // TODO: 8960 - Quantity rules in variation details
+        productVariation.minAllowedQuantity
     }
 
     var maxAllowedQuantity: String? {
-        nil // TODO: 8960 - Quantity rules in variation details
+        productVariation.maxAllowedQuantity
     }
 
     var groupOfQuantity: String? {
-        nil // TODO: 8960 - Quantity rules in variation details
+        productVariation.groupOfQuantity
     }
 
     // Visibility logic

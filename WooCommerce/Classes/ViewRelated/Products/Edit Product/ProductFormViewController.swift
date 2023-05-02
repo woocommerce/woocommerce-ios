@@ -467,7 +467,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .noVariationsWarning:
                 return // This warning is not actionable.
             case .quantityRules:
-                // TODO: 9252 - Add analytics
+                eventLogger.logQuantityRulesTapped()
                 showQuantityRules()
                 return
             }

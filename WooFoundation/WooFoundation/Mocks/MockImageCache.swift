@@ -1,14 +1,14 @@
 @testable import Kingfisher
 
-final class MockImageCache: ImageCache {
+public final class MockImageCache: ImageCache {
     // Mocks in-memory cache.
     private var imagesByKey: [String: UIImage] = [:]
 
-    override func imageCachedType(forKey key: String, processorIdentifier identifier: String = DefaultImageProcessor.default.identifier) -> CacheType {
+    public override func imageCachedType(forKey key: String, processorIdentifier identifier: String = DefaultImageProcessor.default.identifier) -> CacheType {
         imagesByKey[key] != nil ? .memory: .none
     }
 
-    override func retrieveImage(forKey key: String,
+    public override func retrieveImage(forKey key: String,
                                 options: KingfisherParsedOptionsInfo,
                                 callbackQueue: CallbackQueue = .mainCurrentOrAsync,
                                 completionHandler: ((Result<ImageCacheResult, KingfisherError>) -> Void)?) {
@@ -19,7 +19,7 @@ final class MockImageCache: ImageCache {
         }
     }
 
-    override func store(_ image: KFCrossPlatformImage,
+    public override func store(_ image: KFCrossPlatformImage,
                         original: Data? = nil,
                         forKey key: String,
                         options: KingfisherParsedOptionsInfo,
@@ -28,7 +28,7 @@ final class MockImageCache: ImageCache {
         imagesByKey[key] = image
     }
 
-    override func store(_ image: KFCrossPlatformImage,
+    public override func store(_ image: KFCrossPlatformImage,
                         original: Data? = nil,
                         forKey key: String,
                         processorIdentifier identifier: String = "",

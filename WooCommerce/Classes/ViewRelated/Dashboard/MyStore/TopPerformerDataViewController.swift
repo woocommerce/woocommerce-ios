@@ -5,6 +5,7 @@ import Experiments
 import SwiftUI
 import WordPressUI
 import class AutomatticTracks.CrashLogging
+import WooFoundation
 
 
 

@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WooFoundation
 
 
 /// A simple Product List presented from the Order Details screen -> Shipping Labels Packages.

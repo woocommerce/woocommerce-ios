@@ -1,23 +1,23 @@
 import UIKit
-@testable import WooCommerce
+@testable import WooFoundation
 
-final class MockImageDownloadTask: ImageDownloadTask {
+public final class MockImageDownloadTask: ImageDownloadTask {
     private(set) var isCancelled: Bool = false
 
-    func cancel() {
+    public func cancel() {
         isCancelled = true
     }
 }
 
-final class MockImageDownloader: ImageDownloader {
+public final class MockImageDownloader: ImageDownloader {
     // Mocks in-memory cache.
     private let imagesByKey: [String: UIImage]
 
-    init(imagesByKey: [String: UIImage]) {
+    public init(imagesByKey: [String: UIImage]) {
         self.imagesByKey = imagesByKey
     }
 
-    func downloadImage(with url: URL, onCompletion: ((Result<UIImage, Error>) -> Void)?) -> ImageDownloadTask? {
+    public func downloadImage(with url: URL, onCompletion: ((Result<UIImage, Error>) -> Void)?) -> ImageDownloadTask? {
         if let image = imagesByKey[url.absoluteString] {
             onCompletion?(.success(image))
         } else {

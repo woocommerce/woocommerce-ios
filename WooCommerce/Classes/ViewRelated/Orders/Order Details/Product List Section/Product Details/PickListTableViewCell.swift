@@ -2,6 +2,7 @@ import UIKit
 import Gridicons
 import Yosemite
 import WordPressUI
+import WooFoundation
 
 
 /// Pick List: a simplified ProductDetails cell, that focuses on order fulfillment.

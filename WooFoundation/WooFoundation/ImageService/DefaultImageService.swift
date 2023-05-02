@@ -9,7 +9,7 @@ private extension URL {
 
 /// Implements `ImageService` using `Kingfisher` library.
 ///
-struct DefaultImageService: ImageService {
+public struct DefaultImageService: ImageService {
     private let imageDownloader: ImageDownloader
     private let imageCache: ImageCache
 
@@ -32,13 +32,13 @@ struct DefaultImageService: ImageService {
         return options
     }
 
-    init(imageCache: ImageCache = ImageCache.default,
-         imageDownloader: ImageDownloader = Kingfisher.ImageDownloader.default) {
+    public init(imageCache: ImageCache = ImageCache.default,
+                imageDownloader: ImageDownloader = Kingfisher.ImageDownloader.default) {
         self.imageCache = imageCache
         self.imageDownloader = imageDownloader
     }
 
-    func retrieveImageFromCache(with url: URL, completion: @escaping ImageCacheRetrievalCompletion) {
+    public func retrieveImageFromCache(with url: URL, completion: @escaping ImageCacheRetrievalCompletion) {
         imageCache.retrieveImage(forKey: url.imageCacheKey) { result in
             switch result {
             case .success(let value):
@@ -50,26 +50,26 @@ struct DefaultImageService: ImageService {
         }
     }
 
-    func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?) -> ImageDownloadTask? {
+    public func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?) -> ImageDownloadTask? {
         return imageDownloader.downloadImage(with: url) { result in
-                                                switch result {
-                                                case .success(let image):
-                                                    if shouldCacheImage {
-                                                        self.imageCache.store(image, forKey: url.imageCacheKey)
-                                                    }
+            switch result {
+            case .success(let image):
+                if shouldCacheImage {
+                    self.imageCache.store(image, forKey: url.imageCacheKey)
+                }
 
-                                                    completion?(image, nil)
-                                                case .failure(let kingfisherError):
-                                                    completion?(nil, .other(error: kingfisherError))
-                                                }
+                completion?(image, nil)
+            case .failure(let kingfisherError):
+                completion?(nil, .other(error: kingfisherError))
+            }
         }
     }
 
-    func downloadAndCacheImageForImageView(_ imageView: UIImageView,
-                                           with url: String?,
-                                           placeholder: UIImage? = nil,
-                                           progressBlock: ImageDownloadProgressBlock? = nil,
-                                           completion: ImageDownloadCompletion? = nil) {
+    public func downloadAndCacheImageForImageView(_ imageView: UIImageView,
+                                                  with url: String?,
+                                                  placeholder: UIImage? = nil,
+                                                  progressBlock: ImageDownloadProgressBlock? = nil,
+                                                  completion: ImageDownloadCompletion? = nil) {
         let encodedString = url?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         let url = URL(string: encodedString ?? "")
         imageView.kf.setImage(with: url,

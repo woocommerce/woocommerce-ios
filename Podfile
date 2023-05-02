@@ -54,6 +54,10 @@ def stripe_terminal
   pod 'StripeTerminal', '~> 2.19.1'
 end
 
+def kingfisher
+  pod 'Kingfisher', '~> 7.6.2'
+end
+
 def networking_pods
   alamofire
   cocoa_lumberjack
@@ -106,7 +110,7 @@ target 'WooCommerce' do
   keychain
   pod 'ZendeskSupportSDK', '~> 6.0'
   stripe_terminal
-  pod 'Kingfisher', '~> 7.6.2'
+  kingfisher
   pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']
 
   # Unit Tests
@@ -159,6 +163,7 @@ end
 #
 def woofoundation_pods
   cocoa_lumberjack
+  kingfisher
 end
 
 # Tools Target:

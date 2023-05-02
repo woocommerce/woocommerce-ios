@@ -1,4 +1,5 @@
 import UIKit
+import WooFoundation
 
 final class ProductsTabProductTableViewCell: UITableViewCell {
     private lazy var productImageView: UIImageView = {

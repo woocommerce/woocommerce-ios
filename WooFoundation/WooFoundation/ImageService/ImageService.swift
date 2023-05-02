@@ -1,12 +1,12 @@
 import UIKit
 
-typealias ImageCacheRetrievalCompletion = (_ image: UIImage?) -> Void
-typealias ImageDownloadCompletion = (_ image: UIImage?, _ error: ImageServiceError?) -> Void
-typealias ImageDownloadProgressBlock = (_ receivedSize: Int64, _ totalSize: Int64) -> Void
+public typealias ImageCacheRetrievalCompletion = (_ image: UIImage?) -> Void
+public typealias ImageDownloadCompletion = (_ image: UIImage?, _ error: ImageServiceError?) -> Void
+public typealias ImageDownloadProgressBlock = (_ receivedSize: Int64, _ totalSize: Int64) -> Void
 
 /// Provides an interface for retrieving, downloading, and caching an image.
 ///
-protocol ImageService {
+public protocol ImageService {
 
     /// Retrieves an image from cache.
     /// - Parameters:
@@ -37,6 +37,6 @@ protocol ImageService {
 
 // MARK: - Errors
 //
-enum ImageServiceError: Error {
+public enum ImageServiceError: Error {
     case other(error: Error)
 }

@@ -1,10 +1,10 @@
 import XCTest
 
-@testable import WooCommerce
+@testable import WooFoundation
 @testable import Kingfisher
 
 final class DefaultImageServiceTests: XCTestCase {
-    private let testImage = UIImage.productPlaceholderImage
+    private let testImage = UIImage(systemName: "photo")!
 
     private let url = URL(string: "https://woo.com/fun")!
 
@@ -83,7 +83,7 @@ final class DefaultImageServiceTests: XCTestCase {
 
     func testDownloadingAndCachingAndRetrievingAnImageForImageView() {
         let mockImageView = UIImageView()
-        let mockPlaceholder = UIImage.shippingImage
+        let mockPlaceholder = UIImage(systemName: "shippingbox")
 
         let mockCache = MockImageCache(name: "Testing")
         // `MockKingfisherImageDownloader` is used in this test because it depends on a Kingfisher `ImageDownloader`.
@@ -113,7 +113,7 @@ final class DefaultImageServiceTests: XCTestCase {
 
     func testDownloadingAndCachingAndRetrievingAnImageForImageViewFromURLWithSpecialChars() {
         let mockImageView = UIImageView()
-        let mockPlaceholder = UIImage.shippingImage
+        let mockPlaceholder = UIImage(systemName: "shippingbox")
 
         let mockCache = MockImageCache(name: "Testing")
 

@@ -1,6 +1,7 @@
 import SafariServices
 import UIKit
 import Yosemite
+import WooFoundation
 
 /// View Control for Review Order screen
 /// This screen is shown when Mark Order Complete button is tapped

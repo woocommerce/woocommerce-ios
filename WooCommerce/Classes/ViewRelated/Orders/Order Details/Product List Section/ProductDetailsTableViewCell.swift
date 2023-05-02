@@ -2,6 +2,7 @@ import UIKit
 import Gridicons
 import Yosemite
 import WordPressUI
+import WooFoundation
 
 
 /// Product Details: Renders a row that displays a single Product.

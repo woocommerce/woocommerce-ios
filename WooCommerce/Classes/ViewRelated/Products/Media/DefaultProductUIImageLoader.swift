@@ -1,6 +1,7 @@
 import Photos
 import Yosemite
 import Combine
+import WooFoundation
 
 /// Provides images based on Product image status:
 /// - Requests the image from `PHImageManager` for a `PHASset`

@@ -11,8 +11,17 @@
 		03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */; };
 		03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */; };
 		03597A9D28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9C28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift */; };
+		035AEDFF2A012E59008D9F32 /* MockKingfisherImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCC72A0126510095CDE0 /* MockKingfisherImageDownloader.swift */; };
+		035AEE002A012E59008D9F32 /* MockImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCC92A0126520095CDE0 /* MockImageDownloader.swift */; };
+		035AEE012A012E59008D9F32 /* MockImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCC82A0126520095CDE0 /* MockImageCache.swift */; };
 		035BA3A6290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BA3A5290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift */; };
 		036563D728F93F8D00D84BFD /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 036563D628F93F8D00D84BFD /* TestKit */; };
+		036BBCBE2A011C6E0095CDE0 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCB92A011C6E0095CDE0 /* ImageService.swift */; };
+		036BBCBF2A011C6E0095CDE0 /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCBA2A011C6E0095CDE0 /* KingfisherImageDownloader+ImageDownloadable.swift */; };
+		036BBCC02A011C6E0095CDE0 /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCBB2A011C6E0095CDE0 /* ImageDownloader.swift */; };
+		036BBCC22A011C6E0095CDE0 /* DefaultImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCBD2A011C6E0095CDE0 /* DefaultImageService.swift */; };
+		036BBCC42A0124660095CDE0 /* DefaultImageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCC32A0124660095CDE0 /* DefaultImageServiceTests.swift */; };
+		036BBCCE2A0126E50095CDE0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 036BBCCD2A0126E50095CDE0 /* Constants.swift */; };
 		03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8C3882914083F002235B1 /* Bundle+Woo.swift */; };
 		265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 265C99D728B93F04005E6117 /* ColorPalette.xcassets */; };
 		265C99DD28B941D5005E6117 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */; };
@@ -58,6 +67,15 @@
 		03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceComUTMProvider.swift; sourceTree = "<group>"; };
 		03597A9C28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceComUTMProviderTests.swift; sourceTree = "<group>"; };
 		035BA3A5290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTMProviderProtocolExtensionTests.swift; sourceTree = "<group>"; };
+		036BBCB92A011C6E0095CDE0 /* ImageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
+		036BBCBA2A011C6E0095CDE0 /* KingfisherImageDownloader+ImageDownloadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "KingfisherImageDownloader+ImageDownloadable.swift"; sourceTree = "<group>"; };
+		036BBCBB2A011C6E0095CDE0 /* ImageDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
+		036BBCBD2A011C6E0095CDE0 /* DefaultImageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageService.swift; sourceTree = "<group>"; };
+		036BBCC32A0124660095CDE0 /* DefaultImageServiceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultImageServiceTests.swift; sourceTree = "<group>"; };
+		036BBCC72A0126510095CDE0 /* MockKingfisherImageDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockKingfisherImageDownloader.swift; sourceTree = "<group>"; };
+		036BBCC82A0126520095CDE0 /* MockImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockImageCache.swift; sourceTree = "<group>"; };
+		036BBCC92A0126520095CDE0 /* MockImageDownloader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockImageDownloader.swift; sourceTree = "<group>"; };
+		036BBCCD2A0126E50095CDE0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		03B8C3882914083F002235B1 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
 		265C99D728B93F04005E6117 /* ColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorPalette.xcassets; sourceTree = "<group>"; };
 		265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Muriel-Tests.swift"; sourceTree = "<group>"; };
@@ -119,6 +137,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		036BBCB82A011C6E0095CDE0 /* ImageService */ = {
+			isa = PBXGroup;
+			children = (
+				036BBCB92A011C6E0095CDE0 /* ImageService.swift */,
+				036BBCBA2A011C6E0095CDE0 /* KingfisherImageDownloader+ImageDownloadable.swift */,
+				036BBCBB2A011C6E0095CDE0 /* ImageDownloader.swift */,
+				036BBCBD2A011C6E0095CDE0 /* DefaultImageService.swift */,
+			);
+			path = ImageService;
+			sourceTree = "<group>";
+		};
+		036BBCC52A01248D0095CDE0 /* ImageService */ = {
+			isa = PBXGroup;
+			children = (
+				036BBCC32A0124660095CDE0 /* DefaultImageServiceTests.swift */,
+			);
+			path = ImageService;
+			sourceTree = "<group>";
+		};
 		265C99DB28B941D5005E6117 /* Colors */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,6 +221,9 @@
 			children = (
 				03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */,
 				689D11D22891B7D800F6A83F /* MockCrashLogger.swift */,
+				036BBCC82A0126520095CDE0 /* MockImageCache.swift */,
+				036BBCC72A0126510095CDE0 /* MockKingfisherImageDownloader.swift */,
+				036BBCC92A0126520095CDE0 /* MockImageDownloader.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -220,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				26AF1F4E28B8362800937BA9 /* Colors */,
+				036BBCB82A011C6E0095CDE0 /* ImageService */,
 				689D11D12891B7B100F6A83F /* Mocks */,
 				689D11CE2891B37400F6A83F /* Protocols */,
 				686BE910288EE09B00967C86 /* Utilities */,
@@ -234,6 +275,8 @@
 		B9C9C642283E703C001B879F /* WooFoundationTests */ = {
 			isa = PBXGroup;
 			children = (
+				036BBCCD2A0126E50095CDE0 /* Constants.swift */,
+				036BBCC52A01248D0095CDE0 /* ImageService */,
 				AE948D0B28CF6D34009F3246 /* Extensions */,
 				686BE913288EE2BC00967C86 /* Utilities */,
 			);
@@ -478,26 +521,33 @@
 			buildActionMask = 2147483647;
 			files = (
 				03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */,
+				036BBCC22A011C6E0095CDE0 /* DefaultImageService.swift in Sources */,
 				B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */,
 				26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */,
+				035AEE002A012E59008D9F32 /* MockImageDownloader.swift in Sources */,
 				03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */,
 				B9C9C663283E7296001B879F /* Logging.swift in Sources */,
 				6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */,
 				B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */,
 				B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */,
+				036BBCBE2A011C6E0095CDE0 /* ImageService.swift in Sources */,
 				AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */,
 				03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */,
+				036BBCC02A011C6E0095CDE0 /* ImageDownloader.swift in Sources */,
 				26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */,
+				035AEDFF2A012E59008D9F32 /* MockKingfisherImageDownloader.swift in Sources */,
 				689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */,
 				B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */,
 				03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */,
 				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,
 				689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */,
 				26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */,
+				036BBCBF2A011C6E0095CDE0 /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */,
 				686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */,
 				B9C9C65E283E71C8001B879F /* CurrencySettings.swift in Sources */,
 				26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */,
 				26AF1F5428B8362800937BA9 /* ColorStudio.swift in Sources */,
+				035AEE012A012E59008D9F32 /* MockImageCache.swift in Sources */,
 				68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -506,7 +556,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				036BBCCE2A0126E50095CDE0 /* Constants.swift in Sources */,
 				03597A9D28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift in Sources */,
+				036BBCC42A0124660095CDE0 /* DefaultImageServiceTests.swift in Sources */,
 				686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */,
 				265C99DF28B94271005E6117 /* MurielColorTests.swift in Sources */,
 				AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */,

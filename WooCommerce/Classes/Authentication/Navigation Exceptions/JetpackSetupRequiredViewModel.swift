@@ -1,5 +1,6 @@
 import Combine
 import UIKit
+import WooFoundation
 
 /// Configuration and actions for an ULErrorViewController,
 /// modeling an error when Jetpack is not installed or is not connected

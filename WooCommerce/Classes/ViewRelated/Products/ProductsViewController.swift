@@ -2,6 +2,7 @@ import UIKit
 import WordPressUI
 import Yosemite
 import Combine
+import WooFoundation
 
 import class AutomatticTracks.CrashLogging
 

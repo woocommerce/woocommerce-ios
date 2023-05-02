@@ -364,8 +364,6 @@
 		029F29FE24DA5B2D004751CA /* ProductInventorySettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029F29FD24DA5B2D004751CA /* ProductInventorySettingsViewModel.swift */; };
 		02A275BA23FE50AA005C560F /* ProductUIImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A275B923FE50AA005C560F /* ProductUIImageLoader.swift */; };
 		02A275BE23FE57DC005C560F /* ProductUIImageLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A275BD23FE57DC005C560F /* ProductUIImageLoaderTests.swift */; };
-		02A275C023FE58F6005C560F /* MockImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A275BF23FE58F6005C560F /* MockImageCache.swift */; };
-		02A275C223FE590A005C560F /* MockKingfisherImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A275C123FE590A005C560F /* MockKingfisherImageDownloader.swift */; };
 		02A275C423FE5B64005C560F /* MockPHAssetImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A275C323FE5B64005C560F /* MockPHAssetImageLoader.swift */; };
 		02A275C623FE9EFC005C560F /* MockFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A275C523FE9EFC005C560F /* MockFeatureFlagService.swift */; };
 		02A410F52583A84C005E2925 /* SpacerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A410F32583A84C005E2925 /* SpacerTableViewCell.swift */; };
@@ -420,9 +418,6 @@
 		02BC5AA824D2802B00C43326 /* MockProductVariationStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC5AA724D2802B00C43326 /* MockProductVariationStoresManager.swift */; };
 		02BE9CC029C05CFD00292333 /* SitePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BE9CBF29C05CFD00292333 /* SitePreviewView.swift */; };
 		02BF9BAF2851E7EA008CE2DD /* MockAppleIDCredentialChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BF9BAE2851E7EA008CE2DD /* MockAppleIDCredentialChecker.swift */; };
-		02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2923B5BB1C00F880B1 /* ImageService.swift */; };
-		02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */; };
-		02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */; };
 		02C1853B27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1853A27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift */; };
 		02C1853D27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1853C27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift */; };
 		02C2756824F4E77F00286C04 /* ProductShippingSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2756724F4E77F00286C04 /* ProductShippingSettingsViewModel.swift */; };
@@ -492,9 +487,6 @@
 		02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */; };
 		02E8B17C23E2C78A00A43403 /* ProductImageStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17B23E2C78A00A43403 /* ProductImageStatus.swift */; };
 		02E8B17E23E2C8D900A43403 /* ProductImageActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17D23E2C8D900A43403 /* ProductImageActionHandler.swift */; };
-		02EA6BF82435E80600FFF90A /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BF72435E80600FFF90A /* ImageDownloader.swift */; };
-		02EA6BFA2435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */; };
-		02EA6BFC2435EC3500FFF90A /* MockImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BFB2435EC3500FFF90A /* MockImageDownloader.swift */; };
 		02EAA4C8290F992B00918DAB /* LoggedOutStoreCreationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAA4C7290F992B00918DAB /* LoggedOutStoreCreationCoordinator.swift */; };
 		02EAA4CA2911004B00918DAB /* TextFieldStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAA4C92911004B00918DAB /* TextFieldStyles.swift */; };
 		02ECD1DF24FF48D000735BE5 /* PaginationTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ECD1DE24FF48D000735BE5 /* PaginationTracker.swift */; };
@@ -2612,8 +2604,6 @@
 		029F29FD24DA5B2D004751CA /* ProductInventorySettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventorySettingsViewModel.swift; sourceTree = "<group>"; };
 		02A275B923FE50AA005C560F /* ProductUIImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductUIImageLoader.swift; sourceTree = "<group>"; };
 		02A275BD23FE57DC005C560F /* ProductUIImageLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductUIImageLoaderTests.swift; sourceTree = "<group>"; };
-		02A275BF23FE58F6005C560F /* MockImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageCache.swift; sourceTree = "<group>"; };
-		02A275C123FE590A005C560F /* MockKingfisherImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockKingfisherImageDownloader.swift; sourceTree = "<group>"; };
 		02A275C323FE5B64005C560F /* MockPHAssetImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPHAssetImageLoader.swift; sourceTree = "<group>"; };
 		02A275C523FE9EFC005C560F /* MockFeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFeatureFlagService.swift; sourceTree = "<group>"; };
 		02A410F32583A84C005E2925 /* SpacerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacerTableViewCell.swift; sourceTree = "<group>"; };
@@ -2667,9 +2657,6 @@
 		02BC5AA724D2802B00C43326 /* MockProductVariationStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductVariationStoresManager.swift; sourceTree = "<group>"; };
 		02BE9CBF29C05CFD00292333 /* SitePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePreviewView.swift; sourceTree = "<group>"; };
 		02BF9BAE2851E7EA008CE2DD /* MockAppleIDCredentialChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAppleIDCredentialChecker.swift; sourceTree = "<group>"; };
-		02C0CD2923B5BB1C00F880B1 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
-		02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageService.swift; sourceTree = "<group>"; };
-		02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageServiceTests.swift; sourceTree = "<group>"; };
 		02C1853A27FF0D9C00ABD764 /* RefundSubmissionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundSubmissionUseCase.swift; sourceTree = "<group>"; };
 		02C1853C27FF153A00ABD764 /* CardPresentRefundOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentRefundOrchestrator.swift; sourceTree = "<group>"; };
 		02C2756724F4E77F00286C04 /* ProductShippingSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -2739,9 +2726,6 @@
 		02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSpinnerView.swift; sourceTree = "<group>"; };
 		02E8B17B23E2C78A00A43403 /* ProductImageStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageStatus.swift; sourceTree = "<group>"; };
 		02E8B17D23E2C8D900A43403 /* ProductImageActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageActionHandler.swift; sourceTree = "<group>"; };
-		02EA6BF72435E80600FFF90A /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
-		02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KingfisherImageDownloader+ImageDownloadable.swift"; sourceTree = "<group>"; };
-		02EA6BFB2435EC3500FFF90A /* MockImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageDownloader.swift; sourceTree = "<group>"; };
 		02EAA4C7290F992B00918DAB /* LoggedOutStoreCreationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutStoreCreationCoordinator.swift; sourceTree = "<group>"; };
 		02EAA4C92911004B00918DAB /* TextFieldStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldStyles.swift; sourceTree = "<group>"; };
 		02ECD1DE24FF48D000735BE5 /* PaginationTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationTracker.swift; sourceTree = "<group>"; };
@@ -5501,11 +5485,7 @@
 		02C0CD2823B5BAFB00F880B1 /* ImageService */ = {
 			isa = PBXGroup;
 			children = (
-				02C0CD2923B5BB1C00F880B1 /* ImageService.swift */,
-				02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */,
 				021AEF9D2407F55C00029D28 /* PHAssetImageLoader.swift */,
-				02EA6BF72435E80600FFF90A /* ImageDownloader.swift */,
-				02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */,
 			);
 			path = ImageService;
 			sourceTree = "<group>";
@@ -7255,12 +7235,9 @@
 				B555531221B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift */,
 				3198A1E72694DC7200597213 /* MockKnownReadersProvider.swift */,
 				027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */,
-				02A275BF23FE58F6005C560F /* MockImageCache.swift */,
-				02A275C123FE590A005C560F /* MockKingfisherImageDownloader.swift */,
 				02A275C323FE5B64005C560F /* MockPHAssetImageLoader.swift */,
 				02A275C523FE9EFC005C560F /* MockFeatureFlagService.swift */,
 				02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */,
-				02EA6BFB2435EC3500FFF90A /* MockImageDownloader.swift */,
 				6856D249FD1702FE3864950A /* MockPushNotificationsManager.swift */,
 				57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */,
 				7E6A01A22726C5D3001668D5 /* MockProductCategoryStoresManager.swift */,
@@ -7643,7 +7620,6 @@
 				93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */,
 				D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */,
 				0247AAA123A3C5A6007F967E /* DecimalInputFormatterTests.swift */,
-				02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */,
 				024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */,
 				D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */,
 				D8F82AC422AF903700B67E4B /* IconsTests.swift */,
@@ -11294,7 +11270,6 @@
 				D89CFFDD25B44468000E4683 /* ULAccountMismatchViewController.swift in Sources */,
 				03E471C6293A2E95001A58AD /* CardPresentModalBuiltInReaderCheckingDeviceSupport.swift in Sources */,
 				B687940C27699D420092BCA0 /* RefundFeesCalculationUseCase.swift in Sources */,
-				02EA6BF82435E80600FFF90A /* ImageDownloader.swift in Sources */,
 				CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
 				CCE785CA29C1F9170003977F /* ProductBundleItemStockStatus+UI.swift in Sources */,
@@ -11453,7 +11428,6 @@
 				02BBD6EB29A316FB00243BE2 /* StoreOnboardingCoordinator.swift in Sources */,
 				D881FE062579DC78008DE6F2 /* NotWPAccountViewModel.swift in Sources */,
 				311D21ED264AF0E700102316 /* CardReaderSettingsAlerts.swift in Sources */,
-				02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */,
 				26ABCE532518EAF300721CB0 /* IssueRefundTableViewCell.swift in Sources */,
 				0304E35E28BDC86D00A80191 /* LearnMoreViewModel.swift in Sources */,
 				02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */,
@@ -11508,7 +11482,6 @@
 				02E8B17C23E2C78A00A43403 /* ProductImageStatus.swift in Sources */,
 				0259D5FF2581F3FA003B1CD6 /* ShippingLabelPaperSizeOptionsViewController.swift in Sources */,
 				CCEC256A27B581E800EF9FA3 /* ProductVariationFormatter.swift in Sources */,
-				02EA6BFA2435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */,
 				7E7C5F8F2719BA7300315B61 /* ProductCategoryCellViewModel.swift in Sources */,
 				02EF166C292DFE9A00D90AD6 /* WebCheckoutViewModel.swift in Sources */,
 				DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */,
@@ -12071,7 +12044,6 @@
 				0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */,
 				EECB7EE62864647F0028C888 /* ProductImagesProductIDUpdater.swift in Sources */,
 				FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */,
-				02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */,
 				03E471C8293A3076001A58AD /* CardPresentModalBuiltInConnectingToReader.swift in Sources */,
 				0365986529AF942700F297D3 /* PaymentSettingsFlowHint.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
@@ -12338,7 +12310,6 @@
 				026D4A24280461960090164F /* LegacyCollectOrderPaymentUseCaseTests.swift in Sources */,
 				D88D5A3D230B5E85007B6E01 /* ServiceLocatorTests.swift in Sources */,
 				269098BA27D6922E001FEB07 /* FeesInputTransformerTests.swift in Sources */,
-				02A275C223FE590A005C560F /* MockKingfisherImageDownloader.swift in Sources */,
 				CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */,
 				D80254822655267A001B2CC1 /* CardPresentModalErrorTests.swift in Sources */,
 				02AC822C2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift in Sources */,
@@ -12426,7 +12397,6 @@
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */,
 				77307809251EA07100178696 /* ProductDownloadSettingsViewModelTests.swift in Sources */,
-				02EA6BFC2435EC3500FFF90A /* MockImageDownloader.swift in Sources */,
 				57C9A8FC24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift in Sources */,
 				CCE785C829C1E8280003977F /* BundledProductsListViewModelTests.swift in Sources */,
 				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,
@@ -12627,7 +12597,6 @@
 				DEF8CF0D29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift in Sources */,
 				0248042D2887C92A00991319 /* MockLoggedOutAppSettings.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
-				02A275C023FE58F6005C560F /* MockImageCache.swift in Sources */,
 				261AA30E275506DE009530FE /* PaymentMethodsViewModelTests.swift in Sources */,
 				4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */,
 				02077F72253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift in Sources */,
@@ -12681,7 +12650,6 @@
 				CC04918F292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift in Sources */,
 				02BC5AA524D27F8900C43326 /* ProductVariationFormViewModel+UpdatesTests.swift in Sources */,
 				D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */,
-				02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */,
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
 				CCCFFC5D2934F0BA006130AF /* StatsIntervalDataParserTests.swift in Sources */,
 				02645D8A27BA2EDB0065DC68 /* NSAttributedString+AttributesTests.swift in Sources */,

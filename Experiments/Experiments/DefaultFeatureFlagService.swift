@@ -67,8 +67,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .domainSettings:
             return true
-        case .simplifyProductEditing:
-            return false
         case .jetpackSetupWithApplicationPassword:
             return true
         case .dashboardOnboarding:

@@ -37,7 +37,7 @@ final class LoginTests: XCTestCase {
         }
         try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
-            .proceedWith(password: TestCredentials.password)
+            .enterValidPassword()
 
         try LoginEpilogueScreen()
             .verifyEpilogueDisplays(email: "e2eflowtestingmobile@example.com", siteUrl: TestCredentials.siteUrl)

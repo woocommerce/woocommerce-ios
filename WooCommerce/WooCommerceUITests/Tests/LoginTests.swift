@@ -20,7 +20,7 @@ final class LoginTests: XCTestCase {
             .tapLogIn()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
-            .enterValidPassword(password: TestCredentials.password)
+            .enterValidPassword()
 
         try TabNavComponent()
             .goToMenuScreen()
@@ -58,7 +58,7 @@ final class LoginTests: XCTestCase {
         }
         try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
-            .enterInvalidPassword(password: "invalidPswd")
+            .enterInvalidPassword()
             .verifyLoginError()
     }
 }

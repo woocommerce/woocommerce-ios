@@ -30,14 +30,14 @@ public final class PasswordScreen: ScreenObject {
     }
 
     @discardableResult
-    public func enterValidPassword(password: String) throws -> MyStoreScreen {
-        try proceedWith(password: password)
+    public func enterValidPassword() throws -> MyStoreScreen {
+        try proceedWith(password: "pw")
 
         return try MyStoreScreen()
     }
 
-    public func enterInvalidPassword(password: String) throws -> PasswordScreen {
-        try proceedWith(password: password)
+    public func enterInvalidPassword() throws -> PasswordScreen {
+        try proceedWith(password: "invalidPswd")
         if continueButton.exists && !continueButton.isHittable {
             waitFor(element: continueButton, predicate: "isEnabled == true")
         }

@@ -3,6 +3,7 @@
 13.5
 -----
 [Internal] Products: Simplify Product Editing experiment is removed; there should be no changes to the existing product creation/editing behavior. [https://github.com/woocommerce/woocommerce-ios/pull/9602]
+- [*] Orders: Parses HTML-encoded characters and removes extraneous, non-attribute meta data from the list of attributes for an item in an order. [https://github.com/woocommerce/woocommerce-ios/pull/9603]
 
 13.4
 -----

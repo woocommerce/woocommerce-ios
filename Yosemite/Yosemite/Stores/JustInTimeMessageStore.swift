@@ -145,7 +145,7 @@ private extension JustInTimeMessageStore {
         }
 
         let asset = UIImageAsset()
-        asset.register(lightImage, with: UITraitCollection(userInterfaceStyle: .light))
+        asset.register(lightImage, with: UITraitCollection(userInterfaceStyle: .unspecified))
 
         if let darkImageUrl = message.assets[assetKind.darkUrlKey],
            let darkImage = await image(for: darkImageUrl) {

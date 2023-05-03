@@ -33,8 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .loginMagicLinkEmphasisM2:
             return true
-        case .productMultiSelectionM1:
-            return true
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
@@ -71,10 +69,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .domainSettings:
             return true
-        case .simplifyProductEditing:
-            // Enabled for the A/B experiment treatment group only
-            // Disabled for the control group and UI testing
-            return ABTest.simplifiedProductEditing.variation == .treatment && !isUITesting
         case .jetpackSetupWithApplicationPassword:
             return true
         case .dashboardOnboarding:
@@ -94,8 +88,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .readOnlySubscriptions:
             return true
         case .productDescriptionAI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .readOnlyGiftCards:
+            return true
+        case .hideStoreOnboardingTaskList:
+            return true
+        case .readOnlyMinMaxQuantities:
             return true
         default:
             return true

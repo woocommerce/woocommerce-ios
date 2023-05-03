@@ -62,12 +62,6 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
-    /// Indicates whether Product Multi-Selection is enabled
-    ///
-    var isProductMultiSelectionEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.productMultiSelectionM1)
-    }
-
     var title: String {
         switch flow {
         case .creation:
@@ -180,7 +174,7 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: isProductMultiSelectionEnabled,
+            supportsMultipleSelection: true,
             toggleAllVariationsOnSelection: false,
             topProductsProvider: TopProductsFromCachedOrdersProvider(),
             onProductSelectionStateChanged: { [weak self] product in
@@ -407,13 +401,10 @@ final class EditableOrderViewModel: ObservableObject {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
-        if isProductMultiSelectionEnabled {
-            if item.variationID != 0 {
-                productSelectorViewModel.changeSelectionStateForVariation(with: item.variationID, productID: item.productID)
-            } else if item.productID != 0 {
-                productSelectorViewModel.changeSelectionStateForProduct(with: item.productID)
-            }
-
+        if item.variationID != 0 {
+            productSelectorViewModel.changeSelectionStateForVariation(with: item.variationID, productID: item.productID)
+        } else if item.productID != 0 {
+            productSelectorViewModel.changeSelectionStateForProduct(with: item.productID)
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -875,37 +866,23 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product (from the product list) to the order.
     ///
-    // TODO:
-    // This method needs to be refactored, to reflect that adds products to Order for single selection,
-    // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
     func addOrRemoveProductToOrder(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
             allProducts.append(product)
         }
 
-        if isProductMultiSelectionEnabled {
-            // Multi-selection
-            if !selectedProducts.contains(where: { $0.productID == product.productID }) {
-                selectedProducts.append(product)
-                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .product))
-            } else {
-                selectedProducts.removeAll(where: { $0.productID == product.productID })
-                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
-            }
+        if !selectedProducts.contains(where: { $0.productID == product.productID }) {
+            selectedProducts.append(product)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .product))
         } else {
-            // Single-selection
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
-            orderSynchronizer.setProduct.send(input)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1))
+            selectedProducts.removeAll(where: { $0.productID == product.productID })
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
         }
     }
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
-    // TODO:
-    // This method needs to be refactored, to reflect that adds variations to Order for single selection,
-    // but only selects/unselects for multi-selection: https://github.com/woocommerce/woocommerce-ios/issues/9176
     func addOrRemoveProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         if !allProducts.contains(product) {
@@ -916,20 +893,12 @@ private extension EditableOrderViewModel {
             allProductVariations.append(variation)
         }
 
-        if isProductMultiSelectionEnabled {
-            // Multi-Selection
-            if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
-                selectedProductVariations.append(variation)
-                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .variation))
-            } else {
-                selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
-                analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
-            }
+        if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
+            selectedProductVariations.append(variation)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .variation))
         } else {
-            // Single-Selection
-            let input = OrderSyncProductInput(product: .variation(variation), quantity: 1)
-            orderSynchronizer.setProduct.send(input)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1))
+            selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
+            analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
         }
     }
 

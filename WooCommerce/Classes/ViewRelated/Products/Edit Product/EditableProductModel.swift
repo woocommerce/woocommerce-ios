@@ -179,6 +179,23 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.subscription
     }
 
+    var hasQuantityRules: Bool {
+        let hasNoRules = minAllowedQuantity.isNilOrEmpty && maxAllowedQuantity.isNilOrEmpty && groupOfQuantity.isNilOrEmpty
+        return !hasNoRules
+    }
+
+    var minAllowedQuantity: String? {
+        product.minAllowedQuantity
+    }
+
+    var maxAllowedQuantity: String? {
+        product.maxAllowedQuantity
+    }
+
+    var groupOfQuantity: String? {
+        product.groupOfQuantity
+    }
+
     func isStockStatusEnabled() -> Bool {
         // Only a variable product's stock status is not editable.
         productType != .variable
@@ -207,11 +224,9 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     /// Additionally we don't take dates into consideration as we don't control their value when creating a product.
     ///
     func isEmpty() -> Bool {
-        let simplifiedEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
         guard let emptyProduct = ProductFactory().createNewProduct(type: productType,
                                                                    isVirtual: virtual,
-                                                                   siteID: siteID,
-                                                                   status: simplifiedEditingEnabled ? .draft : .published) else {
+                                                                   siteID: siteID) else {
             return false
         }
 

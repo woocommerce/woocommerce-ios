@@ -9,9 +9,6 @@ extension ProductFormSection {
         case .settings(let rows):
             let row = rows[rowIndex]
             return row.reuseIdentifier
-        case .optionsCTA(let rows):
-            let row = rows[rowIndex]
-            return row.reuseIdentifier
         }
     }
 }
@@ -83,7 +80,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .bundledProducts,
              .components,
              .subscription,
-             .noVariationsWarning:
+             .noVariationsWarning,
+             .quantityRules:
             return [ImageAndTitleAndTextTableViewCell.self]
         case .reviews:
             return [ProductReviewsTableViewCell.self]
@@ -116,30 +114,11 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .bundledProducts,
              .components,
              .subscription,
-             .noVariationsWarning:
+             .noVariationsWarning,
+             .quantityRules:
             return ImageAndTitleAndTextTableViewCell.self
         case .reviews:
             return ProductReviewsTableViewCell.self
-        }
-    }
-}
-
-extension ProductFormSection.OptionsCTARow: ReusableTableRow {
-    var cellTypes: [UITableViewCell.Type] {
-        switch self {
-        case .addOptions:
-            return [cellType]
-        }
-    }
-
-    var reuseIdentifier: String {
-        return cellType.reuseIdentifier
-    }
-
-    private var cellType: UITableViewCell.Type {
-        switch self {
-        case .addOptions:
-            return BasicTableViewCell.self
         }
     }
 }

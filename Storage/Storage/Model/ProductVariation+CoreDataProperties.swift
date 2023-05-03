@@ -40,6 +40,10 @@ extension ProductVariation {
     @NSManaged public var dateOnSaleEnd: Date?
     @NSManaged public var siteID: Int64
     @NSManaged public var productID: Int64
+    @NSManaged public var minAllowedQuantity: String?
+    @NSManaged public var maxAllowedQuantity: String?
+    @NSManaged public var groupOfQuantity: String?
+    @NSManaged public var overrideProductQuantities: NSNumber?
     @NSManaged public var dimensions: ProductDimensions?
     @NSManaged public var image: ProductImage?
     @NSManaged public var downloads: Set<ProductDownload>?

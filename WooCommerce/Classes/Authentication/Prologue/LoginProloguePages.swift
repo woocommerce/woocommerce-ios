@@ -106,24 +106,24 @@ final class LoginProloguePageTypeViewController: UIViewController {
 
 private extension LoginProloguePageTypeViewController {
     func configureStackView() {
-        view.addSubview(stackView)
+        // Scroll view to contain all contents
+        let scrollView = UIScrollView()
+        view.addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(scrollView, insets: .init(top: 0, left: 0, bottom: -Constants.stackBottomMargin, right: 0))
+        scrollView.addSubview(stackView)
 
         // Stack view layout
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = Constants.stackSpacing
 
-        // Reduce centerYAnchor constraint priority to ensure the bottom margin has higher priority, so stack view is fully visible on shorter devices
-        let verticalCentering = stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stackVerticalOffset)
-        verticalCentering.priority = .required - 1
 
         // Set constraints
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.pinSubviewToAllEdges(stackView)
         NSLayoutConstraint.activate([
-            verticalCentering,
-            stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: Constants.stackBottomMargin),
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
     }
 
@@ -194,7 +194,6 @@ private extension LoginProloguePageTypeViewController {
 private extension LoginProloguePageTypeViewController {
     enum Constants {
         static let stackSpacing: CGFloat = 40 // Space between image and text
-        static let stackVerticalOffset: CGFloat = 103
         static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let imageHeightMultiplier: CGFloat = 0.35
         static let labelLeadingMargin: CGFloat = 48

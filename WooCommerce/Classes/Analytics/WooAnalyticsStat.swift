@@ -173,6 +173,7 @@ public enum WooAnalyticsStat: String {
     case storeOnboardingTaskTapped = "store_onboarding_task_tapped"
     case storeOnboardingTaskCompleted = "store_onboarding_task_completed"
     case storeOnboardingCompleted = "store_onboarding_completed"
+    case storeOnboardingHideList = "store_onboarding_hide_list"
 
     // MARK: Site picker. Can be triggered by login epilogue or settings.
     //
@@ -577,6 +578,7 @@ public enum WooAnalyticsStat: String {
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
     case productDetailViewComponentsTapped = "product_details_view_components_tapped"
     case productDetailsViewSubscriptionsTapped = "product_details_view_subscriptions_tapped"
+    case productDetailViewQuantityRulesTapped = "product_detail_view_quantity_rules_tapped"
 
     // MARK: Edit Product Variation Events
     //
@@ -589,6 +591,7 @@ public enum WooAnalyticsStat: String {
     case productVariationDetailUpdateButtonTapped = "product_variation_update_button_tapped"
     case productVariationDetailUpdateSuccess = "product_variation_update_success"
     case productVariationDetailUpdateError = "product_variation_update_error"
+    case productVariationDetailViewQuantityRulesTapped = "product_variation_view_quantity_rules_tapped"
 
     case productVariationBulkUpdateSectionTapped = "product_variation_bulk_update_section_tapped"
     case productVariationBulkUpdateFieldTapped = "product_variation_bulk_update_field_tapped"
@@ -690,6 +693,16 @@ public enum WooAnalyticsStat: String {
     // MARK: Aztec editor
     //
     case aztecEditorDoneButtonTapped = "aztec_editor_done_button_tapped"
+
+    // MARK: Product description AI
+    //
+    case productDescriptionAIButtonTapped = "product_description_ai_button_tapped"
+    case productDescriptionAIGenerateButtonTapped = "product_description_ai_generate_button_tapped"
+    case productDescriptionAIPauseButtonTapped = "product_description_ai_pause_button_tapped"
+    case productDescriptionAIApplyButtonTapped = "product_description_ai_apply_button_tapped"
+    case productDescriptionAICopyButtonTapped = "product_description_ai_copy_button_tapped"
+    case productDescriptionAIGenerationSuccess = "product_description_ai_generation_success"
+    case productDescriptionAIGenerationFailed = "product_description_ai_generation_failed"
 
     // MARK: Jetpack Tunnel Events
     //

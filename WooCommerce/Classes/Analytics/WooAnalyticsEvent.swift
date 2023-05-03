@@ -345,6 +345,12 @@ extension WooAnalyticsEvent {
         static func productVariationGenerationFailure() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationGenerationFailure, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Quantity Rules row for a product variation.
+        ///
+        static func quantityRulesTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationDetailViewQuantityRulesTapped, properties: [:])
+        }
     }
 }
 
@@ -408,6 +414,12 @@ extension WooAnalyticsEvent {
         static func subscriptionsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailsViewSubscriptionsTapped, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Quantity Rules row.
+        ///
+        static func quantityRulesTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailViewQuantityRulesTapped, properties: [:])
+        }
     }
 }
 
@@ -469,6 +481,7 @@ extension WooAnalyticsEvent {
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
             static let source = "source"
+            static let isFilterActive = "is_filter_active"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -604,9 +617,11 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationProductSelectorConfirmButtonTapped(productCount: Int) -> WooAnalyticsEvent {
+        static func orderCreationProductSelectorConfirmButtonTapped(productCount: Int, sources: [String], isFilterActive: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationProductSelectorConfirmButtonTapped, properties: [
-                Keys.productCount: Int64(productCount)
+                Keys.productCount: Int64(productCount),
+                Keys.source: sources.joined(separator: ","),
+                Keys.isFilterActive: isFilterActive
             ])
         }
 

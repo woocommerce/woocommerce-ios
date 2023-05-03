@@ -58,10 +58,6 @@ public enum FeatureFlag: Int {
     ///
     case loginMagicLinkEmphasisM2
 
-    /// Product multi-selection milestone 1: Enables selecting multiple products in the Order creation flow
-    ///
-    case productMultiSelectionM1
-
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding
@@ -156,10 +152,6 @@ public enum FeatureFlag: Int {
     ///
     case supportRequests
 
-    /// Whether to enable the simplified product editing experience.
-    ///
-    case simplifyProductEditing
-
     /// Whether to enable Jetpack setup for users authenticated with application passwords.
     ///
     case jetpackSetupWithApplicationPassword
@@ -203,4 +195,12 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Gift Cards extension
     ///
     case readOnlyGiftCards
+
+    /// Ability to hide store onboarding task list
+    ///
+    case hideStoreOnboardingTaskList
+
+    /// Enables read-only support for the Min/Max Quantities extension
+    ///
+    case readOnlyMinMaxQuantities
 }

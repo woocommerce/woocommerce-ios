@@ -435,7 +435,11 @@ private extension ProductVariationsRemoteTests {
                                 shippingClass: "",
                                 shippingClassID: 0,
                                 menuOrder: 1,
-                                subscription: nil)
+                                subscription: nil,
+                                minAllowedQuantity: nil,
+                                maxAllowedQuantity: nil,
+                                groupOfQuantity: nil,
+                                overrideProductQuantities: nil)
     }
 
     func sampleProductVariationAttributes() -> [ProductVariationAttribute] {

@@ -38,7 +38,8 @@ private extension ProductVariationDetailsFactory {
         let vc: UIViewController
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
                                                                   allAttributes: parentProduct.attributes,
-                                                                  parentProductSKU: parentProduct.sku)
+                                                                  parentProductSKU: parentProduct.sku,
+                                                                  parentProductDisablesQuantityRules: parentProduct.combineVariationQuantities)
         let productImageActionHandler = productImageUploader
             .actionHandler(key: .init(siteID: productVariation.siteID,
                                       productOrVariationID: .variation(productID: productVariation.productID, variationID: productVariation.productVariationID),
@@ -48,6 +49,7 @@ private extension ProductVariationDetailsFactory {
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
                                                       allAttributes: parentProduct.attributes,
                                                       parentProductSKU: parentProduct.sku,
+                                                      parentProductDisablesQuantityRules: parentProduct.combineVariationQuantities,
                                                       formType: formType,
                                                       productImageActionHandler: productImageActionHandler)
         vc = ProductFormViewController(viewModel: viewModel,

@@ -10,10 +10,10 @@ struct ProductFactory {
     ///   - isVirtual: Whether the product is virtual (for simple products).
     ///   - siteID: The site ID where the product is added to.
     ///   - status: The status of the new product.
-    func createNewProduct(type: ProductType, isVirtual: Bool, siteID: Int64, status: ProductStatus = .published) -> Product? {
+    func createNewProduct(type: ProductType, isVirtual: Bool, siteID: Int64) -> Product? {
         switch type {
         case .simple, .grouped, .variable, .affiliate:
-            return createEmptyProduct(type: type, isVirtual: isVirtual, siteID: siteID, status: status)
+            return createEmptyProduct(type: type, isVirtual: isVirtual, siteID: siteID)
         default:
             return nil
         }
@@ -25,13 +25,13 @@ struct ProductFactory {
     /// - Parameters:
     ///   - existingProduct: The product to copy.
     ///   - status: The status of the new product.
-    func newProduct(from existingProduct: Product, status: ProductStatus = .published) -> Product {
-        return existingProduct.copy(productID: 0, name: "", statusKey: status.rawValue, groupedProducts: [])
+    func newProduct(from existingProduct: Product) -> Product {
+        return existingProduct.copy(productID: 0, name: "", statusKey: ProductStatus.published.rawValue, groupedProducts: [])
     }
 }
 
 private extension ProductFactory {
-    func createEmptyProduct(type: ProductType, isVirtual: Bool, siteID: Int64, status: ProductStatus) -> Product {
+    func createEmptyProduct(type: ProductType, isVirtual: Bool, siteID: Int64) -> Product {
         Product(siteID: siteID,
                 productID: 0,
                 name: "",
@@ -43,7 +43,7 @@ private extension ProductFactory {
                 dateOnSaleStart: nil,
                 dateOnSaleEnd: nil,
                 productTypeKey: type.rawValue,
-                statusKey: status.rawValue,
+                statusKey: ProductStatus.published.rawValue,
                 featured: false,
                 catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
                 fullDescription: "",
@@ -99,6 +99,10 @@ private extension ProductFactory {
                 bundleStockQuantity: nil,
                 bundledItems: [],
                 compositeComponents: [],
-                subscription: nil)
+                subscription: nil,
+                minAllowedQuantity: nil,
+                maxAllowedQuantity: nil,
+                groupOfQuantity: nil,
+                combineVariationQuantities: nil)
     }
 }

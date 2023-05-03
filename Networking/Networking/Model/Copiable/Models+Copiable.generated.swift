@@ -1084,7 +1084,11 @@ extension Networking.Product {
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
         compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
-        subscription: NullableCopiableProp<ProductSubscription> = .copy
+        subscription: NullableCopiableProp<ProductSubscription> = .copy,
+        minAllowedQuantity: NullableCopiableProp<String> = .copy,
+        maxAllowedQuantity: NullableCopiableProp<String> = .copy,
+        groupOfQuantity: NullableCopiableProp<String> = .copy,
+        combineVariationQuantities: NullableCopiableProp<Bool> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1154,6 +1158,10 @@ extension Networking.Product {
         let bundledItems = bundledItems ?? self.bundledItems
         let compositeComponents = compositeComponents ?? self.compositeComponents
         let subscription = subscription ?? self.subscription
+        let minAllowedQuantity = minAllowedQuantity ?? self.minAllowedQuantity
+        let maxAllowedQuantity = maxAllowedQuantity ?? self.maxAllowedQuantity
+        let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
+        let combineVariationQuantities = combineVariationQuantities ?? self.combineVariationQuantities
 
         return Networking.Product(
             siteID: siteID,
@@ -1223,7 +1231,11 @@ extension Networking.Product {
             bundleStockQuantity: bundleStockQuantity,
             bundledItems: bundledItems,
             compositeComponents: compositeComponents,
-            subscription: subscription
+            subscription: subscription,
+            minAllowedQuantity: minAllowedQuantity,
+            maxAllowedQuantity: maxAllowedQuantity,
+            groupOfQuantity: groupOfQuantity,
+            combineVariationQuantities: combineVariationQuantities
         )
     }
 }
@@ -1527,7 +1539,11 @@ extension Networking.ProductVariation {
         shippingClass: NullableCopiableProp<String> = .copy,
         shippingClassID: CopiableProp<Int64> = .copy,
         menuOrder: CopiableProp<Int64> = .copy,
-        subscription: NullableCopiableProp<ProductSubscription> = .copy
+        subscription: NullableCopiableProp<ProductSubscription> = .copy,
+        minAllowedQuantity: NullableCopiableProp<String> = .copy,
+        maxAllowedQuantity: NullableCopiableProp<String> = .copy,
+        groupOfQuantity: NullableCopiableProp<String> = .copy,
+        overrideProductQuantities: NullableCopiableProp<Bool> = .copy
     ) -> Networking.ProductVariation {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1566,6 +1582,10 @@ extension Networking.ProductVariation {
         let shippingClassID = shippingClassID ?? self.shippingClassID
         let menuOrder = menuOrder ?? self.menuOrder
         let subscription = subscription ?? self.subscription
+        let minAllowedQuantity = minAllowedQuantity ?? self.minAllowedQuantity
+        let maxAllowedQuantity = maxAllowedQuantity ?? self.maxAllowedQuantity
+        let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
+        let overrideProductQuantities = overrideProductQuantities ?? self.overrideProductQuantities
 
         return Networking.ProductVariation(
             siteID: siteID,
@@ -1604,7 +1624,11 @@ extension Networking.ProductVariation {
             shippingClass: shippingClass,
             shippingClassID: shippingClassID,
             menuOrder: menuOrder,
-            subscription: subscription
+            subscription: subscription,
+            minAllowedQuantity: minAllowedQuantity,
+            maxAllowedQuantity: maxAllowedQuantity,
+            groupOfQuantity: groupOfQuantity,
+            overrideProductQuantities: overrideProductQuantities
         )
     }
 }

@@ -1818,6 +1818,66 @@ final class MigrationTests: XCTestCase {
         // Order appliedGiftCards relationship exists.
         XCTAssertEqual(migratedOrder.value(forKey: "appliedGiftCards") as? NSSet, NSSet(array: [giftCard]))
     }
+
+    func test_migrating_from_85_to_86_adds_min_max_quantities_attributes() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 85")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContainer.viewContext, forModel: 85)
+        let variation = insertProductVariation(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        // Attributes do not exist in Model 85.
+        XCTAssertNil(product.entity.attributesByName["minAllowedQuantity"])
+        XCTAssertNil(product.entity.attributesByName["maxAllowedQuantity"])
+        XCTAssertNil(product.entity.attributesByName["groupOfQuantity"])
+        XCTAssertNil(product.entity.attributesByName["combineVariationQuantities"])
+        XCTAssertNil(variation.entity.attributesByName["minAllowedQuantity"])
+        XCTAssertNil(variation.entity.attributesByName["maxAllowedQuantity"])
+        XCTAssertNil(variation.entity.attributesByName["groupOfQuantity"])
+        XCTAssertNil(variation.entity.attributesByName["overrideProductQuantities"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 86")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        let migratedVariation = try XCTUnwrap(targetContext.first(entityName: "ProductVariation"))
+
+        // Migrated product and variation have expected default nil attributes.
+        XCTAssertNil(migratedProduct.value(forKey: "minAllowedQuantity"))
+        XCTAssertNil(migratedProduct.value(forKey: "maxAllowedQuantity"))
+        XCTAssertNil(migratedProduct.value(forKey: "groupOfQuantity"))
+        XCTAssertNil(migratedProduct.value(forKey: "combineVariationQuantities"))
+        XCTAssertNil(migratedVariation.value(forKey: "minAllowedQuantity"))
+        XCTAssertNil(migratedVariation.value(forKey: "maxAllowedQuantity"))
+        XCTAssertNil(migratedVariation.value(forKey: "groupOfQuantity"))
+        XCTAssertNil(migratedVariation.value(forKey: "overrideProductQuantities"))
+
+        // Set values for new attributes.
+        let quantityValue = "2"
+        migratedProduct.setValue(quantityValue, forKey: "minAllowedQuantity")
+        migratedProduct.setValue(quantityValue, forKey: "maxAllowedQuantity")
+        migratedProduct.setValue(quantityValue, forKey: "groupOfQuantity")
+        migratedProduct.setValue(true, forKey: "combineVariationQuantities")
+        migratedVariation.setValue(quantityValue, forKey: "minAllowedQuantity")
+        migratedVariation.setValue(quantityValue, forKey: "maxAllowedQuantity")
+        migratedVariation.setValue(quantityValue, forKey: "groupOfQuantity")
+        migratedVariation.setValue(true, forKey: "overrideProductQuantities")
+        try targetContext.save()
+
+        // New values are set correctly for attributes.
+        XCTAssertEqual(try XCTUnwrap(migratedProduct.value(forKey: "minAllowedQuantity") as? String), quantityValue)
+        XCTAssertEqual(try XCTUnwrap(migratedProduct.value(forKey: "maxAllowedQuantity") as? String), quantityValue)
+        XCTAssertEqual(try XCTUnwrap(migratedProduct.value(forKey: "groupOfQuantity") as? String), quantityValue)
+        XCTAssertTrue(try XCTUnwrap(migratedProduct.value(forKey: "combineVariationQuantities") as? Bool))
+        XCTAssertEqual(try XCTUnwrap(migratedVariation.value(forKey: "minAllowedQuantity") as? String), quantityValue)
+        XCTAssertEqual(try XCTUnwrap(migratedVariation.value(forKey: "maxAllowedQuantity") as? String), quantityValue)
+        XCTAssertEqual(try XCTUnwrap(migratedVariation.value(forKey: "groupOfQuantity") as? String), quantityValue)
+        XCTAssertTrue(try XCTUnwrap(migratedVariation.value(forKey: "overrideProductQuantities") as? Bool))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

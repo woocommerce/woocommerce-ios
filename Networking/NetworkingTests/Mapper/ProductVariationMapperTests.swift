@@ -58,6 +58,19 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.trialLength, "0")
         XCTAssertEqual(subscriptionSettings.trialPeriod, .month)
     }
+
+    /// Test that product variations with properties from the Min/Max Quantities extension are properly parsed.
+    ///
+    func test_min_max_quantities_are_properly_parsed() throws {
+        // Given
+        let productVariation = try XCTUnwrap(mapLoadMinMaxQuantityVariationResponse())
+
+        // Then
+        XCTAssertEqual(productVariation.minAllowedQuantity, "6")
+        XCTAssertEqual(productVariation.maxAllowedQuantity, "30")
+        XCTAssertEqual(productVariation.groupOfQuantity, "3")
+        XCTAssertEqual(productVariation.overrideProductQuantities, true)
+    }
 }
 
 /// Private Helpers
@@ -95,6 +108,12 @@ private extension ProductVariationMapperTests {
     ///
     func mapLoadSubscriptionVariationResponse() -> ProductVariation? {
         return mapProductVariation(from: "product-variation-subscription")
+    }
+
+    /// Returns the ProductVariationMapper output upon receiving `product-variation-min-max-quantities`
+    ///
+    func mapLoadMinMaxQuantityVariationResponse() -> ProductVariation? {
+        return mapProductVariation(from: "product-variation-min-max-quantities")
     }
 }
 
@@ -146,7 +165,11 @@ private extension ProductVariationMapperTests {
                                 shippingClass: "",
                                 shippingClassID: 0,
                                 menuOrder: 1,
-                                subscription: nil)
+                                subscription: nil,
+                                minAllowedQuantity: nil,
+                                maxAllowedQuantity: nil,
+                                groupOfQuantity: nil,
+                                overrideProductQuantities: nil)
     }
 
     func sampleProductVariationAttributes() -> [ProductVariationAttribute] {

@@ -634,6 +634,8 @@
 		CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */; };
 		CE132BBA223851F80029DB6C /* ProductCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BB9223851F80029DB6C /* ProductCategory.swift */; };
 		CE132BBC223859710029DB6C /* ProductTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BBB223859710029DB6C /* ProductTag.swift */; };
+		CE13680F29FA74A400EBF43C /* product-min-max-quantities.json in Resources */ = {isa = PBXBuildFile; fileRef = CE13680E29FA74A400EBF43C /* product-min-max-quantities.json */; };
+		CE13681129FA809600EBF43C /* product-variation-min-max-quantities.json in Resources */ = {isa = PBXBuildFile; fileRef = CE13681029FA809600EBF43C /* product-variation-min-max-quantities.json */; };
 		CE17C6B1229462C000AACE1C /* ProductStockStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17C6B0229462C000AACE1C /* ProductStockStatus.swift */; };
 		CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */ = {isa = PBXBuildFile; fileRef = CE19CB10222486A500E8AF7A /* order-statuses.json */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
@@ -1567,6 +1569,8 @@
 		CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
 		CE132BB9223851F80029DB6C /* ProductCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategory.swift; sourceTree = "<group>"; };
 		CE132BBB223859710029DB6C /* ProductTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTag.swift; sourceTree = "<group>"; };
+		CE13680E29FA74A400EBF43C /* product-min-max-quantities.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-min-max-quantities.json"; sourceTree = "<group>"; };
+		CE13681029FA809600EBF43C /* product-variation-min-max-quantities.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-variation-min-max-quantities.json"; sourceTree = "<group>"; };
 		CE17C6B0229462C000AACE1C /* ProductStockStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatus.swift; sourceTree = "<group>"; };
 		CE19CB10222486A500E8AF7A /* order-statuses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-statuses.json"; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
@@ -2563,6 +2567,7 @@
 				74749B98224135C4005C4CF2 /* product.json */,
 				EE6FDCFB2966A70400E1CECF /* product-without-data.json */,
 				DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */,
+				CE13680E29FA74A400EBF43C /* product-min-max-quantities.json */,
 				02AAD53E250092A300BA1E26 /* product-add-or-delete.json */,
 				02698CF524C17FC1005337C4 /* product-alternative-types.json */,
 				CC01CE5729B0EBED004FF537 /* product-bundle.json */,
@@ -2595,6 +2600,7 @@
 				EE57C133297F985A00BC31E7 /* product-variations-bulk-create-without-data.json */,
 				EE57C132297F985A00BC31E7 /* product-variations-bulk-update-without-data.json */,
 				451274A525276C82009911FF /* product-variation.json */,
+				CE13681029FA809600EBF43C /* product-variation-min-max-quantities.json */,
 				CCEC5E9029E9BF1400912D6B /* product-variation-subscription.json */,
 				CE0A0F1E223998A00075ED8D /* products-load-all.json */,
 				EEA6583D2966B41E00112DF0 /* products-load-all-without-data.json */,
@@ -3519,6 +3525,7 @@
 				D865CE65278CA202002C8520 /* stripe-payment-intent-canceled.json in Resources */,
 				DE42F9672967F61D00D514C2 /* refunds-all-without-data.json in Resources */,
 				AED8AEBA272A97B400663FCC /* null-data.json in Resources */,
+				CE13680F29FA74A400EBF43C /* product-min-max-quantities.json in Resources */,
 				02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */,
 				31A451D627863A2E00FE81AA /* stripe-account-unknown-status.json in Resources */,
 				45152819257A84A60076B03C /* product-attributes-all.json in Resources */,
@@ -3570,6 +3577,7 @@
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
 				456930AD2652AF00009ED69D /* shipping-label-carriers-and-rates-success.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,
+				CE13681129FA809600EBF43C /* product-variation-min-max-quantities.json in Resources */,
 				3158A49F2729F3F600C3CFA8 /* wcpay-account-live-live.json in Resources */,
 				0359EA2927AC2AAD0048DE2D /* wcpay-charge-error.json in Resources */,
 				CC33755029C88B920006A538 /* product-composite.json in Resources */,

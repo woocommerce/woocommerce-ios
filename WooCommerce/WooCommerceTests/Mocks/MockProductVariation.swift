@@ -41,6 +41,10 @@ final class MockProductVariation {
                                 shippingClass: "",
                                 shippingClassID: 0,
                                 menuOrder: 1,
-                                subscription: nil)
+                                subscription: nil,
+                                minAllowedQuantity: nil,
+                                maxAllowedQuantity: nil,
+                                groupOfQuantity: nil,
+                                overrideProductQuantities: nil)
     }
 }

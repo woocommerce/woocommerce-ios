@@ -211,7 +211,7 @@ private extension UpgradesViewModel {
 
         static func freeTrialPlanInfo(planDuration: Int, daysLeft: Int) -> String {
             let format = NSLocalizedString("You are in the %1$d-day free trial. The free trial will end in %2$d days. " +
-                                           "Upgrade to unlock new features and keep your store running.",
+                                           "Upgrade to new feature isn't available on the app.",
                                            comment: "Reads like: You are in the 14-day free trial. The free trial will end in 5 days. " +
                                            "Upgrade to unlock new features and keep your store running.")
             return String.localizedStringWithFormat(format, planDuration, daysLeft)

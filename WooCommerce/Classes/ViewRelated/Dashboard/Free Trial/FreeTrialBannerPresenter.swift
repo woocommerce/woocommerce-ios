@@ -103,7 +103,7 @@ private extension FreeTrialBannerPresenter {
         freeTrialBanner?.removeFromSuperview()
 
         let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
-            self?.showUpgradePlanWebView()
+            self?.showSubscriptionsView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -134,12 +134,9 @@ private extension FreeTrialBannerPresenter {
 
     /// Shows a web view for the merchant to update their site plan.
     ///
-    func showUpgradePlanWebView() {
+    func showSubscriptionsView() {
         guard let viewController else { return }
-        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
-            self?.removeBanner() // Removes the banner immediately.
-            self?.reloadBannerVisibility() // Reloads the plan again in case the plan didn't update as expected.
-        })
-        viewController.present(upgradeController, animated: true)
+        let upgradeController = UpgradesHostingController(siteID: siteID)
+        viewController.show(upgradeController, sender: true)
     }
 }

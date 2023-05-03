@@ -1,0 +1,430 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "equalTo": "/wc/v3/payment_gateways&_method=get"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": [
+                {
+                    "id": "woocommerce_payments",
+                    "title": "Credit card / debit card",
+                    "description": "Enter your card details",
+                    "order": -1,
+                    "enabled": true,
+                    "method_title": "WooCommerce Payments",
+                    "method_description": "WooCommerce Payments gives your store flexibility to accept credit cards, debit cards, and Apple Pay. Enable popular local payment methods and other digital wallets like Google Pay to give customers even more choice.<br/><br/>\n\t\t\tBy using WooCommerce Payments you agree to be bound by our <a href=\"https://wordpress.com/tos/\" target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>  and acknowledge that you have read our <a href=\"https://automattic.com/privacy/\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a>",
+                    "method_supports": [
+                        "products",
+                        "refunds",
+                        "multiple_subscriptions",
+                        "subscription_cancellation",
+                        "subscription_payment_method_change_admin",
+                        "subscription_payment_method_change_customer",
+                        "subscription_payment_method_change",
+                        "subscription_reactivation",
+                        "subscription_suspension",
+                        "subscriptions",
+                        "gateway_scheduled_payments",
+                        "tokenization",
+                        "add_payment_method"
+                    ],
+                    "settings": {
+                        "account_statement_descriptor": {
+                            "id": "account_statement_descriptor",
+                            "label": "Customer bank statement",
+                            "description": "Edit the way your store name appears on your customers’ bank statements (read more about requirements <a href=\"https://woocommerce.com/document/payments/bank-statement-descriptor/\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>).",
+                            "type": "account_statement_descriptor",
+                            "value": "",
+                            "default": "",
+                            "tip": "Edit the way your store name appears on your customers’ bank statements (read more about requirements <a href=\"https://woocommerce.com/document/payments/bank-statement-descriptor/\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>).",
+                            "placeholder": ""
+                        },
+                        "manual_capture": {
+                            "id": "manual_capture",
+                            "label": "Issue an authorization on checkout, and capture later.",
+                            "description": "Charge must be captured within 7 days of authorization, otherwise the authorization and order will be canceled.",
+                            "type": "checkbox",
+                            "value": "no",
+                            "default": "no",
+                            "tip": "Charge must be captured within 7 days of authorization, otherwise the authorization and order will be canceled.",
+                            "placeholder": ""
+                        },
+                        "saved_cards": {
+                            "id": "saved_cards",
+                            "label": "Enable payment via saved cards",
+                            "description": "If enabled, users will be able to pay with a saved card during checkout. Card details are saved on our platform, not on your store.",
+                            "type": "checkbox",
+                            "value": "yes",
+                            "default": "yes",
+                            "tip": "If enabled, users will be able to pay with a saved card during checkout. Card details are saved on our platform, not on your store.",
+                            "placeholder": ""
+                        },
+                        "test_mode": {
+                            "id": "test_mode",
+                            "label": "Enable test mode",
+                            "description": "Simulate transactions using test card numbers.",
+                            "type": "checkbox",
+                            "value": "yes",
+                            "default": "no",
+                            "tip": "Simulate transactions using test card numbers.",
+                            "placeholder": ""
+                        },
+                        "enable_logging": {
+                            "id": "enable_logging",
+                            "label": "When enabled debug notes will be added to the log.",
+                            "description": "",
+                            "type": "checkbox",
+                            "value": "no",
+                            "default": "no",
+                            "tip": "",
+                            "placeholder": ""
+                        },
+                        "payment_request_details": {
+                            "id": "payment_request_details",
+                            "label": "Payment request buttons",
+                            "description": "",
+                            "type": "title",
+                            "value": "",
+                            "default": "",
+                            "tip": "",
+                            "placeholder": ""
+                        },
+                        "payment_request": {
+                            "id": "payment_request",
+                            "label": "Enable payment request buttons (Apple Pay, Google Pay, and more). <br />By using Apple Pay, you agree to <a href=\"https://stripe.com/apple-pay/legal\" target=\"_blank\">Stripe</a> and <a href=\"https://developer.apple.com/apple-pay/acceptable-use-guidelines-for-websites/\" target=\"_blank\">Apple</a>'s Terms of Service.",
+                            "description": "If enabled, users will be able to pay using Apple Pay, Google Pay or the Payment Request API if supported by the browser.",
+                            "type": "checkbox",
+                            "value": "yes",
+                            "default": "no",
+                            "tip": "If enabled, users will be able to pay using Apple Pay, Google Pay or the Payment Request API if supported by the browser.",
+                            "placeholder": ""
+                        },
+                        "payment_request_button_type": {
+                            "id": "payment_request_button_type",
+                            "label": "Button type",
+                            "description": "Select the button type you would like to show.",
+                            "type": "select",
+                            "value": "buy",
+                            "default": "buy",
+                            "tip": "Select the button type you would like to show.",
+                            "placeholder": "",
+                            "options": {
+                                "default": "Only icon",
+                                "buy": "Buy",
+                                "donate": "Donate",
+                                "book": "Book"
+                            }
+                        },
+                        "payment_request_button_theme": {
+                            "id": "payment_request_button_theme",
+                            "label": "Button theme",
+                            "description": "Select the button theme you would like to show.",
+                            "type": "select",
+                            "value": "dark",
+                            "default": "dark",
+                            "tip": "Select the button theme you would like to show.",
+                            "placeholder": "",
+                            "options": {
+                                "dark": "Dark",
+                                "light": "Light",
+                                "light-outline": "Light-Outline"
+                            }
+                        },
+                        "payment_request_button_height": {
+                            "id": "payment_request_button_height",
+                            "label": "Button height",
+                            "description": "Enter the height you would like the button to be in pixels. Width will always be 100%.",
+                            "type": "text",
+                            "value": "44",
+                            "default": "44",
+                            "tip": "Enter the height you would like the button to be in pixels. Width will always be 100%.",
+                            "placeholder": ""
+                        },
+                        "payment_request_button_label": {
+                            "id": "payment_request_button_label",
+                            "label": "Custom button label",
+                            "description": "Enter the custom text you would like the button to have.",
+                            "type": "text",
+                            "value": "Buy now",
+                            "default": "Buy now",
+                            "tip": "Enter the custom text you would like the button to have.",
+                            "placeholder": ""
+                        },
+                        "payment_request_button_locations": {
+                            "id": "payment_request_button_locations",
+                            "label": "Button locations",
+                            "description": "Select where you would like to display the button.",
+                            "type": "multiselect",
+                            "value": [
+                                "product",
+                                "cart",
+                                "checkout"
+                            ],
+                            "default": [
+                                "product",
+                                "cart",
+                                "checkout"
+                            ],
+                            "tip": "Select where you would like to display the button.",
+                            "placeholder": "",
+                            "options": {
+                                "product": "Product",
+                                "cart": "Cart",
+                                "checkout": "Checkout"
+                            }
+                        },
+                        "upe_enabled_payment_method_ids": {
+                            "id": "upe_enabled_payment_method_ids",
+                            "label": "Payments accepted on checkout",
+                            "description": "",
+                            "type": "multiselect",
+                            "value": [
+                                "card"
+                            ],
+                            "default": [
+                                "card"
+                            ],
+                            "tip": "",
+                            "placeholder": ""
+                        },
+                        "payment_request_button_size": {
+                            "id": "payment_request_button_size",
+                            "label": "Size of the button displayed for Express Checkouts",
+                            "description": "Select the size of the button.",
+                            "type": "select",
+                            "value": "default",
+                            "default": "default",
+                            "tip": "Select the size of the button.",
+                            "placeholder": "",
+                            "options": {
+                                "default": "Default",
+                                "medium": "Medium",
+                                "large": "Large"
+                            }
+                        }
+                    },
+                    "needs_setup": false,
+                    "post_install_scripts": [],
+                    "settings_url": "https://automatticwidgets.wpcomstaging.com/wp-admin/admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments",
+                    "connection_url": "",
+                    "setup_help_text": "Next we’ll ask you to share a few details about your business to create your account.",
+                    "required_settings_keys": [],
+                    "_links": {
+                        "self": [
+                            {
+                                "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/payment_gateways/woocommerce_payments"
+                            }
+                        ],
+                        "collection": [
+                            {
+                                "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/payment_gateways"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "bacs",
+                    "title": "Direct bank transfer",
+                    "description": "Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.",
+                    "order": 0,
+                    "enabled": false,
+                    "method_title": "Direct bank transfer",
+                    "method_description": "Take payments in person via BACS. More commonly known as direct bank/wire transfer.",
+                    "method_supports": [
+                        "products"
+                    ],
+                    "settings": {
+                        "title": {
+                            "id": "title",
+                            "label": "Title",
+                            "description": "This controls the title which the user sees during checkout.",
+                            "type": "safe_text",
+                            "value": "Direct bank transfer",
+                            "default": "Direct bank transfer",
+                            "tip": "This controls the title which the user sees during checkout.",
+                            "placeholder": ""
+                        },
+                        "instructions": {
+                            "id": "instructions",
+                            "label": "Instructions",
+                            "description": "Instructions that will be added to the thank you page and emails.",
+                            "type": "textarea",
+                            "value": "",
+                            "default": "",
+                            "tip": "Instructions that will be added to the thank you page and emails.",
+                            "placeholder": ""
+                        }
+                    },
+                    "needs_setup": false,
+                    "post_install_scripts": [],
+                    "settings_url": "https://automatticwidgets.wpcomstaging.com/wp-admin/admin.php?page=wc-settings&tab=checkout&section=bacs",
+                    "connection_url": null,
+                    "setup_help_text": null,
+                    "required_settings_keys": [],
+                    "_links": {
+                        "self": [
+                            {
+                                "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/payment_gateways/bacs"
+                            }
+                        ],
+                        "collection": [
+                            {
+                                "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/payment_gateways"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "cheque",
+                    "title": "Check payments",
+                    "description": "Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.",
+                    "order": 1,
+                    "enabled": false,
+                    "method_title": "Check payments",
+                    "method_description": "Take payments in person via checks. This offline gateway can also be useful to test purchases.",
+                    "method_supports": [
+                        "products"
+                    ],
+                    "settings": {
+                        "title": {
+                            "id": "title",
+                            "label": "Title",
+                            "description": "This controls the title which the user sees during checkout.",
+                            "type": "safe_text",
+                            "value": "Check payments",
+                            "default": "Check payments",
+                            "tip": "This controls the title which the user sees during checkout.",
+                            "placeholder": ""
+                        },
+                        "instructions": {
+                            "id": "instructions",
+                            "label": "Instructions",
+                            "description": "Instructions that will be added to the thank you page and emails.",
+                            "type": "textarea",
+                            "value": "",
+                            "default": "",
+                            "tip": "Instructions that will be added to the thank you page and emails.",
+                            "placeholder": ""
+                        }
+                    },
+                    "needs_setup": false,
+                    "post_install_scripts": [],
+                    "settings_url": "https://automatticwidgets.wpcomstaging.com/wp-admin/admin.php?page=wc-settings&tab=checkout&section=cheque",
+                    "connection_url": null,
+                    "setup_help_text": null,
+                    "required_settings_keys": [],
+                    "_links": {
+                        "self": [
+                            {
+                                "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/payment_gateways/cheque"
+                            }
+                        ],
+                        "collection": [
+                            {
+                                "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/payment_gateways"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "cod",
+                    "title": "Pay in Person",
+                    "description": "Pay by card or another accepted payment method",
+                    "order": 2,
+                    "enabled": true,
+                    "method_title": "Cash on delivery",
+                    "method_description": "Have your customers pay with cash (or by other means) upon delivery.",
+                    "method_supports": [
+                        "products"
+                    ],
+                    "settings": {
+                        "title": {
+                            "id": "title",
+                            "label": "Title",
+                            "description": "Payment method description that the customer will see on your checkout.",
+                            "type": "safe_text",
+                            "value": "Pay in Person",
+                            "default": "Cash on delivery",
+                            "tip": "Payment method description that the customer will see on your checkout.",
+                            "placeholder": ""
+                        },
+                        "instructions": {
+                            "id": "instructions",
+                            "label": "Instructions",
+                            "description": "Instructions that will be added to the thank you page.",
+                            "type": "textarea",
+                            "value": "Pay by card or another accepted payment method",
+                            "default": "Pay with cash upon delivery.",
+                            "tip": "Instructions that will be added to the thank you page.",
+                            "placeholder": ""
+                        },
+                        "enable_for_methods": {
+                            "id": "enable_for_methods",
+                            "label": "Enable for shipping methods",
+                            "description": "If COD is only available for certain methods, set it up here. Leave blank to enable for all methods.",
+                            "type": "multiselect",
+                            "value": "",
+                            "default": "",
+                            "tip": "If COD is only available for certain methods, set it up here. Leave blank to enable for all methods.",
+                            "placeholder": "",
+                            "options": {
+                                "Flat rate": {
+                                    "flat_rate": "Any &quot;Flat rate&quot; method",
+                                    "flat_rate:1": "US &ndash; Delivery (#1)"
+                                },
+                                "Free shipping": {
+                                    "free_shipping": "Any &quot;Free shipping&quot; method"
+                                },
+                                "Local pickup": {
+                                    "pickup_location": "Any &quot;Local pickup&quot; method"
+                                }
+                            }
+                        },
+                        "enable_for_virtual": {
+                            "id": "enable_for_virtual",
+                            "label": "Accept COD if the order is virtual",
+                            "description": "",
+                            "type": "checkbox",
+                            "value": "yes",
+                            "default": "yes",
+                            "tip": "",
+                            "placeholder": ""
+                        }
+                    },
+                    "needs_setup": false,
+                    "post_install_scripts": [],
+                    "settings_url": "https://automatticwidgets.wpcomstaging.com/wp-admin/admin.php?page=wc-settings&tab=checkout&section=cod",
+                    "connection_url": null,
+                    "setup_help_text": null,
+                    "required_settings_keys": [],
+                    "_links": {
+                        "self": [
+                            {
+                                "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/payment_gateways/cod"
+                            }
+                        ],
+                        "collection": [
+                            {
+                                "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/payment_gateways"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

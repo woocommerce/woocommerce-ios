@@ -1279,6 +1279,9 @@
 		800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */ = {isa = PBXBuildFile; fileRef = 800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */; };
 		800A5BCB2759CE4B009DE2CD /* ProductsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */; };
 		803B0A4629CC2CE20051EFD6 /* ProductSearchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 803B0A4529CC2CE20051EFD6 /* ProductSearchScreen.swift */; };
+		80A643022A010F2100F65C0C /* connection_tokens.json in Resources */ = {isa = PBXBuildFile; fileRef = 80A643012A010F2100F65C0C /* connection_tokens.json */; };
+		80A643042A011A6E00F65C0C /* account_summary.json in Resources */ = {isa = PBXBuildFile; fileRef = 80A643032A011A6E00F65C0C /* account_summary.json */; };
+		80A643062A011A8800F65C0C /* payment_gateways.json in Resources */ = {isa = PBXBuildFile; fileRef = 80A643052A011A8800F65C0C /* payment_gateways.json */; };
 		80AD2CA22782B4EB00A63DE8 /* products_list_1.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA12782B4EB00A63DE8 /* products_list_1.json */; };
 		80AD2CA427858BAB00A63DE8 /* StatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80AD2CA327858BAB00A63DE8 /* StatsTests.swift */; };
 		80AD2CA627859B4400A63DE8 /* reports_leaderboards_stats_day.json in Resources */ = {isa = PBXBuildFile; fileRef = 80AD2CA527859B4400A63DE8 /* reports_leaderboards_stats_day.json */; };
@@ -3514,6 +3517,9 @@
 		800A5BC4275889EC009DE2CD /* reports_revenue_stats_year.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = reports_revenue_stats_year.json; sourceTree = "<group>"; };
 		800A5BCA2759CE4B009DE2CD /* ProductsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTests.swift; sourceTree = "<group>"; };
 		803B0A4529CC2CE20051EFD6 /* ProductSearchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchScreen.swift; sourceTree = "<group>"; };
+		80A643012A010F2100F65C0C /* connection_tokens.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = connection_tokens.json; sourceTree = "<group>"; };
+		80A643032A011A6E00F65C0C /* account_summary.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = account_summary.json; sourceTree = "<group>"; };
+		80A643052A011A8800F65C0C /* payment_gateways.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = payment_gateways.json; sourceTree = "<group>"; };
 		80AD2CA12782B4EB00A63DE8 /* products_list_1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_list_1.json; sourceTree = "<group>"; };
 		80AD2CA327858BAB00A63DE8 /* StatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTests.swift; sourceTree = "<group>"; };
 		80AD2CA527859B4400A63DE8 /* reports_leaderboards_stats_day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = reports_leaderboards_stats_day.json; sourceTree = "<group>"; };
@@ -7496,6 +7502,9 @@
 			isa = PBXGroup;
 			children = (
 				800A5B982755BADA009DE2CD /* accounts.json */,
+				80A643012A010F2100F65C0C /* connection_tokens.json */,
+				80A643032A011A6E00F65C0C /* account_summary.json */,
+				80A643052A011A8800F65C0C /* payment_gateways.json */,
 			);
 			path = payments;
 			sourceTree = "<group>";
@@ -10730,6 +10739,7 @@
 				C0A37CB8282957EB00E0826D /* orders_3337_add_customer_details.json in Resources */,
 				800A5BBE27586AEF009DE2CD /* products_reviews_6163.json in Resources */,
 				FE6BCDFC26A9D0E700D96FE2 /* users_me.json in Resources */,
+				80A643042A011A6E00F65C0C /* account_summary.json in Resources */,
 				80CC810329E673AB00CA1687 /* products_add_new_physical_2129.json in Resources */,
 				CCF27B3A280EF98F00B755E1 /* orders_3337.json in Resources */,
 				CC5C278B27EE314F00B25D2A /* orders_3337_create_order.json in Resources */,
@@ -10740,6 +10750,7 @@
 				800A5BC6275889ED009DE2CD /* reports_revenue_stats_hour.json in Resources */,
 				800A5BB027586898009DE2CD /* products_2132.json in Resources */,
 				800A5BA6275719E5009DE2CD /* orders_2201_refunds.json in Resources */,
+				80A643062A011A8800F65C0C /* payment_gateways.json in Resources */,
 				800A5BA827586126009DE2CD /* products_2129.json in Resources */,
 				CC2A08022862400100510C4B /* orders_3337_add_shipping.json in Resources */,
 				800A5BC027586AFC009DE2CD /* products_reviews_6164.json in Resources */,
@@ -10749,6 +10760,7 @@
 				800A5BC8275889ED009DE2CD /* reports_revenue_stats_year.json in Resources */,
 				CC2A08062863222500510C4B /* orders_3337_add_fee.json in Resources */,
 				800A5BBC27586AE1009DE2CD /* products_reviews_6162.json in Resources */,
+				80A643022A010F2100F65C0C /* connection_tokens.json in Resources */,
 				800A5B6127548F53009DE2CD /* sites_posts_password.json in Resources */,
 				800A5BB427586A0E009DE2CD /* products_reviews_6155.json in Resources */,
 				800A5B5F27548F31009DE2CD /* site_info_wordpress_com.json in Resources */,

@@ -68,9 +68,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .domainSettings:
             return true
         case .simplifyProductEditing:
-            // Enabled for the A/B experiment treatment group only
-            // Disabled for the control group and UI testing
-            return ABTest.simplifiedProductEditing.variation == .treatment && !isUITesting
+            return false
         case .jetpackSetupWithApplicationPassword:
             return true
         case .dashboardOnboarding:

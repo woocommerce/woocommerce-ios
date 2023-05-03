@@ -29,7 +29,6 @@ final class AddProductCoordinator: Coordinator {
     private let sourceView: UIView?
     private let productImageUploader: ProductImageUploaderProtocol
     private let storage: StorageManagerType
-    private let isSimplifiedBottomSheetEnabled: Bool
 
     /// ResultController to to track the current product count.
     ///
@@ -49,8 +48,7 @@ final class AddProductCoordinator: Coordinator {
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isSimplifiedBottomSheetEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
         self.source = source
         self.sourceBarButtonItem = sourceBarButtonItem
@@ -58,7 +56,6 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
-        self.isSimplifiedBottomSheetEnabled = isSimplifiedBottomSheetEnabled
     }
 
     init(siteID: Int64,
@@ -66,8 +63,7 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         isSimplifiedBottomSheetEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.siteID = siteID
         self.source = source
         self.sourceBarButtonItem = nil
@@ -75,7 +71,6 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
-        self.isSimplifiedBottomSheetEnabled = isSimplifiedBottomSheetEnabled
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -90,9 +85,7 @@ final class AddProductCoordinator: Coordinator {
             break
         }
 
-        if isSimplifiedBottomSheetEnabled {
-            presentProductTypeSingleBottomSheet()
-        } else if shouldPresentProductCreationBottomSheet() {
+        if shouldPresentProductCreationBottomSheet() {
             presentProductCreationTypeBottomSheet()
         } else {
             presentProductTypeBottomSheet(creationType: .manual)
@@ -120,36 +113,6 @@ private extension AddProductCoordinator {
     ///
     func shouldShowGroupedProductType() -> Bool {
         !productsResultsController.isEmpty
-    }
-
-    /// Presents a single bottom sheet for users to choose what kind of product they want to create, with a template or manually.
-    ///
-    func presentProductTypeSingleBottomSheet() {
-        let subtitle = NSLocalizedString("Choose a template for your product",
-                                         comment: "Message subtitle of bottom sheet for selecting a product type to create a product with a template")
-        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: subtitle)
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedProductType in
-            ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedProductType.productType.rawValue])
-            self.navigationController.dismiss(animated: true) {
-                switch selectedProductType {
-                case .blank:
-                    self.presentProductForm(bottomSheetProductType: selectedProductType)
-                default:
-                    self.createAndPresentTemplate(productType: selectedProductType)
-                }
-            }
-        }
-
-        command.data = [
-            .simple(isVirtual: false),
-            .simple(isVirtual: true),
-            shouldShowGroupedProductType() ? .grouped : nil,
-            .affiliate,
-            .blank
-        ].compactMap { $0 }
-
-        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-        productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
 
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.
@@ -229,8 +192,7 @@ private extension AddProductCoordinator {
             switch result {
             case .success(let product):
                 // Transforms the auto-draft product into a new product ready to be used.
-                let newProduct = ProductFactory().newProduct(from: product,
-                                                             status: self.isSimplifiedBottomSheetEnabled ? .draft : .published)
+                let newProduct = ProductFactory().newProduct(from: product)
                 self.presentProduct(newProduct) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
 
             case .failure(let error):
@@ -252,8 +214,7 @@ private extension AddProductCoordinator {
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
-                                                              siteID: siteID,
-                                                              status: isSimplifiedBottomSheetEnabled ? .draft : .published) else {
+                                                              siteID: siteID) else {
             assertionFailure("Unable to create product of type: \(bottomSheetProductType)")
             return
         }
@@ -280,15 +241,9 @@ private extension AddProductCoordinator {
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
                                                        presentationStyle: .navigationStack)
-        if isSimplifiedBottomSheetEnabled {
-            viewController.addCloseNavigationBarButton(title: NSLocalizedString("Cancel", comment: "Button to dismiss the new product form"))
-            let productFormNavController = WooNavigationController(rootViewController: viewController)
-            navigationController.present(productFormNavController, animated: true)
-        } else {
-            // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-            viewController.hidesBottomBarWhenPushed = true
-            navigationController.pushViewController(viewController, animated: true)
-        }
+        // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+        viewController.hidesBottomBarWhenPushed = true
+        navigationController.pushViewController(viewController, animated: true)
     }
 
     /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.

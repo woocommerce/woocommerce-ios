@@ -66,31 +66,33 @@ struct FeatureAnnouncementCardView: View {
             }
             .padding(.top, Layout.padding)
 
-            HStack(alignment: .bottom, spacing: 0) {
-                VStack(alignment: .leading, spacing: 0) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(viewModel.title)
-                            .headlineStyle()
-                            .padding(.bottom, Layout.smallSpacing)
-                        Text(viewModel.message)
-                            .bodyStyle()
-                            .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
-                    }
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityElement(children: .combine)
-                    if let buttonTitle = viewModel.buttonTitle {
-                        Button(buttonTitle) {
-                            viewModel.ctaTapped()
-                            callToAction?()
+            VStack(alignment: .leading, spacing: 0) {
+                Text(viewModel.title)
+                    .headlineStyle()
+                    .padding(.bottom, Layout.smallSpacing)
+                    HStack(alignment: .bottom) {
+                        VStack(alignment: .leading) {
+                            Text(viewModel.message)
+                                .bodyStyle()
+                                .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
+
+                            if let buttonTitle = viewModel.buttonTitle {
+                                Button(buttonTitle) {
+                                    viewModel.ctaTapped()
+                                    callToAction?()
+                                }
+                                .padding(.bottom, Layout.bottomButtonPadding)
+                                .foregroundColor(Color(.withColorStudio(.pink)))
+                            }
                         }
-                        .padding(.bottom, Layout.bottomButtonPadding)
-                        .foregroundColor(Color(.withColorStudio(.pink)))
-                    }
+
+                        Image(uiImage: viewModel.image)
+                            .resizable()
+                            .scaledToFit()
+                            .accessibilityHidden(true)
                 }
-                Spacer()
-                Image(uiImage: viewModel.image)
-                    .accessibilityHidden(true)
             }
+            .accessibilityElement(children: .combine)
             .padding(.top, Layout.smallSpacing)
             .padding(.leading, Layout.padding)
         }

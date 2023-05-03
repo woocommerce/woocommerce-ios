@@ -35,6 +35,31 @@ public struct OrderTaxLine: Decodable, Equatable, GeneratedFakeable, GeneratedCo
         self.ratePercent = ratePercent
         self.attributes = attributes
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let taxID = try container.decode(Int64.self, forKey: .taxID)
+        let rateCode = try container.decode(String.self, forKey: .rateCode)
+        let rateID = try container.decode(Int64.self, forKey: .rateID)
+        let label = try container.decode(String.self, forKey: .label)
+        let isCompoundTaxRate = try container.decode(Bool.self, forKey: .isCompoundTaxRate)
+        let totalTax = try container.decode(String.self, forKey: .totalTax)
+        let totalShippingTax = try container.decode(String.self, forKey: .totalShippingTax)
+        let ratePercent = try container.decode(Double.self, forKey: .ratePercent)
+
+        // Use failsafe decoding to discard any attributes with non-string values (currently not supported).
+        let attributes = container.failsafeDecodeIfPresent(lossyList: [OrderItemAttribute].self, forKey: .attributes)
+
+        self.init(taxID: taxID,
+                  rateCode: rateCode,
+                  rateID: rateID,
+                  label: label,
+                  isCompoundTaxRate: isCompoundTaxRate,
+                  totalTax: totalTax,
+                  totalShippingTax: totalShippingTax,
+                  ratePercent: ratePercent,
+                  attributes: attributes)
+    }
 }
 
 /// Defines all of the OrderTaxLine's CodingKeys.

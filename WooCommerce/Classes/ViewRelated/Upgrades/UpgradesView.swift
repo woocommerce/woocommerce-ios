@@ -73,9 +73,10 @@ struct UpgradesView: View {
             })
 
             Section(content: {
-                Text(Localization.tryItForDays)
+                Text(Localization.experienceFeatures)
                     .bold()
-                    .secondaryTitleStyle()
+                    .headlineStyle()
+                    .listRowSeparator(.hidden)
 
                 ForEach(FreeTrialFeatures.features, id: \.title) { feature in
                     HStack {
@@ -86,6 +87,7 @@ struct UpgradesView: View {
                             .foregroundColor(Color(.text))
                             .calloutStyle()
                     }
+                    .listRowSeparator(.hidden)
                 }
             })
 
@@ -120,7 +122,8 @@ private extension UpgradesView {
         static let title = NSLocalizedString("Subscriptions", comment: "Title for the Subscriptions / Upgrades view")
         static let subscriptionStatus = NSLocalizedString("SUBSCRIPTION STATUS", comment: "Title for the plan section on the subscriptions view. Uppercased")
         static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title for the button to upgrade from a free trial")
-        static let tryItForDays = NSLocalizedString("Try it free for 14 days.", comment: "Title for the features list in the free trial Summary Screen")
+        static let experienceFeatures = NSLocalizedString("Experience more of our features and services beyond the app",
+                                                    comment: "Title for the features list in the Subscriptions Screen")
         static let cancelTrial = NSLocalizedString("Cancel Free Trial", comment: "Title for the button to cancel a free trial")
         static let troubleshooting = NSLocalizedString("TROUBLESHOOTING",
                                                        comment: "Title for the section to contact support on the subscriptions view. Uppercased")

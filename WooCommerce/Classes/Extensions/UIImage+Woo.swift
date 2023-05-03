@@ -652,6 +652,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Shopping cart Purple
+    ///
+    static var shoppingCartPurpleIcon: UIImage {
+        return UIImage(named: "icon-shopping-cart-purple")!
+    }
+
     /// Credit card
     ///
     static var creditCardIcon: UIImage {

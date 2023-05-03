@@ -24,7 +24,7 @@ struct FreeTrialBanner: View {
     ///
     let mainText: String
 
-    /// Closure invoked when the merchants taps on the `Upgrade Now` button.
+    /// Closure invoked when the merchants taps on the `Learn More` button.
     ///
     let onLearnMoreTapped: () -> Void
 

@@ -100,9 +100,7 @@ private extension UpgradesViewModel {
     func updateViewProperties(from plan: WPComSitePlan) {
         planName = Self.getPlanName(from: plan)
         planInfo = Self.getPlanInfo(from: plan)
-        shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan)
-        && featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
-
+        shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan, featureFlagService: featureFlagService)
         errorNotice = nil
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
@@ -172,8 +170,8 @@ private extension UpgradesViewModel {
 
     /// Only allow to upgrade the plan if we are on a free trial.
     ///
-    static func getUpgradeNowButtonVisibility(from plan: WPComSitePlan) -> Bool {
-        plan.isFreeTrial
+    static func getUpgradeNowButtonVisibility(from plan: WPComSitePlan, featureFlagService: FeatureFlagService) -> Bool {
+        plan.isFreeTrial && featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
     }
 
     /// Returns a site plan duration in days.

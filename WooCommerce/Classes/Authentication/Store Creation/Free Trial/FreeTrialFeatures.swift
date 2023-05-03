@@ -2,7 +2,7 @@ import UIKit
 
 /// Defines all Free Trial Features that may be displayed in any UI section of the app
 ///
-class FreeTrialFeatures {
+struct FreeTrialFeatures {
     /// Free Trial feature representation
     ///
     struct Feature {

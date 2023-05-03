@@ -35,6 +35,10 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private(set) var showLoadingIndicator = false
 
+    /// Holds a reference to the free trial features.
+    ///
+    let freeTrialFeatures = FreeTrialFeatures.features
+
     /// Observable subscription store.
     ///
     private var subscriptions: Set<AnyCancellable> = []

@@ -72,13 +72,12 @@ struct UpgradesView: View {
                 Text(viewModel.planInfo)
             })
 
-            Section(content: {
+            VStack(alignment: .leading) {
                 Text(Localization.experienceFeatures)
                     .bold()
                     .headlineStyle()
-                    .listRowSeparator(.hidden)
 
-                ForEach(FreeTrialFeatures.features, id: \.title) { feature in
+                ForEach(viewModel.freeTrialFeatures, id: \.title) { feature in
                     HStack {
                         Image(uiImage: feature.icon)
                             .foregroundColor(Color(uiColor: .accent))
@@ -89,7 +88,7 @@ struct UpgradesView: View {
                     }
                     .listRowSeparator(.hidden)
                 }
-            })
+            }
             .renderedIf(viewModel.shouldShowFreeTrialFeatures)
 
             Button(Localization.cancelTrial) {

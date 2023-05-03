@@ -1,4 +1,5 @@
 import Foundation
+import Experiments
 import Storage
 import Networking
 import WooFoundation
@@ -8,13 +9,16 @@ import WooFoundation
 public class JustInTimeMessageStore: Store {
     private let remote: JustInTimeMessagesRemoteProtocol
     private let imageService: ImageService
+    private let featureFlagService: FeatureFlagService
 
     public init(dispatcher: Dispatcher,
-                         storageManager: StorageManagerType,
-                         network: Network,
-                         imageService: ImageService) {
+                storageManager: StorageManagerType,
+                network: Network,
+                imageService: ImageService,
+                featureFlagService: FeatureFlagService) {
         self.remote = JustInTimeMessagesRemote(network: network)
         self.imageService = imageService
+        self.featureFlagService = featureFlagService
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -134,7 +138,8 @@ private extension JustInTimeMessageStore {
     /// - Returns: UIImageAsset, with dark and light mode images, for the current device's screen density
     func imageAsset(ofKind assetKind: ImageAssetKind,
                     from message: Networking.JustInTimeMessage) async -> UIImageAsset? {
-        guard let url = message.assets[assetKind.baseUrlKey],
+        guard featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone3),
+              let url = message.assets[assetKind.baseUrlKey],
               let lightImage = await image(for: url) else {
             return nil
         }

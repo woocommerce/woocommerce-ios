@@ -18,6 +18,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isFreeTrial: Bool
     private let jetpackSetupWithApplicationPassword: Bool
     private let isTapToPayOnIPhoneMilestone2On: Bool
+    private let isTapToPayOnIPhoneMilestone3On: Bool
     private let isIPPUKExpansionEnabled: Bool
     private let isReadOnlySubscriptionsEnabled: Bool
     private let isProductDescriptionAIEnabled: Bool
@@ -39,6 +40,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isFreeTrial: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isTapToPayOnIPhoneMilestone2On: Bool = false,
+         isTapToPayOnIPhoneMilestone3On: Bool = false,
          isIPPUKExpansionEnabled: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
          isProductDescriptionAIEnabled: Bool = false,
@@ -59,6 +61,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isFreeTrial = isFreeTrial
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
+        self.isTapToPayOnIPhoneMilestone3On = isTapToPayOnIPhoneMilestone3On
         self.isIPPUKExpansionEnabled = isIPPUKExpansionEnabled
         self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
         self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
@@ -99,6 +102,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return jetpackSetupWithApplicationPassword
         case .tapToPayOnIPhoneMilestone2:
             return isTapToPayOnIPhoneMilestone2On
+        case .tapToPayOnIPhoneMilestone3:
+            return isTapToPayOnIPhoneMilestone3On
         case .IPPUKExpansion:
             return isIPPUKExpansionEnabled
         case .readOnlySubscriptions:

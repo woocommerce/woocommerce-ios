@@ -67,6 +67,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .appStore
         case .tapToPayOnIPhoneMilestone2:
             return true
+        case .tapToPayOnIPhoneMilestone3:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .domainSettings:
             return true
         case .simplifyProductEditing:

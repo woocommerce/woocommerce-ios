@@ -84,6 +84,10 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhoneMilestone2
 
+    /// Enables Tap to Pay on iPhone Milestone 3 (JITM customisation & modals, sped up payment initialisation, automatic trial payment refunds.)
+    ///
+    case tapToPayOnIPhoneMilestone3
+
     /// Store creation MVP.
     ///
     case storeCreationMVP

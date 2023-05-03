@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case consolidatedCardReaderManuals
 
-    /// Showing a "New to WooCommerce" link in the login prologue screen
-    ///
-    case newToWooCommerceLinkInLoginPrologue
-
     /// Onboarding experiment on the login prologue screen
     ///
     case loginPrologueOnboarding

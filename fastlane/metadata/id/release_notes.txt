@@ -1,1 +1,1 @@
-Inggris, sambutlah pembayaran langsung! Kami umumkan bahwa fitur pembayaran langsung kini hadir bagi penjual di Inggris yang menggunakan sistem Pembayaran WooCommerce. Rilis ini juga meliputi beberapa perbaikan kecil pada proses pengelolaan toko Anda. Sekali lagi, terima kasih atas feedback Anda. Terus kirimkan feedback Anda!
+Rilis ini mencakup sejumlah perbaikan bug dan peningkatan untuk memaksimalkan pengalaman Anda. Kami berkomitmen untuk terus menyempurnakan aplikasi WooCommerce. Nantikan berbagai pembaruan menarik dalam beberapa minggu ke depan. Terus ikuti beritanya!

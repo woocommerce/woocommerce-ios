@@ -55,7 +55,8 @@ public final class CustomerDetailsScreen: ScreenObject {
             addressToggle.tap()
         }
 
-        // If the switch state is still not as needed, tap its inner switch, if it's hittable
+        // If the switch state is still not as needed, tap its inner switch, if it's hittable.
+        // See https://github.com/woocommerce/woocommerce-ios/pull/9629 for more details.
         if addressToggle.value as! String != value && addressToggle.switches.firstMatch.isHittable {
             addressToggle.switches.firstMatch.tap()
         }

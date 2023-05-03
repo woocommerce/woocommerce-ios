@@ -14,10 +14,6 @@ public enum ABTest: String, Codable, CaseIterable {
     /// Experiment ref: pbxNRc-1S0-p2
     case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202212_v2"
 
-    /// A/B test for a simplified product creation and editing experience.
-    /// Experiment ref: pbxNRc-2li-p2
-    case simplifiedProductEditing = "woocommerceios_products_creation_editing_simplify_v1"
-
     /// Returns a variation for the given experiment
     ///
     public var variation: Variation? {
@@ -29,7 +25,7 @@ public enum ABTest: String, Codable, CaseIterable {
     /// When adding a new experiment, add it to the appropriate case depending on its context (logged-in or logged-out experience).
     public var context: ExperimentContext {
         switch self {
-        case .aaTestLoggedIn, .simplifiedProductEditing:
+        case .aaTestLoggedIn:
             return .loggedIn
         case .aaTestLoggedOut:
             return .loggedOut

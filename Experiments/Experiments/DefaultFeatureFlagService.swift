@@ -67,10 +67,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .domainSettings:
             return true
-        case .simplifyProductEditing:
-            // Enabled for the A/B experiment treatment group only
-            // Disabled for the control group and UI testing
-            return ABTest.simplifiedProductEditing.variation == .treatment && !isUITesting
         case .jetpackSetupWithApplicationPassword:
             return true
         case .dashboardOnboarding:
@@ -96,7 +92,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .hideStoreOnboardingTaskList:
             return true
         case .readOnlyMinMaxQuantities:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

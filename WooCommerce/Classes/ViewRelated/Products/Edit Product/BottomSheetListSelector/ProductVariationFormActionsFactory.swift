@@ -5,9 +5,14 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let productVariation: EditableProductVariationModel
     private let editable: Bool
 
-    init(productVariation: EditableProductVariationModel, editable: Bool) {
+    private let isMinMaxQuantitiesEnabled: Bool
+
+    init(productVariation: EditableProductVariationModel,
+         editable: Bool,
+         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities)) {
         self.productVariation = productVariation
         self.editable = editable
+        self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -25,11 +30,6 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     /// Returns an array of actions that are visible in the product form settings section.
     func settingsSectionActions() -> [ProductFormEditAction] {
         return visibleSettingsSectionActions()
-    }
-
-    /// Returns an array of actions that are visible in the product form options CTA section.
-    func optionsCTASectionActions() -> [ProductFormEditAction] {
-        []
     }
 
     /// Returns an array of actions that are visible in the product form bottom sheet.
@@ -59,11 +59,13 @@ private extension ProductVariationFormActionsFactory {
                 return nil
             }
         }()
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && productVariation.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             subscriptionOrPriceRow,
             shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
             .attributes(editable: editable),
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .status(editable: editable),
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
@@ -79,7 +81,7 @@ private extension ProductVariationFormActionsFactory {
 
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
-        case .priceSettings, .noPriceWarning, .status, .attributes, .subscription:
+        case .priceSettings, .noPriceWarning, .status, .attributes, .subscription, .quantityRules:
             // The price settings, attributes, and visibility actions are always visible in the settings section.
             return true
         case .inventorySettings:

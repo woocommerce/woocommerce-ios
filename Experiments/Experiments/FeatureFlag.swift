@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Min/Max Quantities extension
     ///
     case readOnlyMinMaxQuantities
+
+    /// Enables updates of the Privacy Choices project.
+    ///
+    case privacyChoices
 }

@@ -90,6 +90,7 @@ struct UpgradesView: View {
                     .listRowSeparator(.hidden)
                 }
             })
+            .renderedIf(viewModel.shouldShowFreeTrialFeatures)
 
             Button(Localization.cancelTrial) {
                 print("Cancel Free Trial tapped")

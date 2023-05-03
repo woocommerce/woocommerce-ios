@@ -23,6 +23,10 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private(set) var shouldShowUpgradeButton = false
 
+    /// Defines if the view should show the Full Plan features..
+    ///
+    private(set) var shouldShowFreeTrialFeatures = false
+
     /// Defines if the view should show the "Cancel Free Trial"  button.
     ///
     private(set) var shouldShowCancelTrialButton = false
@@ -97,6 +101,7 @@ private extension UpgradesViewModel {
 
         errorNotice = nil
         showLoadingIndicator = false
+        shouldShowFreeTrialFeatures = plan.isFreeTrial
     }
 
     func updateLoadingViewProperties() {
@@ -105,6 +110,7 @@ private extension UpgradesViewModel {
         shouldShowUpgradeButton = false
         errorNotice = nil
         showLoadingIndicator = true
+        shouldShowFreeTrialFeatures = false
     }
 
     func updateFailedViewProperties() {
@@ -113,6 +119,7 @@ private extension UpgradesViewModel {
         shouldShowUpgradeButton = false
         errorNotice = createErrorNotice()
         showLoadingIndicator = false
+        shouldShowFreeTrialFeatures = false
     }
 
     /// Removes any occurrences of `WordPress.com` from the site's name.

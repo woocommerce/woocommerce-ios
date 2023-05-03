@@ -38,6 +38,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
         XCTAssertTrue(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
 
@@ -71,6 +72,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
         XCTAssertTrue(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
 
@@ -104,6 +106,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
         XCTAssertFalse(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
 
@@ -161,6 +164,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isEmpty)
         XCTAssertFalse(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNotNil(viewModel.errorNotice)
     }
 

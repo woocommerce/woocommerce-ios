@@ -15,7 +15,7 @@ public class JustInTimeMessageStore: Store {
                 storageManager: StorageManagerType,
                 network: Network,
                 imageService: ImageService,
-                featureFlagService: FeatureFlagService) {
+                featureFlagService: FeatureFlagService = DefaultFeatureFlagService()) {
         self.remote = JustInTimeMessagesRemote(network: network)
         self.imageService = imageService
         self.featureFlagService = featureFlagService

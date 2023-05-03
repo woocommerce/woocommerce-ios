@@ -1,5 +1,4 @@
 import UIKit
-@testable import WooFoundation
 
 public final class MockImageDownloadTask: ImageDownloadTask {
     private(set) var isCancelled: Bool = false

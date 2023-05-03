@@ -13,6 +13,11 @@ public protocol DomainRemoteProtocol {
     /// - Returns: A list of paid domain suggestions.
     func loadPaidDomainSuggestions(query: String) async throws -> [PaidDomainSuggestion]
 
+    /// Loads the price information for a premium domain.
+    /// - Parameter domain: Name of a premium domain.
+    /// - Returns: Price information of a premium domain.
+    func loadPremiumDomainPrice(domain: String) async throws -> PremiumDomainPrice
+
     /// Loads WPCOM domain products for domain cost and sale info in `loadPaidDomainSuggestions`.
     /// - Returns: A list of domain products.
     func loadDomainProducts() async throws -> [DomainProduct]
@@ -51,9 +56,18 @@ public class DomainRemote: Remote, DomainRemoteProtocol {
         let path = Path.domainSuggestions
         let parameters: [String: Any] = [
             ParameterKey.query: query,
-            ParameterKey.quantity: Defaults.domainSuggestionsQuantity
+            ParameterKey.quantity: Defaults.domainSuggestionsQuantity,
+            ParameterKey.dotcomDomainsIncluded: false,
+            ParameterKey.dotblogDomainsIncluded: false,
+            ParameterKey.vendor: "variation8_front"
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
+        return try await enqueue(request)
+    }
+
+    public func loadPremiumDomainPrice(domain: String) async throws -> PremiumDomainPrice {
+        let path = Path.premiumDomainPrice(domain: domain)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         return try await enqueue(request)
     }
 
@@ -121,17 +135,38 @@ public struct PaidDomainSuggestion: Decodable, Equatable {
     public let productID: Int64
     /// Whether there is privacy support. Used when creating a cart with a domain product.
     public let supportsPrivacy: Bool
+    /// Whether the domain is a premium domain, which cannot be redeemed with a domain credit.
+    /// Non-premium domains don't have this field, thus this is marked as optional.
+    public let isPremium: Bool?
 
-    public init(name: String, productID: Int64, supportsPrivacy: Bool) {
+    public init(name: String, productID: Int64, supportsPrivacy: Bool, isPremium: Bool?) {
         self.name = name
         self.productID = productID
         self.supportsPrivacy = supportsPrivacy
+        self.isPremium = isPremium
     }
 
     private enum CodingKeys: String, CodingKey {
         case name = "domain_name"
         case productID = "product_id"
         case supportsPrivacy = "supports_privacy"
+        case isPremium = "is_premium"
+    }
+}
+
+/// Necessary data for a premium domain price.
+public struct PremiumDomainPrice: Decodable, Equatable {
+    /// Cost value.
+    public let cost: Decimal
+    /// Optional sale cost value.
+    public let saleCost: Decimal?
+    /// Currency.
+    public let currency: String
+
+    private enum CodingKeys: String, CodingKey {
+        case cost = "raw_price"
+        case saleCost = "sale_cost"
+        case currency = "currency_code"
     }
 }
 
@@ -335,6 +370,12 @@ private extension DomainRemote {
         static let domainContactInfo = "contact_information"
         /// Domain names parameter for validating contact info.
         static let domainNames = "domain_names"
+        /// Whether or not to include wordpress.com subdomains.
+        static let dotcomDomainsIncluded = "include_wordpressdotcom"
+        /// Whether or not to include .blog subdomains.
+        static let dotblogDomainsIncluded = "include_dotblogsubdomain"
+        /// Suggestions vendor to use.
+        static let vendor = "vendor"
     }
 
     enum Path {
@@ -342,5 +383,8 @@ private extension DomainRemote {
         static let domainProducts = "products"
         static let domains = "domains"
         static let domainContactInfo = "me/domain-contact-information"
+        static func premiumDomainPrice(domain: String) -> String {
+            "domains/\(domain)/price"
+        }
     }
 }

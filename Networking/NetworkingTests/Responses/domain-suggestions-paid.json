@@ -26,5 +26,18 @@
         "cost": "US$25.00",
         "raw_price": 25,
         "currency_code": "USD"
+    },
+    {
+        "domain_name": "pizzas.blog",
+        "relevance": 0.99,
+        "supports_privacy": true,
+        "vendor": "donuts",
+        "is_premium": true,
+        "match_reasons": [
+            "tld-common",
+            "similar-match"
+        ],
+        "product_id": 76,
+        "product_slug": "dotblog_domain"
     }
 ]

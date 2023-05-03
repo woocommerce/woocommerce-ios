@@ -155,7 +155,7 @@ public struct WPComPlan: Decodable, Equatable {
 }
 
 /// Necessary data of a domain to create a cart. Contains a subset of properties of `PaidDomainSuggestion`.
-public struct DomainToPurchase: Decodable, Equatable {
+public struct DomainToPurchase: Equatable {
     /// Domain name.
     public let name: String
     /// WPCOM product ID.
@@ -167,12 +167,6 @@ public struct DomainToPurchase: Decodable, Equatable {
         self.name = name
         self.productID = productID
         self.supportsPrivacy = supportsPrivacy
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case name = "domain_name"
-        case productID = "product_id"
-        case supportsPrivacy = "supports_privacy"
     }
 }
 

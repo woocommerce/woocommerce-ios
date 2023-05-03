@@ -3,6 +3,9 @@ import SwiftUI
 
 /// Main view for the plan settings.
 ///
+/// We might want to consider renaming this group of types to follow the `Subscriptions`
+/// wording since we're deactivating the `Upgrades` structure from the app.
+///
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
 
     init(siteID: Int64) {

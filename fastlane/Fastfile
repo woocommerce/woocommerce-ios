@@ -1142,6 +1142,8 @@ lane :test_without_building do |options|
     max_concurrent_simulators: CONCURRENT_SIMULATORS,
     test_without_building: true,
     xctestrun: xctestrun_path,
+    # This lane uses prebuilt app binary and doesn't need to resolve SPM dependencies.
+    skip_package_dependencies_resolution: true,
     result_bundle: true,
     # settins for XML test report generation via `trainer`
     output_types: '',

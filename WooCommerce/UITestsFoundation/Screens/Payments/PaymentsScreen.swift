@@ -10,6 +10,22 @@ public final class PaymentsScreen: ScreenObject {
         $0.cells["card-reader-manuals"]
     }
 
+    private let nextButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["next-button"]
+    }
+
+    private let takePaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["take-payment-button"]
+    }
+
+    private let cashPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["payment-methods-view-cash-row"]
+    }
+
+    private let markAsPaidButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["Mark as Paid"]
+    }
+
     private let learnMoreButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Learn more about In‑Person Payments"]
     }
@@ -21,6 +37,10 @@ public final class PaymentsScreen: ScreenObject {
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
     private var cardReaderManualsButton: XCUIElement { cardReaderManualsButtonGetter(app) }
     private var learnMoreButton: XCUIElement { learnMoreButtonGetter(app) }
+    private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var takePaymentButton: XCUIElement { takePaymentButtonGetter(app) }
+    private var cashPaymentButton: XCUIElement { cashPaymentButtonGetter(app) }
+    private var markAsPaidButton: XCUIElement { markAsPaidButtonGetter(app) }
     private var IPPDocumentationHeaderText: XCUIElement { IPPDocumentationHeaderTextGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
@@ -38,6 +58,34 @@ public final class PaymentsScreen: ScreenObject {
 
     public func tapLearnMoreIPPLink() throws -> Self {
         learnMoreButton.tap()
+        return self
+    }
+
+    public func tapCollectPayment() throws -> Self {
+        collectPaymentButton.tap()
+        return self
+    }
+
+    public func enterPaymentAmount() throws -> Self {
+        app.enterText(text: "5")
+        nextButton.tap()
+        return self
+    }
+
+    public func takeCashPayment() throws -> Self {
+        takePaymentButton.waitForIsHittable(timeout: 10)
+        takePaymentButton.tap()
+
+        cashPaymentButton.waitForIsHittable(timeout: 10)
+        cashPaymentButton.tap()
+
+        markAsPaidButton.tap()
+        return self
+    }
+
+    @discardableResult
+    public func verifyOrderCompletedToastDisplayed() throws -> Self {
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Order completed'")).firstMatch.exists)
         return self
     }
 

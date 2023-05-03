@@ -18,8 +18,20 @@ final class BundledProductsListViewModel: ObservableObject {
         /// Stock status of the bundled product
         let stockStatus: String
 
+        /// SKU of the bundled product
+        let sku: String?
+
         /// URL of the bundled product's image, if any
         let imageURL: URL?
+
+        /// Subtitle: Stock status and SKU of the bundled product
+        var subtitle: String {
+            guard let sku, sku.isNotEmpty else {
+                return stockStatus
+            }
+            let skuLabel = String.localizedStringWithFormat(Localization.skuFormat, sku)
+            return stockStatus + "\n" + skuLabel
+        }
     }
 
     /// View title
@@ -60,10 +72,12 @@ private extension BundledProductsListViewModel {
     ///
     static func getViewModels(for bundleItems: [ProductBundleItem], with products: [Product], siteID: Int64) -> [BundledProduct] {
         bundleItems.map { bundleItem in
-            BundledProduct(id: bundleItem.bundledItemID,
-                           title: bundleItem.title,
-                           stockStatus: bundleItem.stockStatus.description,
-                           imageURL: products.first(where: { $0.productID == bundleItem.productID })?.imageURL) // URL for bundle item's first image
+            let product = products.first(where: { $0.productID == bundleItem.productID })
+            return BundledProduct(id: bundleItem.bundledItemID,
+                                  title: bundleItem.title,
+                                  stockStatus: bundleItem.stockStatus.description,
+                                  sku: product?.sku,
+                                  imageURL: product?.imageURL) // URL for bundle item's first image
         }
     }
 
@@ -112,5 +126,7 @@ extension BundledProductsListViewModel {
         static let title = NSLocalizedString("Bundled Products", comment: "Title for the bundled products screen")
         static let infoNotice = NSLocalizedString("You can edit bundled products in the web dashboard.",
                                                   comment: "Info notice at the bottom of the bundled products screen")
+        static let skuFormat = NSLocalizedString("SKU: %1$@",
+                                                 comment: "SKU label for a product in the bundled products screen. The variable shows the SKU of the product.")
     }
 }

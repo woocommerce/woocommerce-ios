@@ -16,6 +16,7 @@ final class UpgradesViewModelTests: XCTestCase {
 
         let session = SessionManager.testingInstance
         let stores = MockStoresManager(sessionManager: session)
+        let featureFlags = MockFeatureFlagService(isFreeTrialUpgradeEnabled: true)
         session.defaultSite = sampleSite
 
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
@@ -29,7 +30,7 @@ final class UpgradesViewModelTests: XCTestCase {
 
         // When
         let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
         viewModel.loadPlan()
 
         // Then
@@ -59,7 +60,8 @@ final class UpgradesViewModelTests: XCTestCase {
             }
         }
         let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+        let featureFlags = MockFeatureFlagService(isFreeTrialUpgradeEnabled: true)
+        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
 
         // When
         viewModel.loadPlan()

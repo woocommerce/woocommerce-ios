@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import protocol Experiments.FeatureFlagService
 
 /// ViewModel for the Upgrades View
 ///
@@ -46,12 +47,18 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Feature flag service.
+    ///
+    private let featureFlagService: FeatureFlagService
+
     init(stores: StoresManager = ServiceLocator.stores,
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.storePlanSynchronizer = storePlanSynchronizer
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         observePlan()
     }
 
@@ -86,6 +93,8 @@ private extension UpgradesViewModel {
         planName = Self.getPlanName(from: plan)
         planInfo = Self.getPlanInfo(from: plan)
         shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan)
+        && featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
+
         errorNotice = nil
         showLoadingIndicator = false
     }

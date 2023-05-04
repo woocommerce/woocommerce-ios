@@ -6,6 +6,9 @@ import XCTest
 final class BundledProductsListViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 12345
+    private let sampleSKU = "product-sku"
+    private let sampleImage: Yosemite.ProductImage = .fake().copy(src: "https://woocommerce.com/woo.jpg")
+
     private var storageManager: StorageManagerType!
     private var storage: StorageType {
         storageManager.viewStorage
@@ -41,7 +44,7 @@ final class BundledProductsListViewModelTests: XCTestCase {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 12)
         let imageURL = URL(string: "https://woocommerce.com/woo.jpg")
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 12, sku: "product-sku", images: [.fake().copy(src: imageURL?.absoluteString)])
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 12, sku: sampleSKU, images: [.fake().copy(src: imageURL?.absoluteString)])
         insert(product)
 
         // When
@@ -55,8 +58,8 @@ final class BundledProductsListViewModelTests: XCTestCase {
 
     func test_view_model_syncs_and_updates_bundled_products_with_missing_images() throws {
         // Given
-        let productWithImage = Product.fake().copy(siteID: sampleSiteID, productID: 12, images: [.fake().copy(src: "https://woocommerce.com/woo.jpg")])
-        let productWithoutImage = Product.fake().copy(siteID: sampleSiteID, productID: 13)
+        let productWithImage = Product.fake().copy(siteID: sampleSiteID, productID: 12, sku: sampleSKU, images: [sampleImage])
+        let productWithoutImage = Product.fake().copy(siteID: sampleSiteID, productID: 13, sku: sampleSKU)
         insert([productWithImage, productWithoutImage])
 
         // When
@@ -83,6 +86,39 @@ final class BundledProductsListViewModelTests: XCTestCase {
         // Then
         let bundledProductsWithoutImages = try XCTUnwrap(viewModel?.bundledProducts.filter({ $0.imageURL == nil }))
         XCTAssertTrue(bundledProductsWithoutImages.isEmpty)
+    }
+
+    func test_view_model_syncs_and_updates_bundled_products_with_missing_sku() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 12, sku: sampleSKU, images: [sampleImage])
+        insert(product)
+
+        // When
+        var viewModel: BundledProductsListViewModel?
+        _ = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case let .retrieveProducts(_, _, _, _, onCompletion):
+                    let products = [product, product.copy(productID: 13)]
+                    onCompletion(.success((products: products, hasNextPage: false)))
+                    promise(true)
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            viewModel = BundledProductsListViewModel(siteID: self.sampleSiteID,
+                                                     bundleItems: [ProductBundleItem.fake().copy(productID: 12),
+                                                                   ProductBundleItem.fake().copy(productID: 13)],
+                                                     storageManager: self.storageManager,
+                                                     stores: self.stores)
+        }
+
+        // Then
+        let expectedViewModel = try XCTUnwrap(viewModel)
+        let bundledProductsWithoutSKUs = try XCTUnwrap(expectedViewModel.bundledProducts.filter({ $0.sku == nil }))
+        XCTAssertEqual(expectedViewModel.bundledProducts.count, 2)
+        XCTAssertTrue(bundledProductsWithoutSKUs.isEmpty)
     }
 
     func test_view_model_bundled_product_returns_expected_subtitle_with_stock_status_and_sku() {

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.6
+-----
+- [*] JITMs: Added customization to Just in Time Message banner background and badges [https://github.com/woocommerce/woocommerce-ios/pull/9633]
+
 13.5
 -----
 [Internal] Products: Simplify Product Editing experiment is removed; there should be no changes to the existing product creation/editing behavior. [https://github.com/woocommerce/woocommerce-ios/pull/9602]

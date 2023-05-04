@@ -1,42 +1,78 @@
 import SwiftUI
 
 struct BadgeView: View {
-    enum BadgeType {
+    enum BadgeType: Equatable {
         case new
         case tip
+        case remoteImage(lightUrl: URL, darkUrl: URL?)
+        case customText(text: String)
 
-        var title: String {
+        var title: String? {
             switch self {
             case .new:
                 return Localization.newTitle
             case .tip:
                 return Localization.tipTitle
+            case .customText(let text):
+                return text
+            case .remoteImage:
+                return nil
+            }
+        }
+
+        static func ==(lhs: BadgeType, rhs: BadgeType) -> Bool {
+            switch (lhs, rhs) {
+            case (.new, .new), (.tip, .tip):
+                return true
+            case (.customText(let lhsText), .customText(let rhsText)):
+                return lhsText == rhsText
+            case (remoteImage(let lhsLightUrl, let lhsDarkUrl), remoteImage(let rhsLightUrl, let rhsDarkUrl)):
+                return lhsLightUrl == rhsLightUrl && lhsDarkUrl == rhsDarkUrl
+            default:
+                return false
             }
         }
     }
 
-    private let text: String
+    private let type: BadgeType
 
     init(type: BadgeType) {
-        text = type.title.uppercased()
+        self.type = type
     }
 
     init(text: String) {
-        self.text = text
+        self.type = .customText(text: text)
     }
 
     var body: some View {
-        Text(text)
-            .bold()
-            .foregroundColor(Color(.textBrand))
-            .captionStyle()
-            .padding(.leading, Layout.horizontalPadding)
-            .padding(.trailing, Layout.horizontalPadding)
-            .padding(.top, Layout.verticalPadding)
-            .padding(.bottom, Layout.verticalPadding)
-            .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .fill(Color(.wooCommercePurple(.shade0)))
-            )
+        if let text = type.title {
+            Text(text)
+                .bold()
+                .foregroundColor(Color(.textBrand))
+                .captionStyle()
+                .padding(.leading, Layout.horizontalPadding)
+                .padding(.trailing, Layout.horizontalPadding)
+                .padding(.top, Layout.verticalPadding)
+                .padding(.bottom, Layout.verticalPadding)
+                .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                    .fill(Color(.wooCommercePurple(.shade0)))
+                )
+        } else if case .remoteImage(let lightUrl, let darkUrl) = type {
+            AdaptiveAsyncImage(lightUrl: lightUrl, darkUrl: darkUrl, scale: 3) { imagePhase in
+                switch imagePhase {
+                case .success(let image):
+                    image.scaledToFit()
+                case .empty:
+                    BadgeView(type: .new).redacted(reason: .placeholder)
+                case .failure:
+                    EmptyView()
+                @unknown default:
+                    EmptyView()
+                }
+            }
+        } else {
+            EmptyView()
+        }
     }
 }
 

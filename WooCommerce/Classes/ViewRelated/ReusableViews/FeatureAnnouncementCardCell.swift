@@ -41,7 +41,7 @@ class FeatureAnnouncementCardCell: UITableViewCell {
     func configure(with viewModel: FeatureAnnouncementCardViewModel) {
         self.viewModel = viewModel
 
-        badgeLabel.text = viewModel.badgeType?.title.uppercased()
+        badgeLabel.text = viewModel.badgeType?.title?.uppercased()
         titleLabel.text = viewModel.title
         messageLabel.text = viewModel.message
         ctaButton.setTitle(viewModel.buttonTitle, for: .normal)

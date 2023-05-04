@@ -40,8 +40,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 private extension DefaultProductFormTableViewModel {
     mutating func configureSections(product: ProductFormDataModel, actionsFactory: ProductFormActionsFactoryProtocol) {
         sections = [.primaryFields(rows: primaryFieldRows(product: product, actions: actionsFactory.primarySectionActions())),
-                    .settings(rows: settingsRows(productModel: product, actions: actionsFactory.settingsSectionActions())),
-                    .optionsCTA(rows: optionsCTARows(product: product, actions: actionsFactory.optionsCTASectionActions()))]
+                    .settings(rows: settingsRows(productModel: product, actions: actionsFactory.settingsSectionActions()))]
             .filter { $0.isNotEmpty }
     }
 
@@ -155,17 +154,6 @@ private extension DefaultProductFormTableViewModel {
             }
         }
     }
-
-    func optionsCTARows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.OptionsCTARow] {
-        return actions.map { action in
-            switch action {
-            case .addOptions:
-                return .addOptions
-            default:
-                fatalError("Unexpected action in the options CTA section: \(action)")
-            }
-        }
-    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -275,15 +263,14 @@ private extension DefaultProductFormTableViewModel {
         let title = Localization.productTypeTitle
 
         let details: String
-        let hideDownloadableProductType = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
         switch product.productType {
         case .simple:
-            switch (product.downloadable, product.virtual, hideDownloadableProductType) {
-            case (true, _, false):
+            switch (product.downloadable, product.virtual) {
+            case (true, _):
                 details = Localization.downloadableProductType
-            case (_, true, _):
+            case (_, true):
                 details = Localization.virtualProductType
-            case (_, false, _):
+            case (_, false):
                 details = Localization.physicalProductType
             }
         case .custom(let customProductType):

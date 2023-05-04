@@ -333,32 +333,6 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(actionButtons, [.save, .more])
     }
 
-    func test_action_buttons_for_new_product_with_simplified_editing_enabled() throws {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-        let product = try XCTUnwrap(ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: 123))
-        let viewModel = createViewModel(product: product, formType: .add, stores: stores, simplifiedProductEditingEnabled: true)
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.save])
-    }
-
-    func test_action_buttons_for_existing_draft_product_and_no_pending_changes_with_simplified_editing_enabled() {
-        // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
-        let viewModel = createViewModel(product: product, formType: .edit, stores: stores, simplifiedProductEditingEnabled: true)
-
-        // When
-        let actionButtons = viewModel.actionButtons
-
-        // Then
-        XCTAssertEqual(actionButtons, [.preview, .publish, .more])
-    }
-
     func test_action_buttons_for_existing_published_product_and_pending_changes() {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123")
@@ -632,37 +606,13 @@ final class ProductFormViewModelTests: XCTestCase {
     func test_updateDownloadableFiles_does_not_change_downloadable_when_not_simplifiedProductEditingEnabled() {
         // Given
         let product = Product.fake().copy(downloadable: true, downloads: [.fake()])
-        let viewModel = createViewModel(product: product, formType: .edit, simplifiedProductEditingEnabled: false)
+        let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
         viewModel.updateDownloadableFiles(downloadableFiles: [], downloadLimit: 0, downloadExpiry: 0)
 
         // Then
         XCTAssertTrue(viewModel.productModel.downloadable)
-    }
-
-    func test_updateDownloadableFiles_sets_downloadable_to_true_when_downloadable_files_added_and_simplifiedProductEditingEnabled() {
-        // Given
-        let product = Product.fake().copy(downloadable: false, downloads: [])
-        let viewModel = createViewModel(product: product, formType: .edit, simplifiedProductEditingEnabled: true)
-
-        // When
-        viewModel.updateDownloadableFiles(downloadableFiles: [.fake()], downloadLimit: 0, downloadExpiry: 0)
-
-        // Then
-        XCTAssertTrue(viewModel.productModel.downloadable)
-    }
-
-    func test_updateDownloadableFiles_sets_downloadable_to_false_when_downloadable_files_removed_and_simplifiedProductEditingEnabled() {
-        // Given
-        let product = Product.fake().copy(downloadable: false, downloads: [.fake()])
-        let viewModel = createViewModel(product: product, formType: .edit, simplifiedProductEditingEnabled: true)
-
-        // When
-        viewModel.updateDownloadableFiles(downloadableFiles: [], downloadLimit: 0, downloadExpiry: 0)
-
-        // Then
-        XCTAssertFalse(viewModel.productModel.downloadable)
     }
 }
 
@@ -670,15 +620,13 @@ private extension ProductFormViewModelTests {
     func createViewModel(product: Product,
                          formType: ProductFormType,
                          stores: StoresManager = ServiceLocator.stores,
-                         analytics: Analytics = ServiceLocator.analytics,
-                         simplifiedProductEditingEnabled: Bool = false) -> ProductFormViewModel {
+                         analytics: Analytics = ServiceLocator.analytics) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
-                                    analytics: analytics,
-                                    simplifiedProductEditingEnabled: simplifiedProductEditingEnabled)
+                                    analytics: analytics)
     }
 }

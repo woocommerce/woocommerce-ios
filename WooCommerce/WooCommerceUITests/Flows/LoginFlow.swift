@@ -16,7 +16,7 @@ class LoginFlow {
     static func logInWithWPcom() throws -> MyStoreScreen {
         try PrologueScreen().tapContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
-            .proceedWith(password: TestCredentials.password)
+            .enterValidPassword()
 
         return try LoginEpilogueScreen()
             .verifyEpilogueDisplays(email: "e2eflowtestingmobile@example.com", siteUrl: TestCredentials.siteUrl)
@@ -29,7 +29,7 @@ class LoginFlow {
             .tapLogIn()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
-            .proceedWith(password: TestCredentials.password)
+            .enterValidPassword()
         return try MyStoreScreen()
     }
 }

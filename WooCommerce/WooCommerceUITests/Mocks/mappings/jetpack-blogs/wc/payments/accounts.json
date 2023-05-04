@@ -15,18 +15,21 @@
         "status": 200,
         "jsonBody": {
             "data": {
-                "card_present_eligible": false,
-                "country": "US",
-                "current_deadline": null,
-                "has_overdue_requirements": false,
+                "is_live": false,
                 "has_pending_requirements": false,
+                "has_overdue_requirements": false,
+                "current_deadline": null,
+                "status": "complete",
                 "statement_descriptor": "",
-                "status": "NOACCOUNT",
                 "store_currencies": {
-                    "default": "USD",
-                    "supported": ["USD"]
+                    "default": "usd",
+                    "supported": [
+                        "usd"
+                    ]
                 },
-                "test_mode": false
+                "country": "US",
+                "card_present_eligible": false,
+                "test_mode": true
             }
         },
         "headers": {

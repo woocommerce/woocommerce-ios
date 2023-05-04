@@ -42,16 +42,9 @@ public enum BottomSheetProductType: Hashable {
     /// Title shown on the action sheet.
     ///
     var actionSheetTitle: String {
-        let simplifyProductEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
         switch self {
         case .simple(let isVirtual):
-            if isVirtual, simplifyProductEditingEnabled {
-                return NSLocalizedString("Virtual product",
-                                         comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
-            } else if !isVirtual, simplifyProductEditingEnabled {
-                return NSLocalizedString("Physical product",
-                                         comment: "Action sheet option when the user wants to change the Product type to simple physical product")
-            } else if isVirtual {
+            if isVirtual {
                 return NSLocalizedString("Simple virtual product",
                                          comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
             } else {
@@ -78,16 +71,9 @@ public enum BottomSheetProductType: Hashable {
     /// Description shown on the action sheet.
     ///
     var actionSheetDescription: String {
-        let simplifyProductEditingEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
         switch self {
         case .simple(let isVirtual):
-            if isVirtual, simplifyProductEditingEnabled {
-                return NSLocalizedString("A digital product like services, downloadable books, music or videos",
-                                         comment: "Description of the Action sheet option when the user wants to change the Product type to virtual product")
-            } else if !isVirtual, simplifyProductEditingEnabled {
-                return NSLocalizedString("A tangible item that gets delivered to customers",
-                                         comment: "Description of the Action sheet option when the user wants to change the Product type to physical product")
-            } else if isVirtual {
+            if isVirtual {
                 return NSLocalizedString("A unique digital product like services, downloadable books, music or videos",
                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple virtual product")
             } else {

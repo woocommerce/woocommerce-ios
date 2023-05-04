@@ -3,6 +3,9 @@ import SwiftUI
 
 /// Main view for the plan settings.
 ///
+/// We might want to consider renaming this group of types to follow the `Subscriptions`
+/// wording since we're deactivating the `Upgrades` structure from the app.
+///
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
 
     init(siteID: Int64) {
@@ -72,6 +75,25 @@ struct UpgradesView: View {
                 Text(viewModel.planInfo)
             })
 
+            VStack(alignment: .leading) {
+                Text(Localization.experienceFeatures)
+                    .bold()
+                    .headlineStyle()
+
+                ForEach(viewModel.freeTrialFeatures, id: \.title) { feature in
+                    HStack {
+                        Image(uiImage: feature.icon)
+                            .foregroundColor(Color(uiColor: .accent))
+
+                        Text(feature.title)
+                            .foregroundColor(Color(.text))
+                            .calloutStyle()
+                    }
+                    .listRowSeparator(.hidden)
+                }
+            }
+            .renderedIf(viewModel.shouldShowFreeTrialFeatures)
+
             Button(Localization.cancelTrial) {
                 print("Cancel Free Trial tapped")
             }
@@ -103,6 +125,8 @@ private extension UpgradesView {
         static let title = NSLocalizedString("Subscriptions", comment: "Title for the Subscriptions / Upgrades view")
         static let subscriptionStatus = NSLocalizedString("SUBSCRIPTION STATUS", comment: "Title for the plan section on the subscriptions view. Uppercased")
         static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title for the button to upgrade from a free trial")
+        static let experienceFeatures = NSLocalizedString("Experience more of our features and services beyond the app",
+                                                    comment: "Title for the features list in the Subscriptions Screen")
         static let cancelTrial = NSLocalizedString("Cancel Free Trial", comment: "Title for the button to cancel a free trial")
         static let troubleshooting = NSLocalizedString("TROUBLESHOOTING",
                                                        comment: "Title for the section to contact support on the subscriptions view. Uppercased")

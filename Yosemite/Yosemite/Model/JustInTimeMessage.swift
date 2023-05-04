@@ -35,6 +35,10 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
 
     public let backgroundImageDarkUrl: URL?
 
+    public let badgeImageUrl: URL?
+
+    public let badgeImageDarkUrl: URL?
+
     public init(siteID: Int64,
                 messageID: String,
                 featureClass: String,
@@ -43,7 +47,9 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
                 buttonTitle: String,
                 url: String,
                 backgroundImageUrl: URL?,
-                backgroundImageDarkUrl: URL?) {
+                backgroundImageDarkUrl: URL?,
+                badgeImageUrl: URL?,
+                badgeImageDarkUrl: URL?) {
         self.siteID = siteID
         self.messageID = messageID
         self.featureClass = featureClass
@@ -53,6 +59,8 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
         self.url = url
         self.backgroundImageUrl = backgroundImageUrl
         self.backgroundImageDarkUrl = backgroundImageDarkUrl
+        self.badgeImageUrl = badgeImageUrl
+        self.badgeImageDarkUrl = badgeImageDarkUrl
     }
 
     init(message: Networking.JustInTimeMessage) {
@@ -64,7 +72,9 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
                   buttonTitle: message.cta.message,
                   url: message.cta.link,
                   backgroundImageUrl: message.assets[ImageAssetKind.background.baseUrlKey],
-                  backgroundImageDarkUrl: message.assets[ImageAssetKind.background.darkUrlKey])
+                  backgroundImageDarkUrl: message.assets[ImageAssetKind.background.darkUrlKey],
+                  badgeImageUrl: message.assets[ImageAssetKind.badge.baseUrlKey],
+                  badgeImageDarkUrl: message.assets[ImageAssetKind.badge.darkUrlKey])
     }
 
     enum ImageAssetKind {

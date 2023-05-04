@@ -70,7 +70,9 @@ final class JustInTimeMessageStoreTests: XCTestCase {
             buttonTitle: "Purchase Card Reader",
             url: "https://woocommerce.com/products/hardware/US",
             backgroundImageUrl: URL(string: "https://example.net/images/background-light@2x.png"),
-            backgroundImageDarkUrl: nil
+            backgroundImageDarkUrl: nil,
+            badgeImageUrl: nil,
+            badgeImageDarkUrl: nil
         )
 
         // Then

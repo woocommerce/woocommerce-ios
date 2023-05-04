@@ -18,7 +18,9 @@ extension Yosemite.JustInTimeMessage {
             buttonTitle: .fake(),
             url: .fake(),
             backgroundImageUrl: .fake(),
-            backgroundImageDarkUrl: .fake()
+            backgroundImageDarkUrl: .fake(),
+            badgeImageUrl: .fake(),
+            badgeImageDarkUrl: .fake()
         )
     }
 }

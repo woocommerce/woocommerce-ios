@@ -22,6 +22,8 @@ struct UpsellCardReadersCampaign {
               message: Localization.cardMessage,
               buttonTitle: buttonTitle,
               image: .paymentsFeatureBannerImage,
+              imageUrl: nil,
+              imageDarkUrl: nil,
               showDismissConfirmation: true,
               dismissAlertTitle: Localization.dismissTitle,
               dismissAlertMessage: Localization.dismissMessage,

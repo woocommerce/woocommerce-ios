@@ -12,7 +12,18 @@ protocol AnnouncementCardViewModelProtocol {
     var title: String { get }
     var message: String { get }
     var buttonTitle: String? { get }
+
+    /// `image` is the background/decorative image for the card.
+    /// It will be used as a placeholder and/or fallback when `imageUrl` is specified
     var image: UIImage { get }
+
+    /// `imageUrl` is used to load a remote image for the card, if specified.
+    /// `image` will be used as the placeholder during loading
+    var imageUrl: URL? { get }
+
+    /// `imageUrl` is used to load a remote dark mode image for the card, if specified.
+    /// `image` will be used as the placeholder during loading
+    var imageDarkUrl: URL? { get }
 
     func onAppear()
     func ctaTapped()
@@ -43,6 +54,14 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
 
     var image: UIImage {
         config.image
+    }
+
+    var imageUrl: URL? {
+        config.imageUrl
+    }
+
+    var imageDarkUrl: URL? {
+        config.imageDarkUrl
     }
 
     var showDismissConfirmation: Bool {
@@ -141,6 +160,8 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
         let message: String
         let buttonTitle: String?
         let image: UIImage
+        let imageUrl: URL?
+        let imageDarkUrl: URL?
         let showDismissConfirmation: Bool
         let dismissAlertTitle: String
         let dismissAlertMessage: String

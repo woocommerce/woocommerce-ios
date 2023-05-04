@@ -15,6 +15,10 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
 
     var image: UIImage = .emptyProductsImage
 
+    var imageUrl: URL? = nil
+
+    var imageDarkUrl: URL? = nil
+
     func onAppear() {
         // No-op
     }

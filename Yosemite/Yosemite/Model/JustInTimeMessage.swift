@@ -31,13 +31,19 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
     ///
     public let url: String
 
+    public let backgroundImageUrl: URL?
+
+    public let backgroundImageDarkUrl: URL?
+
     public init(siteID: Int64,
                 messageID: String,
                 featureClass: String,
                 title: String,
                 detail: String,
                 buttonTitle: String,
-                url: String) {
+                url: String,
+                backgroundImageUrl: URL?,
+                backgroundImageDarkUrl: URL?) {
         self.siteID = siteID
         self.messageID = messageID
         self.featureClass = featureClass
@@ -45,6 +51,8 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
         self.detail = detail
         self.buttonTitle = buttonTitle
         self.url = url
+        self.backgroundImageUrl = backgroundImageUrl
+        self.backgroundImageDarkUrl = backgroundImageDarkUrl
     }
 
     init(message: Networking.JustInTimeMessage) {
@@ -54,6 +62,39 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
                   title: message.content.message,
                   detail: message.content.description,
                   buttonTitle: message.cta.message,
-                  url: message.cta.link)
+                  url: message.cta.link,
+                  backgroundImageUrl: message.assets[ImageAssetKind.background.baseUrlKey],
+                  backgroundImageDarkUrl: message.assets[ImageAssetKind.background.darkUrlKey])
     }
+
+    enum ImageAssetKind {
+            case background
+            case badge
+
+            var baseUrlKey: String {
+                return baseUrlKeyPrefix + Constants.urlKeySuffix
+            }
+
+            var darkUrlKey: String {
+                return darkUrlKeyPrefix + Constants.urlKeySuffix
+            }
+
+            private var darkUrlKeyPrefix: String {
+                return baseUrlKeyPrefix + Constants.darkKeySuffix
+            }
+
+            private var baseUrlKeyPrefix: String {
+                switch self {
+                case .background:
+                    return "background_image"
+                case .badge:
+                    return "badge_image"
+                }
+            }
+
+            enum Constants {
+                static let urlKeySuffix = "_url"
+                static let darkKeySuffix = "_dark"
+            }
+        }
 }

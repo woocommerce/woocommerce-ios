@@ -5,7 +5,7 @@ import enum Yosemite.AppSettingsAction
 struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     var showDividers: Bool = true
 
-    var badgeType: BadgeView.BadgeType = .tip
+    var badgeType: BadgeView.BadgeType? = .tip
 
     var title: String = Localization.title
 

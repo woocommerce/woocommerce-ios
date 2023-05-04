@@ -80,7 +80,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     // MARK: - default AnnouncementCardViewModelProtocol conformance
     let showDividers: Bool = false
 
-    let badgeType: BadgeView.BadgeType = .tip
+    let badgeType: BadgeView.BadgeType? = nil
 
     let image: UIImage = .paymentsFeatureBannerImage
 

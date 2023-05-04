@@ -7,7 +7,7 @@ private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 
 protocol AnnouncementCardViewModelProtocol {
     var showDividers: Bool { get }
-    var badgeType: BadgeView.BadgeType { get }
+    var badgeType: BadgeView.BadgeType? { get }
 
     var title: String { get }
     var message: String { get }
@@ -80,7 +80,7 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
         config.showDividers
     }
 
-    var badgeType: BadgeView.BadgeType {
+    var badgeType: BadgeView.BadgeType? {
         config.badgeType
     }
 
@@ -166,7 +166,7 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
         let dismissAlertTitle: String
         let dismissAlertMessage: String
         let showDividers: Bool
-        let badgeType: BadgeView.BadgeType
+        let badgeType: BadgeView.BadgeType?
     }
 }
 

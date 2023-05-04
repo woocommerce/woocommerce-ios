@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Min/Max Quantities extension
     ///
     case readOnlyMinMaxQuantities
+
+    /// Enables EU Bound notifications inside the Shipping Labels feature
+    ///
+    case euShippingNotification
 }

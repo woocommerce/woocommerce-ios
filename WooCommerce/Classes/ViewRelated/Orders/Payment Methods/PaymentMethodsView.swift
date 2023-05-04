@@ -134,22 +134,25 @@ struct PaymentMethodsView: View {
                 })
             .navigationViewStyle(.stack)
         }
-        .shareSheet(isPresented: $sharingPaymentLink) {
-            // If paymentLink is available it already contains a valid URL.
-            // CompactMap is required due to Swift URL APIs.
-            ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
-                if completed {
-                    dismiss()
-                    viewModel.performLinkSharedTasks()
-                }
-            }
+        .sheet(isPresented: $sharingPaymentLink) {
+            SharePaymentLinkView(url: viewModel.paymentLink!, formattedTotal: viewModel.formattedTotal)
         }
+//        .shareSheet(isPresented: $sharingPaymentLink) {
+//            // If paymentLink is available it already contains a valid URL.
+//            // CompactMap is required due to Swift URL APIs.
+//            ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
+//                if completed {
+//                    dismiss()
+//                    viewModel.performLinkSharedTasks()
+//                }
+//            }
+//        }
     }
 }
 
 /// Represents a Payment method row
 ///
-private struct MethodRow: View {
+ private struct MethodRow: View {
     /// Icon of the row
     ///
     private let icon: UIImage
@@ -215,7 +218,7 @@ extension PaymentMethodsView {
                                             comment: "(External) card reader payment method title on the select payment method screen")
         static let tapToPay = NSLocalizedString("Tap to Pay on iPhone",
                                                 comment: "Tap to Pay on iPhone method title on the select payment method screen")
-        static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen")
+        static let link = NSLocalizedString("Scan to Pay - Share Payment Link", comment: "Payment Link method title on the select payment method screen")
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")

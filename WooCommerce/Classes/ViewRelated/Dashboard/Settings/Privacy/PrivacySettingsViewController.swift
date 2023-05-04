@@ -42,6 +42,12 @@ class PrivacySettingsViewController: UIViewController {
         return refreshControl
     }()
 
+    /// Defines if the `privacyChoices` feature is enabled.
+    ///
+    private var isPrivacyChoicesEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices)
+    }
+
     // MARK: - Overridden Methods
     //
     override func viewDidLoad() {
@@ -55,6 +61,11 @@ class PrivacySettingsViewController: UIViewController {
         registerTableViewCells()
 
         loadAccountSettings()
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tableView.updateHeaderHeight()
     }
 
     @IBAction private func pullToRefresh(sender: UIRefreshControl) {
@@ -105,15 +116,26 @@ private extension PrivacySettingsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
-
         tableView.refreshControl = refreshControl
+
+        if isPrivacyChoicesEnabled {
+            tableView.tableHeaderView = createTableHeaderView()
+            tableView.updateHeaderHeight()
+        }
     }
 
     func configureSections() {
-        sections = [
-            Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
-            Section(title: nil, rows: [.reportCrashes, .crashInfo])
-        ]
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices) {
+            return sections = [
+                Section(title: Localization.tracking, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+                Section(title: Localization.reports, rows: [.reportCrashes, .crashInfo])
+            ]
+        } else {
+            return sections = [
+                Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+                Section(title: nil, rows: [.reportCrashes, .crashInfo])
+            ]
+        }
     }
 
     func registerTableViewCells() {
@@ -253,6 +275,21 @@ private extension PrivacySettingsViewController {
         cell.textLabel?.numberOfLines = 0
     }
 
+    /// Creates the table header view.
+    ///
+    func createTableHeaderView() -> UIView {
+        let label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = Localization.tableTitle
+        label.applyFootnoteStyle()
+        label.numberOfLines = 0
+
+        let container = UIView(frame: .init(x: 0, y: 0, width: Int(self.tableView.frame.width), height: 0))
+        container.addSubview(label)
+        container.pinSubviewToSafeArea(label, insets: Constants.headerTitleInsets)
+        return container
+    }
+
     // MARK: Actions
     //
     func collectInfoWasUpdated(newValue: Bool) {
@@ -322,6 +359,10 @@ extension PrivacySettingsViewController: UITableViewDataSource {
         return UITableView.automaticDimension
     }
 
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        sections[section].title
+    }
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         // Give some breathing room to the table.
         let lastSection = sections.count - 1
@@ -368,10 +409,23 @@ extension PrivacySettingsViewController: UITableViewDelegate {
 
 // MARK: - Private Types
 //
+
+extension PrivacySettingsViewController {
+    enum Localization {
+        static let tableTitle = NSLocalizedString("We value your privacy. " +
+                                                  "Your personal data is used to optimize our website, improve security, " +
+                                                  "conduct analytics and marketing activities, and enhance your user experience.",
+                                                  comment: "Main description on the privacy screen.")
+        static let tracking = NSLocalizedString("Tracking", comment: "Title of the tracking section on the privacy screen")
+        static let reports = NSLocalizedString("Reports", comment: "Title of the report section on the privacy screen")
+    }
+}
+
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)
+    static let headerTitleInsets = UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16)
 }
 
 private struct Section {

@@ -65,7 +65,6 @@ final class GeneralAppSettingsTests: XCTestCase {
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
-                                                  isProductSKUInputScannerSwitchEnabled: true,
                                                   isCouponManagementSwitchEnabled: true,
                                                   isInAppPurchasesSwitchEnabled: false,
                                                   isTapToPayOnIPhoneSwitchEnabled: false,
@@ -89,7 +88,6 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.knownCardReaders, readers)
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
-        assertEqual(newSettings.isProductSKUInputScannerSwitchEnabled, true)
         assertEqual(newSettings.isCouponManagementSwitchEnabled, true)
         assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
         assertEqual(newSettings.featureAnnouncementCampaignSettings, featureAnnouncementCampaignSettings)
@@ -104,7 +102,6 @@ private extension GeneralAppSettingsTests {
     func createGeneralAppSettings(installationDate: Date? = nil,
                                   feedbacks: [FeedbackType: FeedbackSettings] = [:],
                                   isViewAddOnsSwitchEnabled: Bool = false,
-                                  isProductSKUInputScannerSwitchEnabled: Bool = false,
                                   isCouponManagementSwitchEnabled: Bool = false,
                                   isInAppPurchasesSwitchEnabled: Bool = false,
                                   isTapToPayOnIPhoneSwitchEnabled: Bool = false,
@@ -117,7 +114,6 @@ private extension GeneralAppSettingsTests {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,
                            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-                           isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
                            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
                            isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
                            isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,

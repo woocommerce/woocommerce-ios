@@ -2,6 +2,7 @@
 
 13.5
 -----
+- [*] Product form > Inventory: the SKU scanner is enabled for all users, where it used to be behind a feature switch in Settings > Experimental Features. [https://github.com/woocommerce/woocommerce-ios/pull/9631]
 [Internal] Products: Simplify Product Editing experiment is removed; there should be no changes to the existing product creation/editing behavior. [https://github.com/woocommerce/woocommerce-ios/pull/9602]
 
 13.4

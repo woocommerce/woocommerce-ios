@@ -245,7 +245,7 @@ final class DomainSelectorViewStores: DefaultStoresManager {
                 if let freeDomainsResult {
                     completion(freeDomainsResult)
                 }
-            } else if case let .loadPaidDomainSuggestions(_, completion) = action {
+            } else if case let .loadPaidDomainSuggestions(_, _, completion) = action {
                 if let paidDomainsResult {
                     completion(paidDomainsResult)
                 }
@@ -300,13 +300,15 @@ struct DomainSelectorView_Previews: PreviewProvider {
                                           supportsPrivacy: true,
                                           name: "grapefruitsmoothie.com",
                                           term: "year",
-                                          cost: "NT$154.00"),
+                                          cost: "NT$154.00",
+                                          isPremium: false),
                                     .init(productID: 2,
                                           supportsPrivacy: true,
                                           name: "fruitsmoothie.com",
                                           term: "year",
                                           cost: "NT$610.00",
-                                          saleCost: "NT$154.00")
+                                          saleCost: "NT$154.00",
+                                          isPremium: false)
                                 ])),
                                 hasDomainCredit: true)),
                 onDomainSelection: { _ in },

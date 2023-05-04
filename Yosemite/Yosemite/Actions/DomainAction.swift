@@ -1,10 +1,11 @@
 import Foundation
+import class WooFoundation.CurrencySettings
 
 // MARK: - DomainAction: Defines all of the Actions supported by the DomainStore.
 //
 public enum DomainAction: Action {
     case loadFreeDomainSuggestions(query: String, completion: (Result<[FreeDomainSuggestion], Error>) -> Void)
-    case loadPaidDomainSuggestions(query: String, completion: (Result<[PaidDomainSuggestion], Error>) -> Void)
+    case loadPaidDomainSuggestions(query: String, currencySettings: CurrencySettings, completion: (Result<[PaidDomainSuggestion], Error>) -> Void)
     case loadDomains(siteID: Int64, completion: (Result<[SiteDomain], Error>) -> Void)
     case createDomainShoppingCart(siteID: Int64,
                                   domain: DomainToPurchase,
@@ -31,13 +32,16 @@ public struct PaidDomainSuggestion: Equatable {
     public let cost: String
     /// Optional sale cost string including the currency.
     public let saleCost: String?
+    /// Whether the domain is a premium domain. A premium domain cannot be redeemed with domain credit.
+    public let isPremium: Bool
 
-    public init(productID: Int64, supportsPrivacy: Bool, name: String, term: String, cost: String, saleCost: String? = nil) {
+    public init(productID: Int64, supportsPrivacy: Bool, name: String, term: String, cost: String, saleCost: String? = nil, isPremium: Bool) {
         self.productID = productID
         self.supportsPrivacy = supportsPrivacy
         self.name = name
         self.term = term
         self.cost = cost
         self.saleCost = saleCost
+        self.isPremium = isPremium
     }
 }

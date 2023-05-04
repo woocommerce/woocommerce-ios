@@ -2,6 +2,7 @@
 
 13.5
 -----
+- [*] Settings > Domains: Premium domains are now supported, the domain suggestions now match the results on web and Android. It's more noticeable for stores with a domain credit, where not all domains are free for the first year anymore. [https://github.com/woocommerce/woocommerce-ios/pull/9607]
 [Internal] Products: Simplify Product Editing experiment is removed; there should be no changes to the existing product creation/editing behavior. [https://github.com/woocommerce/woocommerce-ios/pull/9602]
 - [*] Orders: Parses HTML-encoded characters and removes extraneous, non-attribute meta data from the list of attributes for an item in an order. [https://github.com/woocommerce/woocommerce-ios/pull/9603]
 

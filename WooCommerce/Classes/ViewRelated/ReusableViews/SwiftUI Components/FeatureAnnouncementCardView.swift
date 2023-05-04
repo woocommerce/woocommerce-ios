@@ -85,8 +85,26 @@ struct FeatureAnnouncementCardView: View {
                         }
                     }
                     Spacer()
-                    Image(uiImage: viewModel.image)
-                        .accessibilityHidden(true)
+                    if let imageUrl = viewModel.imageUrl {
+                        AsyncImage(url: imageUrl) { imagePhase in
+                            switch imagePhase {
+                            case .failure:
+                                Image(uiImage: viewModel.image)
+                                    .accessibilityHidden(true)
+                            case .success(let image):
+                                image.resizable()
+                                    .scaledToFit()
+                                    .accessibilityHidden(true)
+                            case .empty:
+                                ProgressView()
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                    } else {
+                        Image(uiImage: viewModel.image)
+                            .accessibilityHidden(true)
+                    }
                 }
             }
             .padding(.top, Layout.smallSpacing)

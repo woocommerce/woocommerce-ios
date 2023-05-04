@@ -13,6 +13,10 @@ final class ShippingLabelFormViewController: UIViewController {
     ///
     private var shouldMarkOrderComplete = false
 
+    /// Top banner that notices about shipping constraints.
+    ///
+    private var topBannerView: TopBannerView?
+
     /// Assign this closure to be notified after a shipping label is successfully purchased
     ///
     var onLabelPurchase: ((_ isOrderComplete: Bool) -> Void)?
@@ -543,6 +547,21 @@ private extension ShippingLabelFormViewController {
         let notice = Notice(title: message, feedbackType: .error)
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+}
+
+// MARK: - Top Banner
+//
+private extension ShippingLabelFormViewController {
+    func showTopBannerView() {
+        let factory = ShippingLabelsEUNoticeTopBannerFactory()
+        let topBannerView = factory.createTopBanner()
+        self.topBannerView = topBannerView
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
     }
 }
 

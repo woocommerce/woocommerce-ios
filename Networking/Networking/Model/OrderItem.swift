@@ -88,8 +88,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
-        // Do not throw errors in case new metadata is introduced with a different format
-        let allAttributes = (try? container.decodeIfPresent([OrderItemAttribute].self, forKey: .attributes)) ?? []
+        // Use failsafe decoding to discard any attributes with non-string values (currently not supported).
+        let allAttributes = container.failsafeDecodeIfPresent(lossyList: [OrderItemAttribute].self, forKey: .attributes)
         attributes = allAttributes.filter { !$0.name.hasPrefix("_") } // Exclude private items (marked with an underscore)
 
         // initialize the struct

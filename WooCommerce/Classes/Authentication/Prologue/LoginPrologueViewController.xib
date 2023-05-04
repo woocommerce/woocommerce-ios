@@ -13,7 +13,6 @@
                 <outlet property="backgroundView" destination="3vu-Xh-Yk9" id="SU5-64-Opq"/>
                 <outlet property="containerView" destination="o29-Vv-KDs" id="U7h-cw-w9k"/>
                 <outlet property="curvedRectangle" destination="Rhn-8s-tRs" id="fwI-6M-kbT"/>
-                <outlet property="newToWooCommerceButton" destination="IUc-Ht-iMk" id="nQg-ke-CWf"/>
                 <outlet property="topLogoImageView" destination="bNB-4i-gz9" id="waf-Yz-zqd"/>
                 <outlet property="view" destination="V2X-Xj-JeZ" id="Vob-Ki-8K1"/>
             </connections>
@@ -24,34 +23,27 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3vu-Xh-Yk9" userLabel="Bottom View">
-                    <rect key="frame" x="0.0" y="844" width="390" height="0.0"/>
+                    <rect key="frame" x="0.0" y="810" width="390" height="34"/>
                     <viewLayoutGuide key="safeArea" id="tzS-rk-lug"/>
                     <color key="backgroundColor" red="0.96470588235294119" green="0.96862745098039216" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o29-Vv-KDs" userLabel="Container View">
-                    <rect key="frame" x="0.0" y="768" width="390" height="76"/>
+                    <rect key="frame" x="0.0" y="810" width="390" height="0.0"/>
                     <color key="backgroundColor" red="0.96470588235294119" green="0.96862745098039216" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1" image="prologue-curved-rectangle" translatesAutoresizingMaskIntoConstraints="NO" id="Rhn-8s-tRs" userLabel="Curved ImageView">
-                    <rect key="frame" x="0.0" y="52" width="390" height="716"/>
+                    <rect key="frame" x="0.0" y="99" width="390" height="711"/>
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1" verticalHuggingPriority="1" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="prologue-logo" translatesAutoresizingMaskIntoConstraints="NO" id="bNB-4i-gz9" userLabel="Top Logo">
-                    <rect key="frame" x="107" y="28" width="176" height="36"/>
+                    <rect key="frame" x="107" y="75" width="176" height="36"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="176" id="di7-9A-rnI"/>
                         <constraint firstAttribute="height" constant="36" id="gWf-lm-a4c"/>
                     </constraints>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IUc-Ht-iMk">
-                    <rect key="frame" x="157.66666666666666" y="789.66666666666663" width="75" height="34.333333333333371"/>
-                    <state key="normal" title="Button"/>
-                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="3oc-0l-uZX"/>
             <constraints>
-                <constraint firstItem="IUc-Ht-iMk" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="o29-Vv-KDs" secondAttribute="trailing" constant="16" id="5TO-hi-QbE"/>
-                <constraint firstItem="IUc-Ht-iMk" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="o29-Vv-KDs" secondAttribute="leading" constant="16" id="B0q-rB-pt3"/>
                 <constraint firstAttribute="bottom" secondItem="3vu-Xh-Yk9" secondAttribute="bottom" id="DQs-9H-0q1"/>
                 <constraint firstItem="o29-Vv-KDs" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" id="EIM-fi-cgJ"/>
                 <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="o29-Vv-KDs" secondAttribute="trailing" id="LER-Vg-1a4"/>
@@ -62,9 +54,7 @@
                 <constraint firstItem="3vu-Xh-Yk9" firstAttribute="top" secondItem="o29-Vv-KDs" secondAttribute="bottom" id="fcK-hC-jRy"/>
                 <constraint firstItem="3vu-Xh-Yk9" firstAttribute="leading" secondItem="V2X-Xj-JeZ" secondAttribute="leading" id="osl-zf-VHk"/>
                 <constraint firstItem="Rhn-8s-tRs" firstAttribute="trailing" secondItem="3oc-0l-uZX" secondAttribute="trailing" id="sli-mX-npW"/>
-                <constraint firstItem="IUc-Ht-iMk" firstAttribute="bottom" secondItem="o29-Vv-KDs" secondAttribute="bottom" constant="-20" id="ukL-9P-uxE"/>
                 <constraint firstItem="Rhn-8s-tRs" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" id="vw2-Lp-6Db"/>
-                <constraint firstItem="IUc-Ht-iMk" firstAttribute="centerX" secondItem="o29-Vv-KDs" secondAttribute="centerX" id="xCS-jP-Lti"/>
                 <constraint firstItem="o29-Vv-KDs" firstAttribute="bottom" secondItem="3oc-0l-uZX" secondAttribute="bottom" id="yj6-tl-g4o"/>
                 <constraint firstItem="3vu-Xh-Yk9" firstAttribute="trailing" secondItem="V2X-Xj-JeZ" secondAttribute="trailing" id="zQC-U3-vhG"/>
             </constraints>

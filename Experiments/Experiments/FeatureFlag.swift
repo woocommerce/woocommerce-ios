@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Barcode scanner for product SKU input
-    ///
-    case productSKUInputScanner
-
     /// Displays the Inbox option under the Hub Menu.
     ///
     case inbox

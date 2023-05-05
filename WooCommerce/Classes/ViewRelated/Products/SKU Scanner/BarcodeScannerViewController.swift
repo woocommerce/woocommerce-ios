@@ -14,6 +14,11 @@ final class BarcodeScannerViewController: UIViewController {
     @IBOutlet private weak var instructionLabel: PaddedLabel!
     @IBOutlet private weak var bottomDimmingView: UIView!
 
+    // > Delegate any interaction with the AVCaptureSession—including its inputs and outputs—to a
+    // > dedicated serial dispatch queue, so that the interaction doesn’t block the main queue.
+    // >
+    // > – https://developer.apple.com/documentation/avfoundation/capture_setup/avcam_building_a_camera_app
+    private let sessionQueue = DispatchQueue(label: "qrlogincamerasession.queue.serial")
     private let session = AVCaptureSession()
     private var requests = [VNRequest]()
 
@@ -142,7 +147,9 @@ private extension BarcodeScannerViewController {
         previewLayer.frame = videoOutputImageView.bounds
         videoOutputImageView.layer.addSublayer(previewLayer)
 
-        session.startRunning()
+        sessionQueue.async { [weak self] in
+            self?.session.startRunning()
+        }
     }
 }
 

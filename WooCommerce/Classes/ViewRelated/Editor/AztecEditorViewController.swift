@@ -240,32 +240,9 @@ private extension AztecEditorViewController {
 
 // MARK: Keyboard frame update handling
 //
-private extension AztecEditorViewController {
-    func handleKeyboardFrameUpdate(keyboardFrame: CGRect) {
-        let referenceView = editorView.activeView
-
-        // Converts the keyboard frame from the window coordinate to the view's coordinate.
-        let keyboardFrame = view.convert(keyboardFrame, from: nil)
-
-        let bottomInset = referenceView.frame.maxY - (keyboardFrame.minY + view.layoutMargins.bottom)
-        let contentInsets  = UIEdgeInsets(top: referenceView.contentInset.top,
-                                          left: 0,
-                                          bottom: max(0, bottomInset),
-                                          right: 0)
-
-        htmlTextView.contentInset = contentInsets
-        richTextView.contentInset = contentInsets
-
-        updateScrollInsets()
-    }
-
-    func updateScrollInsets() {
-        let referenceView = editorView.activeView
-        var scrollInsets = referenceView.contentInset
-        var rightMargin = (view.frame.maxX - referenceView.frame.maxX)
-        rightMargin -= view.safeAreaInsets.right
-        scrollInsets.right = -rightMargin
-        referenceView.scrollIndicatorInsets = scrollInsets
+extension AztecEditorViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        editorView.activeView
     }
 }
 

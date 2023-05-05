@@ -284,24 +284,17 @@ private extension ProductInventorySettingsViewController {
         }
         cell.configure(viewModel: cellViewModel)
 
-        // Configures accessory view for adding SKU from barcode scanner by fetching switch's state from app settings.
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productSKUInputScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) else {
+        // Configures accessory view for adding SKU from barcode scanner if camera is available.
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             return
         }
-        let action = AppSettingsAction.loadProductSKUInputScannerFeatureSwitchState() { [weak cell, self] result in
-            guard let cell = cell else { return }
-            guard let isEnabled = try? result.get(), isEnabled else {
-                return cell.accessoryView = nil
-            }
 
-            let button = UIButton(type: .detailDisclosure)
-            button.applyIconButtonStyle(icon: .scanImage)
-            button.addAction(UIAction(handler: { [weak self] _ in
-                self?.scanSKUButtonTapped()
-            }), for: .touchUpInside)
-            cell.accessoryView = button
-        }
-        ServiceLocator.stores.dispatch(action)
+        let button = UIButton(type: .detailDisclosure)
+        button.applyIconButtonStyle(icon: .scanImage)
+        button.addAction(UIAction(handler: { [weak self] _ in
+            self?.scanSKUButtonTapped()
+        }), for: .touchUpInside)
+        cell.accessoryView = button
     }
 
     func configureManageStock(cell: SwitchTableViewCell) {

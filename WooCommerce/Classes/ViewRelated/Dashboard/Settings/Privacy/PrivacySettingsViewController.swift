@@ -178,7 +178,6 @@ private extension PrivacySettingsViewController {
     func configureAnalytics(cell: SwitchTableViewCell) {
         // image
         cell.imageView?.image = nil
-        cell.imageView?.tintColor = .text
 
         // text
         cell.title = NSLocalizedString(
@@ -329,7 +328,12 @@ private extension PrivacySettingsViewController {
 
         let container = UIView(frame: .init(x: 0, y: 0, width: Int(self.tableView.frame.width), height: 0))
         container.addSubview(label)
-        container.pinSubviewToSafeArea(label, insets: Constants.headerTitleInsets)
+        NSLayoutConstraint.activate([
+            container.readableContentGuide.leadingAnchor.constraint(equalTo: label.leadingAnchor, constant: -Constants.headerTitleInsets.left),
+            container.readableContentGuide.trailingAnchor.constraint(equalTo: label.trailingAnchor, constant: Constants.headerTitleInsets.right),
+            container.readableContentGuide.topAnchor.constraint(equalTo: label.topAnchor, constant: -Constants.headerTitleInsets.top),
+            container.readableContentGuide.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: Constants.headerTitleInsets.bottom),
+        ])
         return container
     }
 
@@ -473,7 +477,7 @@ private struct Constants {
     static let rowHeight = CGFloat(44)
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)
-    static let headerTitleInsets = UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16)
+    static let headerTitleInsets = UIEdgeInsets(top: 16, left: 14, bottom: 32, right: 14)
     static let footerPadding = CGFloat(24)
 }
 

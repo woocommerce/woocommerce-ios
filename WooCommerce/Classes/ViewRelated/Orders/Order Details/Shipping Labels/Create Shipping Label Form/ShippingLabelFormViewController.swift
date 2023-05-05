@@ -652,4 +652,9 @@ private extension ShippingLabelFormViewController {
                                                                     comment: "Unable to fetch countries action failed in Shipping Label Form")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
     }
+
+    enum Constants {
+        static let headerDefaultHeight = CGFloat(130)
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
+    }
 }

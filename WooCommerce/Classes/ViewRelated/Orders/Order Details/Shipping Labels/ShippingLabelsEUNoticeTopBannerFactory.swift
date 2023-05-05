@@ -13,9 +13,9 @@ final class ShippingLabelsEUNoticeTopBannerFactory {
 
 private extension ShippingLabelsEUNoticeTopBannerFactory {
     enum Localization {
-        static let title = NSLocalizedString("")
-        static let info = NSLocalizedString("")
-        static let learnMore = NSLocalizedString("")
-        static let dismiss = NSLocalizedString("")
+        static let title = NSLocalizedString("", comment: "")
+        static let info = NSLocalizedString("", comment: "")
+        static let learnMore = NSLocalizedString("", comment: "")
+        static let dismiss = NSLocalizedString("", comment: "")
     }
 }

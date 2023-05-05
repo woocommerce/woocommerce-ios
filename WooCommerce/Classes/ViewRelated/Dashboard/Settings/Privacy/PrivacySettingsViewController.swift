@@ -407,6 +407,11 @@ extension PrivacySettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // Add a greater padding for the new privacy choices redesign.
+        if isPrivacyChoicesEnabled {
+            return Constants.footerPadding
+        }
+
         // Give some breathing room to the table.
         let lastSection = sections.count - 1
         if section == lastSection {
@@ -469,6 +474,7 @@ private struct Constants {
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)
     static let headerTitleInsets = UIEdgeInsets(top: 16, left: 16, bottom: 32, right: 16)
+    static let footerPadding = CGFloat(24)
 }
 
 private struct Section {

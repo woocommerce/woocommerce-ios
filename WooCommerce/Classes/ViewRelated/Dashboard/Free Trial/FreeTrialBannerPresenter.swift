@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import UIKit
+import protocol Experiments.FeatureFlagService
 
 /// Presents or hides the free trial banner at the bottom of the screen.
 /// Internally uses the `storePlanSynchronizer` to know when to present or hide the banner.
@@ -28,16 +29,24 @@ final class FreeTrialBannerPresenter {
     /// Observable subscription store.
     ///
     private var subscriptions: Set<AnyCancellable> = []
+    
+    /// Feature flag service.
+    ///
+    private let featureFlagService: FeatureFlagService
 
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
     ///   - onLayoutUpdated: Closure invoked when the banner is added or removed.
-    init(viewController: UIViewController, containerView: UIView, siteID: Int64, onLayoutUpdated: @escaping (CGFloat) -> Void) {
+    init(viewController: UIViewController,
+         containerView: UIView, siteID: Int64,
+         onLayoutUpdated: @escaping (CGFloat) -> Void,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.viewController = viewController
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
+        self.featureFlagService = featureFlagService
         observeStorePlan()
         observeConnectivity()
     }

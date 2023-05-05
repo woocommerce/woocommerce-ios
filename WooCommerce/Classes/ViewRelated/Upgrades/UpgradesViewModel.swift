@@ -103,7 +103,7 @@ private extension UpgradesViewModel {
         shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan, featureFlagService: featureFlagService)
         errorNotice = nil
         showLoadingIndicator = false
-        shouldShowFreeTrialFeatures = plan.isFreeTrial
+        shouldShowFreeTrialFeatures = plan.isFreeTrial && featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
     }
 
     func updateLoadingViewProperties() {

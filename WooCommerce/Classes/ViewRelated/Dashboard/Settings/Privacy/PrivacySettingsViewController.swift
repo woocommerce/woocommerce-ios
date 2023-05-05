@@ -42,6 +42,12 @@ class PrivacySettingsViewController: UIViewController {
         return refreshControl
     }()
 
+    /// Defines if the `privacyChoices` feature is enabled.
+    ///
+    private var isPrivacyChoicesEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices)
+    }
+
     // MARK: - Overridden Methods
     //
     override func viewDidLoad() {
@@ -55,6 +61,11 @@ class PrivacySettingsViewController: UIViewController {
         registerTableViewCells()
 
         loadAccountSettings()
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tableView.updateHeaderHeight()
     }
 
     @IBAction private func pullToRefresh(sender: UIRefreshControl) {
@@ -105,15 +116,26 @@ private extension PrivacySettingsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
-
         tableView.refreshControl = refreshControl
+
+        if isPrivacyChoicesEnabled {
+            tableView.tableHeaderView = createTableHeaderView()
+            tableView.updateHeaderHeight()
+        }
     }
 
     func configureSections() {
-        sections = [
-            Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
-            Section(title: nil, rows: [.reportCrashes, .crashInfo])
-        ]
+        if isPrivacyChoicesEnabled {
+            return sections = [
+                Section(title: Localization.tracking, rows: [.analytics, .analyticsInfo]),
+                Section(title: Localization.reports, rows: [.reportCrashes, .crashInfo])
+            ]
+        } else {
+            return sections = [
+                Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+                Section(title: nil, rows: [.reportCrashes, .crashInfo])
+            ]
+        }
     }
 
     func registerTableViewCells() {
@@ -126,6 +148,10 @@ private extension PrivacySettingsViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
+        case let cell as SwitchTableViewCell where row == .analytics:
+            configureAnalytics(cell: cell)
+        case let cell as BasicTableViewCell where row == .analyticsInfo:
+            configureAnalyticsInfo(cell: cell)
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfo:
@@ -147,6 +173,32 @@ private extension PrivacySettingsViewController {
         default:
             fatalError()
         }
+    }
+
+    func configureAnalytics(cell: SwitchTableViewCell) {
+        // image
+        cell.imageView?.image = nil
+
+        // text
+        cell.title = NSLocalizedString(
+            "Analytics",
+            comment: "Analytics toggle title in the privacy screen."
+        )
+
+        // switch
+        cell.isOn = collectInfo
+        cell.onChange = { [weak self] newValue in
+            self?.collectInfoWasUpdated(newValue: newValue)
+        }
+    }
+
+    func configureAnalyticsInfo(cell: BasicTableViewCell) {
+        cell.imageView?.image = nil
+        cell.textLabel?.text = NSLocalizedString(
+            "These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps.",
+            comment: "Analytics toggle description in the privacy screen."
+        )
+        configureInfo(cell: cell)
     }
 
     func configureCollectInfo(cell: SwitchTableViewCell) {
@@ -222,8 +274,12 @@ private extension PrivacySettingsViewController {
 
     func configureReportCrashes(cell: SwitchTableViewCell) {
         // image
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .text
+        if isPrivacyChoicesEnabled {
+            cell.imageView?.image = nil
+        } else {
+            cell.imageView?.image = .invisibleImage
+            cell.imageView?.tintColor = .text
+        }
 
         // text
         cell.title = NSLocalizedString(
@@ -239,9 +295,13 @@ private extension PrivacySettingsViewController {
     }
 
     func configureCrashInfo(cell: BasicTableViewCell) {
-        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground(modal: false)
+        if isPrivacyChoicesEnabled {
+            cell.imageView?.image = nil
+        } else {
+            // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
+            cell.imageView?.image = .invisibleImage
+            cell.imageView?.tintColor = .listForeground(modal: false)
+        }
         cell.textLabel?.text = NSLocalizedString(
             "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.",
             comment: "Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does"
@@ -251,6 +311,30 @@ private extension PrivacySettingsViewController {
 
     func configureInfo(cell: BasicTableViewCell) {
         cell.textLabel?.numberOfLines = 0
+        if isPrivacyChoicesEnabled {
+            cell.textLabel?.applySubheadlineStyle()
+            cell.textLabel?.textColor = .textSubtle
+        }
+    }
+
+    /// Creates the table header view.
+    ///
+    func createTableHeaderView() -> UIView {
+        let label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = Localization.tableTitle
+        label.applyFootnoteStyle()
+        label.numberOfLines = 0
+
+        let container = UIView(frame: .init(x: 0, y: 0, width: Int(self.tableView.frame.width), height: 0))
+        container.addSubview(label)
+        NSLayoutConstraint.activate([
+            container.readableContentGuide.leadingAnchor.constraint(equalTo: label.leadingAnchor, constant: -Constants.headerTitleInsets.left),
+            container.readableContentGuide.trailingAnchor.constraint(equalTo: label.trailingAnchor, constant: Constants.headerTitleInsets.right),
+            container.readableContentGuide.topAnchor.constraint(equalTo: label.topAnchor, constant: -Constants.headerTitleInsets.top),
+            container.readableContentGuide.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: Constants.headerTitleInsets.bottom),
+        ])
+        return container
     }
 
     // MARK: Actions
@@ -322,7 +406,16 @@ extension PrivacySettingsViewController: UITableViewDataSource {
         return UITableView.automaticDimension
     }
 
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        sections[section].title
+    }
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // Add a greater padding for the new privacy choices redesign.
+        if isPrivacyChoicesEnabled {
+            return Constants.footerPadding
+        }
+
         // Give some breathing room to the table.
         let lastSection = sections.count - 1
         if section == lastSection {
@@ -368,10 +461,24 @@ extension PrivacySettingsViewController: UITableViewDelegate {
 
 // MARK: - Private Types
 //
+
+extension PrivacySettingsViewController {
+    enum Localization {
+        static let tableTitle = NSLocalizedString("We value your privacy. " +
+                                                  "Your personal data is used to optimize our mobile apps, improve security, " +
+                                                  "conduct analytics and marketing activities, and enhance your user experience.",
+                                                  comment: "Main description on the privacy screen.")
+        static let tracking = NSLocalizedString("Tracking", comment: "Title of the tracking section on the privacy screen")
+        static let reports = NSLocalizedString("Reports", comment: "Title of the report section on the privacy screen")
+    }
+}
+
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)
+    static let headerTitleInsets = UIEdgeInsets(top: 16, left: 14, bottom: 32, right: 14)
+    static let footerPadding = CGFloat(24)
 }
 
 private struct Section {
@@ -380,6 +487,8 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
+    case analytics
+    case analyticsInfo
     case collectInfo
     case privacyInfo
     case privacyPolicy
@@ -392,6 +501,10 @@ private enum Row: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
+        case .analytics:
+            return SwitchTableViewCell.self
+        case .analyticsInfo:
+            return BasicTableViewCell.self
         case .collectInfo:
             return SwitchTableViewCell.self
         case .privacyInfo:

@@ -87,6 +87,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .readOnlyMinMaxQuantities:
             return true
+        case .privacyChoices:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

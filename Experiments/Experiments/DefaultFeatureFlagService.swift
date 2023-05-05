@@ -83,6 +83,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .freeTrial:
             return true
+        case .freeTrialUpgrade:
+            return false
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:

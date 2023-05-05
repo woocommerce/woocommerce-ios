@@ -34,10 +34,6 @@ public enum FeatureFlag: Int {
     ///
     case consolidatedCardReaderManuals
 
-    /// Showing a "New to WooCommerce" link in the login prologue screen
-    ///
-    case newToWooCommerceLinkInLoginPrologue
-
     /// Onboarding experiment on the login prologue screen
     ///
     case loginPrologueOnboarding
@@ -45,10 +41,6 @@ public enum FeatureFlag: Int {
     /// Local notifications scheduled 24 hours after certain login errors
     ///
     case loginErrorNotifications
-
-    /// Whether to prefer magic link to password in the login flow
-    ///
-    case loginMagicLinkEmphasis
 
     /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
     ///

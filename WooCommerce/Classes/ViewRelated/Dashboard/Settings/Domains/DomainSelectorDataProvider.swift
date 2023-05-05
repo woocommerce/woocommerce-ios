@@ -49,6 +49,9 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
     let name: String
     let attributedDetail: AttributedString?
 
+    /// Whether the domain is a premium domain. A premium domain cannot be redeemed with domain credit.
+    let isPremium: Bool
+
     // Properties for cart creation after a domain is selected.
     let productID: Int64
     let supportsPrivacy: Bool
@@ -61,7 +64,7 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
             attributedCost.font = .body
             attributedCost.foregroundColor = .init(.secondaryLabel)
 
-            if hasDomainCredit {
+            if hasDomainCredit && !domainSuggestion.isPremium {
                 // Strikethrough style for the original cost string.
                 attributedCost.strikethroughStyle = .single
 
@@ -85,6 +88,7 @@ struct PaidDomainSuggestionViewModel: DomainSuggestionViewProperties, Equatable 
                 return attributedCost
             }
         }()
+        self.isPremium = domainSuggestion.isPremium
         self.productID = domainSuggestion.productID
         self.supportsPrivacy = domainSuggestion.supportsPrivacy
         self.hasDomainCredit = hasDomainCredit
@@ -118,7 +122,7 @@ final class PaidDomainSelectorDataProvider: DomainSelectorDataProvider {
     @MainActor
     func loadDomainSuggestions(query: String) async throws -> [PaidDomainSuggestionViewModel] {
         return try await withCheckedThrowingContinuation { [hasDomainCredit] continuation in
-            stores.dispatch(DomainAction.loadPaidDomainSuggestions(query: query) { result in
+            stores.dispatch(DomainAction.loadPaidDomainSuggestions(query: query, currencySettings: ServiceLocator.currencySettings) { result in
                 continuation.resume(with: result.map { $0.map { PaidDomainSuggestionViewModel(domainSuggestion: $0,
                                                                                               hasDomainCredit: hasDomainCredit) } })
             })

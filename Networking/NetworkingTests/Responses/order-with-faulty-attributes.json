@@ -54,7 +54,7 @@
               }
             },
             "id" : 3666,
-            "key" : "_measurement_data",
+            "key" : "measurement_data",
             "value" : {
               "_measurement_needed" : 2.2999999999999998,
               "_measurement_needed_unit" : "kg",
@@ -63,7 +63,7 @@
                 "unit" : "kg"
               }
             },
-            "display_key" : "_measurement_data"
+            "display_key" : "measurement_data"
           }
         ],
         "parent_name" : null,

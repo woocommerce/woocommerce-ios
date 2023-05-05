@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-25 09:54:24+0000 */
+/* Translation-Revision-Date: 2023-05-02 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -36,7 +36,8 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (au client)";
 
-/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 / 2 months'.
+   The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ \/ %2$@" = "%1$@ \/ %2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
@@ -380,6 +381,7 @@ which should be translated separately and considered part of this sentence. */
 "Activating" = "Activation";
 
 /* Application's Active State
+   Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "Actif";
 
@@ -815,6 +817,7 @@ which should be translated separately and considered part of this sentence. */
 "Application Name" = "Nom de l’application";
 
 /* Apply navigation button in custom range date picker
+   Button title to insert AI-generated product description.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "Appliquer";
@@ -1257,7 +1260,8 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "Annuler l’installation";
 
-/* Display label for cancelled order status. */
+/* Display label for cancelled order status.
+   Display label for the subscription status type */
 "Cancelled" = "Annulé";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1644,8 +1648,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "Association à un site WordPress.com";
 
-/* Bottom title of the alert presented with a spinner while the reader is being prepared
-   Title label for modal dialog that appears when connecting to a card reader */
+/* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "Connexion au lecteur";
 
 /* Error message when establishing a connection to the card reader times out. */
@@ -1737,7 +1740,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cook Islands" = "Îles Cook";
 
-/* Copy address text button title — should be one word and as short as possible. */
+/* Button title to copy generated text in the product description AI generator view.
+   Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copier";
 
 /* Action title for copying coupon code from the Coupon Details screen */
@@ -2093,6 +2097,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Décrire votre produit";
+
+/* Product features placeholder in the product description AI generator view. */
+"Describe your product features" = "Décrivez les fonctionnalités de votre produit";
 
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "Décrire votre produit pour vos clients futurs...";
@@ -2567,6 +2574,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "Entrer un mot de passe";
 
+/* Product name placeholder in the product description AI generator view. */
+"Enter product name" = "Entrer le nom du produit";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "Entrez l'adresse de la boutique WooCommerce que vous aimeriez connecter.";
 
@@ -2751,7 +2761,8 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "Expire après : %@";
 
-/* Status of coupons that are expired */
+/* Display label for the subscription status type
+   Status of coupons that are expired */
 "Expired" = "Expiré";
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
@@ -2905,8 +2916,8 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Remise produit fixe";
 
-/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
-"Follow reader instructions to pay" = "Suivez les instructions du lecteur pour le paiement.";
+/* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
+"Follow the on-screen instructions to pay" = "Suivre les instructions à l’écran pour payer";
 
 /* User role badge */
 "Follower" = "Abonné";
@@ -2971,6 +2982,9 @@ which should be translated separately and considered part of this sentence. */
 /* General section title in the hub menu */
 "General" = "Général";
 
+/* Button title to generate product description with Jetpack AI. */
+"Generate" = "Générer";
+
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "Générer une nouvelle variante";
 
@@ -2982,6 +2996,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title to allow the user confirm if they want to generate all variations */
 "Generate all variations?" = "Générer toutes les variantes ?";
+
+/* Accessibility label to generate product description with Jetpack AI from the Aztec editor. */
+"Generate product description with AI" = "Générer la description du produit avec l’IA";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Génération de la variante";
@@ -3056,6 +3073,10 @@ which should be translated separately and considered part of this sentence. */
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Cadeau";
 
+/* Gift Cards label for payment view
+   Gift Cards section title */
+"Gift Cards" = "Cartes-cadeaux";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
@@ -3094,6 +3115,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Grenada" = "Grenade";
+
+/* Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row */
+"Group of: %@" = "Groupe de : %@";
 
 /* Display label for grouped product type. */
 "Grouped" = "Groupé";
@@ -3229,6 +3253,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "Caché";
+
+/* Action title for hiding store onboarding task list
+   Title of the Hide store setup list button in the action sheet. */
+"Hide store setup list" = "Masquer la liste de configuration de la boutique";
 
 /* Industry option in the store creation category question. */
 "Home, furniture, and garden" = "Maison, mobilier et jardin";
@@ -3652,6 +3680,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Analytics Hub Last Quarter selection range */
 "Last Quarter" = "Trimestre dernier";
 
+/* Section title for last sold products on the Select Product screen. */
+"Last Sold" = "Dernières ventes";
+
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "Semaine dernière";
 
@@ -4014,6 +4045,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Dépense max. (%1$@)";
 
+/* Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row */
+"Maximum quantity: %@" = "Quantité maximale : %@";
+
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Dépense maximale de %1$@";
 
@@ -4054,6 +4088,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "Dépense min. (%1$@)";
+
+/* Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row */
+"Minimum quantity: %@" = "Quantité minimale : %@";
 
 /* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Minimum spend of %1$@" = "Dépense minimale de %1$@ ";
@@ -4456,6 +4493,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Spoken label to indicate switch control is turned on */
 "On" = "Activé";
 
+/* Display label for the subscription status type */
+"On Hold" = "En attente";
+
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
 "On back order" = "Commande différée";
@@ -4772,8 +4812,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payments" = "Paiements";
 
 /* Display label for pending order status.
-   Display label for the review's pending status */
+   Display label for the review's pending status
+   Display label for the subscription status type */
 "Pending" = "En attente";
+
+/* Display label for the subscription status type */
+"Pending Cancel" = "Annulation en attente";
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "En attente de relecture";
@@ -4842,10 +4886,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Veuillez charger le lecteur";
 
-/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Assurez-vous que votre téléphone dispose de la configuration requise suivante : iPhone XS ou plus récent exécutant iOS 16.0 ou une version ultérieure. Contactez l’assistance si cette erreur s’affiche sur un appareil pris en charge.";
 
-/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Assurez-vous que votre ID Apple est valide, puis réessayez. Un ID Apple valide est obligatoire pour pouvoir accepter les conditions d’utilisation d’Apple.";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
@@ -4854,7 +4898,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Veuillez connecter votre boutique à Jetpack pour y accéder dans cette application.";
 
-/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "Veuillez contacter l’assistance. Un problème est survenu lors du démarrage du service Appuyer pour payer sur iPhone.";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -4944,7 +4988,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Veuillez sélectionner un colis";
 
-/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
 "Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Connectez-vous à iCloud sur cet appareil pour utiliser le service Appuyer pour payer sur iPhone.";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
@@ -4965,7 +5009,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Réessayez ou contactez-nous ; nous nous ferons un plaisir de vous aider !";
 
-/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
 "Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "Veuillez réessayer et accepter les conditions d’utilisation d’Apple pour pouvoir utiliser le service Appuyer pour payer sur iPhone.";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
@@ -5041,6 +5085,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Poland" = "Pologne";
 
+/* Section title for popular products on the Select Product screen. */
+"Popular" = "Popularité";
+
 /* Country option for a site address. */
 "Portugal" = "Portugal";
 
@@ -5062,11 +5109,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "Thèmes premium";
 
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing Tap to Pay on iPhone" = "Préparation de la fonctionnalité Appuyer pour payer sur iPhone";
+
+/* Bottom title of the alert presented with a spinner while Tap to Pay on iPhone is being prepared */
+"Preparing Tap to Pay on iPhone " = "Préparation de la fonctionnalité Appuyer pour payer sur iPhone ";
+
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Préparation du document";
 
-/* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader" = "Préparation du lecteur de cartes de l’iPhone en cours...";
+/* Bottom title of the alert presented with a spinner while the reader is being prepared */
+"Preparing reader" = "Préparation du lecteur";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Présenter la carte pour procéder au paiement";
@@ -5239,6 +5292,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Section title for products on the Select Product screen.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
    Title of the 'Products' tab - used for spotlight indexing on iOS.
@@ -5322,6 +5376,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The accessibility label for the quantity button when selecting an item to refund
    Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "Quantité";
+
+/* Title for Quantity Rules row in the product form screen. */
+"Quantity Rules" = "Règles de quantité";
 
 /* Navigation title on the quantity item selector screen */
 "Quantity to refund" = "Quantité à rembourser";
@@ -5467,7 +5524,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
-   Title for removing an attribute in the edit attribute action sheet. */
+   Title for removing an attribute in the edit attribute action sheet.
+   Title for the action button on the confirm alert for hiding store onboarding task list */
 "Remove" = "Supprimer";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -6329,7 +6387,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "Nous n’avons malheureusement pas pu créer de demande d’assistance pour vous. Veuillez réessayer ultérieurement.";
 
-/* Error message when the built-in reader connection experiences an unexpected internal service error. */
+/* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "Désolés, nous n’avons pas pu démarrer la fonctionnalité iPhone Appuyer pour payer. Veuillez vérifier votre connexion et réessayer.";
 
 /* No comment provided by engineer. */
@@ -6426,6 +6484,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "Paramètres de la boutique";
 
+/* Controls store onboarding setup list visibility. */
+"Store Setup List" = "Liste de configuration de la boutique";
+
 /* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "La création de la boutique est toujours en cours...";
 
@@ -6464,10 +6525,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for the subscription settings in a subscription product. */
 "Subscription" = "Abonnement";
 
+/* Subscription title with subscription number. Reads like: 'Subscription #123' */
+"Subscription #%d" = "Abonnement n° %d";
+
 /* Label for the subscription price setting in the subscription settings screen. */
 "Subscription price" = "Prix de l’abonnement";
 
-/* Title for the Subscriptions / Upgrades view */
+/* Subscriptions section title
+   Title for the Subscriptions / Upgrades view */
 "Subscriptions" = "Abonnements";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
@@ -6610,11 +6675,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tap or insert card to refund" = "Saisissez la carte ou insérez-la pour procéder au remboursement";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
-   The button title on the reader type alert, for the user to choose the built-in reader. */
+   The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "Appuyer pour payer sur iPhone";
 
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is a call in progress */
 "Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "Le service Appuyer pour payer sur iPhone ne peut pas être utilisé pendant un appel téléphonique. Veuillez réessayer une fois l’appel terminé.";
+
+/* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
+"Tap to Pay on iPhone is ready" = "Appuyer pour payer sur iPhone est prêt";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Appuyer pour insérer une règle horizontale";
@@ -6808,10 +6876,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle text in the store creation loading screen */
 "The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "L’équipe Woo compte plus de 350 collaborateurs et collaboratrices de talent, répartis dans plus de 30 pays.";
 
-/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Le montant n’est pas pris en charge par le service Appuyer pour payer sur iPhone. Essayez un lecteur physique ou un autre moyen de paiement.";
 
-/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device's NFC chipset has been disabled by a device management policy. */
 "The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "L’application n’a pas pu activer le service Appuyer pour payer, car la puce NFC est désactivée. Pour plus d’informations, veuillez contacter l’assistance.";
 
 /* Error title when trying to remove an attribute remotely. */
@@ -6880,7 +6948,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "Le code promo ne pouvait pas être vide";
 
-/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the currency for payment is not supported for Tap to Pay on iPhone. */
 "The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "La devise n’est pas prise en charge par le service Appuyer pour payer sur iPhone. Essayez un lecteur physique ou un autre moyen de paiement.";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
@@ -6895,8 +6963,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "Le domaine acheté redirigera les utilisateurs vers votre adresse principale.";
 
-/* Label within the modal dialog that appears when connecting to a built in card reader */
-"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "Lors de la première connexion, vous devrez peut-être accepter les conditions d’utilisation d’Apple.";
+/* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
+"The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Lors de la première utilisation de la fonctionnalité Appuyer pour payer sur iPhone, vous devrez peut-être accepter les conditions d’utilisation d’Apple.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Le nouveau nom de colis personnalisé n’est pas unique.";
@@ -7093,7 +7161,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Une erreur s’est produite, impossible de percevoir le paiement.";
 
-/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there was some issue with the connection. Retryable. */
 "There was an issue preparing to use Tap to Pay on iPhone – please try again." = "Un problème est survenu lors de la préparation de l’utilisation du service Appuyer pour payer sur iPhone. Veuillez réessayer.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
@@ -8288,6 +8356,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "Nous rejoindre";
 
+/* Title in the product description AI generator view. */
+"Write product description" = "Écrire la description du produit";
+
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Mauvais compte ?";
 
@@ -8361,6 +8432,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Vous pouvez définir le code postal de votre boutique dans wp-admin > WooCommerce > Réglages (Général)";
 
+/* Confirm message for hiding store onboarding task list */
+"You can show it when you need it by going to Menu > Settings > Store" = "Vous pouvez l’afficher lorsque vous en avez besoin en accédant à Menu > Réglages > Boutique";
+
 /* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Vous pouvez toujours accepter des paiements en espèces en activant le moyen de paiement « Paiement à la livraison » dans votre boutique.";
 
@@ -8385,7 +8459,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Vous devez ajouter un mot de passe afin de protéger votre produit par mot de passe";
 
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Vous devez définir un code d’accès pour déverrouiller l’écran et utiliser le service Appuyer pour payer sur iPhone.";
 
 /* No comment provided by engineer. */
@@ -8531,9 +8605,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "exemple.com";
-
-/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
-"iPhone reader is ready" = "Le lecteur de l’iPhone est prêt.";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Cette application utilise le Bluetooth pour se connecter aux lecteurs de carte pris en charge.";

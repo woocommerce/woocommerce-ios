@@ -370,7 +370,7 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Upgrades.id
+            item.id == HubMenuViewModel.Subscriptions.id
         }))
     }
 
@@ -387,7 +387,7 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Upgrades.id
+            item.id == HubMenuViewModel.Subscriptions.id
         }))
     }
 

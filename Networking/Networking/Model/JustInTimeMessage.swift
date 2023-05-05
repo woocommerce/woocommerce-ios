@@ -30,18 +30,22 @@ public struct JustInTimeMessage: GeneratedCopiable, GeneratedFakeable, Equatable
     ///
     public let assets: [String: URL]
 
+    public let template: String
+
     public init(siteID: Int64,
                 messageID: String,
                 featureClass: String,
                 content: JustInTimeMessage.Content,
                 cta: JustInTimeMessage.CTA,
-                assets: [String: URL]) {
+                assets: [String: URL],
+                template: String) {
         self.siteID = siteID
         self.messageID = messageID
         self.featureClass = featureClass
         self.content = content
         self.cta = cta
         self.assets = assets
+        self.template = template
     }
 }
 
@@ -52,6 +56,7 @@ extension JustInTimeMessage: Codable {
         case content
         case cta = "CTA"
         case assets
+        case template
     }
 
     public init(from decoder: Decoder) throws {
@@ -67,6 +72,7 @@ extension JustInTimeMessage: Codable {
         self.content = try container.decode(JustInTimeMessage.Content.self, forKey: JustInTimeMessage.CodingKeys.content)
         self.cta = try container.decode(JustInTimeMessage.CTA.self, forKey: JustInTimeMessage.CodingKeys.cta)
         self.assets = try container.decodeIfPresent([String: URL].self, forKey: .assets) ?? [:]
+        self.template = try container.decodeIfPresent(String.self, forKey: .template) ?? "default"
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -77,6 +83,7 @@ extension JustInTimeMessage: Codable {
         try container.encode(self.content, forKey: JustInTimeMessage.CodingKeys.content)
         try container.encode(self.cta, forKey: JustInTimeMessage.CodingKeys.cta)
         try container.encode(self.assets, forKey: .assets)
+        try container.encode(self.template, forKey: .template)
     }
 }
 

@@ -398,7 +398,8 @@ extension Networking.JustInTimeMessage {
         featureClass: CopiableProp<String> = .copy,
         content: CopiableProp<JustInTimeMessage.Content> = .copy,
         cta: CopiableProp<JustInTimeMessage.CTA> = .copy,
-        assets: CopiableProp<[String: URL]> = .copy
+        assets: CopiableProp<[String: URL]> = .copy,
+        template: CopiableProp<String> = .copy
     ) -> Networking.JustInTimeMessage {
         let siteID = siteID ?? self.siteID
         let messageID = messageID ?? self.messageID
@@ -406,6 +407,7 @@ extension Networking.JustInTimeMessage {
         let content = content ?? self.content
         let cta = cta ?? self.cta
         let assets = assets ?? self.assets
+        let template = template ?? self.template
 
         return Networking.JustInTimeMessage(
             siteID: siteID,
@@ -413,7 +415,8 @@ extension Networking.JustInTimeMessage {
             featureClass: featureClass,
             content: content,
             cta: cta,
-            assets: assets
+            assets: assets,
+            template: template
         )
     }
 }

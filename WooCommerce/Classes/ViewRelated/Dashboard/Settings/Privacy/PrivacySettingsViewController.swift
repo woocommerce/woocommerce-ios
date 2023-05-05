@@ -196,7 +196,7 @@ private extension PrivacySettingsViewController {
     func configureAnalyticsInfo(cell: BasicTableViewCell) {
         cell.imageView?.image = nil
         cell.textLabel?.text = NSLocalizedString(
-            "These cookies allow us to optimize performance by collecting information on how users interact with our websites.",
+            "These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps.",
             comment: "Analytics toggle description in the privacy screen."
         )
         configureInfo(cell: cell)
@@ -461,7 +461,7 @@ extension PrivacySettingsViewController: UITableViewDelegate {
 extension PrivacySettingsViewController {
     enum Localization {
         static let tableTitle = NSLocalizedString("We value your privacy. " +
-                                                  "Your personal data is used to optimize our website, improve security, " +
+                                                  "Your personal data is used to optimize our mobile apps, improve security, " +
                                                   "conduct analytics and marketing activities, and enhance your user experience.",
                                                   comment: "Main description on the privacy screen.")
         static let tracking = NSLocalizedString("Tracking", comment: "Title of the tracking section on the privacy screen")

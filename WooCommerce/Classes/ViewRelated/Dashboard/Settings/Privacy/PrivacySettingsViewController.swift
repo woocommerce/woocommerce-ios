@@ -125,9 +125,9 @@ private extension PrivacySettingsViewController {
     }
 
     func configureSections() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices) {
+        if isPrivacyChoicesEnabled {
             return sections = [
-                Section(title: Localization.tracking, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+                Section(title: Localization.tracking, rows: [.analytics, .analyticsInfo]),
                 Section(title: Localization.reports, rows: [.reportCrashes, .crashInfo])
             ]
         } else {
@@ -148,6 +148,10 @@ private extension PrivacySettingsViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
+        case let cell as SwitchTableViewCell where row == .analytics:
+            configureAnalytics(cell: cell)
+        case let cell as BasicTableViewCell where row == .analyticsInfo:
+            configureAnalyticsInfo(cell: cell)
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfo:
@@ -169,6 +173,33 @@ private extension PrivacySettingsViewController {
         default:
             fatalError()
         }
+    }
+
+    func configureAnalytics(cell: SwitchTableViewCell) {
+        // image
+        cell.imageView?.image = nil
+        cell.imageView?.tintColor = .text
+
+        // text
+        cell.title = NSLocalizedString(
+            "Analytics",
+            comment: "Analytics toggle title in the privacy screen."
+        )
+
+        // switch
+        cell.isOn = collectInfo
+        cell.onChange = { [weak self] newValue in
+            self?.collectInfoWasUpdated(newValue: newValue)
+        }
+    }
+
+    func configureAnalyticsInfo(cell: BasicTableViewCell) {
+        cell.imageView?.image = nil
+        cell.textLabel?.text = NSLocalizedString(
+            "These cookies allow us to optimize performance by collecting information on how users interact with our websites.",
+            comment: "Analytics toggle description in the privacy screen."
+        )
+        configureInfo(cell: cell)
     }
 
     func configureCollectInfo(cell: SwitchTableViewCell) {
@@ -244,8 +275,12 @@ private extension PrivacySettingsViewController {
 
     func configureReportCrashes(cell: SwitchTableViewCell) {
         // image
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .text
+        if isPrivacyChoicesEnabled {
+            cell.imageView?.image = nil
+        } else {
+            cell.imageView?.image = .invisibleImage
+            cell.imageView?.tintColor = .text
+        }
 
         // text
         cell.title = NSLocalizedString(
@@ -261,9 +296,13 @@ private extension PrivacySettingsViewController {
     }
 
     func configureCrashInfo(cell: BasicTableViewCell) {
-        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground(modal: false)
+        if isPrivacyChoicesEnabled {
+            cell.imageView?.image = nil
+        } else {
+            // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
+            cell.imageView?.image = .invisibleImage
+            cell.imageView?.tintColor = .listForeground(modal: false)
+        }
         cell.textLabel?.text = NSLocalizedString(
             "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.",
             comment: "Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does"
@@ -273,6 +312,10 @@ private extension PrivacySettingsViewController {
 
     func configureInfo(cell: BasicTableViewCell) {
         cell.textLabel?.numberOfLines = 0
+        if isPrivacyChoicesEnabled {
+            cell.textLabel?.applySubheadlineStyle()
+            cell.textLabel?.textColor = .textSubtle
+        }
     }
 
     /// Creates the table header view.
@@ -434,6 +477,8 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
+    case analytics
+    case analyticsInfo
     case collectInfo
     case privacyInfo
     case privacyPolicy
@@ -446,6 +491,10 @@ private enum Row: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
+        case .analytics:
+            return SwitchTableViewCell.self
+        case .analyticsInfo:
+            return BasicTableViewCell.self
         case .collectInfo:
             return SwitchTableViewCell.self
         case .privacyInfo:

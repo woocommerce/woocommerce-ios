@@ -8,6 +8,7 @@
 - [*] Payments: Products are removed directly from an order when its count is below one, instead of opening an extra screen to remove it. [https://github.com/woocommerce/woocommerce-ios/pull/9624]
 - [*] Orders: Parses HTML-encoded characters and removes extraneous, non-attribute meta data from the list of attributes for an item in an order. [https://github.com/woocommerce/woocommerce-ios/pull/9603]
 - [*] Products: Adds the component descriptions to the list of components in a composite product (using the Composite Products extension). [https://github.com/woocommerce/woocommerce-ios/pull/9634]
+- [*] Product form > description editor AI for WPCOM stores: the prompt was updated so that the generated description is shorter. [https://github.com/woocommerce/woocommerce-ios/pull/9637]
 
 13.4
 -----

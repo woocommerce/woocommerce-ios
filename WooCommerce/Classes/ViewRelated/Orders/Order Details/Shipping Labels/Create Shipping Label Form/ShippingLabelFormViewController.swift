@@ -47,6 +47,7 @@ final class ShippingLabelFormViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        showTopBannerView()
         observeViewModel()
     }
 

@@ -6,6 +6,7 @@ import Storage
 //
 public class ProductStore: Store {
     private let remote: ProductsRemoteProtocol
+    private let generativeContentRemote: GenerativeContentRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
@@ -13,11 +14,17 @@ public class ProductStore: Store {
 
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
-        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let generativeContentRemote = GenerativeContentRemote(network: network)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, generativeContentRemote: generativeContentRemote)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
+    public init(dispatcher: Dispatcher,
+                storageManager: StorageManagerType,
+                network: Network,
+                remote: ProductsRemoteProtocol,
+                generativeContentRemote: GenerativeContentRemoteProtocol) {
         self.remote = remote
+        self.generativeContentRemote = generativeContentRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -46,10 +53,6 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrievePopularCachedProducts(let siteID, let onCompletion):
-            retrievePopularCachedProducts(siteID: siteID, onCompletion: onCompletion)
-        case .retrieveRecentlySoldCachedProducts(let siteID, let onCompletion):
-            retrieveRecentlySoldCachedProducts(siteID: siteID, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -113,6 +116,8 @@ public class ProductStore: Store {
             checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion)
         case let .createTemplateProduct(siteID, template, onCompletion):
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
+        case let .generateProductDescription(siteID, name, features, languageCode, completion):
+            generateProductDescription(siteID: siteID, name: name, features: features, languageCode: languageCode, completion: completion)
         }
     }
 }
@@ -323,50 +328,6 @@ private extension ProductStore {
         }
     }
 
-    func retrievePopularCachedProducts(siteID: Int64, onCompletion: @escaping ([Product]) -> Void) {
-        // Get completed orders
-        let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
-                                                      matching: completedOrdersPredicate(from: siteID),
-                                                      sortedBy: nil)
-
-        let completedOrders = completedStorageOrders.map { $0.toReadOnly() }
-
-        // Get product ids sorted by occurence
-        let completedOrdersItems = completedOrders.flatMap { $0.items }
-        let productIDCountDictionary = completedOrdersItems.reduce(into: [:]) { counts, orderItem in counts[orderItem.productID, default: 0] += 1 }
-        let sortedByOccurenceProductIDs = productIDCountDictionary
-            .sorted { $0.value > $1.value }
-            .map { $0.key }
-            .uniqued()
-
-        // Retrieve products from product ids and finish
-        let products = retrieveProducts(from: sortedByOccurenceProductIDs)
-        onCompletion(products)
-    }
-
-    func retrieveRecentlySoldCachedProducts(siteID: Int64, onCompletion: @escaping ([Product]) -> Void) {
-        let completedStorageOrders = sharedDerivedStorage.allObjects(ofType: StorageOrder.self,
-                                                      matching: completedOrdersPredicate(from: siteID),
-                                                      sortedBy: [NSSortDescriptor(key: #keyPath(StorageOrder.datePaid), ascending: false)])
-
-        let completedOrders = completedStorageOrders.map { $0.toReadOnly() }
-
-        let productIDs = completedOrders
-            .flatMap { $0.items }
-            .map { $0.productID }
-            .uniqued()
-
-        let products = retrieveProducts(from: productIDs)
-        onCompletion(products)
-    }
-
-    func completedOrdersPredicate(from siteID: Int64) -> NSPredicate {
-        let completedOrderPredicate = NSPredicate(format: "statusKey ==[c] %@", OrderStatusEnum.completed.rawValue)
-        let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
-
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [completedOrderPredicate, sitePredicate])
-    }
-
     func retrieveProducts(from productIDs: [Int64]) -> [Product] {
         productIDs
             .compactMap {
@@ -522,6 +483,24 @@ private extension ProductStore {
 
             case .failure(let error):
                 onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func generateProductDescription(siteID: Int64,
+                                    name: String,
+                                    features: String,
+                                    languageCode: String,
+                                    completion: @escaping (Result<String, Error>) -> Void) {
+        let prompt = "Perform in-depth keyword research for a product on an e-commerce store and return a product description " +
+        "that includes as many keywords as possible and at least 200 words. " +
+        "The tone should be professional and without many questions. " +
+        "Try to make shorter sentences, using less difficult words to improve readability. " +
+        "Product name: \(name)\nFeatures: \(features)\nLanguage: \(languageCode)"
+        Task {
+            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }
+            await MainActor.run {
+                completion(result)
             }
         }
     }

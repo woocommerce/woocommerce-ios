@@ -9,6 +9,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     private let placeholderTaskCount = 3
     private let freeTrialID = "1052"
     private var sessionManager: SessionManager!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -16,12 +18,16 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         sessionManager = .makeForTesting(authenticated: true)
         stores = MockStoresManager(sessionManager: sessionManager)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         stores = nil
         sessionManager = nil
         defaults = nil
+        analytics = nil
+        analyticsProvider = nil
         super.tearDown()
     }
 
@@ -756,6 +762,66 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.shouldShowInDashboard)
+    }
+
+    func test_shouldShowInDashboard_is_false_when_user_has_opted_to_hide_the_list() async {
+        // Given
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+
+        // When
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = true
+
+        // Then
+        XCTAssertFalse(sut.shouldShowInDashboard)
+    }
+
+    // MARK: - hideTaskList
+
+    func test_hideTaskList_updates_userdefaults() async {
+        // Given
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+
+        // When
+        sut.hideTaskList()
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
+    }
+
+    func test_hideTaskList_tracks_hide_list_event() async throws {
+        // Given
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: true, type: .storeDetails),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults,
+                                           analytics: analytics)
+        await sut.reloadTasks()
+
+        // When
+        sut.hideTaskList()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "store_onboarding_hide_list"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["source"] as? String, "onboarding_list")
+        XCTAssertTrue(try XCTUnwrap(eventProperties["hide"] as? Bool))
+        XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
     }
 }
 

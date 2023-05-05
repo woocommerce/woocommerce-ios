@@ -91,7 +91,15 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .IPPUKExpansion:
             return true
-        case .subscriptionProducts:
+        case .readOnlySubscriptions:
+            return true
+        case .productDescriptionAI:
+            return true
+        case .readOnlyGiftCards:
+            return true
+        case .hideStoreOnboardingTaskList:
+            return true
+        case .readOnlyMinMaxQuantities:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

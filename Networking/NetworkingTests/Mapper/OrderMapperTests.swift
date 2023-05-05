@@ -379,6 +379,25 @@ final class OrderMapperTests: XCTestCase {
         let expectedCustomField = OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")
         XCTAssertEqual(customField, expectedCustomField)
     }
+
+    func test_order_renewal_subscription_id_is_parsed_successfully() throws {
+        let order = try XCTUnwrap(mapLoadOrderWithSubscriptionRenewal())
+
+        XCTAssertEqual(order.renewalSubscriptionID, "282")
+    }
+
+    func test_order_applied_gift_cards_are_parsed_successfully() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithGiftCards())
+
+        // When
+        let giftCard = try XCTUnwrap(order.appliedGiftCards.first)
+
+        // Then
+        XCTAssertEqual(giftCard.giftCardID, 2)
+        XCTAssertEqual(giftCard.code, "SU9F-MGB5-KS5V-EZFT")
+        XCTAssertEqual(giftCard.amount, 20)
+    }
 }
 
 
@@ -455,6 +474,18 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithChargeResponse() -> Order? {
         return mapOrder(from: "order-with-charge")
+    }
+
+    /// Returns the Order output upon receiving `order-with-subscription-renewal`
+    ///
+    func mapLoadOrderWithSubscriptionRenewal() -> Order? {
+        return mapOrder(from: "order-with-subscription-renewal")
+    }
+
+    /// Returns the Order output upon receiving `order-with-gift-cards`
+    ///
+    func mapLoadOrderWithGiftCards() -> Order? {
+        return mapOrder(from: "order-with-gift-cards")
     }
 
 }

@@ -312,7 +312,11 @@ extension MockObjectGraph {
             bundleStockQuantity: nil,
             bundledItems: [],
             compositeComponents: [],
-            subscription: nil
+            subscription: nil,
+            minAllowedQuantity: nil,
+            maxAllowedQuantity: nil,
+            groupOfQuantity: nil,
+            combineVariationQuantities: nil
         )
     }
 }
@@ -363,7 +367,9 @@ extension MockObjectGraph {
             refunds: [],
             fees: [],
             taxes: [],
-            customFields: []
+            customFields: [],
+            renewalSubscriptionID: nil,
+            appliedGiftCards: []
         )
     }
 }

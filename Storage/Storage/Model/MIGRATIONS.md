@@ -2,6 +2,20 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 86 (Release 13.4.0.0)
+- @rachelmcr 2023-04-27
+    - Added `minAllowedQuantity` attribute to `Product` and `ProductVariation` entities.
+    - Added `maxAllowedQuantity` attribute to `Product` and `ProductVariation` entities.
+    - Added `groupOfQuantity` attribute to `Product` and `ProductVariation` entities.
+    - Added `combineVariationQuantities` attribute to `Product` entity.
+    - Added `overrideProductQuantities` attribute to `ProductVariation` entity.
+
+## Model 85 (Release 13.4.0.0)
+- @rachelmcr 2023-04-25
+    - Added `renewalSubscriptionID` attribute to `Order` entity.
+    - Added `OrderGiftCard` entity.
+    - Added `appliedGiftCards` to-many relationship from `Order` to `OrderGiftCard`.
+
 ## Model 84 (Release 13.3.0.0)
 - @selanthiraiyan 2023-04-20
     - Added `isPublic` attribute to `Site` entity.

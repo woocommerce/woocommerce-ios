@@ -82,6 +82,12 @@ extension Storage.Product: ReadOnlyConvertible {
         backordered = product.backordered
         bundleStockQuantity = product.bundleStockQuantity as? NSNumber
         bundleStockStatus = product.bundleStockStatus?.rawValue
+        minAllowedQuantity = product.minAllowedQuantity
+        maxAllowedQuantity = product.maxAllowedQuantity
+        groupOfQuantity = product.groupOfQuantity
+        if let productCombineVariationQuantities = product.combineVariationQuantities {
+            combineVariationQuantities = NSNumber(booleanLiteral: productCombineVariationQuantities)
+        }
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -175,7 +181,11 @@ extension Storage.Product: ReadOnlyConvertible {
                        bundleStockQuantity: bundleStockQuantity as? Int64,
                        bundledItems: bundledItemsArray.map { $0.toReadOnly() },
                        compositeComponents: compositeComponentsArray.map { $0.toReadOnly() },
-                       subscription: subscription?.toReadOnly())
+                       subscription: subscription?.toReadOnly(),
+                       minAllowedQuantity: minAllowedQuantity,
+                       maxAllowedQuantity: maxAllowedQuantity,
+                       groupOfQuantity: groupOfQuantity,
+                       combineVariationQuantities: combineVariationQuantities?.boolValue)
     }
 
     // MARK: - Private Helpers

@@ -74,7 +74,7 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] Make a Tap to Pay on iPhone payment
     - [ ] Manage Card Reader - Connect/Disconnect Reader
     - [x] Card Reader Manual (Chipper) loads
-    - [ ] Learn More link loads
+    - [x] Learn More link loads
 
 ## Running tests
 

@@ -2,6 +2,9 @@ import Foundation
 
 /// Protocol for `SubscriptionsRemote` mainly used for mocking.
 public protocol SubscriptionsRemoteProtocol {
+    func loadSubscription(siteID: Int64,
+                          subscriptionID: Int64,
+                          completion: @escaping (Result<Subscription, Error>) -> Void)
     func loadSubscriptions(siteID: Int64,
                            orderID: Int64,
                            completion: @escaping (Result<[Subscription], Error>) -> Void)
@@ -10,6 +13,26 @@ public protocol SubscriptionsRemoteProtocol {
 /// Subscriptions: Remote Endpoints
 ///
 public final class SubscriptionsRemote: Remote, SubscriptionsRemoteProtocol {
+
+    /// Retrieves a specific `Subscription`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Remote ID of the site that owns the subscriptions.
+    ///     - subscriptionID: Remote ID of the subscription.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadSubscription(siteID: Int64, subscriptionID: Int64, completion: @escaping (Result<Subscription, Error>) -> Void) {
+        let path = "\(Path.subscriptions)/\(subscriptionID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: [:],
+                                     availableAsRESTRequest: true)
+        let mapper = SubscriptionMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 
     /// Retrieves all `Subscriptions` for a parent `Order`.
     ///

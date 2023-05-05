@@ -496,7 +496,9 @@ extension Networking.Order {
             refunds: .fake(),
             fees: .fake(),
             taxes: .fake(),
-            customFields: .fake()
+            customFields: .fake(),
+            renewalSubscriptionID: .fake(),
+            appliedGiftCards: .fake()
         )
     }
 }
@@ -533,6 +535,17 @@ extension OrderFeeTaxStatus {
     ///
     public static func fake() -> OrderFeeTaxStatus {
         .taxable
+    }
+}
+extension Networking.OrderGiftCard {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderGiftCard {
+        .init(
+            giftCardID: .fake(),
+            code: .fake(),
+            amount: .fake()
+        )
     }
 }
 extension Networking.OrderItem {
@@ -843,7 +856,11 @@ extension Networking.Product {
             bundleStockQuantity: .fake(),
             bundledItems: .fake(),
             compositeComponents: .fake(),
-            subscription: .fake()
+            subscription: .fake(),
+            minAllowedQuantity: .fake(),
+            maxAllowedQuantity: .fake(),
+            groupOfQuantity: .fake(),
+            combineVariationQuantities: .fake()
         )
     }
 }
@@ -1165,7 +1182,11 @@ extension Networking.ProductVariation {
             shippingClass: .fake(),
             shippingClassID: .fake(),
             menuOrder: .fake(),
-            subscription: .fake()
+            subscription: .fake(),
+            minAllowedQuantity: .fake(),
+            maxAllowedQuantity: .fake(),
+            groupOfQuantity: .fake(),
+            overrideProductQuantities: .fake()
         )
     }
 }

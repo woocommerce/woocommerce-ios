@@ -15,12 +15,14 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     private var orderPaidWithNoPaymentMethod: Order!
     private var orderWithAPIRefunds: Order!
     private var orderWithTransientRefunds: Order!
+    private var orderWithGiftCards: Order!
     private var brokenOrderViewModel: OrderPaymentDetailsViewModel!
     private var anotherBrokenOrderViewModel: OrderPaymentDetailsViewModel!
     private var orderWithFeesViewModel: OrderPaymentDetailsViewModel!
     private var orderPaidWithNoPaymentMethodViewModel: OrderPaymentDetailsViewModel!
     private var orderWithAPIRefundsViewModel: OrderPaymentDetailsViewModel!
     private var orderWithTransientRefundsViewModel: OrderPaymentDetailsViewModel!
+    private var orderWithGiftCardsViewModel: OrderPaymentDetailsViewModel!
 
     override func setUp() {
         super.setUp()
@@ -44,6 +46,9 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
 
         orderWithTransientRefunds = MockOrders().orderWithTransientRefunds()
         orderWithTransientRefundsViewModel = OrderPaymentDetailsViewModel(order: orderWithTransientRefunds, refund: MockRefunds.sampleRefund())
+
+        orderWithGiftCards = order.copy(appliedGiftCards: [.fake().copy(code: "ABCD", amount: 5)])
+        orderWithGiftCardsViewModel = OrderPaymentDetailsViewModel(order: orderWithGiftCards)
     }
 
     override func tearDown() {
@@ -186,5 +191,23 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         let refundAmount = try XCTUnwrap(orderWithTransientRefundsViewModel.refundAmount)
 
         XCTAssertTrue(refundAmount.hasPrefix("-"))
+    }
+
+    func test_giftCards_text_matches_expectation() {
+        let expectedText = NSLocalizedString("Gift Cards", comment: "Gift Cards label for payment view") + " (ABCD)"
+        XCTAssertEqual(orderWithGiftCardsViewModel.giftCardsText, expectedText)
+    }
+
+    func test_giftCards_value_matches_expectation() {
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount("-5", with: order.currency)!
+        XCTAssertEqual(orderWithGiftCardsViewModel.giftCardsValue, expectedValue)
+    }
+
+    func test_giftCards_is_visible_for_orders_with_giftCard() {
+        XCTAssertFalse(orderWithGiftCardsViewModel.shouldHideGiftCards)
+    }
+
+    func test_giftCards_is_hidden_for_orders_without_giftCard() {
+        XCTAssertTrue(viewModel.shouldHideGiftCards)
     }
 }

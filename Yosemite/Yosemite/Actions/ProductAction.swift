@@ -63,15 +63,6 @@ public enum ProductAction: Action {
         pageSize: Int = ProductsRemote.Default.pageSize,
         onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
-    /// Retrieve cached popular products, that is, those that were included
-    /// in a completed order most often, in descending order.
-    ///
-    case retrievePopularCachedProducts(siteID: Int64, onCompletion: ([Product]) -> Void)
-
-    /// Retrieve the recently sold products in cache sorted by paid date
-    /// 
-    case retrieveRecentlySoldCachedProducts(siteID: Int64, onCompletion: ([Product]) -> Void)
-
     /// Deletes all of the cached products.
     ///
     case resetStoredProducts(onCompletion: () -> Void)
@@ -116,4 +107,8 @@ public enum ProductAction: Action {
     /// Creates a product using the provided template type.
     ///
     case createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: (Result<Product, Error>) -> Void)
+
+    /// Generates a product description with Jetpack AI given the name, features, and language code.
+    ///
+    case generateProductDescription(siteID: Int64, name: String, features: String, languageCode: String, completion: (Result<String, Error>) -> Void)
 }

@@ -402,6 +402,12 @@ extension WooAnalyticsEvent {
         static func componentsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewComponentsTapped, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Subscriptions row (applicable for subscription-type products only).
+        ///
+        static func subscriptionsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionsTapped, properties: [:])
+        }
     }
 }
 
@@ -463,6 +469,7 @@ extension WooAnalyticsEvent {
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
             static let source = "source"
+            static let isFilterActive = "is_filter_active"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -598,9 +605,11 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationProductSelectorConfirmButtonTapped(productCount: Int) -> WooAnalyticsEvent {
+        static func orderCreationProductSelectorConfirmButtonTapped(productCount: Int, sources: [String], isFilterActive: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationProductSelectorConfirmButtonTapped, properties: [
-                Keys.productCount: Int64(productCount)
+                Keys.productCount: Int64(productCount),
+                Keys.source: sources.joined(separator: ","),
+                Keys.isFilterActive: isFilterActive
             ])
         }
 
@@ -621,6 +630,18 @@ extension WooAnalyticsEvent {
         ///
         static func pluginsNotSyncedYet() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pluginsNotSyncedYet, properties: [:])
+        }
+
+        /// Tracked when subscriptions are displayed in order details.
+        ///
+        static func subscriptionsShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailsSubscriptionsShown, properties: [:])
+        }
+
+        /// Tracked when gift cards are displayed in order details.
+        ///
+        static func giftCardsShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailsGiftCardShown, properties: [:])
         }
     }
 }

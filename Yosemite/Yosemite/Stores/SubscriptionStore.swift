@@ -31,22 +31,36 @@ public final class SubscriptionStore: Store {
 
         switch action {
         case .loadSubscriptions(let order, let completion):
-            loadSubscriptions(siteID: order.siteID, orderID: order.orderID, completion: completion)
+            loadSubscriptions(for: order, completion: completion)
         }
     }
 }
 
 private extension SubscriptionStore {
 
-    /// Retrieves all Subscriptions for a given Order.
+    /// Retrieves all `Subscriptions` for a given `Order`.
     ///
-    func loadSubscriptions(siteID: Int64, orderID: Int64, completion: @escaping (Result<[Subscription], Error>) -> Void) {
-        remote.loadSubscriptions(siteID: siteID, orderID: orderID) { result in
-            switch result {
-            case .success(let response):
-                completion(.success(response))
-            case .failure(let error):
-                completion(.failure(error))
+    /// If the provided order is a subscription renewal order, we load the specific subscription using its ID.
+    /// Otherwise, we load any subscriptions for the provided parent order.
+    ///
+    func loadSubscriptions(for order: Order, completion: @escaping (Result<[Subscription], Error>) -> Void) {
+        if let subscriptionIDString = order.renewalSubscriptionID, let subscriptionID = Int64(subscriptionIDString) {
+            remote.loadSubscription(siteID: order.siteID, subscriptionID: subscriptionID) { result in
+                switch result {
+                case .success(let response):
+                    completion(.success([response]))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } else {
+            remote.loadSubscriptions(siteID: order.siteID, orderID: order.orderID) { result in
+                switch result {
+                case .success(let response):
+                    completion(.success(response))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
             }
         }
     }

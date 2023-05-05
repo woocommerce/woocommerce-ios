@@ -192,7 +192,23 @@ public enum FeatureFlag: Int {
     ///
     case IPPUKExpansion
 
-    /// Enables subscription product settings in product details
+    /// Enables read-only support for the Subscriptions extension in product and order details
     ///
-    case subscriptionProducts
+    case readOnlySubscriptions
+
+    /// Enables generating product description using AI.
+    ///
+    case productDescriptionAI
+
+    /// Enables read-only support for the Gift Cards extension
+    ///
+    case readOnlyGiftCards
+
+    /// Ability to hide store onboarding task list
+    ///
+    case hideStoreOnboardingTaskList
+
+    /// Enables read-only support for the Min/Max Quantities extension
+    ///
+    case readOnlyMinMaxQuantities
 }

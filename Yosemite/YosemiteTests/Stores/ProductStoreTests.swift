@@ -762,118 +762,6 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
-    // MARK: - ProductAction.retrieveMostPopularProductsInCache
-
-    func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_returns_them_sorted() {
-        let productIDs: [Int64] = [1, 2, 3]
-        preparePopularProductsSamples(with: productIDs)
-
-        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrievePopularCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
-                promise(result)
-            })
-
-            store.onAction(action)
-        }
-
-        XCTAssertEqual(cachedPopularProducts.first?.productID, productIDs.first)
-        XCTAssertEqual(cachedPopularProducts[1].productID, productIDs[1])
-        XCTAssertEqual(cachedPopularProducts.last?.productID, productIDs.last)
-    }
-
-    func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_orders_are_not_completed_returns_empty_array() {
-        preparePopularProductsSamples(with: [1, 2, 3], orderStatus: .pending)
-
-        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrievePopularCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
-                promise(result)
-            })
-
-            store.onAction(action)
-        }
-
-        XCTAssertTrue(cachedPopularProducts.isEmpty)
-    }
-
-    func test_retrieveMostPopularProductsInCache_when_there_are_several_popular_products_but_siteID_is_different_returns_empty_array() {
-        preparePopularProductsSamples(with: [1, 2, 3])
-
-        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrievePopularCachedProducts(siteID: 555, onCompletion: { result in
-                promise(result)
-            })
-
-            store.onAction(action)
-        }
-
-        XCTAssertTrue(cachedPopularProducts.isEmpty)
-    }
-
-    // MARK: - ProductAction.retrieveRecentlySoldCachedProducts
-
-    func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_returns_them_sorted() {
-        let productIDs: [Int64] = [1, 2, 3]
-        prepareRecentlySoldProductSamples(with: productIDs)
-
-        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
-                promise(result)
-            })
-
-            store.onAction(action)
-        }
-
-        XCTAssertEqual(cachedPopularProducts.first?.productID, productIDs.first)
-        XCTAssertEqual(cachedPopularProducts[1].productID, productIDs[1])
-        XCTAssertEqual(cachedPopularProducts.last?.productID, productIDs.last)
-    }
-
-    func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_but_orders_are_not_completed_returns_empty_array() {
-        prepareRecentlySoldProductSamples(with: [1, 2, 3], orderStatus: .pending)
-
-        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: self.sampleSiteID, onCompletion: { result in
-                promise(result)
-            })
-
-            store.onAction(action)
-        }
-
-        XCTAssertTrue(cachedPopularProducts.isEmpty)
-    }
-
-    func test_retrieveRecentlySoldCachedProducts_when_there_are_several_sold_products_but_siteID_is_different_returns_empty_array() {
-        prepareRecentlySoldProductSamples(with: [1, 2, 3])
-
-        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let cachedPopularProducts: [Yosemite.Product] = waitFor { promise in
-            let action = ProductAction.retrieveRecentlySoldCachedProducts(siteID: 555, onCompletion: { result in
-                promise(result)
-            })
-
-            store.onAction(action)
-        }
-
-        XCTAssertTrue(cachedPopularProducts.isEmpty)
-    }
-
     // MARK: - ProductAction.resetStoredProducts
 
     /// Verifies that `ProductAction.resetStoredProducts` deletes the Products from Storage
@@ -1713,6 +1601,33 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
+    /// Verifies that `ProductAction.retrieveProducts` effectively persists the fields added by the Min/Max Quantities extension.
+    ///
+    func test_retrieve_products_effectively_persists_mix_max_quantity_fields() throws {
+        let remote = MockProductsRemote()
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                  productID: sampleProductID,
+                                                  minAllowedQuantity: "4",
+                                                  maxAllowedQuantity: "200",
+                                                  groupOfQuantity: "2",
+                                                  combineVariationQuantities: false)
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success([expectedProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        let storedProduct: Yosemite.Product? = waitFor { promise in
+            let action = ProductAction.retrieveProducts(siteID: self.sampleSiteID, productIDs: [self.sampleProductID]) { _ in
+                let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
+                let readOnlyStoredProduct = storedProduct?.toReadOnly()
+                promise(readOnlyStoredProduct)
+            }
+            productStore.onAction(action)
+        }
+
+        XCTAssertNotNil(storedProduct)
+        XCTAssertEqual(storedProduct, expectedProduct)
+    }
+
     func test_calling_replaceProductLocally_replaces_product_locally() throws {
         // Given
         let product = sampleProduct()
@@ -1819,6 +1734,86 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertNotNil(try? result.get())
     }
+
+    // MARK: - ProductAction.generateProductDescription
+
+    func test_generateProductDescription_returns_text_on_success() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success("Trendy product"))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product",
+                                                                           features: "Trendy",
+                                                                           languageCode: "en-US") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let generatedText = try XCTUnwrap(result.get())
+        XCTAssertEqual(generatedText, "Trendy product")
+    }
+
+    func test_generateProductDescription_returns_error_on_failure() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product",
+                                                                           features: "Trendy",
+                                                                           languageCode: "en-US") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+    }
+
+    func test_generateProductDescription_includes_parameters_in_remote_base_parameter() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product name",
+                                                                           features: "Trendy, cool, fun",
+                                                                           languageCode: "en-US") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
+        XCTAssertTrue(base.contains("Product name: A product name"))
+        XCTAssertTrue(base.contains("Features: Trendy, cool, fun"))
+        XCTAssertTrue(base.contains("Language: en-US"))
+    }
 }
 
 // MARK: - Private Helpers
@@ -1906,7 +1901,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: nil,
                        bundledItems: [],
                        compositeComponents: [],
-                       subscription: nil)
+                       subscription: nil,
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -2067,7 +2066,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: 0,
                        bundledItems: [.fake(), .fake()],
                        compositeComponents: [.fake(), .fake()],
-                       subscription: .fake())
+                       subscription: .fake(),
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -2202,7 +2205,11 @@ private extension ProductStoreTests {
                        bundleStockQuantity: nil,
                        bundledItems: [],
                        compositeComponents: [],
-                       subscription: nil)
+                       subscription: nil,
+                       minAllowedQuantity: nil,
+                       maxAllowedQuantity: nil,
+                       groupOfQuantity: nil,
+                       combineVariationQuantities: nil)
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {
@@ -2281,29 +2288,17 @@ private extension ProductStoreTests {
                                                            ])
         return [topping, soda, delivery]
     }
+}
 
-    func preparePopularProductsSamples(with productIDs: [Int64], orderStatus: OrderStatusEnum = .completed) {
-        productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: $0))}
-
-        let orderItems = productIDs.map { OrderItem.fake().copy(productID: $0) }
-        let orders = (0 ..< 3).map { _ in Order.fake().copy(siteID: sampleSiteID, status: orderStatus) }
-
-        storageManager.insertSampleOrder(readOnlyOrder: orders[0]).items = NSOrderedSet(array: (0 ..< 1)
-            .map { index in storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index]) })
-        storageManager.insertSampleOrder(readOnlyOrder: orders[1]).items = NSOrderedSet(array: (0 ..< 2)
-            .map { index in storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index]) })
-        storageManager.insertSampleOrder(readOnlyOrder: orders[2]).items = NSOrderedSet(array: (0 ..< 3)
-            .map { index in storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index]) })
-    }
-
-    func prepareRecentlySoldProductSamples(with productIDs: [Int64], orderStatus: OrderStatusEnum = .completed) {
-        productIDs.forEach { storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(productID: $0))}
-
-        let orderItems = productIDs.map { OrderItem.fake().copy(productID: $0) }
-        let orders = (0 ..< 3).map { index in Order.fake().copy(siteID: sampleSiteID, status: orderStatus, datePaid: Date().addingDays(-index)) }
-
-        for (index, _) in orders.enumerated() {
-          storageManager.insertSampleOrder(readOnlyOrder: orders[index]).items = [storageManager.insertSampleOrderItem(readOnlyOrderItem: orderItems[index])]
-        }
+private extension ProductStore {
+    convenience init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: ProductsRemoteProtocol) {
+        self.init(dispatcher: dispatcher,
+                  storageManager: storageManager,
+                  network: network,
+                  remote: remote,
+                  generativeContentRemote: MockGenerativeContentRemote())
     }
 }

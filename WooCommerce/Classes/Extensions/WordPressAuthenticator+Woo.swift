@@ -26,7 +26,6 @@ extension WordPressAuthenticator {
                                                                 enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: false,
-                                                                enableSiteCredentialsLoginForSelfHostedSites: true,
                                                                 isWPComLoginRequiredForSiteCredentialsLogin: false,
                                                                 isWPComMagicLinkPreferredToPassword: isWPComMagicLinkPreferredToPassword,
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
@@ -42,8 +41,7 @@ extension WordPressAuthenticator {
                                                                 enableManualSiteCredentialLogin: true,
                                                                 enableManualErrorHandlingForSiteCredentialLogin: isManualErrorHandlingEnabled,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
-                                                                enableSiteAddressLoginOnlyInPrologue: true,
-                                                                enableSiteCredentialLoginForJetpackSites: false)
+                                                                enableSiteAddressLoginOnlyInPrologue: true)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)

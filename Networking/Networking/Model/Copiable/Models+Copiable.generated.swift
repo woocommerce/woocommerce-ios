@@ -525,7 +525,9 @@ extension Networking.Order {
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
         fees: CopiableProp<[OrderFeeLine]> = .copy,
         taxes: CopiableProp<[OrderTaxLine]> = .copy,
-        customFields: CopiableProp<[OrderMetaData]> = .copy
+        customFields: CopiableProp<[OrderMetaData]> = .copy,
+        renewalSubscriptionID: NullableCopiableProp<String> = .copy,
+        appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy
     ) -> Networking.Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -561,6 +563,8 @@ extension Networking.Order {
         let fees = fees ?? self.fees
         let taxes = taxes ?? self.taxes
         let customFields = customFields ?? self.customFields
+        let renewalSubscriptionID = renewalSubscriptionID ?? self.renewalSubscriptionID
+        let appliedGiftCards = appliedGiftCards ?? self.appliedGiftCards
 
         return Networking.Order(
             siteID: siteID,
@@ -596,7 +600,9 @@ extension Networking.Order {
             refunds: refunds,
             fees: fees,
             taxes: taxes,
-            customFields: customFields
+            customFields: customFields,
+            renewalSubscriptionID: renewalSubscriptionID,
+            appliedGiftCards: appliedGiftCards
         )
     }
 }
@@ -651,6 +657,24 @@ extension Networking.OrderFeeLine {
             totalTax: totalTax,
             taxes: taxes,
             attributes: attributes
+        )
+    }
+}
+
+extension Networking.OrderGiftCard {
+    public func copy(
+        giftCardID: CopiableProp<Int64> = .copy,
+        code: CopiableProp<String> = .copy,
+        amount: CopiableProp<Int64> = .copy
+    ) -> Networking.OrderGiftCard {
+        let giftCardID = giftCardID ?? self.giftCardID
+        let code = code ?? self.code
+        let amount = amount ?? self.amount
+
+        return Networking.OrderGiftCard(
+            giftCardID: giftCardID,
+            code: code,
+            amount: amount
         )
     }
 }
@@ -1057,7 +1081,11 @@ extension Networking.Product {
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
         compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
-        subscription: NullableCopiableProp<ProductSubscription> = .copy
+        subscription: NullableCopiableProp<ProductSubscription> = .copy,
+        minAllowedQuantity: NullableCopiableProp<String> = .copy,
+        maxAllowedQuantity: NullableCopiableProp<String> = .copy,
+        groupOfQuantity: NullableCopiableProp<String> = .copy,
+        combineVariationQuantities: NullableCopiableProp<Bool> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1127,6 +1155,10 @@ extension Networking.Product {
         let bundledItems = bundledItems ?? self.bundledItems
         let compositeComponents = compositeComponents ?? self.compositeComponents
         let subscription = subscription ?? self.subscription
+        let minAllowedQuantity = minAllowedQuantity ?? self.minAllowedQuantity
+        let maxAllowedQuantity = maxAllowedQuantity ?? self.maxAllowedQuantity
+        let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
+        let combineVariationQuantities = combineVariationQuantities ?? self.combineVariationQuantities
 
         return Networking.Product(
             siteID: siteID,
@@ -1196,7 +1228,11 @@ extension Networking.Product {
             bundleStockQuantity: bundleStockQuantity,
             bundledItems: bundledItems,
             compositeComponents: compositeComponents,
-            subscription: subscription
+            subscription: subscription,
+            minAllowedQuantity: minAllowedQuantity,
+            maxAllowedQuantity: maxAllowedQuantity,
+            groupOfQuantity: groupOfQuantity,
+            combineVariationQuantities: combineVariationQuantities
         )
     }
 }
@@ -1500,7 +1536,11 @@ extension Networking.ProductVariation {
         shippingClass: NullableCopiableProp<String> = .copy,
         shippingClassID: CopiableProp<Int64> = .copy,
         menuOrder: CopiableProp<Int64> = .copy,
-        subscription: NullableCopiableProp<ProductSubscription> = .copy
+        subscription: NullableCopiableProp<ProductSubscription> = .copy,
+        minAllowedQuantity: NullableCopiableProp<String> = .copy,
+        maxAllowedQuantity: NullableCopiableProp<String> = .copy,
+        groupOfQuantity: NullableCopiableProp<String> = .copy,
+        overrideProductQuantities: NullableCopiableProp<Bool> = .copy
     ) -> Networking.ProductVariation {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1539,6 +1579,10 @@ extension Networking.ProductVariation {
         let shippingClassID = shippingClassID ?? self.shippingClassID
         let menuOrder = menuOrder ?? self.menuOrder
         let subscription = subscription ?? self.subscription
+        let minAllowedQuantity = minAllowedQuantity ?? self.minAllowedQuantity
+        let maxAllowedQuantity = maxAllowedQuantity ?? self.maxAllowedQuantity
+        let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
+        let overrideProductQuantities = overrideProductQuantities ?? self.overrideProductQuantities
 
         return Networking.ProductVariation(
             siteID: siteID,
@@ -1577,7 +1621,11 @@ extension Networking.ProductVariation {
             shippingClass: shippingClass,
             shippingClassID: shippingClassID,
             menuOrder: menuOrder,
-            subscription: subscription
+            subscription: subscription,
+            minAllowedQuantity: minAllowedQuantity,
+            maxAllowedQuantity: maxAllowedQuantity,
+            groupOfQuantity: groupOfQuantity,
+            overrideProductQuantities: overrideProductQuantities
         )
     }
 }
@@ -2190,7 +2238,7 @@ extension Networking.Subscription {
         billingInterval: CopiableProp<String> = .copy,
         total: CopiableProp<String> = .copy,
         startDate: CopiableProp<Date> = .copy,
-        endDate: CopiableProp<Date> = .copy
+        endDate: NullableCopiableProp<Date> = .copy
     ) -> Networking.Subscription {
         let siteID = siteID ?? self.siteID
         let subscriptionID = subscriptionID ?? self.subscriptionID

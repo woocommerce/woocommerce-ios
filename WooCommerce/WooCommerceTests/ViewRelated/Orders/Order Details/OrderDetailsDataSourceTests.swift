@@ -556,6 +556,72 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let customFieldSection = section(withCategory: .customFields, from: dataSource)
         XCTAssertNil(customFieldSection)
     }
+
+    func test_subscriptions_section_is_visible_when_order_has_associated_subscriptions() throws {
+        // Given
+        let order = MockOrders().makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
+        )
+
+        // When
+        dataSource.orderSubscriptions = [Subscription.fake()]
+
+        // Then
+        let subscriptionSection = section(withCategory: .subscriptions, from: dataSource)
+        XCTAssertNotNil(subscriptionSection)
+    }
+
+    func test_subscriptions_section_is_hidden_when_order_has_no_associated_subscriptions() throws {
+        // Given
+        let order = MockOrders().makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
+        )
+
+        // When
+        dataSource.orderSubscriptions = []
+
+        // Then
+        let subscriptionSection = section(withCategory: .subscriptions, from: dataSource)
+        XCTAssertNil(subscriptionSection)
+    }
+
+    func test_giftCards_section_is_visible_when_order_has_gift_cards() throws {
+        // Given
+        let order = Order.fake().copy(appliedGiftCards: [.init(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)])
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                featureFlags: MockFeatureFlagService(isReadOnlyGiftCardsEnabled: true))
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let giftCardsSection = section(withCategory: .giftCards, from: dataSource)
+        XCTAssertNotNil(giftCardsSection)
+    }
+
+    func test_giftCards_section_is_hidden_when_order_has_no_gift_cards() throws {
+        // Given
+        let order = Order.fake()
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                featureFlags: MockFeatureFlagService(isReadOnlyGiftCardsEnabled: true))
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let giftCardsSection = section(withCategory: .giftCards, from: dataSource)
+        XCTAssertNil(giftCardsSection)
+    }
 }
 
 // MARK: - Test Data

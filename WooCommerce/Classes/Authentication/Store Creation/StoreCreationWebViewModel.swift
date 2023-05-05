@@ -29,6 +29,10 @@ final class StoreCreationWebViewModel: AuthenticatedWebViewModel {
         handleCompletionIfPossible(navigationURL.absoluteString)
         return .allow
     }
+
+    func didFailProvisionalNavigation(with error: Error) {
+        handleError(error)
+    }
 }
 
 enum StoreCreationError: Error {

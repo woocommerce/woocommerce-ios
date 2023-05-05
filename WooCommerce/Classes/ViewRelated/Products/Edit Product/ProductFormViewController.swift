@@ -66,6 +66,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let showGroupedTableViewAppearance: Bool
 
+    private let aiEligibilityChecker: ProductFormAIEligibilityChecker
+
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
@@ -88,6 +90,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
         self.showGroupedTableViewAppearance = showGroupedTableViewAppearance
+        self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -459,10 +462,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isActionable else {
                     return
                 }
-                // TODO: Track row tapped
+                ServiceLocator.analytics.track(event: .ProductDetail.subscriptionsTapped())
                 showSubscriptionSettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.
+            case .quantityRules:
+                // TODO: 9252 - Add analytics
+                // TODO: 8960 - Navigate to quantity rules view
+                return
             }
         case .optionsCTA(let rows):
             let row = rows[indexPath.row]
@@ -1167,8 +1174,14 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editProductDescription() {
-        let editorViewController = EditorFactory().productDescriptionEditor(product: product) { [weak self] content in
-            self?.onEditProductDescriptionCompletion(newDescription: content)
+        let isAIGenerationEnabled = aiEligibilityChecker.isFeatureEnabled(.description)
+        let editorViewController = EditorFactory().productDescriptionEditor(product: product,
+                                                                            isAIGenerationEnabled: isAIGenerationEnabled) { [weak self] content, productName in
+            guard let self else { return }
+            if let productName {
+                self.onEditProductNameCompletion(newName: productName)
+            }
+            self.onEditProductDescriptionCompletion(newDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)
     }
@@ -1358,7 +1371,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editShortDescription() {
-        let editorViewController = EditorFactory().productShortDescriptionEditor(product: product) { [weak self] content in
+        let editorViewController = EditorFactory().productShortDescriptionEditor(product: product) { [weak self] content, _ in
             self?.onEditShortDescriptionCompletion(newShortDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)

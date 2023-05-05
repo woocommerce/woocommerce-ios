@@ -204,6 +204,17 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.fixedProductDiscountIcon)
     }
 
+    func test_magicWandIcon_is_not_nil() {
+        // Given
+        let size = CGSize(width: 10, height: 20)
+
+        // When
+        let image = UIImage.magicWandIcon(size: size)
+
+        // Then
+        XCTAssertEqual(size, image.size)
+    }
+
     func test_percentage_discount_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.percentageDiscountIcon)
     }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-25 11:54:03+0000 */
+/* Translation-Revision-Date: 2023-04-30 02:10:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -36,7 +36,8 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@（对客户可见）";
 
-/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 / 2 months'.
+   The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ \/ %2$@" = "%1$@\/%2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
@@ -380,6 +381,7 @@ which should be translated separately and considered part of this sentence. */
 "Activating" = "激活";
 
 /* Application's Active State
+   Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "激活";
 
@@ -815,6 +817,7 @@ which should be translated separately and considered part of this sentence. */
 "Application Name" = "应用程序名称";
 
 /* Apply navigation button in custom range date picker
+   Button title to insert AI-generated product description.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "应用";
@@ -1257,7 +1260,8 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "取消安装";
 
-/* Display label for cancelled order status. */
+/* Display label for cancelled order status.
+   Display label for the subscription status type */
 "Cancelled" = "已取消";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1644,8 +1648,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "正在连接到 WordPress.com 站点";
 
-/* Bottom title of the alert presented with a spinner while the reader is being prepared
-   Title label for modal dialog that appears when connecting to a card reader */
+/* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "正在连接阅读器";
 
 /* Error message when establishing a connection to the card reader times out. */
@@ -1737,7 +1740,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cook Islands" = "库克群岛";
 
-/* Copy address text button title — should be one word and as short as possible. */
+/* Button title to copy generated text in the product description AI generator view.
+   Copy address text button title — should be one word and as short as possible. */
 "Copy" = "复制";
 
 /* Action title for copying coupon code from the Coupon Details screen */
@@ -2751,7 +2755,8 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "过期时间：%@";
 
-/* Status of coupons that are expired */
+/* Display label for the subscription status type
+   Status of coupons that are expired */
 "Expired" = "已过期";
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
@@ -2905,9 +2910,6 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "固定的产品折扣";
 
-/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
-"Follow reader instructions to pay" = "按照读卡器说明进行付款";
-
 /* User role badge */
 "Follower" = "粉丝";
 
@@ -2970,6 +2972,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* General section title in the hub menu */
 "General" = "常规";
+
+/* Button title to generate product description with Jetpack AI. */
+"Generate" = "生成";
 
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "生成新变体";
@@ -4772,7 +4777,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payments" = "付款";
 
 /* Display label for pending order status.
-   Display label for the review's pending status */
+   Display label for the review's pending status
+   Display label for the subscription status type */
 "Pending" = "待审";
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
@@ -4842,10 +4848,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "请为读卡器充电";
 
-/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "请检查您的手机是否符合这些要求：运行 iOS 16.0 或以上版本的 iPhone XS 或更新机型。 如果支持的设备上显示该错误，请联系支持团队。";
 
-/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "请检查您的 Apple ID 是否有效，然后重试。 接受 Apple 的服务条款时需要使用一个有效的 Apple ID";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
@@ -4854,7 +4860,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "请将您的商店连接到 Jetpack，以便在此应用程序上访问商店。";
 
-/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "请联系支持人员 – 在 iPhone 上启动“点按付款”时出现问题";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -4944,7 +4950,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "请选择包裹";
 
-/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
 "Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "请在此设备上登录 iCloud，以便在 iPhone 上使用“点按付款”";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
@@ -4965,7 +4971,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "请重试或与我们联系，我们很乐意为您提供帮助！";
 
-/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
 "Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "请重试，并接受 Apple 的服务条款，以便您可以在 iPhone 上使用“点按付款”";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
@@ -5041,6 +5047,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Poland" = "波兰";
 
+/* Section title for popular products on the Select Product screen. */
+"Popular" = "热门";
+
 /* Country option for a site address. */
 "Portugal" = "葡萄牙";
 
@@ -5064,9 +5073,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "正在准备文档";
-
-/* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader" = "正在准备 iPhone 读卡器...";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "出示卡片以付款";
@@ -5239,6 +5245,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Section title for products on the Select Product screen.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
    Title of the 'Products' tab - used for spotlight indexing on iOS.
@@ -5467,7 +5474,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
-   Title for removing an attribute in the edit attribute action sheet. */
+   Title for removing an attribute in the edit attribute action sheet.
+   Title for the action button on the confirm alert for hiding store onboarding task list */
 "Remove" = "删除";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -6329,7 +6337,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "很抱歉，我们无法创建您的支持请求，请稍后再试。";
 
-/* Error message when the built-in reader connection experiences an unexpected internal service error. */
+/* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "抱歉，我们无法在 iPhone 上启用“点按付款”功能。 请检查您的连接，然后重试。";
 
 /* No comment provided by engineer. */
@@ -6467,7 +6475,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the subscription price setting in the subscription settings screen. */
 "Subscription price" = "订阅价格";
 
-/* Title for the Subscriptions / Upgrades view */
+/* Subscriptions section title
+   Title for the Subscriptions / Upgrades view */
 "Subscriptions" = "订阅";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
@@ -6610,10 +6619,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tap or insert card to refund" = "点击或插卡以退款";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
-   The button title on the reader type alert, for the user to choose the built-in reader. */
+   The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "点击以在 iPhone 上付款";
 
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is a call in progress */
 "Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "通话期间无法在 iPhone 上使用“点按付款”。 请在结束通话后重试。";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
@@ -6808,10 +6817,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle text in the store creation loading screen */
 "The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "Woo 团队由超过 350 名才华横溢的员工组成，他们分布在超过 30 个国家和地区。";
 
-/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该金额 – 请尝试使用硬件读卡器或换一种付款方式。";
 
-/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device's NFC chipset has been disabled by a device management policy. */
 "The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "此应用无法启用 iPhone 上的“点按付款”，因为已禁用 NFC 芯片。 请联系支持团队以了解详情。";
 
 /* Error title when trying to remove an attribute remotely. */
@@ -6880,7 +6889,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "优惠券代码不能为空";
 
-/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the currency for payment is not supported for Tap to Pay on iPhone. */
 "The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该币种 – 请尝试使用硬件读卡器或换一种付款方式。";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
@@ -6894,9 +6903,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "购买的域名会将用户重定向至您的主要地址。";
-
-/* Label within the modal dialog that appears when connecting to a built in card reader */
-"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "第一次连接时，系统可能会提醒您接受 Apple 的服务条款。";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "新定制包裹名称不唯一。";
@@ -7093,7 +7099,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "收款时出错。";
 
-/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there was some issue with the connection. Retryable. */
 "There was an issue preparing to use Tap to Pay on iPhone – please try again." = "准备在 iPhone 上使用“点按付款”时出现问题 – 请重试。";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
@@ -8385,7 +8391,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "您需要添加密码，以便通过密码保护产品";
 
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "您需要设置锁屏密码，才能在 iPhone 上使用“点按付款”";
 
 /* No comment provided by engineer. */
@@ -8531,9 +8537,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
-
-/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
-"iPhone reader is ready" = "iPhone 读卡器已准备就绪";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "此应用程序通过蓝牙来连接到支持的读卡器。";

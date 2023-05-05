@@ -41,6 +41,7 @@ enum ProductFormEditAction: Equatable {
     case subscription(actionable: Bool)
     // Variable Subscription products only
     case noVariationsWarning
+    case quantityRules
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -75,6 +76,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
     private let isSubscriptionProductsEnabled: Bool
+    private let isMinMaxQuantitiesEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -89,7 +91,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isDownloadableFilesSettingBased: Bool = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing),
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
-         isSubscriptionProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts),
+         isSubscriptionProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
+         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -106,6 +109,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isSubscriptionProductsEnabled = isSubscriptionProductsEnabled
+        self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -182,12 +186,14 @@ private extension ProductFormActionsFactory {
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowDownloadableProduct = isDownloadableFilesSettingBased ? product.downloadable : true
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable, hideSeparator: false),
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
@@ -205,12 +211,14 @@ private extension ProductFormActionsFactory {
         let shouldShowExternalURLRow = editable || product.product.externalURL?.isNotEmpty == true
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
         let canEditProductType = formType != .add && editable
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable, hideSeparator: false),
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowExternalURLRow ? .externalURL(editable: editable): nil,
             shouldShowSKURow ? .sku(editable: editable): nil,
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
@@ -225,11 +233,13 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
         let canEditProductType = formType != .add && editable
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .groupedProducts(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowSKURow ? .sku(editable: editable): nil,
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
@@ -250,6 +260,7 @@ private extension ProductFormActionsFactory {
             let productHasNoPriceSet = variationsPrice == .unknown && product.product.variations.isNotEmpty && product.product.price.isEmpty
             return canEditProductType && (variationsHaveNoPriceSet || productHasNoPriceSet)
         }()
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .variations(hideSeparator: shouldShowNoPriceWarningRow),
@@ -258,6 +269,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             .shippingSettings(editable: editable),
             .inventorySettings(editable: canEditInventorySettingsRow),
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
@@ -273,12 +285,14 @@ private extension ProductFormActionsFactory {
         let canOpenBundledProducts = product.bundledItems.isNotEmpty
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             shouldShowBundledProductsRow ? .bundledProducts(actionable: canOpenBundledProducts) : nil,
             shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -294,12 +308,14 @@ private extension ProductFormActionsFactory {
         let canOpenComponents = product.compositeComponents.isNotEmpty
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             shouldShowComponentsRow ? .components(actionable: canOpenComponents) : nil,
             shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -321,11 +337,13 @@ private extension ProductFormActionsFactory {
             }
         }()
         let shouldShowReviewsRow = product.reviewsAllowed
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             subscriptionOrPriceRow,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -340,12 +358,14 @@ private extension ProductFormActionsFactory {
         let shouldShowNoVariationsWarning = product.product.variations.isEmpty
         let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowReviewsRow = product.reviewsAllowed
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
             shouldShowAttributesRow ? .attributes(editable: editable) : nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -359,11 +379,13 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
+            shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
@@ -450,6 +472,9 @@ private extension ProductFormActionsFactory {
             // The subscription row is always visible in the settings section for a subscription product.
             return true
         case .noVariationsWarning:
+            // Always visible when available
+            return true
+        case .quantityRules:
             // Always visible when available
             return true
         default:

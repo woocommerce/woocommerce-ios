@@ -31,7 +31,7 @@ public struct Subscription: Decodable, Equatable, GeneratedFakeable, GeneratedCo
     public let startDate: Date
 
     /// The subscription's end date in GMT.
-    public let endDate: Date
+    public let endDate: Date?
 
     /// Subscription struct initializer.
     ///
@@ -44,7 +44,7 @@ public struct Subscription: Decodable, Equatable, GeneratedFakeable, GeneratedCo
                 billingInterval: String,
                 total: String,
                 startDate: Date,
-                endDate: Date) {
+                endDate: Date?) {
         self.siteID = siteID
         self.subscriptionID = subscriptionID
         self.parentID = parentID
@@ -74,7 +74,7 @@ public struct Subscription: Decodable, Equatable, GeneratedFakeable, GeneratedCo
         let billingInterval = try container.decode(String.self, forKey: .billingInterval)
         let total = try container.decode(String.self, forKey: .total)
         let startDate = try container.decode(Date.self, forKey: .startDate)
-        let endDate = try container.decode(Date.self, forKey: .endDate)
+        let endDate = try? container.decode(Date.self, forKey: .endDate)
 
         self.init(siteID: siteID,
                   subscriptionID: subscriptionID,

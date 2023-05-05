@@ -339,7 +339,6 @@ extension Networking.JustInTimeMessage {
             siteID: .fake(),
             messageID: .fake(),
             featureClass: .fake(),
-            ttl: .fake(),
             content: .fake(),
             cta: .fake(),
             assets: .fake()

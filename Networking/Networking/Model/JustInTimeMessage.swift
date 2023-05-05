@@ -18,10 +18,6 @@ public struct JustInTimeMessage: GeneratedCopiable, GeneratedFakeable, Equatable
     ///
     public let featureClass: String
 
-    /// TTL, or Time To Live: validity of the JITM's client-side dismissal in seconds, only relevant after dismissal.
-    ///
-    public let ttl: Int64
-
     /// Content of the JITM: in particular, the title and description of the message
     ///
     public let content: Content
@@ -37,14 +33,12 @@ public struct JustInTimeMessage: GeneratedCopiable, GeneratedFakeable, Equatable
     public init(siteID: Int64,
                 messageID: String,
                 featureClass: String,
-                ttl: Int64,
                 content: JustInTimeMessage.Content,
                 cta: JustInTimeMessage.CTA,
                 assets: [String: URL]) {
         self.siteID = siteID
         self.messageID = messageID
         self.featureClass = featureClass
-        self.ttl = ttl
         self.content = content
         self.cta = cta
         self.assets = assets
@@ -55,7 +49,6 @@ extension JustInTimeMessage: Codable {
     enum CodingKeys: String, CodingKey {
         case messageID = "id"
         case featureClass = "feature_class"
-        case ttl
         case content
         case cta = "CTA"
         case assets
@@ -71,7 +64,6 @@ extension JustInTimeMessage: Codable {
         self.siteID = siteID
         self.messageID = try container.decode(String.self, forKey: JustInTimeMessage.CodingKeys.messageID)
         self.featureClass = try container.decode(String.self, forKey: JustInTimeMessage.CodingKeys.featureClass)
-        self.ttl = try container.decode(Int64.self, forKey: JustInTimeMessage.CodingKeys.ttl)
         self.content = try container.decode(JustInTimeMessage.Content.self, forKey: JustInTimeMessage.CodingKeys.content)
         self.cta = try container.decode(JustInTimeMessage.CTA.self, forKey: JustInTimeMessage.CodingKeys.cta)
         self.assets = try container.decodeIfPresent([String: URL].self, forKey: .assets) ?? [:]
@@ -82,7 +74,6 @@ extension JustInTimeMessage: Codable {
 
         try container.encode(self.messageID, forKey: JustInTimeMessage.CodingKeys.messageID)
         try container.encode(self.featureClass, forKey: JustInTimeMessage.CodingKeys.featureClass)
-        try container.encode(self.ttl, forKey: JustInTimeMessage.CodingKeys.ttl)
         try container.encode(self.content, forKey: JustInTimeMessage.CodingKeys.content)
         try container.encode(self.cta, forKey: JustInTimeMessage.CodingKeys.cta)
         try container.encode(self.assets, forKey: .assets)

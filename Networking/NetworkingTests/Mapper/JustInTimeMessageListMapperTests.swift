@@ -34,7 +34,6 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
             siteID: dummySiteID,
             messageID: "woomobile_ipp_barcode_users",
             featureClass: "woomobile_ipp",
-            ttl: 300,
             content: JustInTimeMessage.Content(
                 message: "In-person card payments",
                 description: "Sell anywhere, and take card payments using a mobile card reader."),
@@ -55,7 +54,6 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
         let expectedJustInTimeMessage = JustInTimeMessage(siteID: dummySiteID,
                                                           messageID: "woomobile_ipp_barcode_users",
                                                           featureClass: "woomobile_ipp",
-                                                          ttl: 300,
                                                           content: JustInTimeMessage.Content(
                                                             message: "In-person card payments",
                                                             description: "Sell anywhere, and take card payments using a mobile card reader."),

@@ -29,10 +29,10 @@ final class FreeTrialBannerPresenter {
     /// Observable subscription store.
     ///
     private var subscriptions: Set<AnyCancellable> = []
-    
+
     /// Feature flag service.
     ///
-    private let featureFlagService: FeatureFlagService
+    private let inAppStoreUpgradeEnabled: Bool
 
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
@@ -46,7 +46,7 @@ final class FreeTrialBannerPresenter {
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
-        self.featureFlagService = featureFlagService
+        self.inAppStoreUpgradeEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
         observeStorePlan()
         observeConnectivity()
     }
@@ -111,7 +111,14 @@ private extension FreeTrialBannerPresenter {
         // Remove any previous banner.
         freeTrialBanner?.removeFromSuperview()
 
-        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
+        let actionText: String
+        if inAppStoreUpgradeEnabled {
+            actionText = Localization.upgradeNow
+        } else {
+            actionText = Localization.learnMore
+        }
+
+        let freeTrialViewController = FreeTrialBannerHostingViewController(actionText: actionText, mainText: contentText) { [weak self] in
             self?.showUpgradesView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -145,9 +152,8 @@ private extension FreeTrialBannerPresenter {
     ///
     func showUpgradesView() {
         guard let viewController else { return }
-        let upgradeEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
 
-        if upgradeEnabled {
+        if inAppStoreUpgradeEnabled {
             let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
                 self?.removeBanner() // Removes the banner immediately.
                 self?.reloadBannerVisibility() // Reloads the plan again in case the plan didn't update as expected.
@@ -157,5 +163,12 @@ private extension FreeTrialBannerPresenter {
             let upgradeController = UpgradesHostingController(siteID: siteID)
             viewController.show(upgradeController, sender: self)
         }
+    }
+}
+
+private extension FreeTrialBannerPresenter {
+    enum Localization {
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
     }
 }

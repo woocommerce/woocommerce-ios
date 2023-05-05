@@ -145,7 +145,17 @@ private extension FreeTrialBannerPresenter {
     ///
     func showUpgradesView() {
         guard let viewController else { return }
-        let upgradeController = UpgradesHostingController(siteID: siteID)
-        viewController.show(upgradeController, sender: self)
+        let upgradeEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
+
+        if upgradeEnabled {
+            let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
+                self?.removeBanner() // Removes the banner immediately.
+                self?.reloadBannerVisibility() // Reloads the plan again in case the plan didn't update as expected.
+            })
+            viewController.present(upgradeController, animated: true)
+        } else {
+            let upgradeController = UpgradesHostingController(siteID: siteID)
+            viewController.show(upgradeController, sender: self)
+        }
     }
 }

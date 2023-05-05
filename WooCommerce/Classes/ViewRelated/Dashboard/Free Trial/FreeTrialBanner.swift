@@ -5,8 +5,10 @@ import SwiftUI
 final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialBanner> {
     /// Designated initializer.
     ///
-    init(mainText: String, onLearnMoreTapped: @escaping () -> Void) {
-        super.init(rootView: FreeTrialBanner(mainText: mainText, onLearnMoreTapped: onLearnMoreTapped))
+    init(actionText: String, mainText: String, onLearnMoreTapped: @escaping () -> Void) {
+        super.init(rootView: FreeTrialBanner(actionText: actionText,
+                                             mainText: mainText,
+                                             onLearnMoreTapped: onLearnMoreTapped))
     }
 
     /// Needed for protocol conformance.
@@ -20,6 +22,10 @@ final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialB
 ///
 struct FreeTrialBanner: View {
 
+    /// Text to be rendered as the banner action button
+    ///
+    let actionText: String
+    
     /// Text to be rendered next to the info image.
     ///
     let mainText: String
@@ -40,7 +46,7 @@ struct FreeTrialBanner: View {
                     Text(mainText)
                         .bodyStyle()
 
-                    Text(Localization.learnMore)
+                    Text(actionText)
                         .underline(true)
                         .linkStyle()
                         .onTapGesture(perform: onLearnMoreTapped)
@@ -64,12 +70,13 @@ extension FreeTrialBanner {
 
     enum Localization {
         static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
     }
 }
 
 struct FreeTrial_Preview: PreviewProvider {
     static var previews: some View {
-        FreeTrialBanner(mainText: "Your Free trial has ended", onLearnMoreTapped: { })
+        FreeTrialBanner(actionText: "Upgrade now", mainText: "Your Free trial has ended", onLearnMoreTapped: { })
             .previewLayout(.sizeThatFits)
     }
 }

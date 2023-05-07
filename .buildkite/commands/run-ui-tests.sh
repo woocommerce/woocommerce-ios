@@ -20,6 +20,9 @@ tar -xf build-products.tar
 echo "--- :rubygems: Setting up Gems"
 install_gems
 
+echo "--- :swift: Setting up Swift Packages"
+install_swiftpm_dependencies
+
 echo "--- 🧪 Testing"
 xcrun simctl list >> /dev/null
 rake mocks &

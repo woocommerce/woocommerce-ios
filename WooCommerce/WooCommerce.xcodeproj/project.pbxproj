@@ -1148,6 +1148,10 @@
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
 		581D5052274AA2480089B6AD /* View+AutofocusTextModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */; };
+		621AB4B729E93E0A001D8AEA /* CouponSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621AB4B629E93E0A001D8AEA /* CouponSelectorView.swift */; };
+		627C44E629EBC5EE001A2B59 /* CouponRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627C44E529EBC5EE001A2B59 /* CouponRow.swift */; };
+		627C44E829EBC94D001A2B59 /* CouponRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627C44E729EBC94D001A2B59 /* CouponRowViewModel.swift */; };
+		62C5805E29ED4FE50000988F /* CouponSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C5805D29ED4FE50000988F /* CouponSelectorViewModel.swift */; };
 		682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */; };
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
@@ -3336,6 +3340,10 @@
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AutofocusTextModifier.swift"; sourceTree = "<group>"; };
+		621AB4B629E93E0A001D8AEA /* CouponSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponSelectorView.swift; sourceTree = "<group>"; };
+		627C44E529EBC5EE001A2B59 /* CouponRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponRow.swift; sourceTree = "<group>"; };
+		627C44E729EBC94D001A2B59 /* CouponRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponRowViewModel.swift; sourceTree = "<group>"; };
+		62C5805D29ED4FE50000988F /* CouponSelectorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponSelectorViewModel.swift; sourceTree = "<group>"; };
 		682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommandTests.swift; sourceTree = "<group>"; };
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
@@ -5715,6 +5723,7 @@
 		03FBDA9B263AD47200ACE257 /* Coupons */ = {
 			isa = PBXGroup;
 			children = (
+				627C44E429EBC5D9001A2B59 /* CouponSelector */,
 				DE74F2A127E41D4F0002FE59 /* EnableAnalytics */,
 				DE7B479127A38ABC0018742E /* CouponDetails */,
 				4572641527F1EABE004E1F95 /* Add and Edit Coupons */,
@@ -7077,6 +7086,17 @@
 				57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */,
 			);
 			path = TitleAndEditableValueTableViewCell;
+			sourceTree = "<group>";
+		};
+		627C44E429EBC5D9001A2B59 /* CouponSelector */ = {
+			isa = PBXGroup;
+			children = (
+				621AB4B629E93E0A001D8AEA /* CouponSelectorView.swift */,
+				62C5805D29ED4FE50000988F /* CouponSelectorViewModel.swift */,
+				627C44E529EBC5EE001A2B59 /* CouponRow.swift */,
+				627C44E729EBC94D001A2B59 /* CouponRowViewModel.swift */,
+			);
+			path = CouponSelector;
 			sourceTree = "<group>";
 		};
 		682210EB2909664800814E14 /* Customer */ = {
@@ -10918,6 +10938,7 @@
 				CC13C0CB278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift in Sources */,
 				020732042988AB7B000A53C2 /* DomainContactInfoForm.swift in Sources */,
 				DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */,
+				62C5805E29ED4FE50000988F /* CouponSelectorViewModel.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
 				CCF4346E290AE1F900B4475A /* ProductsOnboardingAnnouncementCardViewModel.swift in Sources */,
@@ -11249,6 +11270,7 @@
 				45912FE32526642200982948 /* ProductFormViewController+Helpers.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
+				627C44E629EBC5EE001A2B59 /* CouponRow.swift in Sources */,
 				AEACCB6D2785FF4A000D01F0 /* NavigationRow.swift in Sources */,
 				DE50294928BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift in Sources */,
 				CC857C7529B23AE100E19D1E /* BundledProductsListViewModel.swift in Sources */,
@@ -11408,6 +11430,7 @@
 				0304E36628BE1EED00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				26E0ADF12631D94D00A5EB3B /* TopBannerWrapperView.swift in Sources */,
+				627C44E829EBC94D001A2B59 /* CouponRowViewModel.swift in Sources */,
 				26C6E8EA26E8FD3900C7BB0F /* LazyView.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
 				4567389D2745497C00743054 /* OrderStatusFilterViewController.swift in Sources */,
@@ -11976,6 +11999,7 @@
 				45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */,
 				038BC37F29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift in Sources */,
 				E16715CB26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift in Sources */,
+				621AB4B729E93E0A001D8AEA /* CouponSelectorView.swift in Sources */,
 				028CB70F290138EF00331C09 /* Publisher+Concurrency.swift in Sources */,
 				311F827426CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift in Sources */,
 				020DD0AF294A06C400727BEF /* StoreCreationSellingStatusQuestionView.swift in Sources */,

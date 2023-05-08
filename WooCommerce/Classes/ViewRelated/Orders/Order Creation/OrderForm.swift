@@ -97,8 +97,6 @@ struct OrderForm: View {
     ///
     var dismissHandler: (() -> Void) = {}
 
-    // TODO-gm: Move the FF here
-
     @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Fix for breaking navbar button
@@ -223,9 +221,6 @@ private struct MultipleLinesMessage: View {
 private struct ProductsSection: View {
     let scroll: ScrollViewProxy
 
-    // TODO-gm: Extract the flag to the EditableOrderViewModel via injecting it into Orderform
-    let isAddProductToOrderViaBarcodeScannerEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
-
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -311,7 +306,7 @@ private struct ProductsSection: View {
                 }, content: {
                     EmptyView()
                 })
-                .renderedIf(isAddProductToOrderViaBarcodeScannerEnabled)
+                .renderedIf(viewModel.isAddProductToOrderViaBarcodeScannerEnabled)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()

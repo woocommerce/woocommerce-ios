@@ -30,7 +30,7 @@ final class FreeTrialBannerPresenter {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    /// Feature flag service.
+    /// Flag reflecting when it's possible to upgrade a store plan from the app.
     ///
     private let inAppStoreUpgradeEnabled: Bool
 

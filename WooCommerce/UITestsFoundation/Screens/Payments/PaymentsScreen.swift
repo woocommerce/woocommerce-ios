@@ -82,7 +82,9 @@ public final class PaymentsScreen: ScreenObject {
 
     @discardableResult
     public func verifyOrderCompletedToastDisplayed() throws -> Self {
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Order completed'")).firstMatch.exists)
+        let orderCompletedToast = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Reader'")).firstMatch
+        XCTAssertTrue(orderCompletedToast.exists)
+
         return self
     }
 

@@ -51,7 +51,7 @@ struct BundledProductsList: View {
                             .accessibilityHidden(true)
                             .padding(.leading)
 
-                        TitleAndSubtitleRow(title: bundledProduct.title, subtitle: bundledProduct.stockStatus)
+                        TitleAndSubtitleRow(title: bundledProduct.title, subtitle: bundledProduct.subtitle)
                             .accessibilityElement(children: .combine)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
@@ -80,9 +80,9 @@ private enum Layout {
 struct BundledProductsList_Previews: PreviewProvider {
 
     static let viewModel = BundledProductsListViewModel(bundledProducts: [
-        .init(id: 1, title: "Beanie with Logo", stockStatus: "In stock", imageURL: nil),
-        .init(id: 2, title: "T-Shirt with Logo", stockStatus: "In stock", imageURL: nil),
-        .init(id: 3, title: "Hoodie with Logo", stockStatus: "Out of stock", imageURL: nil)
+        .init(id: 1, title: "Beanie with Logo", stockStatus: "In stock", sku: "beanie-with-logo", imageURL: nil),
+        .init(id: 2, title: "T-Shirt with Logo", stockStatus: "In stock", sku: "t-shirt-with-logo", imageURL: nil),
+        .init(id: 3, title: "Hoodie with Logo", stockStatus: "Out of stock", sku: nil, imageURL: nil)
     ])
 
     static var previews: some View {

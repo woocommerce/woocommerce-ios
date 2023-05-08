@@ -32,25 +32,6 @@ class BetaFeaturesTests: XCTestCase {
         XCTAssertEqual(enabled, true)
     }
 
-    func test_productSKUScanner_defaults_to_false() {
-        let enabled = appSettings.betaFeatureEnabled(.productSKUScanner)
-        XCTAssertEqual(enabled, false)
-    }
-
-    func test_productSKUScanner_defaults_saves_value() throws {
-        try appSettings.setBetaFeatureEnabled(.productSKUScanner, enabled: true)
-        let enabled = appSettings.betaFeatureEnabled(.productSKUScanner)
-        XCTAssertEqual(enabled, true)
-    }
-
-    func test_productSKUScanner_binding_reads_and_writes_value() {
-        let enabledBinding = appSettings.betaFeatureEnabledBinding(.productSKUScanner)
-        XCTAssertEqual(enabledBinding.wrappedValue, false)
-        enabledBinding.wrappedValue = true
-        let enabled = appSettings.betaFeatureEnabled(.productSKUScanner)
-        XCTAssertEqual(enabled, true)
-    }
-
     func test_couponManagement_defaults_to_false() {
         let enabled = appSettings.betaFeatureEnabled(.couponManagement)
         XCTAssertEqual(enabled, false)

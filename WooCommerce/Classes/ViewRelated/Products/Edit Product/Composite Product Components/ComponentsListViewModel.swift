@@ -57,9 +57,9 @@ extension ComponentsListViewModel {
     convenience init(siteID: Int64, components: [ProductCompositeComponent]) {
         let viewModels = components.map { component in
             return Component(id: component.componentID,
-                             title: component.title,
+                             title: component.title.strippedHTML,
                              imageURL: URL(string: component.imageURL),
-                             description: component.description,
+                             description: component.description.strippedHTML.trimmingCharacters(in: .whitespacesAndNewlines),
                              optionType: component.optionType,
                              optionIDs: component.optionIDs,
                              defaultOptionID: component.defaultOptionID)

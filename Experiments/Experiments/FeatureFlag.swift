@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Barcode scanner for product SKU input
-    ///
-    case productSKUInputScanner
-
     /// Displays the Inbox option under the Hub Menu.
     ///
     case inbox
@@ -160,6 +156,10 @@ public enum FeatureFlag: Int {
     ///
     case freeTrial
 
+    /// Enables free trial store upgrades inside the app
+    ///
+    case freeTrialUpgrade
+
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin
@@ -191,4 +191,8 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Min/Max Quantities extension
     ///
     case readOnlyMinMaxQuantities
+
+    /// Enables updates of the Privacy Choices project.
+    ///
+    case privacyChoices
 }

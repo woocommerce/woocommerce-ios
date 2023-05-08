@@ -13,8 +13,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .productSKUInputScanner:
-            return true
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
@@ -73,6 +71,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .freeTrial:
             return true
+        case .freeTrialUpgrade:
+            return false
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
@@ -89,6 +89,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .readOnlyMinMaxQuantities:
             return true
+        case .privacyChoices:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -336,7 +336,7 @@ extension HubMenuViewModel {
         let icon: UIImage = .shoppingCartPurpleIcon
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-subscriptions"
-        let trackingOption: String = "subscriptions"
+        let trackingOption: String = "upgrades"
     }
 
     struct Upgrades: HubMenuItem {

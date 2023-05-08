@@ -492,11 +492,17 @@ private extension ProductStore {
                                     features: String,
                                     languageCode: String,
                                     completion: @escaping (Result<String, Error>) -> Void) {
-        let prompt = "Perform in-depth keyword research for a product on an e-commerce store and return a product description " +
-        "that includes as many keywords as possible and at least 200 words. " +
-        "The tone should be professional and without many questions. " +
-        "Try to make shorter sentences, using less difficult words to improve readability. " +
-        "Product name: \(name)\nFeatures: \(features)\nLanguage: \(languageCode)"
+        let prompt = [
+            "Your task is to help a marketing team create a description for a retail website of a product based on the " +
+            "properties delimited by triple backticks at the end.",
+            "Some requirements for the description are:",
+            "- Perform in-depth keyword research for the product, and include as many keywords in the description as possible. " +
+            "Do not output the list of keywords",
+            "- In language \(languageCode)",
+            "- The length should be up to 50-60 words in English, or equivalent length in other languages",
+            "- Try to make shorter sentences, using less difficult words to improve readability\n",
+            "```Product name: \(name)\nProduct features: \(features)```"
+        ].joined(separator: "\n")
         Task {
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }
             await MainActor.run {

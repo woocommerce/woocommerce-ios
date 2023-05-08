@@ -14,10 +14,6 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Barcode scanner for product SKU input
-    ///
-    case productSKUInputScanner
-
     /// Displays the Inbox option under the Hub Menu.
     ///
     case inbox
@@ -45,10 +41,6 @@ public enum FeatureFlag: Int {
     /// Local notifications scheduled 24 hours after certain login errors
     ///
     case loginErrorNotifications
-
-    /// Whether to prefer magic link to password in the login flow
-    ///
-    case loginMagicLinkEmphasis
 
     /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
     ///
@@ -164,6 +156,10 @@ public enum FeatureFlag: Int {
     ///
     case freeTrial
 
+    /// Enables free trial store upgrades inside the app
+    ///
+    case freeTrialUpgrade
+
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin
@@ -195,6 +191,10 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Min/Max Quantities extension
     ///
     case readOnlyMinMaxQuantities
+
+    /// Enables updates of the Privacy Choices project.
+    ///
+    case privacyChoices
 
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///

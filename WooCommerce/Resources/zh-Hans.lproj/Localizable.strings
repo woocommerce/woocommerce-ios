@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-30 02:10:07+0000 */
+/* Translation-Revision-Date: 2023-05-04 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -2098,6 +2098,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "描述您的产品";
 
+/* Product features placeholder in the product description AI generator view. */
+"Describe your product features" = "描述您的产品特征";
+
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "向您的潜在客户描述您的产品…";
 
@@ -2571,6 +2574,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "输入密码";
 
+/* Product name placeholder in the product description AI generator view. */
+"Enter product name" = "输入产品名称";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "输入您要关联的 WooCommerce 商店的地址。";
 
@@ -2910,6 +2916,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "固定的产品折扣";
 
+/* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
+"Follow the on-screen instructions to pay" = "按照屏幕上的说明付款";
+
 /* User role badge */
 "Follower" = "粉丝";
 
@@ -2988,6 +2997,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title to allow the user confirm if they want to generate all variations */
 "Generate all variations?" = "生成所有变体？";
 
+/* Accessibility label to generate product description with Jetpack AI from the Aztec editor. */
+"Generate product description with AI" = "使用 AI 生成产品描述";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "正在生成变量";
 
@@ -3061,6 +3073,10 @@ which should be translated separately and considered part of this sentence. */
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "礼品";
 
+/* Gift Cards label for payment view
+   Gift Cards section title */
+"Gift Cards" = "礼品卡";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
@@ -3099,6 +3115,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Grenada" = "格林纳达";
+
+/* Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row */
+"Group of: %@" = "组数：%@";
 
 /* Display label for grouped product type. */
 "Grouped" = "已分组";
@@ -3234,6 +3253,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "已隐藏";
+
+/* Action title for hiding store onboarding task list
+   Title of the Hide store setup list button in the action sheet. */
+"Hide store setup list" = "隐藏商店设置列表";
 
 /* Industry option in the store creation category question. */
 "Home, furniture, and garden" = "家居、家具和园艺";
@@ -3657,6 +3680,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Analytics Hub Last Quarter selection range */
 "Last Quarter" = "最后一个季度";
 
+/* Section title for last sold products on the Select Product screen. */
+"Last Sold" = "上次销售";
+
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "上周";
 
@@ -4019,6 +4045,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "最高 消费 (%1$@)";
 
+/* Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row */
+"Maximum quantity: %@" = "最大数量：%@";
+
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "最高消费金额：%1$@";
 
@@ -4059,6 +4088,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "最低 消费 (%1$@)";
+
+/* Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row */
+"Minimum quantity: %@" = "最小数量：%@";
 
 /* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Minimum spend of %1$@" = "最低消费金额：%1$@";
@@ -4461,6 +4493,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Spoken label to indicate switch control is turned on */
 "On" = "打开";
 
+/* Display label for the subscription status type */
+"On Hold" = "保留";
+
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
 "On back order" = "延迟交货";
@@ -4781,6 +4816,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the subscription status type */
 "Pending" = "待审";
 
+/* Display label for the subscription status type */
+"Pending Cancel" = "待取消";
+
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "待审核";
 
@@ -5071,8 +5109,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "高级版主题";
 
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing Tap to Pay on iPhone" = "正在准备 iPhone 上的“点按付款”功能";
+
+/* Bottom title of the alert presented with a spinner while Tap to Pay on iPhone is being prepared */
+"Preparing Tap to Pay on iPhone " = "正在准备 iPhone 上的“点按付款”功能 ";
+
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "正在准备文档";
+
+/* Bottom title of the alert presented with a spinner while the reader is being prepared */
+"Preparing reader" = "正在准备阅读器";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "出示卡片以付款";
@@ -5329,6 +5376,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The accessibility label for the quantity button when selecting an item to refund
    Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "数量";
+
+/* Title for Quantity Rules row in the product form screen. */
+"Quantity Rules" = "数量规则";
 
 /* Navigation title on the quantity item selector screen */
 "Quantity to refund" = "退款的产品数量";
@@ -6434,6 +6484,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "商店设置";
 
+/* Controls store onboarding setup list visibility. */
+"Store Setup List" = "商店设置列表";
+
 /* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "商店创建仍在进行中";
 
@@ -6471,6 +6524,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for Subscription row in the product form screen.
    Title for the subscription settings in a subscription product. */
 "Subscription" = "订阅";
+
+/* Subscription title with subscription number. Reads like: 'Subscription #123' */
+"Subscription #%d" = "订阅编号%d";
 
 /* Label for the subscription price setting in the subscription settings screen. */
 "Subscription price" = "订阅价格";
@@ -6624,6 +6680,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because there is a call in progress */
 "Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "通话期间无法在 iPhone 上使用“点按付款”。 请在结束通话后重试。";
+
+/* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
+"Tap to Pay on iPhone is ready" = "iPhone 上的“点按付款”功能已就绪";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "轻点以插入水平标尺";
@@ -6903,6 +6962,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "购买的域名会将用户重定向至您的主要地址。";
+
+/* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
+"The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "第一次在 iPhone 上使用“点按付款”功能时，系统可能会提醒您接受 Apple 的服务条款。";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "新定制包裹名称不唯一。";
@@ -8294,6 +8356,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "与我们合作";
 
+/* Title in the product description AI generator view. */
+"Write product description" = "撰写产品描述";
+
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "错误帐户？";
 
@@ -8366,6 +8431,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "您可以在“wp-admin > WooCommerce > 设置（常规）”中设置商店的邮编";
+
+/* Confirm message for hiding store onboarding task list */
+"You can show it when you need it by going to Menu > Settings > Store" = "您可以在需要时，前往“菜单”>“设置”>“商店”将其设置为显示";
 
 /* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "您仍然可以在商店中启用“货到付款”的支付方式，来接受现场现金付款。";

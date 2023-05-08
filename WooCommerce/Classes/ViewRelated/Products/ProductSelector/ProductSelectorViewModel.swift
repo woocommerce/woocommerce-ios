@@ -110,10 +110,6 @@ final class ProductSelectorViewModel: ObservableObject {
     /// 
     @Published var productsSectionViewModels: [ProductsSectionViewModel] = []
 
-    /// Determines if multiple item selection is supported.
-    ///
-    let supportsMultipleSelection: Bool
-
     /// Determines if it is possible to toggle all variation items upon selection
     ///
     let toggleAllVariationsOnSelection: Bool
@@ -202,15 +198,12 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onCloseButtonTapped: (() -> Void)?
 
-    /// Initializer for single selection
-    ///
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         supportsMultipleSelection: Bool = false,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
@@ -223,7 +216,6 @@ final class ProductSelectorViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
-        self.supportsMultipleSelection = supportsMultipleSelection
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
@@ -234,46 +226,6 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
         tracker = ProductSelectorViewModelTracker(analytics: analytics, trackProductsSource: topProductsProvider != nil)
-
-        topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
-        tracker.viewModel = self
-
-        configureSyncingCoordinator()
-        refreshDataAndSync()
-        configureFirstPageLoad()
-        synchronizeProductFilterSearch()
-    }
-
-    /// Initializer for multiple selections
-    ///
-    init(siteID: Int64,
-         selectedItemIDs: [Int64],
-         purchasableItemsOnly: Bool = false,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics,
-         supportsMultipleSelection: Bool = false,
-         toggleAllVariationsOnSelection: Bool = true,
-         topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
-         onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
-         onAllSelectionsCleared: (() -> Void)? = nil,
-         onSelectedVariationsCleared: (() -> Void)? = nil,
-         onCloseButtonTapped: (() -> Void)? = nil) {
-        self.siteID = siteID
-        self.storageManager = storageManager
-        self.stores = stores
-        self.analytics = analytics
-        self.supportsMultipleSelection = supportsMultipleSelection
-        self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
-        self.onProductSelectionStateChanged = nil
-        self.onVariationSelectionStateChanged = nil
-        self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
-        self.initialSelectedItems = selectedItemIDs
-        self.purchasableItemsOnly = purchasableItemsOnly
-        self.onAllSelectionsCleared = onAllSelectionsCleared
-        self.onSelectedVariationsCleared = onSelectedVariationsCleared
-        self.onCloseButtonTapped = onCloseButtonTapped
-        self.tracker = ProductSelectorViewModelTracker(analytics: analytics, trackProductsSource: topProductsProvider != nil)
 
         topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
         tracker.viewModel = self
@@ -295,11 +247,6 @@ final class ProductSelectorViewModel: ObservableObject {
 
         guard let onProductSelectionStateChanged else {
             toggleSelection(productID: productID)
-            return
-        }
-        guard supportsMultipleSelection else {
-            // The selector supports single selection only
-            onProductSelectionStateChanged(selectedProduct)
             return
         }
         // The selector supports multiple selection. Toggles the item, and triggers the selection
@@ -328,7 +275,6 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
-                                                 supportsMultipleSelection: supportsMultipleSelection,
                                                  onVariationSelectionStateChanged: onVariationSelectionStateChanged,
                                                  onSelectionsCleared: onSelectedVariationsCleared)
     }

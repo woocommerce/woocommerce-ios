@@ -651,11 +651,13 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Given
         stores.updateDefaultStore(storeID: 6)
         stores.updateDefaultStore(.fake().copy(siteID: 6, isWordPressComStore: true))
+        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true,
+                                                        isProductDescriptionAIFromStoreOnboardingEnabled: true)
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: true,
                                            stores: stores,
                                            defaults: defaults,
-                                           featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true))
+                                           featureFlagService: featureFlagService)
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),

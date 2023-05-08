@@ -135,7 +135,7 @@ private extension StoreOnboardingViewModel {
             guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
                 return false
             }
-            let eligibilityChecker = ProductFormAIEligibilityChecker(site: stores.sessionManager.defaultSite)
+            let eligibilityChecker = ProductFormAIEligibilityChecker(site: stores.sessionManager.defaultSite, featureFlagService: featureFlagService)
             return eligibilityChecker.isFeatureEnabled(.description)
         }()
 

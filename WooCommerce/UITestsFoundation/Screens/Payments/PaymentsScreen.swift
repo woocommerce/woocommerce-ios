@@ -73,11 +73,8 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     public func takeCashPayment() throws -> Self {
-        takePaymentButton.waitForIsHittable(timeout: 10)
-        takePaymentButton.tap()
-
-        cashPaymentButton.waitForIsHittable(timeout: 10)
-        cashPaymentButton.tap()
+        takePaymentButton.waitAndTap()
+        cashPaymentButton.waitAndTap()
 
         markAsPaidButton.tap()
         return self

@@ -153,4 +153,10 @@ extension XCUIElement {
         '\(firstSubstring)' and '\(secondSubstring)' does not appear on label!
         """)
     }
+
+    /// timeout: timeout value, if not specified defaults to 10
+    public func waitAndTap(timeout: Double = 10) {
+        self.waitForIsHittable(timeout: timeout)
+        self.tap()
+    }
 }

@@ -25,7 +25,7 @@ struct FreeTrialBanner: View {
     /// Text to be rendered as the banner action button
     ///
     let actionText: String
-    
+
     /// Text to be rendered next to the info image.
     ///
     let mainText: String

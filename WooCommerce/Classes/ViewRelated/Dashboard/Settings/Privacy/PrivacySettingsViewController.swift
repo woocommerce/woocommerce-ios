@@ -130,12 +130,14 @@ private extension PrivacySettingsViewController {
         if isPrivacyChoicesEnabled {
             return sections = [
                 Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
-                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.analytics, .analyticsInfo]),
+                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy, .morePrivacyInfo]),
                 Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         } else {
             return sections = [
-                Section(title: nil, footer: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+                Section(title: nil,
+                        footer: nil,
+                        rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
                 Section(title: nil, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         }
@@ -155,6 +157,10 @@ private extension PrivacySettingsViewController {
             configureAnalytics(cell: cell)
         case let cell as BasicTableViewCell where row == .analyticsInfo:
             configureAnalyticsInfo(cell: cell)
+        case let cell as BasicTableViewCell where row == .morePrivacy:
+            configureMorePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .morePrivacyInfo:
+            configureMorePrivacyInfo(cell: cell)
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfo:
@@ -201,6 +207,22 @@ private extension PrivacySettingsViewController {
             "These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps.",
             comment: "Analytics toggle description in the privacy screen."
         )
+        configureInfo(cell: cell)
+    }
+
+    func configureMorePrivacy(cell: BasicTableViewCell) {
+        cell.imageView?.image = nil
+        cell.textLabel?.text = NSLocalizedString(
+            "Advertising Option",
+            comment: "More Privacy Options section title in the privacy screen."
+        )
+    }
+
+    func configureMorePrivacyInfo(cell: BasicTableViewCell) {
+        cell.imageView?.image = nil
+        cell.textLabel?.text = NSLocalizedString("More Privacy Options Available. Check here to learn more.",
+                                                 comment: "More Privacy toggle section in the privacy screen.")
+        cell.accessoryType = .disclosureIndicator
         configureInfo(cell: cell)
     }
 

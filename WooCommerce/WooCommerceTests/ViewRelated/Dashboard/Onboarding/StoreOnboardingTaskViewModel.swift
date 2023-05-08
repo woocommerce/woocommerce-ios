@@ -15,7 +15,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
         let task: StoreOnboardingTask = .init(isComplete: true, type: .addFirstProduct)
 
         // When
-        let sut = StoreOnboardingTaskViewModel(task: task)
+        let sut = StoreOnboardingTaskViewModel(task: task, isEligibleForProductDescriptionAI: false)
 
         // Then
         XCTAssertEqual(true, sut.isComplete)
@@ -26,7 +26,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
         let task: StoreOnboardingTask = .init(isComplete: true, type: .addFirstProduct)
 
         // When
-        let sut = StoreOnboardingTaskViewModel(task: task)
+        let sut = StoreOnboardingTaskViewModel(task: task, isEligibleForProductDescriptionAI: false)
 
         // Then
         XCTAssertEqual(task, sut.task)
@@ -34,7 +34,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
 
     func test_the_icon_is_correct_for_different_type_of_tasks() {
         for task in tasks {
-            let sut = StoreOnboardingTaskViewModel(task: task)
+            let sut = StoreOnboardingTaskViewModel(task: task, isEligibleForProductDescriptionAI: false)
             switch task.type {
             case .storeDetails:
                 XCTAssertEqual(sut.icon, .storeDetailsImage)
@@ -54,7 +54,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
 
     func test_the_title_is_correct_for_different_type_of_tasks() {
         for task in tasks {
-            let sut = StoreOnboardingTaskViewModel(task: task)
+            let sut = StoreOnboardingTaskViewModel(task: task, isEligibleForProductDescriptionAI: false)
             switch task.type {
             case .storeDetails:
                 XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.StoreDetails.title)
@@ -74,7 +74,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
 
     func test_the_subtitle_is_correct_for_different_type_of_tasks() {
         for task in tasks {
-            let sut = StoreOnboardingTaskViewModel(task: task)
+            let sut = StoreOnboardingTaskViewModel(task: task, isEligibleForProductDescriptionAI: false)
             switch task.type {
             case .storeDetails:
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.StoreDetails.subtitle)
@@ -88,6 +88,25 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.Payments.subtitle)
             case .unsupported:
                 XCTAssertEqual(sut.subtitle, "")
+            }
+        }
+    }
+
+    func test_the_badge_text_is_correct_for_different_type_of_tasks_when_site_is_not_eligible_for_description_AI() {
+        for task in tasks {
+            let sut = StoreOnboardingTaskViewModel(task: task, isEligibleForProductDescriptionAI: false)
+            XCTAssertNil(sut.badgeText)
+        }
+    }
+
+    func test_the_badge_text_is_correct_for_different_type_of_tasks_when_site_is_eligible_for_description_AI() {
+        for task in tasks {
+            let sut = StoreOnboardingTaskViewModel(task: task, isEligibleForProductDescriptionAI: true)
+            switch task.type {
+            case .addFirstProduct:
+                XCTAssertEqual(sut.badgeText, StoreOnboardingTaskViewModel.Localization.AddFirstProduct.badgeText)
+            default:
+                XCTAssertNil(sut.badgeText)
             }
         }
     }

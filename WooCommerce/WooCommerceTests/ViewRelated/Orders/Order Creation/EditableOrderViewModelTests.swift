@@ -33,7 +33,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_view_model_product_list_is_initialized_with_expected_values() {
         // Then
-        XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 

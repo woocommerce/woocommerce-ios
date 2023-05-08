@@ -107,38 +107,33 @@ struct StoreOnboardingTaskView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             Group {
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct),
-                                                         isEligibleForProductDescriptionAI: false),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct)),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
                 StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct),
-                                                         isEligibleForProductDescriptionAI: true),
+                                                         badgeText: "✨ AI content generator available."),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .launchStore),
-                                                         isEligibleForProductDescriptionAI: false),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .launchStore)),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .customizeDomains),
-                                                         isEligibleForProductDescriptionAI: false),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .customizeDomains)),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .payments),
-                                                         isEligibleForProductDescriptionAI: false),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .payments)),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: true, type: .payments),
-                                                         isEligibleForProductDescriptionAI: false),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: true, type: .payments)),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })

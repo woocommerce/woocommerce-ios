@@ -131,21 +131,30 @@ private extension StoreOnboardingViewModel {
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
         async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan
         let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
-        let isEligibleForProductDescriptionAI: Bool = {
-            guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
-                return false
-            }
-            let eligibilityChecker = ProductFormAIEligibilityChecker(site: stores.sessionManager.defaultSite, featureFlagService: featureFlagService)
-            return eligibilityChecker.isFeatureEnabled(.description)
-        }()
 
         if await shouldManuallyAppendLaunchStoreTask {
             return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
                 .sorted()
-                .map { .init(task: $0, isEligibleForProductDescriptionAI: isEligibleForProductDescriptionAI) }
+                .map { .init(task: $0, badgeText: badgeText(task: $0.type)) }
         } else {
             return tasksFromServer
-                .map { .init(task: $0, isEligibleForProductDescriptionAI: isEligibleForProductDescriptionAI) }
+                .map { .init(task: $0, badgeText: badgeText(task: $0.type)) }
+        }
+    }
+
+    func badgeText(task: StoreOnboardingTask.TaskType) -> String? {
+        switch task {
+        case .addFirstProduct:
+            let isEligibleForProductDescriptionAI: Bool = {
+                guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
+                    return false
+                }
+                let eligibilityChecker = ProductFormAIEligibilityChecker(site: stores.sessionManager.defaultSite, featureFlagService: featureFlagService)
+                return eligibilityChecker.isFeatureEnabled(.description)
+            }()
+            return isEligibleForProductDescriptionAI ? StoreOnboardingTaskViewModel.Localization.AddFirstProduct.badgeText: nil
+        default:
+            return nil
         }
     }
 
@@ -262,7 +271,7 @@ private extension StoreOnboardingViewModel {
 private extension StoreOnboardingTaskViewModel {
     static func placeHolder() -> Self {
         .init(task: .init(isComplete: true,
-                          type: .launchStore), isEligibleForProductDescriptionAI: false)
+                          type: .launchStore))
     }
 }
 

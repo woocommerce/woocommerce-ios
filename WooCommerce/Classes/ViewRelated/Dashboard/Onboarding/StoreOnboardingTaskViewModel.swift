@@ -13,40 +13,34 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
         task.isComplete
     }
 
-    init(task: StoreOnboardingTask, isEligibleForProductDescriptionAI: Bool) {
+    init(task: StoreOnboardingTask, badgeText: String? = nil) {
         self.task = task
+        self.badgeText = badgeText
         switch task.type {
         case .storeDetails:
             icon = .storeDetailsImage
             title = Localization.StoreDetails.title
             subtitle = Localization.StoreDetails.subtitle
-            badgeText = nil
         case .addFirstProduct:
             icon = .addProductImage
             title = Localization.AddFirstProduct.title
             subtitle = Localization.AddFirstProduct.subtitle
-            badgeText = isEligibleForProductDescriptionAI ?
-            Localization.AddFirstProduct.badgeText: nil
         case .launchStore:
             icon = .launchStoreImage
             title = Localization.LaunchStore.title
             subtitle = Localization.LaunchStore.subtitle
-            badgeText = nil
         case .customizeDomains:
             icon = .customizeDomainsImage
             title = Localization.CustomizeDomains.title
             subtitle = Localization.CustomizeDomains.subtitle
-            badgeText = nil
         case .payments, .woocommercePayments:
             icon = .getPaidImage
             title = Localization.Payments.title
             subtitle = Localization.Payments.subtitle
-            badgeText = nil
         case .unsupported:
             icon = .checkCircleImage
             title = ""
             subtitle = ""
-            badgeText = nil
         }
     }
 }

@@ -66,7 +66,8 @@ struct StoreOnboardingTaskView: View {
                             if let badgeText = viewModel.badgeText {
                                 BadgeView(text: badgeText,
                                           customizations: .init(textColor: .init(uiColor: .secondaryLabel),
-                                                                backgroundColor: .init(uiColor: .systemGray6)))
+                                                                backgroundColor: .init(uiColor: .init(light: .systemGray6,
+                                                                                                      dark: .systemGray5))))
                             }
                         }
                         Spacer()

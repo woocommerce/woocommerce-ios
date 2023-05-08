@@ -56,6 +56,7 @@ class StoreOnboardingViewModel: ObservableObject {
     private let siteID: Int64
 
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     private var state: State
 
@@ -87,6 +88,7 @@ class StoreOnboardingViewModel: ObservableObject {
         self.state = .loading
         self.defaults = defaults
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
 
         Publishers.CombineLatest3($noTasksAvailableForDisplay,
@@ -130,6 +132,9 @@ private extension StoreOnboardingViewModel {
         async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan
         let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
         let isEligibleForProductDescriptionAI: Bool = {
+            guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
+                return false
+            }
             let eligibilityChecker = ProductFormAIEligibilityChecker(site: stores.sessionManager.defaultSite)
             return eligibilityChecker.isFeatureEnabled(.description)
         }()

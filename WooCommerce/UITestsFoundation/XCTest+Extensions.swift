@@ -154,7 +154,10 @@ extension XCUIElement {
         """)
     }
 
-    /// timeout: timeout value, if not specified defaults to 10
+    /**
+     Waits the specified amount of time for the element's isHittable property to be true, and then taps it.
+     - Parameter timeout: timeout value, if not specified defaults to 10
+     */
     public func waitAndTap(timeout: Double = 10) {
         self.waitForIsHittable(timeout: timeout)
         self.tap()

@@ -64,7 +64,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Indicates whether adding a product to the order via SKU scanning is enabled
     ///
-    var isAddProductToOrderViaBarcodeScannerEnabled: Bool {
+    var isAddProductToOrderViaSKUScannerEnabled: Bool {
         featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
     }
 

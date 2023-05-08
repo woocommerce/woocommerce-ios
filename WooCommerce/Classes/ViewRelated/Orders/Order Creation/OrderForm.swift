@@ -306,7 +306,7 @@ private struct ProductsSection: View {
                 }, content: {
                     EmptyView()
                 })
-                .renderedIf(viewModel.isAddProductToOrderViaBarcodeScannerEnabled)
+                .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()

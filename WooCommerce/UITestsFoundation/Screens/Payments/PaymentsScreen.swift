@@ -66,8 +66,8 @@ public final class PaymentsScreen: ScreenObject {
         return self
     }
 
-    public func enterPaymentAmount() throws -> Self {
-        app.enterText(text: "5")
+    public func enterPaymentAmount(_ amount: String) throws -> Self {
+        app.enterText(text: amount)
         nextButton.tap()
         return self
     }

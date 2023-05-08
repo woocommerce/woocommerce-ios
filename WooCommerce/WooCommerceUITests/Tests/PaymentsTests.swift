@@ -28,7 +28,7 @@ final class PaymentsTests: XCTestCase {
 
     func test_complete_cash_simple_payment() throws {
         try PaymentsScreen().tapCollectPayment()
-            .enterPaymentAmount()
+            .enterPaymentAmount("5")
             .takeCashPayment()
             .verifyOrderCompletedToastDisplayed()
             .verifyPaymentsScreenLoaded()

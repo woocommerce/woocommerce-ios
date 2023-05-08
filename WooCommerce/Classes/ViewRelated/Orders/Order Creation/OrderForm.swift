@@ -97,6 +97,8 @@ struct OrderForm: View {
     ///
     var dismissHandler: (() -> Void) = {}
 
+    // TODO-gm: Move the FF here
+
     @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Fix for breaking navbar button
@@ -221,6 +223,9 @@ private struct MultipleLinesMessage: View {
 private struct ProductsSection: View {
     let scroll: ScrollViewProxy
 
+    // TODO-gm: Extract the flag to the EditableOrderViewModel via injecting it into Orderform
+    let isAddProductToOrderViaBarcodeScannerEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
+
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -231,9 +236,17 @@ private struct ProductsSection: View {
     ///
     @State private var showAddProduct: Bool = false
 
+    /// Defines whether `AddProductViaBarcodeScanner` modal is presented.
+    ///
+    @State private var showAddProductViaBarcodeScanner: Bool = false
+
     /// ID for Add Product button
     ///
     @Namespace var addProductButton
+
+    /// ID for Add Product via Barcode Scanner button
+    ///
+    @Namespace var addProductViaBarcodeScannerButton
 
     ///   Environment safe areas
     ///
@@ -288,6 +301,17 @@ private struct ProductsSection: View {
                         navigationButtonID = UUID()
                     }
                 })
+                Button(OrderForm.Localization.addProductViaBarcodeScanner) {
+                    showAddProductViaBarcodeScanner.toggle()
+                }
+                .accessibilityIdentifier(OrderForm.Accessibility.addProductViaBarcodeScannerButtonIdentifier)
+                .buttonStyle(PlusButtonStyle())
+                .sheet(isPresented: $showAddProductViaBarcodeScanner, onDismiss: {
+                    scroll.scrollTo(addProductViaBarcodeScannerButton)
+                }, content: {
+                    EmptyView()
+                })
+                .renderedIf(isAddProductToOrderViaBarcodeScannerEnabled)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
@@ -313,6 +337,8 @@ private extension OrderForm {
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
+        static let addProductViaBarcodeScanner = NSLocalizedString("Add Product via barcode",
+                                                                   comment: "Title text of the button to add a single product via scanning its barcode")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
     }
@@ -322,6 +348,7 @@ private extension OrderForm {
         static let cancelButtonIdentifier = "new-order-cancel-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
+        static let addProductViaBarcodeScannerButtonIdentifier = "new-order-add-product-via-barcode-scanner-button"
     }
 }
 

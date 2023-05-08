@@ -7,38 +7,46 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
     let icon: UIImage
     let title: String
     let subtitle: String
+    let badgeText: String?
 
     var isComplete: Bool {
         task.isComplete
     }
 
-    init(task: StoreOnboardingTask) {
+    init(task: StoreOnboardingTask, isEligibleForProductDescriptionAI: Bool) {
         self.task = task
         switch task.type {
         case .storeDetails:
             icon = .storeDetailsImage
             title = Localization.StoreDetails.title
             subtitle = Localization.StoreDetails.subtitle
+            badgeText = nil
         case .addFirstProduct:
             icon = .addProductImage
             title = Localization.AddFirstProduct.title
             subtitle = Localization.AddFirstProduct.subtitle
+            badgeText = isEligibleForProductDescriptionAI ?
+            Localization.AddFirstProduct.badgeText: nil
         case .launchStore:
             icon = .launchStoreImage
             title = Localization.LaunchStore.title
             subtitle = Localization.LaunchStore.subtitle
+            badgeText = nil
         case .customizeDomains:
             icon = .customizeDomainsImage
             title = Localization.CustomizeDomains.title
             subtitle = Localization.CustomizeDomains.subtitle
+            badgeText = nil
         case .payments, .woocommercePayments:
             icon = .getPaidImage
             title = Localization.Payments.title
             subtitle = Localization.Payments.subtitle
+            badgeText = nil
         case .unsupported:
             icon = .checkCircleImage
             title = ""
             subtitle = ""
+            badgeText = nil
         }
     }
 }
@@ -65,6 +73,10 @@ extension StoreOnboardingTaskViewModel {
             static let subtitle = NSLocalizedString(
                 "Start selling by adding products or services to your store.",
                 comment: "Subtitle of the store onboarding task to add the first product."
+            )
+            static let badgeText = NSLocalizedString(
+                "✨ AI content generator available.",
+                comment: "Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI."
             )
         }
 

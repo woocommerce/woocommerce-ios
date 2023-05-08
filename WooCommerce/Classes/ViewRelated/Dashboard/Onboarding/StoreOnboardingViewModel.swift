@@ -129,14 +129,18 @@ private extension StoreOnboardingViewModel {
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
         async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan
         let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
+        let isEligibleForProductDescriptionAI: Bool = {
+            let eligibilityChecker = ProductFormAIEligibilityChecker(site: stores.sessionManager.defaultSite)
+            return eligibilityChecker.isFeatureEnabled(.description)
+        }()
 
         if await shouldManuallyAppendLaunchStoreTask {
             return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
                 .sorted()
-                .map { .init(task: $0) }
+                .map { .init(task: $0, isEligibleForProductDescriptionAI: isEligibleForProductDescriptionAI) }
         } else {
             return tasksFromServer
-                .map { .init(task: $0) }
+                .map { .init(task: $0, isEligibleForProductDescriptionAI: isEligibleForProductDescriptionAI) }
         }
     }
 
@@ -253,7 +257,7 @@ private extension StoreOnboardingViewModel {
 private extension StoreOnboardingTaskViewModel {
     static func placeHolder() -> Self {
         .init(task: .init(isComplete: true,
-                          type: .launchStore))
+                          type: .launchStore), isEligibleForProductDescriptionAI: false)
     }
 }
 

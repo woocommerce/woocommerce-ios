@@ -61,6 +61,13 @@ struct StoreOnboardingTaskView: View {
                                 .redacted(reason: isRedacted ? .placeholder : [])
                                 // This size modifier is necessary so that the subtitle is never truncated.
                                 .fixedSize(horizontal: false, vertical: true)
+
+                            // Optional badge.
+                            if let badgeText = viewModel.badgeText {
+                                BadgeView(text: badgeText,
+                                          customizations: .init(textColor: .init(uiColor: .secondaryLabel),
+                                                                backgroundColor: .init(uiColor: .systemGray6)))
+                            }
                         }
                         Spacer()
                         // Chevron icon
@@ -100,27 +107,38 @@ struct StoreOnboardingTaskView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             Group {
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct)),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct),
+                                                         isEligibleForProductDescriptionAI: false),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .launchStore)),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct),
+                                                         isEligibleForProductDescriptionAI: true),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .customizeDomains)),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .launchStore),
+                                                         isEligibleForProductDescriptionAI: false),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .payments)),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .customizeDomains),
+                                                         isEligibleForProductDescriptionAI: false),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })
 
-                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: true, type: .payments)),
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .payments),
+                                                         isEligibleForProductDescriptionAI: false),
+                                        showDivider: true,
+                                        isRedacted: false,
+                                        onTap: { _ in })
+
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: true, type: .payments),
+                                                         isEligibleForProductDescriptionAI: false),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })

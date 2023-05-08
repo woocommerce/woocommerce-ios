@@ -2,7 +2,6 @@ import Storage
 
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
-    case productSKUScanner
     case couponManagement
     case inAppPurchases
 }
@@ -12,8 +11,6 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsTitle
-        case .productSKUScanner:
-            return Localization.productSKUScannerTitle
         case .couponManagement:
             return Localization.couponManagementTitle
         case .inAppPurchases:
@@ -25,8 +22,6 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsDescription
-        case .productSKUScanner:
-            return Localization.productSKUScannerDescription
         case .couponManagement:
             return Localization.couponManagementDescription
         case .inAppPurchases:
@@ -38,8 +33,6 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return \.isViewAddOnsSwitchEnabled
-        case .productSKUScanner:
-            return \.isProductSKUInputScannerSwitchEnabled
         case .couponManagement:
             return \.isCouponManagementSwitchEnabled
         case .inAppPurchases:
@@ -118,13 +111,6 @@ private extension BetaFeature {
         static let viewAddOnsDescription = NSLocalizedString(
             "Test out viewing Order Add-Ons as we get ready to launch",
             comment: "Cell description on the beta features screen to enable the order add-ons feature")
-
-        static let productSKUScannerTitle = NSLocalizedString(
-            "Product SKU Scanner",
-            comment: "Cell title on beta features screen to enable product SKU input scanner in inventory settings.")
-        static let productSKUScannerDescription = NSLocalizedString(
-            "Test out scanning a barcode for a product SKU in the product inventory settings",
-            comment: "Cell description on beta features screen to enable product SKU input scanner in inventory settings.")
 
         static let couponManagementTitle = NSLocalizedString(
             "Coupon Management",

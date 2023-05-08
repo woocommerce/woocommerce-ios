@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.5
+This release contains a handful of minor improvements to make your product management experience smoother, including the option to scan a product SKU. We hope you notice the love we put into our software. Stay tuned for some exciting news coming your way!
+
 ## 13.4
 This release includes several bug fixes and improvements to make your experience smoother. We're committed to continuously improving the WooCommerce app, and we have some exciting updates coming in the next few weeks. Stay tuned!
 

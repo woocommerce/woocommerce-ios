@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-04-24 15:54:20+0000 */
+/* Translation-Revision-Date: 2023-05-02 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -36,7 +36,8 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (ללקוח)";
 
-/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 / 2 months'.
+   The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ \/ %2$@" = "%1$@ \/ %2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
@@ -380,6 +381,7 @@ which should be translated separately and considered part of this sentence. */
 "Activating" = "מפעיל";
 
 /* Application's Active State
+   Display label for the subscription status type
    Status of coupons that are active */
 "Active" = "פעיל";
 
@@ -815,6 +817,7 @@ which should be translated separately and considered part of this sentence. */
 "Application Name" = "שם האפליקציה";
 
 /* Apply navigation button in custom range date picker
+   Button title to insert AI-generated product description.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "החלה";
@@ -1257,7 +1260,8 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "לבטל את ההתקנה";
 
-/* Display label for cancelled order status. */
+/* Display label for cancelled order status.
+   Display label for the subscription status type */
 "Cancelled" = "בוטלו";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1644,8 +1648,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "מתחבר לאתר ב-WordPress.com";
 
-/* Bottom title of the alert presented with a spinner while the reader is being prepared
-   Title label for modal dialog that appears when connecting to a card reader */
+/* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "מתחבר אל קורא הכרטיסים";
 
 /* Error message when establishing a connection to the card reader times out. */
@@ -1737,7 +1740,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cook Islands" = "איי קוק";
 
-/* Copy address text button title — should be one word and as short as possible. */
+/* Button title to copy generated text in the product description AI generator view.
+   Copy address text button title — should be one word and as short as possible. */
 "Copy" = "העתק";
 
 /* Action title for copying coupon code from the Coupon Details screen */
@@ -2093,6 +2097,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "יש לתאר את המוצר שלך";
+
+/* Product features placeholder in the product description AI generator view. */
+"Describe your product features" = "יש לתאר את מאפייני המוצר";
 
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "לתאר את המוצר שלך ללקוחות עתידיים...";
@@ -2567,6 +2574,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "יש להזין סיסמה";
 
+/* Product name placeholder in the product description AI generator view. */
+"Enter product name" = "יש להזין שם המוצר";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "יש להזין את הכתובת של החנות שלך ב-WooCommerce שאליה ברצונך להתחבר.";
 
@@ -2751,7 +2761,8 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'. */
 "Expire after: %@" = "פקיעת תוקף לאחר: %@";
 
-/* Status of coupons that are expired */
+/* Display label for the subscription status type
+   Status of coupons that are expired */
 "Expired" = "פג תוקף";
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
@@ -2905,8 +2916,8 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "הנחת מוצר קבועה";
 
-/* Label asking users to follow the built in reader instruction. Presented to users when a payment is going to be collected using the iPhone's built in reader */
-"Follow reader instructions to pay" = "לביצוע תשלום, יש לעקוב אחר ההוראות בקורא הכרטיסים";
+/* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
+"Follow the on-screen instructions to pay" = "יש לעקוב אחר ההוראות שמופיעות על המסך כדי לשלם";
 
 /* User role badge */
 "Follower" = "עוקב";
@@ -2971,6 +2982,9 @@ which should be translated separately and considered part of this sentence. */
 /* General section title in the hub menu */
 "General" = "כללי";
 
+/* Button title to generate product description with Jetpack AI. */
+"Generate" = "ליצור";
+
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "ליצור סוג חדש";
 
@@ -2982,6 +2996,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title to allow the user confirm if they want to generate all variations */
 "Generate all variations?" = "האם ליצור את כל הסוגים?";
+
+/* Accessibility label to generate product description with Jetpack AI from the Aztec editor. */
+"Generate product description with AI" = "ליצור תיאור מוצר באמצעות בינה מלאכותית";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "יוצר סוג";
@@ -3056,6 +3073,10 @@ which should be translated separately and considered part of this sentence. */
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "מתנה";
 
+/* Gift Cards label for payment view
+   Gift Cards section title */
+"Gift Cards" = "שוברי מתנה";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
@@ -3094,6 +3115,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Grenada" = "גרנדה";
+
+/* Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row */
+"Group of: %@" = "קבוצה של: %@";
 
 /* Display label for grouped product type. */
 "Grouped" = "בקבוצה";
@@ -3229,6 +3253,10 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "מוסתר";
+
+/* Action title for hiding store onboarding task list
+   Title of the Hide store setup list button in the action sheet. */
+"Hide store setup list" = "להסתיר את רשימת ההגדרות לחנות";
 
 /* Industry option in the store creation category question. */
 "Home, furniture, and garden" = "בית, ריהוט וגינה";
@@ -3652,6 +3680,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Analytics Hub Last Quarter selection range */
 "Last Quarter" = "הרבעון הקודם";
 
+/* Section title for last sold products on the Select Product screen. */
+"Last Sold" = "הפריט האחרון שנמכר";
+
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "השבוע הקודם";
 
@@ -4014,6 +4045,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "מקסימום הוצאה (%1$@)";
 
+/* Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row */
+"Maximum quantity: %@" = "כמות מקסימלית: %@";
+
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "הוצאה מקסימלית בגובה %1$@";
 
@@ -4054,6 +4088,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "מינימום הוצאה (%1$@)";
+
+/* Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row */
+"Minimum quantity: %@" = "כמות מינימלית: %@";
 
 /* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Minimum spend of %1$@" = "הוצאה מינימלית בגובה %1$@";
@@ -4456,6 +4493,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Spoken label to indicate switch control is turned on */
 "On" = "מופעל";
 
+/* Display label for the subscription status type */
+"On Hold" = "בהמתנה";
+
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
 "On back order" = "בהזמנה חוזרת";
@@ -4772,8 +4812,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Payments" = "תשלומים";
 
 /* Display label for pending order status.
-   Display label for the review's pending status */
+   Display label for the review's pending status
+   Display label for the subscription status type */
 "Pending" = "ממתין לאישור";
+
+/* Display label for the subscription status type */
+"Pending Cancel" = "ממתין לביטול";
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "ביקורת ממתינה לאישור";
@@ -4842,10 +4886,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "יש להטעין את הקורא";
 
-/* Error message shown when the built-in reader cannot be used because the device does not meet minimum requirements. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "עליך לוודא שהטלפון שלך עומד בדרישות הבאות: מכשיר iPhone XS או מכשיר חדש יותר עם מערכת הפעלה של iOS 16.0 ומעלה. יש לפנות לתמיכה אם השגיאה הזאת מופיעה במכשיר נתמך.";
 
-/* Error message shown when the built-in reader cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "עליך לוודא שה-Apple ID שלך תקף ולנסות שוב. חשבון Apple ID תקף נדרש כדי לקבל את תנאי השימוש של Apple";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
@@ -4854,7 +4898,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "יש לחבר את החנות שלך אל Jetpack כדי לגשת אליה באפליקציה הזאת.";
 
-/* Error message shown when the built-in reader cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "יש לפנות לתמיכה – הייתה בעיה בהתחלת השימוש ב-Tap to Pay ב-iPhone";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -4944,7 +4988,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "יש לבחור חבילה";
 
-/* Error message shown when the built-in reader cannot be used because the device is not signed in to iCloud. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
 "Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "יש להתחבר ל-iCloud במכשיר זה כדי להשתמש ב-Tap to Pay ב-iPhone";
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
@@ -4965,7 +5009,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
 
-/* Error message shown when the built-in reader cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
 "Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "כדי להשתמש באפשרות Tap to Pay ב-iPhone, יש לנסות שוב ולקבל את תנאי השימוש של Tap to Pay ב-iPhone";
 
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
@@ -5041,6 +5085,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Poland" = "פולין";
 
+/* Section title for popular products on the Select Product screen. */
+"Popular" = "פופולארי";
+
 /* Country option for a site address. */
 "Portugal" = "פורטוגל";
 
@@ -5062,11 +5109,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "ערכות פרימיום";
 
+/* Title label for modal dialog that appears when connecting to a built in card reader */
+"Preparing Tap to Pay on iPhone" = "הכנה של Tap To Pay ב-iPhone";
+
+/* Bottom title of the alert presented with a spinner while Tap to Pay on iPhone is being prepared */
+"Preparing Tap to Pay on iPhone " = "הכנה של Tap To Pay ב-iPhone ";
+
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "מכין את המסמך";
 
-/* Title label for modal dialog that appears when connecting to a built in card reader */
-"Preparing iPhone card reader" = "מכין את קורא הכרטיסים של ה-iPhone...";
+/* Bottom title of the alert presented with a spinner while the reader is being prepared */
+"Preparing reader" = "הכנה של קורא כרטיסים";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "יש להציג את הכרטיס לביצוע תשלום";
@@ -5239,6 +5292,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Section title for products on the Select Product screen.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
    Title of the 'Products' tab - used for spotlight indexing on iOS.
@@ -5322,6 +5376,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The accessibility label for the quantity button when selecting an item to refund
    Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "כמות";
+
+/* Title for Quantity Rules row in the product form screen. */
+"Quantity Rules" = "כללי כמות";
 
 /* Navigation title on the quantity item selector screen */
 "Quantity to refund" = "כמות להחזר הכספי";
@@ -5467,7 +5524,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
-   Title for removing an attribute in the edit attribute action sheet. */
+   Title for removing an attribute in the edit attribute action sheet.
+   Title for the action button on the confirm alert for hiding store onboarding task list */
 "Remove" = "הסרה";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -6329,7 +6387,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "מצטערים, לא הצלחנו ליצור את בקשת התמיכה שלך, יש לנסות שוב מאוחר יותר.";
 
-/* Error message when the built-in reader connection experiences an unexpected internal service error. */
+/* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "מצטערים, לא הצלחנו להתחיל את השירות של Tap To Pay ב-iPhone. יש לבדוק את החיבור ולנסות שוב.";
 
 /* No comment provided by engineer. */
@@ -6426,6 +6484,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "הגדרות החנות";
 
+/* Controls store onboarding setup list visibility. */
+"Store Setup List" = "רשימה להגדרות החנות";
+
 /* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "יצירת החנות עדיין בתהליך";
 
@@ -6464,10 +6525,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for the subscription settings in a subscription product. */
 "Subscription" = "מינוי";
 
+/* Subscription title with subscription number. Reads like: 'Subscription #123' */
+"Subscription #%d" = "מינוי מספר %d";
+
 /* Label for the subscription price setting in the subscription settings screen. */
 "Subscription price" = "מחיר המינוי";
 
-/* Title for the Subscriptions / Upgrades view */
+/* Subscriptions section title
+   Title for the Subscriptions / Upgrades view */
 "Subscriptions" = "מינויים";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
@@ -6610,11 +6675,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tap or insert card to refund" = "יש להצמיד או להכניס את הכרטיס לביצוע החזר כספי";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
-   The button title on the reader type alert, for the user to choose the built-in reader. */
+   The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "להקיש לתשלום ב-iPhone";
 
-/* Error message shown when the built-in reader cannot be used because there is a call in progress */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is a call in progress */
 "Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "לא ניתן להשתמש ב-Tap to Pay ב-iPhone במהלך שיחה טלפונית. יש לסיים את השיחה ולנסות שוב.";
+
+/* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
+"Tap to Pay on iPhone is ready" = "השירות של Tap To Pay ב-iPhone מוכן לשימוש";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "יש להקיש כדי להוסיף סרגל אופקי";
@@ -6808,10 +6876,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle text in the store creation loading screen */
 "The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "הצוות של WooCommerce בנוי מעד 350 אנשים מוכשרים שנמצאים במעל 30 ארצות.";
 
-/* Error message shown when the built-in reader cannot be used because the amount for payment is not supported by the built in reader. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "הסכום לא נתמך על ידי Tap to Pay ב-iPhone – יש לנסות קורא כרטיסים נפרד או אמצעי תשלום שונה.";
 
-/* Error message shown when the built-in reader cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device's NFC chipset has been disabled by a device management policy. */
 "The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "האפליקציה לא הצליחה להפעיל את Tap to Pay ב-iPhone מאחר ששבב ה-NFC מושבת. יש לפנות לתמיכה לפרטים נוספים.";
 
 /* Error title when trying to remove an attribute remotely. */
@@ -6880,7 +6948,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "קוד הקופון לא יכול להיות ריק";
 
-/* Error message shown when the built-in reader cannot be used because the currency for payment is not supported by the built in reader. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the currency for payment is not supported for Tap to Pay on iPhone. */
 "The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "המטבע לא נתמך על ידי Tap to Pay ב-iPhone – יש לנסות קורא כרטיסים נפרד או אמצעי תשלום שונה.";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
@@ -6895,8 +6963,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "הדומיין שנרכש ינתב את המשתמשים אל הכתובת הראשית שלך.";
 
-/* Label within the modal dialog that appears when connecting to a built in card reader */
-"The first time you connect, you may be prompted to accept Apple's Terms of Service." = "עם החיבור הראשון, ייתכן שתופיע בקשה לקבל את תנאי השימוש של Apple.";
+/* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
+"The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "בשימוש הראשון בשירות של Tap To Pay ב-iPhone, ייתכן שתופיע בקשה לקבל את תנאי השימוש של Apple.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "השם של החבילה המותאמת החדשה אינו ייחודי.";
@@ -7093,7 +7161,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "אירעה שגיאה במהלך גביית התשלום.";
 
-/* Error message shown when the built-in reader cannot be used because there was some issue with the connection. Retryable. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there was some issue with the connection. Retryable. */
 "There was an issue preparing to use Tap to Pay on iPhone – please try again." = "הייתה בעיה בהגדרת של Tap to Pay ב-iPhone – יש לנסות שוב.";
 
 /* Refund policy under the purchase button on the store creation plan screen. */
@@ -8288,6 +8356,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "לעבוד איתנו";
 
+/* Title in the product description AI generator view. */
+"Write product description" = "לכתוב תיאור למוצר";
+
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "חשבון שגוי?";
 
@@ -8361,6 +8432,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "אפשר להגדיר את המיקוד של החנות שלך במקטע 'wp-admin' > ‏WooCommerce > הגדרות (כללי)";
 
+/* Confirm message for hiding store onboarding task list */
+"You can show it when you need it by going to Menu > Settings > Store" = "אפשר להציג את המידע כשצריך דרך 'תפריט' > 'הגדרות' > 'חנות'";
+
 /* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "עדיין אפשר לקבל תשלומי מזומן באופן אישי על ידי הפעלת אמצעי התשלום \"מזומן בעת מסירה\" בחנות שלך.";
 
@@ -8385,7 +8459,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "עליך להוסיף סיסמה כדי להגן על המוצר שלך באמצעות סיסמה";
 
-/* Error message shown when the built-in reader cannot be used because the device does not have a passcode set. */
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "עליך להגדיר קוד סיסמה למסך הנעילה כדי להשתמש ב-Tap to Pay ב-iPhone";
 
 /* No comment provided by engineer. */
@@ -8531,9 +8605,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
-
-/* Indicates the status of a built in card reader. Presented to users when payment collection starts */
-"iPhone reader is ready" = "קורא הכרטיסים של ה-iPhone מוכן";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "האפליקציה הזו משתמשת ב-Bluetooth כדי להתחבר לקוראי הכרטיסים הנתמכים.";

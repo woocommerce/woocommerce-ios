@@ -1811,8 +1811,8 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         XCTAssertTrue(base.contains("Product name: A product name"))
-        XCTAssertTrue(base.contains("Features: Trendy, cool, fun"))
-        XCTAssertTrue(base.contains("Language: en-US"))
+        XCTAssertTrue(base.contains("Product features: Trendy, cool, fun"))
+        XCTAssertTrue(base.contains("In language en-US"))
     }
 }
 

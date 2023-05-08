@@ -1,8 +1,19 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
-13.5
+13.6
 -----
 
+
+13.5
+-----
+- [*] Settings > Domains: Premium domains are now supported, the domain suggestions now match the results on web and Android. It's more noticeable for stores with a domain credit, where not all domains are free for the first year anymore. [https://github.com/woocommerce/woocommerce-ios/pull/9607]
+- [*] Product form > Inventory: the SKU scanner is enabled for all users, where it used to be behind a feature switch in Settings > Experimental Features. [https://github.com/woocommerce/woocommerce-ios/pull/9631]
+[Internal] Products: Simplify Product Editing experiment is removed; there should be no changes to the existing product creation/editing behavior. [https://github.com/woocommerce/woocommerce-ios/pull/9602]
+- [*] Payments: Products are removed directly from an order when its count is below one, instead of opening an extra screen to remove it. [https://github.com/woocommerce/woocommerce-ios/pull/9624]
+- [*] Orders: Parses HTML-encoded characters and removes extraneous, non-attribute meta data from the list of attributes for an item in an order. [https://github.com/woocommerce/woocommerce-ios/pull/9603]
+- [*] Products: Adds the component descriptions to the list of components in a composite product (using the Composite Products extension). [https://github.com/woocommerce/woocommerce-ios/pull/9634]
+- [*] Products: Adds the product SKU to the bundled products list in product details, for Bundle products (using the Product Bundles extension). [https://github.com/woocommerce/woocommerce-ios/pull/9626]
+- [*] Product form > description editor AI for WPCOM stores: the prompt was updated so that the generated description is shorter. [https://github.com/woocommerce/woocommerce-ios/pull/9637]
 
 13.4
 -----
@@ -14,6 +25,7 @@
 - [*] Product form > description editor: a magic wand button is added to the keyboard toolbar to auto-generate a product description using Jetpack AI for WPCOM stores. [https://github.com/woocommerce/woocommerce-ios/pull/9577]
 - [Internal] Payments: Upate Tap to Pay connection flow strings to avoid mentioning "reader" [https://github.com/woocommerce/woocommerce-ios/pull/9563]
 - [*] Store onboarding: Now the onboarding task list can be shown/hidden from settings and also from the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/9572, https://github.com/woocommerce/woocommerce-ios/pull/9573]
+- [**] Adds read-only support for the Min/Max Quantities extension in product details. [https://github.com/woocommerce/woocommerce-ios/pull/9585]
 
 13.3
 -----

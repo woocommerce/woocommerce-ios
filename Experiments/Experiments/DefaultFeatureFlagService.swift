@@ -13,8 +13,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .productSKUInputScanner:
-            return true
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
@@ -23,14 +21,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .newToWooCommerceLinkInLoginPrologue:
-            return false
         case .loginPrologueOnboarding:
             return true
         case .loginErrorNotifications:
             return true
-        case .loginMagicLinkEmphasis:
-            return false
         case .loginMagicLinkEmphasisM2:
             return true
         case .promptToEnableCodInIppOnboarding:
@@ -67,10 +61,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .domainSettings:
             return true
-        case .simplifyProductEditing:
-            // Enabled for the A/B experiment treatment group only
-            // Disabled for the control group and UI testing
-            return ABTest.simplifiedProductEditing.variation == .treatment && !isUITesting
         case .jetpackSetupWithApplicationPassword:
             return true
         case .dashboardOnboarding:
@@ -81,6 +71,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .freeTrial:
             return true
+        case .freeTrialUpgrade:
+            return false
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
@@ -96,6 +88,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .hideStoreOnboardingTaskList:
             return true
         case .readOnlyMinMaxQuantities:
+            return true
+        case .privacyChoices:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

@@ -17,4 +17,7 @@ protocol ProductFormEventLoggerProtocol {
 
     /// Called to log an event when the update CTA is tapped.
     func logUpdateButtonTapped()
+
+    /// Called to log an event when the quantity rules row is tapped.
+    func logQuantityRulesTapped()
 }

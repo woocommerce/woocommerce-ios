@@ -12,7 +12,6 @@ enum ProductFormBottomSheetAction {
     case editLinkedProducts
     case editReviews
     case editDownloadableFiles
-    case convertToVariable
 
     init?(productFormAction: ProductFormEditAction) {
         switch productFormAction {
@@ -34,8 +33,6 @@ enum ProductFormBottomSheetAction {
             self = .editReviews
         case .downloadableFiles:
             self = .editDownloadableFiles
-        case .convertToVariable:
-            self = .convertToVariable
         default:
             return nil
         }
@@ -72,9 +69,6 @@ extension ProductFormBottomSheetAction {
         case .editDownloadableFiles:
             return NSLocalizedString("Downloadable files",
                                      comment: "Title of the product form bottom sheet action for editing downloadable files.")
-        case .convertToVariable:
-            return NSLocalizedString("Add product variations",
-                                     comment: "Title of the product form bottom sheet action for switching to variable product type.")
         }
     }
 
@@ -107,9 +101,6 @@ extension ProductFormBottomSheetAction {
         case .editDownloadableFiles:
             return NSLocalizedString("Include downloadable files with purchases",
                                      comment: "Subtitle of the product form bottom sheet action for editing downloadable files.")
-        case .convertToVariable:
-            return NSLocalizedString("Add sizes, colors, or other options",
-                                     comment: "Subtitle of the product form bottom sheet action for switching to variable product type.")
         }
     }
 }

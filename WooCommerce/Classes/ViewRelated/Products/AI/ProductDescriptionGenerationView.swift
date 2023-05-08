@@ -25,6 +25,7 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
 /// Allows the user to generate a product description using Jetpack AI given the product name and features.
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
+    @State private var copyTextNotice: Notice?
 
     init(viewModel: ProductDescriptionGenerationViewModel) {
         self.viewModel = viewModel
@@ -85,6 +86,7 @@ struct ProductDescriptionGenerationView: View {
                         // CTA to copy the generated text.
                         Button {
                             UIPasteboard.general.string = suggestedText
+                            copyTextNotice = .init(title: Localization.textCopiedNotice)
                             ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
                         } label: {
                             Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
@@ -122,6 +124,7 @@ struct ProductDescriptionGenerationView: View {
                 }
             }.padding(insets: Layout.insets)
         }
+        .notice($copyTextNotice, autoDismiss: true)
     }
 }
 
@@ -157,6 +160,10 @@ private extension ProductDescriptionGenerationView {
         static let copyGeneratedText = NSLocalizedString(
             "Copy",
             comment: "Button title to copy generated text in the product description AI generator view."
+        )
+        static let textCopiedNotice = NSLocalizedString(
+            "Copied!",
+            comment: "Text in the notice after copying the generated text in the product description AI generator view."
         )
         static let insertGeneratedText = NSLocalizedString("Apply",
                                                            comment: "Button title to insert AI-generated product description.")

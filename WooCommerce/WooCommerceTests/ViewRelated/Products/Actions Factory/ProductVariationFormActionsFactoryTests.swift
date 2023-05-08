@@ -166,6 +166,36 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
+
+    func test_actions_for_a_physical_ProductVariation_with_quantity_rules() {
+        // Arrange
+        let productVariation = Fixtures.physicalProductVariationWithImages.copy(minAllowedQuantity: "4",
+                                                                                maxAllowedQuantity: "200",
+                                                                                groupOfQuantity: "4",
+                                                                                overrideProductQuantities: true)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: false)
+
+        // Action
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, isMinMaxQuantitiesEnabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .attributes(editable: true),
+                                                                       .quantityRules,
+                                                                       .status(editable: true),
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
 }
 
 private extension ProductVariationFormActionsFactoryTests {

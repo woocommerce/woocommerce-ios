@@ -4,15 +4,12 @@ import Yosemite
 enum ProductFormSection: Equatable {
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
-    case optionsCTA(rows: [OptionsCTARow])
 
     var isNotEmpty: Bool {
         switch self {
         case .primaryFields(let rows):
             return rows.isNotEmpty
         case .settings(let rows):
-            return rows.isNotEmpty
-        case .optionsCTA(let rows):
             return rows.isNotEmpty
         }
     }
@@ -98,10 +95,6 @@ enum ProductFormSection: Equatable {
             let title: String?
             let isActionable: Bool
         }
-    }
-
-    enum OptionsCTARow: Equatable {
-        case addOptions
     }
 }
 

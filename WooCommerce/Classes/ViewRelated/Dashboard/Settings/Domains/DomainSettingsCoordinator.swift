@@ -66,7 +66,7 @@ private extension DomainSettingsCoordinator {
             let domainToPurchase = DomainToPurchase(name: domain.name,
                                                     productID: domain.productID,
                                                     supportsPrivacy: domain.supportsPrivacy)
-            if hasDomainCredit {
+            if hasDomainCredit && domain.isPremium == false {
                 let contactInfo = try? await self.loadDomainContactInfo()
                 self.showContactInfoForm(from: navigationController, contactInfo: contactInfo, domain: domainToPurchase)
             } else {

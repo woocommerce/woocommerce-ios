@@ -102,6 +102,13 @@
                         "value": "1",
                         "display_key": "_reduced_stock",
                         "display_value": "1"
+                    },
+                    {
+                        "id": 6743,
+                        "key": "wc_gc_giftcard_amount",
+                        "value": "22",
+                        "display_key": "Amount",
+                        "display_value": "&#36;22.00"
                     }
                 ],
                 "sku": "pen",

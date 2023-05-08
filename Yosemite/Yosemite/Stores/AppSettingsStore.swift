@@ -170,10 +170,6 @@ public class AppSettingsStore: Store {
             forgetPreferredInPersonPaymentGateway(siteID: siteID)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
-        case .setProductSKUInputScannerFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-            setProductSKUInputScannerFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .loadProductSKUInputScannerFeatureSwitchState(onCompletion: let onCompletion):
-            loadProductSKUInputScannerFeatureSwitchState(onCompletion: onCompletion)
         case .setCouponManagementFeatureSwitchState(let isEnabled, let onCompletion):
             setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadCouponManagementFeatureSwitchState(let onCompletion):
@@ -264,23 +260,6 @@ private extension AppSettingsStore {
     ///
     func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isViewAddOnsSwitchEnabled)))
-    }
-
-    /// Sets the state for the Product SKU Input Scanner beta feature switch into `GeneralAppSettings`.
-    ///
-    func setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
-        do {
-            try generalAppSettings.setValue(isEnabled, for: \.isProductSKUInputScannerSwitchEnabled)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
-        }
-    }
-
-    /// Loads the most recent state for the Product SKU Input Scanner beta feature switch from `GeneralAppSettings`.
-    ///
-    func loadProductSKUInputScannerFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        onCompletion(.success(generalAppSettings.value(for: \.isProductSKUInputScannerSwitchEnabled)))
     }
 
     /// Sets the state for the Coupon Mangagement beta feature switch into `GeneralAppSettings`.

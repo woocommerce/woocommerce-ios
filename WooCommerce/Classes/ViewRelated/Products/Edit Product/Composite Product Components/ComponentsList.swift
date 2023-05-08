@@ -52,9 +52,9 @@ struct ComponentsList: View {
                                 .accessibilityHidden(true)
                                 .padding()
 
-                            Text(component.title)
-                                .bodyStyle()
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            TitleAndSubtitleRow(title: component.title, subtitle: component.description)
+                                .multilineTextAlignment(.leading)
+                                .accessibilityElement(children: .combine)
 
                             DisclosureIndicator()
                                 .padding([.leading, .trailing])
@@ -91,9 +91,27 @@ private enum Layout {
 struct ComponentsList_Previews: PreviewProvider {
 
     static let viewModel = ComponentsListViewModel(siteID: 123, components: [
-        .init(id: "1", title: "Camera Body", imageURL: nil, description: "", optionType: .productIDs, optionIDs: [], defaultOptionID: ""),
-        .init(id: "2", title: "Lens", imageURL: nil, description: "", optionType: .categoryIDs, optionIDs: [], defaultOptionID: ""),
-        .init(id: "3", title: "Memory Card", imageURL: nil, description: "", optionType: .categoryIDs, optionIDs: [], defaultOptionID: "")
+        .init(id: "1",
+              title: "Camera Body",
+              imageURL: nil,
+              description: "Choose between the Nikon D600 or the powerful Canon EOS 5D Mark IV.",
+              optionType: .productIDs,
+              optionIDs: [],
+              defaultOptionID: ""),
+        .init(id: "2",
+              title: "Lens",
+              imageURL: nil,
+              description: "Lenses for Nikon and Canon DSLR cameras.",
+              optionType: .categoryIDs,
+              optionIDs: [],
+              defaultOptionID: ""),
+        .init(id: "3",
+              title: "Memory Card",
+              imageURL: nil,
+              description: "",
+              optionType: .categoryIDs,
+              optionIDs: [],
+              defaultOptionID: "")
     ])
 
     static var previews: some View {

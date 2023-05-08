@@ -15,6 +15,7 @@ final class LoginOnboardingViewController: UIViewController {
                                                                           showsSubtitle: true)
     private lazy var buttonStackView: UIStackView = .init()
     private lazy var nextButton: UIButton = createNextButton()
+    private lazy var imageView = UIImageView(image: .wooLogoPrologueImage)
 
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
@@ -77,7 +78,6 @@ private extension LoginOnboardingViewController {
     }
 
     func configureWooLogo() {
-        let imageView = UIImageView(image: .wooLogoPrologueImage)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         NSLayoutConstraint.activate([
@@ -95,7 +95,12 @@ private extension LoginOnboardingViewController {
         stackView.spacing = Constants.stackViewSpacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
-        view.pinSubviewToSafeArea(stackView, insets: Constants.stackViewInsets)
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: view.safeLeadingAnchor, constant: Constants.stackViewInsets.left),
+            stackView.trailingAnchor.constraint(equalTo: view.safeTrailingAnchor, constant: -Constants.stackViewInsets.right),
+            stackView.bottomAnchor.constraint(equalTo: view.safeBottomAnchor, constant: -Constants.stackViewInsets.bottom),
+            stackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: Constants.stackViewInsets.top)
+        ])
     }
 
     func configureStackViewSubviews() {

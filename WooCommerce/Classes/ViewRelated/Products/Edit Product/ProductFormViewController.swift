@@ -64,8 +64,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
 
-    private let showGroupedTableViewAppearance: Bool
-
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
 
     init(viewModel: ViewModel,
@@ -73,8 +71,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         showGroupedTableViewAppearance: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
@@ -89,7 +86,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
-        self.showGroupedTableViewAppearance = showGroupedTableViewAppearance
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
@@ -467,15 +463,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .noVariationsWarning:
                 return // This warning is not actionable.
             case .quantityRules:
-                // TODO: 9252 - Add analytics
-                // TODO: 8960 - Navigate to quantity rules view
+                eventLogger.logQuantityRulesTapped()
+                showQuantityRules()
                 return
-            }
-        case .optionsCTA(let rows):
-            let row = rows[indexPath.row]
-            switch row {
-            case .addOptions:
-                moreDetailsButtonTapped(button: nil)
             }
         }
     }
@@ -483,9 +473,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let section = tableViewModel.sections[section]
         switch section {
-        case .optionsCTA(let rows) where rows.isEmpty:
-            return 0
-        case .settings, .optionsCTA:
+        case .settings:
             return Constants.settingsHeaderHeight
         default:
             return 0
@@ -495,31 +483,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = tableViewModel.sections[section]
         switch section {
-        case .optionsCTA(let rows) where rows.isEmpty:
-            return nil
-        case .settings, .optionsCTA:
+        case .settings:
             let clearView = UIView(frame: .zero)
             clearView.backgroundColor = .listBackground
-
-            // Helper view that will hide top separator of 1st cell. Otherwise - 2 separators will blend together
-            let separatorBg = UIView(frame: .zero)
-            separatorBg.backgroundColor = .listForeground(modal: false)
-            separatorBg.translatesAutoresizingMaskIntoConstraints = false
-            clearView.addSubview(separatorBg)
-
-            NSLayoutConstraint.activate([
-                separatorBg.topAnchor.constraint(equalTo: clearView.bottomAnchor),
-                separatorBg.trailingAnchor.constraint(equalTo: clearView.trailingAnchor),
-                separatorBg.leadingAnchor.constraint(equalTo: clearView.leadingAnchor),
-                separatorBg.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
-            ])
-
-            // We need custom implementation for full-width separator on top of the section in plain tableview
-            let separator = UIView(frame: .zero)
-            separator.backgroundColor = .systemColor(.separator)
-            separator.translatesAutoresizingMaskIntoConstraints = false
-            separatorBg.addSubview(separator)
-            separatorBg.pinSubviewToAllEdges(separator)
 
             return clearView
         default:
@@ -550,12 +516,8 @@ private extension ProductFormViewController {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
 
-        if showGroupedTableViewAppearance {
-            tableView.backgroundColor = .listBackground
-        } else {
-            tableView.backgroundColor = .listForeground(modal: false)
-            tableView.removeLastCellSeparator()
-        }
+        tableView.backgroundColor = .listForeground(modal: false)
+        tableView.removeLastCellSeparator()
 
         // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
         tableView.contentInsetAdjustmentBehavior = .never
@@ -575,12 +537,6 @@ private extension ProductFormViewController {
                     }
                 }
             case .settings(let rows):
-                rows.forEach { row in
-                    row.cellTypes.forEach { cellType in
-                        tableView.registerNib(for: cellType)
-                    }
-                }
-            case .optionsCTA(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
                         tableView.registerNib(for: cellType)
@@ -782,7 +738,7 @@ private extension ProductFormViewController {
 // MARK: More details actions
 //
 private extension ProductFormViewController {
-    func moreDetailsButtonTapped(button: UIButton?) {
+    func moreDetailsButtonTapped(button: UIButton) {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
@@ -817,8 +773,6 @@ private extension ProductFormViewController {
                                                                         case .editDownloadableFiles:
                                                                             ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
                                                                             self?.showDownloadableFiles()
-                                                                        case .convertToVariable:
-                                                                            self?.convertToVariableType()
                                                                         }
                                                                     }
         }
@@ -1285,23 +1239,6 @@ private extension ProductFormViewController {
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
     }
-
-    func convertToVariableType() {
-        let originalProductType = product.productType
-        let selectedProductType = BottomSheetProductType.variable
-
-        ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
-            "from": originalProductType.rawValue,
-            "to": selectedProductType.productType.rawValue
-        ])
-
-        presentProductTypeChangeAlert(for: originalProductType, completion: { [weak self] change in
-            guard change == true else {
-                return
-            }
-            self?.viewModel.updateProductType(productType: selectedProductType)
-        })
-    }
 }
 
 // MARK: Action - Edit Product Shipping Settings
@@ -1583,8 +1520,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showDownloadableFiles() {
-        let isDownloadableFilesActionEnabled = product.downloadable || ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplifyProductEditing)
-        guard let product = product as? EditableProductModel, isDownloadableFilesActionEnabled  else {
+        guard let product = product as? EditableProductModel, product.downloadable  else {
             return
         }
 
@@ -1740,6 +1676,16 @@ private extension ProductFormViewController {
         }
         let viewModel = SubscriptionSettingsViewModel(subscription: subscription)
         let viewController = SubscriptionSettingsViewController(viewModel: viewModel)
+        show(viewController, sender: self)
+    }
+}
+
+// MARK: Action - Show Quantity Rules
+//
+private extension ProductFormViewController {
+    func showQuantityRules() {
+        let viewModel = QuantityRulesViewModel(product: product)
+        let viewController = QuantityRulesViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }
 }

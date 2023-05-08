@@ -23,4 +23,8 @@ struct ProductVariationFormEventLogger: ProductFormEventLoggerProtocol {
     func logUpdateButtonTapped() {
         ServiceLocator.analytics.track(.productVariationDetailUpdateButtonTapped)
     }
+
+    func logQuantityRulesTapped() {
+        ServiceLocator.analytics.track(event: .Variations.quantityRulesTapped())
+    }
 }

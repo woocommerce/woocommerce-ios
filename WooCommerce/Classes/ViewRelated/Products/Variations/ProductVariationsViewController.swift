@@ -100,6 +100,10 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
         product.sku
     }
 
+    private var parentProductDisablesQuantityRules: Bool? {
+        product.combineVariationQuantities
+    }
+
     private let imageService: ImageService = ServiceLocator.imageService
     private let productImageUploader: ProductImageUploaderProtocol
 
@@ -404,7 +408,8 @@ extension ProductVariationsViewController: UITableViewDataSource {
         let productVariation = resultsController.object(at: indexPath)
         let model = EditableProductVariationModel(productVariation: productVariation,
                                                   allAttributes: allAttributes,
-                                                  parentProductSKU: parentProductSKU)
+                                                  parentProductSKU: parentProductSKU,
+                                                  parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
 
         let viewModel = ProductsTabProductViewModel(productVariationModel: model)
         cell.update(viewModel: viewModel, imageService: imageService)
@@ -533,7 +538,8 @@ private extension ProductVariationsViewController {
     private func navigateToVariationDetail(for productVariation: ProductVariation) {
         let model = EditableProductVariationModel(productVariation: productVariation,
                                                   allAttributes: allAttributes,
-                                                  parentProductSKU: parentProductSKU)
+                                                  parentProductSKU: parentProductSKU,
+                                                  parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
 
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
@@ -546,6 +552,7 @@ private extension ProductVariationsViewController {
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,
+                                                      parentProductDisablesQuantityRules: parentProductDisablesQuantityRules,
                                                       formType: self.viewModel.formType,
                                                       productImageActionHandler: productImageActionHandler)
         viewModel.onVariationDeletion = { [weak self] variation in

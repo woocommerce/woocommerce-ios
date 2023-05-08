@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import protocol Experiments.FeatureFlagService
 
 /// ViewModel for the Upgrades View
 ///
@@ -22,6 +23,10 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private(set) var shouldShowUpgradeButton = false
 
+    /// Defines if the view should show the Full Plan features..
+    ///
+    private(set) var shouldShowFreeTrialFeatures = false
+
     /// Defines if the view should show the "Cancel Free Trial"  button.
     ///
     private(set) var shouldShowCancelTrialButton = false
@@ -29,6 +34,10 @@ final class UpgradesViewModel: ObservableObject {
     /// Indicates if the view should should a redacted state.
     ///
     private(set) var showLoadingIndicator = false
+
+    /// Holds a reference to the free trial features.
+    ///
+    let freeTrialFeatures = FreeTrialFeatures.features
 
     /// Observable subscription store.
     ///
@@ -46,12 +55,18 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
+    /// Feature flag service.
+    ///
+    private let featureFlagService: FeatureFlagService
+
     init(stores: StoresManager = ServiceLocator.stores,
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.storePlanSynchronizer = storePlanSynchronizer
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         observePlan()
     }
 
@@ -85,9 +100,10 @@ private extension UpgradesViewModel {
     func updateViewProperties(from plan: WPComSitePlan) {
         planName = Self.getPlanName(from: plan)
         planInfo = Self.getPlanInfo(from: plan)
-        shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan)
+        shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan, featureFlagService: featureFlagService)
         errorNotice = nil
         showLoadingIndicator = false
+        shouldShowFreeTrialFeatures = plan.isFreeTrial
     }
 
     func updateLoadingViewProperties() {
@@ -96,6 +112,7 @@ private extension UpgradesViewModel {
         shouldShowUpgradeButton = false
         errorNotice = nil
         showLoadingIndicator = true
+        shouldShowFreeTrialFeatures = false
     }
 
     func updateFailedViewProperties() {
@@ -104,6 +121,7 @@ private extension UpgradesViewModel {
         shouldShowUpgradeButton = false
         errorNotice = createErrorNotice()
         showLoadingIndicator = false
+        shouldShowFreeTrialFeatures = false
     }
 
     /// Removes any occurrences of `WordPress.com` from the site's name.
@@ -152,8 +170,8 @@ private extension UpgradesViewModel {
 
     /// Only allow to upgrade the plan if we are on a free trial.
     ///
-    static func getUpgradeNowButtonVisibility(from plan: WPComSitePlan) -> Bool {
-        plan.isFreeTrial
+    static func getUpgradeNowButtonVisibility(from plan: WPComSitePlan, featureFlagService: FeatureFlagService) -> Bool {
+        plan.isFreeTrial && featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
     }
 
     /// Returns a site plan duration in days.
@@ -210,8 +228,7 @@ private extension UpgradesViewModel {
         }
 
         static func freeTrialPlanInfo(planDuration: Int, daysLeft: Int) -> String {
-            let format = NSLocalizedString("You are in the %1$d-day free trial. The free trial will end in %2$d days. " +
-                                           "Upgrade to unlock new features and keep your store running.",
+            let format = NSLocalizedString("You are in the %1$d-day free trial. The free trial will end in %2$d days. ",
                                            comment: "Reads like: You are in the 14-day free trial. The free trial will end in 5 days. " +
                                            "Upgrade to unlock new features and keep your store running.")
             return String.localizedStringWithFormat(format, planDuration, daysLeft)

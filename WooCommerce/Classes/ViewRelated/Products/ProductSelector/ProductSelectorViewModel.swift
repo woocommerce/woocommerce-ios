@@ -9,12 +9,12 @@ struct ProductsSectionViewModel {
     let productRows: [ProductRowViewModel]
 }
 
-private struct ProductsSection {
-    let type: ProductsSectionType
+struct ProductSelectorSection {
+    let type: ProductSelectorSectionType
     let products: [Product]
 }
 
-private enum ProductsSectionType {
+enum ProductSelectorSectionType {
     // Show most popular products, that is, most sold
     case mostPopular
     // Show last sold
@@ -36,13 +36,6 @@ private enum ProductsSectionType {
             return nil
         }
     }
-}
-
-private enum ProductTrackingSource: String {
-    case popular
-    case recent
-    case alphabetical
-    case search
 }
 
 /// View model for `ProductSelectorView`.
@@ -101,7 +94,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private var topProductsFromCachedOrders: ProductSelectorTopProducts = ProductSelectorTopProducts.empty
 
-    private var productIDTrackingSources: [Int64: ProductTrackingSource] = [:]
+    private let tracker: ProductSelectorViewModelTracker
 
     /// Whether we should show the products split by sections
     ///
@@ -111,7 +104,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Sections containing products
     ///
-    @Published private var sections: [ProductsSection] = []
+    @Published private(set) var sections: [ProductSelectorSection] = []
 
     /// View Models for the sections
     /// 
@@ -232,8 +225,10 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
+        tracker = ProductSelectorViewModelTracker(analytics: analytics, trackProductsSource: topProductsProvider != nil)
 
         topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
+        tracker.viewModel = self
 
         configureSyncingCoordinator()
         refreshDataAndSync()
@@ -248,7 +243,7 @@ final class ProductSelectorViewModel: ObservableObject {
             return
         }
 
-        updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
+        tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
 
         guard let onProductSelectionStateChanged else {
             toggleSelection(productID: productID)
@@ -305,7 +300,7 @@ final class ProductSelectorViewModel: ObservableObject {
         // append new selected IDs
         selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
 
-        updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID, selectedVariationIDs: selectedVariationIDs)
+        tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID, selectedVariationIDs: selectedVariationIDs)
     }
 
     /// Select all variations for a given product
@@ -335,7 +330,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func completeMultipleSelection() {
         let allIDs = selectedProductIDs + selectedProductVariationIDs
-        trackConfirmButtonTapped(with: allIDs.count)
+        tracker.trackConfirmButtonTapped(with: allIDs.count)
         onMultipleSelectionCompleted?(allIDs)
     }
 
@@ -532,11 +527,11 @@ private extension ProductSelectorViewModel {
 
         guard popularProducts.isNotEmpty,
               shouldShowSections else {
-            sections = [ProductsSection(type: .allProducts, products: loadedProducts)]
+            sections = [ProductSelectorSection(type: .allProducts, products: loadedProducts)]
             return
         }
 
-        sections = [ProductsSection(type: .mostPopular, products: popularProducts)]
+        sections = [ProductSelectorSection(type: .mostPopular, products: popularProducts)]
 
         let lastSoldProducts = filterProductsFromSortedIdsArray(originalProducts: loadedProducts, productsIds: topProductsFromCachedOrders.lastSoldProductsIds)
         let filteredLastSoldProducts = Array(removeAlreadyAddedProducts(from: lastSoldProducts).prefix(Constants.topSectionsMaxLength))
@@ -564,12 +559,12 @@ private extension ProductSelectorViewModel {
         }
     }
 
-    func appendSectionIfNotEmpty(type: ProductsSectionType, products: [Product]) {
+    func appendSectionIfNotEmpty(type: ProductSelectorSectionType, products: [Product]) {
         guard products.isNotEmpty else {
             return
         }
 
-        sections.append(ProductsSection(type: type, products: products))
+        sections.append(ProductSelectorSection(type: type, products: products))
     }
 
     func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters) {
@@ -683,7 +678,7 @@ private extension ProductSelectorViewModel {
         }.assign(to: &$productsSectionViewModels)
     }
 
-    func generateProductsSectionViewModels(sections: [ProductsSection],
+    func generateProductsSectionViewModels(sections: [ProductSelectorSection],
                                            selectedProductIDs: [Int64],
                                            selectedProductVariationIDs: [Int64]) -> [ProductsSectionViewModel] {
         sections.map { ProductsSectionViewModel(title: $0.type.title,
@@ -756,65 +751,6 @@ extension ProductSelectorViewModel {
                 retryAction()
             }
         }
-    }
-}
-
-// MARK: - Tracking
-private extension ProductSelectorViewModel {
-    func trackConfirmButtonTapped(with productsCount: Int) {
-        let trackingSources = Array(productIDTrackingSources.values.map { $0.rawValue })
-        let areFiltersActive = filtersSubject.value.numberOfActiveFilters > 0
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productsCount,
-                                                                                                        sources: trackingSources,
-                                                                                                        isFilterActive: areFiltersActive))
-    }
-
-    func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64) {
-        guard productIDTrackingSources[productID] == nil else {
-            productIDTrackingSources.removeValue(forKey: productID)
-
-            return
-        }
-
-        if let trackingSource = retrieveTrackingSource(for: productID) {
-            productIDTrackingSources[productID] = trackingSource
-        }
-    }
-
-    func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64, selectedVariationIDs: [Int64]) {
-        guard selectedVariationIDs.isNotEmpty else {
-            productIDTrackingSources.removeValue(forKey: productID)
-
-            return
-        }
-
-        productIDTrackingSources[productID] =  retrieveTrackingSource(for: productID)
-    }
-
-    func retrieveTrackingSource(for productID: Int64) -> ProductTrackingSource? {
-        guard topProductsFromCachedOrders != .empty else {
-            return nil
-        }
-
-        guard searchTerm.isEmpty else {
-            return .search
-        }
-
-        guard !sectionContainsProductID(sectionType: .mostPopular, productID: productID) else {
-            return .popular
-        }
-
-        guard !sectionContainsProductID(sectionType: .lastSold, productID: productID) else {
-            return .recent
-        }
-
-        return .alphabetical
-    }
-
-    func sectionContainsProductID(sectionType: ProductsSectionType, productID: Int64) -> Bool {
-        let section = sections.first(where: { $0.type == sectionType })
-
-        return section?.products.first(where: { $0.productID == productID}) != nil
     }
 }
 

@@ -96,14 +96,6 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Sets the state for the Product SKU Input Scanner beta feature switch.
-    ///
-    case setProductSKUInputScannerFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
-    /// Loads the most recent state for the Product SKU Input Scanner beta feature switch
-    ///
-    case loadProductSKUInputScannerFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
-
     /// Sets the state for the Coupon Management beta feature switch.
     ///
     case setCouponManagementFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)

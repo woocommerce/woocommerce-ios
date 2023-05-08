@@ -29,16 +29,25 @@ public final class PasswordScreen: ScreenObject {
         )
     }
 
-    public func proceedWith(password: String) throws {
-        _ = try tryProceed(password: password)
+    @discardableResult
+    public func enterValidPassword() throws -> MyStoreScreen {
+        try proceedWith(password: "pw")
+
+        return try MyStoreScreen()
     }
 
-    public func tryProceed(password: String) throws -> PasswordScreen {
-        passwordField.enterText(text: password)
-        continueButton.tap()
+    public func enterInvalidPassword() throws -> PasswordScreen {
+        try proceedWith(password: "invalidPswd")
         if continueButton.exists && !continueButton.isHittable {
             waitFor(element: continueButton, predicate: "isEnabled == true")
         }
+
+        return try PasswordScreen()
+    }
+
+    public func proceedWith(password: String) throws {
+        passwordField.enterText(text: password)
+        continueButton.tap()
 
         // As of Xcode 14.3, the Simulator might ask to save the password which, of course, we don't want to do.
         if app.buttons["Save Password"].waitForExistence(timeout: 5) {
@@ -46,10 +55,9 @@ public final class PasswordScreen: ScreenObject {
             // alert where "Save Password" is.
             app.buttons["Not Now"].tap()
         }
-
-        return self
     }
 
+    @discardableResult
     public func verifyLoginError() throws -> PasswordScreen {
         _ = passwordErrorLabel.waitForExistence(timeout: 2)
         XCTAssertTrue(passwordErrorLabel.exists)

@@ -68,32 +68,6 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
-
-    func test_viewmodel_has_product_type_setting_displayed_when_it_is_enabled() {
-        // Given
-        let product = Product.fake().copy(productTypeKey: "simple")
-        let viewModel = ProductSettingsViewModel(product: product, password: nil, formType: .edit, isProductTypeSettingEnabled: true)
-
-        // Then
-        XCTAssertTrue(viewModel.productSettings.productType == .simple)
-        XCTAssertFalse(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.sections.first is ProductSettingsSections.ProductTypeSetting)
-
-        // When
-        viewModel.productSettings.productType = .variable
-
-        // Then
-        XCTAssertTrue(viewModel.hasUnsavedChanges())
-    }
-
-    func test_viewmodel_hides_product_type_setting_when_it_is_disabled() {
-        // Given
-        let product = Product.fake().copy(productTypeKey: "simple")
-        let viewModel = ProductSettingsViewModel(product: product, password: nil, formType: .edit, isProductTypeSettingEnabled: false)
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains(where: { $0 is ProductSettingsSections.ProductTypeSetting }))
-    }
 }
 
 private extension ProductSettingsViewModel {

@@ -127,6 +127,21 @@ extension KeyedDecodingContainer {
 
         return nil
     }
+
+    /// Decodes an array of the specified Type for a given Key (if present), discarding any malformed items in the array.
+    ///
+    /// **WARNING:** Only use this if it's acceptable to handle and display partial data!
+    ///
+    /// This method *does NOT throw*. We want this behavior so that if a malformed entity is received, we just skip it, rather
+    /// than breaking the entire parsing chain.
+    ///
+    func failsafeDecodeIfPresent<T>(lossyList: [T].Type, forKey key: KeyedDecodingContainer<K>.Key) -> [T] where T: Decodable {
+        do {
+            return try decodeIfPresent(LossyDecodableList<T>.self, forKey: key)?.elements ?? []
+        } catch {
+            return []
+        }
+    }
 }
 
 
@@ -143,6 +158,31 @@ extension KeyedDecodingContainer {
         }
 
         return NSRange(location: start, length: end - start)
+    }
+}
+
+private extension KeyedDecodingContainer {
+    /// Decodable list of elements where any invalid or malformed elements are discarded/ignored.
+    ///
+    /// See: https://www.swiftbysundell.com/articles/ignoring-invalid-json-elements-codable/
+    ///
+    struct LossyDecodableList<Element>: Decodable where Element: Decodable {
+        var elements: [Element]
+
+        private struct ElementWrapper: Decodable {
+            var element: Element?
+
+            init(from decoder: Decoder) throws {
+                let container = try decoder.singleValueContainer()
+                element = try? container.decode(Element.self)
+            }
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            let wrappers = try container.decode([ElementWrapper].self)
+            elements = wrappers.compactMap(\.element)
+        }
     }
 }
 

@@ -10,6 +10,9 @@ final class MockDomainRemote {
     /// The results to return in `loadPaidDomainSuggestions`.
     private var loadPaidDomainSuggestionsResult: Result<[PaidDomainSuggestion], Error>?
 
+    /// The results to return in `loadPremiumDomainPrice`.
+    private var loadPremiumDomainPriceResult: [String: PremiumDomainPrice] = [:]
+
     /// The results to return in `loadDomainProducts`.
     private var loadDomainProductsResult: Result<[DomainProduct], Error>?
 
@@ -30,6 +33,10 @@ final class MockDomainRemote {
     /// Returns the value when `loadPaidDomainSuggestions` is called.
     func whenLoadingPaidDomainSuggestions(thenReturn result: Result<[PaidDomainSuggestion], Error>) {
         loadPaidDomainSuggestionsResult = result
+    }
+
+    func whenLoadingPremiumDomainPrice(domain: String, thenReturn price: PremiumDomainPrice) {
+        loadPremiumDomainPriceResult[domain] = price
     }
 
     /// Returns the value when `loadDomainProducts` is called.
@@ -68,6 +75,13 @@ extension MockDomainRemote: DomainRemoteProtocol {
             throw NetworkError.notFound
         }
         return try result.get()
+    }
+
+    func loadPremiumDomainPrice(domain: String) async throws -> PremiumDomainPrice {
+        guard let price = loadPremiumDomainPriceResult[domain] else {
+            throw NetworkError.notFound
+        }
+        return price
     }
 
     func loadDomainProducts() async throws -> [DomainProduct] {

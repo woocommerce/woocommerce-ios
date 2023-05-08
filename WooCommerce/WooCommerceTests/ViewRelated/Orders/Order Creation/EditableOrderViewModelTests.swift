@@ -276,7 +276,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
-    func test_product_is_selected_when_quantity_is_decremented_below_1() {
+    func test_product_is_removed_when_quantity_is_decremented_below_1() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -290,7 +290,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.productRows[0].decrementQuantity()
 
         // Then
-        XCTAssertNotNil(viewModel.selectedProductViewModel)
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product.productID }))
     }
 
     func test_selectOrderItem_selects_expected_order_item() throws {

@@ -24,10 +24,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isViewAddOnsSwitchEnabled: Bool
 
-    /// The state(`true` or `false`) for the Product SKU Input Scanner feature switch.
-    ///
-    public var isProductSKUInputScannerSwitchEnabled: Bool
-
     /// The state for the Coupon Management feature switch.
     ///
     public var isCouponManagementSwitchEnabled: Bool
@@ -63,7 +59,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
-                isProductSKUInputScannerSwitchEnabled: Bool,
                 isCouponManagementSwitchEnabled: Bool,
                 isInAppPurchasesSwitchEnabled: Bool,
                 isTapToPayOnIPhoneSwitchEnabled: Bool,
@@ -75,7 +70,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
-        self.isProductSKUInputScannerSwitchEnabled = isProductSKUInputScannerSwitchEnabled
         self.isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
@@ -90,7 +84,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         .init(installationDate: nil,
               feedbacks: [:],
               isViewAddOnsSwitchEnabled: false,
-              isProductSKUInputScannerSwitchEnabled: false,
               isCouponManagementSwitchEnabled: false,
               isInAppPurchasesSwitchEnabled: false,
               isTapToPayOnIPhoneSwitchEnabled: false,
@@ -121,7 +114,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             installationDate: installationDate,
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
@@ -143,7 +135,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             installationDate: installationDate,
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isProductSKUInputScannerSwitchEnabled: isProductSKUInputScannerSwitchEnabled,
             isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
@@ -165,7 +156,6 @@ extension GeneralAppSettings {
         self.installationDate = try container.decodeIfPresent(Date.self, forKey: .installationDate)
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
-        self.isProductSKUInputScannerSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isProductSKUInputScannerSwitchEnabled) ?? false
         self.isCouponManagementSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isCouponManagementSwitchEnabled) ?? false
         self.isInAppPurchasesSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isInAppPurchasesSwitchEnabled) ?? false
         self.isTapToPayOnIPhoneSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapToPayOnIPhoneSwitchEnabled) ?? false

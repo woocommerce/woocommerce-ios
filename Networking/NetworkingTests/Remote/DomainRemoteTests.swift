@@ -52,8 +52,9 @@ final class DomainRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(suggestions, [
-            .init(name: "color.bar", productID: 356, supportsPrivacy: true),
-            .init(name: "color.ink", productID: 359, supportsPrivacy: true)
+            .init(name: "color.bar", productID: 356, supportsPrivacy: true, isPremium: nil),
+            .init(name: "color.ink", productID: 359, supportsPrivacy: true, isPremium: nil),
+            .init(name: "pizzas.blog", productID: 76, supportsPrivacy: true, isPremium: true)
         ])
     }
 

@@ -32,7 +32,7 @@ public protocol PaymentRemoteProtocol {
     ///   When the cart is being passed to a subsequent API request for checkout, this needs to be `true`.
     ///   When it's necessary to create a persistent cart for later checkout, this is set to `false`. The default value is `true`.
     /// - Returns: The remote response from creating a cart.
-    func createCart(siteID: Int64, domain: PaidDomainSuggestion, isTemporary: Bool) async throws -> CartResponse
+    func createCart(siteID: Int64, domain: DomainToPurchase, isTemporary: Bool) async throws -> CartResponse
 
     /// Checks out the given cart using domain credit as the payment method.
     /// - Parameter cart: Cart generated from one of the `createCart` functions.
@@ -88,7 +88,7 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
         }
     }
 
-    public func createCart(siteID: Int64, domain: PaidDomainSuggestion, isTemporary: Bool) async throws -> CartResponse {
+    public func createCart(siteID: Int64, domain: DomainToPurchase, isTemporary: Bool) async throws -> CartResponse {
         let parameters: [String: Any] = [
             "products": [
                 [
@@ -151,6 +151,22 @@ public struct WPComPlan: Decodable, Equatable {
         case productID = "product_id"
         case name = "product_name"
         case formattedPrice = "formatted_price"
+    }
+}
+
+/// Necessary data of a domain to create a cart. Contains a subset of properties of `PaidDomainSuggestion`.
+public struct DomainToPurchase: Equatable {
+    /// Domain name.
+    public let name: String
+    /// WPCOM product ID.
+    public let productID: Int64
+    /// Whether there is privacy support. Used when creating a cart with a domain product.
+    public let supportsPrivacy: Bool
+
+    public init(name: String, productID: Int64, supportsPrivacy: Bool) {
+        self.name = name
+        self.productID = productID
+        self.supportsPrivacy = supportsPrivacy
     }
 }
 

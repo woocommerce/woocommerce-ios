@@ -121,19 +121,22 @@ private extension PrivacySettingsViewController {
         if isPrivacyChoicesEnabled {
             tableView.tableHeaderView = createTableHeaderView()
             tableView.updateHeaderHeight()
+            tableView.sectionFooterHeight = UITableView.automaticDimension
+            tableView.estimatedSectionFooterHeight = 100
         }
     }
 
     func configureSections() {
         if isPrivacyChoicesEnabled {
             return sections = [
-                Section(title: Localization.tracking, rows: [.analytics, .analyticsInfo]),
-                Section(title: Localization.reports, rows: [.reportCrashes, .crashInfo])
+                Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
+                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.analytics, .analyticsInfo]),
+                Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         } else {
             return sections = [
-                Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
-                Section(title: nil, rows: [.reportCrashes, .crashInfo])
+                Section(title: nil, footer: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+                Section(title: nil, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         }
     }
@@ -410,20 +413,32 @@ extension PrivacySettingsViewController: UITableViewDataSource {
         sections[section].title
     }
 
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // Add a greater padding for the new privacy choices redesign.
-        if isPrivacyChoicesEnabled {
-            return Constants.footerPadding
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard let footer = sections[section].footer else {
+            return nil
         }
 
-        // Give some breathing room to the table.
-        let lastSection = sections.count - 1
-        if section == lastSection {
-            return UITableView.automaticDimension
-        }
+        var attr = NSMutableAttributedString(string: footer, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
+        attr.setAsLink(textToFind: "Cookie Policy", linkURL: "https://automattic.com/cookies/")
+        attr.setAsLink(textToFind: "Privacy Policy", linkURL: "https://automattic.com/privacy/")
 
-        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
-        return CGFloat.leastNonzeroMagnitude
+        let textView = UITextView(frame: .zero)
+        textView.font = .caption1
+        textView.textColor = .textSubtle
+        textView.attributedText = attr
+        textView.textContainer.maximumNumberOfLines = 0
+        textView.backgroundColor = .clear
+        textView.textContainerInset = Constants.footerInsets
+        textView.isEditable = false
+        textView.isScrollEnabled = false
+        textView.delegate = self
+
+        var linkTextAttributes = textView.linkTextAttributes ?? [:]
+        linkTextAttributes[.underlineColor] = UIColor.clear
+        linkTextAttributes[.foregroundColor] = UIColor.primary
+        textView.linkTextAttributes = linkTextAttributes
+
+        return textView
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -470,6 +485,11 @@ extension PrivacySettingsViewController {
                                                   comment: "Main description on the privacy screen.")
         static let tracking = NSLocalizedString("Tracking", comment: "Title of the tracking section on the privacy screen")
         static let reports = NSLocalizedString("Reports", comment: "Title of the report section on the privacy screen")
+        static let morePrivacyOptions = NSLocalizedString("More Privacy Options", comment: "Title of the more privacy options section on the privacy screen")
+        static let morePrivacyOptionsFooter = NSLocalizedString("To learn more about how we use your data to optimize our mobile apps, " +
+                                                                "enhance your experience, and deliver relevant marketing, " +
+                                                                "learn more in our Privacy Policy and Cookie Policy." + "\n",
+                                                                comment: "Footer of the more privacy options section on the privacy screen")
     }
 }
 
@@ -478,17 +498,21 @@ private struct Constants {
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)
     static let headerTitleInsets = UIEdgeInsets(top: 16, left: 14, bottom: 32, right: 14)
-    static let footerPadding = CGFloat(24)
+    static let footerInsets = UIEdgeInsets(top: 8, left: 16, bottom: 16, right: 16)
+    static let footerPadding = CGFloat(44)
 }
 
 private struct Section {
     let title: String?
+    let footer: String?
     let rows: [Row]
 }
 
 private enum Row: CaseIterable {
     case analytics
     case analyticsInfo
+    case morePrivacy
+    case morePrivacyInfo
     case collectInfo
     case privacyInfo
     case privacyPolicy
@@ -504,6 +528,10 @@ private enum Row: CaseIterable {
         case .analytics:
             return SwitchTableViewCell.self
         case .analyticsInfo:
+            return BasicTableViewCell.self
+        case .morePrivacy:
+            return BasicTableViewCell.self
+        case .morePrivacyInfo:
             return BasicTableViewCell.self
         case .collectInfo:
             return SwitchTableViewCell.self
@@ -528,5 +556,12 @@ private enum Row: CaseIterable {
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+extension PrivacySettingsViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        print("Link tapped")
+        return false
     }
 }

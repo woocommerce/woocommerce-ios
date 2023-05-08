@@ -361,6 +361,32 @@ private extension PrivacySettingsViewController {
         return container
     }
 
+    /// Footer view for the More Privacy Section.
+    ///
+    func createMorePrivacyFooterView(text: String) -> UIView {
+        var attr = NSMutableAttributedString(string: text, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
+        attr.setAsLink(textToFind: "Cookie Policy", linkURL: "https://automattic.com/cookies/")
+        attr.setAsLink(textToFind: "Privacy Policy", linkURL: "https://automattic.com/privacy/")
+
+        let textView = UITextView(frame: .zero)
+        textView.font = .caption1
+        textView.textColor = .textSubtle
+        textView.attributedText = attr
+        textView.textContainer.maximumNumberOfLines = 0
+        textView.backgroundColor = .clear
+        textView.textContainerInset = Constants.footerInsets
+        textView.isEditable = false
+        textView.isScrollEnabled = false
+        textView.delegate = self
+
+        var linkTextAttributes = textView.linkTextAttributes ?? [:]
+        linkTextAttributes[.underlineColor] = UIColor.clear
+        linkTextAttributes[.foregroundColor] = UIColor.primary
+        textView.linkTextAttributes = linkTextAttributes
+
+        return textView
+    }
+
     // MARK: Actions
     //
     func collectInfoWasUpdated(newValue: Bool) {
@@ -438,28 +464,7 @@ extension PrivacySettingsViewController: UITableViewDataSource {
         guard let footer = sections[section].footer else {
             return nil
         }
-
-        var attr = NSMutableAttributedString(string: footer, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
-        attr.setAsLink(textToFind: "Cookie Policy", linkURL: "https://automattic.com/cookies/")
-        attr.setAsLink(textToFind: "Privacy Policy", linkURL: "https://automattic.com/privacy/")
-
-        let textView = UITextView(frame: .zero)
-        textView.font = .caption1
-        textView.textColor = .textSubtle
-        textView.attributedText = attr
-        textView.textContainer.maximumNumberOfLines = 0
-        textView.backgroundColor = .clear
-        textView.textContainerInset = Constants.footerInsets
-        textView.isEditable = false
-        textView.isScrollEnabled = false
-        textView.delegate = self
-
-        var linkTextAttributes = textView.linkTextAttributes ?? [:]
-        linkTextAttributes[.underlineColor] = UIColor.clear
-        linkTextAttributes[.foregroundColor] = UIColor.primary
-        textView.linkTextAttributes = linkTextAttributes
-
-        return textView
+        return createMorePrivacyFooterView(text: footer)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

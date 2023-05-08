@@ -365,8 +365,8 @@ private extension PrivacySettingsViewController {
     ///
     func createMorePrivacyFooterView(text: String) -> UIView {
         var attr = NSMutableAttributedString(string: text, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
-        attr.setAsLink(textToFind: "Cookie Policy", linkURL: "https://automattic.com/cookies/")
-        attr.setAsLink(textToFind: "Privacy Policy", linkURL: "https://automattic.com/privacy/")
+        attr.setAsLink(textToFind: Localization.cookiePolicy, linkURL: WooConstants.URLs.cookie.rawValue)
+        attr.setAsLink(textToFind: Localization.privacyPolicy, linkURL: WooConstants.URLs.privacy.rawValue)
 
         let textView = UITextView(frame: .zero)
         textView.font = .caption1
@@ -424,6 +424,24 @@ private extension PrivacySettingsViewController {
     ///
     func presentPrivacyPolicyWebView() {
         WebviewHelper.launch(WooConstants.URLs.privacy.asURL(), with: self)
+    }
+
+    /// Presents a URL modally.
+    ///
+    func presentURL(_ url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true)
+    }
+
+    func trackURLPresentation(_ url: URL) {
+        switch url.absoluteString {
+        case WooConstants.URLs.cookie.rawValue:
+            ServiceLocator.analytics.track(.settingsThirdPartyLearnMoreTapped)
+        case WooConstants.URLs.privacy.rawValue:
+            ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
+        default:
+            break
+        }
     }
 }
 
@@ -493,6 +511,8 @@ extension PrivacySettingsViewController: UITableViewDelegate {
         case .privacyPolicy:
             ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
             presentPrivacyPolicyWebView()
+        case .morePrivacy:
+            presentURL(WooConstants.URLs.morePrivacyDocumentation.asURL())
         default:
             break
         }
@@ -516,6 +536,8 @@ extension PrivacySettingsViewController {
                                                                 "enhance your experience, and deliver relevant marketing, " +
                                                                 "learn more in our Privacy Policy and Cookie Policy." + "\n",
                                                                 comment: "Footer of the more privacy options section on the privacy screen")
+        static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
+        static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")
     }
 }
 
@@ -584,7 +606,8 @@ private enum Row: CaseIterable {
 
 extension PrivacySettingsViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        print("Link tapped")
+        presentURL(URL)
+        trackURLPresentation(URL)
         return false
     }
 }

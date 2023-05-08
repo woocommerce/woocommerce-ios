@@ -110,7 +110,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.errorNotice)
     }
 
-    func test_active_upgrades_disabled_free_trial_has_correct_view_model_values() {
+    func test_free_trial_with_disabled_upgrades_has_correct_view_model_values() {
         // Given
         let expireDate = Date().addingDays(14)
         let plan = WPComSitePlan(id: freeTrialID,

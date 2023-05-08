@@ -34,6 +34,16 @@ final class FreeTrialBannerPresenter {
     ///
     private let inAppStoreUpgradeEnabled: Bool
 
+    /// String for the banner action button text
+    ///
+    private var bannerActionText: String {
+        if inAppStoreUpgradeEnabled {
+            return Localization.upgradeNow
+        } else {
+            return Localization.learnMore
+        }
+    }
+
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
@@ -111,14 +121,7 @@ private extension FreeTrialBannerPresenter {
         // Remove any previous banner.
         freeTrialBanner?.removeFromSuperview()
 
-        let actionText: String
-        if inAppStoreUpgradeEnabled {
-            actionText = Localization.upgradeNow
-        } else {
-            actionText = Localization.learnMore
-        }
-
-        let freeTrialViewController = FreeTrialBannerHostingViewController(actionText: actionText, mainText: contentText) { [weak self] in
+        let freeTrialViewController = FreeTrialBannerHostingViewController(actionText: bannerActionText, mainText: contentText) { [weak self] in
             self?.showUpgradesView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false

@@ -13,6 +13,9 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         /// Bold title with no margin against the body. Hard colors. This is the default.
         case compact
         /// Normal body title with a margin against the body. The title uses body style while
+        /// the body uses subheadline style.
+        case subheadline
+        /// Normal body title with a margin against the body. The title uses body style while
         /// the body uses secondary style.
         case regular
         /// Title with body style and body with secondary style.
@@ -59,6 +62,11 @@ private extension HeadlineLabelTableViewCell {
             headlineLabel?.applyHeadlineStyle()
             bodyLabel?.applyBodyStyle()
             headlineToBodyConstraint.constant = 0
+        case .subheadline:
+            headlineLabel?.applyBodyStyle()
+            bodyLabel?.applySubheadlineStyle()
+            bodyLabel?.textColor = .textSubtle
+            headlineToBodyConstraint.constant = Dimensions.margin
         case .regular:
             headlineLabel?.applyBodyStyle()
             bodyLabel?.applySecondaryBodyStyle()

@@ -130,7 +130,7 @@ private extension PrivacySettingsViewController {
         if isPrivacyChoicesEnabled {
             return sections = [
                 Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
-                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy, .morePrivacyInfo]),
+                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy]),
                 Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         } else {
@@ -157,10 +157,8 @@ private extension PrivacySettingsViewController {
             configureAnalytics(cell: cell)
         case let cell as BasicTableViewCell where row == .analyticsInfo:
             configureAnalyticsInfo(cell: cell)
-        case let cell as BasicTableViewCell where row == .morePrivacy:
+        case let cell as HeadlineLabelTableViewCell where row == .morePrivacy:
             configureMorePrivacy(cell: cell)
-        case let cell as BasicTableViewCell where row == .morePrivacyInfo:
-            configureMorePrivacyInfo(cell: cell)
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfo:
@@ -210,12 +208,13 @@ private extension PrivacySettingsViewController {
         configureInfo(cell: cell)
     }
 
-    func configureMorePrivacy(cell: BasicTableViewCell) {
+    func configureMorePrivacy(cell: HeadlineLabelTableViewCell) {
         cell.imageView?.image = nil
-        cell.textLabel?.text = NSLocalizedString(
-            "Advertising Option",
-            comment: "More Privacy Options section title in the privacy screen."
-        )
+        cell.update(style: .subheadline,
+                    headline: NSLocalizedString("Advertising Option", comment: "More Privacy Options section title in the privacy screen."),
+                    body: NSLocalizedString("More Privacy Options Available. Check here to learn more.",
+                                            comment: "More Privacy toggle section in the privacy screen."))
+        cell.accessoryType = .disclosureIndicator
     }
 
     func configureMorePrivacyInfo(cell: BasicTableViewCell) {
@@ -534,7 +533,6 @@ private enum Row: CaseIterable {
     case analytics
     case analyticsInfo
     case morePrivacy
-    case morePrivacyInfo
     case collectInfo
     case privacyInfo
     case privacyPolicy
@@ -552,9 +550,7 @@ private enum Row: CaseIterable {
         case .analyticsInfo:
             return BasicTableViewCell.self
         case .morePrivacy:
-            return BasicTableViewCell.self
-        case .morePrivacyInfo:
-            return BasicTableViewCell.self
+            return HeadlineLabelTableViewCell.self
         case .collectInfo:
             return SwitchTableViewCell.self
         case .privacyInfo:

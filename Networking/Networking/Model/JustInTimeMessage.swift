@@ -30,18 +30,24 @@ public struct JustInTimeMessage: GeneratedCopiable, GeneratedFakeable, Equatable
     ///
     public let cta: CTA
 
+    /// Named assets for the JITM, with a URL string for where the asset can be found
+    ///
+    public let assets: [String: URL]
+
     public init(siteID: Int64,
                 messageID: String,
                 featureClass: String,
                 ttl: Int64,
                 content: JustInTimeMessage.Content,
-                cta: JustInTimeMessage.CTA) {
+                cta: JustInTimeMessage.CTA,
+                assets: [String: URL]) {
         self.siteID = siteID
         self.messageID = messageID
         self.featureClass = featureClass
         self.ttl = ttl
         self.content = content
         self.cta = cta
+        self.assets = assets
     }
 }
 
@@ -52,6 +58,7 @@ extension JustInTimeMessage: Codable {
         case ttl
         case content
         case cta = "CTA"
+        case assets
     }
 
     public init(from decoder: Decoder) throws {
@@ -67,6 +74,7 @@ extension JustInTimeMessage: Codable {
         self.ttl = try container.decode(Int64.self, forKey: JustInTimeMessage.CodingKeys.ttl)
         self.content = try container.decode(JustInTimeMessage.Content.self, forKey: JustInTimeMessage.CodingKeys.content)
         self.cta = try container.decode(JustInTimeMessage.CTA.self, forKey: JustInTimeMessage.CodingKeys.cta)
+        self.assets = try container.decodeIfPresent([String: URL].self, forKey: .assets) ?? [:]
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -77,6 +85,7 @@ extension JustInTimeMessage: Codable {
         try container.encode(self.ttl, forKey: JustInTimeMessage.CodingKeys.ttl)
         try container.encode(self.content, forKey: JustInTimeMessage.CodingKeys.content)
         try container.encode(self.cta, forKey: JustInTimeMessage.CodingKeys.cta)
+        try container.encode(self.assets, forKey: .assets)
     }
 }
 

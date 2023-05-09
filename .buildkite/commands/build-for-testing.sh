@@ -7,6 +7,9 @@ install_gems
 echo "--- :cocoapods: Setting up Pods"
 install_cocoapods
 
+echo "--- :swift: Setting up Swift Packages"
+install_swiftpm_dependencies
+
 echo "--- :writing_hand: Copy Files"
 mkdir -pv ~/.configure/woocommerce-ios/secrets
 cp -v fastlane/env/project.env.example ~/.configure/woocommerce-ios/secrets/project.env

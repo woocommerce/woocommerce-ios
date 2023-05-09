@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case loginPrologueOnboarding
 
-    /// Local notifications scheduled 24 hours after certain login errors
-    ///
-    case loginErrorNotifications
-
     /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
     ///
     case loginMagicLinkEmphasisM2
@@ -148,6 +144,10 @@ public enum FeatureFlag: Int {
     ///
     case addCouponToOrder
 
+    /// Enables the ability to add products to orders by SKU scanning
+    ///
+    case addProductToOrderViaSKUScanner
+
     /// Whether to enable product bundle settings in product details
     ///
     case productBundles
@@ -176,9 +176,13 @@ public enum FeatureFlag: Int {
     ///
     case readOnlySubscriptions
 
-    /// Enables generating product description using AI.
+    /// Enables generating product description using AI from product description editor.
     ///
     case productDescriptionAI
+
+    /// Enables generating product description using AI from store onboarding.
+    ///
+    case productDescriptionAIFromStoreOnboarding
 
     /// Enables read-only support for the Gift Cards extension
     ///
@@ -195,6 +199,10 @@ public enum FeatureFlag: Int {
     /// Enables updates of the Privacy Choices project.
     ///
     case privacyChoices
+
+    /// Local notifications for store creation
+    ///
+    case storeCreationNotifications
 
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///

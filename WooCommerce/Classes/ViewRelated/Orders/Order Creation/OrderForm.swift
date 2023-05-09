@@ -231,9 +231,17 @@ private struct ProductsSection: View {
     ///
     @State private var showAddProduct: Bool = false
 
+    /// Defines whether `AddProductViaSKUScanner` modal is presented.
+    ///
+    @State private var showAddProductViaSKUScanner: Bool = false
+
     /// ID for Add Product button
     ///
     @Namespace var addProductButton
+
+    /// ID for Add Product via SKU Scanner button
+    ///
+    @Namespace var addProductViaSKUScannerButton
 
     ///   Environment safe areas
     ///
@@ -288,6 +296,20 @@ private struct ProductsSection: View {
                         navigationButtonID = UUID()
                     }
                 })
+                Button(OrderForm.Localization.addProductViaSKUScanner) {
+                    showAddProductViaSKUScanner.toggle()
+                }
+                .accessibilityIdentifier(OrderForm.Accessibility.addProductViaSKUScannerButtonIdentifier)
+                .buttonStyle(PlusButtonStyle())
+                .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
+                    scroll.scrollTo(addProductViaSKUScannerButton)
+                }, content: {
+                    ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                        print("SKU found: \(detectedBarcode)")
+                        showAddProductViaSKUScanner.toggle()
+                    })
+                })
+                .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
@@ -313,6 +335,8 @@ private extension OrderForm {
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
+        static let addProductViaSKUScanner = NSLocalizedString("Add Product via SKU scanner",
+                                                                   comment: "Title text of the button to add a single product via SKU scanning")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
     }
@@ -322,6 +346,7 @@ private extension OrderForm {
         static let cancelButtonIdentifier = "new-order-cancel-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
+        static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
     }
 }
 
@@ -381,5 +406,23 @@ private extension ProductSelectorView.Configuration {
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Add Product screen"
         )
+    }
+}
+
+// MARK: - SKU scanning
+
+private struct ProductSKUInputScannerView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = ProductSKUInputScannerViewController
+
+    let onBarcodeScanned: ((String) -> Void)?
+
+    func makeUIViewController(context: Context) -> ProductSKUInputScannerViewController {
+        ProductSKUInputScannerViewController(onBarcodeScanned: { barcode in
+            onBarcodeScanned?(barcode)
+        })
+    }
+
+    func updateUIViewController(_ uiViewController: ProductSKUInputScannerViewController, context: Context) {
+        // no-op
     }
 }

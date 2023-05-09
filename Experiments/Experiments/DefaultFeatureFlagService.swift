@@ -95,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .storeCreationNotifications:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .euShippingNotification:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

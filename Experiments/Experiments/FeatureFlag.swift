@@ -144,7 +144,7 @@ public enum FeatureFlag: Int {
     ///
     case addCouponToOrder
 
-    /// Enables the ability to add products to orders by SKU scanning 
+    /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner
 
@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Local notifications for store creation
     ///
     case storeCreationNotifications
+
+    /// Enables EU Bound notifications inside the Shipping Labels feature
+    ///
+    case euShippingNotification
 }

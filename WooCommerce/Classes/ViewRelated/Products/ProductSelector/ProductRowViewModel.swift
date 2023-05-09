@@ -197,11 +197,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             price = product.price
         }
 
-        // If product is a product bundle with a bundle stock status, use that as the product stock status.
+        // If product is a product bundle with insufficient bundle stock, use that as the product stock status.
         let stockStatusKey: String = {
             switch (productBundlesEnabled, product.productType, product.bundleStockStatus) {
-            case (true, .bundle, .some(let bundleStockStatus)):
-                return bundleStockStatus.rawValue
+            case (true, .bundle, .insufficientStock):
+                return ProductStockStatus.insufficientStock.rawValue
             default:
                 return product.stockStatusKey
             }

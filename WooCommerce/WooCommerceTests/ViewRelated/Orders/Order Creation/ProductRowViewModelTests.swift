@@ -296,7 +296,7 @@ class ProductRowViewModelTests: XCTestCase {
                       "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
-    func test_bundle_stock_status_used_for_product_bundles_when_feature_flag_enabled() {
+    func test_bundle_stock_status_used_for_product_bundles_when_insufficient_stock_and_feature_flag_enabled() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
 
@@ -305,6 +305,19 @@ class ProductRowViewModelTests: XCTestCase {
 
         // Then
         let expectedStockText = ProductStockStatus.insufficientStock.description
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockText),
+                      "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
+    func test_product_stock_status_used_for_product_bundles_when_backordered_and_feature_flag_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "onbackorder", bundleStockStatus: .inStock)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+
+        // Then
+        let expectedStockText = ProductStockStatus.onBackOrder.description
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockText),
                       "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }

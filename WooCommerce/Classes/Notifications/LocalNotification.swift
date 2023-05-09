@@ -16,6 +16,11 @@ struct LocalNotification {
     /// The scenario for the local notification.
     /// Its raw value is used for the identifier of a local notification and also the event property for analytics.
     enum Scenario: String, CaseIterable {
+        case storeCreationComplete = "store_creation_complete"
+        case oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
+        case oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
+        case oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
+        // The following notifications are deprecated and are canceled in the first release.
         case loginSiteAddressError = "site_address_error"
         case invalidEmailFromSiteAddressLogin = "site_address_email_error"
         case invalidEmailFromWPComLogin = "wpcom_email_error"
@@ -25,24 +30,19 @@ struct LocalNotification {
 
     /// The category of actions for a local notification.
     enum Category: String {
-        case loginError
+        case storeCreation
     }
 
     /// The action type in a local notification.
     enum Action: String {
-        case contactSupport
-        case loginWithWPCom
-        case resetPassword
+        // TODO: 9665 - determine if there are any custom actions
+        case none
 
         /// The title of the action in a local notification.
         var title: String {
             switch self {
-            case .contactSupport:
-                return NSLocalizedString("Contact support", comment: "Local notification action to contact support.")
-            case .loginWithWPCom:
-                return NSLocalizedString("Login with WordPress.com", comment: "Local notification action to log in with WordPress.com.")
-            case .resetPassword:
-                return NSLocalizedString("Reset password", comment: "Local notification action to reset password.")
+            case .none:
+                return ""
             }
         }
     }
@@ -50,35 +50,10 @@ struct LocalNotification {
 
 extension LocalNotification {
     init(scenario: Scenario) {
-        switch scenario {
-        case .loginSiteAddressError:
-            self.init(title: Localization.errorLoggingInTitle,
-                      body: Localization.errorLoggingInBody,
-                      scenario: scenario,
-                      actions: .init(category: .loginError, actions: [.contactSupport, .loginWithWPCom]))
-        case .invalidEmailFromWPComLogin, .invalidEmailFromSiteAddressLogin:
-            self.init(title: Localization.errorLoggingInTitle,
-                      body: Localization.errorLoggingInBody,
-                      scenario: scenario,
-                      actions: .init(category: .loginError, actions: [.contactSupport]))
-        case .invalidPasswordFromWPComLogin, .invalidPasswordFromSiteAddressWPComLogin:
-            self.init(title: Localization.passwordErrorTitle,
-                      body: Localization.errorLoggingInBody,
-                      scenario: scenario,
-                      actions: .init(category: .loginError, actions: [.resetPassword, .contactSupport]))
-        }
-    }
-}
-
-private extension LocalNotification {
-    enum Localization {
-        static let errorLoggingInTitle = NSLocalizedString("Problems with logging in?",
-                                                           comment: "Local notification title when the user encounters an error logging in " +
-                                                           "with site address.")
-        static let passwordErrorTitle = NSLocalizedString("Can't remember your password?",
-                                                           comment: "Local notification title when the user encounters an error with WP.com password.")
-        static let errorLoggingInBody = NSLocalizedString("Get some help!",
-                                                          comment: "Local notification body when the user encounters an error logging in " +
-                                                          "with site address.")
+        // TODO: 9665 - Copy TBD for each notification
+        self.init(title: scenario.rawValue,
+                  body: "",
+                  scenario: scenario,
+                  actions: .init(category: .storeCreation, actions: []))
     }
 }

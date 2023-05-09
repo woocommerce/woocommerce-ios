@@ -217,8 +217,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
-        requestLocalNotificationIfApplicable(error: error)
-
         guard let errorViewModel = viewModel(error) else {
             return
         }
@@ -343,10 +341,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// Jetpack is required. Present an error if we don't detect a valid installation for a self-hosted site.
         if isJetpackInvalidForSelfHostedSite(url: siteURL) {
             return presentJetpackError(for: siteURL, with: credentials, in: navigationController, onDismiss: onDismiss)
-        }
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
-            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
         }
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
@@ -517,40 +511,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                                             navigationController: navigationController)
         self.loggedOutStoreCreationCoordinator = coordinator
         coordinator.start()
-    }
-}
-
-// MARK: - Local notifications
-
-private extension AuthenticationManager {
-    func requestLocalNotificationIfApplicable(error: Error) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) else {
-            return
-        }
-
-        let wooAuthError = AuthenticationError.make(with: error)
-        let notification: LocalNotification?
-        switch wooAuthError {
-        case .notWPSite, .notValidAddress, .noSecureConnection:
-            notification = LocalNotification(scenario: .loginSiteAddressError)
-        case .invalidEmailFromSiteAddressLogin:
-            notification = LocalNotification(scenario: .invalidEmailFromSiteAddressLogin)
-        case .invalidEmailFromWPComLogin:
-            notification = LocalNotification(scenario: .invalidEmailFromWPComLogin)
-        case .invalidPasswordFromSiteAddressWPComLogin:
-            notification = LocalNotification(scenario: .invalidPasswordFromSiteAddressWPComLogin)
-        case .invalidPasswordFromWPComLogin:
-            notification = LocalNotification(scenario: .invalidPasswordFromWPComLogin)
-        default:
-            notification = nil
-        }
-
-        if let notification = notification {
-            ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
-            ServiceLocator.pushNotesManager.requestLocalNotification(notification,
-                                                                     // 24 hours from now.
-                                                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: 86400, repeats: false))
-        }
     }
 }
 
@@ -807,11 +767,6 @@ private extension AuthenticationManager {
             // Tracking `signedIn` after the user logged in using site creds & application password is created
             // to ensure that we are measuring only the users who can actually start using the app
             WordPressAuthenticator.track(.signedIn)
-
-            // clear scheduled local notifications
-            if self.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
-                ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: LocalNotification.Scenario.allCases)
-            }
 
             // navigates to home screen immediately with a placeholder store ID
             self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)

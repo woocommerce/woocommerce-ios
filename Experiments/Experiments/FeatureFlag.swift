@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case loginPrologueOnboarding
 
-    /// Local notifications scheduled 24 hours after certain login errors
-    ///
-    case loginErrorNotifications
-
     /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
     ///
     case loginMagicLinkEmphasisM2
@@ -203,4 +199,8 @@ public enum FeatureFlag: Int {
     /// Enables updates of the Privacy Choices project.
     ///
     case privacyChoices
+
+    /// Local notifications for store creation
+    ///
+    case storeCreationNotifications
 }

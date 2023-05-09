@@ -217,6 +217,16 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }()
 
+        // If product is a product bundle with a bundle stock quantity, override product `manageStock` setting.
+        let manageStock: Bool = {
+            switch (productBundlesEnabled, product.productType, product.bundleStockQuantity) {
+            case (true, .bundle, .some):
+                return true
+            default:
+                return product.manageStock
+            }
+        }()
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -224,7 +234,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   price: price,
                   stockStatusKey: stockStatusKey,
                   stockQuantity: stockQuantity,
-                  manageStock: product.manageStock,
+                  manageStock: manageStock,
                   quantity: quantity,
                   canChangeQuantity: canChangeQuantity,
                   imageURL: product.imageURL,

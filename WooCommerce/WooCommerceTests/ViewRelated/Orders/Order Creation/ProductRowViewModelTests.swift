@@ -339,7 +339,7 @@ class ProductRowViewModelTests: XCTestCase {
 
     func test_bundle_stock_quantity_used_for_product_bundles_when_feature_flag_enabled() {
         // Given
-        let product = Product.fake().copy(productTypeKey: "bundle", manageStock: true, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
+        let product = Product.fake().copy(productTypeKey: "bundle", manageStock: false, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
 
         // When
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)

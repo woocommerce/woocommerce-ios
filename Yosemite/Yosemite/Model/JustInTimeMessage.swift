@@ -76,35 +76,37 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
                   badgeImageUrl: message.assets[ImageAssetKind.badge.baseUrlKey],
                   badgeImageDarkUrl: message.assets[ImageAssetKind.badge.darkUrlKey])
     }
+}
 
+private extension JustInTimeMessage {
     enum ImageAssetKind {
-            case background
-            case badge
+        case background
+        case badge
 
-            var baseUrlKey: String {
-                return baseUrlKeyPrefix + Constants.urlKeySuffix
-            }
+        var baseUrlKey: String {
+            return baseUrlKeyPrefix + Constants.urlKeySuffix
+        }
 
-            var darkUrlKey: String {
-                return darkUrlKeyPrefix + Constants.urlKeySuffix
-            }
+        var darkUrlKey: String {
+            return darkUrlKeyPrefix + Constants.urlKeySuffix
+        }
 
-            private var darkUrlKeyPrefix: String {
-                return baseUrlKeyPrefix + Constants.darkKeySuffix
-            }
+        private var darkUrlKeyPrefix: String {
+            return baseUrlKeyPrefix + Constants.darkKeySuffix
+        }
 
-            private var baseUrlKeyPrefix: String {
-                switch self {
-                case .background:
-                    return "background_image"
-                case .badge:
-                    return "badge_image"
-                }
-            }
-
-            enum Constants {
-                static let urlKeySuffix = "_url"
-                static let darkKeySuffix = "_dark"
+        private var baseUrlKeyPrefix: String {
+            switch self {
+            case .background:
+                return "background_image"
+            case .badge:
+                return "badge_image"
             }
         }
+
+        enum Constants {
+            static let urlKeySuffix = "_url"
+            static let darkKeySuffix = "_dark"
+        }
+    }
 }

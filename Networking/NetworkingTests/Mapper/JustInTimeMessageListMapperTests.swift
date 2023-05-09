@@ -47,9 +47,9 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
 
     /// Verifies that the fields are all parsed correctly.
     ///
-    func test_JustInTimeMessageListMapper_parses_correctly_when_optional_fields_are_missing() throws {
+    func test_JustInTimeMessageListMapper_parses_correctly_when_nonessential_keys_are_missing() throws {
         // Given, When
-        let justInTimeMessage = try XCTUnwrap(mapLoadJustInTimeMessageListWithoutOptionalsResponse()).first
+        let justInTimeMessage = try XCTUnwrap(mapLoadJustInTimeMessageListWithoutNonessentialKeysResponse()).first
 
         // Then
         let expectedJustInTimeMessage = JustInTimeMessage(siteID: dummySiteID,
@@ -87,8 +87,8 @@ private extension JustInTimeMessageListMapperTests {
         return try mapJustInTimeMessageList(from: "just-in-time-message-list")
     }
 
-    func mapLoadJustInTimeMessageListWithoutOptionalsResponse() throws -> [JustInTimeMessage]? {
-        return try mapJustInTimeMessageList(from: "just-in-time-message-list-without-optional-fields")
+    func mapLoadJustInTimeMessageListWithoutNonessentialKeysResponse() throws -> [JustInTimeMessage]? {
+        return try mapJustInTimeMessageList(from: "just-in-time-message-list-without-nonessential-keys")
     }
 
     /// Returns the JustInTimeMessageListMapper output from `just-in-time-message-list-without-data.json`

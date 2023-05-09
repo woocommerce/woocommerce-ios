@@ -19,19 +19,6 @@ struct BadgeView: View {
                 return nil
             }
         }
-
-        static func ==(lhs: BadgeType, rhs: BadgeType) -> Bool {
-            switch (lhs, rhs) {
-            case (.new, .new), (.tip, .tip):
-                return true
-            case (.customText(let lhsText), .customText(let rhsText)):
-                return lhsText == rhsText
-            case (remoteImage(let lhsLightUrl, let lhsDarkUrl), remoteImage(let rhsLightUrl, let rhsDarkUrl)):
-                return lhsLightUrl == rhsLightUrl && lhsDarkUrl == rhsDarkUrl
-            default:
-                return false
-            }
-        }
     }
 
     private let type: BadgeType

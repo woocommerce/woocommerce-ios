@@ -304,7 +304,10 @@ private struct ProductsSection: View {
                 .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
                     scroll.scrollTo(addProductViaSKUScannerButton)
                 }, content: {
-                    EmptyView()
+                    ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                        print("SKU found: \(detectedBarcode)")
+                        showAddProductViaSKUScanner.toggle()
+                    })
                 })
                 .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
             }
@@ -403,5 +406,23 @@ private extension ProductSelectorView.Configuration {
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Add Product screen"
         )
+    }
+}
+
+// MARK: - SKU scanning
+
+private struct ProductSKUInputScannerView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = ProductSKUInputScannerViewController
+
+    let onBarcodeScanned: ((String) -> Void)?
+
+    func makeUIViewController(context: Context) -> ProductSKUInputScannerViewController {
+        ProductSKUInputScannerViewController(onBarcodeScanned: { barcode in
+            onBarcodeScanned?(barcode)
+        })
+    }
+
+    func updateUIViewController(_ uiViewController: ProductSKUInputScannerViewController, context: Context) {
+        // no-op
     }
 }

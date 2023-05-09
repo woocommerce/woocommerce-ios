@@ -148,6 +148,10 @@ public enum FeatureFlag: Int {
     ///
     case addCouponToOrder
 
+    /// Enables the ability to add products to orders by SKU scanning 
+    ///
+    case addProductToOrderViaSKUScanner
+
     /// Whether to enable product bundle settings in product details
     ///
     case productBundles

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-03 11:54:05+0000 */
+/* Translation-Revision-Date: 2023-05-03 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -2099,7 +2099,7 @@ which should be translated separately and considered part of this sentence. */
 "Describe your product" = "Ürününü tanımla";
 
 /* Product features placeholder in the product description AI generator view. */
-"Describe your product features" = "Ürününüz özelliklerini açıklayın";
+"Describe your product features" = "Ürününüzün özelliklerini açıklayın";
 
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "Ürününüzü gelecekteki müşterilerinize anlatın...";
@@ -5119,7 +5119,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Preparing document" = "Belge hazırlanıyor";
 
 /* Bottom title of the alert presented with a spinner while the reader is being prepared */
-"Preparing reader" = "Görüntüleyici hazırlanıyor";
+"Preparing reader" = "Okuyucu hazırlanıyor";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Present card to pay" = "Ödemek için kartı gösterin";
@@ -6682,7 +6682,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "Tap to Pay on iPhone özelliği telefon araması sırasında kullanılamaz. Görüşmenizi bitirdikten sonra lütfen tekrar deneyin.";
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
-"Tap to Pay on iPhone is ready" = " Tap to Pay on iPhone hazır";
+"Tap to Pay on iPhone is ready" = "Tap to Pay on iPhone hazır";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Yatay Cetvel eklemek için dokunun";

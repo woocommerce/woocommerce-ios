@@ -357,9 +357,44 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldAuthenticateAdminPage)
     }
 
-    func test_menuElements_include_upgrades_on_wp_com_sites() {
+    func test_menuElements_include_subscriptions_on_wp_com_sites() {
         // Given
         let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
+
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        viewModel.setupMenuElements()
+
+        XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Subscriptions.id
+        }))
+    }
+
+    func test_menuElements_does_not_include_subscriptions_on_self_hosted_sites() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
+
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: false)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        viewModel.setupMenuElements()
+
+        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Subscriptions.id
+        }))
+    }
+
+
+    func test_menuElements_include_upgrades_on_wp_com_sites() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isFreeTrial: true, isFreeTrialUpgradeEnabled: true)
 
         let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
@@ -376,7 +411,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
     func test_menuElements_does_not_include_upgrades_on_self_hosted_sites() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
+        let featureFlagService = MockFeatureFlagService(isFreeTrial: true, isFreeTrialUpgradeEnabled: true)
 
         let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: false)
@@ -390,7 +425,6 @@ final class HubMenuViewModelTests: XCTestCase {
             item.id == HubMenuViewModel.Upgrades.id
         }))
     }
-
 }
 
 private extension HubMenuViewModelTests {

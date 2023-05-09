@@ -22,6 +22,8 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
             message: "With a card reader, you can accept card payments",
             buttonTitle: "Buy now",
             image: .paymentsFeatureBannerImage,
+            imageUrl: nil,
+            imageDarkUrl: nil,
             showDismissConfirmation: true,
             dismissAlertTitle: "Dismiss alert",
             dismissAlertMessage: "Press here to dismiss alert",

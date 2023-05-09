@@ -5,7 +5,7 @@ import enum Yosemite.AppSettingsAction
 struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
     var showDividers: Bool = true
 
-    var badgeType: BadgeView.BadgeType = .tip
+    var badgeType: BadgeView.BadgeType? = .tip
 
     var title: String = Localization.title
 
@@ -14,6 +14,10 @@ struct ProductsOnboardingAnnouncementCardViewModel: AnnouncementCardViewModelPro
     var buttonTitle: String? = Localization.buttonTitle
 
     var image: UIImage = .emptyProductsImage
+
+    var imageUrl: URL? = nil
+
+    var imageDarkUrl: URL? = nil
 
     func onAppear() {
         // No-op

@@ -41,10 +41,27 @@ public final class CustomerDetailsScreen: ScreenObject {
     public func enterCustomerDetails(name: String) throws -> UnifiedOrderScreen {
         billingFirstNameField.tap()
         billingFirstNameField.typeText(name)
-        addressToggle.tap()
+        addressToggleSet(to: "1")
         shippingFirstNameField.tap()
         shippingFirstNameField.typeText(name)
         doneButton.tap()
         return try UnifiedOrderScreen()
     }
+
+    @discardableResult
+    func addressToggleSet(to value: String) -> Bool {
+        // If the switch state is not as needed, tap.
+        if addressToggle.value as! String != value {
+            addressToggle.tap()
+        }
+
+        // If the switch state is still not as needed, tap its inner switch, if it's hittable.
+        // See https://github.com/woocommerce/woocommerce-ios/pull/9629 for more details.
+        if addressToggle.value as! String != value && addressToggle.switches.firstMatch.isHittable {
+            addressToggle.switches.firstMatch.tap()
+        }
+
+        return addressToggle.value as! String == value
+    }
+
 }

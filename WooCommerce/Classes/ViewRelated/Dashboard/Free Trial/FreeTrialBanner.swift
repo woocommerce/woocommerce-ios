@@ -5,8 +5,10 @@ import SwiftUI
 final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialBanner> {
     /// Designated initializer.
     ///
-    init(mainText: String, onUpgradeNowTapped: @escaping () -> Void) {
-        super.init(rootView: FreeTrialBanner(mainText: mainText, onUpgradeNowTapped: onUpgradeNowTapped))
+    init(actionText: String, mainText: String, onLearnMoreTapped: @escaping () -> Void) {
+        super.init(rootView: FreeTrialBanner(actionText: actionText,
+                                             mainText: mainText,
+                                             onLearnMoreTapped: onLearnMoreTapped))
     }
 
     /// Needed for protocol conformance.
@@ -20,13 +22,17 @@ final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialB
 ///
 struct FreeTrialBanner: View {
 
+    /// Text to be rendered as the banner action button
+    ///
+    let actionText: String
+
     /// Text to be rendered next to the info image.
     ///
     let mainText: String
 
-    /// Closure invoked when the merchants taps on the `Upgrade Now` button.
+    /// Closure invoked when the merchants taps on the `Learn More` button.
     ///
-    let onUpgradeNowTapped: () -> Void
+    let onLearnMoreTapped: () -> Void
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -40,10 +46,10 @@ struct FreeTrialBanner: View {
                     Text(mainText)
                         .bodyStyle()
 
-                    Text(Localization.upgradeNow)
+                    Text(actionText)
                         .underline(true)
                         .linkStyle()
-                        .onTapGesture(perform: onUpgradeNowTapped)
+                        .onTapGesture(perform: onLearnMoreTapped)
                         .accessibilityAddTraits(.isButton)
                 }
             }
@@ -63,13 +69,14 @@ extension FreeTrialBanner {
     }
 
     enum Localization {
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
         static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
     }
 }
 
 struct FreeTrial_Preview: PreviewProvider {
     static var previews: some View {
-        FreeTrialBanner(mainText: "Your Free trial has ended", onUpgradeNowTapped: { })
+        FreeTrialBanner(actionText: "Upgrade now", mainText: "Your Free trial has ended", onLearnMoreTapped: { })
             .previewLayout(.sizeThatFits)
     }
 }

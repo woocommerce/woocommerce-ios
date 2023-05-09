@@ -616,6 +616,102 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.tasksForDisplay.count == 4)
     }
 
+    @MainActor
+    func test_the_badge_text_is_nil_for_all_tasks_when_productDescriptionAIFromStoreOnboarding_feature_is_disabled() async {
+        // Given
+        stores.updateDefaultStore(storeID: 6)
+        stores.updateDefaultStore(.fake().copy(siteID: 6, isWordPressComStore: true))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults,
+                                           featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: false))
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .storeDetails),
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        mockLoadSiteCurrentPlan(result: .failure(MockError()))
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.tasksForDisplay.count == 5)
+        sut.tasksForDisplay.forEach { taskViewModel in
+            XCTAssertNil(taskViewModel.badgeText)
+        }
+    }
+
+    @MainActor
+    func test_the_badge_text_is_not_nil_for_addFirstProduct_task_when_store_is_wpcom() async {
+        // Given
+        stores.updateDefaultStore(storeID: 6)
+        stores.updateDefaultStore(.fake().copy(siteID: 6, isWordPressComStore: true))
+        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true,
+                                                        isProductDescriptionAIFromStoreOnboardingEnabled: true)
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults,
+                                           featureFlagService: featureFlagService)
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .storeDetails),
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        mockLoadSiteCurrentPlan(result: .failure(MockError()))
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.tasksForDisplay.count == 5)
+        sut.tasksForDisplay.forEach { taskViewModel in
+            switch taskViewModel.task.type {
+            case .addFirstProduct:
+                XCTAssertEqual(taskViewModel.badgeText, StoreOnboardingTaskViewModel.Localization.AddFirstProduct.badgeText)
+            default:
+                XCTAssertNil(taskViewModel.badgeText)
+            }
+        }
+    }
+
+    @MainActor
+    func test_the_badge_text_is_not_nil_for_addFirstProduct_task_when_store_is_not_wpcom() async {
+        // Given
+        stores.updateDefaultStore(storeID: 6)
+        stores.updateDefaultStore(.fake().copy(siteID: 6, isWordPressComStore: false))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults,
+                                           featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true))
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .storeDetails),
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertTrue(sut.tasksForDisplay.count == 5)
+        sut.tasksForDisplay.forEach { taskViewModel in
+            XCTAssertNil(taskViewModel.badgeText)
+        }
+    }
+
     // MARK: completedAllStoreOnboardingTasks user defaults
 
     func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async {

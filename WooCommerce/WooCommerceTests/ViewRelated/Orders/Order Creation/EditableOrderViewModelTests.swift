@@ -33,7 +33,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_view_model_product_list_is_initialized_with_expected_values() {
         // Then
-        XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 
@@ -277,7 +276,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
-    func test_product_is_selected_when_quantity_is_decremented_below_1() {
+    func test_product_is_removed_when_quantity_is_decremented_below_1() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -291,7 +290,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.productRows[0].decrementQuantity()
 
         // Then
-        XCTAssertNotNil(viewModel.selectedProductViewModel)
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product.productID }))
     }
 
     func test_selectOrderItem_selects_expected_order_item() throws {
@@ -484,6 +483,24 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.supportsAddingCouponToOrder)
+    }
+
+    // MARK: - Add Products to Order via SKU Scanner Tests
+
+    func test_add_product_to_order_via_sku_scanner_when_feature_flag_is_enabled_then_feature_support_returns_true() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
+
+        // Then
+        XCTAssertTrue(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+    }
+
+    func test_add_product_to_order_via_sku_scanner_feature_flag_is_disabled_then_feature_support_returns_false() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: false))
+
+        // Then
+        XCTAssertFalse(viewModel.isAddProductToOrderViaSKUScannerEnabled)
     }
 
     // MARK: - Payment Section Tests

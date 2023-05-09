@@ -15,13 +15,16 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isAddCouponToOrderEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
     private let isFreeTrial: Bool
+    private let isFreeTrialUpgradeEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
     private let isTapToPayOnIPhoneMilestone2On: Bool
     private let isIPPUKExpansionEnabled: Bool
     private let isReadOnlySubscriptionsEnabled: Bool
     private let isProductDescriptionAIEnabled: Bool
+    private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
     private let isHideStoreOnboardingTaskListFeatureEnabled: Bool
+    private let isAddProductToOrderViaSKUScannerEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -36,13 +39,16 @@ struct MockFeatureFlagService: FeatureFlagService {
          isAddCouponToOrderEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
          isFreeTrial: Bool = false,
+         isFreeTrialUpgradeEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isTapToPayOnIPhoneMilestone2On: Bool = false,
          isIPPUKExpansionEnabled: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
          isProductDescriptionAIEnabled: Bool = false,
+         isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
-         isHideStoreOnboardingTaskListFeatureEnabled: Bool = false) {
+         isHideStoreOnboardingTaskListFeatureEnabled: Bool = false,
+         isAddProductToOrderViaSKUScannerEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -56,13 +62,16 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isAddCouponToOrderEnabled = isAddCouponToOrderEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.isFreeTrial = isFreeTrial
+        self.isFreeTrialUpgradeEnabled = isFreeTrialUpgradeEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
         self.isIPPUKExpansionEnabled = isIPPUKExpansionEnabled
         self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
         self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
+        self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.isHideStoreOnboardingTaskListFeatureEnabled = isHideStoreOnboardingTaskListFeatureEnabled
+        self.isAddProductToOrderViaSKUScannerEnabled = isAddProductToOrderViaSKUScannerEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -93,6 +102,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDashboardStoreOnboardingEnabled
         case .freeTrial:
             return isFreeTrial
+        case .freeTrialUpgrade:
+            return isFreeTrialUpgradeEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
         case .tapToPayOnIPhoneMilestone2:
@@ -103,10 +114,14 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isReadOnlySubscriptionsEnabled
         case .productDescriptionAI:
             return isProductDescriptionAIEnabled
+        case .productDescriptionAIFromStoreOnboarding:
+            return isProductDescriptionAIFromStoreOnboardingEnabled
         case .readOnlyGiftCards:
             return isReadOnlyGiftCardsEnabled
         case .hideStoreOnboardingTaskList:
             return isHideStoreOnboardingTaskListFeatureEnabled
+        case .addProductToOrderViaSKUScanner:
+            return isAddProductToOrderViaSKUScannerEnabled
         default:
             return false
         }

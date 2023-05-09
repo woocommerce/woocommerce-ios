@@ -7,34 +7,36 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
     let icon: UIImage
     let title: String
     let subtitle: String
+    let badgeText: String?
 
     var isComplete: Bool {
         task.isComplete
     }
 
-    init(task: StoreOnboardingTask) {
+    init(task: StoreOnboardingTask, badgeText: String? = nil) {
         self.task = task
+        self.badgeText = badgeText
         switch task.type {
         case .storeDetails:
             icon = .storeDetailsImage
-            title = Localication.StoreDetails.title
-            subtitle = Localication.StoreDetails.subtitle
+            title = Localization.StoreDetails.title
+            subtitle = Localization.StoreDetails.subtitle
         case .addFirstProduct:
             icon = .addProductImage
-            title = Localication.AddFirstProduct.title
-            subtitle = Localication.AddFirstProduct.subtitle
+            title = Localization.AddFirstProduct.title
+            subtitle = Localization.AddFirstProduct.subtitle
         case .launchStore:
             icon = .launchStoreImage
-            title = Localication.LaunchStore.title
-            subtitle = Localication.LaunchStore.subtitle
+            title = Localization.LaunchStore.title
+            subtitle = Localization.LaunchStore.subtitle
         case .customizeDomains:
             icon = .customizeDomainsImage
-            title = Localication.CustomizeDomains.title
-            subtitle = Localication.CustomizeDomains.subtitle
+            title = Localization.CustomizeDomains.title
+            subtitle = Localization.CustomizeDomains.subtitle
         case .payments, .woocommercePayments:
             icon = .getPaidImage
-            title = Localication.Payments.title
-            subtitle = Localication.Payments.subtitle
+            title = Localization.Payments.title
+            subtitle = Localization.Payments.subtitle
         case .unsupported:
             icon = .checkCircleImage
             title = ""
@@ -45,7 +47,7 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
 
 
 extension StoreOnboardingTaskViewModel {
-    enum Localication {
+    enum Localization {
         enum StoreDetails {
             static let title = NSLocalizedString(
                 "Tell us more about your store",
@@ -65,6 +67,10 @@ extension StoreOnboardingTaskViewModel {
             static let subtitle = NSLocalizedString(
                 "Start selling by adding products or services to your store.",
                 comment: "Subtitle of the store onboarding task to add the first product."
+            )
+            static let badgeText = NSLocalizedString(
+                "✨ AI content generator available.",
+                comment: "Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI."
             )
         }
 

@@ -57,15 +57,15 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
             let sut = StoreOnboardingTaskViewModel(task: task)
             switch task.type {
             case .storeDetails:
-                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localication.StoreDetails.title)
+                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.StoreDetails.title)
             case .addFirstProduct:
-                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localication.AddFirstProduct.title)
+                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.AddFirstProduct.title)
             case .launchStore:
-                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localication.LaunchStore.title)
+                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.LaunchStore.title)
             case .customizeDomains:
-                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localication.CustomizeDomains.title)
+                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.CustomizeDomains.title)
             case .payments, .woocommercePayments:
-                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localication.Payments.title)
+                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.Payments.title)
             case .unsupported:
                 XCTAssertEqual(sut.title, "")
             }
@@ -77,18 +77,32 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
             let sut = StoreOnboardingTaskViewModel(task: task)
             switch task.type {
             case .storeDetails:
-                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localication.StoreDetails.subtitle)
+                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.StoreDetails.subtitle)
             case .addFirstProduct:
-                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localication.AddFirstProduct.subtitle)
+                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.AddFirstProduct.subtitle)
             case .launchStore:
-                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localication.LaunchStore.subtitle)
+                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.LaunchStore.subtitle)
             case .customizeDomains:
-                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localication.CustomizeDomains.subtitle)
+                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.CustomizeDomains.subtitle)
             case .payments, .woocommercePayments:
-                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localication.Payments.subtitle)
+                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.Payments.subtitle)
             case .unsupported:
                 XCTAssertEqual(sut.subtitle, "")
             }
+        }
+    }
+
+    func test_the_badge_text_is_set_to_nil_without_badgeText_parameter() {
+        for task in tasks {
+            let sut = StoreOnboardingTaskViewModel(task: task)
+            XCTAssertNil(sut.badgeText)
+        }
+    }
+
+    func test_the_badge_text_is_set_to_badgeText_parameter() {
+        for task in tasks {
+            let sut = StoreOnboardingTaskViewModel(task: task, badgeText: "Tap")
+            XCTAssertEqual(sut.badgeText, "Tap")
         }
     }
 }

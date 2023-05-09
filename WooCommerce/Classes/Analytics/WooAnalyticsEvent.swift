@@ -351,6 +351,12 @@ extension WooAnalyticsEvent {
         static func quantityRulesTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationDetailViewQuantityRulesTapped, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Subscriptions row for a product variation.
+        ///
+        static func subscriptionsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationViewSubscriptionsTapped, properties: [:])
+        }
     }
 }
 

@@ -140,6 +140,25 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                       "Expected details text to include \(expectedStockText) but it was \(detailsText) instead")
     }
 
+    func test_details_for_product_bundle_contain_product_stock_status_when_product_is_backordered_and_feature_flag_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle",
+                                          manageStock: false,
+                                          stockQuantity: 5,
+                                          stockStatusKey: "onbackorder",
+                                          bundleStockStatus: .inStock,
+                                          bundleStockQuantity: 0)
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: true)
+        let detailsText = viewModel.detailsAttributedString.string
+
+        // Then
+        let expectedStockText = ProductStockStatus.onBackOrder.description
+        XCTAssertTrue(detailsText.contains(expectedStockText),
+                      "Expected details text to include \(expectedStockText) but it was \(detailsText) instead")
+    }
+
     func test_details_for_product_bundle_contain_product_stock_status_when_bundle_not_in_stock_and_feature_flag_disabled() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle",
@@ -154,24 +173,6 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Then
-        let expectedStockText = ProductStockStatus.inStock.description
-        XCTAssertTrue(detailsText.contains(expectedStockText))
-    }
-
-    func test_details_for_product_bundle_contain_stock_status_without_quantity_when_bundle_stock_quantity_is_nil_and_feature_flag_enabled() {
-        // Arrange
-        let product = Product.fake().copy(productTypeKey: "bundle",
-                                          manageStock: true,
-                                          stockQuantity: 5,
-                                          stockStatusKey: "instock",
-                                          bundleStockStatus: .inStock,
-                                          bundleStockQuantity: nil)
-
-        // Action
-        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: true)
-        let detailsText = viewModel.detailsAttributedString.string
-
-        // Assert
         let expectedStockText = ProductStockStatus.inStock.description
         XCTAssertTrue(detailsText.contains(expectedStockText))
     }

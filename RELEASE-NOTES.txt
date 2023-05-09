@@ -2,7 +2,7 @@
 
 13.6
 -----
-
+- [*] Remove login error local notifications that used to be scheduled 24 hours from certain login errors. [https://github.com/woocommerce/woocommerce-ios/pull/9666]
 
 13.5
 -----

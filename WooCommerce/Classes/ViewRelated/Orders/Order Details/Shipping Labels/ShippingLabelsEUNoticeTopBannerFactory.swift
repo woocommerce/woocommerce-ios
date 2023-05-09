@@ -11,7 +11,7 @@ final class ShippingLabelsEUNoticeTopBannerFactory {
         }
 
         let viewModel = TopBannerViewModel(
-                title: Localization.title,
+                title: nil,
                 infoText: Localization.info,
                 icon: .infoImage,
                 isExpanded: true,
@@ -25,9 +25,11 @@ final class ShippingLabelsEUNoticeTopBannerFactory {
 
 private extension ShippingLabelsEUNoticeTopBannerFactory {
     enum Localization {
-        static let title = NSLocalizedString("", comment: "")
-        static let info = NSLocalizedString("", comment: "")
-        static let learnMore = NSLocalizedString("", comment: "")
-        static let dismiss = NSLocalizedString("", comment: "")
+        static let info = NSLocalizedString("When shipping to countries that follow European Union (EU) customs rules, " +
+                                            "you must provide a clear, specific description of every item. Otherwise, " +
+                                            "shipments may be delayed or interrupted at customs.",
+                                            comment: "The EU notice banner content describing why some countries require special customs description")
+        static let learnMore = NSLocalizedString("Learn more", comment: "Label for the banner Learn more button")
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Label for the banner Dismiss button")
     }
 }

@@ -51,6 +51,11 @@ final class ShippingLabelFormViewController: UIViewController {
         observeViewModel()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
+
     override var shouldShowOfflineBanner: Bool {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             return false
@@ -555,8 +560,7 @@ private extension ShippingLabelFormViewController {
 //
 private extension ShippingLabelFormViewController {
     func showTopBannerView() {
-        let factory = ShippingLabelsEUNoticeTopBannerFactory()
-        let topBannerView = factory.createTopBanner()
+        let topBannerView = ShippingLabelsEUNoticeTopBannerFactory().createTopBanner()
         self.topBannerView = topBannerView
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)
@@ -655,7 +659,7 @@ private extension ShippingLabelFormViewController {
     }
 
     enum Constants {
-        static let headerDefaultHeight = CGFloat(130)
+        static let headerDefaultHeight = CGFloat(330)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
     }
 }

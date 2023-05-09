@@ -3,6 +3,7 @@
 13.6
 -----
 - [*] Remove login error local notifications that used to be scheduled 24 hours from certain login errors. [https://github.com/woocommerce/woocommerce-ios/pull/9666]
+- [*] Product form > description editor: fix the extra bottom inset after hiding the keyboard either manually (available on a tablet) or applying an AI-generated product description. [https://github.com/woocommerce/woocommerce-ios/pull/9638]
 
 13.5
 -----

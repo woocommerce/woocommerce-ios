@@ -61,6 +61,14 @@ struct StoreOnboardingTaskView: View {
                                 .redacted(reason: isRedacted ? .placeholder : [])
                                 // This size modifier is necessary so that the subtitle is never truncated.
                                 .fixedSize(horizontal: false, vertical: true)
+
+                            // Optional badge.
+                            if let badgeText = viewModel.badgeText {
+                                BadgeView(text: badgeText,
+                                          customizations: .init(textColor: .init(uiColor: .secondaryLabel),
+                                                                backgroundColor: .init(uiColor: .init(light: .systemGray6,
+                                                                                                      dark: .systemGray5))))
+                            }
                         }
                         Spacer()
                         // Chevron icon
@@ -101,6 +109,12 @@ struct StoreOnboardingTaskView_Previews: PreviewProvider {
         VStack {
             Group {
                 StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct)),
+                                        showDivider: true,
+                                        isRedacted: false,
+                                        onTap: { _ in })
+
+                StoreOnboardingTaskView(viewModel: .init(task: .init(isComplete: false, type: .addFirstProduct),
+                                                         badgeText: "✨ AI content generator available."),
                                         showDivider: true,
                                         isRedacted: false,
                                         onTap: { _ in })

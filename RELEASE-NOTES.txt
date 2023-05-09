@@ -3,6 +3,7 @@
 13.6
 -----
 - [*] Product form > description editor: fix the extra bottom inset after hiding the keyboard either manually (available on a tablet) or applying an AI-generated product description. [https://github.com/woocommerce/woocommerce-ios/pull/9638]
+- [*] Products: Fixes stock statuses for Product Bundles so that backordered bundles and bundle stock quantities are displayed as expected. [https://github.com/woocommerce/woocommerce-ios/pull/9681]
 
 13.5
 -----

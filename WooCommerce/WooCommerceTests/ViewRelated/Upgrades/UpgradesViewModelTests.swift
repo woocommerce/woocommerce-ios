@@ -38,7 +38,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
         XCTAssertTrue(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
-        XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
+        XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
 
@@ -72,7 +72,7 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
         XCTAssertTrue(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
-        XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
+        XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
 
@@ -107,6 +107,41 @@ final class UpgradesViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
         XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
+        XCTAssertNil(viewModel.errorNotice)
+    }
+
+    func test_free_trial_with_disabled_upgrades_has_correct_view_model_values() {
+        // Given
+        let expireDate = Date().addingDays(14)
+        let plan = WPComSitePlan(id: freeTrialID,
+                hasDomainCredit: false,
+                expiryDate: expireDate)
+
+        let session = SessionManager.testingInstance
+        let stores = MockStoresManager(sessionManager: session)
+        let featureFlags = MockFeatureFlagService(isFreeTrial: true)
+        session.defaultSite = sampleSite
+
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(plan))
+            default:
+                break
+            }
+        }
+
+        // When
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
+        viewModel.loadPlan()
+
+        // Then
+        XCTAssertEqual(viewModel.planName, NSLocalizedString("Free Trial", comment: ""))
+        XCTAssertTrue(viewModel.planInfo.isNotEmpty)
+        XCTAssertFalse(viewModel.shouldShowUpgradeButton)
+        XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
 

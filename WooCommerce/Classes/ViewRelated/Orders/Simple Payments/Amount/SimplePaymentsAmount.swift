@@ -170,6 +170,7 @@ struct SimplePaymentsAmount: View {
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
+            .accessibilityIdentifier(Accessibility.nextButton)
 
             LazyNavigationLink(destination: summaryView(), isActive: $viewModel.navigateToSummary) {
                 EmptyView()
@@ -219,6 +220,10 @@ private extension SimplePaymentsAmount {
         static func amountFontSize(scale: CGFloat) -> CGFloat {
             56 * scale
         }
+    }
+
+    enum Accessibility {
+        static let nextButton = "next-button"
     }
 }
 

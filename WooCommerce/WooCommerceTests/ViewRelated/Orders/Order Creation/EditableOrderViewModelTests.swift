@@ -33,7 +33,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_view_model_product_list_is_initialized_with_expected_values() {
         // Then
-        XCTAssertTrue(viewModel.productSelectorViewModel.supportsMultipleSelection)
         XCTAssertFalse(viewModel.productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 
@@ -484,6 +483,24 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.supportsAddingCouponToOrder)
+    }
+
+    // MARK: - Add Products to Order via SKU Scanner Tests
+
+    func test_add_product_to_order_via_sku_scanner_when_feature_flag_is_enabled_then_feature_support_returns_true() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
+
+        // Then
+        XCTAssertTrue(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+    }
+
+    func test_add_product_to_order_via_sku_scanner_feature_flag_is_disabled_then_feature_support_returns_false() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: false))
+
+        // Then
+        XCTAssertFalse(viewModel.isAddProductToOrderViaSKUScannerEnabled)
     }
 
     // MARK: - Payment Section Tests

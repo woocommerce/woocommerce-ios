@@ -68,7 +68,12 @@ final class JustInTimeMessageStoreTests: XCTestCase {
             title: "In-person card payments",
             detail: "Sell anywhere, and take card payments using a mobile card reader.",
             buttonTitle: "Purchase Card Reader",
-            url: "https://woocommerce.com/products/hardware/US")
+            url: "https://woocommerce.com/products/hardware/US",
+            backgroundImageUrl: URL(string: "https://example.net/images/background-light@2x.png"),
+            backgroundImageDarkUrl: nil,
+            badgeImageUrl: nil,
+            badgeImageDarkUrl: nil
+        )
 
         // Then
         XCTAssert(result.isSuccess)

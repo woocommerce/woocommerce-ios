@@ -15,27 +15,42 @@ struct BadgeView: View {
         }
     }
 
+    /// UI customizations for the badge.
+    struct Customizations {
+        let textColor: Color
+        let backgroundColor: Color
+
+        init(textColor: Color = Color(.textBrand),
+             backgroundColor: Color = Color(.wooCommercePurple(.shade0))) {
+            self.textColor = textColor
+            self.backgroundColor = backgroundColor
+        }
+    }
+
     private let text: String
+    private let customizations: Customizations
 
     init(type: BadgeType) {
         text = type.title.uppercased()
+        customizations = .init()
     }
 
-    init(text: String) {
+    init(text: String, customizations: Customizations = .init()) {
         self.text = text
+        self.customizations = customizations
     }
 
     var body: some View {
         Text(text)
             .bold()
-            .foregroundColor(Color(.textBrand))
+            .foregroundColor(customizations.textColor)
             .captionStyle()
             .padding(.leading, Layout.horizontalPadding)
             .padding(.trailing, Layout.horizontalPadding)
             .padding(.top, Layout.verticalPadding)
             .padding(.bottom, Layout.verticalPadding)
             .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .fill(Color(.wooCommercePurple(.shade0)))
+                .fill(customizations.backgroundColor)
             )
     }
 }
@@ -61,6 +76,7 @@ struct BadgeView_Previews: PreviewProvider {
             BadgeView(type: .new)
             BadgeView(type: .tip)
             BadgeView(text: "Custom text")
+            BadgeView(text: "Customized colors", customizations: .init(textColor: .green, backgroundColor: .orange))
         }
     }
 }

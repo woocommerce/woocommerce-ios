@@ -176,9 +176,13 @@ public enum FeatureFlag: Int {
     ///
     case readOnlySubscriptions
 
-    /// Enables generating product description using AI.
+    /// Enables generating product description using AI from product description editor.
     ///
     case productDescriptionAI
+
+    /// Enables generating product description using AI from store onboarding.
+    ///
+    case productDescriptionAIFromStoreOnboarding
 
     /// Enables read-only support for the Gift Cards extension
     ///

@@ -235,6 +235,10 @@ private struct ProductsSection: View {
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
 
+    /// Defines whether the camera permissions sheet check is presented.
+    ///
+    @State private var showPermissionsSheet: Bool = false
+
     /// ID for Add Product button
     ///
     @Namespace var addProductButton
@@ -297,7 +301,21 @@ private struct ProductsSection: View {
                     }
                 })
                 Button(OrderForm.Localization.addProductViaSKUScanner) {
-                    showAddProductViaSKUScanner.toggle()
+                    let permissionChecker = AVCaptureDevicePermissionChecker()
+                    let authStatus = permissionChecker.authorizationStatus(for: .video)
+                    switch authStatus {
+                    case .denied, .restricted:
+                        DDLogDebug("Auth status: denied or restricted")
+                        self.showPermissionsSheet = true
+                    case .notDetermined:
+                        DDLogDebug("Auth status: not determined")
+                        break
+                    case .authorized:
+                        DDLogDebug("Auth status: ok")
+                        showAddProductViaSKUScanner.toggle()
+                    default:
+                        DDLogDebug("Unknown case")
+                    }
                 }
                 .accessibilityIdentifier(OrderForm.Accessibility.addProductViaSKUScannerButtonIdentifier)
                 .buttonStyle(PlusButtonStyle())
@@ -314,6 +332,18 @@ private struct ProductsSection: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground(modal: true)))
+            .actionSheet(isPresented: $showPermissionsSheet, content: {
+                ActionSheet(
+                    title: Text(OrderForm.Localization.permissionsTitle),
+                    message: Text(OrderForm.Localization.permissionsMessage),
+                     buttons: [
+                        .default(Text(OrderForm.Localization.permissionsOpenSettings), action: {
+                             UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                         }),
+                         .cancel()
+                     ]
+                 )
+            })
 
             Divider()
         }
@@ -339,6 +369,11 @@ private extension OrderForm {
                                                                    comment: "Title text of the button to add a single product via SKU scanning")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
+        static let permissionsTitle =
+        NSLocalizedString("Camera permissions", comment: "Title of alert that links to settings for camera access.")
+        static let permissionsMessage = NSLocalizedString("Please change your camera permissions in device settings.",
+                                                          comment: "Message of alert that links to settings for camera access.")
+        static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an alert")
     }
 
     enum Accessibility {

@@ -400,15 +400,15 @@ private extension PrivacySettingsViewController {
 
         let userID = defaultAccount.userID
 
-        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { result in
-            if case .success = result {
+        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { [weak self] result in
+            switch result {
+            case .success:
                 ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
+            case .failure:
+                self?.presentErrorUpdatingAccountSettingsNotice(optInValue: newValue)
             }
         }
         ServiceLocator.stores.dispatch(action)
-
-        // This event will only report if the user has turned tracking back on
-        ServiceLocator.analytics.track(.settingsCollectInfoToggled)
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {
@@ -462,6 +462,22 @@ private extension PrivacySettingsViewController {
                             actionTitle: Localization.retry) { [weak self] in
             guard let self else { return }
             self.pullToRefresh(sender: self.refreshControl)
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Presents an error notice when failing to update the account settings.
+    /// Receives the intended analytics `optInValue`as a parameter to be able to resubmit the request upon a retry.
+    ///
+    func presentErrorUpdatingAccountSettingsNotice(optInValue: Bool) {
+        // Needed to treat every notice as unique. When not unique the notice presenter won't display subsequent error notices.
+        let info = NoticeNotificationInfo(identifier: UUID().uuidString)
+        let notice = Notice(title: Localization.errorUpdatingAnalyticsState,
+                            feedbackType: .error,
+                            notificationInfo: info,
+                            actionTitle: Localization.retry) { [weak self] in
+            guard let self else { return }
+            self.collectInfoWasUpdated(newValue: optInValue)
         }
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }

@@ -15,17 +15,40 @@ struct LocalNotification {
 
     /// The scenario for the local notification.
     /// Its raw value is used for the identifier of a local notification and also the event property for analytics.
-    enum Scenario: String, CaseIterable {
-        case storeCreationComplete = "store_creation_complete"
-        case oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
-        case oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
-        case oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
+    enum Scenario {
+        case storeCreationComplete
+        case oneDayAfterStoreCreationNameWithoutFreeTrial
+        case oneDayBeforeFreeTrialExpires(expiryDate: Date)
+        case oneDayAfterFreeTrialExpires
         // The following notifications are deprecated and are canceled in the first release.
-        case loginSiteAddressError = "site_address_error"
-        case invalidEmailFromSiteAddressLogin = "site_address_email_error"
-        case invalidEmailFromWPComLogin = "wpcom_email_error"
-        case invalidPasswordFromSiteAddressWPComLogin = "site_address_wpcom_password_error"
-        case invalidPasswordFromWPComLogin = "wpcom_password_error"
+        case loginSiteAddressError
+        case invalidEmailFromSiteAddressLogin
+        case invalidEmailFromWPComLogin
+        case invalidPasswordFromSiteAddressWPComLogin
+        case invalidPasswordFromWPComLogin
+
+        var identifier: String {
+            switch self {
+            case .storeCreationComplete:
+                return "store_creation_complete"
+            case .oneDayAfterStoreCreationNameWithoutFreeTrial:
+                return "one_day_after_store_creation_name_without_free_trial"
+            case .oneDayBeforeFreeTrialExpires:
+                return "one_day_before_free_trial_expires"
+            case .oneDayAfterFreeTrialExpires:
+                return "one_day_after_free_trial_expires"
+            case .loginSiteAddressError:
+                return "site_address_error"
+            case .invalidEmailFromSiteAddressLogin:
+                return "site_address_email_error"
+            case .invalidEmailFromWPComLogin:
+                return "wpcom_email_error"
+            case .invalidPasswordFromSiteAddressWPComLogin:
+                return "site_address_wpcom_password_error"
+            case .invalidPasswordFromWPComLogin:
+                return "wpcom_password_error"
+            }
+        }
     }
 
     /// The category of actions for a local notification.

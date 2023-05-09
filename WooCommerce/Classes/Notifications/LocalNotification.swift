@@ -20,6 +20,12 @@ struct LocalNotification {
         case oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
         case oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
         case oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
+        // The following notifications are deprecated and are canceled in the first release.
+        case loginSiteAddressError = "site_address_error"
+        case invalidEmailFromSiteAddressLogin = "site_address_email_error"
+        case invalidEmailFromWPComLogin = "wpcom_email_error"
+        case invalidPasswordFromSiteAddressWPComLogin = "site_address_wpcom_password_error"
+        case invalidPasswordFromWPComLogin = "wpcom_password_error"
     }
 
     /// The category of actions for a local notification.

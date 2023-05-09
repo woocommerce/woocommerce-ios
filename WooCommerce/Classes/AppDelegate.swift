@@ -320,12 +320,20 @@ private extension AppDelegate {
     /// Push Notifications: Authorization + Registration!
     ///
     func setupPushNotificationsManagerIfPossible() {
+        let loginErrorNotifications: [LocalNotification.Scenario] = [
+            .loginSiteAddressError,
+            .invalidEmailFromSiteAddressLogin,
+            .invalidEmailFromWPComLogin,
+            .invalidPasswordFromWPComLogin,
+            .invalidPasswordFromSiteAddressWPComLogin
+        ]
         let stores = ServiceLocator.stores
         guard stores.isAuthenticated,
               stores.needsDefaultStore == false,
               stores.isAuthenticatedWithoutWPCom == false else {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) {
                 ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
+                ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: loginErrorNotifications)
             }
             return
         }
@@ -336,6 +344,7 @@ private extension AppDelegate {
             let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
+            pushNotesManager.cancelLocalNotification(scenarios: loginErrorNotifications)
         #endif
     }
 

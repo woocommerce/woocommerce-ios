@@ -90,7 +90,8 @@ public final class PaymentsScreen: ScreenObject {
 
     @discardableResult
     public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
-        XCTAssertTrue(collectPaymentButton.waitForExistence(timeout: 15))
+        collectPaymentButton.waitForExistence(timeout: 15)
+        XCTAssertTrue(isLoaded)
         return self
     }
 

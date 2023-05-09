@@ -40,6 +40,7 @@ struct FeatureAnnouncementCardView: View {
                     Text(viewModel.message)
                         .bodyStyle()
                         .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     if let buttonTitle = viewModel.buttonTitle {
                         Button(buttonTitle) {

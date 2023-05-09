@@ -405,6 +405,7 @@ private extension PrivacySettingsViewController {
             case .success:
                 ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
             case .failure:
+                self?.collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
                 self?.presentErrorUpdatingAccountSettingsNotice(optInValue: newValue)
             }
         }

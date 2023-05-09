@@ -171,6 +171,8 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Each update will trigger a remote product search and sync.
     @Published var searchTerm: String = ""
 
+    @Published var productSearchFilter: ProductSearchFilter = .all
+
     /// All selected products if the selector supports multiple selections.
     ///
     @Published private var selectedProductIDs: [Int64] = []
@@ -456,6 +458,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
+                                                  filter: productSearchFilter,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize,
                                                   stockStatus: filtersSubject.value.stockStatus,

@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View showing a list of products to select.
 ///
@@ -44,6 +45,14 @@ struct ProductSelectorView: View {
             SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
                 .padding(.horizontal, insets: safeAreaInsets)
                 .accessibilityIdentifier("product-selector-search-bar")
+            Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+                ForEach(ProductSearchFilter.allCases, id: \.self) { option in
+                    Text(option.title)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.leading)
+                        .padding(.trailing)
             HStack {
                 Button(Localization.clearSelection) {
                     viewModel.clearSelection()

@@ -488,7 +488,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Add Products to Order via SKU Scanner Tests
 
-    func test_add_product_to_order_via_sku_scanner_feature_flag_is_enabled_then_feature_support_returns_true() {
+    func test_add_product_to_order_via_sku_scanner_when_feature_flag_is_enabled_then_feature_support_returns_true() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
 

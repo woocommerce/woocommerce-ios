@@ -4,7 +4,7 @@ import UIKit
 import Yosemite
 import Combine
 
-final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
+final class JustInTimeMessageViewModel {
     private let siteID: Int64
 
     private let analytics: Analytics
@@ -21,6 +21,8 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     private let justInTimeMessage: JustInTimeMessage
 
     // MARK: - Message properties
+    let template: JustInTimeMessageTemplate
+
     let title: String
 
     let message: String
@@ -30,6 +32,8 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
     let imageUrl: URL?
 
     let imageDarkUrl: URL?
+
+    let badgeType: BadgeView.BadgeType?
 
     private let url: URL?
 
@@ -59,6 +63,7 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         self.featureClass = justInTimeMessage.featureClass
         self.justInTimeMessage = justInTimeMessage
         self.screenName = screenName
+        self.template = justInTimeMessage.template
         self.title = justInTimeMessage.title
         self.message = justInTimeMessage.detail
         self.buttonTitle = justInTimeMessage.buttonTitle
@@ -83,31 +88,9 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         }.store(in: &cancellables)
     }
 
-    // MARK: - default AnnouncementCardViewModelProtocol conformance
-    let showDividers: Bool = false
-
-    let badgeType: BadgeView.BadgeType?
-
-    let image: UIImage = .paymentsFeatureBannerImage
-
-    var showDismissConfirmation: Bool = false
-
-    let dismissAlertTitle: String = ""
-
-    let dismissAlertMessage: String = ""
-
-    // MARK: - AnnouncementCardViewModelProtocol methods
-    func onAppear() {
-        analytics.track(event: .JustInTimeMessage.messageDisplayed(source: screenName,
-                                                                   messageID: messageID,
-                                                                   featureClass: featureClass))
-    }
-
+    // MARK: - Actions
     func ctaTapped() {
-        analytics.track(event: .JustInTimeMessage.callToActionTapped(source: screenName,
-                                                                     messageID: messageID,
-                                                                     featureClass: featureClass))
-
+        trackCtaTapped()
         guard let url = url else {
             return
         }
@@ -115,10 +98,8 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
         urlRouter.handle(url: url)
     }
 
-    func dontShowAgainTapped() {
-        analytics.track(event: .JustInTimeMessage.dismissTapped(source: screenName,
-                                                                messageID: messageID,
-                                                                featureClass: featureClass))
+    func dismissTapped() {
+        trackDismissTapped()
         let action = JustInTimeMessageAction.dismissMessage(justInTimeMessage,
                                                             siteID: siteID,
                                                             completion: { result in
@@ -140,6 +121,48 @@ final class JustInTimeMessageAnnouncementCardViewModel: AnnouncementCardViewMode
             }
         })
         stores.dispatch(action)
+    }
+
+    // MARK: - Analytics
+    private func trackMessageDisplayed() {
+        analytics.track(event: .JustInTimeMessage.messageDisplayed(source: screenName,
+                                                                   messageID: messageID,
+                                                                   featureClass: featureClass))
+    }
+
+    private func trackCtaTapped() {
+        analytics.track(event: .JustInTimeMessage.callToActionTapped(source: screenName,
+                                                                     messageID: messageID,
+                                                                     featureClass: featureClass))
+    }
+
+    private func trackDismissTapped() {
+        analytics.track(event: .JustInTimeMessage.dismissTapped(source: screenName,
+                                                                messageID: messageID,
+                                                                featureClass: featureClass))
+    }
+}
+
+
+extension JustInTimeMessageViewModel: AnnouncementCardViewModelProtocol {
+    // MARK: - default AnnouncementCardViewModelProtocol conformance
+    var showDividers: Bool { false }
+
+    var image: UIImage { .paymentsFeatureBannerImage }
+
+    var showDismissConfirmation: Bool { false }
+
+    var dismissAlertTitle: String { "" }
+
+    var dismissAlertMessage: String { "" }
+
+    // MARK: - AnnouncementCardViewModelProtocol methods
+    func onAppear() {
+        trackMessageDisplayed()
+    }
+
+    func dontShowAgainTapped() {
+        dismissTapped()
     }
 
     func remindLaterTapped() {

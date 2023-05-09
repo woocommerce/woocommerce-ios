@@ -405,3 +405,21 @@ private extension ProductSelectorView.Configuration {
         )
     }
 }
+
+// MARK: - SKU scanning
+
+private struct ProductSKUInputScannerView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = ProductSKUInputScannerViewController
+    
+    let onBarcodeScanned: ((String) -> Void)?
+    
+    func makeUIViewController(context: Context) -> ProductSKUInputScannerViewController {
+        ProductSKUInputScannerViewController(onBarcodeScanned: { barcode in
+            onBarcodeScanned?(barcode)
+        })
+    }
+    
+    func updateUIViewController(_ uiViewController: ProductSKUInputScannerViewController, context: Context) {
+        // no-op
+    }
+}

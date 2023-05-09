@@ -324,7 +324,7 @@ private extension AppDelegate {
         guard stores.isAuthenticated,
               stores.needsDefaultStore == false,
               stores.isAuthenticatedWithoutWPCom == false else {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) {
                 ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
             }
             return
@@ -340,7 +340,7 @@ private extension AppDelegate {
     }
 
     func setupUserNotificationCenter() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loginErrorNotifications) else {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) else {
             return
         }
         UNUserNotificationCenter.current().delegate = self

@@ -88,11 +88,13 @@ private extension PrivacySettingsViewController {
         let userID = defaultAccount.userID
 
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] result in
-            if case let .success(accountSettings) = result {
+            switch result {
+            case .success(let accountSettings):
                 // Switch is off when opting out of Tracks
                 self?.collectInfo = !accountSettings.tracksOptOut
+            case .failure:
+                self?.presentErrorFetchingAccountSettingsNotice()
             }
-
             completion?()
         }
 
@@ -445,6 +447,26 @@ private extension PrivacySettingsViewController {
     }
 }
 
+// MARK: - Notices
+//
+private extension PrivacySettingsViewController {
+    /// Presents an error notice when failing to fetch the account settings.
+    /// The retry button calls the `pullToRefresh` method.
+    ///
+    func presentErrorFetchingAccountSettingsNotice() {
+        // Needed to treat every notice as unique. When not unique the notice presenter won't display subsequent error notices.
+        let info = NoticeNotificationInfo(identifier: UUID().uuidString)
+        let notice = Notice(title: Localization.errorFetchingAnalyticsState,
+                            feedbackType: .error,
+                            notificationInfo: info,
+                            actionTitle: Localization.retry) { [weak self] in
+            guard let self else { return }
+            self.pullToRefresh(sender: self.refreshControl)
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+}
+
 // MARK: - Convenience Methods
 //
 private extension PrivacySettingsViewController {
@@ -538,6 +560,12 @@ extension PrivacySettingsViewController {
                                                                 comment: "Footer of the more privacy options section on the privacy screen")
         static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
         static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")
+
+        static let errorFetchingAnalyticsState = NSLocalizedString("There was an error fetching your account settings",
+                                                                   comment: "Error notice when failing to fetch account settings on the privacy screen.")
+        static let errorUpdatingAnalyticsState = NSLocalizedString("There was an error updating your account settings",
+                                                                   comment: "Error notice when failing to update account settings on the privacy screen.")
+        static let retry = NSLocalizedString("Retry", comment: "Retry button title for the privacy screen notices")
     }
 }
 

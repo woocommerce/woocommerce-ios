@@ -1,0 +1,115 @@
+{
+    "request": {
+        "method": "POST",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "bodyPatterns": [
+            {
+                "matches": ".*path=/wc/v3/orders%26_method%3Dpost"
+            },
+            {
+                "contains": "%22Simple%20Payments%22"
+            }
+        ]
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "id": 630,
+                "parent_id": 0,
+                "status": "auto-draft",
+                "currency": "USD",
+                "version": "7.6.1",
+                "prices_include_tax": false,
+                "date_created": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",
+                "date_modified": "{{now format=customformat}}",
+                "discount_total": "0.00",
+                "discount_tax": "0.00",
+                "shipping_total": "0.00",
+                "shipping_tax": "0.00",
+                "cart_tax": "0.00",
+                "total": "5.00",
+                "total_tax": "0.00",
+                "customer_id": 0,
+                "order_key": "wc_order_xxx",
+                "billing": {
+                    "first_name": "",
+                    "last_name": "",
+                    "company": "",
+                    "address_1": "",
+                    "address_2": "",
+                    "city": "",
+                    "state": "",
+                    "postcode": "",
+                    "country": "",
+                    "email": "",
+                    "phone": ""
+                },
+                "shipping": {
+                    "first_name": "",
+                    "last_name": "",
+                    "company": "",
+                    "address_1": "",
+                    "address_2": "",
+                    "city": "",
+                    "state": "",
+                    "postcode": "",
+                    "country": "",
+                    "phone": ""
+                },
+                "payment_method": "",
+                "payment_method_title": "",
+                "transaction_id": "",
+                "customer_ip_address": "",
+                "customer_user_agent": "",
+                "created_via": "rest-api",
+                "customer_note": "",
+                "date_completed": null,
+                "date_paid": null,
+                "cart_hash": "",
+                "number": "630",
+                "meta_data": [],
+                "line_items": [],
+                "tax_lines": [],
+                "shipping_lines": [],
+                "fee_lines": [
+                    {
+                        "id": 475,
+                        "name": "Simple Payments",
+                        "tax_class": "",
+                        "tax_status": "taxable",
+                        "amount": "",
+                        "total": "5.00",
+                        "total_tax": "0.00",
+                        "taxes": [],
+                        "meta_data": []
+                    }
+                ],
+                "coupon_lines": [],
+                "refunds": [],
+                "payment_url": "https://automatticwidgets.wpcomstaging.com/checkout/order-pay/630/?pay_for_order=true&key=wc_order_xxx",
+                "is_editable": true,
+                "needs_payment": false,
+                "needs_processing": false,
+                "date_created_gmt": "{{now format=customformat}}",
+                "date_modified_gmt": "{{now format=customformat}}",
+                "date_completed_gmt": null,
+                "date_paid_gmt": null,
+                "gift_cards": [],
+                "currency_symbol": "$",
+                "_links": {
+                    "self": [
+                        {
+                            "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/orders/630"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/orders"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

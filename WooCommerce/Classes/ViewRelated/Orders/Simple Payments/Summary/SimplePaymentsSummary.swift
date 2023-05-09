@@ -286,6 +286,7 @@ private struct TakePaymentSection: View {
             })
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
             .padding()
+            .accessibilityIdentifier(SimplePaymentsSummary.Accessibility.takePaymentButton)
 
         }
         .background(Color(.listForeground(modal: false)).ignoresSafeArea())
@@ -300,6 +301,10 @@ private extension SimplePaymentsSummary {
         static let verticalSummarySpacing: CGFloat = 8.0
         static let verticalNoteSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
+    }
+
+    enum Accessibility {
+        static let takePaymentButton = "take-payment-button"
     }
 
     enum Localization {

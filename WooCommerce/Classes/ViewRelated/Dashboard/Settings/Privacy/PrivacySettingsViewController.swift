@@ -80,7 +80,9 @@ class PrivacySettingsViewController: UIViewController {
 private extension PrivacySettingsViewController {
 
     func loadAccountSettings(completion: (()-> Void)? = nil) {
+        // If we can't find an account(non-jp sites), lets use the saved state.
         guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
+            collectInfo = ServiceLocator.analytics.userHasOptedIn
             completion?()
             return
         }
@@ -394,7 +396,9 @@ private extension PrivacySettingsViewController {
     func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
 
+        // If we can't find an account(non-jp sites), lets commit the change immediately.
         guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
+            ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
             return
         }
 

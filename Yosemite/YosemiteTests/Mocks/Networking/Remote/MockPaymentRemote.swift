@@ -70,7 +70,7 @@ extension MockPaymentRemote: PaymentRemoteProtocol {
         return try result.get()
     }
 
-    func createCart(siteID: Int64, domain: PaidDomainSuggestion, isTemporary: Bool) async throws -> CartResponse {
+    func createCart(siteID: Int64, domain: DomainToPurchase, isTemporary: Bool) async throws -> CartResponse {
         guard let result = createDomainCartResult else {
             XCTFail("Could not find result for creating a domain cart.")
             throw NetworkError.notFound

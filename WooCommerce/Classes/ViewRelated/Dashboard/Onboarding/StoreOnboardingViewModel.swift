@@ -56,6 +56,7 @@ class StoreOnboardingViewModel: ObservableObject {
     private let siteID: Int64
 
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     private var state: State
 
@@ -87,6 +88,7 @@ class StoreOnboardingViewModel: ObservableObject {
         self.state = .loading
         self.defaults = defaults
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
 
         Publishers.CombineLatest3($noTasksAvailableForDisplay,
@@ -133,10 +135,26 @@ private extension StoreOnboardingViewModel {
         if await shouldManuallyAppendLaunchStoreTask {
             return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
                 .sorted()
-                .map { .init(task: $0) }
+                .map { .init(task: $0, badgeText: badgeText(task: $0.type)) }
         } else {
             return tasksFromServer
-                .map { .init(task: $0) }
+                .map { .init(task: $0, badgeText: badgeText(task: $0.type)) }
+        }
+    }
+
+    func badgeText(task: StoreOnboardingTask.TaskType) -> String? {
+        switch task {
+        case .addFirstProduct:
+            let isEligibleForProductDescriptionAI: Bool = {
+                guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
+                    return false
+                }
+                let eligibilityChecker = ProductFormAIEligibilityChecker(site: stores.sessionManager.defaultSite, featureFlagService: featureFlagService)
+                return eligibilityChecker.isFeatureEnabled(.description)
+            }()
+            return isEligibleForProductDescriptionAI ? StoreOnboardingTaskViewModel.Localization.AddFirstProduct.badgeText: nil
+        default:
+            return nil
         }
     }
 

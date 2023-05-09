@@ -40,8 +40,8 @@ public final class DomainStore: Store {
         switch action {
         case .loadFreeDomainSuggestions(let query, let completion):
             loadFreeDomainSuggestions(query: query, completion: completion)
-        case .loadPaidDomainSuggestions(let query, let completion):
-            loadPaidDomainSuggestions(query: query, completion: completion)
+        case .loadPaidDomainSuggestions(let query, let currencySettings, let completion):
+            loadPaidDomainSuggestions(query: query, currencySettings: currencySettings, completion: completion)
         case .loadDomains(let siteID, let completion):
             loadDomains(siteID: siteID, completion: completion)
         case .createDomainShoppingCart(let siteID, let domain, let completion):
@@ -64,7 +64,7 @@ private extension DomainStore {
         }
     }
 
-    func loadPaidDomainSuggestions(query: String, completion: @escaping (Result<[PaidDomainSuggestion], Error>) -> Void) {
+    func loadPaidDomainSuggestions(query: String, currencySettings: CurrencySettings, completion: @escaping (Result<[PaidDomainSuggestion], Error>) -> Void) {
         Task { @MainActor in
             do {
                 // Fetches domain products and domain suggestions at the same time.
@@ -75,22 +75,70 @@ private extension DomainStore {
                     productsByID[product.productID] = product
                     return productsByID
                 })
-                let paidDomainSuggestions: [PaidDomainSuggestion] = try await domainSuggestions.compactMap { domainSuggestion in
+
+                let suggestions = try await domainSuggestions
+                let pricesByPremiumDomainName = await loadPriceForPremiumDomains(suggestions)
+                let paidDomainSuggestions: [PaidDomainSuggestion] = suggestions.compactMap { domainSuggestion -> PaidDomainSuggestion? in
                     let productID = domainSuggestion.productID
                     guard let domainProduct = domainProductsByID[productID] else {
                         return nil
                     }
-                    return PaidDomainSuggestion(productID: domainSuggestion.productID,
-                                                supportsPrivacy: domainSuggestion.supportsPrivacy,
-                                                name: domainSuggestion.name,
-                                                term: domainProduct.term,
-                                                cost: domainProduct.cost,
-                                                saleCost: domainProduct.saleCost)
+
+                    if domainSuggestion.isPremium == true {
+                        guard let price = pricesByPremiumDomainName[domainSuggestion.name] else {
+                            return nil
+                        }
+                        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+                        return PaidDomainSuggestion(productID: domainSuggestion.productID,
+                                                    supportsPrivacy: domainSuggestion.supportsPrivacy,
+                                                    name: domainSuggestion.name,
+                                                    term: domainProduct.term,
+                                                    cost: currencyFormatter.formatAmount(price.cost, with: price.currency) ?? "",
+                                                    saleCost: price.saleCost.map { currencyFormatter.formatAmount($0, with: price.currency) ?? "" },
+                                                    isPremium: true)
+                    } else {
+                        return PaidDomainSuggestion(productID: domainSuggestion.productID,
+                                                    supportsPrivacy: domainSuggestion.supportsPrivacy,
+                                                    name: domainSuggestion.name,
+                                                    term: domainProduct.term,
+                                                    cost: domainProduct.cost,
+                                                    saleCost: domainProduct.saleCost,
+                                                    isPremium: false)
+                    }
                 }
                 completion(.success(paidDomainSuggestions))
             } catch {
                 completion(.failure(error))
             }
+        }
+    }
+
+    /// Loads the price asynchronously for each premium domain in the domain suggestions.
+    /// - Returns: A dictionary that maps a domain name to its price.
+    func loadPriceForPremiumDomains(_ domains: [Networking.PaidDomainSuggestion]) async -> [String: PremiumDomainPrice] {
+        await withTaskGroup(of: (String, PremiumDomainPrice)?.self, returning: [String: PremiumDomainPrice].self) { group in
+            var pricesByDomainName: [String: PremiumDomainPrice] = [:]
+
+            // For each domain suggestion, adds a new task to the group to load the price if the domain is a premium domain.
+            for domain in domains {
+                if domain.isPremium == true {
+                    group.addTask {
+                        do {
+                            let price = try await self.remote.loadPremiumDomainPrice(domain: domain.name)
+                            return (domain.name, price)
+                        } catch {
+                            // If the domain price fetching fails, we don't want to fail the whole domain suggestions request.
+                            DDLogError("⛔️ Error loading the price for premium domain \(domain.name): \(error)")
+                            return nil
+                        }
+                    }
+                }
+            }
+
+            for await nameAndPrice in group.compactMap({ $0 }) {
+                pricesByDomainName[nameAndPrice.0] = nameAndPrice.1
+            }
+            return pricesByDomainName
         }
     }
 

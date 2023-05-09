@@ -93,8 +93,11 @@ struct JetpackBenefitsBanner: View {
 
 private extension JetpackBenefitsBanner {
     enum Localization {
-        static let title = NSLocalizedString("Get the full experience with Jetpack", comment: "Title of the Jetpack benefits banner.")
-        static let subtitle = NSLocalizedString("See the benefits", comment: "Subtitle of the Jetpack benefits banner.")
+        static let title = NSLocalizedString("Get order notifications and more", comment: "Title of the Jetpack benefits banner.")
+        static let subtitle = NSLocalizedString(
+            "Stay updated and boost store security. Explore Jetpack now.",
+            comment: "Subtitle of the Jetpack benefits banner."
+        )
     }
 
     enum Layout {

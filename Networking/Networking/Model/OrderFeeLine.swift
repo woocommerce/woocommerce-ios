@@ -38,6 +38,29 @@ public struct OrderFeeLine: Equatable, Codable, GeneratedFakeable, GeneratedCopi
         self.taxes = taxes
         self.attributes = attributes
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let feeID = try container.decode(Int64.self, forKey: .feeID)
+        let name = try container.decode(String.self, forKey: .name)
+        let taxClass = try container.decode(String.self, forKey: .taxClass)
+        let taxStatus = try container.decode(OrderFeeTaxStatus.self, forKey: .taxStatus)
+        let total = try container.decode(String.self, forKey: .total)
+        let totalTax = try container.decode(String.self, forKey: .totalTax)
+        let taxes = try container.decode([OrderItemTax].self, forKey: .taxes)
+
+        // Use failsafe decoding to discard any attributes with non-string values (currently not supported).
+        let attributes = container.failsafeDecodeIfPresent(lossyList: [OrderItemAttribute].self, forKey: .attributes)
+
+        self.init(feeID: feeID,
+                  name: name,
+                  taxClass: taxClass,
+                  taxStatus: taxStatus,
+                  total: total,
+                  totalTax: totalTax,
+                  taxes: taxes,
+                  attributes: attributes)
+    }
 }
 
 // MARK: Codable

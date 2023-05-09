@@ -1,4 +1,5 @@
 import XCTest
+import class WooFoundation.CurrencySettings
 @testable import Networking
 @testable import Yosemite
 
@@ -82,12 +83,12 @@ final class DomainStoreTests: XCTestCase {
 
     func test_loadPaidDomainSuggestions_returns_suggestions_on_success() throws {
         // Given
-        remote.whenLoadingPaidDomainSuggestions(thenReturn: .success([.init(name: "paid.domain", productID: 203, supportsPrivacy: true)]))
+        remote.whenLoadingPaidDomainSuggestions(thenReturn: .success([.init(name: "paid.domain", productID: 203, supportsPrivacy: true, isPremium: false)]))
         remote.whenLoadingDomainProducts(thenReturn: .success([.init(productID: 203, term: "year", cost: "NT$610.00", saleCost: "NT$154.00")]))
 
         // When
         let result = waitFor { promise in
-            self.store.onAction(DomainAction.loadPaidDomainSuggestions(query: "domain") { result in
+            self.store.onAction(DomainAction.loadPaidDomainSuggestions(query: "domain", currencySettings: .init()) { result in
                 promise(result)
             })
         }
@@ -95,18 +96,26 @@ final class DomainStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let suggestions = try XCTUnwrap(result.get())
-        XCTAssertEqual(suggestions, [.init(productID: 203, supportsPrivacy: true, name: "paid.domain", term: "year", cost: "NT$610.00", saleCost: "NT$154.00")])
+        XCTAssertEqual(suggestions, [
+            .init(productID: 203,
+                  supportsPrivacy: true,
+                  name: "paid.domain",
+                  term: "year",
+                  cost: "NT$610.00",
+                  saleCost: "NT$154.00",
+                  isPremium: false)
+        ])
     }
 
     func test_loadPaidDomainSuggestions_returns_empty_suggestions_from_failed_productID_mapping() throws {
         // Given
-        remote.whenLoadingPaidDomainSuggestions(thenReturn: .success([.init(name: "paid.domain", productID: 203, supportsPrivacy: true)]))
+        remote.whenLoadingPaidDomainSuggestions(thenReturn: .success([.init(name: "paid.domain", productID: 203, supportsPrivacy: true, isPremium: false)]))
         // The product ID does not match the domain suggestion.
         remote.whenLoadingDomainProducts(thenReturn: .success([.init(productID: 156, term: "year", cost: "NT$610.00", saleCost: "NT$154.00")]))
 
         // When
         let result = waitFor { promise in
-            self.store.onAction(DomainAction.loadPaidDomainSuggestions(query: "domain") { result in
+            self.store.onAction(DomainAction.loadPaidDomainSuggestions(query: "domain", currencySettings: .init()) { result in
                 promise(result)
             })
         }
@@ -117,6 +126,58 @@ final class DomainStoreTests: XCTestCase {
         XCTAssertEqual(suggestions, [])
     }
 
+    func test_loadPaidDomainSuggestions_returns_premium_domain_with_formatted_price_from_loadPremiumDomainPrice() throws {
+        // Given
+        let domainName = "premium.domain"
+        remote.whenLoadingPaidDomainSuggestions(thenReturn: .success([
+            .init(name: domainName, productID: 645, supportsPrivacy: true, isPremium: true)
+        ]))
+        remote.whenLoadingDomainProducts(thenReturn: .success([.init(productID: 645, term: "year", cost: "NT$610.00", saleCost: "NT$154.00")]))
+        remote.whenLoadingPremiumDomainPrice(domain: domainName, thenReturn: .init(cost: 1000.5, saleCost: 6.8, currency: "TWD"))
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 1)
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.loadPaidDomainSuggestions(query: "domain", currencySettings: currencySettings) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let suggestions = try XCTUnwrap(result.get())
+        XCTAssertEqual(suggestions, [
+            .init(productID: 645, supportsPrivacy: true, name: "premium.domain", term: "year", cost: "NT$ 1,000.5", saleCost: "NT$ 6.8", isPremium: true)
+        ])
+    }
+
+    func test_loadPaidDomainSuggestions_skips_premium_domains_without_a_price() throws {
+        // Given
+        remote.whenLoadingPaidDomainSuggestions(thenReturn: .success([
+            .init(name: "premium.domain", productID: 645, supportsPrivacy: true, isPremium: true),
+            .init(name: "not.premium.domain", productID: 645, supportsPrivacy: true, isPremium: false)
+        ]))
+        remote.whenLoadingDomainProducts(thenReturn: .success([.init(productID: 645, term: "year", cost: "NT$610.00", saleCost: "NT$154.00")]))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(DomainAction.loadPaidDomainSuggestions(query: "domain", currencySettings: .init()) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let suggestions = try XCTUnwrap(result.get())
+        XCTAssertEqual(suggestions, [
+            .init(productID: 645, supportsPrivacy: true, name: "not.premium.domain", term: "year", cost: "NT$610.00", saleCost: "NT$154.00", isPremium: false)
+        ])
+    }
+
     func test_loadPaidDomainSuggestions_returns_error_on_failure() throws {
         // Given
         remote.whenLoadingPaidDomainSuggestions(thenReturn: .failure(NetworkError.invalidURL))
@@ -124,7 +185,7 @@ final class DomainStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.store.onAction(DomainAction.loadPaidDomainSuggestions(query: "domain") { result in
+            self.store.onAction(DomainAction.loadPaidDomainSuggestions(query: "domain", currencySettings: .init()) { result in
                 promise(result)
             })
         }

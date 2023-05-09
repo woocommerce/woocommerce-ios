@@ -304,7 +304,9 @@ private struct ProductsSection: View {
                 .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
                     scroll.scrollTo(addProductViaSKUScannerButton)
                 }, content: {
-                    EmptyView()
+                    ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                        print("SKU found: \(detectedBarcode)")
+                    })
                 })
                 .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
             }
@@ -410,15 +412,15 @@ private extension ProductSelectorView.Configuration {
 
 private struct ProductSKUInputScannerView: UIViewControllerRepresentable {
     typealias UIViewControllerType = ProductSKUInputScannerViewController
-    
+
     let onBarcodeScanned: ((String) -> Void)?
-    
+
     func makeUIViewController(context: Context) -> ProductSKUInputScannerViewController {
         ProductSKUInputScannerViewController(onBarcodeScanned: { barcode in
             onBarcodeScanned?(barcode)
         })
     }
-    
+
     func updateUIViewController(_ uiViewController: ProductSKUInputScannerViewController, context: Context) {
         // no-op
     }

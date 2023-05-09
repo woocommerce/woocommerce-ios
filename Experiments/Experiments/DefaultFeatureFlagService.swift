@@ -65,6 +65,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .addCouponToOrder:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
+        case .addProductToOrderViaSKUScanner:
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .productBundles:
             return true
         case .freeTrial:

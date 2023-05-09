@@ -580,6 +580,7 @@
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
 		03A6C18428B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */; };
 		03A6C18628B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A6C18528B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift */; };
+		03A9F3B22A03E70700385673 /* AdaptiveAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A9F3B12A03E70700385673 /* AdaptiveAsyncImage.swift */; };
 		03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */; };
 		03AA16602719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */; };
 		03AFDE02282C0B82003B67CD /* InPersonPaymentsCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */; };
@@ -2846,6 +2847,7 @@
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
 		03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift; sourceTree = "<group>"; };
 		03A6C18528B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsOnboardingErrorButtonViewModel.swift; sourceTree = "<group>"; };
+		03A9F3B12A03E70700385673 /* AdaptiveAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveAsyncImage.swift; sourceTree = "<group>"; };
 		03AA165D2719B7EF005CCB7B /* ReceiptActionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinator.swift; sourceTree = "<group>"; };
 		03AA165F2719B83D005CCB7B /* ReceiptActionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptActionCoordinatorTests.swift; sourceTree = "<group>"; };
 		03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCompletedView.swift; sourceTree = "<group>"; };
@@ -6969,6 +6971,7 @@
 				020ACF87299A809000B3638B /* LearnMoreAttributedText.swift */,
 				CC857C7629B25FAF00E19D1E /* FooterNotice.swift */,
 				02BE9CBF29C05CFD00292333 /* SitePreviewView.swift */,
+				03A9F3B12A03E70700385673 /* AdaptiveAsyncImage.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -11215,6 +11218,7 @@
 				02DD81FA242CAA400060E50B /* Media+WPMediaAsset.swift in Sources */,
 				311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */,
 				2688643D25D470C000821BA5 /* EditAttributesViewModel.swift in Sources */,
+				03A9F3B22A03E70700385673 /* AdaptiveAsyncImage.swift in Sources */,
 				31C21FA426D9949000916E2E /* SeveralReadersFoundViewController.swift in Sources */,
 				45E1482527736D1E0099CF23 /* SettingsView.swift in Sources */,
 				02E3B62829026C8F007E0F13 /* AccountCreationForm.swift in Sources */,

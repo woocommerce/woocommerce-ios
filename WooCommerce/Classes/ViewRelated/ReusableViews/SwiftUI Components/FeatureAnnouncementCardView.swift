@@ -35,6 +35,7 @@ struct FeatureAnnouncementCardView: View {
             }
             Text(viewModel.title)
                 .headlineStyle()
+                .padding(.trailing, viewModel.badgeType == nil ? Layout.titleTrailingNoBadgeCloseButtonPadding : Layout.padding)
             HStack(alignment: .bottom, spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(viewModel.message)
@@ -124,6 +125,7 @@ extension FeatureAnnouncementCardView {
         static let bottomNoButtonPadding: CGFloat = 60
         static let smallSpacing: CGFloat = 8
         static let largeSpacing: CGFloat = 16
+        static let titleTrailingNoBadgeCloseButtonPadding: CGFloat = 48
     }
 }
 

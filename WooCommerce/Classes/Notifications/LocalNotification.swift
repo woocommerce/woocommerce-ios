@@ -58,12 +58,14 @@ struct LocalNotification {
 
     /// The action type in a local notification.
     enum Action: String {
-        // TODO: 9665 - determine if there are any custom actions
+        case openPlansPage
         case none
 
         /// The title of the action in a local notification.
         var title: String {
             switch self {
+            case .openPlansPage:
+                return Localization.openPlansPage
             case .none:
                 return ""
             }
@@ -72,11 +74,50 @@ struct LocalNotification {
 }
 
 extension LocalNotification {
-    init(scenario: Scenario) {
-        // TODO: 9665 - Copy TBD for each notification
-        self.init(title: scenario.rawValue,
-                  body: "",
-                  scenario: scenario,
-                  actions: .init(category: .storeCreation, actions: []))
+    init?(scenario: Scenario) {
+        /// Name to display in notifications
+        let name: String = {
+            let sessionManager = ServiceLocator.stores.sessionManager
+            guard let name = sessionManager.defaultAccount?.displayName, name.isNotEmpty else {
+                return sessionManager.defaultCredentials?.username ?? ""
+            }
+            return name
+        }()
+
+        switch scenario {
+        case .oneDayBeforeFreeTrialExpires(let expiryDate):
+            let title = String.localizedStringWithFormat(Localization.oneDayBeforeFreeTrialExpiresTitle, name)
+            let dateFormatStyle = Date.FormatStyle()
+                .weekday(.wide)
+                .month(.wide)
+                .day(.defaultDigits)
+            let displayDate = expiryDate.formatted(dateFormatStyle)
+            let message = String.localizedStringWithFormat(Localization.oneDayBeforeFreeTrialExpiresMessage, displayDate)
+            self.init(title: title,
+                      body: message,
+                      scenario: scenario,
+                      actions: .init(category: .storeCreation, actions: [.openPlansPage]))
+        default:
+            return nil
+        }
+    }
+}
+
+private extension LocalNotification {
+    enum Localization {
+        static let oneDayBeforeFreeTrialExpiresTitle = NSLocalizedString(
+            "Time’s almost up, %1$@",
+            comment: "Title of the local notification to remind the user of expiring free trial plan." +
+            "The placeholder is the name of the user."
+        )
+        static let oneDayBeforeFreeTrialExpiresMessage = NSLocalizedString(
+            "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow.",
+            comment: "Message on the local notification to remind the user of the expiring free trial plan." +
+            "The placeholder is the expiry date of the trial plan."
+        )
+        static let openPlansPage = NSLocalizedString(
+            "Upgrade",
+            comment: "Action on the local notification to remind the user of the expiring free trial plan."
+        )
     }
 }

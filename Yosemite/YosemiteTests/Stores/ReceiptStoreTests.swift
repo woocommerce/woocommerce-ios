@@ -527,7 +527,8 @@ private extension ReceiptStoreTests {
                            taxes: [],
                            total: total,
                            totalTax: "",
-                           attributes: [])
+                           attributes: [],
+                           parent: nil)
     }
 }
 

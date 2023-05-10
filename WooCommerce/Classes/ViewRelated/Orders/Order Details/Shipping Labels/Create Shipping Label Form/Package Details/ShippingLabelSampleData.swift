@@ -101,7 +101,8 @@ private extension ShippingLabelSampleData {
                               taxes: [.init(taxID: 1, subtotal: "2", total: "1.2")],
                               total: "30.00",
                               totalTax: "1.20",
-                              attributes: [])
+                              attributes: [],
+                              parent: nil)
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
@@ -116,7 +117,8 @@ private extension ShippingLabelSampleData {
                               taxes: [.init(taxID: 1, subtotal: "0.4", total: "0")],
                               total: "0.00",
                               totalTax: "0.00",
-                              attributes: [])
+                              attributes: [],
+                              parent: nil)
 
         return [item1, item2]
     }

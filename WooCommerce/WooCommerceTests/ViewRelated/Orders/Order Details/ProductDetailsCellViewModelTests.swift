@@ -216,7 +216,8 @@ private extension ProductDetailsCellViewModelTests {
                   taxes: [],
                   total: total,
                   totalTax: "",
-                  attributes: attributes)
+                  attributes: attributes,
+                  parent: nil)
     }
 
     func makeAggregateOrderItem(quantity: Decimal,

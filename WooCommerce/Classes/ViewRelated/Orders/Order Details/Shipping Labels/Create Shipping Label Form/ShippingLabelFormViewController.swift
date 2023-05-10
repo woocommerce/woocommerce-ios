@@ -559,7 +559,7 @@ private extension ShippingLabelFormViewController {
 // MARK: - Top Banner
 //
 private extension ShippingLabelFormViewController {
-    /// Creates a Top Banner View containing the EU Shipping Notice.
+    /// Present a Top Banner View containing the EU Shipping Notice.
     ///
     func showTopBannerView() {
         viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
@@ -567,7 +567,7 @@ private extension ShippingLabelFormViewController {
                 return
             }
 
-            let topBannerView = self.createTopBannerView()
+            let topBannerView = self.createEUShippingNoticeBannerView()
             self.topBannerView = topBannerView
             let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
             headerContainer.addSubview(topBannerView)
@@ -577,7 +577,9 @@ private extension ShippingLabelFormViewController {
         }
     }
 
-    func createTopBannerView() -> TopBannerView {
+    /// Creates the Shipping Notice Top banner with the appropriate actions.
+    ///
+    func createEUShippingNoticeBannerView() -> TopBannerView {
         EUShippingNoticeTopBannerFactory.createTopBanner(
             onDismissPressed: {
                 self.viewModel.setEUShippingNoticeDismissState(isDismissed: true) { success in

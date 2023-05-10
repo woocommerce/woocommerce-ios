@@ -18,6 +18,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     @Published private(set) var doneButtonEnabled: Bool = false
 
+    /// Whether shipping notice banner should be displayed.
+    ///
+    @Published private(set) var shouldDisplayShippingNotice: Bool = false
+
     /// Associated order of the shipping label.
     ///
     private let order: Order
@@ -53,8 +57,6 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     /// References to keep the Combine subscriptions alive with the class.
     ///
     private var cancellables: Set<AnyCancellable> = []
-    
-    let shouldDisplayShippingNotice: Bool
 
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
@@ -87,11 +89,11 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 //
 extension ShippingLabelCustomsFormListViewModel {
     func bannerDismissTapped() {
-        
+        shouldDisplayShippingNotice = false
     }
 
     func bannerLearnMoreTapped(instructionsURL: URL?) {
-        
+
     }
 }
 

@@ -566,7 +566,12 @@ private extension ShippingLabelFormViewController {
 
         let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(
             onDismissPressed: {
-                self.hideTopBannerView()
+                let action = AppSettingsAction.setEUShippingNoticeDismissState(isDismissed: true) { result in
+                    guard let self = self, case .success = result else {
+                        return
+                    }
+                    self.hideTopBannerView()
+                }
             },
             onLearnMorePressed: { instructionsURL in
                 self.presentShippingInstructionsView(instructionsURL: instructionsURL)

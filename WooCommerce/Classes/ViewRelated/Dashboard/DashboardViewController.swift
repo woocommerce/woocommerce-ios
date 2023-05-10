@@ -160,6 +160,7 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
+        observeModalJustInTimeMessages()
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
@@ -525,6 +526,21 @@ private extension DashboardViewController {
 
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
+    }
+
+    private func observeModalJustInTimeMessages() {
+        viewModel.$modalJustInTimeMessageViewModel.sink { [weak self] viewModel in
+            guard let viewModel = viewModel else {
+                return
+            }
+            let modalView = CardPresentPaymentsModalViewController(
+                viewModel: CardPresentModalDisplayMessage(name: viewModel.title, amount: "0", message: viewModel.message))
+            Task { @MainActor in
+                modalView.prepareForCardReaderModalFlow()
+                self?.present(modalView, animated: true)
+            }
+        }
+        .store(in: &subscriptions)
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)

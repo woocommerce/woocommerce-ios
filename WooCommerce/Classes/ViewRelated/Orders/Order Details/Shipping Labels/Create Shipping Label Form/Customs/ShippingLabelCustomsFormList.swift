@@ -16,6 +16,16 @@ struct ShippingLabelCustomsFormList: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
+                EUShippingNoticeBanner(width: geometry.size.width)
+                    .onDismiss {
+                        // TODO
+                    }
+                    .onLearnMore { instructionsURL in
+                        // TODO
+                    }
+                    .renderedIf(true)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
                     ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                   packageNumber: index + 1,

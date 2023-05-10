@@ -5,8 +5,9 @@ import SwiftUI
 /// Hosting Controller for the Privacy Banner View
 ///
 final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
-    init() {
-        super.init(rootView: PrivacyBanner())
+
+    init(goToSettingsAction: @escaping (() -> ()), saveAction: @escaping (() -> ())) {
+        super.init(rootView: PrivacyBanner(goToSettingsAction: goToSettingsAction, saveAction: saveAction))
     }
 
     /// Needed for protocol conformance.
@@ -14,12 +15,19 @@ final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
 }
 
 /// Banner View for the privacy settings.
 ///
 struct PrivacyBanner: View {
+    /// Closure to be invoked when the go to settings button is pressed.
+    ///
+    let goToSettingsAction: (() -> ())
+
+    /// Closure to be invoked when the go to settings button is pressed.
+    ///
+    let saveAction: (() -> ())
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
 
@@ -80,7 +88,7 @@ private extension PrivacyBanner {
 
 struct PrivacyBanner_Previews: PreviewProvider {
     static var previews: some View {
-        PrivacyBanner()
+        PrivacyBanner(goToSettingsAction: {}, saveAction: {})
             .previewLayout(.sizeThatFits)
     }
 }

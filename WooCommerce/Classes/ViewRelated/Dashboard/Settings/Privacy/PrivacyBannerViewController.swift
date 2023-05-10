@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import WordPressUI
 
 /// Hosting Controller for the Privacy Banner View
 ///
@@ -14,6 +15,22 @@ final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
     ///
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Needed when presented via the `BottomSheetViewController`
+        preferredContentSize = .init(width: 0, height: view.intrinsicContentSize.height)
+    }
+}
+
+extension PrivacyBannerViewController: DrawerPresentable {
+    var collapsedHeight: DrawerHeight {
+        return .intrinsicHeight
+    }
+
+    var expandedHeight: DrawerHeight {
+        return .intrinsicHeight
     }
 }
 
@@ -58,7 +75,11 @@ struct PrivacyBanner: View {
                 }
                 .buttonStyle(PrimaryButtonStyle())
             }
-            .padding(.vertical)
+            .padding(.top)
+
+            /// Push all content to the top
+            ///
+            Spacer()
         }
         .padding()
     }

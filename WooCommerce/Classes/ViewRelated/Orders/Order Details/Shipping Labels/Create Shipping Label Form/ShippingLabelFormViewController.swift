@@ -559,6 +559,8 @@ private extension ShippingLabelFormViewController {
 // MARK: - Top Banner
 //
 private extension ShippingLabelFormViewController {
+    /// Creates a Top Banner View containing the EU Shipping Notice.
+    ///
     func showTopBannerView() {
         viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
             guard let self = self, shouldDisplay else {
@@ -589,6 +591,8 @@ private extension ShippingLabelFormViewController {
             })
     }
 
+    /// Presents a Web view containing the new EU Shipping instructions.
+    ///
     func presentShippingInstructionsView(instructionsURL: URL?) {
         let configuration = WebViewControllerConfiguration(url: instructionsURL)
         configuration.secureInteraction = true
@@ -597,6 +601,8 @@ private extension ShippingLabelFormViewController {
         self.present(nc, animated: true)
     }
 
+    /// Removes the Top Banner View from the table view header.
+    ///
     func hideTopBannerView() {
         guard tableView.tableHeaderView != nil else {
             return

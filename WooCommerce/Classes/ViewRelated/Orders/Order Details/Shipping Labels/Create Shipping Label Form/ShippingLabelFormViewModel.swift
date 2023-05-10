@@ -168,6 +168,8 @@ final class ShippingLabelFormViewModel {
         }
     }
 
+    /// Flag to indicate if the view should display the EU shipping notice.
+    ///
     private let isEUShippingNotificationEnabled: Bool
 
     init(order: Order,

@@ -10,13 +10,13 @@ final class EUShippingNoticeTopBannerFactory {
             NSLog("Dismiss clicked")
         }
 
-        let viewModel = TopBannerViewModel(
-                title: nil,
-                infoText: Localization.info,
-                icon: .infoImage,
-                isExpanded: true,
-                topButton: .dismiss(handler: {}),
-                actionButtons: [learnMoreAction, dismissAction])
+        let viewModel = TopBannerViewModel(title: nil,
+                                           infoText: Localization.info,
+                                           icon: .infoOutlineImage,
+                                           iconTintColor: .accent,
+                                           isExpanded: true,
+                                           topButton: .dismiss(handler: {}),
+                                           actionButtons: [learnMoreAction, dismissAction])
         let topBannerView = TopBannerView(viewModel: viewModel)
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
         return topBannerView

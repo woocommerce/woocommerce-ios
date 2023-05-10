@@ -104,6 +104,8 @@ final class DashboardViewController: UIViewController {
 
     private var announcementView: UIView?
 
+    private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
+
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
@@ -533,11 +535,20 @@ private extension DashboardViewController {
             guard let viewModel = viewModel else {
                 return
             }
-            let modalView = CardPresentPaymentsModalViewController(
-                viewModel: CardPresentModalDisplayMessage(name: viewModel.title, amount: "0", message: viewModel.message))
-            Task { @MainActor in
-                modalView.prepareForCardReaderModalFlow()
-                self?.present(modalView, animated: true)
+
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                let modalController = ConstraintsUpdatingHostingController(
+                    rootView: JustInTimeMessageModal_UIKit(
+                        onDismiss: {
+                            self.dismiss(animated: true)
+                        },
+                        viewModel: viewModel))
+
+                self.modalJustInTimeMessageHostingController = modalController
+                modalController.view.backgroundColor = .clear
+                modalController.modalPresentationStyle = .overFullScreen
+                self.present(modalController, animated: true)
             }
         }
         .store(in: &subscriptions)

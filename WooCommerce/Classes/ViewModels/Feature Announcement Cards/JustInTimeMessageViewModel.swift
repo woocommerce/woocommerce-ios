@@ -152,7 +152,14 @@ extension JustInTimeMessageViewModel: AnnouncementCardViewModelProtocol {
 
     var showDismissConfirmation: Bool { false }
 
-    var dismissAlertTitle: String { "" }
+    var dismissAlertTitle: String {
+        switch template {
+        case .modal:
+            return Localization.maybeLaterButton
+        default:
+            return ""
+        }
+    }
 
     var dismissAlertMessage: String { "" }
 
@@ -167,5 +174,14 @@ extension JustInTimeMessageViewModel: AnnouncementCardViewModelProtocol {
 
     func remindLaterTapped() {
         // No-op
+    }
+}
+
+private extension JustInTimeMessageViewModel {
+    enum Localization {
+        static let maybeLaterButton = NSLocalizedString(
+            "Maybe Later",
+            comment: "Dismiss button title for modally presented Just in Time Messages"
+        )
     }
 }

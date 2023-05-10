@@ -14,7 +14,7 @@ final class EditableOrderViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
-    private let permissionChecker: CaptureDevicePermissionChecker
+    let permissionChecker: CaptureDevicePermissionChecker
 
     private var cancellables: Set<AnyCancellable> = []
 

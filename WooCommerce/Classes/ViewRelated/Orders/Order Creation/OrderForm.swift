@@ -449,7 +449,10 @@ private extension ProductSelectorView.Configuration {
 
 private extension ProductsSection {
     func openSettingsAction() {
-        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+        UIApplication.shared.open(settingsURL)
     }
 }
 

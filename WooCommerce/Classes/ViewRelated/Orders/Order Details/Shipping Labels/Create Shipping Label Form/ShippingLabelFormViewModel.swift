@@ -168,7 +168,11 @@ final class ShippingLabelFormViewModel {
         }
     }
 
-    let shouldDisplayShippingNotice: Bool
+    var shouldDisplayShippingNotice: Bool {
+        return false
+    }
+
+    let isEUShippingNotificationEnabled: Bool
 
     init(order: Order,
          originAddress: Address?,
@@ -196,7 +200,7 @@ final class ShippingLabelFormViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
-        self.shouldDisplayShippingNotice = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
+        self.isEUShippingNotificationEnabled = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
 
         state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
@@ -877,6 +881,21 @@ extension ShippingLabelFormViewModel {
     private enum PurchaseError: Error {
         case labelDetailsMissing
         case invalidPackageDetails
+    }
+}
+
+// MARK: - Shipping Notice dismiss state handling
+extension ShippingLabelFormViewModel {
+    func setEUShippingNoticeDismissState(isDismissed: Bool, onCompletion: (Bool) -> Void) {
+        let action = AppSettingsAction.setEUShippingNoticeDismissState(isDismissed: isDismissed) { result in
+            switch result {
+            case .success:
+                onCompletion(true)
+            case .failure:
+                onCompletion(false)
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

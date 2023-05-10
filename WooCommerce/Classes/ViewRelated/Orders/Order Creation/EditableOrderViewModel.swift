@@ -1233,7 +1233,7 @@ private extension EditableOrderViewModel {
 
 extension EditableOrderViewModel {
 
-    enum CurrentPermission {
+    enum CapturePermissionStatus {
         case permitted
         case notPermitted
         case notDetermined
@@ -1241,7 +1241,7 @@ extension EditableOrderViewModel {
 
     /// Returns the current app permission status to capture media
     ///
-    var cameraPermissionStatus: CurrentPermission {
+    var capturePermissionStatus: CapturePermissionStatus {
         let authStatus = permissionChecker.authorizationStatus(for: .video)
         switch authStatus {
         case .authorized:

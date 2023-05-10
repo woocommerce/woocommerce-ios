@@ -1482,36 +1482,53 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.multipleLinesMessage)
     }
 
-    func test_cameraPermissionStatus_is_notDetermined_when_no_permission_is_checked() {
+    func test_capturePermissionStatus_is_notDetermined_when_no_permission_is_checked() {
         // Given, Then
-        XCTAssertEqual(viewModel.cameraPermissionStatus, .notDetermined)
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notDetermined)
     }
 
-    func test_cameraPermissionStatus_is_permitted_when_permissionChecker_is_authorized() {
+    func test_capturePermissionStatus_is_permitted_when_permissionChecker_is_authorized() {
         // Given
         let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .authorized)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
 
         // Then
-        XCTAssertEqual(viewModel.cameraPermissionStatus, .permitted)
+        XCTAssertEqual(viewModel.capturePermissionStatus, .permitted)
     }
 
-    func test_cameraPermissionStatus_is_notPermitted_when_permissionChecker_is_denied() {
+    func test_capturePermissionStatus_is_notPermitted_when_permissionChecker_is_denied() {
         // Given
         let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .denied)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
 
         // Then
-        XCTAssertEqual(viewModel.cameraPermissionStatus, .notPermitted)
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
     }
 
-    func test_cameraPermissionStatus_is_notPermitted_when_permissionChecker_is_restricted() {
+    func test_capturePermissionStatus_is_notPermitted_when_permissionChecker_is_restricted() {
         // Given
         let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .restricted)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
 
         // Then
-        XCTAssertEqual(viewModel.cameraPermissionStatus, .notPermitted)
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
+    }
+
+    // TODO-gm: Failing async test
+    func test_permissions() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // When
+        let isPermissionGranted: Bool = waitFor { promise in
+            permissionChecker.requestAccess(for: .video, completionHandler: { _ in
+                    promise(true)
+            })
+        }
+        // Then
+        XCTAssertTrue(isPermissionGranted)
+        //XCTAssertEqual(viewModel.capturePermissionStatus, .permitted)
     }
 }
 

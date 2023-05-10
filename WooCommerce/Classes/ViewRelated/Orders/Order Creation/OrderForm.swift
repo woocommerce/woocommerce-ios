@@ -338,7 +338,7 @@ private struct ProductsSection: View {
                     message: Text(OrderForm.Localization.permissionsMessage),
                      buttons: [
                         .default(Text(OrderForm.Localization.permissionsOpenSettings), action: {
-                             UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                            openSettingsAction()
                          }),
                          .cancel()
                      ]
@@ -441,6 +441,12 @@ private extension ProductSelectorView.Configuration {
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Add Product screen"
         )
+    }
+}
+
+private extension ProductsSection {
+    func openSettingsAction() {
+        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
     }
 }
 

@@ -53,11 +53,14 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     /// References to keep the Combine subscriptions alive with the class.
     ///
     private var cancellables: Set<AnyCancellable> = []
+    
+    let shouldDisplayShippingNotice: Bool
 
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
          destinationCountry: Country,
          countries: [Country],
+         shouldDisplayShippingNotice: Bool = false,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.multiplePackagesDetected = customsForms.count > 1
@@ -71,6 +74,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
             return ServiceLocator.currencySettings.symbol(from: currencyCode)
         }()
         self.currencySymbol = currencySymbol
+        self.shouldDisplayShippingNotice = shouldDisplayShippingNotice
         self.inputViewModels = customsForms.map { .init(customsForm: $0,
                                                         destinationCountry: destinationCountry,
                                                         countries: countries,

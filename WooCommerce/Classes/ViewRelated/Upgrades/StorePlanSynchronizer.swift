@@ -29,12 +29,18 @@ final class StorePlanSynchronizer: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Handles local notifications for free trial plan expiration
+    ///
+    private let pushNotesManager: PushNotesManager
+
     /// Observable subscription store.
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.stores = stores
+        self.pushNotesManager = pushNotesManager
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -69,11 +75,57 @@ final class StorePlanSynchronizer: ObservableObject {
             switch result {
             case .success(let plan):
                 self.planState = .loaded(plan)
+                self.scheduleOrCancelNotificationsIfNeeded(for: plan)
             case .failure(let error):
                 self.planState = .failed
                 DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")
             }
         }
         stores.dispatch(action)
+    }
+}
+
+// MARK: - Local notifications about trial plan expiration
+//
+private extension StorePlanSynchronizer {
+    func scheduleOrCancelNotificationsIfNeeded(for plan: WPComSitePlan) {
+        guard plan.isFreeTrial else {
+            /// cancels any scheduled notifications
+            return cancelFreeTrialExpirationNotifications()
+        }
+        guard let expiryDate = plan.expiryDate,
+              expiryDate > Date() else {
+            /// only schedule notifications if the plan is not expired yet
+            return
+        }
+
+        cancelFreeTrialExpirationNotifications()
+        scheduleBeforeExpirationNotification(expiryDate: expiryDate)
+        scheduleAfterExpirationNotification(expiryDate: expiryDate)
+    }
+
+    func cancelFreeTrialExpirationNotifications() {
+        pushNotesManager.cancelLocalNotification(scenarios: [
+            .oneDayAfterFreeTrialExpires,
+            .oneDayBeforeFreeTrialExpires(expiryDate: Date()) // placeholder date, irrelevant to the notification identifier
+        ])
+    }
+
+    func scheduleBeforeExpirationNotification(expiryDate: Date) {
+        guard let notification = LocalNotification(scenario: .oneDayBeforeFreeTrialExpires(expiryDate: expiryDate)) else {
+            return
+        }
+        /// Scheduled for 1 day before the expiry date
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: expiryDate.timeIntervalSinceNow - 86400, repeats: false)
+        pushNotesManager.requestLocalNotification(notification, trigger: trigger)
+    }
+
+    func scheduleAfterExpirationNotification(expiryDate: Date) {
+        guard let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires) else {
+            return
+        }
+        /// Scheduled for 1 day after the expiry date
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: expiryDate.timeIntervalSinceNow + 86400, repeats: false)
+        pushNotesManager.requestLocalNotification(notification, trigger: trigger)
     }
 }

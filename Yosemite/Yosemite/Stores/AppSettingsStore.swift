@@ -192,6 +192,10 @@ public class AppSettingsStore: Store {
             loadFirstInPersonPaymentsTransactionDate(siteID: siteID, using: cardReaderType, onCompletion: completion)
         case .storeInPersonPaymentsTransactionIfFirst(siteID: let siteID, cardReaderType: let cardReaderType):
             storeInPersonPaymentsTransactionIfFirst(siteID: siteID, using: cardReaderType)
+        case .setEUShippingNoticeDismissState(let isDismissed, let onCompletion):
+            setEUShippingNoticeDismissState(isDismissed: isDismissed, onCompletion: onCompletion)
+        case .loadEUShippingNoticeDismissState(let onCompletion):
+            loadEUShippingNoticeDismissState(onCompletion: onCompletion)
         }
     }
 }

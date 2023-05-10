@@ -1481,6 +1481,38 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.multipleLinesMessage)
     }
+
+    func test_cameraPermissionStatus_is_notDetermined_when_no_permission_is_checked() {
+        // Given, Then
+        XCTAssertEqual(viewModel.cameraPermissionStatus, .notDetermined)
+    }
+
+    func test_cameraPermissionStatus_is_permitted_when_permissionChecker_is_authorized() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .authorized)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // Then
+        XCTAssertEqual(viewModel.cameraPermissionStatus, .permitted)
+    }
+
+    func test_cameraPermissionStatus_is_notPermitted_when_permissionChecker_is_denied() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .denied)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // Then
+        XCTAssertEqual(viewModel.cameraPermissionStatus, .notPermitted)
+    }
+
+    func test_cameraPermissionStatus_is_notPermitted_when_permissionChecker_is_restricted() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .restricted)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // Then
+        XCTAssertEqual(viewModel.cameraPermissionStatus, .notPermitted)
+    }
 }
 
 private extension MockStorageManager {

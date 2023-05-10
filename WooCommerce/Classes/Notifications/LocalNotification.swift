@@ -58,14 +58,20 @@ struct LocalNotification {
 
     /// The action type in a local notification.
     enum Action: String {
-        case openPlansPage
+        case explore
+        case subscribe
+        case upgrade
         case none
 
         /// The title of the action in a local notification.
         var title: String {
             switch self {
-            case .openPlansPage:
-                return Localization.openPlansPage
+            case .explore:
+                return Localization.Actions.explore
+            case .subscribe:
+                return Localization.Actions.subscribe
+            case .upgrade:
+                return Localization.Actions.upgrade
             case .none:
                 return ""
             }
@@ -86,17 +92,17 @@ extension LocalNotification {
 
         switch scenario {
         case .oneDayBeforeFreeTrialExpires(let expiryDate):
-            let title = String.localizedStringWithFormat(Localization.oneDayBeforeFreeTrialExpiresTitle, name)
+            let title = String.localizedStringWithFormat(Localization.OneDayBeforeFreeTrialExpires.title, name)
             let dateFormatStyle = Date.FormatStyle()
                 .weekday(.wide)
                 .month(.wide)
                 .day(.defaultDigits)
             let displayDate = expiryDate.formatted(dateFormatStyle)
-            let message = String.localizedStringWithFormat(Localization.oneDayBeforeFreeTrialExpiresMessage, displayDate)
+            let message = String.localizedStringWithFormat(Localization.OneDayBeforeFreeTrialExpires.body, displayDate)
             self.init(title: title,
                       body: message,
                       scenario: scenario,
-                      actions: .init(category: .storeCreation, actions: [.openPlansPage]))
+                      actions: .init(category: .storeCreation, actions: [.upgrade]))
         default:
             return nil
         }
@@ -105,19 +111,32 @@ extension LocalNotification {
 
 private extension LocalNotification {
     enum Localization {
-        static let oneDayBeforeFreeTrialExpiresTitle = NSLocalizedString(
-            "Time’s almost up, %1$@",
-            comment: "Title of the local notification to remind the user of expiring free trial plan." +
-            "The placeholder is the name of the user."
-        )
-        static let oneDayBeforeFreeTrialExpiresMessage = NSLocalizedString(
-            "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow.",
-            comment: "Message on the local notification to remind the user of the expiring free trial plan." +
-            "The placeholder is the expiry date of the trial plan."
-        )
-        static let openPlansPage = NSLocalizedString(
-            "Upgrade",
-            comment: "Action on the local notification to remind the user of the expiring free trial plan."
-        )
+        enum OneDayBeforeFreeTrialExpires {
+            static let title = NSLocalizedString(
+                "Time’s almost up, %1$@",
+                comment: "Title of the local notification to remind the user of expiring free trial plan." +
+                "The placeholder is the name of the user."
+            )
+            static let body = NSLocalizedString(
+                "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow.",
+                comment: "Message on the local notification to remind the user of the expiring free trial plan." +
+                "The placeholder is the expiry date of the trial plan."
+            )
+        }
+
+        enum Actions {
+            static let explore = NSLocalizedString(
+                "Explore",
+                comment: "Action on the local notification to remind the user of a newly created store."
+            )
+            static let subscribe = NSLocalizedString(
+                "Subscribe",
+                comment: "Action on the local notification to suggest the user to subscribe to the trial plan."
+            )
+            static let upgrade = NSLocalizedString(
+                "Upgrade",
+                comment: "Action on the local notification to remind the user of the expiring free trial plan."
+            )
+        }
     }
 }

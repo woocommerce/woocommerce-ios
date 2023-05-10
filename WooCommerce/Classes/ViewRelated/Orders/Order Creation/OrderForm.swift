@@ -301,8 +301,8 @@ private struct ProductsSection: View {
                     }
                 })
                 Button(OrderForm.Localization.addProductViaSKUScanner) {
-                    let permissionChecker = AVCaptureDevicePermissionChecker()
-                    let authStatus = permissionChecker.authorizationStatus(for: .video)
+                    let authStatus = viewModel.cameraPermissionStatus
+
                     switch authStatus {
                     case .denied, .restricted:
                         DDLogDebug("Auth status: denied or restricted")

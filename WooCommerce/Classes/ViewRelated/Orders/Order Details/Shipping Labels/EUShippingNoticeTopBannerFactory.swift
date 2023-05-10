@@ -1,13 +1,14 @@
 import Foundation
 
 final class EUShippingNoticeTopBannerFactory {
-    static func createTopBanner(onLearnMoreTap: @escaping (URL?) -> Void) -> TopBannerView {
+    static func createTopBanner(onDismissPressed: @escaping () -> Void,
+                                onLearnMorePressed: @escaping (URL?) -> Void) -> TopBannerView {
         let learnMoreAction = TopBannerViewModel.ActionButton(title: Localization.learnMore) { _ in
-            onLearnMoreTap(URL(string: String.shippingCustomsInstructionsForEUCountries))
+            onLearnMorePressed(URL(string: String.shippingCustomsInstructionsForEUCountries))
         }
 
         let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) { _ in
-            NSLog("Dismiss clicked")
+            onDismissPressed()
         }
 
         let viewModel = TopBannerViewModel(title: nil,

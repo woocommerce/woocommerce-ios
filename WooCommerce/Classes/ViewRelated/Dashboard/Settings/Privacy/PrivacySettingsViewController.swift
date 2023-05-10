@@ -578,9 +578,9 @@ extension PrivacySettingsViewController {
         static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
         static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")
 
-        static let errorFetchingAnalyticsState = NSLocalizedString("There was an error fetching your account settings",
+        static let errorFetchingAnalyticsState = NSLocalizedString("There was an error fetching your privacy settings",
                                                                    comment: "Error notice when failing to fetch account settings on the privacy screen.")
-        static let errorUpdatingAnalyticsState = NSLocalizedString("There was an error updating your account settings",
+        static let errorUpdatingAnalyticsState = NSLocalizedString("There was an error updating your privacy settings",
                                                                    comment: "Error notice when failing to update account settings on the privacy screen.")
         static let retry = NSLocalizedString("Retry", comment: "Retry button title for the privacy screen notices")
     }

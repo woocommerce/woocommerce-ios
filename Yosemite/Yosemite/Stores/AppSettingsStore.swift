@@ -320,6 +320,24 @@ private extension AppSettingsStore {
         }
         onCompletion(numberOfDaysSinceLastDismissal >= 5)
     }
+
+    /// Sets the EU Shipping Notice dismissal state into `GeneralAppSettings`
+    ///
+    func setEUShippingNoticeDismissState(isDismissed: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(isDismissed, for: \.isEUShippingNoticeDismissed)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
+    /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadEUShippingNoticeDismissState(onCompletion: (Result<Bool, Error>) -> Void) {
+        onCompletion(.success(generalAppSettings.value(for: \.isEUShippingNoticeDismissed)))
+    }
 }
 
 // MARK: - In Person Payments Actions

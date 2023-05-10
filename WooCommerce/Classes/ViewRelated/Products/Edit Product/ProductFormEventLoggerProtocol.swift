@@ -20,4 +20,7 @@ protocol ProductFormEventLoggerProtocol {
 
     /// Called to log an event when the quantity rules row is tapped.
     func logQuantityRulesTapped()
+
+    /// Called to log an event when the subscriptions row is tapped.
+    func logSubscriptionsTapped()
 }

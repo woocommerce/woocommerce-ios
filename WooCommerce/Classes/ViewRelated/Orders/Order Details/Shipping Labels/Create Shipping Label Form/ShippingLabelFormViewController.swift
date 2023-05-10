@@ -564,10 +564,20 @@ private extension ShippingLabelFormViewController {
             return
         }
 
-        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(
+        let topBannerView = createTopBannerView()
+        self.topBannerView = topBannerView
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    func createTopBannerView() -> TopBannerView {
+        EUShippingNoticeTopBannerFactory.createTopBanner(
             onDismissPressed: {
                 let action = AppSettingsAction.setEUShippingNoticeDismissState(isDismissed: true) { result in
-                    guard let self = self, case .success = result else {
+                    guard case .success = result else {
                         return
                     }
                     self.hideTopBannerView()
@@ -576,12 +586,6 @@ private extension ShippingLabelFormViewController {
             onLearnMorePressed: { instructionsURL in
                 self.presentShippingInstructionsView(instructionsURL: instructionsURL)
             })
-        self.topBannerView = topBannerView
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
-        tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
     }
 
     func presentShippingInstructionsView(instructionsURL: URL?) {

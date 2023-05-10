@@ -80,7 +80,9 @@ class PrivacySettingsViewController: UIViewController {
 private extension PrivacySettingsViewController {
 
     func loadAccountSettings(completion: (()-> Void)? = nil) {
+        // If we can't find an account(non-jp sites), lets use the saved state.
         guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
+            collectInfo = ServiceLocator.analytics.userHasOptedIn
             completion?()
             return
         }
@@ -88,11 +90,13 @@ private extension PrivacySettingsViewController {
         let userID = defaultAccount.userID
 
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] result in
-            if case let .success(accountSettings) = result {
+            switch result {
+            case .success(let accountSettings):
                 // Switch is off when opting out of Tracks
                 self?.collectInfo = !accountSettings.tracksOptOut
+            case .failure:
+                self?.presentErrorFetchingAccountSettingsNotice()
             }
-
             completion?()
         }
 
@@ -121,19 +125,24 @@ private extension PrivacySettingsViewController {
         if isPrivacyChoicesEnabled {
             tableView.tableHeaderView = createTableHeaderView()
             tableView.updateHeaderHeight()
+            tableView.sectionFooterHeight = UITableView.automaticDimension
+            tableView.estimatedSectionFooterHeight = 100
         }
     }
 
     func configureSections() {
         if isPrivacyChoicesEnabled {
             return sections = [
-                Section(title: Localization.tracking, rows: [.analytics, .analyticsInfo]),
-                Section(title: Localization.reports, rows: [.reportCrashes, .crashInfo])
+                Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
+                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy]),
+                Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         } else {
             return sections = [
-                Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
-                Section(title: nil, rows: [.reportCrashes, .crashInfo])
+                Section(title: nil,
+                        footer: nil,
+                        rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+                Section(title: nil, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         }
     }
@@ -152,6 +161,8 @@ private extension PrivacySettingsViewController {
             configureAnalytics(cell: cell)
         case let cell as BasicTableViewCell where row == .analyticsInfo:
             configureAnalyticsInfo(cell: cell)
+        case let cell as HeadlineLabelTableViewCell where row == .morePrivacy:
+            configureMorePrivacy(cell: cell)
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfo:
@@ -198,6 +209,23 @@ private extension PrivacySettingsViewController {
             "These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps.",
             comment: "Analytics toggle description in the privacy screen."
         )
+        configureInfo(cell: cell)
+    }
+
+    func configureMorePrivacy(cell: HeadlineLabelTableViewCell) {
+        cell.imageView?.image = nil
+        cell.update(style: .subheadline,
+                    headline: NSLocalizedString("Advertising Option", comment: "More Privacy Options section title in the privacy screen."),
+                    body: NSLocalizedString("More Privacy Options Available. Check here to learn more.",
+                                            comment: "More Privacy toggle section in the privacy screen."))
+        cell.accessoryType = .disclosureIndicator
+    }
+
+    func configureMorePrivacyInfo(cell: BasicTableViewCell) {
+        cell.imageView?.image = nil
+        cell.textLabel?.text = NSLocalizedString("More Privacy Options Available. Check here to learn more.",
+                                                 comment: "More Privacy toggle section in the privacy screen.")
+        cell.accessoryType = .disclosureIndicator
         configureInfo(cell: cell)
     }
 
@@ -337,26 +365,55 @@ private extension PrivacySettingsViewController {
         return container
     }
 
+    /// Footer view for the More Privacy Section.
+    ///
+    func createMorePrivacyFooterView(text: String) -> UIView {
+        let attr = NSMutableAttributedString(string: text, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
+        attr.setAsLink(textToFind: Localization.cookiePolicy, linkURL: WooConstants.URLs.cookie.rawValue)
+        attr.setAsLink(textToFind: Localization.privacyPolicy, linkURL: WooConstants.URLs.privacy.rawValue)
+
+        let textView = UITextView(frame: .zero)
+        textView.font = .caption1
+        textView.textColor = .textSubtle
+        textView.attributedText = attr
+        textView.textContainer.maximumNumberOfLines = 0
+        textView.backgroundColor = .clear
+        textView.textContainerInset = Constants.footerInsets
+        textView.isEditable = false
+        textView.isScrollEnabled = false
+        textView.delegate = self
+
+        var linkTextAttributes = textView.linkTextAttributes ?? [:]
+        linkTextAttributes[.underlineColor] = UIColor.clear
+        linkTextAttributes[.foregroundColor] = UIColor.primary
+        textView.linkTextAttributes = linkTextAttributes
+
+        return textView
+    }
+
     // MARK: Actions
     //
     func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
 
+        // If we can't find an account(non-jp sites), lets commit the change immediately.
         guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
+            ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
             return
         }
 
         let userID = defaultAccount.userID
 
-        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { result in
-            if case .success = result {
+        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { [weak self] result in
+            switch result {
+            case .success:
                 ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
+            case .failure:
+                self?.collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
+                self?.presentErrorUpdatingAccountSettingsNotice(optInValue: newValue)
             }
         }
         ServiceLocator.stores.dispatch(action)
-
-        // This event will only report if the user has turned tracking back on
-        ServiceLocator.analytics.track(.settingsCollectInfoToggled)
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {
@@ -374,6 +431,61 @@ private extension PrivacySettingsViewController {
     ///
     func presentPrivacyPolicyWebView() {
         WebviewHelper.launch(WooConstants.URLs.privacy.asURL(), with: self)
+    }
+
+    /// Presents a URL modally.
+    ///
+    func presentURL(_ url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true)
+    }
+
+    func trackURLPresentation(_ url: URL) {
+        switch url.absoluteString {
+        case WooConstants.URLs.cookie.rawValue:
+            ServiceLocator.analytics.track(.settingsThirdPartyLearnMoreTapped)
+        case WooConstants.URLs.privacy.rawValue:
+            ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
+        default:
+            break
+        }
+    }
+}
+
+// MARK: - Notices
+//
+private extension PrivacySettingsViewController {
+    /// Presents an error notice when failing to fetch the account settings.
+    /// The retry button calls the `pullToRefresh` method.
+    ///
+    func presentErrorFetchingAccountSettingsNotice() {
+        // Needed to treat every notice as unique. When not unique the notice presenter won't display subsequent error notices.
+        let info = NoticeNotificationInfo(identifier: UUID().uuidString)
+        let notice = Notice(title: Localization.errorFetchingAnalyticsState,
+                            feedbackType: .error,
+                            notificationInfo: info,
+                            actionTitle: Localization.retry) { [weak self] in
+            guard let self else { return }
+            self.pullToRefresh(sender: self.refreshControl)
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Presents an error notice when failing to update the account settings.
+    /// Receives the intended analytics `optInValue`as a parameter to be able to resubmit the request upon a retry.
+    ///
+    func presentErrorUpdatingAccountSettingsNotice(optInValue: Bool) {
+        // Needed to treat every notice as unique. When not unique the notice presenter won't display subsequent error notices.
+        let info = NoticeNotificationInfo(identifier: UUID().uuidString)
+        let notice = Notice(title: Localization.errorUpdatingAnalyticsState,
+                            feedbackType: .error,
+                            notificationInfo: info,
+                            actionTitle: Localization.retry) { [weak self] in
+            guard let self else { return }
+            self.collectInfo = optInValue
+            self.collectInfoWasUpdated(newValue: optInValue)
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -410,20 +522,11 @@ extension PrivacySettingsViewController: UITableViewDataSource {
         sections[section].title
     }
 
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // Add a greater padding for the new privacy choices redesign.
-        if isPrivacyChoicesEnabled {
-            return Constants.footerPadding
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard let footer = sections[section].footer else {
+            return nil
         }
-
-        // Give some breathing room to the table.
-        let lastSection = sections.count - 1
-        if section == lastSection {
-            return UITableView.automaticDimension
-        }
-
-        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
-        return CGFloat.leastNonzeroMagnitude
+        return createMorePrivacyFooterView(text: footer)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -452,6 +555,8 @@ extension PrivacySettingsViewController: UITableViewDelegate {
         case .privacyPolicy:
             ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
             presentPrivacyPolicyWebView()
+        case .morePrivacy:
+            presentURL(WooConstants.URLs.morePrivacyDocumentation.asURL())
         default:
             break
         }
@@ -470,6 +575,19 @@ extension PrivacySettingsViewController {
                                                   comment: "Main description on the privacy screen.")
         static let tracking = NSLocalizedString("Tracking", comment: "Title of the tracking section on the privacy screen")
         static let reports = NSLocalizedString("Reports", comment: "Title of the report section on the privacy screen")
+        static let morePrivacyOptions = NSLocalizedString("More Privacy Options", comment: "Title of the more privacy options section on the privacy screen")
+        static let morePrivacyOptionsFooter = NSLocalizedString("To learn more about how we use your data to optimize our mobile apps, " +
+                                                                "enhance your experience, and deliver relevant marketing, " +
+                                                                "learn more in our Privacy Policy and Cookie Policy." + "\n",
+                                                                comment: "Footer of the more privacy options section on the privacy screen")
+        static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
+        static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")
+
+        static let errorFetchingAnalyticsState = NSLocalizedString("There was an error fetching your privacy settings",
+                                                                   comment: "Error notice when failing to fetch account settings on the privacy screen.")
+        static let errorUpdatingAnalyticsState = NSLocalizedString("There was an error updating your privacy settings",
+                                                                   comment: "Error notice when failing to update account settings on the privacy screen.")
+        static let retry = NSLocalizedString("Retry", comment: "Retry button title for the privacy screen notices")
     }
 }
 
@@ -478,17 +596,20 @@ private struct Constants {
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)
     static let headerTitleInsets = UIEdgeInsets(top: 16, left: 14, bottom: 32, right: 14)
-    static let footerPadding = CGFloat(24)
+    static let footerInsets = UIEdgeInsets(top: 8, left: 16, bottom: 16, right: 16)
+    static let footerPadding = CGFloat(44)
 }
 
 private struct Section {
     let title: String?
+    let footer: String?
     let rows: [Row]
 }
 
 private enum Row: CaseIterable {
     case analytics
     case analyticsInfo
+    case morePrivacy
     case collectInfo
     case privacyInfo
     case privacyPolicy
@@ -505,6 +626,8 @@ private enum Row: CaseIterable {
             return SwitchTableViewCell.self
         case .analyticsInfo:
             return BasicTableViewCell.self
+        case .morePrivacy:
+            return HeadlineLabelTableViewCell.self
         case .collectInfo:
             return SwitchTableViewCell.self
         case .privacyInfo:
@@ -528,5 +651,13 @@ private enum Row: CaseIterable {
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+extension PrivacySettingsViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        presentURL(URL)
+        trackURLPresentation(URL)
+        return false
     }
 }

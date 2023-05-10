@@ -97,6 +97,11 @@ extension WooConstants {
         ///
         case privacy = "https://automattic.com/privacy/"
 
+        /// More Privacy Documentation URL.
+        /// TODO: Replace with the real one once it is built https://github.com/woocommerce/woomobile-private/issues/286
+        ///
+        case morePrivacyDocumentation = "https://wordpress.com/support/tracking-opt-outs/"
+
         /// Privacy policy for California users URL
         ///
         case californiaPrivacy = "https://automattic.com/privacy/#california-consumer-privacy-act-ccpa"

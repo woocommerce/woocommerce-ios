@@ -103,6 +103,13 @@ extension LocalNotification {
                       body: message,
                       scenario: scenario,
                       actions: .init(category: .storeCreation, actions: [.upgrade]))
+        case .oneDayAfterFreeTrialExpires:
+            let title = Localization.OneDayAfterFreeTrialExpires.title
+            let message = String.localizedStringWithFormat(Localization.OneDayAfterFreeTrialExpires.body, name)
+            self.init(title: title,
+                      body: message,
+                      scenario: scenario,
+                      actions: .init(category: .storeCreation, actions: [.upgrade]))
         default:
             return nil
         }
@@ -113,7 +120,7 @@ private extension LocalNotification {
     enum Localization {
         enum OneDayBeforeFreeTrialExpires {
             static let title = NSLocalizedString(
-                "Time’s almost up, %1$@",
+                "Time’s almost up, %1$@!",
                 comment: "Title of the local notification to remind the user of expiring free trial plan." +
                 "The placeholder is the name of the user."
             )
@@ -121,6 +128,18 @@ private extension LocalNotification {
                 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow.",
                 comment: "Message on the local notification to remind the user of the expiring free trial plan." +
                 "The placeholder is the expiry date of the trial plan."
+            )
+        }
+
+        enum OneDayAfterFreeTrialExpires {
+            static let title = NSLocalizedString(
+                "Your trial has ended.",
+                comment: "Title of the local notification to remind the user of the expired free trial plan."
+            )
+            static let body = NSLocalizedString(
+                "%1$@, we have paused your store, but you can continue by picking a plan that suits you best.",
+                comment: "Message on the local notification to remind the user of the expired free trial plan." +
+                "The placeholder is the name of the user."
             )
         }
 

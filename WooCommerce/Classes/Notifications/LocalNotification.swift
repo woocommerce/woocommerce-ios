@@ -62,7 +62,6 @@ struct LocalNotification {
         case explore
         case subscribe
         case upgrade
-        case none
 
         /// The title of the action in a local notification.
         var title: String {
@@ -73,8 +72,6 @@ struct LocalNotification {
                 return Localization.Actions.subscribe
             case .upgrade:
                 return Localization.Actions.upgrade
-            case .none:
-                return ""
             }
         }
     }

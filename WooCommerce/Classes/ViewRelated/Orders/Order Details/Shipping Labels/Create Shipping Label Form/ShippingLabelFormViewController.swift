@@ -560,18 +560,37 @@ private extension ShippingLabelFormViewController {
 //
 private extension ShippingLabelFormViewController {
     func showTopBannerView() {
-        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner { instructionsURL in
-            let configuration = WebViewControllerConfiguration(url: instructionsURL)
-            configuration.secureInteraction = true
-            let webKitVC = WebKitViewController(configuration: configuration)
-            let nc = WooNavigationController(rootViewController: webKitVC)
-            self.present(nc, animated: true)
+        guard viewModel.shouldDisplayShippingNotice else {
+            return
         }
+
+        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(
+            onDismissPressed: {
+                self.hideTopBannerView()
+            },
+            onLearnMorePressed: { instructionsURL in
+                let configuration = WebViewControllerConfiguration(url: instructionsURL)
+                configuration.secureInteraction = true
+                let webKitVC = WebKitViewController(configuration: configuration)
+                let nc = WooNavigationController(rootViewController: webKitVC)
+                self.present(nc, animated: true)
+            })
         self.topBannerView = topBannerView
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)
         headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
         tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    func hideTopBannerView() {
+        guard tableView.tableHeaderView != nil else {
+            return
+        }
+
+        topBannerView?.removeFromSuperview()
+        topBannerView = nil
+        tableView.tableHeaderView = nil
         tableView.updateHeaderHeight()
     }
 }

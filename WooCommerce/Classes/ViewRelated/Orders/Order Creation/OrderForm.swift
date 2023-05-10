@@ -304,18 +304,19 @@ private struct ProductsSection: View {
                     let capturePermissionStatus = viewModel.capturePermissionStatus
                     switch capturePermissionStatus {
                     case .notPermitted:
-                        DDLogDebug("Capture permission status: Denied or restricted \(capturePermissionStatus.hashValue)")
+                        logPermissionStatus(status: .notPermitted)
                         self.showPermissionsSheet = true
                     case .notDetermined:
-                        DDLogDebug("Capture permission status: Not determined \(capturePermissionStatus.hashValue)")
+                        logPermissionStatus(status: .notDetermined)
                         viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
                             if isPermissionGranted {
                                 showAddProductViaSKUScanner.toggle()
+                                logPermissionStatus(status: .permitted)
                             }
-                            DDLogDebug("Capture permission granted: \(isPermissionGranted)")
                         })
                     case .permitted:
                         showAddProductViaSKUScanner.toggle()
+                        logPermissionStatus(status: .permitted)
                     }
                 }
                 .accessibilityIdentifier(OrderForm.Accessibility.addProductViaSKUScannerButtonIdentifier)
@@ -451,6 +452,10 @@ private extension ProductsSection {
             return
         }
         UIApplication.shared.open(settingsURL)
+    }
+
+    func logPermissionStatus(status: EditableOrderViewModel.CapturePermissionStatus) {
+        DDLogDebug("Capture permission status: \(status)")
     }
 }
 

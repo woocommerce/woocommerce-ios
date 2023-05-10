@@ -29,6 +29,8 @@ struct ProductSelectorView: View {
 
     @State private var showingFilters: Bool = false
 
+    @State private var searchHeaderisBeingEdited = false
+
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
@@ -42,7 +44,9 @@ struct ProductSelectorView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
+            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+                searchHeaderisBeingEdited = isEditing
+            })
                 .padding(.horizontal, insets: safeAreaInsets)
                 .accessibilityIdentifier("product-selector-search-bar")
             Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
@@ -53,6 +57,7 @@ struct ProductSelectorView: View {
                         .pickerStyle(.segmented)
                         .padding(.leading)
                         .padding(.trailing)
+                        .renderedIf(searchIsEditing)
             HStack {
                 Button(Localization.clearSelection) {
                     viewModel.clearSelection()

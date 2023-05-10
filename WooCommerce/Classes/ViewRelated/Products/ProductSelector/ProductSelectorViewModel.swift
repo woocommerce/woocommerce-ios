@@ -490,7 +490,8 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) {
         // At the moment local search supports neither filters nor pagination
         guard filtersSubject.value.numberOfActiveFilters == 0,
-              pageNumber == 1 else {
+              pageNumber == 1,
+              productSearchFilter == .all else {
             return
         }
 
@@ -624,14 +625,15 @@ private extension ProductSelectorViewModel {
         sections.append(ProductSelectorSection(type: type, products: products))
     }
 
-    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters) {
+    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters, productSearchFilter: ProductSearchFilter) {
         productsResultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
                                                   productType: filters.productType)
         if searchTerm.isNotEmpty {
-            // When the search query changes, also includes the original results predicate in addition to the search keyword.
-            let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", searchTerm)
+            // When the search query changes, also includes the original results predicate in addition to the search keyword and filter key.
+            let searchResultsPredicate = NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@ AND $result.filterKey = %@).@count > 0",
+                                                     searchTerm, productSearchFilter.rawValue)
             let subpredicates = [resultsPredicate, searchResultsPredicate].compactMap { $0 }
             productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
         } else {
@@ -666,12 +668,15 @@ private extension ProductSelectorViewModel {
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
 
         let filtersPublisher = filtersSubject.removeDuplicates()
+        let searchFilterPublisher = $productSearchFilter
+            .removeDuplicates()
+            .debounce(for: .milliseconds(200), scheduler: DispatchQueue.main)
 
-        searchTermPublisher.combineLatest(filtersPublisher)
-            .sink { [weak self] searchTerm, filtersSubject in
+        Publishers.CombineLatest3(searchTermPublisher, filtersPublisher, searchFilterPublisher)
+            .sink { [weak self] searchTerm, filtersSubject, productSearchFilter in
                 guard let self = self else { return }
                 self.updateFilterButtonTitle(with: filtersSubject)
-                self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject)
+                self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject, productSearchFilter: productSearchFilter)
                 self.reloadData()
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)

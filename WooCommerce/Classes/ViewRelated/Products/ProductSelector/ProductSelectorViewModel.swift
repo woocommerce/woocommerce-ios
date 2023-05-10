@@ -339,6 +339,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func clearSearchAndFilters() {
         searchTerm = ""
+        productSearchFilter = .all
         filtersSubject.send(.init())
     }
 

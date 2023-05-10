@@ -366,7 +366,7 @@ private extension PrivacySettingsViewController {
     /// Footer view for the More Privacy Section.
     ///
     func createMorePrivacyFooterView(text: String) -> UIView {
-        var attr = NSMutableAttributedString(string: text, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
+        let attr = NSMutableAttributedString(string: text, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
         attr.setAsLink(textToFind: Localization.cookiePolicy, linkURL: WooConstants.URLs.cookie.rawValue)
         attr.setAsLink(textToFind: Localization.privacyPolicy, linkURL: WooConstants.URLs.privacy.rawValue)
 
@@ -478,6 +478,7 @@ private extension PrivacySettingsViewController {
                             notificationInfo: info,
                             actionTitle: Localization.retry) { [weak self] in
             guard let self else { return }
+            self.collectInfo = optInValue
             self.collectInfoWasUpdated(newValue: optInValue)
         }
         ServiceLocator.noticePresenter.enqueue(notice: notice)

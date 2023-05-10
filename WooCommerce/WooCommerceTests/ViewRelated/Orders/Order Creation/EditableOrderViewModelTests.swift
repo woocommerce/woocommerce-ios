@@ -1514,21 +1514,89 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
     }
 
-    // TODO-gm: Failing async test
-    func test_permissions() {
+    func test_requestCameraAccess_when_permission_is_granted_then_true_is_passed_to_the_completion_handler() {
         // Given
         let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        permissionChecker.whenRequestingAccess(thenReturn: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
 
         // When
-        let isPermissionGranted: Bool = waitFor { promise in
-            permissionChecker.requestAccess(for: .video, completionHandler: { _ in
-                    promise(true)
+        let permissionWasGranted: Bool = waitFor { promise in
+            viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                promise(isPermissionGranted)
             })
         }
+
         // Then
-        XCTAssertTrue(isPermissionGranted)
-        //XCTAssertEqual(viewModel.capturePermissionStatus, .permitted)
+        XCTAssertTrue(permissionWasGranted)
+    }
+
+    func test_requestCameraAccess_when_permission_is_denied_then_false_is_passed_to_the_completion_handler() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        permissionChecker.whenRequestingAccess(thenReturn: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // When
+        let permissionWasGranted: Bool = waitFor { promise in
+            viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                promise(isPermissionGranted)
+            })
+        }
+
+        // Then
+        XCTAssertFalse(permissionWasGranted)
+    }
+
+    func test_requestCameraAccess_when_permission_is_granted_then_capturePermissionStatus_is_permitted() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        permissionChecker.whenRequestingAccess(setAuthorizationStatus: .authorized)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // When
+        waitFor { promise in
+            viewModel.requestCameraAccess(onCompletion: { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.capturePermissionStatus, .permitted)
+    }
+
+    func test_requestCameraAccess_when_permission_is_denied_then_capturePermissionStatus_is_notPermitted() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        permissionChecker.whenRequestingAccess(setAuthorizationStatus: .denied)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // When
+        waitFor { promise in
+            viewModel.requestCameraAccess(onCompletion: { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
+    }
+
+    func test_requestCameraAccess_when_permission_is_restricted_then_capturePermissionStatus_is_notPermitted() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        permissionChecker.whenRequestingAccess(setAuthorizationStatus: .restricted)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // When
+        waitFor { promise in
+            viewModel.requestCameraAccess(onCompletion: { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
     }
 }
 

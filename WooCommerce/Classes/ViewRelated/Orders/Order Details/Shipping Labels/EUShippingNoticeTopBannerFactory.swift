@@ -1,9 +1,9 @@
 import Foundation
 
 final class EUShippingNoticeTopBannerFactory {
-    static func createTopBanner() -> TopBannerView {
+    static func createTopBanner(onLearnMoreTap: @escaping (String) -> Void) -> TopBannerView {
         let learnMoreAction = TopBannerViewModel.ActionButton(title: Localization.learnMore) { _ in
-            NSLog("Learn more clicked")
+            onLearnMoreTap(URL.shippingCustomsInstructionsForEUCountries)
         }
 
         let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) { _ in
@@ -15,7 +15,7 @@ final class EUShippingNoticeTopBannerFactory {
                                            icon: .infoOutlineImage,
                                            iconTintColor: .accent,
                                            isExpanded: true,
-                                           topButton: .dismiss(handler: {}),
+                                           topButton: .none,
                                            actionButtons: [learnMoreAction, dismissAction])
         let topBannerView = TopBannerView(viewModel: viewModel)
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
@@ -31,5 +31,9 @@ private extension EUShippingNoticeTopBannerFactory {
                                             comment: "The EU notice banner content describing why some countries require special customs description")
         static let learnMore = NSLocalizedString("Learn more", comment: "Label for the banner Learn more button")
         static let dismiss = NSLocalizedString("Dismiss", comment: "Label for the banner Dismiss button")
+    }
+
+    enum URL {
+        static let shippingCustomsInstructionsForEUCountries = "https://www.usps.com/international/new-eu-customs-rules.htm"
     }
 }

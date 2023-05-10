@@ -57,7 +57,7 @@ struct ProductSelectorView: View {
                         .pickerStyle(.segmented)
                         .padding(.leading)
                         .padding(.trailing)
-                        .renderedIf(searchIsEditing)
+                        .renderedIf(searchHeaderisBeingEdited)
             HStack {
                 Button(Localization.clearSelection) {
                     viewModel.clearSelection()

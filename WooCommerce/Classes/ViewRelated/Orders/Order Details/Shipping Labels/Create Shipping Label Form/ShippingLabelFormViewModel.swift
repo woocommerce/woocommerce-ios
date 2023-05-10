@@ -168,11 +168,7 @@ final class ShippingLabelFormViewModel {
         }
     }
 
-    var shouldDisplayShippingNotice: Bool {
-        return false
-    }
-
-    let isEUShippingNotificationEnabled: Bool
+    private let isEUShippingNotificationEnabled: Bool
 
     init(order: Order,
          originAddress: Address?,
@@ -886,11 +882,24 @@ extension ShippingLabelFormViewModel {
 
 // MARK: - Shipping Notice dismiss state handling
 extension ShippingLabelFormViewModel {
-    func setEUShippingNoticeDismissState(isDismissed: Bool, onCompletion: (Bool) -> Void) {
+    func setEUShippingNoticeDismissState(isDismissed: Bool,
+                                         onCompletion: @escaping (Bool) -> Void) {
         let action = AppSettingsAction.setEUShippingNoticeDismissState(isDismissed: isDismissed) { result in
             switch result {
             case .success:
                 onCompletion(true)
+            case .failure:
+                onCompletion(false)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func shouldDisplayEUShippingNotice(onCompletion: @escaping (Bool) -> Void) {
+        let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in
+            switch result {
+            case .success(let dismissState):
+                onCompletion(dismissState && self.isEUShippingNotificationEnabled)
             case .failure:
                 onCompletion(false)
             }

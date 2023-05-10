@@ -39,6 +39,22 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         context.coordinator.bannerWrapper.width = width
     }
+
+    /// Returns a copy of the view with `onDismissTapped` handling.
+    ///
+    func onDismiss(_ handler: @escaping Callback) -> EUShippingNoticeBanner {
+        var copy = self
+        copy.onDismiss = handler
+        return copy
+    }
+
+    /// Returns a copy of the view with `onLearnMoreTapped` handling.
+    ///
+    func onLearnMore(_ handler: @escaping Callback) -> EUShippingNoticeBanner {
+        var copy = self
+        copy.onGiveFeedback = handler
+        return copy
+    }
 }
 
 extension EUShippingNoticeBanner {

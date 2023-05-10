@@ -18,12 +18,12 @@ struct ShippingLabelCustomsFormList: View {
             ScrollView {
                 EUShippingNoticeBanner(width: geometry.size.width)
                     .onDismiss {
-                        // TODO
+                        viewModel.bannerDismissTapped()
                     }
                     .onLearnMore { instructionsURL in
-                        // TODO
+                        viewModel.bannerLearnMoreTapped(instructionsURL: instructionsURL)
                     }
-                    .renderedIf(true)
+                    .renderedIf(viewModel.shouldDisplayShippingNotice)
                     .fixedSize(horizontal: false, vertical: true)
 
                 ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in

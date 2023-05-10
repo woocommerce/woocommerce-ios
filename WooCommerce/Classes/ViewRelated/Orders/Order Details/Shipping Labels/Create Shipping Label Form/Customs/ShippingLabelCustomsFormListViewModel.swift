@@ -83,6 +83,18 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     }
 }
 
+// MARK: - Banner
+//
+extension ShippingLabelCustomsFormListViewModel {
+    func bannerDismissTapped() {
+        
+    }
+
+    func bannerLearnMoreTapped(instructionsURL: URL?) {
+        
+    }
+}
+
 // MARK: - Validation
 //
 private extension ShippingLabelCustomsFormListViewModel {

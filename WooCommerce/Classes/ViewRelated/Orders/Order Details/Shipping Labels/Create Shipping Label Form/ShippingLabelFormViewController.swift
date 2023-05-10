@@ -563,7 +563,7 @@ private extension ShippingLabelFormViewController {
         guard viewModel.shouldDisplayShippingNotice else {
             return
         }
-        
+
         let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(
             onDismissPressed: {
                 self.hideTopBannerView()

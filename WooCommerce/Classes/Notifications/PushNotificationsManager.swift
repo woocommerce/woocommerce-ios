@@ -339,13 +339,13 @@ extension PushNotificationsManager {
                 content.categoryIdentifier = categoryIdentifier
             }
 
-            let request = UNNotificationRequest(identifier: notification.scenario.rawValue,
+            let request = UNNotificationRequest(identifier: notification.scenario.identifier,
                                                 content: content,
                                                 trigger: trigger)
             do {
                 try await center.add(request)
                 ServiceLocator.analytics.track(.loginLocalNotificationScheduled, withProperties: [
-                    "type": notification.scenario.rawValue
+                    "type": notification.scenario.identifier
                 ])
             } catch {
                 DDLogError("⛔️ Unable to request a local notification: \(error)")
@@ -355,7 +355,7 @@ extension PushNotificationsManager {
 
     func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
         let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: scenarios.map { $0.rawValue })
+        center.removePendingNotificationRequests(withIdentifiers: scenarios.map { $0.identifier })
     }
 }
 

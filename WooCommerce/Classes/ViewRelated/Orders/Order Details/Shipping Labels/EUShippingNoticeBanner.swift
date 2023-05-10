@@ -6,6 +6,20 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
     ///
     private let width: CGFloat
 
+    /// Closure to be invoked when the "Learn more" button is pressed.
+    ///
+    private var onGiveFeedback: Callback? = nil
+
+    /// Closure to be invoked when the "Dismiss" button is pressed.
+    ///
+    private var onDismiss: Callback? = nil
+
+    /// Create a view with the desired `width`. Needed to calculate a correct view `height` later.
+    ///
+    init(width: CGFloat) {
+        self.width = width
+    }
+
     func makeUIView(context: Context) -> UIViewType {
         fatalError("makeUIView(context:) has not been implemented")
     }

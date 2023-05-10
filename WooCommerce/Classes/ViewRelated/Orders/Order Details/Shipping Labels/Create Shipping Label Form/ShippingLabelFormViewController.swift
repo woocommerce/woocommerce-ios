@@ -563,17 +563,13 @@ private extension ShippingLabelFormViewController {
         guard viewModel.shouldDisplayShippingNotice else {
             return
         }
-
+        
         let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(
             onDismissPressed: {
                 self.hideTopBannerView()
             },
             onLearnMorePressed: { instructionsURL in
-                let configuration = WebViewControllerConfiguration(url: instructionsURL)
-                configuration.secureInteraction = true
-                let webKitVC = WebKitViewController(configuration: configuration)
-                let nc = WooNavigationController(rootViewController: webKitVC)
-                self.present(nc, animated: true)
+                self.presentShippingInstructionsView(instructionsURL: instructionsURL)
             })
         self.topBannerView = topBannerView
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
@@ -581,6 +577,14 @@ private extension ShippingLabelFormViewController {
         headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
         tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
+    }
+
+    func presentShippingInstructionsView(instructionsURL: URL?) {
+        let configuration = WebViewControllerConfiguration(url: instructionsURL)
+        configuration.secureInteraction = true
+        let webKitVC = WebKitViewController(configuration: configuration)
+        let nc = WooNavigationController(rootViewController: webKitVC)
+        self.present(nc, animated: true)
     }
 
     func hideTopBannerView() {

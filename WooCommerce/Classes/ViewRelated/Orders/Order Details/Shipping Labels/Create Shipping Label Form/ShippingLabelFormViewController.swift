@@ -560,27 +560,28 @@ private extension ShippingLabelFormViewController {
 //
 private extension ShippingLabelFormViewController {
     func showTopBannerView() {
-        guard viewModel.shouldDisplayShippingNotice else {
-            return
-        }
+        viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
+            guard let self = self, shouldDisplay else {
+                return
+            }
 
-        let topBannerView = createTopBannerView()
-        self.topBannerView = topBannerView
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
-        tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
+            let topBannerView = self.createTopBannerView()
+            self.topBannerView = topBannerView
+            let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+            headerContainer.addSubview(topBannerView)
+            headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+            self.tableView.tableHeaderView = headerContainer
+            self.tableView.updateHeaderHeight()
+        }
     }
 
     func createTopBannerView() -> TopBannerView {
         EUShippingNoticeTopBannerFactory.createTopBanner(
             onDismissPressed: {
-                let action = AppSettingsAction.setEUShippingNoticeDismissState(isDismissed: true) { result in
-                    guard case .success = result else {
-                        return
+                self.viewModel.setEUShippingNoticeDismissState(isDismissed: true) { success in
+                    if success {
+                        self.hideTopBannerView()
                     }
-                    self.hideTopBannerView()
                 }
             },
             onLearnMorePressed: { instructionsURL in

@@ -560,7 +560,7 @@ private extension ShippingLabelFormViewController {
 //
 private extension ShippingLabelFormViewController {
     func showTopBannerView() {
-        let topBannerView = ShippingLabelsEUNoticeTopBannerFactory().createTopBanner()
+        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner()
         self.topBannerView = topBannerView
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)

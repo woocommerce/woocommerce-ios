@@ -1,7 +1,7 @@
 import Foundation
 
-final class ShippingLabelsEUNoticeTopBannerFactory {
-    func createTopBanner() -> TopBannerView {
+final class EUShippingNoticeTopBannerFactory {
+    static func createTopBanner() -> TopBannerView {
         let learnMoreAction = TopBannerViewModel.ActionButton(title: Localization.learnMore) { _ in
             NSLog("Learn more clicked")
         }
@@ -23,7 +23,7 @@ final class ShippingLabelsEUNoticeTopBannerFactory {
     }
 }
 
-private extension ShippingLabelsEUNoticeTopBannerFactory {
+private extension EUShippingNoticeTopBannerFactory {
     enum Localization {
         static let info = NSLocalizedString("When shipping to countries that follow European Union (EU) customs rules, " +
                                             "you must provide a clear, specific description of every item. Otherwise, " +

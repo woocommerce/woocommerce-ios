@@ -88,11 +88,13 @@ private extension PrivacySettingsViewController {
         let userID = defaultAccount.userID
 
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] result in
-            if case let .success(accountSettings) = result {
+            switch result {
+            case .success(let accountSettings):
                 // Switch is off when opting out of Tracks
                 self?.collectInfo = !accountSettings.tracksOptOut
+            case .failure:
+                self?.presentErrorFetchingAccountSettingsNotice()
             }
-
             completion?()
         }
 
@@ -364,7 +366,7 @@ private extension PrivacySettingsViewController {
     /// Footer view for the More Privacy Section.
     ///
     func createMorePrivacyFooterView(text: String) -> UIView {
-        var attr = NSMutableAttributedString(string: text, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
+        let attr = NSMutableAttributedString(string: text, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
         attr.setAsLink(textToFind: Localization.cookiePolicy, linkURL: WooConstants.URLs.cookie.rawValue)
         attr.setAsLink(textToFind: Localization.privacyPolicy, linkURL: WooConstants.URLs.privacy.rawValue)
 
@@ -398,15 +400,16 @@ private extension PrivacySettingsViewController {
 
         let userID = defaultAccount.userID
 
-        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { result in
-            if case .success = result {
+        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { [weak self] result in
+            switch result {
+            case .success:
                 ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
+            case .failure:
+                self?.collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
+                self?.presentErrorUpdatingAccountSettingsNotice(optInValue: newValue)
             }
         }
         ServiceLocator.stores.dispatch(action)
-
-        // This event will only report if the user has turned tracking back on
-        ServiceLocator.analytics.track(.settingsCollectInfoToggled)
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {
@@ -442,6 +445,43 @@ private extension PrivacySettingsViewController {
         default:
             break
         }
+    }
+}
+
+// MARK: - Notices
+//
+private extension PrivacySettingsViewController {
+    /// Presents an error notice when failing to fetch the account settings.
+    /// The retry button calls the `pullToRefresh` method.
+    ///
+    func presentErrorFetchingAccountSettingsNotice() {
+        // Needed to treat every notice as unique. When not unique the notice presenter won't display subsequent error notices.
+        let info = NoticeNotificationInfo(identifier: UUID().uuidString)
+        let notice = Notice(title: Localization.errorFetchingAnalyticsState,
+                            feedbackType: .error,
+                            notificationInfo: info,
+                            actionTitle: Localization.retry) { [weak self] in
+            guard let self else { return }
+            self.pullToRefresh(sender: self.refreshControl)
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Presents an error notice when failing to update the account settings.
+    /// Receives the intended analytics `optInValue`as a parameter to be able to resubmit the request upon a retry.
+    ///
+    func presentErrorUpdatingAccountSettingsNotice(optInValue: Bool) {
+        // Needed to treat every notice as unique. When not unique the notice presenter won't display subsequent error notices.
+        let info = NoticeNotificationInfo(identifier: UUID().uuidString)
+        let notice = Notice(title: Localization.errorUpdatingAnalyticsState,
+                            feedbackType: .error,
+                            notificationInfo: info,
+                            actionTitle: Localization.retry) { [weak self] in
+            guard let self else { return }
+            self.collectInfo = optInValue
+            self.collectInfoWasUpdated(newValue: optInValue)
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -538,6 +578,12 @@ extension PrivacySettingsViewController {
                                                                 comment: "Footer of the more privacy options section on the privacy screen")
         static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
         static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")
+
+        static let errorFetchingAnalyticsState = NSLocalizedString("There was an error fetching your privacy settings",
+                                                                   comment: "Error notice when failing to fetch account settings on the privacy screen.")
+        static let errorUpdatingAnalyticsState = NSLocalizedString("There was an error updating your privacy settings",
+                                                                   comment: "Error notice when failing to update account settings on the privacy screen.")
+        static let retry = NSLocalizedString("Retry", comment: "Retry button title for the privacy screen notices")
     }
 }
 

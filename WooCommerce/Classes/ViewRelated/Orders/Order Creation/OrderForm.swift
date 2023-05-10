@@ -301,19 +301,20 @@ private struct ProductsSection: View {
                     }
                 })
                 Button(OrderForm.Localization.addProductViaSKUScanner) {
-                    switch viewModel.capturePermissionStatus {
+                    let capturePermissionStatus = viewModel.capturePermissionStatus
+                    switch capturePermissionStatus {
                     case .notPermitted:
-                        DDLogDebug("Auth status: denied or restricted")
+                        DDLogDebug("Capture permission status: Denied or restricted \(capturePermissionStatus.hashValue)")
                         self.showPermissionsSheet = true
                     case .notDetermined:
-                        DDLogDebug("Auth status: not determined")
+                        DDLogDebug("Capture permission status: Not determined \(capturePermissionStatus.hashValue)")
                         viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
                             if isPermissionGranted {
                                 showAddProductViaSKUScanner.toggle()
                             }
+                            DDLogDebug("Capture permission granted: \(isPermissionGranted)")
                         })
                     case .permitted:
-                        DDLogDebug("Auth status: ok")
                         showAddProductViaSKUScanner.toggle()
                     }
                 }

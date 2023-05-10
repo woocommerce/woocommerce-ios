@@ -1,4 +1,5 @@
 import Foundation
+import protocol Yosemite.StoresManager
 
 /// Content for a local notification to be converted to `UNNotificationContent`.
 struct LocalNotification {
@@ -80,10 +81,13 @@ struct LocalNotification {
 }
 
 extension LocalNotification {
-    init?(scenario: Scenario) {
+    init?(scenario: Scenario,
+          stores: StoresManager = ServiceLocator.stores,
+          timeZone: TimeZone = .current,
+          locale: Locale = .current) {
         /// Name to display in notifications
         let name: String = {
-            let sessionManager = ServiceLocator.stores.sessionManager
+            let sessionManager = stores.sessionManager
             guard let name = sessionManager.defaultAccount?.displayName, name.isNotEmpty else {
                 return sessionManager.defaultCredentials?.username ?? ""
             }
@@ -114,7 +118,7 @@ extension LocalNotification {
 
         case .oneDayBeforeFreeTrialExpires(let expiryDate):
             title = String.localizedStringWithFormat(Localization.OneDayBeforeFreeTrialExpires.title, name)
-            let dateFormatStyle = Date.FormatStyle()
+            let dateFormatStyle = Date.FormatStyle(locale: locale, timeZone: timeZone)
                 .weekday(.wide)
                 .month(.wide)
                 .day(.defaultDigits)
@@ -140,7 +144,7 @@ extension LocalNotification {
     }
 }
 
-private extension LocalNotification {
+extension LocalNotification {
     enum Localization {
         enum StoreCreationComplete {
             static let title = NSLocalizedString(

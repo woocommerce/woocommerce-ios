@@ -121,19 +121,24 @@ private extension PrivacySettingsViewController {
         if isPrivacyChoicesEnabled {
             tableView.tableHeaderView = createTableHeaderView()
             tableView.updateHeaderHeight()
+            tableView.sectionFooterHeight = UITableView.automaticDimension
+            tableView.estimatedSectionFooterHeight = 100
         }
     }
 
     func configureSections() {
         if isPrivacyChoicesEnabled {
             return sections = [
-                Section(title: Localization.tracking, rows: [.analytics, .analyticsInfo]),
-                Section(title: Localization.reports, rows: [.reportCrashes, .crashInfo])
+                Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
+                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy]),
+                Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         } else {
             return sections = [
-                Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
-                Section(title: nil, rows: [.reportCrashes, .crashInfo])
+                Section(title: nil,
+                        footer: nil,
+                        rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
+                Section(title: nil, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         }
     }
@@ -152,6 +157,8 @@ private extension PrivacySettingsViewController {
             configureAnalytics(cell: cell)
         case let cell as BasicTableViewCell where row == .analyticsInfo:
             configureAnalyticsInfo(cell: cell)
+        case let cell as HeadlineLabelTableViewCell where row == .morePrivacy:
+            configureMorePrivacy(cell: cell)
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfo:
@@ -198,6 +205,23 @@ private extension PrivacySettingsViewController {
             "These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps.",
             comment: "Analytics toggle description in the privacy screen."
         )
+        configureInfo(cell: cell)
+    }
+
+    func configureMorePrivacy(cell: HeadlineLabelTableViewCell) {
+        cell.imageView?.image = nil
+        cell.update(style: .subheadline,
+                    headline: NSLocalizedString("Advertising Option", comment: "More Privacy Options section title in the privacy screen."),
+                    body: NSLocalizedString("More Privacy Options Available. Check here to learn more.",
+                                            comment: "More Privacy toggle section in the privacy screen."))
+        cell.accessoryType = .disclosureIndicator
+    }
+
+    func configureMorePrivacyInfo(cell: BasicTableViewCell) {
+        cell.imageView?.image = nil
+        cell.textLabel?.text = NSLocalizedString("More Privacy Options Available. Check here to learn more.",
+                                                 comment: "More Privacy toggle section in the privacy screen.")
+        cell.accessoryType = .disclosureIndicator
         configureInfo(cell: cell)
     }
 
@@ -337,6 +361,32 @@ private extension PrivacySettingsViewController {
         return container
     }
 
+    /// Footer view for the More Privacy Section.
+    ///
+    func createMorePrivacyFooterView(text: String) -> UIView {
+        var attr = NSMutableAttributedString(string: text, attributes: [.foregroundColor: UIColor.textSubtle, .font: UIFont.caption1])
+        attr.setAsLink(textToFind: Localization.cookiePolicy, linkURL: WooConstants.URLs.cookie.rawValue)
+        attr.setAsLink(textToFind: Localization.privacyPolicy, linkURL: WooConstants.URLs.privacy.rawValue)
+
+        let textView = UITextView(frame: .zero)
+        textView.font = .caption1
+        textView.textColor = .textSubtle
+        textView.attributedText = attr
+        textView.textContainer.maximumNumberOfLines = 0
+        textView.backgroundColor = .clear
+        textView.textContainerInset = Constants.footerInsets
+        textView.isEditable = false
+        textView.isScrollEnabled = false
+        textView.delegate = self
+
+        var linkTextAttributes = textView.linkTextAttributes ?? [:]
+        linkTextAttributes[.underlineColor] = UIColor.clear
+        linkTextAttributes[.foregroundColor] = UIColor.primary
+        textView.linkTextAttributes = linkTextAttributes
+
+        return textView
+    }
+
     // MARK: Actions
     //
     func collectInfoWasUpdated(newValue: Bool) {
@@ -375,6 +425,24 @@ private extension PrivacySettingsViewController {
     func presentPrivacyPolicyWebView() {
         WebviewHelper.launch(WooConstants.URLs.privacy.asURL(), with: self)
     }
+
+    /// Presents a URL modally.
+    ///
+    func presentURL(_ url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true)
+    }
+
+    func trackURLPresentation(_ url: URL) {
+        switch url.absoluteString {
+        case WooConstants.URLs.cookie.rawValue:
+            ServiceLocator.analytics.track(.settingsThirdPartyLearnMoreTapped)
+        case WooConstants.URLs.privacy.rawValue:
+            ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
+        default:
+            break
+        }
+    }
 }
 
 // MARK: - Convenience Methods
@@ -410,20 +478,11 @@ extension PrivacySettingsViewController: UITableViewDataSource {
         sections[section].title
     }
 
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // Add a greater padding for the new privacy choices redesign.
-        if isPrivacyChoicesEnabled {
-            return Constants.footerPadding
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard let footer = sections[section].footer else {
+            return nil
         }
-
-        // Give some breathing room to the table.
-        let lastSection = sections.count - 1
-        if section == lastSection {
-            return UITableView.automaticDimension
-        }
-
-        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section footers.
-        return CGFloat.leastNonzeroMagnitude
+        return createMorePrivacyFooterView(text: footer)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -452,6 +511,8 @@ extension PrivacySettingsViewController: UITableViewDelegate {
         case .privacyPolicy:
             ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
             presentPrivacyPolicyWebView()
+        case .morePrivacy:
+            presentURL(WooConstants.URLs.morePrivacyDocumentation.asURL())
         default:
             break
         }
@@ -470,6 +531,13 @@ extension PrivacySettingsViewController {
                                                   comment: "Main description on the privacy screen.")
         static let tracking = NSLocalizedString("Tracking", comment: "Title of the tracking section on the privacy screen")
         static let reports = NSLocalizedString("Reports", comment: "Title of the report section on the privacy screen")
+        static let morePrivacyOptions = NSLocalizedString("More Privacy Options", comment: "Title of the more privacy options section on the privacy screen")
+        static let morePrivacyOptionsFooter = NSLocalizedString("To learn more about how we use your data to optimize our mobile apps, " +
+                                                                "enhance your experience, and deliver relevant marketing, " +
+                                                                "learn more in our Privacy Policy and Cookie Policy." + "\n",
+                                                                comment: "Footer of the more privacy options section on the privacy screen")
+        static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
+        static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")
     }
 }
 
@@ -478,17 +546,20 @@ private struct Constants {
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)
     static let headerTitleInsets = UIEdgeInsets(top: 16, left: 14, bottom: 32, right: 14)
-    static let footerPadding = CGFloat(24)
+    static let footerInsets = UIEdgeInsets(top: 8, left: 16, bottom: 16, right: 16)
+    static let footerPadding = CGFloat(44)
 }
 
 private struct Section {
     let title: String?
+    let footer: String?
     let rows: [Row]
 }
 
 private enum Row: CaseIterable {
     case analytics
     case analyticsInfo
+    case morePrivacy
     case collectInfo
     case privacyInfo
     case privacyPolicy
@@ -505,6 +576,8 @@ private enum Row: CaseIterable {
             return SwitchTableViewCell.self
         case .analyticsInfo:
             return BasicTableViewCell.self
+        case .morePrivacy:
+            return HeadlineLabelTableViewCell.self
         case .collectInfo:
             return SwitchTableViewCell.self
         case .privacyInfo:
@@ -528,5 +601,13 @@ private enum Row: CaseIterable {
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+extension PrivacySettingsViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        presentURL(URL)
+        trackURLPresentation(URL)
+        return false
     }
 }

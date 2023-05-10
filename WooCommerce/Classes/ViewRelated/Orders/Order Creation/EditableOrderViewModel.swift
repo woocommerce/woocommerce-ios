@@ -1254,11 +1254,7 @@ extension EditableOrderViewModel {
     }
 
     func requestCameraAccess(onCompletion: @escaping ((Bool) -> Void)) {
-        permissionChecker.requestAccess(for: .video, completionHandler: { isPermissionGranted in
-            if isPermissionGranted {
-                onCompletion(isPermissionGranted)
-            }}
-        )
+        permissionChecker.requestAccess(for: .video, completionHandler: onCompletion)
     }
 }
 

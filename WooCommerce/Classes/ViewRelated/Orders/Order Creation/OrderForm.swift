@@ -372,10 +372,10 @@ private extension OrderForm {
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
         static let permissionsTitle =
-        NSLocalizedString("Camera permissions", comment: "Title of alert that links to settings for camera access.")
-        static let permissionsMessage = NSLocalizedString("Please change your camera permissions in device settings.",
-                                                          comment: "Message of alert that links to settings for camera access.")
-        static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an alert")
+        NSLocalizedString("Camera permissions", comment: "Title of the action sheet button that links to settings for camera access")
+        static let permissionsMessage = NSLocalizedString("Please change your camera permissions in device settings",
+                                                          comment: "Message of the action sheet button that links to settings for camera access")
+        static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an action sheet")
     }
 
     enum Accessibility {

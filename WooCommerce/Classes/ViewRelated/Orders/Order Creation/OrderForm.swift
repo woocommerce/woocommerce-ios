@@ -303,21 +303,19 @@ private struct ProductsSection: View {
                 Button(OrderForm.Localization.addProductViaSKUScanner) {
                     let authStatus = viewModel.cameraPermissionStatus
                     switch authStatus {
-                    case .denied, .restricted:
+                    case .notPermitted:
                         DDLogDebug("Auth status: denied or restricted")
                         self.showPermissionsSheet = true
                     case .notDetermined:
                         DDLogDebug("Auth status: not determined")
-                        viewModel.permissionChecker.requestAccess(for: .video, completionHandler: { isPermissionGranted in
+                        viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
                             if isPermissionGranted {
                                 showAddProductViaSKUScanner.toggle()
                             }
                         })
-                    case .authorized:
+                    case .permitted:
                         DDLogDebug("Auth status: ok")
                         showAddProductViaSKUScanner.toggle()
-                    default:
-                        DDLogDebug("Unknown case")
                     }
                 }
                 .accessibilityIdentifier(OrderForm.Accessibility.addProductViaSKUScannerButtonIdentifier)

@@ -4,7 +4,6 @@ import protocol Storage.StorageManagerType
 import Experiments
 import WooFoundation
 import enum Networking.DotcomError
-import AVFoundation
 
 /// View model used in Order Creation and Editing flows.
 ///
@@ -14,7 +13,7 @@ final class EditableOrderViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
-    let permissionChecker: CaptureDevicePermissionChecker
+    private let permissionChecker: CaptureDevicePermissionChecker
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -68,13 +67,6 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     var isAddProductToOrderViaSKUScannerEnabled: Bool {
         featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
-    }
-
-    /// Returns the current app permission status to capture media
-    ///
-    var cameraPermissionStatus: AVAuthorizationStatus {
-        let authStatus = permissionChecker.authorizationStatus(for: .video)
-        return authStatus
     }
 
     var title: String {
@@ -1234,6 +1226,39 @@ private extension EditableOrderViewModel {
         } else {
             return String.localizedStringWithFormat(Localization.CouponSummary.plural, output)
         }
+    }
+}
+
+// MARK: Camera scanner
+
+extension EditableOrderViewModel {
+
+    enum CurrentPermission {
+        case permitted
+        case notPermitted
+        case notDetermined
+    }
+
+    /// Returns the current app permission status to capture media
+    ///
+    var cameraPermissionStatus: CurrentPermission {
+        let authStatus = permissionChecker.authorizationStatus(for: .video)
+        switch authStatus {
+        case .authorized:
+            return .permitted
+        case .denied, .restricted:
+            return .notPermitted
+        default:
+            return .notDetermined
+        }
+    }
+
+    func requestCameraAccess(onCompletion: @escaping ((Bool) -> Void)) {
+        permissionChecker.requestAccess(for: .video, completionHandler: { isPermissionGranted in
+            if isPermissionGranted {
+                onCompletion(isPermissionGranted)
+            }}
+        )
     }
 }
 

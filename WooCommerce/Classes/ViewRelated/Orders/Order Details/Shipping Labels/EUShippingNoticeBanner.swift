@@ -42,17 +42,17 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
 
     /// Returns a copy of the view with `onDismissTapped` handling.
     ///
-    func onDismiss(_ handler: @escaping Callback) -> EUShippingNoticeBanner {
+    func onDismiss(_ handler: @escaping () -> Void) -> EUShippingNoticeBanner {
         var copy = self
-        copy.onDismiss = handler
+        copy.onDismissTapped = handler
         return copy
     }
 
     /// Returns a copy of the view with `onLearnMoreTapped` handling.
     ///
-    func onLearnMore(_ handler: @escaping Callback) -> EUShippingNoticeBanner {
+    func onLearnMore(_ handler: @escaping (URL?) -> Void) -> EUShippingNoticeBanner {
         var copy = self
-        copy.onGiveFeedback = handler
+        copy.onLearnMoreTapped = handler
         return copy
     }
 }

@@ -560,26 +560,38 @@ private extension ShippingLabelFormViewController {
 // MARK: - Top Banner
 //
 private extension ShippingLabelFormViewController {
-    /// Creates a Top Banner View containing the EU Shipping Notice.
+    /// Present a Top Banner View containing the EU Shipping Notice.
     ///
     func showTopBannerView() {
-        guard viewModel.shouldDisplayShippingNotice else {
-            return
-        }
+        viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
+            guard let self = self, shouldDisplay else {
+                return
+            }
 
-        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(
+            let topBannerView = self.createEUShippingNoticeBannerView()
+            self.topBannerView = topBannerView
+            let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+            headerContainer.addSubview(topBannerView)
+            headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+            self.tableView.tableHeaderView = headerContainer
+            self.tableView.updateHeaderHeight()
+        }
+    }
+
+    /// Creates the Shipping Notice Top banner with the appropriate actions.
+    ///
+    func createEUShippingNoticeBannerView() -> TopBannerView {
+        EUShippingNoticeTopBannerFactory.createTopBanner(
             onDismissPressed: {
-                self.hideTopBannerView()
+                self.viewModel.setEUShippingNoticeDismissState(isDismissed: true) { success in
+                    if success {
+                        self.hideTopBannerView()
+                    }
+                }
             },
             onLearnMorePressed: { instructionsURL in
                 self.presentShippingInstructionsView(instructionsURL: instructionsURL)
             })
-        self.topBannerView = topBannerView
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
-        tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
     }
 
     /// Presents a Web view containing the new EU Shipping instructions.

@@ -170,7 +170,7 @@ final class ShippingLabelFormViewModel {
 
     /// Flag to indicate if the view should display the EU shipping notice.
     ///
-    let shouldDisplayShippingNotice: Bool
+    private let isEUShippingNotificationEnabled: Bool
 
     init(order: Order,
          originAddress: Address?,
@@ -198,7 +198,7 @@ final class ShippingLabelFormViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
-        self.shouldDisplayShippingNotice = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
+        self.isEUShippingNotificationEnabled = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
 
         state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
@@ -879,6 +879,34 @@ extension ShippingLabelFormViewModel {
     private enum PurchaseError: Error {
         case labelDetailsMissing
         case invalidPackageDetails
+    }
+}
+
+// MARK: - Shipping Notice dismiss state handling
+extension ShippingLabelFormViewModel {
+    func setEUShippingNoticeDismissState(isDismissed: Bool,
+                                         onCompletion: @escaping (Bool) -> Void) {
+        let action = AppSettingsAction.setEUShippingNoticeDismissState(isDismissed: isDismissed) { result in
+            switch result {
+            case .success:
+                onCompletion(true)
+            case .failure:
+                onCompletion(false)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func shouldDisplayEUShippingNotice(onCompletion: @escaping (Bool) -> Void) {
+        let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in
+            switch result {
+            case .success(let dismissed):
+                onCompletion(!dismissed && self.isEUShippingNotificationEnabled)
+            case .failure:
+                onCompletion(false)
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

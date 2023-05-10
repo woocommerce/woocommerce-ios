@@ -1209,7 +1209,8 @@ private extension AppSettingsStoreTests {
             isTapToPayOnIPhoneSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
-            sitesWithAtLeastOneIPPTransactionFinished: []
+            sitesWithAtLeastOneIPPTransactionFinished: [],
+            isEUShippingNoticeDismissed: false
         )
         return (settings, feedback)
     }
@@ -1224,7 +1225,8 @@ private extension AppSettingsStoreTests {
             isTapToPayOnIPhoneSwitchEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
-            sitesWithAtLeastOneIPPTransactionFinished: []
+            sitesWithAtLeastOneIPPTransactionFinished: [],
+            isEUShippingNoticeDismissed: false
         )
         return settings
     }

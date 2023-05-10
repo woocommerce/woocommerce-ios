@@ -56,6 +56,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>
 
+    /// Whether the EU Shipping Notice was dismissed.
+    ///
+    public var isEUShippingNoticeDismissed: Bool
+
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -66,7 +70,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
                 featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings],
-                sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>) {
+                sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>,
+                isEUShippingNoticeDismissed: Bool) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -78,6 +83,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled
         self.isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled
         self.sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished
+        self.isEUShippingNoticeDismissed = isEUShippingNoticeDismissed
     }
 
     public static var `default`: Self {
@@ -90,7 +96,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               knownCardReaders: [],
               lastEligibilityErrorInfo: nil,
               featureAnnouncementCampaignSettings: [:],
-              sitesWithAtLeastOneIPPTransactionFinished: [])
+              sitesWithAtLeastOneIPPTransactionFinished: [],
+              isEUShippingNoticeDismissed: false)
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -120,7 +127,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
-            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished
+            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
+            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed
         )
     }
 
@@ -141,7 +149,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: updatedSettings,
-            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished
+            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
+            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed
         )
     }
 }
@@ -167,6 +176,7 @@ extension GeneralAppSettings {
             forKey: .featureAnnouncementCampaignSettings) ?? [:]
         self.sitesWithAtLeastOneIPPTransactionFinished = try container.decodeIfPresent(Set<Int64>.self,
                                                                                         forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? Set<Int64>([])
+        self.isEUShippingNoticeDismissed = try container.decodeIfPresent(Bool.self, forKey: .isEUShippingNoticeDismissed) ?? false
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

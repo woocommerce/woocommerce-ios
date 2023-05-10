@@ -72,7 +72,8 @@ final class GeneralAppSettingsTests: XCTestCase {
                                                   lastEligibilityErrorInfo: eligibilityInfo,
                                                   lastJetpackBenefitsBannerDismissedTime: jetpackBannerDismissedDate,
                                                   featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
-                                                  sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished)
+                                                  sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
+                                                  isEUShippingNoticeDismissed: false)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
@@ -109,7 +110,8 @@ private extension GeneralAppSettingsTests {
                                   lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                                   lastJetpackBenefitsBannerDismissedTime: Date? = nil,
                                   featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:],
-                                  sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = []
+                                  sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [],
+                                  isEUShippingNoticeDismissed: Bool = false
     ) -> GeneralAppSettings {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,
@@ -121,6 +123,7 @@ private extension GeneralAppSettingsTests {
                            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
                            lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
                            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
-                           sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished)
+                           sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
+                           isEUShippingNoticeDismissed: isEUShippingNoticeDismissed)
     }
 }

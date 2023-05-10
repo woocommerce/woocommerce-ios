@@ -1,9 +1,9 @@
 import Foundation
 
 final class EUShippingNoticeTopBannerFactory {
-    static func createTopBanner(onLearnMoreTap: @escaping (String) -> Void) -> TopBannerView {
+    static func createTopBanner(onLearnMoreTap: @escaping (URL?) -> Void) -> TopBannerView {
         let learnMoreAction = TopBannerViewModel.ActionButton(title: Localization.learnMore) { _ in
-            onLearnMoreTap(URL.shippingCustomsInstructionsForEUCountries)
+            onLearnMoreTap(URL(string: String.shippingCustomsInstructionsForEUCountries))
         }
 
         let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) { _ in
@@ -33,7 +33,7 @@ private extension EUShippingNoticeTopBannerFactory {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Label for the banner Dismiss button")
     }
 
-    enum URL {
+    enum String {
         static let shippingCustomsInstructionsForEUCountries = "https://www.usps.com/international/new-eu-customs-rules.htm"
     }
 }

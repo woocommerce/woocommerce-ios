@@ -34,7 +34,11 @@ final class LocalNotificationTests: XCTestCase {
         assertEqual(LocalNotification.Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.title, notification.title)
         assertEqual(LocalNotification.Category.storeCreation, notification.actions?.category)
         assertEqual([LocalNotification.Action.subscribe], notification.actions?.actions)
-        let expectedBody = String.localizedStringWithFormat(LocalNotification.Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.body, testName, storeName)
+        let expectedBody = String.localizedStringWithFormat(
+            LocalNotification.Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.body,
+            testName,
+            storeName
+        )
         assertEqual(expectedBody, notification.body)
     }
 

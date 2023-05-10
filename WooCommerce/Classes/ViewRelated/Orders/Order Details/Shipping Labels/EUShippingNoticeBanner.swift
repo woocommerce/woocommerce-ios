@@ -8,11 +8,11 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
 
     /// Closure to be invoked when the "Learn more" button is pressed.
     ///
-    private var onGiveFeedback: Callback? = nil
+    private var onLearnMoreTapped: ((URL?) -> Void)? = nil
 
     /// Closure to be invoked when the "Dismiss" button is pressed.
     ///
-    private var onDismiss: Callback? = nil
+    private var onDismissTapped: (() -> Void)? = nil
 
     /// Create a view with the desired `width`. Needed to calculate a correct view `height` later.
     ///
@@ -21,7 +21,15 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UIViewType {
-        fatalError("makeUIView(context:) has not been implemented")
+        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner {
+            onDismissTapped?()
+        } onLearnMorePressed: { instructionsURL in
+            onLearnMoreTapped?(instructionsURL)
+        }
+
+        context.coordinator.bannerWrapper.width = width
+        context.coordinator.bannerWrapper.setBanner(topBannerView)
+        return context.coordinator.bannerWrapper
     }
 
     func makeCoordinator() -> Coordinator {

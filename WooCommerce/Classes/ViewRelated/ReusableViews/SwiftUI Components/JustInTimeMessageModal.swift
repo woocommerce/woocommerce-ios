@@ -36,7 +36,11 @@ struct JustInTimeMessageModal: View {
 
             if let buttonTitle = viewModel.buttonTitle {
                 Button(buttonTitle) {
-                    viewModel.ctaTapped()
+                    // dismissal and async call to the viewModel are required for the webview presentation to work.
+                    isPresented = false
+                    Task {
+                        viewModel.ctaTapped()
+                    }
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .foregroundColor(Color(uiColor: .primary))

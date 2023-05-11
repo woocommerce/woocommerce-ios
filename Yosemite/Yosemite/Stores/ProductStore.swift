@@ -53,6 +53,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveFirstProductMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
+            retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -326,6 +328,22 @@ private extension ProductStore {
             }
 
         }
+    }
+
+    /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
+    ///
+    func retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+        remote.searchProductsBySKU(for: siteID, keyword: sku, pageNumber: Remote.Default.firstPageNumber, pageSize: 10, completion: { result in
+            switch result {
+            case let .success(products):
+                guard let product = products.first(where: { $0.sku == sku }) else {
+                    return onCompletion(.failure(ProductLoadError.notFound))
+                }
+                onCompletion(.success(product))
+            case .failure:
+                onCompletion(.failure(ProductLoadError.notFound))
+            }
+        })
     }
 
     func retrieveProducts(from productIDs: [Int64]) -> [Product] {

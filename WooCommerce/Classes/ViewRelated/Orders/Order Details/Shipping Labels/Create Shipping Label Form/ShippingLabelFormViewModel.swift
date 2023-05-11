@@ -209,6 +209,7 @@ final class ShippingLabelFormViewModel {
         syncPackageDetails()
         fetchCountries()
         monitorAccountSettingsResultsController()
+        updateEUShippingNoticeVisibility()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {

@@ -1849,10 +1849,6 @@ final class ProductStoreTests: XCTestCase {
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
 
-        // The product that is expected to be in the search results
-        let expectedProductName = "Chocolate bars"
-        let expectedProductSKU = "chocobars"
-
         // When
         let productSKU = "choco"
         let result = waitFor { promise in

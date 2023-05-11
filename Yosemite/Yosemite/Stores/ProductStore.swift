@@ -333,7 +333,12 @@ private extension ProductStore {
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
     func retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
-        remote.searchProductsBySKU(for: siteID, keyword: sku, pageNumber: Remote.Default.firstPageNumber, pageSize: 10, completion: { result in
+        remote.searchProductsBySKU(for: siteID,
+                                   keyword: sku,
+                                   pageNumber: Remote.Default.firstPageNumber,
+                                   pageSize: ProductStore.Constants.singleResultPageSize,
+                                   completion: { [weak self] result in
+            guard self != nil else { return }
             switch result {
             case let .success(products):
                 guard let product = products.first(where: { $0.sku == sku }) else {
@@ -1021,5 +1026,11 @@ public enum ProductLoadError: Error, Equatable {
                 return .notFound
             }
         }
+    }
+}
+
+private extension ProductStore {
+    enum Constants {
+        static let singleResultPageSize: Int = 1
     }
 }

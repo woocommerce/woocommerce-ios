@@ -20,17 +20,14 @@ final class AggregateDataHelper {
     /// Combine all refunded products into a single data source
     ///
     static func combineRefundedProducts(from refunds: [Refund], orderItems: [OrderItem]) -> [AggregateOrderItem]? {
-        /// OrderItemRefund.orderItemID isn't useful for finding duplicates
-        /// because multiple refunds cause orderItemIDs to be unique.
-        /// Instead, we need to find duplicate *Products*.
         let items = refunds.flatMap { $0.items }
         let currency = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
-        // Creates an array of dictionaries, with the hash value as the key.
-        // Example: [hashValue: [item, item], hashvalue: [item]]
+        // Creates an array of dictionaries, with the refunded order item ID as the key.
+        // Example: [refundedItemID: [item, item], refundedItemID: [item]]
         // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.
         let grouped = Dictionary(grouping: items) { (item) in
-            return item.hashValue
+            return item.refundedItemID
         }
 
         let unsortedResult = grouped.compactMap { (key, items) -> AggregateOrderItem? in

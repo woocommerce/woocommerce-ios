@@ -476,7 +476,7 @@ private extension ShippingLabelFormViewController {
                                                        customsForms: viewModel.customsForms,
                                                        destinationCountry: country,
                                                        countries: viewModel.countries,
-                                                       shouldDisplayShippingNotice: viewModel.shouldDisplayShippingNotice)
+                                                       shouldDisplayShippingNotice: viewModel.isEUShippingNotificationEnabled)
         let formList = ShippingLabelCustomsFormList(viewModel: vm) { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
         }

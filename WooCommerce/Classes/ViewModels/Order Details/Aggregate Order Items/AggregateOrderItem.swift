@@ -6,6 +6,7 @@ import Codegen
 /// (order items - refunded order items) = aggregate order item data.
 ///
 struct AggregateOrderItem: Equatable, GeneratedCopiable {
+    let itemID: String
     let productID: Int64
     let variationID: Int64
 
@@ -27,7 +28,8 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
 
     /// Designated initializer.
     ///
-    init(productID: Int64,
+    init(itemID: String,
+         productID: Int64,
          variationID: Int64,
          name: String,
          price: NSDecimalNumber?,
@@ -36,6 +38,7 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
          total: NSDecimalNumber?,
          imageURL: URL? = nil,
          attributes: [OrderItemAttribute]) {
+        self.itemID = itemID
         self.productID = productID
         self.variationID = variationID
         self.name = name
@@ -53,9 +56,7 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
 //
 extension AggregateOrderItem: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(productID)
-        hasher.combine(variationID)
-        hasher.combine(attributes)
+        hasher.combine(itemID)
     }
 }
 

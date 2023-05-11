@@ -27,7 +27,9 @@ final class AggregateDataHelper {
         // Example: [refundedItemID: [item, item], refundedItemID: [item]]
         // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.
         let grouped = Dictionary(grouping: items) { (item) in
-            return item.refundedItemID
+            // There should always be a refunded item ID (the ID for the refunded `OrderItem`).
+            // As a fallback, use the `OrderItemRefund` ID as a unique ID for the refund.
+            return item.refundedItemID ?? item.itemID.description
         }
 
         let unsortedResult = grouped.compactMap { (key, items) -> AggregateOrderItem? in
@@ -55,6 +57,7 @@ final class AggregateDataHelper {
             })?.attributes ?? []
 
             return AggregateOrderItem(
+                itemID: key,
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -84,6 +87,7 @@ final class AggregateDataHelper {
         let convertedItems = items.map { item -> AggregateOrderItem in
             let total = currency.convertToDecimal(item.total) ?? NSDecimalNumber.zero
             return AggregateOrderItem(
+                itemID: item.itemID.description,
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -118,6 +122,7 @@ final class AggregateDataHelper {
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
             return AggregateOrderItem(
+                itemID: item.itemID,
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,

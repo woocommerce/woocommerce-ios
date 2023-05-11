@@ -109,8 +109,9 @@ private extension AggregatedShippingLabelOrderItems {
     func orderItem(from model: OrderItemModel, quantity: Int) -> AggregateOrderItem {
         switch model {
         case .productName(let name):
-            return .init(productID: 0, variationID: 0, name: name, price: nil, quantity: 0, sku: nil, total: nil, attributes: [])
+            return .init(itemID: "0", productID: 0, variationID: 0, name: name, price: nil, quantity: 0, sku: nil, total: nil, attributes: [])
         case .product(let product, let orderItem, let name):
+            let itemID = orderItem?.itemID.description ?? "0"
             let productName = orderItem?.name ?? name
             let price = orderItem?.price ??
                 currencyFormatter.convertToDecimal(product.price) ?? 0
@@ -121,7 +122,8 @@ private extension AggregatedShippingLabelOrderItems {
             } else {
                 imageURL = nil
             }
-            return .init(productID: product.productID,
+            return .init(itemID: itemID,
+                         productID: product.productID,
                          variationID: 0,
                          name: productName,
                          price: price,
@@ -131,6 +133,7 @@ private extension AggregatedShippingLabelOrderItems {
                          imageURL: imageURL,
                          attributes: orderItem?.attributes ?? [])
         case .productVariation(let variation, let orderItem, let name):
+            let itemID = orderItem?.itemID.description ?? "0"
             let productName = orderItem?.name ?? name
             let price = orderItem?.price ??
                 currencyFormatter.convertToDecimal(variation.price) ?? 0
@@ -141,7 +144,8 @@ private extension AggregatedShippingLabelOrderItems {
             } else {
                 imageURL = nil
             }
-            return .init(productID: variation.productID,
+            return .init(itemID: itemID,
+                         productID: variation.productID,
                          variationID: variation.productVariationID,
                          name: productName,
                          price: price,

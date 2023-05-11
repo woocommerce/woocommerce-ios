@@ -97,6 +97,37 @@ final class AggregateDataHelperTests: XCTestCase {
         XCTAssertEqual(aggregatedOrderItems.count, 1)
         XCTAssertEqual(aggregatedOrderItems[0].attributes, testOrderItemAttributes)
     }
+
+    func test_two_order_items_with_same_productID_and_different_itemIDs_create_two_AggregateOrderItems() {
+        // Given
+        let productID: Int64 = 1
+        let orderItems = [MockOrderItem.sampleItem(itemID: 62, productID: productID, quantity: 1),
+                          MockOrderItem.sampleItem(itemID: 63, productID: productID, quantity: 1)]
+        let order = MockOrders().empty().copy(items: orderItems)
+        let refundItems = [MockRefunds.sampleRefundItem(productID: productID, refundedItemID: "62")]
+        let refunds = [MockRefunds.sampleRefund(items: refundItems)]
+
+        // When
+        let aggregatedOrderItems = AggregateDataHelper.combineOrderItems(order.items, with: refunds)
+
+        // Then
+        XCTAssertEqual(aggregatedOrderItems.count, 2)
+    }
+
+    func test_two_refunds_with_same_productID_and_different_itemIDs_create_two_AggregateOrderItems() {
+        // Given
+        let productID: Int64 = 1
+        let orderItems = [MockOrderItem.sampleItem(itemID: 62, productID: productID, quantity: 3)]
+        let refundItems = [MockRefunds.sampleRefundItem(productID: productID, refundedItemID: "62", quantity: 1),
+                           MockRefunds.sampleRefundItem(productID: productID, refundedItemID: "63", quantity: 1)]
+        let refunds = [MockRefunds.sampleRefund(items: refundItems)]
+
+        // When
+        let aggregatedRefunds = AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: orderItems)
+
+        // Then
+        XCTAssertEqual(aggregatedRefunds?.count, 2)
+    }
 }
 
 
@@ -143,7 +174,8 @@ private extension AggregateDataHelperTests {
     func expectedRefundedProducts() -> [AggregateOrderItem] {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         var expectedArray = [AggregateOrderItem]()
-        let item0 = AggregateOrderItem(productID: 16,
+        let item0 = AggregateOrderItem(itemID: "0",
+                                       productID: 16,
                                        variationID: 0,
                                        name: "Woo Logo",
                                        price: currencyFormatter.convertToDecimal("31.5") ?? NSDecimalNumber.zero,
@@ -153,6 +185,7 @@ private extension AggregateDataHelperTests {
                                        attributes: [])
         expectedArray.append(item0)
         let item1 = AggregateOrderItem(
+            itemID: "1",
             productID: 21,
             variationID: 70,
             name: "Ship Your Idea - Blue, XL",
@@ -167,6 +200,7 @@ private extension AggregateDataHelperTests {
         /// We expect this item to have these attributes by passing an order item
         /// with the same refunded item id to the combineRefundedProducts function
         let item2 = AggregateOrderItem(
+            itemID: "2",
             productID: 21,
             variationID: 71,
             name: "Ship Your Idea - Black, L",
@@ -179,6 +213,7 @@ private extension AggregateDataHelperTests {
         expectedArray.append(item2)
 
         let item3 = AggregateOrderItem(
+            itemID: "3",
             productID: 22,
             variationID: 0,
             name: "Ninja Silhouette",
@@ -191,6 +226,7 @@ private extension AggregateDataHelperTests {
         expectedArray.append(item3)
 
         let item4 = AggregateOrderItem(
+            itemID: "4",
             productID: 24,
             variationID: 0,
             name: "Happy Ninja",

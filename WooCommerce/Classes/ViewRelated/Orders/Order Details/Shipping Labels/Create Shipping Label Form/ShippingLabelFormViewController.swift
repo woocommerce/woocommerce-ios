@@ -581,26 +581,23 @@ private extension ShippingLabelFormViewController {
     ///
     func createEUShippingNoticeBannerView() -> TopBannerView {
         EUShippingNoticeTopBannerFactory.createTopBanner(
-            onDismissPressed: {
-                self.viewModel.setEUShippingNoticeDismissState(isDismissed: true) { success in
+            onDismissPressed: { [weak self] in
+                self?.viewModel.setEUShippingNoticeDismissState(isDismissed: true) { success in
                     if success {
                         self.hideTopBannerView()
                     }
                 }
             },
-            onLearnMorePressed: { instructionsURL in
-                self.presentShippingInstructionsView(instructionsURL: instructionsURL)
+            onLearnMorePressed: { [weak self] in
+                self?.presentShippingInstructionsView()
             })
     }
 
     /// Presents a Web view containing the new EU Shipping instructions.
     ///
-    func presentShippingInstructionsView(instructionsURL: URL?) {
-        let configuration = WebViewControllerConfiguration(url: instructionsURL)
-        configuration.secureInteraction = true
-        let webKitVC = WebKitViewController(configuration: configuration)
-        let nc = WooNavigationController(rootViewController: webKitVC)
-        self.present(nc, animated: true)
+    func presentShippingInstructionsView() {
+        let instructionsURL = WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL()
+        WebviewHelper.launch(instructionsURL, with: self)
     }
 
     /// Removes the Top Banner View from the table view header.

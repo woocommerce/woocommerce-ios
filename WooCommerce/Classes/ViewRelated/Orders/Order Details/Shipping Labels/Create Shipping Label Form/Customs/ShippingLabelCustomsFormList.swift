@@ -15,8 +15,8 @@ final class ShippingCustomsFormListHostingController: UIHostingController<Shippi
                                                               shouldDisplayShippingNotice: shouldDisplayShippingNotice)
         super.init(rootView: .init(viewModel: viewModel, onCompletion: onCompletion))
 
-        rootView.onLearnMoreTapped = { [weak self] instructionsURL in
-            self?.presentShippingInstructionsView(instructionsURL: instructionsURL)
+        rootView.onLearnMoreTapped = { [weak self] in
+            self?.presentShippingInstructionsView()
         }
     }
 
@@ -24,12 +24,9 @@ final class ShippingCustomsFormListHostingController: UIHostingController<Shippi
         fatalError("init(coder:) has not been implemented")
     }
 
-    func presentShippingInstructionsView(instructionsURL: URL?) {
-        let configuration = WebViewControllerConfiguration(url: instructionsURL)
-        configuration.secureInteraction = true
-        let webKitVC = WebKitViewController(configuration: configuration)
-        let nc = WooNavigationController(rootViewController: webKitVC)
-        present(nc, animated: true)
+    func presentShippingInstructionsView() {
+        let instructionsURL = WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL()
+        WebviewHelper.launch(instructionsURL, with: self)
     }
 }
 
@@ -38,7 +35,7 @@ struct ShippingLabelCustomsFormList: View {
     @ObservedObject private var viewModel: ShippingLabelCustomsFormListViewModel
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
 
-    var onLearnMoreTapped: (URL?) -> Void = { _ in }
+    var onLearnMoreTapped: () -> Void = {}
 
     init(viewModel: ShippingLabelCustomsFormListViewModel,
          onCompletion: @escaping ([ShippingLabelCustomsForm]) -> Void) {
@@ -54,8 +51,8 @@ struct ShippingLabelCustomsFormList: View {
                     .onDismiss {
                         viewModel.bannerDismissTapped()
                     }
-                    .onLearnMore { instructionsURL in
-                        onLearnMoreTapped(instructionsURL)
+                    .onLearnMore {
+                        onLearnMoreTapped()
                     }
                     .renderedIf(viewModel.shouldDisplayShippingNotice)
                     .fixedSize(horizontal: false, vertical: true)

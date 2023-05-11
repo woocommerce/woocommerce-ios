@@ -584,7 +584,8 @@ private extension ShippingLabelFormViewController {
     /// Presents a Web view containing the new EU Shipping instructions.
     ///
     func presentShippingInstructionsView() {
-        WebviewHelper.launch(WooConstants.URLs.shippingCustomsInstructionsForEUCountries, with: self)
+        let instructionsURL = WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL()
+        WebviewHelper.launch(instructionsURL, with: self)
     }
 
     /// Removes the Top Banner View from the table view header.

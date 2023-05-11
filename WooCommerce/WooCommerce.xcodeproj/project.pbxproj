@@ -726,6 +726,7 @@
 		267C01CF29E89E1700FCC97B /* StorePlanSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */; };
 		267C01D129E9B18E00FCC97B /* StorePlanSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267C01D029E9B18E00FCC97B /* StorePlanSynchronizerTests.swift */; };
 		267D6882296485850072ED0C /* ProductVariationGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267D6881296485850072ED0C /* ProductVariationGeneratorTests.swift */; };
+		267F60132A0C24D700CD1E4E /* PrivacyBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267F60122A0C24D700CD1E4E /* PrivacyBannerViewController.swift */; };
 		26838354296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838353296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift */; };
 		26838356296F702B00CCF60A /* GenerateAllVariationsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838355296F702B00CCF60A /* GenerateAllVariationsPresenter.swift */; };
 		26838358296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838357296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift */; };
@@ -2987,6 +2988,7 @@
 		267C01D029E9B18E00FCC97B /* StorePlanSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlanSynchronizerTests.swift; sourceTree = "<group>"; };
 		267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilderTests.swift; sourceTree = "<group>"; };
 		267D6881296485850072ED0C /* ProductVariationGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationGeneratorTests.swift; sourceTree = "<group>"; };
+		267F60122A0C24D700CD1E4E /* PrivacyBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyBannerViewController.swift; sourceTree = "<group>"; };
 		26838353296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationsOptionPresenter.swift; sourceTree = "<group>"; };
 		26838355296F702B00CCF60A /* GenerateAllVariationsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAllVariationsPresenter.swift; sourceTree = "<group>"; };
 		26838357296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAllVariationsUseCase.swift; sourceTree = "<group>"; };
@@ -9005,6 +9007,7 @@
 			isa = PBXGroup;
 			children = (
 				CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */,
+				267F60122A0C24D700CD1E4E /* PrivacyBannerViewController.swift */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -11580,6 +11583,7 @@
 				45E3C8F325E7D30300102E84 /* ShippingLabelAddress+Woo.swift in Sources */,
 				57A25C7C25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift in Sources */,
 				B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */,
+				267F60132A0C24D700CD1E4E /* PrivacyBannerViewController.swift in Sources */,
 				D8610BD2256F291000A5DF27 /* JetpackErrorViewModel.swift in Sources */,
 				26C6E8E626E6B5F500C7BB0F /* StateSelectorViewModel.swift in Sources */,
 				020B2F9423BDDBDC00BD79AD /* ProductUpdateError+UI.swift in Sources */,

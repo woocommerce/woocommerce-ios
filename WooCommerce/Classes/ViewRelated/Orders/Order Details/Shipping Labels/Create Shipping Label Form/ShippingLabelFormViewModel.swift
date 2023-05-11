@@ -891,16 +891,15 @@ extension ShippingLabelFormViewModel {
 extension ShippingLabelFormViewModel {
     func updateEUShippingNoticeVisibility() {
         verifyEUShippingNoticeDismissState { [weak self] dismissed in
-            guard let self = self else {
+            guard let self = self, dismissed else {
+                self?.shouldPresentEUShippingNotice = false
                 return
             }
             
             // TODO: will trigger a validation checking if it's an EU country destination
             let isEUCountryScenario = true
             
-            self.shouldPresentEUShippingNotice = isEUCountryScenario
-            && self.isEUShippingNotificationEnabled
-            && !dismissed
+            self.shouldPresentEUShippingNotice = isEUCountryScenario && self.isEUShippingNotificationEnabled
         }
     }
     

@@ -337,7 +337,7 @@ private extension AppSettingsStore {
 
     }
 
-    /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
+    /// Loads the EU Shipping Notice dismissal state from `GeneralAppSettings`
     ///
     func loadEUShippingNoticeDismissState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isEUShippingNoticeDismissed)))

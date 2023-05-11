@@ -58,14 +58,24 @@ struct JustInTimeMessageModal: View {
 
 #if DEBUG // to avoid importing things we don't need in the implementation
 import Yosemite
-import Fakes
 
 struct JustInTimeMessageModal_Previews: PreviewProvider {
-    static let viewModel: JustInTimeMessageViewModel = .init(
-        justInTimeMessage: Yosemite.JustInTimeMessage.fake().copy(
-            title: "Hello merchants!",
-            detail: "Take a look at this!",
-            template: .modal),
+    private static let message = Yosemite.JustInTimeMessage(
+        siteID: 0,
+        messageID: "messageID",
+        featureClass: "new–feature",
+        title: "Hey merchants!",
+        detail: "Take a look at this new feature...",
+        buttonTitle: "Try it out",
+        url: "https://woocommerce.com/mobile/payments",
+        backgroundImageUrl: nil,
+        backgroundImageDarkUrl: nil,
+        badgeImageUrl: nil,
+        badgeImageDarkUrl: nil,
+        template: .modal)
+
+    private static let viewModel: JustInTimeMessageViewModel = .init(
+        justInTimeMessage: message,
         screenName: "preview",
         siteID: 0)
 

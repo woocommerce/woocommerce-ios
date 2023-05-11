@@ -132,7 +132,7 @@ private extension PrivacySettingsViewController {
         if isPrivacyChoicesEnabled {
             return sections = [
                 Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
-                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy]),
+                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy, .usageTracking]),
                 Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         } else {
@@ -161,6 +161,8 @@ private extension PrivacySettingsViewController {
             configureAnalyticsInfo(cell: cell)
         case let cell as HeadlineLabelTableViewCell where row == .morePrivacy:
             configureMorePrivacy(cell: cell)
+        case let cell as HeadlineLabelTableViewCell where row == .usageTracking:
+            configureUsageTracker(cell: cell)
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfo:
@@ -219,12 +221,13 @@ private extension PrivacySettingsViewController {
         cell.accessoryType = .disclosureIndicator
     }
 
-    func configureMorePrivacyInfo(cell: BasicTableViewCell) {
+    func configureUsageTracker(cell: HeadlineLabelTableViewCell) {
         cell.imageView?.image = nil
-        cell.textLabel?.text = NSLocalizedString("More Privacy Options Available. Check here to learn more.",
-                                                 comment: "More Privacy toggle section in the privacy screen.")
+        cell.update(style: .subheadline,
+                    headline: NSLocalizedString("Usage Tracking", comment: "Usage tracker title in the privacy screen."),
+                    body: NSLocalizedString("Learn more about the data we collect about your store and your options to control this data sharing.",
+                                            comment: "Usage Tracker description section in the privacy screen."))
         cell.accessoryType = .disclosureIndicator
-        configureInfo(cell: cell)
     }
 
     func configureCollectInfo(cell: SwitchTableViewCell) {
@@ -606,6 +609,7 @@ private enum Row: CaseIterable {
     case analytics
     case analyticsInfo
     case morePrivacy
+    case usageTracking
     case collectInfo
     case privacyInfo
     case privacyPolicy
@@ -623,6 +627,8 @@ private enum Row: CaseIterable {
         case .analyticsInfo:
             return BasicTableViewCell.self
         case .morePrivacy:
+            return HeadlineLabelTableViewCell.self
+        case .usageTracking:
             return HeadlineLabelTableViewCell.self
         case .collectInfo:
             return SwitchTableViewCell.self

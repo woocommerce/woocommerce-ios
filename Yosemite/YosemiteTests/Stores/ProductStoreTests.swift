@@ -1814,6 +1814,35 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains("Product features: Trendy, cool, fun"))
         XCTAssertTrue(base.contains("In language en-US"))
     }
+
+    // MARK: - ProductAction.retrieveFirstProductMatchFromSKU
+
+    func test_retrieveFirstProductMatchFromSKU_retrieves_product_when_successful_SKU_match_then_returns_matched_product() throws {
+        // Given
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
+
+        // The product that is expected to be in the search results
+        let expectedProductID: Int64 = 2783
+        let expectedProductName = "Chocolate bars"
+        let expectedProductSKU = "chocobars"
+
+        // When
+        let productSKU = "chocobars"
+        let result = waitFor { promise in
+            let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: self.sampleSiteID,
+                                                                        sku: productSKU,
+                                                                        onCompletion: { product in
+                promise(product)
+            })
+            store.onAction(action)
+        }
+
+        let productMatch = try XCTUnwrap(result.get())
+        XCTAssertEqual(productMatch.productID, expectedProductID)
+        XCTAssertEqual(productMatch.name, expectedProductName)
+        XCTAssertEqual(productMatch.sku, expectedProductSKU)
+    }
 }
 
 // MARK: - Private Helpers

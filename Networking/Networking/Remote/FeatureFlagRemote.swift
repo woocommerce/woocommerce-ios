@@ -2,13 +2,13 @@ import Foundation
 
 /// Protocol for `FeatureFlagsRemote` mainly used for mocking.
 ///
-public protocol FeatureFlagsRemoteProtocol {
+public protocol FeatureFlagRemoteProtocol {
     func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool]
 }
 
 /// Feature Flags: Remote Endpoints
 ///
-public class FeatureFlagsRemote: Remote {
+public class FeatureFlagRemote: Remote {
     public func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool] {
         let parameters: [String: String] = [
             ParameterKeys.platform: "ios",
@@ -50,7 +50,7 @@ public enum RemoteFeatureFlag: Decodable {
 
 // MARK: - Constants!
 //
-private extension FeatureFlagsRemote {
+private extension FeatureFlagRemote {
     enum Paths {
         static let lookup = "mobile/feature-flags"
     }

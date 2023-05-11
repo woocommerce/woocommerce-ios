@@ -2,7 +2,7 @@ import TestKit
 import XCTest
 @testable import Networking
 
-final class FeatureFlagsRemoteTests: XCTestCase {
+final class FeatureFlagRemoteTests: XCTestCase {
     /// Dummy Network Wrapper
     ///
     private var network: MockNetwork!
@@ -24,7 +24,7 @@ final class FeatureFlagsRemoteTests: XCTestCase {
 
     func test_loadAllFeatureFlags_returns_all_known_flags() async throws {
         // Given
-        let remote = FeatureFlagsRemote(network: network)
+        let remote = FeatureFlagRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all")
 
         // When
@@ -41,7 +41,7 @@ final class FeatureFlagsRemoteTests: XCTestCase {
 
     func test_loadAllFeatureFlags_returns_empty_dictionary_when_response_does_not_include_known_flags() async throws {
         // Given
-        let remote = FeatureFlagsRemote(network: network)
+        let remote = FeatureFlagRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all-with-missing-values")
 
         // When
@@ -53,7 +53,7 @@ final class FeatureFlagsRemoteTests: XCTestCase {
 
     func test_loadAllFeatureFlags_properly_handles_errors() async throws {
         // Given
-        let remote = FeatureFlagsRemote(network: network)
+        let remote = FeatureFlagRemote(network: network)
 
         // When
         await assertThrowsError({ _ = try await remote.loadAllFeatureFlags() }, errorAssert: {

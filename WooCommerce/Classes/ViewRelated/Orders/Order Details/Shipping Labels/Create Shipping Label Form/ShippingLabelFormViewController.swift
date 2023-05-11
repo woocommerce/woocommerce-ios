@@ -47,7 +47,7 @@ final class ShippingLabelFormViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
-        showTopBannerView()
+        observeEUShippingNoticeVisibilityChanges()
         observeViewModel()
     }
 
@@ -476,7 +476,7 @@ private extension ShippingLabelFormViewController {
                                                        customsForms: viewModel.customsForms,
                                                        destinationCountry: country,
                                                        countries: viewModel.countries,
-                                                       shouldDisplayShippingNotice: viewModel.shouldDisplayShippingNotice)
+                                                       shouldDisplayShippingNotice: viewModel.shouldPresentEUShippingNotice)
         let formList = ShippingLabelCustomsFormList(viewModel: vm) { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
         }
@@ -560,22 +560,29 @@ private extension ShippingLabelFormViewController {
 // MARK: - Top Banner
 //
 private extension ShippingLabelFormViewController {
+    func observeEUShippingNoticeVisibilityChanges() {
+        viewModel.$shouldPresentEUShippingNotice
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] shouldPresent in
+                guard let self = self else { return }
+
+                if shouldPresent {
+                    self.showTopBannerView()
+                }
+            }
+    }
+
     /// Present a Top Banner View containing the EU Shipping Notice.
     ///
     func showTopBannerView() {
-        viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
-            guard let self = self, shouldDisplay else {
-                return
-            }
-
-            let topBannerView = self.createEUShippingNoticeBannerView()
-            self.topBannerView = topBannerView
-            let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-            headerContainer.addSubview(topBannerView)
-            headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
-            self.tableView.tableHeaderView = headerContainer
-            self.tableView.updateHeaderHeight()
-        }
+        let topBannerView = self.createEUShippingNoticeBannerView()
+        self.topBannerView = topBannerView
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+        self.tableView.tableHeaderView = headerContainer
+        self.tableView.updateHeaderHeight()
     }
 
     /// Creates the Shipping Notice Top banner with the appropriate actions.

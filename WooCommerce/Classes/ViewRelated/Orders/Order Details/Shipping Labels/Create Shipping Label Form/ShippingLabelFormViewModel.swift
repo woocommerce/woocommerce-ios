@@ -176,6 +176,8 @@ final class ShippingLabelFormViewModel {
     ///
     private let isEUShippingNotificationEnabled: Bool
 
+    var subscriptions = Set<AnyCancellable>()
+
     init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,

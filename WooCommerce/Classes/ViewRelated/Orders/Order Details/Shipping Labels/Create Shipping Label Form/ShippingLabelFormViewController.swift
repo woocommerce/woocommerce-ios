@@ -562,15 +562,17 @@ private extension ShippingLabelFormViewController {
 private extension ShippingLabelFormViewController {
     func observeEUShippingNoticeVisibilityChanges() {
         viewModel.$shouldPresentEUShippingNotice
-            .dropFirst()
             .removeDuplicates()
             .sink { [weak self] shouldPresent in
                 guard let self = self else { return }
 
                 if shouldPresent {
                     self.showTopBannerView()
+                } else {
+                    self.hideTopBannerView()
                 }
-            }
+
+            }.store(in: &viewModel.subscriptions)
     }
 
     /// Present a Top Banner View containing the EU Shipping Notice.
@@ -583,6 +585,19 @@ private extension ShippingLabelFormViewController {
         headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
         self.tableView.tableHeaderView = headerContainer
         self.tableView.updateHeaderHeight()
+    }
+
+    /// Removes the Top Banner View from the table view header.
+    ///
+    func hideTopBannerView() {
+        guard tableView.tableHeaderView != nil else {
+            return
+        }
+
+        topBannerView?.removeFromSuperview()
+        topBannerView = nil
+        tableView.tableHeaderView = nil
+        tableView.updateHeaderHeight()
     }
 
     /// Creates the Shipping Notice Top banner with the appropriate actions.
@@ -609,19 +624,6 @@ private extension ShippingLabelFormViewController {
         let webKitVC = WebKitViewController(configuration: configuration)
         let nc = WooNavigationController(rootViewController: webKitVC)
         self.present(nc, animated: true)
-    }
-
-    /// Removes the Top Banner View from the table view header.
-    ///
-    func hideTopBannerView() {
-        guard tableView.tableHeaderView != nil else {
-            return
-        }
-
-        topBannerView?.removeFromSuperview()
-        topBannerView = nil
-        tableView.tableHeaderView = nil
-        tableView.updateHeaderHeight()
     }
 }
 

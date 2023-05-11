@@ -13,10 +13,22 @@ final class ShippingCustomsFormListHostingController: UIHostingController<Shippi
                                                               destinationCountry: destinationCountry,
                                                               countries: countries)
         super.init(rootView: .init(viewModel: viewModel, onCompletion: onCompletion))
+
+        rootView.onLearnMoreTapped = { [weak self] instructionsURL in
+            self?.presentShippingInstructionsView(instructionsURL: instructionsURL)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func presentShippingInstructionsView(instructionsURL: URL?) {
+        let configuration = WebViewControllerConfiguration(url: instructionsURL)
+        configuration.secureInteraction = true
+        let webKitVC = WebKitViewController(configuration: configuration)
+        let nc = WooNavigationController(rootViewController: webKitVC)
+        present(nc, animated: true)
     }
 }
 
@@ -24,6 +36,8 @@ struct ShippingLabelCustomsFormList: View {
     @Environment(\.presentationMode) var presentation
     @ObservedObject private var viewModel: ShippingLabelCustomsFormListViewModel
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
+
+    var onLearnMoreTapped: (URL?) -> Void = { _ in }
 
     init(viewModel: ShippingLabelCustomsFormListViewModel,
          onCompletion: @escaping ([ShippingLabelCustomsForm]) -> Void) {
@@ -40,7 +54,7 @@ struct ShippingLabelCustomsFormList: View {
                         viewModel.bannerDismissTapped()
                     }
                     .onLearnMore { instructionsURL in
-                        viewModel.bannerLearnMoreTapped(instructionsURL: instructionsURL)
+                        onLearnMoreTapped(instructionsURL)
                     }
                     .renderedIf(viewModel.shouldDisplayShippingNotice)
                     .fixedSize(horizontal: false, vertical: true)

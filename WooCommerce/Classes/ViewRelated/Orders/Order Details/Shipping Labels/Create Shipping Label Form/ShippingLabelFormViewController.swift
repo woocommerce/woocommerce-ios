@@ -575,7 +575,7 @@ private extension ShippingLabelFormViewController {
     ///
     func showTopBannerView() {
         viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
-            guard let self = self, shouldDisplay else {
+            guard let self, shouldDisplay else {
                 return
             }
 

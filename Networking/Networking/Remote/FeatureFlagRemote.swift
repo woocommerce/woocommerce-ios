@@ -8,7 +8,7 @@ public protocol FeatureFlagRemoteProtocol {
 
 /// Feature Flags: Remote Endpoints
 ///
-public class FeatureFlagRemote: Remote {
+public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
     public func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool] {
         let parameters: [String: String] = [
             ParameterKeys.platform: "ios",

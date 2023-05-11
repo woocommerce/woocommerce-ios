@@ -96,6 +96,7 @@ public typealias ProductVariation = Networking.ProductVariation
 public typealias ProductVariationAttribute = Networking.ProductVariationAttribute
 public typealias ReaderLocation = Networking.ReaderLocation
 public typealias Refund = Networking.Refund
+public typealias RemoteFeatureFlag = Networking.RemoteFeatureFlag
 public typealias StatGranularity = Networking.StatGranularity
 public typealias StatsGranularityV4 = Networking.StatsGranularityV4
 public typealias ShipmentTracking = Networking.ShipmentTracking

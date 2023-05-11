@@ -567,11 +567,11 @@ private extension ShippingLabelFormViewController {
         }
 
         let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(
-            onDismissPressed: {
-                self.hideTopBannerView()
+            onDismissPressed: { [weak self] in
+                self?.hideTopBannerView()
             },
-            onLearnMorePressed: {
-                self.presentShippingInstructionsView()
+            onLearnMorePressed: { [weak self] in
+                self?.presentShippingInstructionsView()
             })
         self.topBannerView = topBannerView
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))

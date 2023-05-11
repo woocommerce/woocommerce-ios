@@ -469,3 +469,50 @@ enum ProductVariationDecodingError: Error {
     case missingSiteID
     case missingProductID
 }
+
+public extension ProductVariation {
+    static func productVariation(from product: Product) -> ProductVariation {
+        ProductVariation(siteID: product.siteID,
+                         productID: product.parentID,
+                         productVariationID: product.productID,
+                         attributes: product.attributes.map { ProductVariationAttribute(id: $0.attributeID, name: $0.name, option: $0.options.first ?? "") },
+                         image: nil,
+                         permalink: product.permalink,
+                         dateCreated: product.dateCreated,
+                         dateModified: product.dateModified,
+                         dateOnSaleStart: product.dateOnSaleStart,
+                         dateOnSaleEnd: product.dateOnSaleEnd,
+                         status: product.productStatus,
+                         description: product.fullDescription,
+                         sku: product.sku,
+                         price: product.price,
+                         regularPrice: product.regularPrice,
+                         salePrice: product.salePrice,
+                         onSale: product.onSale,
+                         purchasable: product.purchasable,
+                         virtual: product.virtual,
+                         downloadable: product.downloadable,
+                         downloads: product.downloads,
+                         downloadLimit: product.downloadLimit,
+                         downloadExpiry: product.downloadExpiry,
+                         taxStatusKey: product.taxStatusKey,
+                         taxClass: product.taxClass,
+                         manageStock: product.manageStock,
+                         stockQuantity: product.stockQuantity,
+                         stockStatus: product.productStockStatus,
+                         backordersKey: product.backordersKey,
+                         backordersAllowed: product.backordersAllowed,
+                         backordered: product.backordered,
+                         weight: product.weight,
+                         dimensions: product.dimensions,
+                         shippingClass: product.shippingClass,
+                         shippingClassID: product.shippingClassID,
+                         menuOrder: Int64(product.menuOrder),
+                         subscription: product.subscription,
+                         minAllowedQuantity: product.maxAllowedQuantity,
+                         maxAllowedQuantity: product.maxAllowedQuantity,
+                         groupOfQuantity: product.groupOfQuantity,
+                         overrideProductQuantities: false)
+
+    }
+}

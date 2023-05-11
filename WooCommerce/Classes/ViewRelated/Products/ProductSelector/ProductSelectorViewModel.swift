@@ -3,6 +3,7 @@ import protocol Storage.StorageManagerType
 import Combine
 import Foundation
 import WooFoundation
+import Networking
 
 struct ProductsSectionViewModel {
     let title: String?
@@ -178,7 +179,7 @@ final class ProductSelectorViewModel: ObservableObject {
     @Published private var selectedProductVariationIDs: [Int64] = []
 
     var totalSelectedItemsCount: Int {
-        selectedProductIDs.count + selectedProductVariationIDs.count
+        Array(Set(selectedProductIDs + selectedProductVariationIDs)).count
     }
 
     /// IDs of selected products and variations from initializer.
@@ -246,23 +247,30 @@ final class ProductSelectorViewModel: ObservableObject {
         }
 
         tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
-
-        guard let onProductSelectionStateChanged else {
-            toggleSelection(productID: productID)
-            return
-        }
-        // The selector supports multiple selection. Toggles the item, and triggers the selection
         toggleSelection(productID: productID)
-        onProductSelectionStateChanged(selectedProduct)
+
+        if selectedProduct.productType == .custom("variation") {
+            let productVariation = ProductVariation.productVariation(from: selectedProduct)
+            toggleSelection(variationID: selectedProduct.productID)
+            onVariationSelectionStateChanged?(productVariation, selectedProduct.copy(productID: selectedProduct.parentID))
+        } else {
+            onProductSelectionStateChanged?(selectedProduct)
+        }
+
+
     }
 
     func changeSelectionStateForVariation(with id: Int64, productID: Int64) {
         getVariationsViewModel(for: productID)?.changeSelectionStateForVariation(with: id)
 
-        if selectedProductVariationIDs.contains(id) {
-            selectedProductVariationIDs = selectedProductVariationIDs.filter { $0 != id }
+        toggleSelection(variationID: id)
+    }
+
+    func toggleSelection(variationID: Int64) {
+        if selectedProductVariationIDs.contains(variationID) {
+            selectedProductVariationIDs = selectedProductVariationIDs.filter { $0 != variationID }
         } else {
-            selectedProductVariationIDs.append(id)
+            selectedProductVariationIDs.append(variationID)
         }
     }
 

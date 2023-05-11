@@ -206,7 +206,7 @@ private extension PrivacySettingsViewController {
     func configureAnalyticsInfo(cell: BasicTableViewCell) {
         cell.imageView?.image = nil
         cell.textLabel?.text = NSLocalizedString(
-            "These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps.",
+            "Allow us to optimize performance by collecting information on how users interact with our mobile apps.",
             comment: "Analytics toggle description in the privacy screen."
         )
         configureInfo(cell: cell)
@@ -215,8 +215,8 @@ private extension PrivacySettingsViewController {
     func configureMorePrivacy(cell: HeadlineLabelTableViewCell) {
         cell.imageView?.image = nil
         cell.update(style: .subheadline,
-                    headline: NSLocalizedString("Advertising Option", comment: "More Privacy Options section title in the privacy screen."),
-                    body: NSLocalizedString("More Privacy Options Available. Check here to learn more.",
+                    headline: NSLocalizedString("Web Options", comment: "More Privacy Options section title in the privacy screen."),
+                    body: NSLocalizedString("More privacy options available for woocommerce.com users. Check here to learn more.",
                                             comment: "More Privacy toggle section in the privacy screen."))
         cell.accessoryType = .disclosureIndicator
     }
@@ -385,7 +385,7 @@ private extension PrivacySettingsViewController {
         textView.delegate = self
 
         var linkTextAttributes = textView.linkTextAttributes ?? [:]
-        linkTextAttributes[.underlineColor] = UIColor.clear
+        linkTextAttributes[.underlineColor] = UIColor.primary
         linkTextAttributes[.foregroundColor] = UIColor.primary
         textView.linkTextAttributes = linkTextAttributes
 
@@ -570,14 +570,14 @@ extension PrivacySettingsViewController {
     enum Localization {
         static let tableTitle = NSLocalizedString("We value your privacy. " +
                                                   "Your personal data is used to optimize our mobile apps, improve security, " +
-                                                  "conduct analytics and marketing activities, and enhance your user experience.",
+                                                  "conduct analytics, and enhance your user experience.",
                                                   comment: "Main description on the privacy screen.")
         static let tracking = NSLocalizedString("Tracking", comment: "Title of the tracking section on the privacy screen")
         static let reports = NSLocalizedString("Reports", comment: "Title of the report section on the privacy screen")
         static let morePrivacyOptions = NSLocalizedString("More Privacy Options", comment: "Title of the more privacy options section on the privacy screen")
         static let morePrivacyOptionsFooter = NSLocalizedString("To learn more about how we use your data to optimize our mobile apps, " +
                                                                 "enhance your experience, and deliver relevant marketing, " +
-                                                                "learn more in our Privacy Policy and Cookie Policy." + "\n",
+                                                                "please review our Privacy Policy and Cookie Policy." + "\n",
                                                                 comment: "Footer of the more privacy options section on the privacy screen")
         static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
         static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")

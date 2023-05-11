@@ -18,7 +18,7 @@ final class ShippingLabelFormViewController: UIViewController {
     private lazy var topBannerView: TopBannerView = {
         EUShippingNoticeTopBannerFactory.createTopBanner(
                 onDismissPressed: { [weak self] in
-                    self?.viewModel.setEUShippingNoticeDismissState(isDismissed: true) { [weak self] success in
+                    self?.viewModel.dismissEUShippingNotice { [weak self] success in
                         if success {
                             self?.hideTopBannerView()
                         }

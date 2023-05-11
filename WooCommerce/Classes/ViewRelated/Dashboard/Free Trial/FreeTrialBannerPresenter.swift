@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import UIKit
+import protocol Experiments.FeatureFlagService
 
 /// Presents or hides the free trial banner at the bottom of the screen.
 /// Internally uses the `storePlanSynchronizer` to know when to present or hide the banner.
@@ -29,15 +30,33 @@ final class FreeTrialBannerPresenter {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Flag reflecting when it's possible to upgrade a store plan from the app.
+    ///
+    private let inAppStoreUpgradeEnabled: Bool
+
+    /// String for the banner action button text
+    ///
+    private var bannerActionText: String {
+        if inAppStoreUpgradeEnabled {
+            return Localization.upgradeNow
+        } else {
+            return Localization.learnMore
+        }
+    }
+
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
     ///   - onLayoutUpdated: Closure invoked when the banner is added or removed.
-    init(viewController: UIViewController, containerView: UIView, siteID: Int64, onLayoutUpdated: @escaping (CGFloat) -> Void) {
+    init(viewController: UIViewController,
+         containerView: UIView, siteID: Int64,
+         onLayoutUpdated: @escaping (CGFloat) -> Void,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.viewController = viewController
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
+        self.inAppStoreUpgradeEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
         observeStorePlan()
         observeConnectivity()
     }
@@ -102,8 +121,8 @@ private extension FreeTrialBannerPresenter {
         // Remove any previous banner.
         freeTrialBanner?.removeFromSuperview()
 
-        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
-            self?.showUpgradePlanWebView()
+        let freeTrialViewController = FreeTrialBannerHostingViewController(actionText: bannerActionText, mainText: contentText) { [weak self] in
+            self?.showUpgradesView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -134,12 +153,25 @@ private extension FreeTrialBannerPresenter {
 
     /// Shows a web view for the merchant to update their site plan.
     ///
-    func showUpgradePlanWebView() {
+    func showUpgradesView() {
         guard let viewController else { return }
-        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
-            self?.removeBanner() // Removes the banner immediately.
-            self?.reloadBannerVisibility() // Reloads the plan again in case the plan didn't update as expected.
-        })
-        viewController.present(upgradeController, animated: true)
+
+        if inAppStoreUpgradeEnabled {
+            let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
+                self?.removeBanner() // Removes the banner immediately.
+                self?.reloadBannerVisibility() // Reloads the plan again in case the plan didn't update as expected.
+            })
+            viewController.present(upgradeController, animated: true)
+        } else {
+            let upgradeController = UpgradesHostingController(siteID: siteID)
+            viewController.show(upgradeController, sender: self)
+        }
+    }
+}
+
+private extension FreeTrialBannerPresenter {
+    enum Localization {
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
     }
 }

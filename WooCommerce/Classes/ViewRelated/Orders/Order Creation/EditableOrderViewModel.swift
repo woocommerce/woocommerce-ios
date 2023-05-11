@@ -62,6 +62,12 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
+    /// Indicates whether adding a product to the order via SKU scanning is enabled
+    ///
+    var isAddProductToOrderViaSKUScannerEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
+    }
+
     var title: String {
         switch flow {
         case .creation:
@@ -174,7 +180,6 @@ final class EditableOrderViewModel: ObservableObject {
             purchasableItemsOnly: true,
             storageManager: storageManager,
             stores: stores,
-            supportsMultipleSelection: true,
             toggleAllVariationsOnSelection: false,
             topProductsProvider: TopProductsFromCachedOrdersProvider(),
             onProductSelectionStateChanged: { [weak self] product in
@@ -431,7 +436,7 @@ final class EditableOrderViewModel: ObservableObject {
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             },
                                        removeProductIntent: { [weak self] in
-                self?.selectOrderItem(item.itemID) })
+                self?.removeItemFromOrder(item)})
         } else {
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
@@ -442,7 +447,7 @@ final class EditableOrderViewModel: ObservableObject {
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             },
                                        removeProductIntent: { [weak self] in
-                self?.selectOrderItem(item.itemID) })
+                self?.removeItemFromOrder(item)})
         }
     }
 

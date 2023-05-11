@@ -4,39 +4,9 @@ import Foundation
 extension ProductFormDataModel {
     /// Create a description text based on a product data model's stock status/quantity.
     func createStockText(productBundlesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles)) -> String {
-        // When feature flag is enabled: If product is a product bundle with a bundle stock status, use that as the product stock status.
-        let stockStatus = {
-            switch (productBundlesEnabled, productType, bundleStockStatus) {
-            case (true, .bundle, .some(let bundleStockStatus)):
-                return bundleStockStatus
-            default:
-                return self.stockStatus
-            }
-        }()
-        // When feature flag is enabled: If product is a product bundle, use the bundle stock quantity.
-        let stockQuantity: Decimal? = {
-            switch (productBundlesEnabled, productType, bundleStockQuantity) {
-            case (true, .bundle, .some(let bundleStockQuantity)):
-                return Decimal(bundleStockQuantity)
-            case (true, .bundle, nil):
-                return nil
-            default:
-                return self.stockQuantity
-            }
-        }()
-        // When feature flag is enabled:
-        // If product is a product bundle, use the bundle stock quantity to set the `manageStock` setting (override the product-level setting).
-        // Even if the product's `manageStock` setting is false, we want to show the bundle stock quantity when there is one.
-        let manageStock: Bool = {
-            switch (productBundlesEnabled, productType, bundleStockQuantity) {
-            case (true, .bundle, .some):
-                return true
-            case (true, .bundle, nil):
-                return false
-            default:
-                return self.manageStock
-            }
-        }()
+        if productBundlesEnabled && productType == .bundle {
+            return createProductBundleStockText()
+        }
 
         switch stockStatus {
         case .inStock:
@@ -44,6 +14,30 @@ extension ProductFormDataModel {
                 let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
                 let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
                 return String.localizedStringWithFormat(format, localizedStockQuantity)
+            } else {
+                return NSLocalizedString("In stock", comment: "Label about product's inventory stock status shown on Products tab")
+            }
+        default:
+            return stockStatus.description
+        }
+    }
+
+    /// Create a description text based on a product bundle data model's stock status/quantity and bundle stock status/quantity.
+    private func createProductBundleStockText() -> String {
+        // Use bundle stock status if it is insufficent stock
+        if let bundleStockStatus, bundleStockStatus == .insufficientStock {
+            return bundleStockStatus.description
+        }
+
+        switch stockStatus {
+        case .inStock:
+            let quantityFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
+            if let bundleStockQuantity { // Use bundle stock quantity, if set
+                let localizedStockQuantity = NumberFormatter.localizedString(from: NSDecimalNumber(value: bundleStockQuantity), number: .decimal)
+                return String.localizedStringWithFormat(quantityFormat, localizedStockQuantity)
+            } else if let stockQuantity, manageStock { // Otherwise, use product stock quantity if set and product manages stock
+                let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
+                return String.localizedStringWithFormat(quantityFormat, localizedStockQuantity)
             } else {
                 return NSLocalizedString("In stock", comment: "Label about product's inventory stock status shown on Products tab")
             }

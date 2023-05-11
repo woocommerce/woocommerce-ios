@@ -592,6 +592,7 @@ public enum WooAnalyticsStat: String {
     case productVariationDetailUpdateSuccess = "product_variation_update_success"
     case productVariationDetailUpdateError = "product_variation_update_error"
     case productVariationDetailViewQuantityRulesTapped = "product_variation_view_quantity_rules_tapped"
+    case productVariationViewSubscriptionsTapped = "product_variation_view_subscriptions_tapped"
 
     case productVariationBulkUpdateSectionTapped = "product_variation_bulk_update_section_tapped"
     case productVariationBulkUpdateFieldTapped = "product_variation_bulk_update_field_tapped"

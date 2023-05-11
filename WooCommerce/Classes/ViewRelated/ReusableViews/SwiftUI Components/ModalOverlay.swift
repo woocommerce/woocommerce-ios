@@ -34,7 +34,7 @@ struct ModalOverlay<OverlayContent: View>: View {
                             .frame(width: geometry.size.width * 0.75)
                             .frame(maxHeight: geometry.size.height * 0.8)
                             .fixedSize(horizontal: false, vertical: true) // these three modifiers define the container size
-                            .background(Color(.basicBackground))
+                            .background(Color(.tertiarySystemBackground))
                             .cornerRadius(10)
                             .shadow(radius: 10)
                     }

@@ -7,6 +7,11 @@ import WordPressUI
 ///
 final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
 
+    /// Tracks the banner view intrinsic height.
+    /// Needed to enable it's scrolling when it grows bigger than the screen.
+    ///
+    var bannerIntrinsicHeight: CGFloat = 0
+
     init(goToSettingsAction: @escaping (() -> ()), saveAction: @escaping (() -> ())) {
         super.init(rootView: PrivacyBanner(goToSettingsAction: goToSettingsAction, saveAction: saveAction))
     }
@@ -19,18 +24,23 @@ final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        // Needed when presented via the `BottomSheetViewController`
-        preferredContentSize = .init(width: 0, height: view.intrinsicContentSize.height)
+
+        // Make the banner scrollable when the banner height is bigger than the screen height.
+        // Send it in the next run loop to avoid a recursive `viewDidLayoutSubviews`.
+        bannerIntrinsicHeight = view.intrinsicContentSize.height
+        DispatchQueue.main.async {
+            self.rootView.shouldScroll = self.bannerIntrinsicHeight > self.view.frame.height
+        }
     }
 }
 
 extension PrivacyBannerViewController: DrawerPresentable {
     var collapsedHeight: DrawerHeight {
-        return .intrinsicHeight
+        return .contentHeight(bannerIntrinsicHeight)
     }
 
     var expandedHeight: DrawerHeight {
-        return .intrinsicHeight
+        return .contentHeight(bannerIntrinsicHeight)
     }
 }
 
@@ -45,7 +55,21 @@ struct PrivacyBanner: View {
     ///
     let saveAction: (() -> ())
 
+    /// Determines in the banner should be scrollable on it's parent container.
+    ///
+    var shouldScroll: Bool = false
+
     var body: some View {
+        if shouldScroll {
+            ScrollView(showsIndicators: false) {
+                banner
+            }
+        } else {
+            banner
+        }
+    }
+
+    var banner: some View {
         VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
 
             Text(Localization.bannerTitle)

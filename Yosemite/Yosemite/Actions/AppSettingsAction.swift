@@ -143,7 +143,7 @@ public enum AppSettingsAction: Action {
 
     /// Sets the dismiss state for the EU Shipping Notice.
     ///
-    case setEUShippingNoticeDismissState(isDismissed: Bool, onCompletion: (Result<Void, Error>) -> Void)
+    case dismissEUShippingNotice(onCompletion: (Result<Void, Error>) -> Void)
 
     /// Loads the most recent dismiss state for the EU Shipping Notice.
     ///

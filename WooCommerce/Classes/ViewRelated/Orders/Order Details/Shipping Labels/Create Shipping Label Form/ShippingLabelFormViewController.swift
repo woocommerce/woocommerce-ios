@@ -15,7 +15,19 @@ final class ShippingLabelFormViewController: UIViewController {
 
     /// Top banner that notices about shipping constraints.
     ///
-    private var topBannerView: TopBannerView?
+    private lazy var topBannerView: TopBannerView = {
+        EUShippingNoticeTopBannerFactory.createTopBanner(
+                onDismissPressed: { [weak self] in
+                    self?.viewModel.dismissEUShippingNotice { [weak self] success in
+                        if success {
+                            self?.hideTopBannerView()
+                        }
+                    }
+                },
+                onLearnMorePressed: { [weak self] in
+                    self?.presentShippingInstructionsView()
+                })
+    }()
 
     /// Assign this closure to be notified after a shipping label is successfully purchased
     ///
@@ -564,12 +576,11 @@ private extension ShippingLabelFormViewController {
     ///
     func showTopBannerView() {
         viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
-            guard let self = self, shouldDisplay else {
+            guard let self, shouldDisplay else {
                 return
             }
 
-            let topBannerView = self.createEUShippingNoticeBannerView()
-            self.topBannerView = topBannerView
+            let topBannerView = self.topBannerView
             let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
             headerContainer.addSubview(topBannerView)
             headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
@@ -578,30 +589,11 @@ private extension ShippingLabelFormViewController {
         }
     }
 
-    /// Creates the Shipping Notice Top banner with the appropriate actions.
-    ///
-    func createEUShippingNoticeBannerView() -> TopBannerView {
-        EUShippingNoticeTopBannerFactory.createTopBanner(
-            onDismissPressed: {
-                self.viewModel.setEUShippingNoticeDismissState(isDismissed: true) { success in
-                    if success {
-                        self.hideTopBannerView()
-                    }
-                }
-            },
-            onLearnMorePressed: { instructionsURL in
-                self.presentShippingInstructionsView(instructionsURL: instructionsURL)
-            })
-    }
-
     /// Presents a Web view containing the new EU Shipping instructions.
     ///
-    func presentShippingInstructionsView(instructionsURL: URL?) {
-        let configuration = WebViewControllerConfiguration(url: instructionsURL)
-        configuration.secureInteraction = true
-        let webKitVC = WebKitViewController(configuration: configuration)
-        let nc = WooNavigationController(rootViewController: webKitVC)
-        self.present(nc, animated: true)
+    func presentShippingInstructionsView() {
+        let instructionsURL = WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL()
+        WebviewHelper.launch(instructionsURL, with: self)
     }
 
     /// Removes the Top Banner View from the table view header.
@@ -611,8 +603,7 @@ private extension ShippingLabelFormViewController {
             return
         }
 
-        topBannerView?.removeFromSuperview()
-        topBannerView = nil
+        topBannerView.removeFromSuperview()
         tableView.tableHeaderView = nil
         tableView.updateHeaderHeight()
     }

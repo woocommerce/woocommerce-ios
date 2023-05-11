@@ -570,8 +570,8 @@ private extension ShippingLabelFormViewController {
             onDismissPressed: {
                 self.hideTopBannerView()
             },
-            onLearnMorePressed: { instructionsURL in
-                self.presentShippingInstructionsView(instructionsURL: instructionsURL)
+            onLearnMorePressed: {
+                self.presentShippingInstructionsView()
             })
         self.topBannerView = topBannerView
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
@@ -583,8 +583,8 @@ private extension ShippingLabelFormViewController {
 
     /// Presents a Web view containing the new EU Shipping instructions.
     ///
-    func presentShippingInstructionsView(instructionsURL: URL?) {
-        let configuration = WebViewControllerConfiguration(url: instructionsURL)
+    func presentShippingInstructionsView() {
+        let configuration = WebViewControllerConfiguration(url: WooConstants.URLs.shippingCustomsInstructionsForEUCountries)
         configuration.secureInteraction = true
         let webKitVC = WebKitViewController(configuration: configuration)
         let nc = WooNavigationController(rootViewController: webKitVC)

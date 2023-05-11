@@ -556,6 +556,8 @@ extension PrivacySettingsViewController: UITableViewDelegate {
             presentPrivacyPolicyWebView()
         case .morePrivacy:
             presentURL(WooConstants.URLs.morePrivacyDocumentation.asURL())
+        case .usageTracking:
+            presentURL(WooConstants.URLs.usageTrackingDocumentation.asURL())
         default:
             break
         }

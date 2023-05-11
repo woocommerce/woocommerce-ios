@@ -6,12 +6,13 @@ final class ShippingCustomsFormListHostingController: UIHostingController<Shippi
          customsForms: [ShippingLabelCustomsForm],
          destinationCountry: Country,
          countries: [Country],
-         onCompletion: @escaping ([ShippingLabelCustomsForm]) -> Void,
-         shouldDisplayShippingNotice: Bool = false) {
+         shouldDisplayShippingNotice: Bool,
+         onCompletion: @escaping ([ShippingLabelCustomsForm]) -> Void) {
         let viewModel = ShippingLabelCustomsFormListViewModel(order: order,
                                                               customsForms: customsForms,
                                                               destinationCountry: destinationCountry,
-                                                              countries: countries)
+                                                              countries: countries,
+                                                              shouldDisplayShippingNotice: shouldDisplayShippingNotice)
         super.init(rootView: .init(viewModel: viewModel, onCompletion: onCompletion))
 
         rootView.onLearnMoreTapped = { [weak self] instructionsURL in

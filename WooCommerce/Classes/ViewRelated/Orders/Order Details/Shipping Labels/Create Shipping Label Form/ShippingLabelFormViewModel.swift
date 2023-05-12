@@ -225,6 +225,7 @@ final class ShippingLabelFormViewModel {
         handleCarrierAndRatesValueChanges(selectedRates: [], editable: false)
 
         updateRowsForCustomsIfNeeded()
+        updateEUShippingNoticeVisibility()
 
         if dataState == .validated, let address {
             userDefaults[.storePhoneNumber] = address.phone
@@ -242,6 +243,7 @@ final class ShippingLabelFormViewModel {
         handleCarrierAndRatesValueChanges(selectedRates: [], editable: false)
 
         updateRowsForCustomsIfNeeded()
+        updateEUShippingNoticeVisibility()
 
         if dateState == .validated {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_complete"])

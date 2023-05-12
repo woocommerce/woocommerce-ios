@@ -232,7 +232,8 @@ final class DashboardViewModel {
         case .some(.modal):
             modalJustInTimeMessageViewModel = viewModel
         default:
-            break
+            announcementViewModel = nil
+            modalJustInTimeMessageViewModel = nil
         }
 
     }

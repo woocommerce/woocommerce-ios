@@ -538,6 +538,7 @@ private extension DashboardViewController {
 
             Task { @MainActor [weak self] in
                 guard let self = self else { return }
+                self.dismissModalJustInTimeMessage()
                 let modalController = ConstraintsUpdatingHostingController(
                     rootView: JustInTimeMessageModal_UIKit(
                         onDismiss: {
@@ -552,6 +553,15 @@ private extension DashboardViewController {
             }
         }
         .store(in: &subscriptions)
+    }
+
+    private func dismissModalJustInTimeMessage() {
+        guard let modalJustInTimeMessageHostingController = modalJustInTimeMessageHostingController,
+              modalJustInTimeMessageHostingController.isBeingPresented
+        else {
+            return
+        }
+        dismiss(animated: true)
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)

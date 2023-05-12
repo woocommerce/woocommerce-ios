@@ -1,9 +1,12 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.7
+-----
+- [*] JITMs: Added modal-style Just in Time Message support on the dashboard [https://github.com/woocommerce/woocommerce-ios/pull/9694]
+
 13.6
 -----
 - [*] JITMs: Added customization to Just in Time Message banner background and badges [https://github.com/woocommerce/woocommerce-ios/pull/9633]
-- [*] JITMs: Added modal-style Just in Time Message support on the dashboard [https://github.com/woocommerce/woocommerce-ios/pull/9694]
 - [*] Product form > description editor: fix the extra bottom inset after hiding the keyboard either manually (available on a tablet) or applying an AI-generated product description. [https://github.com/woocommerce/woocommerce-ios/pull/9638]
 
 13.5

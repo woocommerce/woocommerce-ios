@@ -576,7 +576,7 @@ private extension ShippingLabelFormViewController {
         viewModel.$shouldPresentEUShippingNotice
             .removeDuplicates()
             .sink { [weak self] shouldPresent in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 if shouldPresent {
                     self.showTopBannerView()

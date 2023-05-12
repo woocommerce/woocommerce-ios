@@ -919,8 +919,7 @@ extension ShippingLabelFormViewModel {
 
     private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
         guard isEUShippingNotificationEnabled else {
-            onCompletion(false)
-            return
+            return onCompletion(false)
         }
 
         let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in

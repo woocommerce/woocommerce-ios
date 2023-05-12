@@ -13,6 +13,7 @@ final class EditableOrderViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
+    private let permissionChecker: CaptureDevicePermissionChecker
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -320,7 +321,8 @@ final class EditableOrderViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
+         permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker()) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -330,6 +332,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
+        self.permissionChecker = permissionChecker
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -1222,6 +1225,35 @@ private extension EditableOrderViewModel {
         } else {
             return String.localizedStringWithFormat(Localization.CouponSummary.plural, output)
         }
+    }
+}
+
+// MARK: Camera scanner
+
+extension EditableOrderViewModel {
+
+    enum CapturePermissionStatus {
+        case permitted
+        case notPermitted
+        case notDetermined
+    }
+
+    /// Returns the current app permission status to capture media
+    ///
+    var capturePermissionStatus: CapturePermissionStatus {
+        let authStatus = permissionChecker.authorizationStatus(for: .video)
+        switch authStatus {
+        case .authorized:
+            return .permitted
+        case .denied, .restricted:
+            return .notPermitted
+        default:
+            return .notDetermined
+        }
+    }
+
+    func requestCameraAccess(onCompletion: @escaping ((Bool) -> Void)) {
+        permissionChecker.requestAccess(for: .video, completionHandler: onCompletion)
     }
 }
 

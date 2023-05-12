@@ -664,7 +664,6 @@
 		261B526E29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B526D29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift */; };
 		261E91A029C961EE00A5C118 /* UpgradesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */; };
 		261E91A329C9882600A5C118 /* UpgradesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E91A229C9882600A5C118 /* UpgradesViewModelTests.swift */; };
-		261E91A529CA592E00A5C118 /* UpgradePlanCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E91A429CA592E00A5C118 /* UpgradePlanCoordinatingController.swift */; };
 		261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */; };
 		261F1A7C29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */; };
 		26281776278F0B0100C836D3 /* View+NoticesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26281775278F0B0100C836D3 /* View+NoticesModifier.swift */; };
@@ -726,6 +725,7 @@
 		267C01CF29E89E1700FCC97B /* StorePlanSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */; };
 		267C01D129E9B18E00FCC97B /* StorePlanSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267C01D029E9B18E00FCC97B /* StorePlanSynchronizerTests.swift */; };
 		267D6882296485850072ED0C /* ProductVariationGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267D6881296485850072ED0C /* ProductVariationGeneratorTests.swift */; };
+		267F60132A0C24D700CD1E4E /* PrivacyBannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267F60122A0C24D700CD1E4E /* PrivacyBannerViewController.swift */; };
 		26838354296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838353296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift */; };
 		26838356296F702B00CCF60A /* GenerateAllVariationsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838355296F702B00CCF60A /* GenerateAllVariationsPresenter.swift */; };
 		26838358296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838357296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift */; };
@@ -2933,7 +2933,6 @@
 		261B526D29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportFormMetadataProvider.swift; sourceTree = "<group>"; };
 		261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModel.swift; sourceTree = "<group>"; };
 		261E91A229C9882600A5C118 /* UpgradesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModelTests.swift; sourceTree = "<group>"; };
-		261E91A429CA592E00A5C118 /* UpgradePlanCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlanCoordinatingController.swift; sourceTree = "<group>"; };
 		261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerViewModel.swift; sourceTree = "<group>"; };
 		261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerViewModelTests.swift; sourceTree = "<group>"; };
 		26281775278F0B0100C836D3 /* View+NoticesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+NoticesModifier.swift"; sourceTree = "<group>"; };
@@ -2991,6 +2990,7 @@
 		267C01D029E9B18E00FCC97B /* StorePlanSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlanSynchronizerTests.swift; sourceTree = "<group>"; };
 		267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilderTests.swift; sourceTree = "<group>"; };
 		267D6881296485850072ED0C /* ProductVariationGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationGeneratorTests.swift; sourceTree = "<group>"; };
+		267F60122A0C24D700CD1E4E /* PrivacyBannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyBannerViewController.swift; sourceTree = "<group>"; };
 		26838353296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationsOptionPresenter.swift; sourceTree = "<group>"; };
 		26838355296F702B00CCF60A /* GenerateAllVariationsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAllVariationsPresenter.swift; sourceTree = "<group>"; };
 		26838357296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateAllVariationsUseCase.swift; sourceTree = "<group>"; };
@@ -6096,7 +6096,6 @@
 			children = (
 				264957A229C520860095AA4C /* UpgradesView.swift */,
 				261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */,
-				261E91A429CA592E00A5C118 /* UpgradePlanCoordinatingController.swift */,
 				267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */,
 			);
 			name = Upgrades;
@@ -9017,6 +9016,7 @@
 			isa = PBXGroup;
 			children = (
 				CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */,
+				267F60122A0C24D700CD1E4E /* PrivacyBannerViewController.swift */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -11592,6 +11592,7 @@
 				45E3C8F325E7D30300102E84 /* ShippingLabelAddress+Woo.swift in Sources */,
 				57A25C7C25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift in Sources */,
 				B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */,
+				267F60132A0C24D700CD1E4E /* PrivacyBannerViewController.swift in Sources */,
 				D8610BD2256F291000A5DF27 /* JetpackErrorViewModel.swift in Sources */,
 				26C6E8E626E6B5F500C7BB0F /* StateSelectorViewModel.swift in Sources */,
 				020B2F9423BDDBDC00BD79AD /* ProductUpdateError+UI.swift in Sources */,
@@ -12141,7 +12142,6 @@
 				D8610CE2257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift in Sources */,
 				038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */,
 				03E471CE293F63B4001A58AD /* PaymentCaptureOrchestrator.swift in Sources */,
-				261E91A529CA592E00A5C118 /* UpgradePlanCoordinatingController.swift in Sources */,
 				B5980A6321AC879F00EBF596 /* Bundle+Woo.swift in Sources */,
 				B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */,
 				02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */,

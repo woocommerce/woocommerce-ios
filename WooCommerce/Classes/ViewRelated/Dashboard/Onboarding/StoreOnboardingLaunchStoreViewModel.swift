@@ -24,7 +24,7 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
         let font: UIFont = .body
         let foregroundColor: UIColor = .text
         let linkColor: UIColor = .textLink
-        let linkContent = Localization.upgrade
+        let linkContent = Localization.learnMore
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .left
@@ -50,18 +50,18 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
 
     /// Closure invoked when the merchants taps on the `Upgrade` button.
     ///
-    private let onUpgradeTapped: () -> Void
+    private let onLearnMoreTapped: () -> Void
 
     init(siteURL: URL,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          onLaunch: @escaping () -> Void,
-         onUpgradeTapped: @escaping () -> Void) {
+         onLearnMoreTapped: @escaping () -> Void) {
         self.siteURL = siteURL
         self.siteID = siteID
         self.stores = stores
         self.onLaunch = onLaunch
-        self.onUpgradeTapped = onUpgradeTapped
+        self.onLearnMoreTapped = onLearnMoreTapped
     }
 
     @MainActor
@@ -89,8 +89,8 @@ final class StoreOnboardingLaunchStoreViewModel: ObservableObject {
     }
 
     @MainActor
-    func didTapUpgrade() {
-        onUpgradeTapped()
+    func didTapLearnMore() {
+        onLearnMoreTapped()
     }
 }
 
@@ -140,6 +140,6 @@ private extension StoreOnboardingLaunchStoreViewModel {
             comment: "Message to ask the user to upgrade free trial plan to launch store."
             + "Reads - To launch your store, you need to upgrade to our plan. Upgrade"
         )
-        static let upgrade = NSLocalizedString("Upgrade", comment: "Title on the button to upgrade a free trial plan.")
+        static let learnMore = NSLocalizedString("Learn More", comment: "Title on the button to upgrade a free trial plan.")
     }
 }

@@ -26,7 +26,7 @@ public final class FeatureFlagStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: StoreOnboardingTasksAction.self)
+        dispatcher.register(processor: self, for: FeatureFlagAction.self)
     }
 
     /// Receives and executes Actions.

@@ -7,10 +7,10 @@ import Yosemite
 ///
 struct EUCustomsScenarioValidator {
     static func validate(origin: ShippingLabelAddress?, destination: ShippingLabelAddress?) -> Bool {
-        origin?.country == usISOCode && countriesFollowingEUCustoms.contains(destination?.country ?? "")
+        usCountryISOCode.contains(origin?.country ?? "") && countriesFollowingEUCustoms.contains(destination?.country ?? "")
     }
 
-    private static let usISOCode = "US"
+    private static let usCountryISOCode: Set<String> = ["US", "USA"] // United States of America
     private static let countriesFollowingEUCustoms: Set<String> = ["AT", "AUT", // Austria
                                                                    "BE", "BEL", // Belgium
                                                                    "BG", "BGR", // Bulgaria

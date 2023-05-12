@@ -245,6 +245,35 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[0].name, skuFilterProduct.name)
     }
 
+    func test_entering_search_term_when_search_filter_is_sku_and_returns_variations_as_products_then_shows_the_variations() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let expectation = expectation(description: "Completed product search")
+        let skuFilterVariation = Product.fake().copy(siteID: self.sampleSiteID, productID: 2, name: "t-shirt", productTypeKey: "variation", purchasable: true)
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+                self.insert(skuFilterVariation, withSearchTerm: "shirt", filterKey: "sku")
+                onCompletion(.success(()))
+                expectation.fulfill()
+            case .searchProductsInCache:
+                break
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.productSearchFilter = .sku
+        viewModel.searchTerm = "shirt"
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        XCTAssertEqual(viewModel.productRows[0].name, skuFilterVariation.name)
+    }
+
     func test_entering_search_term_when_there_are_no_filters_then_performs_local_product_search() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)

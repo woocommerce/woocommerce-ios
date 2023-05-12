@@ -590,8 +590,7 @@ private extension ShippingLabelFormViewController {
     /// Present a Top Banner View containing the EU Shipping Notice.
     ///
     func showTopBannerView() {
-        let topBannerView = self.createEUShippingNoticeBannerView()
-        self.topBannerView = topBannerView
+        let topBannerView = self.topBannerView
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)
         headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
@@ -606,7 +605,7 @@ private extension ShippingLabelFormViewController {
             return
         }
 
-        topBannerView?.removeFromSuperview()
+        topBannerView.removeFromSuperview()
         tableView.tableHeaderView = nil
         tableView.updateHeaderHeight()
     }

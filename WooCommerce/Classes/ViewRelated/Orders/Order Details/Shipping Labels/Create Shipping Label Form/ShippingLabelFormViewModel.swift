@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Combine
 import WooFoundation
 import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService

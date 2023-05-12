@@ -46,7 +46,7 @@ public extension Product {
                          shippingClassID: shippingClassID,
                          menuOrder: Int64(menuOrder),
                          subscription: subscription,
-                         minAllowedQuantity: maxAllowedQuantity,
+                         minAllowedQuantity: minAllowedQuantity,
                          maxAllowedQuantity: maxAllowedQuantity,
                          groupOfQuantity: groupOfQuantity,
                          overrideProductQuantities: false)

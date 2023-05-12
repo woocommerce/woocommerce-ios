@@ -492,10 +492,21 @@ private extension ProductSelectorViewModel {
     func transitionToSyncingState(pageNumber: Int) {
         shouldShowScrollIndicator = true
         notice = nil
-        if pageNumber == 1 {
-            syncStatus = .firstPageSync
+
+        if shouldShowLoadingScreen(pageNumber: pageNumber) {
+            syncStatus = .loading
         }
     }
+
+    func shouldShowLoadingScreen(pageNumber: Int) -> Bool {
+        guard pageNumber == 1 else {
+            return false
+        }
+
+        return products.isEmpty ||
+               searchTerm.isNotEmpty ||
+               filtersSubject.value.numberOfActiveFilters != 0
+   }
 
     /// Update state after sync is complete.
     ///
@@ -732,7 +743,7 @@ extension ProductSelectorViewModel {
     /// Represents possible statuses for syncing products
     ///
     enum SyncStatus {
-        case firstPageSync
+        case loading
         case results
         case empty
     }

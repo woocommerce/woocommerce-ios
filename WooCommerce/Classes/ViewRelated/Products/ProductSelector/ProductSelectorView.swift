@@ -124,7 +124,7 @@ struct ProductSelectorView: View {
             case .empty:
                 EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                     .frame(maxHeight: .infinity)
-            case .firstPageSync:
+            case .loading:
                 List(viewModel.ghostRows) { rowViewModel in
                     ProductRow(viewModel: rowViewModel)
                         .redacted(reason: .placeholder)

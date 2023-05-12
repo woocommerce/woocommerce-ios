@@ -102,6 +102,10 @@ extension WooConstants {
         ///
         case morePrivacyDocumentation = "https://wordpress.com/support/tracking-opt-outs/"
 
+        /// Documentation about WooCommerce Usage Tracking
+        ///
+        case usageTrackingDocumentation = "https://woocommerce.com/usage-tracking/"
+
         /// Privacy policy for California users URL
         ///
         case californiaPrivacy = "https://automattic.com/privacy/#california-consumer-privacy-act-ccpa"

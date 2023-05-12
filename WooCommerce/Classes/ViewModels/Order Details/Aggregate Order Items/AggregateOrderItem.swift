@@ -52,11 +52,11 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
 }
 
 
-// MARK: - Hashable Conformance
+// MARK: - Comparable Conformance
 //
-extension AggregateOrderItem: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(itemID)
+extension AggregateOrderItem: Comparable {
+    static func < (lhs: AggregateOrderItem, rhs: AggregateOrderItem) -> Bool {
+        return lhs.itemID < rhs.itemID
     }
 }
 

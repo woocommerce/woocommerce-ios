@@ -69,9 +69,7 @@ final class AggregateDataHelper {
             )
         }
 
-        let sorted = unsortedResult.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
-
-        return sorted
+        return unsortedResult.sorted()
     }
 
     /// Combine original order items with refunded products
@@ -102,7 +100,7 @@ final class AggregateDataHelper {
         let allItems = convertedItems + refundedProducts
 
         let grouped = Dictionary(grouping: allItems) { (item) in
-            return item.hashValue
+            return item.itemID
         }
 
         let unsortedResult: [AggregateOrderItem] = grouped.compactMap { (key, items) in
@@ -136,20 +134,6 @@ final class AggregateDataHelper {
 
         var filtered = unsortedResult.filter { $0.quantity > 0 }
 
-        // Sort elements following the previous order of the items.
-        var sorted: [AggregateOrderItem] = []
-        for item in allItems {
-            if let find = filtered.first(where: {
-                $0.hashValue == item.hashValue
-            }) {
-                sorted.append(find)
-            }
-
-            filtered.removeAll {
-                $0.hashValue == item.hashValue
-            }
-        }
-
-        return sorted
+        return filtered.sorted()
     }
 }

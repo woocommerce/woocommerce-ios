@@ -173,60 +173,9 @@ private extension AggregateDataHelperTests {
     ///
     func expectedRefundedProducts() -> [AggregateOrderItem] {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        var expectedArray = [AggregateOrderItem]()
-        let item0 = AggregateOrderItem(itemID: "0",
-                                       productID: 16,
-                                       variationID: 0,
-                                       name: "Woo Logo",
-                                       price: currencyFormatter.convertToDecimal("31.5") ?? NSDecimalNumber.zero,
-                                       quantity: -2,
-                                       sku: "HOODIE-WOO-LOGO",
-                                       total: currencyFormatter.convertToDecimal("-63.00") ?? NSDecimalNumber.zero,
-                                       attributes: [])
-        expectedArray.append(item0)
-        let item1 = AggregateOrderItem(
-            itemID: "1",
-            productID: 21,
-            variationID: 70,
-            name: "Ship Your Idea - Blue, XL",
-            price: currencyFormatter.convertToDecimal("27") ?? NSDecimalNumber.zero,
-            quantity: -3,
-            sku: "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
-            total: currencyFormatter.convertToDecimal("-81.00") ?? NSDecimalNumber.zero,
-            attributes: []
-        )
-        expectedArray.append(item1)
 
-        /// We expect this item to have these attributes by passing an order item
-        /// with the same refunded item id to the combineRefundedProducts function
-        let item2 = AggregateOrderItem(
-            itemID: "2",
-            productID: 21,
-            variationID: 71,
-            name: "Ship Your Idea - Black, L",
-            price: currencyFormatter.convertToDecimal("31.5") ?? NSDecimalNumber.zero,
-            quantity: -1,
-            sku: "HOODIE-SHIP-YOUR-IDEA-BLACK-L",
-            total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
-            attributes: testOrderItemAttributes
-        )
-        expectedArray.append(item2)
-
-        let item3 = AggregateOrderItem(
-            itemID: "3",
-            productID: 22,
-            variationID: 0,
-            name: "Ninja Silhouette",
-            price: currencyFormatter.convertToDecimal("18") ?? NSDecimalNumber.zero,
-            quantity: -1,
-            sku: "T-SHIRT-NINJA-SILHOUETTE",
-            total: currencyFormatter.convertToDecimal("-18.00") ?? NSDecimalNumber.zero,
-            attributes: []
-        )
-        expectedArray.append(item3)
-
-        let item4 = AggregateOrderItem(
-            itemID: "4",
+        let item0 = AggregateOrderItem(
+            itemID: "59",
             productID: 24,
             variationID: 0,
             name: "Happy Ninja",
@@ -236,8 +185,55 @@ private extension AggregateDataHelperTests {
             total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
             attributes: []
         )
-        expectedArray.append(item4)
 
-        return expectedArray
+        let item1 = AggregateOrderItem(
+            itemID: "60",
+            productID: 22,
+            variationID: 0,
+            name: "Ninja Silhouette",
+            price: currencyFormatter.convertToDecimal("18") ?? NSDecimalNumber.zero,
+            quantity: -1,
+            sku: "T-SHIRT-NINJA-SILHOUETTE",
+            total: currencyFormatter.convertToDecimal("-18.00") ?? NSDecimalNumber.zero,
+            attributes: []
+        )
+
+        let item2 = AggregateOrderItem(
+            itemID: "63",
+            productID: 21,
+            variationID: 71,
+            name: "Ship Your Idea - Black, L",
+            price: currencyFormatter.convertToDecimal("31.5") ?? NSDecimalNumber.zero,
+            quantity: -1,
+            sku: "HOODIE-SHIP-YOUR-IDEA-BLACK-L",
+            total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
+            attributes: testOrderItemAttributes
+        )
+
+        let item3 = AggregateOrderItem(
+            itemID: "64",
+            productID: 16,
+            variationID: 0,
+            name: "Woo Logo",
+            price: currencyFormatter.convertToDecimal("31.5") ?? NSDecimalNumber.zero,
+            quantity: -2,
+            sku: "HOODIE-WOO-LOGO",
+            total: currencyFormatter.convertToDecimal("-63.00") ?? NSDecimalNumber.zero,
+            attributes: []
+        )
+
+        let item4 = AggregateOrderItem(
+            itemID: "65",
+            productID: 21,
+            variationID: 70,
+            name: "Ship Your Idea - Blue, XL",
+            price: currencyFormatter.convertToDecimal("27") ?? NSDecimalNumber.zero,
+            quantity: -3,
+            sku: "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
+            total: currencyFormatter.convertToDecimal("-81.00") ?? NSDecimalNumber.zero,
+            attributes: []
+        )
+
+        return [item0, item1, item2, item3, item4]
     }
 }

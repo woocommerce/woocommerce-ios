@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.7
+-----
+- [Internal] Adds guidance for new Customs rule when shipping to some EU countries
+
 13.6
 -----
 - [*] Remove login error local notifications that used to be scheduled 24 hours from certain login errors. [https://github.com/woocommerce/woocommerce-ios/pull/9666]

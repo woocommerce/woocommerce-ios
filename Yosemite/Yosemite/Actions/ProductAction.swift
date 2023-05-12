@@ -63,6 +63,10 @@ public enum ProductAction: Action {
         pageSize: Int = ProductsRemote.Default.pageSize,
         onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
+    /// Retrieves the first Product with exact-match SKU
+    ///
+    case retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: (Result<Product, Error>) -> Void)
+
     /// Deletes all of the cached products.
     ///
     case resetStoredProducts(onCompletion: () -> Void)

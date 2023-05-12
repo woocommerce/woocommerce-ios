@@ -150,12 +150,6 @@ private extension StoreOnboardingCoordinator {
     /// Shows a web view for the merchant to update their site plan.
     ///
     func showUpgradePlanWebView() {
-        let upgradeController = UpgradePlanCoordinatingController(siteID: site.siteID,
-                                                                  source: .banner,
-                                                                  onSuccess: { [weak self] in
-            self?.onUpgradePlan?()
-            self?.reloadTasks()
-        })
-        navigationController.present(upgradeController, animated: true)
+        print("Navigate to plan view")
     }
 }

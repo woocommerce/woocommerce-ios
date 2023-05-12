@@ -92,11 +92,7 @@ final class HubMenuViewModel: ObservableObject {
 
         // Only show the upgrades menu on WPCom sites
         if stores.sessionManager.defaultSite?.isWordPressComStore == true {
-            if featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade) {
-                settingsElements.append(Upgrades())
-            } else {
-                settingsElements.append(Subscriptions())
-            }
+            settingsElements.append(Subscriptions())
         }
     }
 
@@ -339,17 +335,6 @@ extension HubMenuViewModel {
         let trackingOption: String = "upgrades"
     }
 
-    struct Upgrades: HubMenuItem {
-        static var id = "upgrades"
-
-        let title: String = Localization.upgrades
-        let description: String = Localization.upgradesDescription
-        let icon: UIImage = .iconBolt
-        let iconColor: UIColor = .primary
-        let accessibilityIdentifier: String = "menu-upgrades"
-        let trackingOption: String = "upgrades"
-    }
-
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Title of the hub menu settings button")
         static let settingsDescription = NSLocalizedString("Update your preferences", comment: "Description of the hub menu settings button")
@@ -370,8 +355,6 @@ extension HubMenuViewModel {
         static let couponDescription = NSLocalizedString("Boost sales with special offers", comment: "Description of the Coupons menu in the hub menu")
         static let reviews = NSLocalizedString("Reviews", comment: "Title of one of the hub menu options")
         static let reviewsDescription = NSLocalizedString("Capture reviews for your store", comment: "Description of one of the hub menu options")
-        static let upgrades = NSLocalizedString("Upgrades", comment: "Title of one of the hub menu options")
-        static let upgradesDescription = NSLocalizedString("Manage your plans", comment: "Description of one of the hub menu options")
         static let subscriptions = NSLocalizedString("Subscriptions", comment: "Title of one of the hub menu options")
         static let subscriptionsDescription = NSLocalizedString("Manage your subscription", comment: "Description of one of the hub menu options")
     }

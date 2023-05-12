@@ -248,7 +248,7 @@ final class ProductSelectorViewModel: ObservableObject {
             onProductSelectionStateChanged?(selectedProduct)
         }
     }
-    
+
     func toggleSelection(id: Int64) {
         if selectedItemsIDs.contains(id) {
             selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
@@ -389,7 +389,6 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     ///
     private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         searchProductsInCacheIfPossible(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
-        debugPrint("productSearchFilter", productSearchFilter)
 
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,

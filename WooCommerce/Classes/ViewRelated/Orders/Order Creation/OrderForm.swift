@@ -373,7 +373,8 @@ private extension OrderForm {
                                                                    comment: "Accessibility hint for selecting a product in an order form")
         static let permissionsTitle =
         NSLocalizedString("Camera permissions", comment: "Title of the action sheet button that links to settings for camera access")
-        static let permissionsMessage = NSLocalizedString("Please change your camera permissions in device settings",
+        static let permissionsMessage = NSLocalizedString("Camera access is required for SKU scanning. " +
+                                                          "Please enable camera permissions in your device settings",
                                                           comment: "Message of the action sheet button that links to settings for camera access")
         static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an action sheet")
     }

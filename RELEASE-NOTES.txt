@@ -2,7 +2,7 @@
 
 13.7
 -----
-- [Internal] Adds guidance for new Customs rule when shipping to some EU countries
+- [Internal] Adds guidance for new Customs rule when shipping to some EU countries. [https://github.com/woocommerce/woocommerce-ios/pull/9715]
 
 13.6
 -----

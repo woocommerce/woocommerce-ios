@@ -419,6 +419,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         }
 
         stores.dispatch(action)
+        tracker.trackSearchTriggered()
     }
 
     private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) {

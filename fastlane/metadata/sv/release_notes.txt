@@ -1,1 +1,1 @@
-Den här versionen inkluderar ett flertal buggkorrigeringar och förbättringar som gör din upplevelse smidigare. Vi är fast beslutna att kontinuerligt förbättra WooCommerce-appen och vi har några spännande uppdateringar på gång under de närmaste veckorna. Håll ögonen öppna!
+Den här versionen innehåller en handfull mindre förbättringar som ska göra din produkthanteringsupplevelse smidigare, inklusive möjligheten att skanna produktartikelnummer. Vi hoppas att du kommer att märka hur mycket arbete vi lägger ned på vår programvara. Håll ögonen öppna efter fler spännande nyheter.

@@ -1,1 +1,1 @@
-Diese Version enthält verschiedene Fehlerkorrekturen und Verbesserungen für ein optimiertes Nutzererlebnis. Wir arbeiten daran, die WooCommerce-App stetig verbessern, und in den nächsten Wochen stehen einige spannende Updates an. Rechne also mit weiteren Neuigkeiten!
+Diese Version enthält ein paar kleinere Verbesserungen am Produktverwaltungserlebnis, einschließlich der Option zum Scannen der Produkt-Artikelnummer. Wir hoffen, dass dir unsere Bemühungen auffallen und sie dir weiterhelfen. Bleib dran, es folgen bald spannende Neuigkeiten!

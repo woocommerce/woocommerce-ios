@@ -1,1 +1,1 @@
-Esta versão inclui várias correções de bug e melhorias para tornar sua experiência mais agradável. Estamos empenhados em melhorar cada vez mais o aplicativo do WooCommerce e teremos algumas atualizações interessantes nas próximas semanas. Fique ligado!
+Esta versão tem algumas pequenas melhorias, incluindo a opção de escanear o SKU de um produto, para tornar sua experiência de gerenciamento de produtos mais agradável. Esperamos que seja nítido que esse software foi feito com muito amor. Fique ligado porque em breve traremos ótimas notícias!

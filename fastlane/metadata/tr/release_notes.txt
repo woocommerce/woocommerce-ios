@@ -1,1 +1,1 @@
-Bu sürüm, deneyiminizi daha sorunsuz hale getirmek için birkaç hata düzeltmesi ve iyileştirme içerir. WooCommerce uygulamasını sürekli olarak geliştirmek için çalışıyoruz. Önümüzdeki birkaç hafta içinde bazı heyecan verici güncellemelerimiz olacak. Beklemede kalın!
+Bu sürüm, bir ürün SKU'sunu tarama seçeneği de dahil olmak üzere, ürün yönetimi deneyiminizi daha sorunsuz hale getirmek için birkaç küçük iyileştirme içerir. Yazılımımıza gönlümüzden kattığımız sevgiyi fark edeceğinizi umuyoruz. Yaklaşan bazı heyecan verici haberler için bizi takip etmeye devam edin!

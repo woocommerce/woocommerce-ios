@@ -3,7 +3,8 @@ import AVFoundation
 
 /// A mock implementation of `CaptureDevicePermissionChecker` protocol.
 final class MockCaptureDevicePermissionChecker {
-    private let authorizationStatus: AVAuthorizationStatus
+    private var authorizationStatus: AVAuthorizationStatus
+    private var updatedAuthorizationStatus: AVAuthorizationStatus? = nil
     private var isAccessGranted: Bool = false
 
     init(authorizationStatus: AVAuthorizationStatus) {
@@ -13,6 +14,10 @@ final class MockCaptureDevicePermissionChecker {
     func whenRequestingAccess(thenReturn isGranted: Bool) {
         isAccessGranted = isGranted
     }
+
+    func whenRequestingAccess(setAuthorizationStatus status: AVAuthorizationStatus) {
+        updatedAuthorizationStatus = status
+    }
 }
 
 extension MockCaptureDevicePermissionChecker: CaptureDevicePermissionChecker {
@@ -21,6 +26,9 @@ extension MockCaptureDevicePermissionChecker: CaptureDevicePermissionChecker {
     }
 
     func requestAccess(for mediaType: AVMediaType, completionHandler handler: @escaping (_ isGranted: Bool) -> Void) {
+        if let updatedAuthorizationStatus = updatedAuthorizationStatus {
+            authorizationStatus = updatedAuthorizationStatus
+        }
         handler(isAccessGranted)
     }
 }

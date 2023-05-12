@@ -5,34 +5,34 @@ class EUCustomsScenarioValidator {
     static func validate(origin: ShippingLabelAddress?, destination: ShippingLabelAddress?) -> Bool {
         origin?.country == "US" && countriesFollowingEUCustoms.contains(destination?.country ?? "")
     }
-
-    static let countriesFollowingEUCustoms = ["AT", "AUT",
-                                              "BE", "BEL",
-                                              "BG", "BGR",
-                                              "HR", "HRV",
-                                              "CY", "CYP",
-                                              "CZ", "CZE",
-                                              "DK", "DNK",
-                                              "EE", "EST",
-                                              "FI", "FIN",
-                                              "FR", "FRA",
-                                              "DE", "DEU",
-                                              "GR", "GRC",
-                                              "HU", "HUN",
-                                              "IE", "IRL",
-                                              "IT", "ITA",
-                                              "LV", "LVA",
-                                              "LT", "LTU",
-                                              "LU", "LUX",
-                                              "MT", "MLT",
-                                              "NL", "NLD",
-                                              "NO", "NOR",
-                                              "PL", "POL",
-                                              "PT", "PRT",
-                                              "RO", "ROU",
-                                              "SK", "SVK",
-                                              "SI", "SVN",
-                                              "ES", "ESP",
-                                              "SE", "SWE",
-                                              "CH", "CHE"]
+    
+    static let countriesFollowingEUCustoms: Set<String> = ["AT", "AUT", // Austria
+                                                           "BE", "BEL", // Belgium
+                                                           "BG", "BGR", // Bulgaria
+                                                           "HR", "HRV", // Croatia
+                                                           "CY", "CYP", // Cyprus
+                                                           "CZ", "CZE", // Czech Republic
+                                                           "DK", "DNK", // Denmark
+                                                           "EE", "EST", // Estonia
+                                                           "FI", "FIN", // Finland
+                                                           "FR", "FRA", // France
+                                                           "DE", "DEU", // Germany
+                                                           "GR", "GRC", // Greece
+                                                           "HU", "HUN", // Hungary
+                                                           "IE", "IRL", // Ireland
+                                                           "IT", "ITA", // Italy
+                                                           "LV", "LVA", // Latvia
+                                                           "LT", "LTU", // Lithuania
+                                                           "LU", "LUX", // Luxembourg
+                                                           "MT", "MLT", // Malta
+                                                           "NL", "NLD", // Netherlands
+                                                           "NO", "NOR", // Norway
+                                                           "PL", "POL", // Poland
+                                                           "PT", "PRT", // Portugal
+                                                           "RO", "ROU", // Romania
+                                                           "SK", "SVK", // Slovakia
+                                                           "SI", "SVN", // Slovenia
+                                                           "ES", "ESP", // Spain
+                                                           "SE", "SWE", // Sweden
+                                                           "CH", "CHE"] // Switzerland
 }

@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Combine
 import WooFoundation
 import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
@@ -170,7 +171,13 @@ final class ShippingLabelFormViewModel {
 
     /// Flag to indicate if the view should display the EU shipping notice.
     ///
-    let isEUShippingNotificationEnabled: Bool
+    @Published private(set) var shouldPresentEUShippingNotice: Bool = false
+
+    /// Flag to indicate if the `.euShippingNotification` feature is activated.
+    ///
+    private let isEUShippingNotificationEnabled: Bool
+
+    var subscriptions = Set<AnyCancellable>()
 
     init(order: Order,
          originAddress: Address?,
@@ -205,6 +212,7 @@ final class ShippingLabelFormViewModel {
         syncPackageDetails()
         fetchCountries()
         monitorAccountSettingsResultsController()
+        updateEUShippingNoticeVisibility()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -217,6 +225,7 @@ final class ShippingLabelFormViewModel {
         handleCarrierAndRatesValueChanges(selectedRates: [], editable: false)
 
         updateRowsForCustomsIfNeeded()
+        updateEUShippingNoticeVisibility()
 
         if dataState == .validated, let address {
             userDefaults[.storePhoneNumber] = address.phone
@@ -234,6 +243,7 @@ final class ShippingLabelFormViewModel {
         handleCarrierAndRatesValueChanges(selectedRates: [], editable: false)
 
         updateRowsForCustomsIfNeeded()
+        updateEUShippingNoticeVisibility()
 
         if dateState == .validated {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_complete"])
@@ -884,6 +894,17 @@ extension ShippingLabelFormViewModel {
 
 // MARK: - Shipping Notice dismiss state handling
 extension ShippingLabelFormViewModel {
+    private func updateEUShippingNoticeVisibility() {
+        verifyEUShippingNoticeDismissState { [weak self] dismissed in
+            guard let self = self, dismissed else {
+                self?.shouldPresentEUShippingNotice = false
+                return
+            }
+
+            self.shouldPresentEUShippingNotice = EUCustomsScenarioValidator.validate(origin: self.originAddress, destination: self.destinationAddress)
+        }
+    }
+
     func dismissEUShippingNotice(onCompletion: @escaping (Bool) -> Void) {
         let action = AppSettingsAction.dismissEUShippingNotice { result in
             switch result {
@@ -896,7 +917,7 @@ extension ShippingLabelFormViewModel {
         stores.dispatch(action)
     }
 
-    func shouldDisplayEUShippingNotice(onCompletion: @escaping (Bool) -> Void) {
+    private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
         guard isEUShippingNotificationEnabled else {
             return onCompletion(false)
         }

@@ -59,7 +59,7 @@ final class ShippingLabelFormViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
-        showTopBannerView()
+        observeEUShippingNoticeVisibilityChanges()
         observeViewModel()
     }
 
@@ -488,7 +488,7 @@ private extension ShippingLabelFormViewController {
                                                                              customsForms: viewModel.customsForms,
                                                                              destinationCountry: country,
                                                                              countries: viewModel.countries,
-                                                                             shouldDisplayShippingNotice: viewModel.isEUShippingNotificationEnabled,
+                                                                             shouldDisplayShippingNotice: viewModel.shouldPresentEUShippingNotice,
                                                                              onCompletion: { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
         })
@@ -572,28 +572,29 @@ private extension ShippingLabelFormViewController {
 // MARK: - Top Banner
 //
 private extension ShippingLabelFormViewController {
+    func observeEUShippingNoticeVisibilityChanges() {
+        viewModel.$shouldPresentEUShippingNotice
+            .removeDuplicates()
+            .sink { [weak self] shouldPresent in
+                guard let self else { return }
+
+                if shouldPresent {
+                    self.showTopBannerView()
+                } else {
+                    self.hideTopBannerView()
+                }
+
+            }.store(in: &viewModel.subscriptions)
+    }
+
     /// Present a Top Banner View containing the EU Shipping Notice.
     ///
     func showTopBannerView() {
-        viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
-            guard let self, shouldDisplay else {
-                return
-            }
-
-            let topBannerView = self.topBannerView
-            let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-            headerContainer.addSubview(topBannerView)
-            headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
-            self.tableView.tableHeaderView = headerContainer
-            self.tableView.updateHeaderHeight()
-        }
-    }
-
-    /// Presents a Web view containing the new EU Shipping instructions.
-    ///
-    func presentShippingInstructionsView() {
-        let instructionsURL = WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL()
-        WebviewHelper.launch(instructionsURL, with: self)
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
     }
 
     /// Removes the Top Banner View from the table view header.
@@ -606,6 +607,13 @@ private extension ShippingLabelFormViewController {
         topBannerView.removeFromSuperview()
         tableView.tableHeaderView = nil
         tableView.updateHeaderHeight()
+    }
+
+    /// Presents a Web view containing the new EU Shipping instructions.
+    ///
+    func presentShippingInstructionsView() {
+        let instructionsURL = WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL()
+        WebviewHelper.launch(instructionsURL, with: self)
     }
 }
 

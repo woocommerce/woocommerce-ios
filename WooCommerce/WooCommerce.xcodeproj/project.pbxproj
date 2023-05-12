@@ -1538,6 +1538,7 @@
 		B6F3796C293794A000718561 /* AnalyticsHubYearToDateRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796B293794A000718561 /* AnalyticsHubYearToDateRangeData.swift */; };
 		B6F3796E293796BC00718561 /* AnalyticsHubWeekToDateRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796D293796BC00718561 /* AnalyticsHubWeekToDateRangeData.swift */; };
 		B6F37970293798ED00718561 /* AnalyticsHubTodayRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796F293798ED00718561 /* AnalyticsHubTodayRangeData.swift */; };
+		B6FEFFF12A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FEFFF02A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift */; };
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
 		B90C65CD29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C65CC29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift */; };
 		B90C65D129AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C65D029AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift */; };
@@ -3811,6 +3812,7 @@
 		B6F3796B293794A000718561 /* AnalyticsHubYearToDateRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubYearToDateRangeData.swift; sourceTree = "<group>"; };
 		B6F3796D293796BC00718561 /* AnalyticsHubWeekToDateRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubWeekToDateRangeData.swift; sourceTree = "<group>"; };
 		B6F3796F293798ED00718561 /* AnalyticsHubTodayRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTodayRangeData.swift; sourceTree = "<group>"; };
+		B6FEFFF02A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUCustomsScenarioValidator.swift; sourceTree = "<group>"; };
 		B90C65CC29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentOnboardingStateCache.swift; sourceTree = "<group>"; };
 		B90C65D029AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift; sourceTree = "<group>"; };
 		B910685F27F1F28F00AD0575 /* GhostableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostableViewController.swift; sourceTree = "<group>"; };
@@ -6654,6 +6656,7 @@
 				456396A525C81C9A001F1A26 /* ShippingLabelFormViewController.swift */,
 				456396A625C81C9A001F1A26 /* ShippingLabelFormViewController.xib */,
 				456396AD25C81D81001F1A26 /* ShippingLabelFormViewModel.swift */,
+				B6FEFFF02A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift */,
 				4515C88A25D6BD520099C8E3 /* Shipping Address Validation */,
 				456C7EE825EE71C10016CBC6 /* Shipping Address Suggested Address */,
 				451A995B260E2E0A0059D135 /* Package Details */,
@@ -12000,6 +12003,7 @@
 				02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */,
 				45D875D22611EA2100226C3F /* ListHeaderView.swift in Sources */,
 				DE2FE58D292617C30018040A /* SiteCredentialLoginViewModel.swift in Sources */,
+				B6FEFFF12A0DDC0000C0F546 /* EUCustomsScenarioValidator.swift in Sources */,
 				026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */,
 				4590B64C261C673B00A6FCE0 /* WeightFormatter.swift in Sources */,
 				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,

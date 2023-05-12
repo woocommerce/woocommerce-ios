@@ -46,6 +46,7 @@ final class StoreCreationCoordinator: Coordinator {
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
+    private let localNotificationScheduler: LocalNotificationScheduler
     private var jetpackCheckRetryInterval: TimeInterval {
         isFreeTrialCreation ? 10 : 5
     }
@@ -58,7 +59,8 @@ final class StoreCreationCoordinator: Coordinator {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) {
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.source = source
         self.navigationController = navigationController
         // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
@@ -71,6 +73,7 @@ final class StoreCreationCoordinator: Coordinator {
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
+        self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
 
         Task { @MainActor in
             if let purchasesManager {
@@ -724,6 +727,8 @@ private extension StoreCreationCoordinator {
         ///
         let waitingTimeStart = Date()
 
+        scheduleLocalNotificationWhenStoreIsReady()
+
         jetpackSiteSubscription = $siteIDFromStoreCreation
             .compactMap { $0 }
             .removeDuplicates()
@@ -752,6 +757,9 @@ private extension StoreCreationCoordinator {
             .replaceError(with: nil)
             .sink { [weak self] site in
                 guard let self else { return }
+
+                self.cancelLocalNotificationWhenStoreIsReady()
+
                 guard let site else {
                     navigationController.dismiss(animated: true) { [weak self] in
                         guard let self else { return }
@@ -866,6 +874,25 @@ private extension StoreCreationCoordinator {
                                                           flow: flow,
                                                           isFreeTrial: isFreeTrialCreation,
                                                           waitingTime: waitingTime))
+    }
+}
+
+private extension StoreCreationCoordinator {
+    func scheduleLocalNotificationWhenStoreIsReady() {
+        guard let notification = LocalNotification(scenario: .storeCreationComplete, stores: stores) else {
+            return
+        }
+        cancelLocalNotificationWhenStoreIsReady()
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      // 5 minutes from now when the site is most likely ready.
+                                                      trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5 * 60, repeats: false),
+                                                      remoteFeatureFlag: .storeCreationCompleteNotification)
+        }
+    }
+
+    func cancelLocalNotificationWhenStoreIsReady() {
+        localNotificationScheduler.cancel(scenario: .storeCreationComplete)
     }
 }
 

@@ -503,9 +503,13 @@ private extension ProductSelectorViewModel {
             return false
         }
 
-        return products.isEmpty ||
-               searchTerm.isNotEmpty ||
-               filtersSubject.value.numberOfActiveFilters != 0
+        guard searchTerm.isEmpty ||
+              filtersSubject.value.numberOfActiveFilters == 0 else {
+            return true
+        }
+
+
+        return products.isEmpty
    }
 
     /// Update state after sync is complete.

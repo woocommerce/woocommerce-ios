@@ -894,7 +894,7 @@ extension ShippingLabelFormViewModel {
 
 // MARK: - Shipping Notice dismiss state handling
 extension ShippingLabelFormViewModel {
-    func updateEUShippingNoticeVisibility() {
+    private func updateEUShippingNoticeVisibility() {
         verifyEUShippingNoticeDismissState { [weak self] dismissed in
             guard let self = self, dismissed else {
                 self?.shouldPresentEUShippingNotice = false

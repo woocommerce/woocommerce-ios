@@ -167,7 +167,7 @@ final class ShippingLabelFormViewModel {
             onChange?()
         }
     }
-    
+
     /// Flag to indicate if the view should display the EU shipping notice.
     ///
     @Published private(set) var shouldPresentEUShippingNotice: Bool = false
@@ -897,17 +897,16 @@ extension ShippingLabelFormViewModel {
                 self?.shouldPresentEUShippingNotice = false
                 return
             }
-            
+
             // TODO: will trigger a validation checking if it's an EU country destination
             let isEUCountryScenario = true
-            
+
             self.shouldPresentEUShippingNotice = isEUCountryScenario && self.isEUShippingNotificationEnabled
         }
     }
-    
-    func setEUShippingNoticeDismissState(isDismissed: Bool,
-                                         onCompletion: @escaping (Bool) -> Void) {
-        let action = AppSettingsAction.setEUShippingNoticeDismissState(isDismissed: isDismissed) { result in
+
+    func dismissEUShippingNotice(onCompletion: @escaping (Bool) -> Void) {
+        let action = AppSettingsAction.dismissEUShippingNotice { result in
             switch result {
             case .success:
                 onCompletion(true)
@@ -918,11 +917,16 @@ extension ShippingLabelFormViewModel {
         stores.dispatch(action)
     }
 
-    private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
+    func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
+        guard isEUShippingNotificationEnabled else {
+            onCompletion(false)
+            return
+        }
+
         let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in
             switch result {
             case .success(let dismissed):
-                onCompletion(!dismissed && self.isEUShippingNotificationEnabled)
+                onCompletion(!dismissed)
             case .failure:
                 onCompletion(false)
             }

@@ -192,8 +192,8 @@ public class AppSettingsStore: Store {
             loadFirstInPersonPaymentsTransactionDate(siteID: siteID, using: cardReaderType, onCompletion: completion)
         case .storeInPersonPaymentsTransactionIfFirst(siteID: let siteID, cardReaderType: let cardReaderType):
             storeInPersonPaymentsTransactionIfFirst(siteID: siteID, using: cardReaderType)
-        case .setEUShippingNoticeDismissState(let isDismissed, let onCompletion):
-            setEUShippingNoticeDismissState(isDismissed: isDismissed, onCompletion: onCompletion)
+        case .dismissEUShippingNotice(let onCompletion):
+            setEUShippingNoticeDismissState(isDismissed: true, onCompletion: onCompletion)
         case .loadEUShippingNoticeDismissState(let onCompletion):
             loadEUShippingNoticeDismissState(onCompletion: onCompletion)
         }
@@ -337,7 +337,7 @@ private extension AppSettingsStore {
 
     }
 
-    /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
+    /// Loads the EU Shipping Notice dismissal state from `GeneralAppSettings`
     ///
     func loadEUShippingNoticeDismissState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isEUShippingNoticeDismissed)))

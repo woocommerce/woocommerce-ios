@@ -8,7 +8,7 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
 
     /// Closure to be invoked when the "Learn more" button is pressed.
     ///
-    private var onLearnMoreTapped: ((URL?) -> Void)? = nil
+    private var onLearnMoreTapped: (() -> Void)? = nil
 
     /// Closure to be invoked when the "Dismiss" button is pressed.
     ///
@@ -23,8 +23,8 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
     func makeUIView(context: Context) -> UIViewType {
         let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner {
             onDismissTapped?()
-        } onLearnMorePressed: { instructionsURL in
-            onLearnMoreTapped?(instructionsURL)
+        } onLearnMorePressed: {
+            onLearnMoreTapped?()
         }
 
         context.coordinator.bannerWrapper.width = width
@@ -50,7 +50,7 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
 
     /// Returns a copy of the view with `onLearnMoreTapped` handling.
     ///
-    func onLearnMore(_ handler: @escaping (URL?) -> Void) -> EUShippingNoticeBanner {
+    func onLearnMore(_ handler: @escaping () -> Void) -> EUShippingNoticeBanner {
         var copy = self
         copy.onLearnMoreTapped = handler
         return copy

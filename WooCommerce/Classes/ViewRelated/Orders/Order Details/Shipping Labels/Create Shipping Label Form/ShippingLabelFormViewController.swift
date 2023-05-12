@@ -15,7 +15,19 @@ final class ShippingLabelFormViewController: UIViewController {
 
     /// Top banner that notices about shipping constraints.
     ///
-    private var topBannerView: TopBannerView?
+    private lazy var topBannerView: TopBannerView = {
+        EUShippingNoticeTopBannerFactory.createTopBanner(
+                onDismissPressed: { [weak self] in
+                    self?.viewModel.dismissEUShippingNotice { [weak self] success in
+                        if success {
+                            self?.hideTopBannerView()
+                        }
+                    }
+                },
+                onLearnMorePressed: { [weak self] in
+                    self?.presentShippingInstructionsView()
+                })
+    }()
 
     /// Assign this closure to be notified after a shipping label is successfully purchased
     ///
@@ -472,15 +484,15 @@ private extension ShippingLabelFormViewController {
               let country = viewModel.countries.first(where: { $0.code == countryCode }) else {
             fatalError("⛔️ Destination country is not found")
         }
-        let vm = ShippingLabelCustomsFormListViewModel(order: viewModel.order,
-                                                       customsForms: viewModel.customsForms,
-                                                       destinationCountry: country,
-                                                       countries: viewModel.countries,
-                                                       shouldDisplayShippingNotice: viewModel.shouldPresentEUShippingNotice)
-        let formList = ShippingLabelCustomsFormList(viewModel: vm) { [weak self] forms in
+        let hostingVC = ShippingCustomsFormListHostingController(order: viewModel.order,
+                                                                             customsForms: viewModel.customsForms,
+                                                                             destinationCountry: country,
+                                                                             countries: viewModel.countries,
+                                                                             shouldDisplayShippingNotice: viewModel.shouldPresentEUShippingNotice,
+                                                                             onCompletion: { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
-        }
-        let hostingVC = UIHostingController(rootView: formList)
+        })
+
         navigationController?.show(hostingVC, sender: nil)
     }
 
@@ -595,35 +607,15 @@ private extension ShippingLabelFormViewController {
         }
 
         topBannerView?.removeFromSuperview()
-        topBannerView = nil
         tableView.tableHeaderView = nil
         tableView.updateHeaderHeight()
     }
 
-    /// Creates the Shipping Notice Top banner with the appropriate actions.
-    ///
-    func createEUShippingNoticeBannerView() -> TopBannerView {
-        EUShippingNoticeTopBannerFactory.createTopBanner(
-            onDismissPressed: {
-                self.viewModel.setEUShippingNoticeDismissState(isDismissed: true) { success in
-                    if success {
-                        self.hideTopBannerView()
-                    }
-                }
-            },
-            onLearnMorePressed: { instructionsURL in
-                self.presentShippingInstructionsView(instructionsURL: instructionsURL)
-            })
-    }
-
     /// Presents a Web view containing the new EU Shipping instructions.
     ///
-    func presentShippingInstructionsView(instructionsURL: URL?) {
-        let configuration = WebViewControllerConfiguration(url: instructionsURL)
-        configuration.secureInteraction = true
-        let webKitVC = WebKitViewController(configuration: configuration)
-        let nc = WooNavigationController(rootViewController: webKitVC)
-        self.present(nc, animated: true)
+    func presentShippingInstructionsView() {
+        let instructionsURL = WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL()
+        WebviewHelper.launch(instructionsURL, with: self)
     }
 }
 

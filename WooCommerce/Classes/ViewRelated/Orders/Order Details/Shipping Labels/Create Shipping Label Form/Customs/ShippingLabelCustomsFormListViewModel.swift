@@ -91,10 +91,6 @@ extension ShippingLabelCustomsFormListViewModel {
     func bannerDismissTapped() {
         shouldDisplayShippingNotice = false
     }
-
-    func bannerLearnMoreTapped(instructionsURL: URL?) {
-
-    }
 }
 
 // MARK: - Validation

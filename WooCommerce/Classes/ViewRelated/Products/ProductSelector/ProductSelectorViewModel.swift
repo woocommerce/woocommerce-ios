@@ -249,20 +249,20 @@ final class ProductSelectorViewModel: ObservableObject {
         tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
         toggleSelection(productID: productID)
 
-        if selectedProduct.productType == .custom("variation") {
-            let productVariation = ProductVariation.productVariation(from: selectedProduct)
+        // The SKU search gives product variations as products. Here we have to handle that.
+        if let productVariation = selectedProduct.toProductVariation() {
+            // For SKU search, we show variations together with products,
+            // so we have to toggle it in both product and variations so it looks marked in both screens.
             toggleSelection(variationID: selectedProduct.productID)
+            // We generate a parent product, which has the same info with the right ID, that is, the product variation parent id.
             onVariationSelectionStateChanged?(productVariation, selectedProduct.copy(productID: selectedProduct.parentID))
         } else {
             onProductSelectionStateChanged?(selectedProduct)
         }
-
-
     }
 
     func changeSelectionStateForVariation(with id: Int64, productID: Int64) {
         getVariationsViewModel(for: productID)?.changeSelectionStateForVariation(with: id)
-
         toggleSelection(variationID: id)
     }
 

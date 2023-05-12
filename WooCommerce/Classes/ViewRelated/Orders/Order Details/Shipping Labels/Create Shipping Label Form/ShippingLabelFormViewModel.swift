@@ -899,10 +899,7 @@ extension ShippingLabelFormViewModel {
                 return
             }
 
-            // TODO: will trigger a validation checking if it's an US-to-EU
-            let isEUCountryScenario = true
-
-            self.shouldPresentEUShippingNotice = isEUCountryScenario && self.isEUShippingNotificationEnabled
+            self.shouldPresentEUShippingNotice = EUCustomsScenarioValidator.validate(origin: self.originAddress, destination: self.destinationAddress)
         }
     }
 

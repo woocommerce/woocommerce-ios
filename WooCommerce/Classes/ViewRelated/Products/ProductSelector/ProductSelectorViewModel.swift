@@ -367,7 +367,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync products from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
-        transitionToSyncingState()
+        transitionToSyncingState(pageNumber: pageNumber)
 
         if searchTerm.isNotEmpty {
             searchProducts(siteID: siteID, keyword: searchTerm, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
@@ -410,6 +410,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     ///
     private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         searchProductsInCacheIfPossible(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
+        debugPrint("productSearchFilter", productSearchFilter)
 
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
@@ -488,10 +489,10 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 private extension ProductSelectorViewModel {
     /// Update state for sync from remote.
     ///
-    func transitionToSyncingState() {
+    func transitionToSyncingState(pageNumber: Int) {
         shouldShowScrollIndicator = true
         notice = nil
-        if products.isEmpty {
+        if pageNumber == 1 {
             syncStatus = .firstPageSync
         }
     }
@@ -625,7 +626,7 @@ private extension ProductSelectorViewModel {
         let filtersPublisher = filtersSubject.removeDuplicates()
         let searchFilterPublisher = $productSearchFilter
             .removeDuplicates()
-            .debounce(for: .milliseconds(200), scheduler: DispatchQueue.main)
+            .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
 
         Publishers.CombineLatest3(searchTermPublisher, filtersPublisher, searchFilterPublisher)
             .sink { [weak self] searchTerm, filtersSubject, productSearchFilter in

@@ -407,9 +407,11 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setProduct.send(input)
 
         if item.variationID != 0 {
-            productSelectorViewModel.changeSelectionStateForVariation(with: item.variationID, productID: item.productID)
+            productSelectorViewModel.toggleSelection(id: item.variationID)
+            selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
         } else if item.productID != 0 {
-            productSelectorViewModel.changeSelectionStateForProduct(with: item.productID)
+            productSelectorViewModel.toggleSelection(id: item.productID)
+            selectedProducts.removeAll(where: { $0.productID == item.productID })
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))

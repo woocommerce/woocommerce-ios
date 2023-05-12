@@ -248,12 +248,7 @@ final class ProductSelectorViewModel: ObservableObject {
             onProductSelectionStateChanged?(selectedProduct)
         }
     }
-
-    func changeSelectionStateForVariation(with id: Int64, productID: Int64) {
-        getVariationsViewModel(for: productID)?.changeSelectionStateForVariation(with: id)
-        toggleSelection(id: id)
-    }
-
+    
     func toggleSelection(id: Int64) {
         if selectedItemsIDs.contains(id) {
             selectedItemsIDs = selectedItemsIDs.filter { $0 != id }

@@ -63,7 +63,7 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] New order results in a push notification
     - [ ] Orders push notification opens the correct order
     - [ ] Reviews push notification opens the correct review
-7. Universal Links and Deeplinks - Tests are temporarily disabled, [Issue 9382](https://github.com/woocommerce/woocommerce-ios/issues/9382) is happening frequently on tests too
+7. Universal Links and Deeplinks - Tests are temporarily disabled, will re-enable/remove when [Issue 9706](https://github.com/woocommerce/woocommerce-ios/issues/9706) is resolved.
     - [x] Universal Link to Payments screen
     - [x] Universal Link to an Order
 8. Settings

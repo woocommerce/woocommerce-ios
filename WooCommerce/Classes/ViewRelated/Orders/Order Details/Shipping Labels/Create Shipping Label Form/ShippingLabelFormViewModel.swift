@@ -899,7 +899,7 @@ extension ShippingLabelFormViewModel {
                 return
             }
 
-            // TODO: will trigger a validation checking if it's an EU country destination
+            // TODO: will trigger a validation checking if it's an US-to-EU
             let isEUCountryScenario = true
 
             self.shouldPresentEUShippingNotice = isEUCountryScenario && self.isEUShippingNotificationEnabled
@@ -918,7 +918,7 @@ extension ShippingLabelFormViewModel {
         stores.dispatch(action)
     }
 
-    func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
+    private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
         guard isEUShippingNotificationEnabled else {
             onCompletion(false)
             return

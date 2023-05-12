@@ -2,6 +2,8 @@ import UIKit
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
+import protocol Experiments.FeatureFlagService
+
 
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.
 ///
@@ -166,11 +168,16 @@ final class ShippingLabelFormViewModel {
         }
     }
 
+    /// Flag to indicate if the view should display the EU shipping notice.
+    ///
+    let shouldDisplayShippingNotice: Bool
+
     init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userDefaults: UserDefaults) {
 
         self.siteID = order.siteID
@@ -191,6 +198,7 @@ final class ShippingLabelFormViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
+        self.shouldDisplayShippingNotice = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
 
         state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()

@@ -297,6 +297,10 @@ extension WooConstants {
         ///
         case testURLStringWithSpecialCharacters = "https://test.com/test-–-survey"
 
+        /// URL with the USPS instructions when shipping from US to EU countries with specific customs rules.
+        ///
+        case shippingCustomsInstructionsForEUCountries = "https://www.usps.com/international/new-eu-customs-rules.htm"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

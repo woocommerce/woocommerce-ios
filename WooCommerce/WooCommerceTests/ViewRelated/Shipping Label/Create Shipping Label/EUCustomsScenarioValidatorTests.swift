@@ -3,8 +3,13 @@ import XCTest
 @testable import Yosemite
 
 final class EUCustomsScenarioValidatorTests: XCTestCase {
+
     func test_when_origin_country_is_US_and_destination_country_is_not_in_EU_new_custom_rules_then_return_false() {
         assertValidationFailsFor(origin: "US", destination: "BR")
+    }
+
+    func test_when_origin_country_is_NOT_US_then_return_false() {
+        assertValidationFailsFor(origin: "BR", destination: "AT")
     }
 
     private func assertValidationSucceedsFor(origin: String, destination: String) {

@@ -487,7 +487,7 @@ private extension ProductSelectorViewModel {
             return false
         }
 
-        guard searchTerm.isEmpty ||
+        guard searchTerm.isEmpty &&
               filtersSubject.value.numberOfActiveFilters == 0 else {
             return true
         }

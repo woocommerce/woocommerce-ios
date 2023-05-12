@@ -310,12 +310,12 @@ private struct ProductsSection: View {
                         logPermissionStatus(status: .notDetermined)
                         viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
                             if isPermissionGranted {
-                                showAddProductViaSKUScanner.toggle()
+                                showAddProductViaSKUScanner = true
                                 logPermissionStatus(status: .permitted)
                             }
                         })
                     case .permitted:
-                        showAddProductViaSKUScanner.toggle()
+                        showAddProductViaSKUScanner = true
                         logPermissionStatus(status: .permitted)
                     }
                 }

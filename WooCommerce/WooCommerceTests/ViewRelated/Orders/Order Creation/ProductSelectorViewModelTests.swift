@@ -85,7 +85,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
-                XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
+                XCTAssertEqual(viewModel.syncStatus, .loading)
                 onCompletion(.success(true))
             default:
                 XCTFail("Unsupported Action")
@@ -137,7 +137,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(syncStatusSpy, [.firstPageSync, .results])
+        XCTAssertEqual(syncStatusSpy, [.loading, .results])
         XCTAssertEqual(viewModel.syncStatus, .results)
     }
 

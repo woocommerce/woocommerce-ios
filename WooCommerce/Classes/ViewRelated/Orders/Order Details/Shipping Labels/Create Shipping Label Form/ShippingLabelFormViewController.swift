@@ -15,7 +15,19 @@ final class ShippingLabelFormViewController: UIViewController {
 
     /// Top banner that notices about shipping constraints.
     ///
-    private var topBannerView: TopBannerView?
+    private lazy var topBannerView: TopBannerView = {
+        EUShippingNoticeTopBannerFactory.createTopBanner(
+                onDismissPressed: { [weak self] in
+                    self?.viewModel.dismissEUShippingNotice { [weak self] success in
+                        if success {
+                            self?.hideTopBannerView()
+                        }
+                    }
+                },
+                onLearnMorePressed: { [weak self] in
+                    self?.presentShippingInstructionsView()
+                })
+    }()
 
     /// Assign this closure to be notified after a shipping label is successfully purchased
     ///
@@ -559,26 +571,21 @@ private extension ShippingLabelFormViewController {
 // MARK: - Top Banner
 //
 private extension ShippingLabelFormViewController {
-    /// Creates a Top Banner View containing the EU Shipping Notice.
+    /// Present a Top Banner View containing the EU Shipping Notice.
     ///
     func showTopBannerView() {
-        guard viewModel.shouldDisplayShippingNotice else {
-            return
-        }
+        viewModel.shouldDisplayEUShippingNotice { [weak self] shouldDisplay in
+            guard let self, shouldDisplay else {
+                return
+            }
 
-        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(
-            onDismissPressed: { [weak self] in
-                self?.hideTopBannerView()
-            },
-            onLearnMorePressed: { [weak self] in
-                self?.presentShippingInstructionsView()
-            })
-        self.topBannerView = topBannerView
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
-        tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
+            let topBannerView = self.topBannerView
+            let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+            headerContainer.addSubview(topBannerView)
+            headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+            self.tableView.tableHeaderView = headerContainer
+            self.tableView.updateHeaderHeight()
+        }
     }
 
     /// Presents a Web view containing the new EU Shipping instructions.
@@ -595,8 +602,7 @@ private extension ShippingLabelFormViewController {
             return
         }
 
-        topBannerView?.removeFromSuperview()
-        topBannerView = nil
+        topBannerView.removeFromSuperview()
         tableView.tableHeaderView = nil
         tableView.updateHeaderHeight()
     }

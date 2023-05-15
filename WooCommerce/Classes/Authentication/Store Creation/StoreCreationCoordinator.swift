@@ -733,7 +733,7 @@ private extension StoreCreationCoordinator {
                 }
                 // Waits some seconds before syncing sites every time.
                 try await Task.sleep(nanoseconds: UInt64(self.jetpackCheckRetryInterval * 1_000_000_000))
-                return try await self.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
+                return try await self.syncSite(siteID: siteID, expectedStoreName: expectedStoreName, haveTrackedOutOfSyncEvent: haveTrackedOutOfSyncEvent)
             }
             .receive(on: DispatchQueue.main)
             .handleEvents(receiveCompletion: { [weak self] output in
@@ -787,35 +787,22 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func syncSites(forSiteThatMatchesSiteID siteID: Int64, expectedStoreName: String) async throws -> Site {
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            self?.storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
-                guard let self else {
-                    return continuation.resume(throwing: StoreCreationCoordinatorError.selfDeallocated)
-                }
-                // The newly created site often has `isJetpackThePluginInstalled=false` initially,
-                // which results in a JCP site.
-                // In this case, we want to retry sites syncing.
-                guard let site = self.storePickerViewModel.site(thatMatchesSiteID: siteID) else {
-                    DDLogInfo("🔵 Retrying: Site unavailable...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
-                }
+    func syncSite(siteID: Int64, expectedStoreName: String, haveTrackedOutOfSyncEvent: Bool) async throws -> Site {
+        let site = try await loadSite(siteID: siteID)
 
-                guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
-                    DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
-                }
-
-                // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
-                // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
-                guard site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName else {
-                    DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotFullySynced)
-                }
-
-                continuation.resume(returning: site)
-            }
+        guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
+            DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet for siteID \(siteID)...")
+            throw StoreCreationError.newSiteIsNotJetpackSite
         }
+
+        // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
+        // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
+        guard (site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName) || haveTrackedOutOfSyncEvent else {
+            DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
+            throw StoreCreationError.newSiteIsNotFullySynced
+        }
+
+        return site
     }
 
     @MainActor
@@ -866,6 +853,17 @@ private extension StoreCreationCoordinator {
                                                           flow: flow,
                                                           isFreeTrial: isFreeTrialCreation,
                                                           waitingTime: waitingTime))
+    }
+}
+
+private extension StoreCreationCoordinator {
+    @MainActor
+    func loadSite(siteID: Int64) async throws -> Site {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SiteAction.loadSite(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }
 

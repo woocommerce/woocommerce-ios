@@ -6,7 +6,8 @@ import Foundation
 public struct MockAggregateOrderItem {
     /// Consider setting a subset of properties using `.copy`.
     public static func emptyItem() -> AggregateOrderItem {
-        .init(productID: 0,
+        .init(itemID: "0",
+              productID: 0,
               variationID: 0,
               name: "",
               price: nil,

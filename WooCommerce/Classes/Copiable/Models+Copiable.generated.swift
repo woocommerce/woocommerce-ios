@@ -7,6 +7,7 @@ import Yosemite
 
 extension WooCommerce.AggregateOrderItem {
     func copy(
+        itemID: CopiableProp<String> = .copy,
         productID: CopiableProp<Int64> = .copy,
         variationID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
@@ -17,6 +18,7 @@ extension WooCommerce.AggregateOrderItem {
         imageURL: NullableCopiableProp<URL> = .copy,
         attributes: CopiableProp<[OrderItemAttribute]> = .copy
     ) -> WooCommerce.AggregateOrderItem {
+        let itemID = itemID ?? self.itemID
         let productID = productID ?? self.productID
         let variationID = variationID ?? self.variationID
         let name = name ?? self.name
@@ -28,6 +30,7 @@ extension WooCommerce.AggregateOrderItem {
         let attributes = attributes ?? self.attributes
 
         return WooCommerce.AggregateOrderItem(
+            itemID: itemID,
             productID: productID,
             variationID: variationID,
             name: name,

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Order Item that was refunded or will be refunded.
 ///
-public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedCopiable, Hashable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64
@@ -145,15 +145,5 @@ private extension OrderItemRefund {
         case quantity = "qty"
         case total = "refund_total"
         case taxes = "refund_tax"
-    }
-}
-
-
-// MARK: - Hashable Conformance
-//
-extension OrderItemRefund: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(productID)
-        hasher.combine(variationID)
     }
 }

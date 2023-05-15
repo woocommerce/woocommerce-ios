@@ -225,7 +225,8 @@ private extension ProductDetailsCellViewModelTests {
                                 sku: String = "",
                                 imageURL: URL? = nil,
                                 attributes: [OrderItemAttribute] = []) -> AggregateOrderItem {
-        AggregateOrderItem(productID: 1,
+        AggregateOrderItem(itemID: "2",
+                           productID: 1,
                            variationID: 6,
                            name: "order",
                            price: price,

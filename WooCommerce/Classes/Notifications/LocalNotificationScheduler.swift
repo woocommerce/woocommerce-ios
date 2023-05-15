@@ -27,14 +27,16 @@ final class LocalNotificationScheduler {
                   remoteFeatureFlag: RemoteFeatureFlag?,
                   shouldSkipIfScheduled: Bool = false) async {
         if let remoteFeatureFlag, await isRemoteFeatureFlagEnabled(remoteFeatureFlag) == false {
-                return
+            return
         }
 
-        if shouldSkipIfScheduled {
-            pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
-        } else {
-            pushNotesManager.requestLocalNotification(notification,
-                                                      trigger: trigger)
+        Task {
+            if shouldSkipIfScheduled {
+                await pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
+            } else {
+                await pushNotesManager.requestLocalNotification(notification,
+                                                          trigger: trigger)
+            }
         }
     }
 

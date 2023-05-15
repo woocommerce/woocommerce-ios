@@ -114,7 +114,7 @@ extension LocalNotification {
             actions = [.subscribe]
 
         case let .oneDayBeforeFreeTrialExpires(_, expiryDate):
-            title = String.localizedStringWithFormat(Localization.OneDayBeforeFreeTrialExpires.title, name)
+            title = Localization.OneDayBeforeFreeTrialExpires.title
             let dateFormatStyle = Date.FormatStyle(locale: locale, timeZone: timeZone)
                 .weekday(.wide)
                 .month(.wide)
@@ -145,7 +145,7 @@ extension LocalNotification {
     enum Localization {
         enum StoreCreationComplete {
             static let title = NSLocalizedString(
-                "Your store is ready!",
+                "🎉 Your store is ready!",
                 comment: "Title of the local notification about a newly created store"
             )
             static let body = NSLocalizedString(
@@ -159,7 +159,7 @@ extension LocalNotification {
 
         enum OneDayAfterStoreCreationNameWithoutFreeTrial {
             static let title = NSLocalizedString(
-                "Your store is waiting!",
+                "🛍️ Your store is waiting!",
                 comment: "Title of the local notification suggesting a trial plan subscription."
             )
             static let body = NSLocalizedString(
@@ -172,9 +172,8 @@ extension LocalNotification {
 
         enum OneDayBeforeFreeTrialExpires {
             static let title = NSLocalizedString(
-                "Time’s almost up, %1$@!",
-                comment: "Title of the local notification to remind the user of expiring free trial plan." +
-                "The placeholder is the name of the user."
+                "⏰ Time’s running out on your free trial!",
+                comment: "Title of the local notification to remind the user of expiring free trial plan."
             )
             static let body = NSLocalizedString(
                 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow.",
@@ -185,7 +184,7 @@ extension LocalNotification {
 
         enum OneDayAfterFreeTrialExpires {
             static let title = NSLocalizedString(
-                "Your trial has ended.",
+                "🌟 Keep your business going with our plan!",
                 comment: "Title of the local notification to remind the user of the expired free trial plan."
             )
             static let body = NSLocalizedString(

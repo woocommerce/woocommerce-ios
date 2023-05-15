@@ -423,7 +423,7 @@ private extension DashboardViewController {
         viewModel.$showWebViewSheet.sink { [weak self] viewModel in
             guard let self = self else { return }
             guard let viewModel = viewModel else { return }
-            dismissModalJustInTimeMessage()
+            self.dismissModalJustInTimeMessage()
             self.openWebView(viewModel: viewModel)
         }
         .store(in: &subscriptions)
@@ -433,7 +433,7 @@ private extension DashboardViewController {
         let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
-            maybeSyncAnnouncementsAfterWebViewDismissed()
+            self.maybeSyncAnnouncementsAfterWebViewDismissed()
         }
         let hostingController = UIHostingController(rootView: webViewSheet)
         hostingController.presentationController?.delegate = self
@@ -565,8 +565,7 @@ private extension DashboardViewController {
     }
 
     private func dismissModalJustInTimeMessage() {
-        guard let modalJustInTimeMessageHostingController = modalJustInTimeMessageHostingController,
-              modalJustInTimeMessageHostingController.isBeingPresented
+        guard let modalJustInTimeMessageHostingController = modalJustInTimeMessageHostingController
         else {
             return
         }

@@ -170,6 +170,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.shouldHideStoreOnboardingTaskList] = nil
+        defaults[.hasSavedPrivacyBannerSettings] = nil
     }
 
     /// Deletes application password

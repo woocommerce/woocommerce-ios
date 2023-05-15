@@ -134,7 +134,7 @@ private extension PrivacySettingsViewController {
         if isPrivacyChoicesEnabled {
             return sections = [
                 Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
-                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy]),
+                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy, .usageTracking]),
                 Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
             ]
         } else {
@@ -163,6 +163,8 @@ private extension PrivacySettingsViewController {
             configureAnalyticsInfo(cell: cell)
         case let cell as HeadlineLabelTableViewCell where row == .morePrivacy:
             configureMorePrivacy(cell: cell)
+        case let cell as HeadlineLabelTableViewCell where row == .usageTracking:
+            configureUsageTracker(cell: cell)
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfo:
@@ -206,7 +208,7 @@ private extension PrivacySettingsViewController {
     func configureAnalyticsInfo(cell: BasicTableViewCell) {
         cell.imageView?.image = nil
         cell.textLabel?.text = NSLocalizedString(
-            "These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps.",
+            "Allow us to optimize performance by collecting information on how users interact with our mobile apps.",
             comment: "Analytics toggle description in the privacy screen."
         )
         configureInfo(cell: cell)
@@ -215,18 +217,19 @@ private extension PrivacySettingsViewController {
     func configureMorePrivacy(cell: HeadlineLabelTableViewCell) {
         cell.imageView?.image = nil
         cell.update(style: .subheadline,
-                    headline: NSLocalizedString("Advertising Option", comment: "More Privacy Options section title in the privacy screen."),
-                    body: NSLocalizedString("More Privacy Options Available. Check here to learn more.",
+                    headline: NSLocalizedString("Web Options", comment: "More Privacy Options section title in the privacy screen."),
+                    body: NSLocalizedString("More privacy options available for woocommerce.com users. Check here to learn more.",
                                             comment: "More Privacy toggle section in the privacy screen."))
         cell.accessoryType = .disclosureIndicator
     }
 
-    func configureMorePrivacyInfo(cell: BasicTableViewCell) {
+    func configureUsageTracker(cell: HeadlineLabelTableViewCell) {
         cell.imageView?.image = nil
-        cell.textLabel?.text = NSLocalizedString("More Privacy Options Available. Check here to learn more.",
-                                                 comment: "More Privacy toggle section in the privacy screen.")
+        cell.update(style: .subheadline,
+                    headline: NSLocalizedString("Usage Tracking", comment: "Usage tracker title in the privacy screen."),
+                    body: NSLocalizedString("Learn more about the data we collect about your store and your options to control this data sharing.",
+                                            comment: "Usage Tracker description section in the privacy screen."))
         cell.accessoryType = .disclosureIndicator
-        configureInfo(cell: cell)
     }
 
     func configureCollectInfo(cell: SwitchTableViewCell) {
@@ -384,7 +387,7 @@ private extension PrivacySettingsViewController {
         textView.delegate = self
 
         var linkTextAttributes = textView.linkTextAttributes ?? [:]
-        linkTextAttributes[.underlineColor] = UIColor.clear
+        linkTextAttributes[.underlineColor] = UIColor.primary
         linkTextAttributes[.foregroundColor] = UIColor.primary
         textView.linkTextAttributes = linkTextAttributes
 
@@ -557,6 +560,8 @@ extension PrivacySettingsViewController: UITableViewDelegate {
             presentPrivacyPolicyWebView()
         case .morePrivacy:
             presentURL(WooConstants.URLs.morePrivacyDocumentation.asURL())
+        case .usageTracking:
+            presentURL(WooConstants.URLs.usageTrackingDocumentation.asURL())
         default:
             break
         }
@@ -571,14 +576,14 @@ extension PrivacySettingsViewController {
     enum Localization {
         static let tableTitle = NSLocalizedString("We value your privacy. " +
                                                   "Your personal data is used to optimize our mobile apps, improve security, " +
-                                                  "conduct analytics and marketing activities, and enhance your user experience.",
+                                                  "conduct analytics, and enhance your user experience.",
                                                   comment: "Main description on the privacy screen.")
         static let tracking = NSLocalizedString("Tracking", comment: "Title of the tracking section on the privacy screen")
         static let reports = NSLocalizedString("Reports", comment: "Title of the report section on the privacy screen")
         static let morePrivacyOptions = NSLocalizedString("More Privacy Options", comment: "Title of the more privacy options section on the privacy screen")
         static let morePrivacyOptionsFooter = NSLocalizedString("To learn more about how we use your data to optimize our mobile apps, " +
                                                                 "enhance your experience, and deliver relevant marketing, " +
-                                                                "learn more in our Privacy Policy and Cookie Policy." + "\n",
+                                                                "please review our Privacy Policy and Cookie Policy." + "\n",
                                                                 comment: "Footer of the more privacy options section on the privacy screen")
         static let cookiePolicy = NSLocalizedString("Cookie Policy", comment: "Cookie Policy text on the privacy screen")
         static let privacyPolicy = NSLocalizedString("Privacy Policy", comment: "Privacy Policy text on the privacy screen")
@@ -610,6 +615,7 @@ private enum Row: CaseIterable {
     case analytics
     case analyticsInfo
     case morePrivacy
+    case usageTracking
     case collectInfo
     case privacyInfo
     case privacyPolicy
@@ -627,6 +633,8 @@ private enum Row: CaseIterable {
         case .analyticsInfo:
             return BasicTableViewCell.self
         case .morePrivacy:
+            return HeadlineLabelTableViewCell.self
+        case .usageTracking:
             return HeadlineLabelTableViewCell.self
         case .collectInfo:
             return SwitchTableViewCell.self

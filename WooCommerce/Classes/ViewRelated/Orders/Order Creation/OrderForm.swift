@@ -235,6 +235,10 @@ private struct ProductsSection: View {
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
 
+    /// Defines whether the camera permissions sheet check is presented.
+    ///
+    @State private var showPermissionsSheet: Bool = false
+
     /// ID for Add Product button
     ///
     @Namespace var addProductButton
@@ -297,7 +301,23 @@ private struct ProductsSection: View {
                     }
                 })
                 Button(OrderForm.Localization.addProductViaSKUScanner) {
-                    showAddProductViaSKUScanner.toggle()
+                    let capturePermissionStatus = viewModel.capturePermissionStatus
+                    switch capturePermissionStatus {
+                    case .notPermitted:
+                        logPermissionStatus(status: .notPermitted)
+                        self.showPermissionsSheet = true
+                    case .notDetermined:
+                        logPermissionStatus(status: .notDetermined)
+                        viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                            if isPermissionGranted {
+                                showAddProductViaSKUScanner = true
+                                logPermissionStatus(status: .permitted)
+                            }
+                        })
+                    case .permitted:
+                        showAddProductViaSKUScanner = true
+                        logPermissionStatus(status: .permitted)
+                    }
                 }
                 .accessibilityIdentifier(OrderForm.Accessibility.addProductViaSKUScannerButtonIdentifier)
                 .buttonStyle(PlusButtonStyle())
@@ -314,6 +334,18 @@ private struct ProductsSection: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground(modal: true)))
+            .actionSheet(isPresented: $showPermissionsSheet, content: {
+                ActionSheet(
+                    title: Text(OrderForm.Localization.permissionsTitle),
+                    message: Text(OrderForm.Localization.permissionsMessage),
+                     buttons: [
+                        .default(Text(OrderForm.Localization.permissionsOpenSettings), action: {
+                            openSettingsAction()
+                         }),
+                         .cancel()
+                     ]
+                 )
+            })
 
             Divider()
         }
@@ -339,6 +371,12 @@ private extension OrderForm {
                                                                    comment: "Title text of the button to add a single product via SKU scanning")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
+        static let permissionsTitle =
+        NSLocalizedString("Camera permissions", comment: "Title of the action sheet button that links to settings for camera access")
+        static let permissionsMessage = NSLocalizedString("Camera access is required for SKU scanning. " +
+                                                          "Please enable camera permissions in your device settings",
+                                                          comment: "Message of the action sheet button that links to settings for camera access")
+        static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an action sheet")
     }
 
     enum Accessibility {
@@ -406,6 +444,19 @@ private extension ProductSelectorView.Configuration {
             "Opens list of product variations.",
             comment: "Accessibility hint for selecting a variable product in the Add Product screen"
         )
+    }
+}
+
+private extension ProductsSection {
+    func openSettingsAction() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+        UIApplication.shared.open(settingsURL)
+    }
+
+    func logPermissionStatus(status: EditableOrderViewModel.CapturePermissionStatus) {
+        DDLogDebug("Capture permission status: \(status)")
     }
 }
 

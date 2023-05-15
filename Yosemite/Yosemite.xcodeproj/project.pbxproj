@@ -59,6 +59,10 @@
 		026D52C0238235930092AE05 /* ProductVariationStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026D52BF238235930092AE05 /* ProductVariationStoreTests.swift */; };
 		0271E1662509CF0100633F7A /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271E1652509CF0100633F7A /* AnyError.swift */; };
 		027CC11129F7AAEA00614B6E /* MockGenerativeContentRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027CC11029F7AAEA00614B6E /* MockGenerativeContentRemote.swift */; };
+		0286A1B82A0CBDC40099EF94 /* FeatureFlagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0286A1B72A0CBDC40099EF94 /* FeatureFlagStore.swift */; };
+		0286A1BA2A0CBE1B0099EF94 /* FeatureFlagAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0286A1B92A0CBE1B0099EF94 /* FeatureFlagAction.swift */; };
+		0286A1BC2A0CC4120099EF94 /* FeatureFlagStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0286A1BB2A0CC4120099EF94 /* FeatureFlagStoreTests.swift */; };
+		0286A1BE2A0CC4810099EF94 /* MockFeatureFlagRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0286A1BD2A0CC4810099EF94 /* MockFeatureFlagRemote.swift */; };
 		028BCE2422DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BCE2322DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift */; };
 		029249E8274B8AEE002E9C34 /* MockMediaRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029249E7274B8AEE002E9C34 /* MockMediaRemote.swift */; };
 		029B00A7230D64E800B0AE66 /* StatsTimeRangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029B00A6230D64E800B0AE66 /* StatsTimeRangeTests.swift */; };
@@ -507,6 +511,10 @@
 		026D52BF238235930092AE05 /* ProductVariationStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationStoreTests.swift; sourceTree = "<group>"; };
 		0271E1652509CF0100633F7A /* AnyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyError.swift; sourceTree = "<group>"; };
 		027CC11029F7AAEA00614B6E /* MockGenerativeContentRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGenerativeContentRemote.swift; sourceTree = "<group>"; };
+		0286A1B72A0CBDC40099EF94 /* FeatureFlagStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagStore.swift; sourceTree = "<group>"; };
+		0286A1B92A0CBE1B0099EF94 /* FeatureFlagAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagAction.swift; sourceTree = "<group>"; };
+		0286A1BB2A0CC4120099EF94 /* FeatureFlagStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagStoreTests.swift; sourceTree = "<group>"; };
+		0286A1BD2A0CC4810099EF94 /* MockFeatureFlagRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFeatureFlagRemote.swift; sourceTree = "<group>"; };
 		028BCE2322DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsStoreErrorTests.swift; sourceTree = "<group>"; };
 		029249E7274B8AEE002E9C34 /* MockMediaRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaRemote.swift; sourceTree = "<group>"; };
 		029B00A6230D64E800B0AE66 /* StatsTimeRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeTests.swift; sourceTree = "<group>"; };
@@ -1255,6 +1263,7 @@
 				02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */,
 				EEB4E2CC29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift */,
 				027CC11029F7AAEA00614B6E /* MockGenerativeContentRemote.swift */,
+				0286A1BD2A0CC4810099EF94 /* MockFeatureFlagRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1479,6 +1488,7 @@
 				021940E5291E8AD80090354E /* SiteStore.swift */,
 				02EF1665292DB65000D90AD6 /* PaymentStore.swift */,
 				EEB4E2C829B0489800371C3C /* StoreOnboardingTasksStore.swift */,
+				0286A1B72A0CBDC40099EF94 /* FeatureFlagStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1545,6 +1555,7 @@
 				DE2E8EAE29541C32002E4B14 /* WordPressSiteStore.swift */,
 				EEB4E2CE29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift */,
 				0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */,
+				0286A1BB2A0CC4120099EF94 /* FeatureFlagStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1736,6 +1747,7 @@
 				02EF1667292DB68C00D90AD6 /* PaymentAction.swift */,
 				DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */,
 				EEB4E2CA29B04A1200371C3C /* StoreOnboardingTasksAction.swift */,
+				0286A1B92A0CBE1B0099EF94 /* FeatureFlagAction.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -2039,6 +2051,8 @@
 				CC80E40C294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift in Sources */,
 				026CF62C237D92DC009563D4 /* ProductVariationAttribute+ReadOnlyConvertible.swift in Sources */,
 				247CE7AB2582DB9300F9D9D1 /* String+Extensions.swift in Sources */,
+				0286A1BA2A0CBE1B0099EF94 /* FeatureFlagAction.swift in Sources */,
+				0286A1B82A0CBDC40099EF94 /* FeatureFlagStore.swift in Sources */,
 				FE28F6F026844231004465C7 /* UserStore.swift in Sources */,
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
 				74B2601F2188A92A0041793A /* Note+ReadOnlyConvertible.swift in Sources */,
@@ -2321,6 +2335,7 @@
 				7492FAE1217FB87100ED2C69 /* SettingStoreTests.swift in Sources */,
 				45ED4F16239E939A004F1BE3 /* TaxClassStoreTests.swift in Sources */,
 				57264572250BE2E7005BBD7C /* OrdersUpsertUseCaseTests.swift in Sources */,
+				0286A1BE2A0CC4810099EF94 /* MockFeatureFlagRemote.swift in Sources */,
 				0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */,
 				D8652E4826307A5000350F37 /* MockReceiptPrinterService.swift in Sources */,
 				020B2F9623BDE4DD00BD79AD /* ProductStoreTests+Validation.swift in Sources */,
@@ -2354,6 +2369,7 @@
 				D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */,
 				261CF2C7255C445A0090D8D3 /* PaymentGatewayStoreTests.swift in Sources */,
 				DE2E8EAF29541C32002E4B14 /* WordPressSiteStore.swift in Sources */,
+				0286A1BC2A0CC4120099EF94 /* FeatureFlagStoreTests.swift in Sources */,
 				2685C121263E064200D9EE97 /* AddOnGroupStoreTests.swift in Sources */,
 				B9AECD482851F28E00E78584 /* Order+CardPresentPaymentTests.swift in Sources */,
 				02124DB02431C18700980D74 /* Media+ProductImageTests.swift in Sources */,

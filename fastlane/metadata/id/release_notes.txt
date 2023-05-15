@@ -1,1 +1,1 @@
-Rilis ini mencakup sejumlah perbaikan bug dan peningkatan untuk memaksimalkan pengalaman Anda. Kami berkomitmen untuk terus menyempurnakan aplikasi WooCommerce. Nantikan berbagai pembaruan menarik dalam beberapa minggu ke depan. Terus ikuti beritanya!
+Rilis ini memuat berbagai perbaikan minor agar pengalaman pengelolaan produk Anda makin mulus, termasuk pilihan untuk memindai SKU produk. Semoga kesungguhan kami mengembangkan perangkat lunak ini dapat Anda rasakan. Terus ikuti kabar menggembirakan yang akan segera tiba.

@@ -13,6 +13,22 @@ final class ShippingLabelFormViewController: UIViewController {
     ///
     private var shouldMarkOrderComplete = false
 
+    /// Top banner that notices about shipping constraints.
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        EUShippingNoticeTopBannerFactory.createTopBanner(
+                onDismissPressed: { [weak self] in
+                    self?.viewModel.dismissEUShippingNotice { [weak self] success in
+                        if success {
+                            self?.hideTopBannerView()
+                        }
+                    }
+                },
+                onLearnMorePressed: { [weak self] in
+                    self?.presentShippingInstructionsView()
+                })
+    }()
+
     /// Assign this closure to be notified after a shipping label is successfully purchased
     ///
     var onLabelPurchase: ((_ isOrderComplete: Bool) -> Void)?
@@ -43,7 +59,13 @@ final class ShippingLabelFormViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
+        observeEUShippingNoticeVisibilityChanges()
         observeViewModel()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -462,14 +484,15 @@ private extension ShippingLabelFormViewController {
               let country = viewModel.countries.first(where: { $0.code == countryCode }) else {
             fatalError("⛔️ Destination country is not found")
         }
-        let vm = ShippingLabelCustomsFormListViewModel(order: viewModel.order,
-                                                       customsForms: viewModel.customsForms,
-                                                       destinationCountry: country,
-                                                       countries: viewModel.countries)
-        let formList = ShippingLabelCustomsFormList(viewModel: vm) { [weak self] forms in
+        let hostingVC = ShippingCustomsFormListHostingController(order: viewModel.order,
+                                                                             customsForms: viewModel.customsForms,
+                                                                             destinationCountry: country,
+                                                                             countries: viewModel.countries,
+                                                                             shouldDisplayShippingNotice: viewModel.shouldPresentEUShippingNotice,
+                                                                             onCompletion: { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
-        }
-        let hostingVC = UIHostingController(rootView: formList)
+        })
+
         navigationController?.show(hostingVC, sender: nil)
     }
 
@@ -543,6 +566,54 @@ private extension ShippingLabelFormViewController {
         let notice = Notice(title: message, feedbackType: .error)
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+}
+
+// MARK: - Top Banner
+//
+private extension ShippingLabelFormViewController {
+    func observeEUShippingNoticeVisibilityChanges() {
+        viewModel.$shouldPresentEUShippingNotice
+            .removeDuplicates()
+            .sink { [weak self] shouldPresent in
+                guard let self else { return }
+
+                if shouldPresent {
+                    self.showTopBannerView()
+                } else {
+                    self.hideTopBannerView()
+                }
+
+            }.store(in: &viewModel.subscriptions)
+    }
+
+    /// Present a Top Banner View containing the EU Shipping Notice.
+    ///
+    func showTopBannerView() {
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    /// Removes the Top Banner View from the table view header.
+    ///
+    func hideTopBannerView() {
+        guard tableView.tableHeaderView != nil else {
+            return
+        }
+
+        topBannerView.removeFromSuperview()
+        tableView.tableHeaderView = nil
+        tableView.updateHeaderHeight()
+    }
+
+    /// Presents a Web view containing the new EU Shipping instructions.
+    ///
+    func presentShippingInstructionsView() {
+        let instructionsURL = WooConstants.URLs.shippingCustomsInstructionsForEUCountries.asURL()
+        WebviewHelper.launch(instructionsURL, with: self)
     }
 }
 
@@ -632,5 +703,10 @@ private extension ShippingLabelFormViewController {
         static let noticeUnableToFetchCountries = NSLocalizedString("Unable to fetch countries.",
                                                                     comment: "Unable to fetch countries action failed in Shipping Label Form")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
+    }
+
+    enum Constants {
+        static let headerDefaultHeight = CGFloat(330)
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
     }
 }

@@ -25,7 +25,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
 
     func test_siteURL_is_set_from_init_value() throws {
         // Given
-        let viewModel = StoreOnboardingLaunchStoreViewModel(siteURL: exampleURL, siteID: 1, onLaunch: {}, onUpgradeTapped: {})
+        let viewModel = StoreOnboardingLaunchStoreViewModel(siteURL: exampleURL, siteID: 1, onLaunch: {}, onLearnMoreTapped: {})
 
         // Then
         XCTAssertEqual(viewModel.siteURL, exampleURL)
@@ -55,7 +55,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
                     // Then
                     promise(())
                 },
-                                                                    onUpgradeTapped: {})
+                                                                    onLearnMoreTapped: {})
                 await viewModel.launchStore()
             }
         }
@@ -73,7 +73,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
                                                             siteID: siteID,
                                                             stores: self.stores,
                                                             onLaunch: {},
-                                                            onUpgradeTapped: {})
+                                                            onLearnMoreTapped: {})
 
         // When
         await viewModel.launchStore()
@@ -95,7 +95,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
                                                       siteID: siteID,
                                                       stores: self.stores,
                                                       onLaunch: {},
-                                                      onUpgradeTapped: {})
+                                                      onLearnMoreTapped: {})
         // When
         await sut.launchStore()
 
@@ -116,7 +116,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
                                                       siteID: siteID,
                                                       stores: self.stores,
                                                       onLaunch: {},
-                                                      onUpgradeTapped: {})
+                                                      onLearnMoreTapped: {})
         // When
         await sut.launchStore()
 
@@ -132,7 +132,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
                                                       siteID: siteID,
                                                       stores: stores,
                                                       onLaunch: {},
-                                                      onUpgradeTapped: {})
+                                                      onLearnMoreTapped: {})
 
         // Then
         XCTAssertEqual(sut.state, .checkingSitePlan)
@@ -152,7 +152,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
                                                       siteID: siteID,
                                                       stores: stores,
                                                       onLaunch: {},
-                                                      onUpgradeTapped: {})
+                                                      onLearnMoreTapped: {})
         // When
         await sut.checkEligibilityToPublishStore()
 
@@ -172,7 +172,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
                                                       siteID: siteID,
                                                       stores: stores,
                                                       onLaunch: {},
-                                                      onUpgradeTapped: {})
+                                                      onLearnMoreTapped: {})
         // When
         await sut.checkEligibilityToPublishStore()
 
@@ -191,7 +191,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
                                                       siteID: siteID,
                                                       stores: stores,
                                                       onLaunch: {},
-                                                      onUpgradeTapped: {})
+                                                      onLearnMoreTapped: {})
         // When
         await sut.checkEligibilityToPublishStore()
 

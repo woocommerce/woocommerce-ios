@@ -156,10 +156,6 @@ public enum FeatureFlag: Int {
     ///
     case freeTrial
 
-    /// Enables free trial store upgrades inside the app
-    ///
-    case freeTrialUpgrade
-
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin
@@ -207,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///
     case euShippingNotification
+
+    /// Do not use the Google SDK when authenticating through a Google account.
+    ///
+    case sdkLessGoogleSignIn
 }

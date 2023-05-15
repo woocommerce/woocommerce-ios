@@ -26,7 +26,8 @@
     {
       "parallelizable" : true,
       "skippedTests" : [
-        "StatsTests\/testStatsScreenLoad()"
+        "UniversalLinksTests\/test_load_orders_universal_link()",
+        "UniversalLinksTests\/test_load_payments_universal_link()"
       ],
       "target" : {
         "containerPath" : "container:WooCommerce.xcodeproj",

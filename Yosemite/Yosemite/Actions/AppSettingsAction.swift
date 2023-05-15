@@ -141,6 +141,14 @@ public enum AppSettingsAction: Action {
     ///
     case loadJetpackBenefitsBannerVisibility(currentTime: Date, calendar: Calendar, onCompletion: (Bool) -> Void)
 
+    /// Sets the dismiss state for the EU Shipping Notice.
+    ///
+    case dismissEUShippingNotice(onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the most recent dismiss state for the EU Shipping Notice.
+    ///
+    case loadEUShippingNoticeDismissState(onCompletion: (Result<Bool, Error>) -> Void)
+
     // MARK: - General Store Settings
 
     /// Sets telemetry availability status information.

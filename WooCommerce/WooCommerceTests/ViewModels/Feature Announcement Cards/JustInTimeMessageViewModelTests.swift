@@ -7,13 +7,13 @@ import Networking
 
 @testable import WooCommerce
 
-final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
+final class JustInTimeMessageViewModelTests: XCTestCase {
     private var subscriptions = Set<AnyCancellable>()
     private var webviewPublishes: [WebViewSheetViewModel]!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: Analytics!
     private var stores: MockStoresManager!
-    private var sut: JustInTimeMessageAnnouncementCardViewModel!
+    private var sut: JustInTimeMessageViewModel!
 
     override func setUp() {
         subscriptions = Set<AnyCancellable>()
@@ -24,7 +24,7 @@ final class JustInTimeMessageAnnouncementCardViewModelTests: XCTestCase {
     }
 
     func setUp(with message: Yosemite.JustInTimeMessage) {
-        sut = JustInTimeMessageAnnouncementCardViewModel(justInTimeMessage: message,
+        sut = JustInTimeMessageViewModel(justInTimeMessage: message,
                                                          screenName: "my_store",
                                                          siteID: 1234,
                                                          stores: stores,

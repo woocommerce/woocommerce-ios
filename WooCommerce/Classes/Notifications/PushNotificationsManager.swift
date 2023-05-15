@@ -353,6 +353,20 @@ extension PushNotificationsManager {
         }
     }
 
+    func requestLocalNotificationIfNeeded(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
+        Task {
+            // TODO: 7318 - tech debt - replace `UNUserNotificationCenter.current()` with
+            // `configuration.userNotificationsCenter` for unit testing
+            let center = UNUserNotificationCenter.current()
+            let pendingNotifications = await center.pendingNotificationRequests()
+            let identifier = notification.scenario.identifier
+            if pendingNotifications.map(\.identifier).contains(identifier) {
+                return
+            }
+            requestLocalNotification(notification, trigger: trigger)
+        }
+    }
+
     func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: scenarios.map { $0.identifier })

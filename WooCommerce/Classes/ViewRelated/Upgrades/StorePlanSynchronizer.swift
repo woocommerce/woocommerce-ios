@@ -102,7 +102,6 @@ private extension StorePlanSynchronizer {
             return
         }
 
-        cancelFreeTrialExpirationNotifications(siteID: siteID)
         scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: expiryDate)
         scheduleAfterExpirationNotification(siteID: siteID, expiryDate: expiryDate)
     }
@@ -120,7 +119,7 @@ private extension StorePlanSynchronizer {
         }
         /// Scheduled for 1 day before the expiry date
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: expiryDate.timeIntervalSinceNow - 86400, repeats: false)
-        pushNotesManager.requestLocalNotification(notification, trigger: trigger)
+        pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
     }
 
     func scheduleAfterExpirationNotification(siteID: Int64, expiryDate: Date) {
@@ -129,6 +128,6 @@ private extension StorePlanSynchronizer {
         }
         /// Scheduled for 1 day after the expiry date
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: expiryDate.timeIntervalSinceNow + 86400, repeats: false)
-        pushNotesManager.requestLocalNotification(notification, trigger: trigger)
+        pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
     }
 }

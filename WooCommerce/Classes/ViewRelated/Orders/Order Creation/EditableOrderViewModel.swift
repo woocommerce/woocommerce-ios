@@ -304,6 +304,12 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.order.status
     }
 
+    /// Current OrderItems
+    /// 
+    var currentOrderItems: [OrderItem] {
+        orderSynchronizer.order.items
+    }
+
     /// Analytics engine.
     ///
     private let analytics: Analytics
@@ -1268,9 +1274,11 @@ extension EditableOrderViewModel {
             return onCompletion(.failure(ScannerError.nilSKU))
         }
 
-        mapFromSKUtoProductID(sku: sku) { result in
+        mapFromSKUtoProductID(sku: sku) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case let .success(productID):
+                self.configureProductRowViewModels()
                 self.orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
                 onCompletion(.success(()))
             case .failure:

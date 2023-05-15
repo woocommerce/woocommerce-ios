@@ -37,6 +37,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     private let localNotificationResponsesSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     private(set) var requestedLocalNotifications: [LocalNotification] = []
+    private(set) var requestedLocalNotificationsIfNeeded: [LocalNotification] = []
     private(set) var canceledLocalNotificationScenarios: [[LocalNotification.Scenario]] = []
 
     func resetBadgeCount(type: Note.Kind) {
@@ -85,6 +86,10 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
         requestedLocalNotifications.append(notification)
+    }
+
+    func requestLocalNotificationIfNeeded(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
+        requestedLocalNotificationsIfNeeded.append(notification)
     }
 
     func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {

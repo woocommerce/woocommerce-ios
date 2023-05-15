@@ -19,8 +19,8 @@ struct LocalNotification {
     enum Scenario {
         case storeCreationComplete
         case oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: String)
-        case oneDayBeforeFreeTrialExpires(expiryDate: Date)
-        case oneDayAfterFreeTrialExpires
+        case oneDayBeforeFreeTrialExpires(siteID: Int64, expiryDate: Date)
+        case oneDayAfterFreeTrialExpires(siteID: Int64)
         // The following notifications are deprecated and are canceled in the first release.
         case loginSiteAddressError
         case invalidEmailFromSiteAddressLogin
@@ -34,10 +34,10 @@ struct LocalNotification {
                 return "store_creation_complete"
             case .oneDayAfterStoreCreationNameWithoutFreeTrial:
                 return "one_day_after_store_creation_name_without_free_trial"
-            case .oneDayBeforeFreeTrialExpires:
-                return "one_day_before_free_trial_expires"
-            case .oneDayAfterFreeTrialExpires:
-                return "one_day_after_free_trial_expires"
+            case let .oneDayBeforeFreeTrialExpires(siteID, _):
+                return "one_day_before_free_trial_expires" + "\(siteID)"
+            case .oneDayAfterFreeTrialExpires(let siteID):
+                return "one_day_after_free_trial_expires" + "\(siteID)"
             case .loginSiteAddressError:
                 return "site_address_error"
             case .invalidEmailFromSiteAddressLogin:
@@ -113,7 +113,7 @@ extension LocalNotification {
             category = .storeCreation
             actions = [.subscribe]
 
-        case .oneDayBeforeFreeTrialExpires(let expiryDate):
+        case let .oneDayBeforeFreeTrialExpires(_, expiryDate):
             title = String.localizedStringWithFormat(Localization.OneDayBeforeFreeTrialExpires.title, name)
             let dateFormatStyle = Date.FormatStyle(locale: locale, timeZone: timeZone)
                 .weekday(.wide)

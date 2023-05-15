@@ -89,9 +89,12 @@ final class StorePlanSynchronizer: ObservableObject {
 //
 private extension StorePlanSynchronizer {
     func scheduleOrCancelNotificationsIfNeeded(for plan: WPComSitePlan) {
+        guard let siteID = site?.siteID else {
+            return
+        }
         guard plan.isFreeTrial else {
             /// cancels any scheduled notifications
-            return cancelFreeTrialExpirationNotifications()
+            return cancelFreeTrialExpirationNotifications(siteID: siteID)
         }
         guard let expiryDate = plan.expiryDate,
               expiryDate > Date() else {
@@ -99,20 +102,20 @@ private extension StorePlanSynchronizer {
             return
         }
 
-        cancelFreeTrialExpirationNotifications()
-        scheduleBeforeExpirationNotification(expiryDate: expiryDate)
-        scheduleAfterExpirationNotification(expiryDate: expiryDate)
+        cancelFreeTrialExpirationNotifications(siteID: siteID)
+        scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: expiryDate)
+        scheduleAfterExpirationNotification(siteID: siteID, expiryDate: expiryDate)
     }
 
-    func cancelFreeTrialExpirationNotifications() {
+    func cancelFreeTrialExpirationNotifications(siteID: Int64) {
         pushNotesManager.cancelLocalNotification(scenarios: [
-            .oneDayAfterFreeTrialExpires,
-            .oneDayBeforeFreeTrialExpires(expiryDate: Date()) // placeholder date, irrelevant to the notification identifier
+            .oneDayAfterFreeTrialExpires(siteID: siteID),
+            .oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: Date()) // placeholder date, irrelevant to the notification identifier
         ])
     }
 
-    func scheduleBeforeExpirationNotification(expiryDate: Date) {
-        guard let notification = LocalNotification(scenario: .oneDayBeforeFreeTrialExpires(expiryDate: expiryDate)) else {
+    func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {
+        guard let notification = LocalNotification(scenario: .oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: expiryDate)) else {
             return
         }
         /// Scheduled for 1 day before the expiry date
@@ -120,8 +123,8 @@ private extension StorePlanSynchronizer {
         pushNotesManager.requestLocalNotification(notification, trigger: trigger)
     }
 
-    func scheduleAfterExpirationNotification(expiryDate: Date) {
-        guard let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires) else {
+    func scheduleAfterExpirationNotification(siteID: Int64, expiryDate: Date) {
+        guard let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)) else {
             return
         }
         /// Scheduled for 1 day after the expiry date

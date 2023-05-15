@@ -25,12 +25,15 @@ struct SearchHeader: View {
 
     private let customizations: Customizations
 
+    private let onEditingChanged: ((Bool) -> Void)?
+
     /// - Parameters:
     ///   - text: Search term binding.
     ///   - placeholder: Placeholder for the text field.
     ///   - customizations: Customizations of the view styles.
     init(text: Binding<String>,
          placeholder: String,
+         onEditingChanged: ((Bool) -> Void)? = nil,
          customizations: Customizations = .init(
             backgroundColor: .searchBarBackground,
             borderColor: .clear,
@@ -40,6 +43,7 @@ struct SearchHeader: View {
          )) {
              self._text = text
              self.placeholder = placeholder
+             self.onEditingChanged = onEditingChanged
              self.customizations = customizations
          }
 
@@ -56,7 +60,7 @@ struct SearchHeader: View {
                 .accessibilityHidden(true)
 
             // TextField
-            TextField(placeholder, text: $text)
+            TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
                 .padding([.bottom, .top], customizations.internalVerticalPadding)
                 .padding(.trailing, customizations.internalHorizontalPadding)
                 .accessibility(addTraits: .isSearchField)

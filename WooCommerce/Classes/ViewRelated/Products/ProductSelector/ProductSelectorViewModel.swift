@@ -167,22 +167,15 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Each update will trigger a remote product search and sync.
     @Published var searchTerm: String = ""
 
-    /// All selected products if the selector supports multiple selections.
-    ///
-    @Published private var selectedProductIDs: [Int64] = []
+    @Published var productSearchFilter: ProductSearchFilter = .all
 
-    /// All selected product variations if the selector supports multiple selections.
+    /// All selected product and variations ids.
     ///
-    @Published private var selectedProductVariationIDs: [Int64] = []
+    @Published private var selectedItemsIDs: [Int64] = []
 
     var totalSelectedItemsCount: Int {
-        selectedProductIDs.count + selectedProductVariationIDs.count
+        selectedItemsIDs.count
     }
-
-    /// IDs of selected products and variations from initializer.
-    /// This is mutable since we want to cancel the setup for any item that is unselected manually.
-    ///
-    private var initialSelectedItems: [Int64]
 
     /// Whether the product list should contains only purchasable items.
     ///
@@ -220,7 +213,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
-        self.initialSelectedItems = selectedItemIDs
+        self.selectedItemsIDs = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
@@ -244,23 +237,22 @@ final class ProductSelectorViewModel: ObservableObject {
         }
 
         tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
+        toggleSelection(id: productID)
 
-        guard let onProductSelectionStateChanged else {
-            toggleSelection(productID: productID)
-            return
+        // The SKU search gives product variations as products. Here we have to handle that.
+        if let productVariation = selectedProduct.toProductVariation() {
+            // We generate a parent product, which has the same info with the right ID, that is, the product variation parent id.
+            onVariationSelectionStateChanged?(productVariation, selectedProduct.copy(productID: selectedProduct.parentID))
+        } else {
+            onProductSelectionStateChanged?(selectedProduct)
         }
-        // The selector supports multiple selection. Toggles the item, and triggers the selection
-        toggleSelection(productID: productID)
-        onProductSelectionStateChanged(selectedProduct)
     }
 
-    func changeSelectionStateForVariation(with id: Int64, productID: Int64) {
-        getVariationsViewModel(for: productID)?.changeSelectionStateForVariation(with: id)
-
-        if selectedProductVariationIDs.contains(id) {
-            selectedProductVariationIDs = selectedProductVariationIDs.filter { $0 != id }
+    func toggleSelection(id: Int64) {
+        if selectedItemsIDs.contains(id) {
+            selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
         } else {
-            selectedProductVariationIDs.append(id)
+            selectedItemsIDs.append(id)
         }
     }
 
@@ -270,7 +262,7 @@ final class ProductSelectorViewModel: ObservableObject {
         guard let variableProduct = products.first(where: { $0.productID == productID }), variableProduct.variations.isNotEmpty else {
             return nil
         }
-        let selectedItems = selectedProductVariationIDs.filter { variableProduct.variations.contains($0) }
+        let selectedItems = selectedItemsIDs.filter { variableProduct.variations.contains($0) }
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
@@ -283,6 +275,7 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     func clearSearchAndFilters() {
         searchTerm = ""
+        productSearchFilter = .all
         filtersSubject.send(.init())
     }
 
@@ -293,12 +286,11 @@ final class ProductSelectorViewModel: ObservableObject {
               variableProduct.variations.isNotEmpty else {
             return
         }
-        // remove items that exist in the initial list
-        initialSelectedItems.removeAll { selectedVariationIDs.contains($0) }
+
         // remove all previous selected variations
-        selectedProductVariationIDs.removeAll(where: { variableProduct.variations.contains($0) })
+        selectedItemsIDs.removeAll(where: { variableProduct.variations.contains($0) })
         // append new selected IDs
-        selectedProductVariationIDs.append(contentsOf: selectedVariationIDs)
+        selectedItemsIDs.append(contentsOf: selectedVariationIDs)
 
         tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID, selectedVariationIDs: selectedVariationIDs)
     }
@@ -314,7 +306,7 @@ final class ProductSelectorViewModel: ObservableObject {
             return
         }
         let selectedIDs: [Int64]
-        let intersection = Set(variableProduct.variations).intersection(Set(selectedProductVariationIDs))
+        let intersection = Set(variableProduct.variations).intersection(Set(selectedItemsIDs))
         if intersection.count == variableProduct.variations.count {
             // if all variation is currently selected, deselect them all
             selectedIDs = []
@@ -329,9 +321,8 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Triggers completion closure when the multiple selection completes.
     ///
     func completeMultipleSelection() {
-        let allIDs = selectedProductIDs + selectedProductVariationIDs
-        tracker.trackConfirmButtonTapped(with: allIDs.count)
-        onMultipleSelectionCompleted?(allIDs)
+        tracker.trackConfirmButtonTapped(with: selectedItemsIDs.count)
+        onMultipleSelectionCompleted?(selectedItemsIDs)
     }
 
     /// Triggers completion closure when the close button is tapped
@@ -343,9 +334,7 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Unselect all items.
     ///
     func clearSelection() {
-        initialSelectedItems = []
-        selectedProductIDs = []
-        selectedProductVariationIDs = []
+        selectedItemsIDs = []
 
         onAllSelectionsCleared?()
     }
@@ -356,7 +345,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync products from remote.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
-        transitionToSyncingState()
+        transitionToSyncingState(pageNumber: pageNumber)
 
         if searchTerm.isNotEmpty {
             searchProducts(siteID: siteID, keyword: searchTerm, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
@@ -402,6 +391,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
+                                                  filter: productSearchFilter,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize,
                                                   stockStatus: filtersSubject.value.stockStatus,
@@ -428,12 +418,14 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
         }
 
         stores.dispatch(action)
+        tracker.trackSearchTriggered()
     }
 
     private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) {
         // At the moment local search supports neither filters nor pagination
         guard filtersSubject.value.numberOfActiveFilters == 0,
-              pageNumber == 1 else {
+              pageNumber == 1,
+              productSearchFilter == .all else {
             return
         }
 
@@ -475,13 +467,28 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 private extension ProductSelectorViewModel {
     /// Update state for sync from remote.
     ///
-    func transitionToSyncingState() {
+    func transitionToSyncingState(pageNumber: Int) {
         shouldShowScrollIndicator = true
         notice = nil
-        if products.isEmpty {
-            syncStatus = .firstPageSync
+
+        if shouldShowLoadingScreen(pageNumber: pageNumber) {
+            syncStatus = .loading
         }
     }
+
+    func shouldShowLoadingScreen(pageNumber: Int) -> Bool {
+        guard pageNumber == 1 else {
+            return false
+        }
+
+        guard searchTerm.isEmpty &&
+              filtersSubject.value.numberOfActiveFilters == 0 else {
+            return true
+        }
+
+
+        return products.isEmpty
+   }
 
     /// Update state after sync is complete.
     ///
@@ -513,7 +520,6 @@ private extension ProductSelectorViewModel {
                 }
 
                 createSectionsAddingTopProductsIfRequired(from: loadedProducts)
-                updateSelectionsFromInitialSelectedItems()
                 observeSelections()
             } catch {
                 DDLogError("⛔️ Error fetching products for new order: \(error)")
@@ -567,14 +573,15 @@ private extension ProductSelectorViewModel {
         sections.append(ProductSelectorSection(type: type, products: products))
     }
 
-    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters) {
+    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters, productSearchFilter: ProductSearchFilter) {
         productsResultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
                                                   productType: filters.productType)
         if searchTerm.isNotEmpty {
-            // When the search query changes, also includes the original results predicate in addition to the search keyword.
-            let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", searchTerm)
+            // When the search query changes, also includes the original results predicate in addition to the search keyword and filter key.
+            let searchResultsPredicate = NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@ AND $result.filterKey = %@).@count > 0",
+                                                     searchTerm, productSearchFilter.rawValue)
             let subpredicates = [resultsPredicate, searchResultsPredicate].compactMap { $0 }
             productsResultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
         } else {
@@ -609,12 +616,15 @@ private extension ProductSelectorViewModel {
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
 
         let filtersPublisher = filtersSubject.removeDuplicates()
+        let searchFilterPublisher = $productSearchFilter
+            .removeDuplicates()
+            .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
 
-        searchTermPublisher.combineLatest(filtersPublisher)
-            .sink { [weak self] searchTerm, filtersSubject in
+        Publishers.CombineLatest3(searchTermPublisher, filtersPublisher, searchFilterPublisher)
+            .sink { [weak self] searchTerm, filtersSubject, productSearchFilter in
                 guard let self = self else { return }
                 self.updateFilterButtonTitle(with: filtersSubject)
-                self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject)
+                self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject, productSearchFilter: productSearchFilter)
                 self.reloadData()
                 self.syncingCoordinator.resynchronize()
             }.store(in: &subscriptions)
@@ -632,70 +642,35 @@ private extension ProductSelectorViewModel {
 
 // MARK: - Multiple selection support
 private extension ProductSelectorViewModel {
-    /// Toggles the selection of the specified product.
-    ///
-    func toggleSelection(productID: Int64) {
-        if initialSelectedItems.contains(productID) {
-            initialSelectedItems.removeAll(where: { $0 == productID })
-        }
-
-        if selectedProductIDs.contains(productID) {
-            selectedProductIDs.removeAll(where: { $0 == productID })
-        } else {
-            selectedProductIDs.append(productID)
-        }
-    }
-
-    /// Update selected product and variation IDs from initial selected items
-    ///
-    func updateSelectionsFromInitialSelectedItems() {
-        guard initialSelectedItems.isNotEmpty else {
-            return
-        }
-        for id in initialSelectedItems {
-            guard !selectedProductIDs.contains(id) && !selectedProductVariationIDs.contains(id) else {
-                continue
-            }
-            if products.contains(where: { $0.productID == id }) {
-                selectedProductIDs.append(id)
-            } else {
-                selectedProductVariationIDs.append(id)
-            }
-        }
-    }
-
     /// Observes changes in selections to update product rows
     ///
     func observeSelections() {
-        $sections.combineLatest($selectedProductIDs, $selectedProductVariationIDs) {
-            [weak self] sections, selectedProductIDs, selectedVariationIDs -> [ProductsSectionViewModel] in
+        $sections.combineLatest($selectedItemsIDs) {
+            [weak self] sections, selectedItemsIDs -> [ProductsSectionViewModel] in
             guard let self = self else {
                 return []
             }
             return self.generateProductsSectionViewModels(sections: sections,
-                                            selectedProductIDs: selectedProductIDs,
-                                            selectedProductVariationIDs: selectedVariationIDs)
+                                                          selectedItemsIDs: selectedItemsIDs)
         }.assign(to: &$productsSectionViewModels)
     }
 
     func generateProductsSectionViewModels(sections: [ProductSelectorSection],
-                                           selectedProductIDs: [Int64],
-                                           selectedProductVariationIDs: [Int64]) -> [ProductsSectionViewModel] {
+                                           selectedItemsIDs: [Int64]) -> [ProductsSectionViewModel] {
         sections.map { ProductsSectionViewModel(title: $0.type.title,
                                                 productRows: generateProductRows(products: $0.products,
-                                                                                 selectedProductIDs: selectedProductIDs,
-                                                                                 selectedProductVariationIDs: selectedProductVariationIDs)) }
+                                                                                 selectedItemsIDs: selectedItemsIDs)) }
     }
 
     /// Generates product rows based on products and selected product/variation IDs
     ///
-    func generateProductRows(products: [Product], selectedProductIDs: [Int64], selectedProductVariationIDs: [Int64]) -> [ProductRowViewModel] {
+    func generateProductRows(products: [Product], selectedItemsIDs: [Int64]) -> [ProductRowViewModel] {
         return products.map { product in
             var selectedState: ProductRow.SelectedState
             if product.variations.isEmpty {
-                selectedState = selectedProductIDs.contains(product.productID) ? .selected : .notSelected
+                selectedState = selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
             } else {
-                let intersection = Set(product.variations).intersection(Set(selectedProductVariationIDs))
+                let intersection = Set(product.variations).intersection(Set(selectedItemsIDs))
                 if intersection.isEmpty {
                     selectedState = .notSelected
                 } else if intersection.count == product.variations.count {
@@ -714,7 +689,7 @@ extension ProductSelectorViewModel {
     /// Represents possible statuses for syncing products
     ///
     enum SyncStatus {
-        case firstPageSync
+        case loading
         case results
         case empty
     }

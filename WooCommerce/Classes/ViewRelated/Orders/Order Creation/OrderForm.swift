@@ -325,8 +325,10 @@ private struct ProductsSection: View {
                     scroll.scrollTo(addProductViaSKUScannerButton)
                 }, content: {
                     ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                        print("SKU found: \(detectedBarcode)")
-                        showAddProductViaSKUScanner.toggle()
+                        print("🍉 Detected SKU: \(detectedBarcode). Attempting to add to Order...")
+                        viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                            showAddProductViaSKUScanner.toggle()
+                        })
                     })
                 })
                 .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)

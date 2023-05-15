@@ -1238,6 +1238,11 @@ extension EditableOrderViewModel {
         case notDetermined
     }
 
+    enum ScannerError: Error {
+        case nilSKU
+        case productNotFound
+    }
+
     /// Returns the current app permission status to capture media
     ///
     var capturePermissionStatus: CapturePermissionStatus {
@@ -1260,18 +1265,34 @@ extension EditableOrderViewModel {
     ///
     func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         guard let sku = sku else {
-            return
+            return onCompletion(.failure(ScannerError.nilSKU))
         }
 
         mapFromSKUtoProductID(sku: sku) { result in
-            onCompletion(.failure(NSError()))
+            switch result {
+            case let .success(productID):
+                self.orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
+                onCompletion(.success(()))
+            case .failure:
+                onCompletion(.failure(ScannerError.productNotFound))
+            }
         }
     }
 
     /// Attempts to map SKU to product ID
     ///
-    func mapFromSKUtoProductID(sku: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        onCompletion(.failure(NSError()))
+    private func mapFromSKUtoProductID(sku: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: { result in
+            switch result {
+            case let .success(product):
+                print("🍉 Success: retrieved product ID \(product.productID) from sku \(sku)")
+                onCompletion(.success(product.productID))
+            case .failure:
+                DDLogError("🍉 Failed to retrieve productID from sku \(sku)")
+                onCompletion(.failure(NSError()))
+            }
+        })
+        stores.dispatch(action)
     }
 }
 

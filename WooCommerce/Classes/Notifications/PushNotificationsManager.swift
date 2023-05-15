@@ -306,9 +306,7 @@ extension PushNotificationsManager {
 
     func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
         Task {
-            // TODO: 7318 - tech debt - replace `UNUserNotificationCenter.current()` with
-            // `configuration.userNotificationsCenter` for unit testing
-            let center = UNUserNotificationCenter.current()
+            let center = configuration.userNotificationsCenter
             let settings = await center.notificationSettings()
             guard settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional else {
                 DDLogError("⛔️ Unable to request a local notification due to invalid authorization status: \(settings.authorizationStatus)")
@@ -355,9 +353,7 @@ extension PushNotificationsManager {
 
     func requestLocalNotificationIfNeeded(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
         Task {
-            // TODO: 7318 - tech debt - replace `UNUserNotificationCenter.current()` with
-            // `configuration.userNotificationsCenter` for unit testing
-            let center = UNUserNotificationCenter.current()
+            let center = configuration.userNotificationsCenter
             let pendingNotifications = await center.pendingNotificationRequests()
             let identifier = notification.scenario.identifier
             if pendingNotifications.map(\.identifier).contains(identifier) {

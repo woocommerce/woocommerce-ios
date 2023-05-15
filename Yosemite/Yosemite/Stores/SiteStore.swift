@@ -46,6 +46,8 @@ public final class SiteStore: Store {
             launchSite(siteID: siteID, completion: completion)
         case let .enableFreeTrial(siteID, profilerData, completion):
             enableFreeTrial(siteID: siteID, profilerData: profilerData, completion: completion)
+        case let.loadSite(siteID, completion):
+            loadSite(siteID: siteID, completion: completion)
         }
     }
 }
@@ -92,6 +94,15 @@ private extension SiteStore {
                 completion(.success(()))
             } catch {
                 completion(.failure(error))
+            }
+        }
+    }
+
+    func loadSite(siteID: Int64, completion: @escaping (Result<Site, Error>) -> Void) {
+        Task { @MainActor in
+            let result = await Result { try await remote.loadSite(siteID: siteID) }
+            await MainActor.run {
+                completion(result)
             }
         }
     }

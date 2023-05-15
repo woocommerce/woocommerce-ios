@@ -96,14 +96,19 @@ private extension StorePlanSynchronizer {
             /// cancels any scheduled notifications
             return cancelFreeTrialExpirationNotifications(siteID: siteID)
         }
-        guard let expiryDate = plan.expiryDate,
-              expiryDate > Date() else {
-            /// only schedule notifications if the plan is not expired yet
+
+        guard let expiryDate = plan.expiryDate else {
             return
         }
+        let oneDayTimeInterval: TimeInterval = 86400
 
-        scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: expiryDate)
-        scheduleAfterExpirationNotification(siteID: siteID, expiryDate: expiryDate)
+        if expiryDate.timeIntervalSinceNow - oneDayTimeInterval > 0 {
+            scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: expiryDate)
+        }
+
+        if expiryDate.timeIntervalSinceNow + oneDayTimeInterval > 0 {
+            scheduleAfterExpirationNotification(siteID: siteID, expiryDate: expiryDate)
+        }
     }
 
     func cancelFreeTrialExpirationNotifications(siteID: Int64) {
@@ -118,7 +123,14 @@ private extension StorePlanSynchronizer {
             return
         }
         /// Scheduled for 1 day before the expiry date
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: expiryDate.timeIntervalSinceNow - 86400, repeats: false)
+        var triggerDateComponents = expiryDate.dateAndTimeComponents()
+        guard let day = triggerDateComponents.day else {
+            return
+        }
+        triggerDateComponents.day = day - 1
+        triggerDateComponents.timeZone = .current
+        triggerDateComponents.calendar = .current
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
     }
 
@@ -127,7 +139,14 @@ private extension StorePlanSynchronizer {
             return
         }
         /// Scheduled for 1 day after the expiry date
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: expiryDate.timeIntervalSinceNow + 86400, repeats: false)
+        var triggerDateComponents = expiryDate.dateAndTimeComponents()
+        guard let day = triggerDateComponents.day else {
+            return
+        }
+        triggerDateComponents.day = day + 1
+        triggerDateComponents.timeZone = .current
+        triggerDateComponents.calendar = .current
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
     }
 }

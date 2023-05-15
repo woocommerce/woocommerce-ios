@@ -84,6 +84,12 @@ struct PaymentMethodsView: View {
                                 viewModel.trackCollectByPaymentLink()
                             }
                         }
+
+                        if viewModel.showScanToPayRow {
+                            Divider()
+
+                            MethodRow(icon: .scanToPayIcon, title: Localization.scanToPay, accessibilityID: Accessibility.scanToPayMethod) {}
+                        }
                     }
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
@@ -216,6 +222,7 @@ extension PaymentMethodsView {
         static let tapToPay = NSLocalizedString("Tap to Pay on iPhone",
                                                 comment: "Tap to Pay on iPhone method title on the select payment method screen")
         static let link = NSLocalizedString("Share Payment Link", comment: "Payment Link method title on the select payment method screen")
+        static let scanToPay = NSLocalizedString("Scan to Pay", comment: "Scan to Pay method title on the select payment method screen")
         static let markAsPaidTitle = NSLocalizedString("Mark as Paid?", comment: "Alert title when selecting the cash payment method")
         static let markAsPaidButton = NSLocalizedString("Mark as Paid", comment: "Alert button when selecting the cash payment method")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the payment methods screen")
@@ -236,6 +243,7 @@ extension PaymentMethodsView {
         static let cardMethod = "payment-methods-view-card-row"
         static let tapToPayMethod = "payment-methods-view-tap-to-pay-row"
         static let paymentLink = "payment-methods-view-payment-link-row"
+        static let scanToPayMethod = "payment-methods-view-scan-to-pay-row"
     }
 }
 

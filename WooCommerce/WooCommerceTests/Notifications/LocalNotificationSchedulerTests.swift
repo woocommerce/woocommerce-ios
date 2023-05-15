@@ -72,7 +72,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
 
 extension LocalNotification: Equatable {
     public static func == (lhs: LocalNotification, rhs: LocalNotification) -> Bool {
-        return lhs.title == rhs.title &&
+        lhs.title == rhs.title &&
         lhs.body == rhs.body &&
         lhs.scenario == rhs.scenario &&
         lhs.actions?.category == rhs.actions?.category &&

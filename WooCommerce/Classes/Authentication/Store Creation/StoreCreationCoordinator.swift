@@ -879,7 +879,7 @@ private extension StoreCreationCoordinator {
 
 private extension StoreCreationCoordinator {
     func scheduleLocalNotificationWhenStoreIsReady() {
-        guard let notification = LocalNotification(scenario: .storeCreationComplete, stores: stores) else {
+        guard let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete, stores: stores) else {
             return
         }
         cancelLocalNotificationWhenStoreIsReady()
@@ -892,7 +892,7 @@ private extension StoreCreationCoordinator {
     }
 
     func cancelLocalNotificationWhenStoreIsReady() {
-        localNotificationScheduler.cancel(scenario: .storeCreationComplete)
+        localNotificationScheduler.cancel(scenario: Constants.LocalNotificationScenario.storeCreationComplete)
     }
 }
 
@@ -1008,6 +1008,11 @@ private extension StoreCreationCoordinator {
         // TODO: 8108 - update the identifier to production value when it's ready
         static let iapPlanIdentifier = "debug.woocommerce.ecommerce.monthly"
         static let webPlanIdentifier = "1021"
+
+        /// Local notification scenarios during store creation.
+        enum LocalNotificationScenario {
+            static let storeCreationComplete: LocalNotification.Scenario = .storeCreationComplete
+        }
     }
 
     /// Error scenarios when purchasing a WPCOM plan.

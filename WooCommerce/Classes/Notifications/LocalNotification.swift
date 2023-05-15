@@ -50,7 +50,7 @@ struct LocalNotification {
                 return "wpcom_password_error"
             }
         }
-    
+
         enum IdentifierPrefix {
             static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
             static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"

@@ -102,6 +102,10 @@ extension WooConstants {
         ///
         case morePrivacyDocumentation = "https://wordpress.com/support/tracking-opt-outs/"
 
+        /// Documentation about WooCommerce Usage Tracking
+        ///
+        case usageTrackingDocumentation = "https://woocommerce.com/usage-tracking/"
+
         /// Privacy policy for California users URL
         ///
         case californiaPrivacy = "https://automattic.com/privacy/#california-consumer-privacy-act-ccpa"
@@ -292,6 +296,10 @@ extension WooConstants {
         /// URL with un-escaped characters for testing purposes. It should read as `https://test.com/test-%E2%80%93-survey`
         ///
         case testURLStringWithSpecialCharacters = "https://test.com/test-–-survey"
+
+        /// URL with the USPS instructions when shipping from US to EU countries with specific customs rules.
+        ///
+        case shippingCustomsInstructionsForEUCountries = "https://www.usps.com/international/new-eu-customs-rules.htm"
 
         /// Returns the URL version of the receiver
         ///

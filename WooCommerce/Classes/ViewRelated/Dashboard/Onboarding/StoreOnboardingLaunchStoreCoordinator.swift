@@ -7,24 +7,24 @@ final class StoreOnboardingLaunchStoreCoordinator: Coordinator {
     let navigationController: UINavigationController
     private let site: Site
     private let isLaunched: Bool
-    private let onUpgradeTapped: () -> Void
+    private let onLearnMoreTapped: () -> Void
     private let onStoreLaunched: (() -> Void)?
 
     /// - Parameters:
     ///   - site: The site for the launch store onboarding task.
     ///   - isLaunched: Whether the site has already been launched.
     ///   - navigationController: The navigation controller that presents the launch store flow.
-    ///   - onUpgradeTapped: Fired upon tapping `Upgrade` button from free trial banne
+    ///   - onLearnMoreTapped: Fired upon tapping `LearnMore` button from free trial banner.
     ///   - onStoreLaunched: Fired when the store is launched successfully
     init(site: Site,
          isLaunched: Bool,
          navigationController: UINavigationController,
-         onUpgradeTapped: @escaping () -> Void,
+         onLearnMoreTapped: @escaping () -> Void,
          onStoreLaunched: (() -> Void)? = nil) {
         self.site = site
         self.isLaunched = isLaunched
         self.navigationController = navigationController
-        self.onUpgradeTapped = onUpgradeTapped
+        self.onLearnMoreTapped = onLearnMoreTapped
         self.onStoreLaunched = onStoreLaunched
     }
 
@@ -49,9 +49,9 @@ private extension StoreOnboardingLaunchStoreCoordinator {
         let launchStoreController = StoreOnboardingLaunchStoreHostingController(viewModel: .init(siteURL: siteURL, siteID: site.siteID) { [weak self] in
             self?.onStoreLaunched?()
             self?.showLaunchedView(siteURL: siteURL, in: modalNavigationController)
-        } onUpgradeTapped: { [weak self] in
+        } onLearnMoreTapped: { [weak self] in
             self?.dismiss()
-            self?.onUpgradeTapped()
+            self?.onLearnMoreTapped()
         })
         modalNavigationController.pushViewController(launchStoreController, animated: false)
         navigationController.present(modalNavigationController, animated: true)

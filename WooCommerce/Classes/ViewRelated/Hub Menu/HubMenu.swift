@@ -153,7 +153,7 @@ struct HubMenu: View {
             showingCoupons = true
         case HubMenuViewModel.InAppPurchases.id:
             showingIAPDebug = true
-        case HubMenuViewModel.Subscriptions.id, HubMenuViewModel.Upgrades.id:
+        case HubMenuViewModel.Subscriptions.id:
             viewModel.presentSubscriptions()
         default:
             break

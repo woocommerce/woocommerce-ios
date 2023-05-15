@@ -1,1 +1,1 @@
-Met deze release hebben we een aantal bugs verholpen en verbeteringen doorgevoerd om je ervaring soepeler te maken. We zullen de WooCommerce-app blijven verbeteren, en er komen de volgende weken een aantal spannende updates aan. Nog even geduld!
+Deze release bevat tal van kleine verbeteringen om je productmanagement-ervaring soepeler te laten verlopen, waaronder de optie om een product-SKU te scannen. We hopen dat je merkt dat we dit met liefde doen. Blijf ons volgen voor meer spannend nieuws!

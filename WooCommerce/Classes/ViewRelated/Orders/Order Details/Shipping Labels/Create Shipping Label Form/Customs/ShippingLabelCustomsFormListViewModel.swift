@@ -18,6 +18,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     @Published private(set) var doneButtonEnabled: Bool = false
 
+    /// Whether shipping notice banner should be displayed.
+    ///
+    @Published private(set) var shouldDisplayShippingNotice: Bool = false
+
     /// Associated order of the shipping label.
     ///
     private let order: Order
@@ -58,6 +62,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
          customsForms: [ShippingLabelCustomsForm],
          destinationCountry: Country,
          countries: [Country],
+         shouldDisplayShippingNotice: Bool = false,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.multiplePackagesDetected = customsForms.count > 1
@@ -71,11 +76,20 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
             return ServiceLocator.currencySettings.symbol(from: currencyCode)
         }()
         self.currencySymbol = currencySymbol
+        self.shouldDisplayShippingNotice = shouldDisplayShippingNotice
         self.inputViewModels = customsForms.map { .init(customsForm: $0,
                                                         destinationCountry: destinationCountry,
                                                         countries: countries,
                                                         currency: currencySymbol) }
         configureFormsValidation()
+    }
+}
+
+// MARK: - Banner
+//
+extension ShippingLabelCustomsFormListViewModel {
+    func bannerDismissTapped() {
+        shouldDisplayShippingNotice = false
     }
 }
 

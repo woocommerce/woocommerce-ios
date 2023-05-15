@@ -1,1 +1,1 @@
-Esta versión incluye varias mejoras y correcciones de varios errores para que tu experiencia sea más fluida. Estamos comprometidos a no dejar de mejorar la aplicación de WooCommerce y las próximas semanas llegarán grandes novedades. Estate atento.
+Esta versión incluye una serie de pequeñas mejoras para que la experiencia de gestión de productos sea más fluida, incluida la opción de explorar la SKU de un producto. Esperamos que seas consciente del cariño que le ponemos a nuestro software. ¡No te pierdas las próximas noticias!

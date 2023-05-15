@@ -318,7 +318,32 @@ private extension AppCoordinator {
     }
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
-        // TODO: 9665 - handle actions on local notifications
+        let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayBeforeFreeTrialExpires
+        let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires
+
+        switch response.notification.request.identifier {
+        case let identifier where identifier.hasPrefix(oneDayBeforeFreeTrialExpiresIdentifier):
+            guard let siteID = Int64(identifier.replacingOccurrences(of: oneDayBeforeFreeTrialExpiresIdentifier, with: "")) else {
+                return
+            }
+            openPlansPage(siteID: siteID)
+        case let identifier where identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier):
+            guard let siteID = Int64(identifier.replacingOccurrences(of: oneDayAfterFreeTrialExpiresIdentifier, with: "")) else {
+                return
+            }
+            openPlansPage(siteID: siteID)
+        default:
+            // TODO: 9665 - handle actions on other local notifications
+            break
+        }
+    }
+}
+
+/// Local notification handling helper methods.
+private extension AppCoordinator {
+    func openPlansPage(siteID: Int64) {
+        let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
+        window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
     }
 }
 

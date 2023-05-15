@@ -2323,6 +2323,7 @@ extension WooAnalyticsEvent {
         enum Source: String {
             case banner
             case upgradesScreen = "upgrades_screen"
+            case localNotification = "local_notification"
         }
 
         static func freeTrialUpgradeNowTapped(source: Source) -> WooAnalyticsEvent {

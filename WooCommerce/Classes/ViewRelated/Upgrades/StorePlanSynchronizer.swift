@@ -113,7 +113,10 @@ private extension StorePlanSynchronizer {
 
     func cancelFreeTrialExpirationNotifications(siteID: Int64) {
         localNotificationScheduler.cancel(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
-        localNotificationScheduler.cancel(scenario: .oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: Date())) // placeholder date, irrelevant to the notification identifier
+        localNotificationScheduler.cancel(scenario: .oneDayBeforeFreeTrialExpires(
+            siteID: siteID,
+            expiryDate: Date() // placeholder date, irrelevant to the notification identifier
+        ))
     }
 
     func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {

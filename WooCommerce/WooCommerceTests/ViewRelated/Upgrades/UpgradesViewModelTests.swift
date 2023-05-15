@@ -16,7 +16,7 @@ final class UpgradesViewModelTests: XCTestCase {
 
         let session = SessionManager.testingInstance
         let stores = MockStoresManager(sessionManager: session)
-        let featureFlags = MockFeatureFlagService(isFreeTrialUpgradeEnabled: true)
+        let featureFlags = MockFeatureFlagService()
         session.defaultSite = sampleSite
 
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
@@ -36,7 +36,6 @@ final class UpgradesViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.planName, NSLocalizedString("Free Trial", comment: ""))
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertTrue(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
         XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
@@ -61,7 +60,7 @@ final class UpgradesViewModelTests: XCTestCase {
             }
         }
         let synchronizer = StorePlanSynchronizer(stores: stores)
-        let featureFlags = MockFeatureFlagService(isFreeTrialUpgradeEnabled: true)
+        let featureFlags = MockFeatureFlagService()
         let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
 
         // When
@@ -70,7 +69,6 @@ final class UpgradesViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.planName, NSLocalizedString("Trial ended", comment: ""))
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertTrue(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
         XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
@@ -104,7 +102,6 @@ final class UpgradesViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.planName, NSLocalizedString("eCommerce", comment: ""))
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertFalse(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
         XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
@@ -162,7 +159,6 @@ final class UpgradesViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.planName.isEmpty)
         XCTAssertTrue(viewModel.planInfo.isEmpty)
-        XCTAssertFalse(viewModel.shouldShowUpgradeButton)
         XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
         XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNotNil(viewModel.errorNotice)

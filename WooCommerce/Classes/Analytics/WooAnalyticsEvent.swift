@@ -351,6 +351,12 @@ extension WooAnalyticsEvent {
         static func quantityRulesTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationDetailViewQuantityRulesTapped, properties: [:])
         }
+
+        /// Tracks when the merchant taps the Subscriptions row for a product variation.
+        ///
+        static func subscriptionsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationViewSubscriptionsTapped, properties: [:])
+        }
     }
 }
 
@@ -482,6 +488,7 @@ extension WooAnalyticsEvent {
             static let itemType = "item_type"
             static let source = "source"
             static let isFilterActive = "is_filter_active"
+            static let searchFilter = "search_filter"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -622,6 +629,12 @@ extension WooAnalyticsEvent {
                 Keys.productCount: Int64(productCount),
                 Keys.source: sources.joined(separator: ","),
                 Keys.isFilterActive: isFilterActive
+            ])
+        }
+
+        static func orderCreationProductSelectorSearchTriggered(searchFilter: ProductSearchFilter) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductSelectorSearchTriggered, properties: [
+                Keys.searchFilter: searchFilter.rawValue
             ])
         }
 

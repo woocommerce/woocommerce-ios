@@ -23,8 +23,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .loginPrologueOnboarding:
             return true
-        case .loginErrorNotifications:
-            return true
         case .loginMagicLinkEmphasisM2:
             return true
         case .promptToEnableCodInIppOnboarding:
@@ -68,13 +66,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .addCouponToOrder:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         case .addProductToOrderViaSKUScanner:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .productBundles:
             return true
         case .freeTrial:
             return true
-        case .freeTrialUpgrade:
-            return false
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
@@ -94,6 +90,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .readOnlyMinMaxQuantities:
             return true
         case .privacyChoices:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .storeCreationNotifications:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .euShippingNotification:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .sdkLessGoogleSignIn:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

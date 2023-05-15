@@ -13,6 +13,7 @@ final class EditableOrderViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
+    private let permissionChecker: CaptureDevicePermissionChecker
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -60,6 +61,12 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     var shouldShowCancelButton: Bool {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
+    }
+
+    /// Indicates whether adding a product to the order via SKU scanning is enabled
+    ///
+    var isAddProductToOrderViaSKUScannerEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
     }
 
     var title: String {
@@ -314,7 +321,8 @@ final class EditableOrderViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
+         permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker()) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -324,6 +332,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
+        self.permissionChecker = permissionChecker
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -401,9 +410,11 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setProduct.send(input)
 
         if item.variationID != 0 {
-            productSelectorViewModel.changeSelectionStateForVariation(with: item.variationID, productID: item.productID)
+            productSelectorViewModel.toggleSelection(id: item.variationID)
+            selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
         } else if item.productID != 0 {
-            productSelectorViewModel.changeSelectionStateForProduct(with: item.productID)
+            productSelectorViewModel.toggleSelection(id: item.productID)
+            selectedProducts.removeAll(where: { $0.productID == item.productID })
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -1216,6 +1227,35 @@ private extension EditableOrderViewModel {
         } else {
             return String.localizedStringWithFormat(Localization.CouponSummary.plural, output)
         }
+    }
+}
+
+// MARK: Camera scanner
+
+extension EditableOrderViewModel {
+
+    enum CapturePermissionStatus {
+        case permitted
+        case notPermitted
+        case notDetermined
+    }
+
+    /// Returns the current app permission status to capture media
+    ///
+    var capturePermissionStatus: CapturePermissionStatus {
+        let authStatus = permissionChecker.authorizationStatus(for: .video)
+        switch authStatus {
+        case .authorized:
+            return .permitted
+        case .denied, .restricted:
+            return .notPermitted
+        default:
+            return .notDetermined
+        }
+    }
+
+    func requestCameraAccess(onCompletion: @escaping ((Bool) -> Void)) {
+        permissionChecker.requestAccess(for: .video, completionHandler: onCompletion)
     }
 }
 

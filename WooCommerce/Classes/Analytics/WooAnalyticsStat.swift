@@ -361,6 +361,7 @@ public enum WooAnalyticsStat: String {
     case orderCreationProductSelectorItemUnselected = "order_creation_product_selector_item_unselected"
     case orderCreationProductSelectorConfirmButtonTapped = "order_creation_product_selector_confirm_button_tapped"
     case orderCreationProductSelectorClearSelectionButtonTapped = "order_creation_product_selector_clear_selection_button_tapped"
+    case orderCreationProductSelectorSearchTriggered = "order_creation_product_selector_search_triggered"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -592,6 +593,7 @@ public enum WooAnalyticsStat: String {
     case productVariationDetailUpdateSuccess = "product_variation_update_success"
     case productVariationDetailUpdateError = "product_variation_update_error"
     case productVariationDetailViewQuantityRulesTapped = "product_variation_view_quantity_rules_tapped"
+    case productVariationViewSubscriptionsTapped = "product_variation_view_subscriptions_tapped"
 
     case productVariationBulkUpdateSectionTapped = "product_variation_bulk_update_section_tapped"
     case productVariationBulkUpdateFieldTapped = "product_variation_bulk_update_field_tapped"

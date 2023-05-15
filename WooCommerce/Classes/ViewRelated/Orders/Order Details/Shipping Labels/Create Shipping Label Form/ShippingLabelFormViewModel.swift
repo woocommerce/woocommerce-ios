@@ -1,7 +1,10 @@
 import UIKit
 import Yosemite
+import Combine
 import WooFoundation
 import protocol Storage.StorageManagerType
+import protocol Experiments.FeatureFlagService
+
 
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.
 ///
@@ -166,11 +169,22 @@ final class ShippingLabelFormViewModel {
         }
     }
 
+    /// Flag to indicate if the view should display the EU shipping notice.
+    ///
+    @Published private(set) var shouldPresentEUShippingNotice: Bool = false
+
+    /// Flag to indicate if the `.euShippingNotification` feature is activated.
+    ///
+    private let isEUShippingNotificationEnabled: Bool
+
+    var subscriptions = Set<AnyCancellable>()
+
     init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userDefaults: UserDefaults) {
 
         self.siteID = order.siteID
@@ -191,12 +205,14 @@ final class ShippingLabelFormViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
+        self.isEUShippingNotificationEnabled = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
 
         state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
         syncPackageDetails()
         fetchCountries()
         monitorAccountSettingsResultsController()
+        updateEUShippingNoticeVisibility()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -209,6 +225,7 @@ final class ShippingLabelFormViewModel {
         handleCarrierAndRatesValueChanges(selectedRates: [], editable: false)
 
         updateRowsForCustomsIfNeeded()
+        updateEUShippingNoticeVisibility()
 
         if dataState == .validated, let address {
             userDefaults[.storePhoneNumber] = address.phone
@@ -226,6 +243,7 @@ final class ShippingLabelFormViewModel {
         handleCarrierAndRatesValueChanges(selectedRates: [], editable: false)
 
         updateRowsForCustomsIfNeeded()
+        updateEUShippingNoticeVisibility()
 
         if dateState == .validated {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_complete"])
@@ -871,6 +889,48 @@ extension ShippingLabelFormViewModel {
     private enum PurchaseError: Error {
         case labelDetailsMissing
         case invalidPackageDetails
+    }
+}
+
+// MARK: - Shipping Notice dismiss state handling
+extension ShippingLabelFormViewModel {
+    private func updateEUShippingNoticeVisibility() {
+        verifyEUShippingNoticeDismissState { [weak self] dismissed in
+            guard let self = self, dismissed else {
+                self?.shouldPresentEUShippingNotice = false
+                return
+            }
+
+            self.shouldPresentEUShippingNotice = EUCustomsScenarioValidator.validate(origin: self.originAddress, destination: self.destinationAddress)
+        }
+    }
+
+    func dismissEUShippingNotice(onCompletion: @escaping (Bool) -> Void) {
+        let action = AppSettingsAction.dismissEUShippingNotice { result in
+            switch result {
+            case .success:
+                onCompletion(true)
+            case .failure:
+                onCompletion(false)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
+        guard isEUShippingNotificationEnabled else {
+            return onCompletion(false)
+        }
+
+        let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in
+            switch result {
+            case .success(let dismissed):
+                onCompletion(!dismissed)
+            case .failure:
+                onCompletion(false)
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

@@ -3,11 +3,15 @@
 13.7
 -----
 - [*] JITMs: Added modal-style Just in Time Message support on the dashboard [https://github.com/woocommerce/woocommerce-ios/pull/9694]
+- [*] Order Creation: Products can be searched by SKU when adding products to an order. [https://github.com/woocommerce/woocommerce-ios/pull/9711]
+- [*] Orders: Fixes order details so separate order items are not combined just because they are the same product or variation. [https://github.com/woocommerce/woocommerce-ios/pull/9710]
 
 13.6
 -----
+- [*] Remove login error local notifications that used to be scheduled 24 hours from certain login errors. [https://github.com/woocommerce/woocommerce-ios/pull/9666]
 - [*] JITMs: Added customization to Just in Time Message banner background and badges [https://github.com/woocommerce/woocommerce-ios/pull/9633]
 - [*] Product form > description editor: fix the extra bottom inset after hiding the keyboard either manually (available on a tablet) or applying an AI-generated product description. [https://github.com/woocommerce/woocommerce-ios/pull/9638]
+- [*] Products: Fixes stock statuses for Product Bundles so that backordered bundles and bundle stock quantities are displayed as expected. [https://github.com/woocommerce/woocommerce-ios/pull/9681]
 
 13.5
 -----

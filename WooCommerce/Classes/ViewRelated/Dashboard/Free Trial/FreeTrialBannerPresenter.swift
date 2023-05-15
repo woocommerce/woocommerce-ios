@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import UIKit
+import protocol Experiments.FeatureFlagService
 
 /// Presents or hides the free trial banner at the bottom of the screen.
 /// Internally uses the `storePlanSynchronizer` to know when to present or hide the banner.
@@ -29,11 +30,20 @@ final class FreeTrialBannerPresenter {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// String for the banner action button text
+    ///
+    private var bannerActionText: String {
+        return Localization.learnMore
+    }
+
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
     ///   - onLayoutUpdated: Closure invoked when the banner is added or removed.
-    init(viewController: UIViewController, containerView: UIView, siteID: Int64, onLayoutUpdated: @escaping (CGFloat) -> Void) {
+    init(viewController: UIViewController,
+         containerView: UIView, siteID: Int64,
+         onLayoutUpdated: @escaping (CGFloat) -> Void,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.viewController = viewController
         self.containerView = containerView
         self.siteID = siteID
@@ -102,7 +112,7 @@ private extension FreeTrialBannerPresenter {
         // Remove any previous banner.
         freeTrialBanner?.removeFromSuperview()
 
-        let freeTrialViewController = FreeTrialBannerHostingViewController(mainText: contentText) { [weak self] in
+        let freeTrialViewController = FreeTrialBannerHostingViewController(actionText: bannerActionText, mainText: contentText) { [weak self] in
             self?.showUpgradesView()
         }
         freeTrialViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -138,5 +148,11 @@ private extension FreeTrialBannerPresenter {
         guard let viewController else { return }
         let upgradeController = UpgradesHostingController(siteID: siteID)
         viewController.show(upgradeController, sender: self)
+    }
+}
+
+private extension FreeTrialBannerPresenter {
+    enum Localization {
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
     }
 }

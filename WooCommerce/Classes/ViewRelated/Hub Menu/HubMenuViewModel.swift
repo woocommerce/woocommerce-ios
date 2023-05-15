@@ -325,13 +325,13 @@ extension HubMenuViewModel {
     }
 
     struct Subscriptions: HubMenuItem {
-        static var id = "upgrades"
+        static var id = "subscriptions"
 
         let title: String = Localization.subscriptions
         let description: String = Localization.subscriptionsDescription
         let icon: UIImage = .shoppingCartPurpleIcon
         let iconColor: UIColor = .primary
-        let accessibilityIdentifier: String = "menu-upgrades"
+        let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"
     }
 

@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case loginPrologueOnboarding
 
-    /// Local notifications scheduled 24 hours after certain login errors
-    ///
-    case loginErrorNotifications
-
     /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
     ///
     case loginMagicLinkEmphasisM2
@@ -148,7 +144,7 @@ public enum FeatureFlag: Int {
     ///
     case addCouponToOrder
 
-    /// Enables the ability to add products to orders by SKU scanning 
+    /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner
 
@@ -159,10 +155,6 @@ public enum FeatureFlag: Int {
     /// Enables conditional behaviour when a site has a free trial plan.
     ///
     case freeTrial
-
-    /// Enables free trial store upgrades inside the app
-    ///
-    case freeTrialUpgrade
 
     /// Enables manual error handling for site credential login.
     ///
@@ -203,4 +195,16 @@ public enum FeatureFlag: Int {
     /// Enables updates of the Privacy Choices project.
     ///
     case privacyChoices
+
+    /// Local notifications for store creation
+    ///
+    case storeCreationNotifications
+
+    /// Enables EU Bound notifications inside the Shipping Labels feature
+    ///
+    case euShippingNotification
+
+    /// Do not use the Google SDK when authenticating through a Google account.
+    ///
+    case sdkLessGoogleSignIn
 }

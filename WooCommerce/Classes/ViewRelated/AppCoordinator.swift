@@ -318,62 +318,7 @@ private extension AppCoordinator {
     }
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
-        switch response.actionIdentifier {
-        case LocalNotification.Action.contactSupport.rawValue:
-            guard let viewController = window.rootViewController else {
-                return
-            }
-            let supportForm = SupportFormHostingController(viewModel: .init())
-            supportForm.show(from: viewController)
-            analytics.track(.loginLocalNotificationTapped, withProperties: [
-                "action": "contact_support",
-                "type": response.notification.request.identifier
-            ])
-        case LocalNotification.Action.loginWithWPCom.rawValue:
-            guard let loginNavigationController = window.rootViewController as? LoginNavigationController,
-                  let viewController = loginNavigationController.topViewController else {
-                return
-            }
-            let command = NavigateToEnterAccount(signInSource: .wpCom)
-            command.execute(from: viewController)
-            analytics.track(.loginLocalNotificationTapped, withProperties: [
-                "action": "login_with_wpcom",
-                "type": response.notification.request.identifier
-            ])
-        case LocalNotification.Action.resetPassword.rawValue:
-            let loginFields: LoginFields = {
-                let fields = LoginFields()
-                fields.meta.userIsDotCom = true
-                return fields
-            }()
-            WordPressAuthenticator.openForgotPasswordURL(loginFields)
-            analytics.track(.loginLocalNotificationTapped, withProperties: [
-                "action": "reset_password",
-                "type": response.notification.request.identifier
-            ])
-        case UNNotificationDefaultActionIdentifier:
-            // Triggered when the user taps on the notification itself instead of one of the actions.
-            let requestIdentifier = response.notification.request.identifier
-            guard LocalNotification.Scenario.allCases.map({ $0.rawValue }).contains(requestIdentifier) else {
-                break
-            }
-            analytics.track(.loginLocalNotificationTapped, withProperties: [
-                "action": "default",
-                "type": requestIdentifier
-            ])
-        case UNNotificationDismissActionIdentifier:
-            // Triggered when the user taps on the notification's "Clear" action.
-            switch response.notification.request.identifier {
-            case LocalNotification.Scenario.loginSiteAddressError.rawValue:
-                analytics.track(.loginLocalNotificationDismissed, withProperties: [
-                    "type": response.notification.request.identifier
-                ])
-            default:
-                break
-            }
-        default:
-            break
-        }
+        // TODO: 9665 - handle actions on local notifications
     }
 }
 

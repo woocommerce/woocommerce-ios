@@ -357,7 +357,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldAuthenticateAdminPage)
     }
 
-    func test_menuElements_include_upgrades_on_wp_com_sites() {
+    func test_menuElements_include_subscriptions_on_wp_com_sites() {
         // Given
         let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
 
@@ -374,7 +374,7 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
-    func test_menuElements_does_not_include_upgrades_on_self_hosted_sites() {
+    func test_menuElements_does_not_include_subscriptions_on_self_hosted_sites() {
         // Given
         let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
 
@@ -390,7 +390,6 @@ final class HubMenuViewModelTests: XCTestCase {
             item.id == HubMenuViewModel.Subscriptions.id
         }))
     }
-
 }
 
 private extension HubMenuViewModelTests {

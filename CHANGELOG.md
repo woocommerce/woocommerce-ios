@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.6
+This release includes several bug fixes and improvements to your product management experience, including fixing stock statuses for Product Bundles so that backordered bundles and bundle stock quantities are displayed as expected. We've also added the option for you to automatically generate product description based on the a few key words.
+
 ## 13.5
 This release contains a handful of minor improvements to make your product management experience smoother, including the option to scan a product SKU. We hope you notice the love we put into our software. Stay tuned for some exciting news coming your way!
 

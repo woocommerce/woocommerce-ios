@@ -192,6 +192,10 @@ public class AppSettingsStore: Store {
             loadFirstInPersonPaymentsTransactionDate(siteID: siteID, using: cardReaderType, onCompletion: completion)
         case .storeInPersonPaymentsTransactionIfFirst(siteID: let siteID, cardReaderType: let cardReaderType):
             storeInPersonPaymentsTransactionIfFirst(siteID: siteID, using: cardReaderType)
+        case .dismissEUShippingNotice(let onCompletion):
+            setEUShippingNoticeDismissState(isDismissed: true, onCompletion: onCompletion)
+        case .loadEUShippingNoticeDismissState(let onCompletion):
+            loadEUShippingNoticeDismissState(onCompletion: onCompletion)
         }
     }
 }
@@ -319,6 +323,24 @@ private extension AppSettingsStore {
             return onCompletion(true)
         }
         onCompletion(numberOfDaysSinceLastDismissal >= 5)
+    }
+
+    /// Sets the EU Shipping Notice dismissal state into `GeneralAppSettings`
+    ///
+    func setEUShippingNoticeDismissState(isDismissed: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(isDismissed, for: \.isEUShippingNoticeDismissed)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
+    /// Loads the EU Shipping Notice dismissal state from `GeneralAppSettings`
+    ///
+    func loadEUShippingNoticeDismissState(onCompletion: (Result<Bool, Error>) -> Void) {
+        onCompletion(.success(generalAppSettings.value(for: \.isEUShippingNoticeDismissed)))
     }
 }
 

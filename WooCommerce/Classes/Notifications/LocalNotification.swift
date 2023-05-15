@@ -59,20 +59,12 @@ struct LocalNotification {
 
     /// The action type in a local notification.
     enum Action: String {
-        case explore
-        case subscribe
-        case upgrade
+        // TODO: add any custom action if needed
+        case none
 
         /// The title of the action in a local notification.
         var title: String {
-            switch self {
-            case .explore:
-                return Localization.Actions.explore
-            case .subscribe:
-                return Localization.Actions.subscribe
-            case .upgrade:
-                return Localization.Actions.upgrade
-            }
+            return ""
         }
     }
 }
@@ -93,15 +85,12 @@ extension LocalNotification {
 
         let title: String
         let body: String
-        let actions: [Action]
-        let category: Category
+        let actions: CategoryActions? = nil
 
         switch scenario {
         case .storeCreationComplete:
             title = Localization.StoreCreationComplete.title
             body = String.localizedStringWithFormat(Localization.StoreCreationComplete.body, name)
-            actions = [.explore]
-            category = .storeCreation
 
         case .oneDayAfterStoreCreationNameWithoutFreeTrial(let storeName):
             title = Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.title
@@ -110,8 +99,6 @@ extension LocalNotification {
                 name,
                 storeName
             )
-            category = .storeCreation
-            actions = [.subscribe]
 
         case let .oneDayBeforeFreeTrialExpires(_, expiryDate):
             title = Localization.OneDayBeforeFreeTrialExpires.title
@@ -121,14 +108,10 @@ extension LocalNotification {
                 .day(.defaultDigits)
             let displayDate = expiryDate.formatted(dateFormatStyle)
             body = String.localizedStringWithFormat(Localization.OneDayBeforeFreeTrialExpires.body, displayDate)
-            category = .storeCreation
-            actions = [.upgrade]
 
         case .oneDayAfterFreeTrialExpires:
             title = Localization.OneDayAfterFreeTrialExpires.title
             body = String.localizedStringWithFormat(Localization.OneDayAfterFreeTrialExpires.body, name)
-            category = .storeCreation
-            actions = [.upgrade]
 
         default:
             return nil
@@ -137,7 +120,7 @@ extension LocalNotification {
         self.init(title: title,
                   body: body,
                   scenario: scenario,
-                  actions: .init(category: category, actions: actions))
+                  actions: actions)
     }
 }
 
@@ -191,21 +174,6 @@ extension LocalNotification {
                 "%1$@, we have paused your store, but you can continue by picking a plan that suits you best.",
                 comment: "Message on the local notification to remind the user of the expired free trial plan." +
                 "The placeholder is the name of the user."
-            )
-        }
-
-        enum Actions {
-            static let explore = NSLocalizedString(
-                "Explore",
-                comment: "Action on the local notification to remind the user of a newly created store."
-            )
-            static let subscribe = NSLocalizedString(
-                "Subscribe",
-                comment: "Action on the local notification to suggest the user to subscribe to the trial plan."
-            )
-            static let upgrade = NSLocalizedString(
-                "Upgrade",
-                comment: "Action on the local notification to remind the user of the expiring free trial plan."
             )
         }
     }

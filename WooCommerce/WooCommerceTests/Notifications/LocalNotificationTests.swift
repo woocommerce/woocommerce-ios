@@ -14,8 +14,7 @@ final class LocalNotificationTests: XCTestCase {
 
         // Then
         assertEqual(LocalNotification.Localization.StoreCreationComplete.title, notification.title)
-        assertEqual(LocalNotification.Category.storeCreation, notification.actions?.category)
-        assertEqual([LocalNotification.Action.explore], notification.actions?.actions)
+        XCTAssertNil(notification.actions)
         let expectedBody = String.localizedStringWithFormat(LocalNotification.Localization.StoreCreationComplete.body, testName)
         assertEqual(expectedBody, notification.body)
     }
@@ -33,7 +32,7 @@ final class LocalNotificationTests: XCTestCase {
         // Then
         assertEqual(LocalNotification.Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.title, notification.title)
         assertEqual(LocalNotification.Category.storeCreation, notification.actions?.category)
-        assertEqual([LocalNotification.Action.subscribe], notification.actions?.actions)
+        XCTAssertNil(notification.actions)
         let expectedBody = String.localizedStringWithFormat(
             LocalNotification.Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.body,
             testName,
@@ -59,8 +58,7 @@ final class LocalNotificationTests: XCTestCase {
         let expectedBody = String.localizedStringWithFormat(LocalNotification.Localization.OneDayBeforeFreeTrialExpires.body, "Wednesday, May 10")
         assertEqual(expectedTitle, notification.title)
         assertEqual(expectedBody, notification.body)
-        assertEqual(LocalNotification.Category.storeCreation, notification.actions?.category)
-        assertEqual([LocalNotification.Action.upgrade], notification.actions?.actions)
+        XCTAssertNil(notification.actions)
     }
 
     func test_oneDayAfterFreeTrialExpires_scenario_returns_correct_notification_contents() throws {
@@ -77,7 +75,6 @@ final class LocalNotificationTests: XCTestCase {
         let expectedBody = String.localizedStringWithFormat(LocalNotification.Localization.OneDayAfterFreeTrialExpires.body, testName)
         assertEqual(expectedTitle, notification.title)
         assertEqual(expectedBody, notification.body)
-        assertEqual(LocalNotification.Category.storeCreation, notification.actions?.category)
-        assertEqual([LocalNotification.Action.upgrade], notification.actions?.actions)
+        XCTAssertNil(notification.actions)
     }
 }

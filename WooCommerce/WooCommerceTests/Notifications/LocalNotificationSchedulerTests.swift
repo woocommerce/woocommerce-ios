@@ -68,6 +68,30 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         // Then
         XCTAssertEqual(pushNotesManager.requestedLocalNotifications, [notification])
     }
+
+    func test_requestLocalNotificationIfNeeded_is_triggered_when_shouldSkipIfScheduled_is_true() async throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager, stores: stores)
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+                // Remote feature flag is enabled.
+                completion(true)
+            }
+        }
+
+        // When
+        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        await scheduler.schedule(notification: notification,
+                                 trigger: nil,
+                                 remoteFeatureFlag: .storeCreationCompleteNotification,
+                                 shouldSkipIfScheduled: true)
+
+        // Then
+        XCTAssertEqual(pushNotesManager.requestedLocalNotifications, [])
+        XCTAssertEqual(pushNotesManager.requestedLocalNotificationsIfNeeded, [notification])
+    }
 }
 
 extension LocalNotification: Equatable {
@@ -84,7 +108,6 @@ extension LocalNotification.Scenario: Equatable {
     public static func ==(lhs: LocalNotification.Scenario, rhs: LocalNotification.Scenario) -> Bool {
         switch (lhs, rhs) {
         case (.storeCreationComplete, .storeCreationComplete),
-            (.oneDayAfterFreeTrialExpires, .oneDayAfterFreeTrialExpires),
             (.loginSiteAddressError, .loginSiteAddressError),
             (.invalidEmailFromSiteAddressLogin, .invalidEmailFromSiteAddressLogin),
             (.invalidEmailFromWPComLogin, .invalidEmailFromWPComLogin),
@@ -93,8 +116,10 @@ extension LocalNotification.Scenario: Equatable {
             return true
         case let (.oneDayAfterStoreCreationNameWithoutFreeTrial(lhsStoreName), .oneDayAfterStoreCreationNameWithoutFreeTrial(rhsStoreName)):
             return lhsStoreName == rhsStoreName
-        case let (.oneDayBeforeFreeTrialExpires(lhsExpiryDate), .oneDayBeforeFreeTrialExpires(rhsExpiryDate)):
-            return lhsExpiryDate == rhsExpiryDate
+        case let (.oneDayBeforeFreeTrialExpires(lhsSiteID, lhsExpiryDate), .oneDayBeforeFreeTrialExpires(rhsSiteID, rhsExpiryDate)):
+            return lhsExpiryDate == rhsExpiryDate && lhsSiteID == rhsSiteID
+        case let (.oneDayAfterFreeTrialExpires(lhsSiteID), .oneDayAfterFreeTrialExpires(rhsSiteID)):
+            return lhsSiteID == rhsSiteID
         default:
             return false
         }

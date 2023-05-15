@@ -30,13 +30,11 @@ final class LocalNotificationScheduler {
             return
         }
 
-        Task {
-            if shouldSkipIfScheduled {
-                await pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
-            } else {
-                await pushNotesManager.requestLocalNotification(notification,
-                                                          trigger: trigger)
-            }
+        if shouldSkipIfScheduled {
+            await pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
+        } else {
+            await pushNotesManager.requestLocalNotification(notification,
+                                                      trigger: trigger)
         }
     }
 

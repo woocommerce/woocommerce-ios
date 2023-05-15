@@ -1597,6 +1597,19 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
     }
+
+    func test_mapFromSKUtoProductID_when_unable_to_map_then_returns_error() {
+        // When
+        let errorWasReceived: Bool = waitFor { promise in
+            self.viewModel.mapFromSKUtoProductID(sku: "", onCompletion: { error in
+                promise(error.isFailure)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(errorWasReceived)
+    }
+
 }
 
 private extension MockStorageManager {

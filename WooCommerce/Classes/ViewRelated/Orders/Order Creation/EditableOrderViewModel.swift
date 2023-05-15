@@ -1255,6 +1255,24 @@ extension EditableOrderViewModel {
     func requestCameraAccess(onCompletion: @escaping ((Bool) -> Void)) {
         permissionChecker.requestAccess(for: .video, completionHandler: onCompletion)
     }
+
+    /// Attempts to add a Product to the current Order by SKU search
+    ///
+    func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        guard let sku = sku else {
+            return
+        }
+
+        mapFromSKUtoProductID(sku: sku) { result in
+            onCompletion(.failure(NSError()))
+        }
+    }
+
+    /// Attempts to map SKU to product ID
+    ///
+    func mapFromSKUtoProductID(sku: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        onCompletion(.failure(NSError()))
+    }
 }
 
 // MARK: Constants

@@ -423,6 +423,7 @@ private extension DashboardViewController {
         viewModel.$showWebViewSheet.sink { [weak self] viewModel in
             guard let self = self else { return }
             guard let viewModel = viewModel else { return }
+            dismissModalJustInTimeMessage()
             self.openWebView(viewModel: viewModel)
         }
         .store(in: &subscriptions)
@@ -562,6 +563,7 @@ private extension DashboardViewController {
             return
         }
         dismiss(animated: true)
+        self.modalJustInTimeMessageHostingController = nil
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)

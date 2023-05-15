@@ -31,7 +31,7 @@ final class StorePlanSynchronizer: ObservableObject {
 
     /// Handles local notifications for free trial plan expiration
     ///
-    private let pushNotesManager: PushNotesManager
+    private let localNotificationScheduler: LocalNotificationScheduler
 
     /// Observable subscription store.
     ///
@@ -40,7 +40,7 @@ final class StorePlanSynchronizer: ObservableObject {
     init(stores: StoresManager = ServiceLocator.stores,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.stores = stores
-        self.pushNotesManager = pushNotesManager
+        self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -112,10 +112,8 @@ private extension StorePlanSynchronizer {
     }
 
     func cancelFreeTrialExpirationNotifications(siteID: Int64) {
-        pushNotesManager.cancelLocalNotification(scenarios: [
-            .oneDayAfterFreeTrialExpires(siteID: siteID),
-            .oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: Date()) // placeholder date, irrelevant to the notification identifier
-        ])
+        localNotificationScheduler.cancel(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
+        localNotificationScheduler.cancel(scenario: .oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: Date())) // placeholder date, irrelevant to the notification identifier
     }
 
     func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {
@@ -131,7 +129,12 @@ private extension StorePlanSynchronizer {
         triggerDateComponents.timeZone = .current
         triggerDateComponents.calendar = .current
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
-        pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      trigger: trigger,
+                                                      remoteFeatureFlag: .oneDayBeforeFreeTrialExpiresNotification,
+                                                      shouldSkipIfScheduled: true)
+        }
     }
 
     func scheduleAfterExpirationNotification(siteID: Int64, expiryDate: Date) {
@@ -147,6 +150,11 @@ private extension StorePlanSynchronizer {
         triggerDateComponents.timeZone = .current
         triggerDateComponents.calendar = .current
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
-        pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      trigger: trigger,
+                                                      remoteFeatureFlag: .oneDayAfterFreeTrialExpiresNotification,
+                                                      shouldSkipIfScheduled: true)
+        }
     }
 }

@@ -1,56 +1,64 @@
+import TestKit
 import XCTest
 @testable import Networking
 
-class FeatureFlagRemoteTests: XCTestCase {
-
+final class FeatureFlagRemoteTests: XCTestCase {
     /// Dummy Network Wrapper
     ///
-    let network = MockNetwork()
+    private var network: MockNetwork!
 
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
+        network = MockNetwork()
         network.removeAllSimulatedResponses()
+    }
+
+    override func tearDown() {
+        network = nil
+        super.tearDown()
     }
 
     // MARK: - Load All Feature Flag Tests
 
-    /// Verifies that loadAllFeatureFlags properly parses the `feature-flags-load-all` sample response.
-    ///
-    func testLoadAllFeatureFlagsProperlyReturnsParsedFeatureFlags() throws {
+    func test_loadAllFeatureFlags_returns_all_known_flags() async throws {
         // Given
-        let remote = FeatureFlagsRemote(network: network)
+        let remote = FeatureFlagRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all")
 
         // When
-        var result: Result<FeatureFlagList, Error>?
-        waitForExpectation { expectation in
-            remote.loadAllFeatureFlags(forDeviceId: UUID().uuidString) { aResult in
-                result = aResult
-                expectation.fulfill()
-            }
-        }
+        let featureFlags = try await remote.loadAllFeatureFlags()
 
         // Then
-        let featureFlags = try XCTUnwrap(result?.get())
-        XCTAssert(featureFlags.count == 2)
+        XCTAssertEqual(featureFlags, [
+            .storeCreationCompleteNotification: false,
+            .oneDayAfterStoreCreationNameWithoutFreeTrial: false,
+            .oneDayBeforeFreeTrialExpiresNotification: false,
+            .oneDayAfterFreeTrialExpiresNotification: false
+        ])
     }
 
-    func testLoadAllFeatureFlagsProperlyHandlesErrors() throws {
+    func test_loadAllFeatureFlags_returns_empty_dictionary_when_response_does_not_include_known_flags() async throws {
         // Given
-        let remote = FeatureFlagsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "generic_error")
+        let remote = FeatureFlagRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all-with-missing-values")
 
         // When
-        var result: Result<FeatureFlagList, Error>?
-        waitForExpectation { expectation in
-            remote.loadAllFeatureFlags(forDeviceId: UUID().uuidString) { aResult in
-                result = aResult
-                expectation.fulfill()
-            }
-        }
+        let featureFlags = try await remote.loadAllFeatureFlags()
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+        XCTAssert(featureFlags.isEmpty)
+    }
+
+    func test_loadAllFeatureFlags_properly_handles_errors() async throws {
+        // Given
+        let remote = FeatureFlagRemote(network: network)
+
+        // When
+        await assertThrowsError({ _ = try await remote.loadAllFeatureFlags() }, errorAssert: {
+            // Then
+            ($0 as? NetworkError) == .notFound
+        })
     }
 }

@@ -1597,19 +1597,81 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
     }
-
-    func test_mapFromSKUtoProductID_when_unable_to_map_then_returns_error() {
+    
+    func test_addScannedProductToOrder_when_sku_is_nil_then_fails_to_add_product_and_returns_nilSKU_error() {
+        // Given
+        let nilSKU: String? = nil
+        
         // When
-        let errorWasReceived: Bool = waitFor { promise in
-            self.viewModel.mapFromSKUtoProductID(sku: "", onCompletion: { error in
-                promise(error.isFailure)
+        var capturedErrors: [EditableOrderViewModel.ScannerError] = []
+        viewModel.addScannedProductToOrder(barcode: nilSKU, onCompletion: { expectedError in
+            switch expectedError {
+            case let .failure(error as EditableOrderViewModel.ScannerError):
+                capturedErrors.append(error)
+            default:
+                XCTFail("Expected failure, got success")
+            }
+        })
+        
+        // Then
+        XCTAssertEqual(capturedErrors, [.nilSKU])
+    }
+    
+    func test_addScannedProductToOrder_when_sku_is_not_found_then_fails_to_add_product_and_returns_productNotFound_error() {
+        // Given
+        let nonExistingSKU = "choco"
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+                onCompletion(.failure(NSError()))
+            default:
+                XCTFail("Expected failure, got success")
+            }
+        })
+
+        // When
+        let expectedError = waitFor { promise in
+            self.viewModel.addScannedProductToOrder(barcode: nonExistingSKU, onCompletion: { expectedError in
+                switch expectedError {
+                case let .failure(error as EditableOrderViewModel.ScannerError):
+                    promise(error)
+                default:
+                    XCTFail("Expected failure, got success")
+                }
+            })
+        }
+
+        XCTAssertEqual(expectedError, .productNotFound)
+    }
+
+    func test_addScannedProductToOrder_when_sku_is_found_then_returns_success() {
+        // Given
+        let existingSKU = "choco"
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+                let product = Product.fake().copy(productID: self.sampleSiteID, sku: existingSKU, purchasable: true)
+                onCompletion(.success(product))
+            default:
+                XCTFail("Expected success, got failure")
+            }
+        })
+
+        // When
+        let successWasReceived: Bool = waitFor { promise in
+            self.viewModel.addScannedProductToOrder(barcode: existingSKU, onCompletion: { result in
+                switch result {
+                case .success(()):
+                    promise(true)
+                default:
+                    XCTFail("Expected success, got failure")
+                }
             })
         }
 
         // Then
-        XCTAssertTrue(errorWasReceived)
+        XCTAssertTrue(successWasReceived)
     }
-
 }
 
 private extension MockStorageManager {

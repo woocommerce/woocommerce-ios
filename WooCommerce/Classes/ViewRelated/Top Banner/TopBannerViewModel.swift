@@ -37,6 +37,7 @@ struct TopBannerViewModel {
     let icon: UIImage?
     let iconTintColor: UIColor?
     let isExpanded: Bool
+    let shouldWrapInfoText: Bool
     let topButton: TopButtonType
     let actionButtons: [ActionButton]
     let type: BannerType
@@ -46,6 +47,7 @@ struct TopBannerViewModel {
          icon: UIImage?,
          iconTintColor: UIColor? = nil,
          isExpanded: Bool = true,
+         shouldWrapInfoText: Bool = true,
          topButton: TopButtonType,
          actionButtons: [ActionButton] = [],
          type: BannerType = .normal) {
@@ -57,5 +59,6 @@ struct TopBannerViewModel {
         self.topButton = topButton
         self.actionButtons = actionButtons
         self.type = type
+        self.shouldWrapInfoText = shouldWrapInfoText
     }
 }

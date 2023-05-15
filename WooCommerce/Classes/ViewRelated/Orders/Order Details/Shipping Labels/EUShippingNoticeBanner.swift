@@ -21,7 +21,7 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UIViewType {
-        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner {
+        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(infoType: .instructions) {
             onDismissTapped?()
         } onLearnMorePressed: {
             onLearnMoreTapped?()

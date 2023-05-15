@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-02 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-05-08 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -304,9 +304,6 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "El formulario de aduanas se debe imprimir y adjuntar a este envío internacional";
 
-/* Description of the Action sheet option when the user wants to change the Product type to virtual product */
-"A digital product like services, downloadable books, music or videos" = "Un producto digital, como servicios, libros descargables, música o videos";
-
 /* Message when attempting to pay for a test transaction with a live card. */
 "A live card was used on a site in test mode. Use a test card instead." = "Se ha utilizado una tarjeta real en un sitio que se encuentra en modo de prueba. En su lugar, usa una tarjeta de prueba.";
 
@@ -321,9 +318,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "No se ha podido establecer una conexión segura con el sitio. Comprueba que tu sitio tiene un certificado SSL válido.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to physical product */
-"A tangible item that gets delivered to customers" = "Un artículo tangible que se envía a los clientes";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "A unique digital product like services, downloadable books, music or videos" = "Un producto digital único, como servicios, libros descargables, música o videos";
@@ -441,9 +435,6 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that adds customer note data when creating a new order */
 "Add Note" = "Añadir nota";
 
-/* Title of the CTA button at the bottom of the product form to add more product details. */
-"Add Options" = "Añadir opciones";
-
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Add Pay in Person to your checkout" = "Añade Pagos en persona a la página de finalizar compra";
 
@@ -457,8 +448,7 @@ which should be translated separately and considered part of this sentence. */
 "Add Price" = "Añadir precio";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
-   Title for the screen to add a product to an order
-   Title text of the button that adds a product when creating or editing an order */
+   Title for the screen to add a product to an order */
 "Add Product" = "Añadir producto";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
@@ -555,9 +545,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Añadir enlace del producto";
 
-/* Title of the product form bottom sheet action for switching to variable product type. */
-"Add product variations" = "Añade variaciones del producto";
-
 /* Title for the Products onboarding banner */
 "Add products to sell" = "Añadir productos para vender";
 
@@ -566,9 +553,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Añade la información de los archivos descargables de los productos a distancia";
-
-/* Subtitle of the product form bottom sheet action for switching to variable product type. */
-"Add sizes, colors, or other options" = "Añade tamaños, colores u otras opciones";
 
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Añade la descripción del cupón.";
@@ -771,7 +755,8 @@ which should be translated separately and considered part of this sentence. */
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Ha ocurrido un error desconocido.";
 
-/* Title for the Analytics Hub screen.
+/* Analytics toggle title in the privacy screen.
+   Title for the Analytics Hub screen.
    Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Análisis";
 
@@ -1207,7 +1192,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
-   Button to dismiss the new product form
    Button to dismiss the site credential login screen
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -1425,9 +1409,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product */
 "Choose a template" = "Elige una plantilla";
-
-/* Message subtitle of bottom sheet for selecting a product type to create a product with a template */
-"Choose a template for your product" = "Elige una plantilla para tu producto";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Elegir del dispositivo";
@@ -1739,6 +1720,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Cook Islands" = "Islas Cook";
+
+/* Text in the notice after copying the generated text in the product description AI generator view. */
+"Copied!" = "¡Copiado!";
 
 /* Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
@@ -2751,6 +2735,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is expanded */
 "Expanded" = "Ampliado";
 
+/* Title for the features list in the Subscriptions Screen */
+"Experience more of our features and services beyond the app" = "Accede a más funciones y servicios más allá de la aplicación";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "Funciones experimentales";
@@ -3029,6 +3016,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Obtén respuestas a todas tus preguntas";
 
+/* Title of the Jetpack benefits banner. */
+"Get order notifications and more" = "Recibe notificaciones de pedidos y mucho más";
+
 /* Title of the store onboarding task to get paid. */
 "Get paid" = "Recibe los pagos";
 
@@ -3046,9 +3036,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to contact support when Jetpack setup fails */
 "Get support" = "Obtener soporte";
-
-/* Title of the Jetpack benefits banner. */
-"Get the full experience with Jetpack" = "Consigue la experiencia completa con Jetpack";
 
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "Saca el máximo partido a tu tienda";
@@ -3115,6 +3102,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Grenada" = "Granada";
+
+/* Title for the 'group of' setting in the quantity rules screen. */
+"Group of" = "Grupo de";
 
 /* Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row */
 "Group of: %@" = "Grupo de: %@";
@@ -3715,7 +3705,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
-   Title of button shown on the Product Reviews screen if the list is empty */
+   Title of button shown on the Product Reviews screen if the list is empty
+   Title on the button to learn more about the free trial plan. */
 "Learn more" = "Saber más";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
@@ -3994,7 +3985,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Manage stock" = "Gestionar inventario";
 
 /* Description of one of the hub menu options */
-"Manage your plans" = "Gestionar tus planes";
+"Manage your subscription" = "Gestiona tu suscripción";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Compensaciones manuales";
@@ -4045,6 +4036,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Máx. Gasto (%1$@)";
 
+/* Title for the maximum quantity setting in the quantity rules screen. */
+"Maximum quantity" = "Cantidad máxima";
+
 /* Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row */
 "Maximum quantity: %@" = "Cantidad máxima: %@";
 
@@ -4088,6 +4082,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "Mín. Gasto (%1$@)";
+
+/* Title for the minimum quantity setting in the quantity rules screen. */
+"Minimum quantity" = "Cantidad mínima";
 
 /* Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row */
 "Minimum quantity: %@" = "Cantidad mínima: %@";
@@ -4261,9 +4258,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "Nuevo pedido de 13,98 $ en tu tienda de WooCommerce";
 
-/* Title of button in the login prologue screen for users who are new to WooCommerce. */
-"New to WooCommerce?" = "¿Acabas de llegar a WooCommerce?";
-
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
@@ -4338,6 +4332,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when no products match the filter on the Products tab */
 "No matching products found" = "No se han encontrado productos que coincidan.";
+
+/* Description when no maximum quantity is set in quantity rules. */
+"No maximum" = "No hay máximo";
+
+/* Description when no minimum quantity is set in quantity rules. */
+"No minimum" = "Sin mínimo";
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "No need to wonder where that stampbook went" = "No hace falta que busques tus sellos";
@@ -4422,6 +4422,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Norway" = "Noruega";
+
+/* Description when no 'group of' quantity is set in quantity rules. */
+"Not grouped" = "Sin agrupar";
 
 /* Action title to dismiss enabling Analytics for a store
    Button in the CTA View for installing WCShip extension for dismissing the view
@@ -4862,9 +4865,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for simple physical product type. */
 "Physical" = "Físico";
 
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Physical product" = "Producto físico";
-
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Elegir tienda para realizar la conexión";
 
@@ -5250,9 +5250,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the view containing a single Product Review */
 "Product Review" = "Reseña de producto";
 
-/* Cell title on beta features screen to enable product SKU input scanner in inventory settings. */
-"Product SKU Scanner" = "Escáner de la SKU del producto";
-
 /* Button title Product Settings in Edit Product More Options Action Sheet
    Product Settings navigation title */
 "Product Settings" = "Configuración del producto";
@@ -5263,8 +5260,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product Total label for payment view */
 "Product Total" = "Total de productos";
 
-/* Product Type label in Product Settings
-   Row title for filtering products by product type. */
+/* Row title for filtering products by product type. */
 "Product Type" = "Tipo de producto";
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
@@ -5377,7 +5373,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "Cantidad";
 
-/* Title for Quantity Rules row in the product form screen. */
+/* Title for Quantity Rules row in the product form screen.
+   Title for the quantity rules in a product. */
 "Quantity Rules" = "Reglas de cantidad";
 
 /* Navigation title on the quantity item selector screen */
@@ -5594,6 +5591,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the button to contact support on the Subscriptions view */
 "Report Subscription Issue" = "Informar sobre un problema en la suscripción";
 
+/* Title of the report section on the privacy screen */
+"Reports" = "Informes";
+
 /* Title for the alert after the support request is created. */
 "Request Sent!" = "¡Solicitud enviada!";
 
@@ -5713,6 +5713,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "SKU already in use by another product" = "Otro producto ya usa este SKU";
 
 /* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
+   SKU label for a product in the bundled products screen. The variable shows the SKU of the product.
    SKU label in order details > product row. The variable shows the SKU of the product. */
 "SKU: %1$@" = "SKU: %1$@";
 
@@ -5893,9 +5894,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button on the stats dashboard that navigates user to the analytics hub */
 "See more" = "Ver más";
-
-/* Subtitle of the Jetpack benefits banner. */
-"See the benefits" = "Ver las ventajas";
 
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
 "Select %1$d Categories" = "Elegir %1$d categorías";
@@ -6468,6 +6466,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of the Inbox menu in the hub menu */
 "Stay up-to-date" = "No te pierdas nada";
 
+/* Subtitle of the Jetpack benefits banner. */
+"Stay updated and boost store security. Explore Jetpack now." = "Mantente al día y aumenta la seguridad de tu tienda. Explora Jetpack ahora.";
+
 /* Button title to contact support to get help with deprecated stats */
 "Still need help? Contact us" = "¿Sigues necesitando ayuda? Contacta con nosotros";
 
@@ -6532,7 +6533,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Subscription price" = "Precio de la suscripción";
 
 /* Subscriptions section title
-   Title for the Subscriptions / Upgrades view */
+   Title for the Subscriptions / Upgrades view
+   Title of one of the hub menu options */
 "Subscriptions" = "Subscriptions";
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
@@ -6807,9 +6809,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Cell description on beta features screen to enable coupon management */
 "Test out managing coupons as we get ready to launch" = "Prueba la gestión de cupones mientras nos preparamos para el lanzamiento";
-
-/* Cell description on beta features screen to enable product SKU input scanner in inventory settings. */
-"Test out scanning a barcode for a product SKU in the product inventory settings" = "Prueba a escanear un código de barras de la SKU de un producto en los ajustes del inventario.";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Prueba la visualización de Complementos del pedido mientras preparamos la publicación";
@@ -7167,6 +7166,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "No hay ningún riesgo. Puedes cancelarlo y obtener un reembolso completo en 30 días.";
 
+/* Analytics toggle description in the privacy screen. */
+"These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps." = "Además, nos permiten optimizar el rendimiento mediante la recopilación de información sobre la forma en que los usuarios interactúan con nuestras aplicaciones para móviles.";
+
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Licencias de terceros";
@@ -7374,6 +7376,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Track shipment" = "Hacer un seguimiento del envío";
 
 /* Order tracking section title
+   Title of the tracking section on the privacy screen
    Tracking section title in Review Order screen */
 "Tracking" = "Seguimiento";
 
@@ -7872,12 +7875,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Upgrade" = "Mejorar ";
 
 /* Title for the button to upgrade from a free trial
-   Title for the WebView when upgrading a free trial plan
-   Title on the button to upgrade a free trial plan. */
+   Title for the WebView when upgrading a free trial plan */
 "Upgrade Now" = "Mejora tu plan ahora";
-
-/* Title of one of the hub menu options */
-"Upgrades" = "Mejoras";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8073,9 +8072,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Producto virtual";
 
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Virtual product" = "Producto virtual";
-
 /* Product Visibility navigation title
    Visibility label in Product Settings */
 "Visibility" = "Visibilidad";
@@ -8170,6 +8166,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Utilizamos otras herramientas de seguimiento, incluyendo algunas de terceras partes. Lee acerca de ellas y cómo controlarlas.";
+
+/* Main description on the privacy screen. */
+"We value your privacy. Your personal data is used to optimize our mobile apps, improve security, conduct analytics and marketing activities, and enhance your user experience." = "Tu seguridad es importante para nosotros. Tus datos personales se utilizan para optimizar nuestras aplicaciones para móviles, mejorar la seguridad, llevar a cabo análisis y actividades de marketing y mejorar tu experiencia de usuario.";
 
 /* Message explaining that WordPress was not detected. */
 "We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "No hemos podido detectar un sitio de WordPress en la dirección que has indicado. Comprueba que WordPress está instalado y que estás ejecutando la versión más reciente disponible.";
@@ -8379,7 +8378,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Yesterday" = "Ayer";
 
 /* Reads like: You are in the 14-day free trial. The free trial will end in 5 days. Upgrade to unlock new features and keep your store running. */
-"You are in the %1$d-day free trial. The free trial will end in %2$d days. Upgrade to unlock new features and keep your store running." = "Estás en el período de prueba de %1$d días. El período de prueba finaliza en %2$d días. Mejora el plan para descubrir nuevas funciones y que tu tienda siga funcionando.";
+"You are in the %1$d-day free trial. The free trial will end in %2$d days. " = "Estás en el período de prueba de %1$d días. El período de prueba finaliza en %2$d días. ";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
 "You are not authorized to access this store." = "No tienes permiso para acceder a esta tienda.";
@@ -8404,6 +8403,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Puedes editar los complementos para los productos en el escritorio del sitio web.";
+
+/* Info notice at the bottom of the quantity rules screen. */
+"You can edit quantity rules in the web dashboard" = "Puedes editar las reglas de cantidad en el Escritorio del sitio web.";
 
 /* Info notice at the bottom of the subscription settings screen. */
 "You can edit subscription settings in the web dashboard" = "Puedes editar la configuración de las suscripciones en el escritorio de tu página web";

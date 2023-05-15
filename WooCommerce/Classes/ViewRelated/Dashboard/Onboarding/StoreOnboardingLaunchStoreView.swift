@@ -97,7 +97,7 @@ private extension StoreOnboardingLaunchStoreView {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.bannerBackground))
         .onTapGesture {
-            viewModel.didTapUpgrade()
+            viewModel.didTapLearnMore()
         }
     }
 
@@ -189,6 +189,6 @@ private extension SiteLaunchError {
 
 struct StoreOnboardingLaunchStoreView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!, siteID: 0, onLaunch: {}, onUpgradeTapped: {}))
+        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!, siteID: 0, onLaunch: {}, onLearnMoreTapped: {}))
     }
 }

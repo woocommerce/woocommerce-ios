@@ -57,9 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v13.5-whats-new"
+msgctxt "v13.6-whats-new"
 msgid ""
-"This release contains a handful of minor improvements to make your product management experience smoother, including the option to scan a product SKU. We hope you notice the love we put into our software. Stay tuned for some exciting news coming your way!\n"
+"This release includes several bug fixes and improvements to your product management experience, including fixing stock statuses for Product Bundles so that backordered bundles and bundle stock quantities are displayed as expected. We've also added the option for you to automatically generate product description based on the a few key words.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

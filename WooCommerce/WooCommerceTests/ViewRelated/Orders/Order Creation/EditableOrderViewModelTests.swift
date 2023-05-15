@@ -1597,11 +1597,11 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
     }
-    
+
     func test_addScannedProductToOrder_when_sku_is_nil_then_fails_to_add_product_and_returns_nilSKU_error() {
         // Given
         let nilSKU: String? = nil
-        
+
         // When
         var capturedErrors: [EditableOrderViewModel.ScannerError] = []
         viewModel.addScannedProductToOrder(barcode: nilSKU, onCompletion: { expectedError in
@@ -1612,11 +1612,11 @@ final class EditableOrderViewModelTests: XCTestCase {
                 XCTFail("Expected failure, got success")
             }
         })
-        
+
         // Then
         XCTAssertEqual(capturedErrors, [.nilSKU])
     }
-    
+
     func test_addScannedProductToOrder_when_sku_is_not_found_then_fails_to_add_product_and_returns_productNotFound_error() {
         // Given
         let nonExistingSKU = "choco"

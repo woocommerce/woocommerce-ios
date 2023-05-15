@@ -35,9 +35,9 @@ struct LocalNotification {
             case .oneDayAfterStoreCreationNameWithoutFreeTrial:
                 return "one_day_after_store_creation_name_without_free_trial"
             case let .oneDayBeforeFreeTrialExpires(siteID, _):
-                return "one_day_before_free_trial_expires" + "\(siteID)"
+                return IdentifierPrefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
             case .oneDayAfterFreeTrialExpires(let siteID):
-                return "one_day_after_free_trial_expires" + "\(siteID)"
+                return IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(siteID)"
             case .loginSiteAddressError:
                 return "site_address_error"
             case .invalidEmailFromSiteAddressLogin:
@@ -49,6 +49,11 @@ struct LocalNotification {
             case .invalidPasswordFromWPComLogin:
                 return "wpcom_password_error"
             }
+        }
+    
+        enum IdentifierPrefix {
+            static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
+            static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
         }
     }
 

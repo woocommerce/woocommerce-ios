@@ -433,13 +433,21 @@ private extension DashboardViewController {
         let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
-            Task {
-                await self.viewModel.syncAnnouncements(for: self.siteID)
-            }
+            maybeSyncAnnouncementsAfterWebViewDismissed()
         }
         let hostingController = UIHostingController(rootView: webViewSheet)
         hostingController.presentationController?.delegate = self
         present(hostingController, animated: true, completion: nil)
+    }
+
+    private func maybeSyncAnnouncementsAfterWebViewDismissed() {
+        // If the web view was opened from a modal JITM, it was dismissed before the webview
+        // was presented. Syncing in that situation would result in it showing again.
+        if self.viewModel.modalJustInTimeMessageViewModel == nil {
+            Task {
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
+        }
     }
 
     /// Subscribes to the trigger to start the Add Product flow for products onboarding
@@ -657,9 +665,7 @@ private extension DashboardViewController {
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
-            Task {
-                await viewModel.syncAnnouncements(for: siteID)
-            }
+            maybeSyncAnnouncementsAfterWebViewDismissed()
         }
     }
 }

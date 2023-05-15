@@ -5,23 +5,23 @@ final class EUShippingNoticeTopBannerFactory {
                                     onLearnMorePressed: @escaping () -> Void) -> TopBannerView {
         return createTopBanner(contentText: Localization.warningInfo, onDismissPressed: onDismissPressed, onLearnMorePressed: onLearnMorePressed)
     }
-    
+
     static func createInstructionsBanner(onDismissPressed: @escaping () -> Void,
                                          onLearnMorePressed: @escaping () -> Void) -> TopBannerView {
         return createTopBanner(contentText: Localization.instructionsInfo, onDismissPressed: onDismissPressed, onLearnMorePressed: onLearnMorePressed)
     }
-    
+
     private static func createTopBanner(contentText: String,
                                         onDismissPressed: @escaping () -> Void,
                                         onLearnMorePressed: @escaping () -> Void) -> TopBannerView {
         let learnMoreAction = TopBannerViewModel.ActionButton(title: Localization.learnMore) { _ in
             onLearnMorePressed()
         }
-        
+
         let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) { _ in
             onDismissPressed()
         }
-        
+
         let viewModel = TopBannerViewModel(title: nil,
                                            infoText: contentText,
                                            icon: .infoOutlineImage,
@@ -35,8 +35,22 @@ final class EUShippingNoticeTopBannerFactory {
     }
 }
 
-private extension EUShippingNoticeTopBannerFactory {
-    enum Localization {
+extension EUShippingNoticeTopBannerFactory {
+    enum InfoType {
+        case warning
+        case instructions
+
+        var localizedRawValue: String {
+            switch self {
+            case .warning:
+                return Localization.warningInfo
+            case .instructions:
+                return Localization.instructionsInfo
+            }
+        }
+    }
+
+    private enum Localization {
         static let warningInfo = NSLocalizedString("When shipping to countries that follow European Union (EU) customs rules, " +
                                                    "you must provide a clear, specific description of every item. Otherwise, " +
                                                    "shipments may be delayed or interrupted at customs.",

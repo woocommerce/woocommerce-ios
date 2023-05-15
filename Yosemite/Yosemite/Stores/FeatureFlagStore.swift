@@ -35,7 +35,7 @@ public final class FeatureFlagStore: Store {
     ///
     override public func onAction(_ action: Action) {
         guard let action = action as? FeatureFlagAction else {
-            assertionFailure("StoreOnboardingTasksStore received an unsupported action")
+            assertionFailure("FeatureFlagStore received an unsupported action")
             return
         }
 

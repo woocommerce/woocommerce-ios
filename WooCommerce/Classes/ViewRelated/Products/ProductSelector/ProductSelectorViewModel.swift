@@ -3,7 +3,6 @@ import protocol Storage.StorageManagerType
 import Combine
 import Foundation
 import WooFoundation
-import Networking
 
 struct ProductsSectionViewModel {
     let title: String?

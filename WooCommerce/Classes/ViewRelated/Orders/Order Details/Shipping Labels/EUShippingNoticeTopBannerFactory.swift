@@ -1,19 +1,9 @@
 import Foundation
 
 final class EUShippingNoticeTopBannerFactory {
-    static func createWarningBanner(onDismissPressed: @escaping () -> Void,
-                                    onLearnMorePressed: @escaping () -> Void) -> TopBannerView {
-        return createTopBanner(contentText: Localization.warningInfo, onDismissPressed: onDismissPressed, onLearnMorePressed: onLearnMorePressed)
-    }
-
-    static func createInstructionsBanner(onDismissPressed: @escaping () -> Void,
-                                         onLearnMorePressed: @escaping () -> Void) -> TopBannerView {
-        return createTopBanner(contentText: Localization.instructionsInfo, onDismissPressed: onDismissPressed, onLearnMorePressed: onLearnMorePressed)
-    }
-
-    private static func createTopBanner(contentText: String,
-                                        onDismissPressed: @escaping () -> Void,
-                                        onLearnMorePressed: @escaping () -> Void) -> TopBannerView {
+    static func createTopBanner(infoType: InfoType,
+                                onDismissPressed: @escaping () -> Void,
+                                onLearnMorePressed: @escaping () -> Void) -> TopBannerView {
         let learnMoreAction = TopBannerViewModel.ActionButton(title: Localization.learnMore) { _ in
             onLearnMorePressed()
         }
@@ -23,7 +13,7 @@ final class EUShippingNoticeTopBannerFactory {
         }
 
         let viewModel = TopBannerViewModel(title: nil,
-                                           infoText: contentText,
+                                           infoText: infoType.content,
                                            icon: .infoOutlineImage,
                                            iconTintColor: .accent,
                                            isExpanded: true,
@@ -40,7 +30,7 @@ extension EUShippingNoticeTopBannerFactory {
         case warning
         case instructions
 
-        var localizedRawValue: String {
+        var content: String {
             switch self {
             case .warning:
                 return Localization.warningInfo

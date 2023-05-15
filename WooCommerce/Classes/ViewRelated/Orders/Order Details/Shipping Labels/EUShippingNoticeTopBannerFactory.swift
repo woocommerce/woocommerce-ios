@@ -17,7 +17,7 @@ final class EUShippingNoticeTopBannerFactory {
                                            icon: .infoOutlineImage,
                                            iconTintColor: .accent,
                                            isExpanded: true,
-                                           shouldWrapInfoText: false,
+                                           shouldResizeInfo: false,
                                            topButton: .none,
                                            actionButtons: [learnMoreAction, dismissAction])
         let topBannerView = TopBannerView(viewModel: viewModel)

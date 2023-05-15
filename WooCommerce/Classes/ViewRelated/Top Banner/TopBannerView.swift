@@ -178,8 +178,8 @@ private extension TopBannerView {
         return iconInformationStackView
     }
 
-    func createLabelHolderStackView(wrapInfoText: Bool) -> UIStackView {
-        guard wrapInfoText else {
+    func createLabelHolderStackView(shouldResizeInfo: Bool) -> UIStackView {
+        guard shouldResizeInfo else {
             labelHolderStackView.addArrangedSubview(infoLabel)
             return labelHolderStackView
         }
@@ -207,7 +207,7 @@ private extension TopBannerView {
         // titleStackView will hidden if there is no title
         titleStackView.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
 
-        let labelHolderStackView = createLabelHolderStackView(wrapInfoText: viewModel.shouldWrapInfoText)
+        let labelHolderStackView = createLabelHolderStackView(shouldResizeInfo: viewModel.shouldResizeInfo)
         let informationStackView = UIStackView(arrangedSubviews: [titleStackView, labelHolderStackView])
 
         informationStackView.axis = .vertical

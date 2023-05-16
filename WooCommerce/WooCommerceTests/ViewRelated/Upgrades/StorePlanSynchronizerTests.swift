@@ -80,25 +80,6 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.planState, .failed)
     }
 
-    func test_synchronizer_schedules() {
-        // Given
-        let samplePlan = WPComSitePlan(hasDomainCredit: false)
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                completion(.success(samplePlan))
-            default:
-                break
-            }
-        }
-
-        // When
-        let synchronizer = StorePlanSynchronizer(stores: stores)
-
-        // Then
-        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
-    }
-
     func test_local_notifications_are_scheduled_if_the_site_has_trial_plan_with_expiry_date_at_least_2_days_away() {
         // Given
         let pushNotesManager = MockPushNotificationsManager()

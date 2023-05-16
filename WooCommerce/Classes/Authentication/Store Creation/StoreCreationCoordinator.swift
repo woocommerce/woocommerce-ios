@@ -796,12 +796,14 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func syncSite(siteID: Int64, expectedStoreName: String, haveTrackedOutOfSyncEvent: Bool) async throws -> Site {
-        let site = try await loadSite(siteID: siteID)
+        let isJetpackActive = try await isJetpackPluginActive(siteID: siteID)
 
-        guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
+        guard isJetpackActive else {
             DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet for siteID \(siteID)...")
             throw StoreCreationError.newSiteIsNotJetpackSite
         }
+
+        let site = try await loadSite(siteID: siteID)
 
         // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
         // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
@@ -869,6 +871,15 @@ private extension StoreCreationCoordinator {
     func loadSite(siteID: Int64) async throws -> Site {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(SiteAction.syncSite(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func isJetpackPluginActive(siteID: Int64) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SitePluginAction.isPluginActive(siteID: siteID, plugin: .jetpack) { result in
                 continuation.resume(with: result)
             })
         }

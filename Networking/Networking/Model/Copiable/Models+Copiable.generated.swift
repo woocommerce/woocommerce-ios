@@ -235,6 +235,21 @@ extension Networking.Customer {
     }
 }
 
+extension Networking.DotcomSitePlugin {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        isActive: CopiableProp<Bool> = .copy
+    ) -> Networking.DotcomSitePlugin {
+        let id = id ?? self.id
+        let isActive = isActive ?? self.isActive
+
+        return Networking.DotcomSitePlugin(
+            id: id,
+            isActive: isActive
+        )
+    }
+}
+
 extension Networking.DotcomUser {
     public func copy(
         id: CopiableProp<Int64> = .copy,

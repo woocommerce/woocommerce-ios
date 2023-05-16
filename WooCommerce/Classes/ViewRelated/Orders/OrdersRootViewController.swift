@@ -66,6 +66,8 @@ final class OrdersRootViewController: UIViewController {
     private let featureFlagService: FeatureFlagService
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
+    
+    private var skuBarcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
     // MARK: View Lifecycle
 
@@ -180,10 +182,47 @@ final class OrdersRootViewController: UIViewController {
         orderDurationRecorder.startRecording()
     }
 
-    /// Will present the Order Creation flow when a product is scanned
-    /// Currently hidden behind feature flag: issue-9728
+    /// Presents the Order Creation flow when a product is scanned
     ///
     @objc func presentOrderCreationFlowByProductScanning() {
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                              onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            
+            print("🍉 scan success: \(scannedBarcode)")
+            self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success:
+                    // We got a product from scanning
+                    break
+                case .failure:
+                    self.handleError()
+                }
+            }
+        })
+        skuBarcodeScannerCoordinator = coordinator
+        coordinator.start()
+    }
+
+    ///
+    func handleScannedBarcode(_ scannedBarcode: String, onCompletion: ((Result<Product, Error>) -> Void)? = nil) {
+        let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: scannedBarcode) { result in
+            switch result {
+            case let .success(matchedProduct):
+                onCompletion?(.success(matchedProduct))
+            case let .failure(error):
+                onCompletion?(.failure(error))
+            }
+        }
+    }
+
+    ///
+    ///
+    func handleError() {
         let message = Localization.errorNoticeMessage
         ordersViewController.showErrorNotice(with: message, in: self)
     }

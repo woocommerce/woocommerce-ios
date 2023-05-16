@@ -59,9 +59,7 @@ final class UniversalLinkRouterTests: XCTestCase {
         let routeOne = MockRoute(handledSubpaths: [subPath], performAction: { _, _ in
             routeOneWasCalled = true
 
-//            return true
-            // purposely failing for testing
-            return false
+            return true
         })
 
         var routeTwoWasCalled = false

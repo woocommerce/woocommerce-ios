@@ -84,8 +84,6 @@ public final class HelpScreen: ScreenObject {
     }
 
     public func verifySubmitButtonEnabled() throws {
-//        XCTAssertTrue(submitButton.isEnabled)
-        // purposely failing for testing
-        XCTAssertFalse(submitButton.isEnabled)
+        XCTAssertTrue(submitButton.isEnabled)
     }
 }

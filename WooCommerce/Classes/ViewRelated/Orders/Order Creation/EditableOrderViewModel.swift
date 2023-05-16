@@ -1278,7 +1278,6 @@ extension EditableOrderViewModel {
             guard let self = self else { return }
             switch result {
             case let .success(productID):
-                self.configureProductRowViewModels()
                 self.orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
                 onCompletion(.success(()))
             case .failure:

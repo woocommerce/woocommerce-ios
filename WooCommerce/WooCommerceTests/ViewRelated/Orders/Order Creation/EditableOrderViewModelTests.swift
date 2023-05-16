@@ -1698,7 +1698,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.currentOrderItems.count, 1)
-        XCTAssertEqual(viewModel.productRows.count, 1)
 
         guard let item = viewModel.currentOrderItems.first else {
             return XCTFail("Expected 1 item, but got none")

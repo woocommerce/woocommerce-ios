@@ -127,7 +127,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Notice presentation handler
     ///
-    private var noticePresenter: NoticePresenter?
+    private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
 
 
     // MARK: - View Lifecycle
@@ -331,10 +331,9 @@ extension OrderListViewController {
     }
 
     func showErrorNotice(with message: String, in viewController: UIViewController) {
-        noticePresenter = DefaultNoticePresenter()
         let notice = Notice(title: message, feedbackType: .error)
-        noticePresenter?.presentingViewController = viewController
-        noticePresenter?.enqueue(notice: notice)
+        noticePresenter.presentingViewController = viewController
+        noticePresenter.enqueue(notice: notice)
     }
 
     private func markOrderAsCompleted(resultID: FetchResultSnapshotObjectID) {

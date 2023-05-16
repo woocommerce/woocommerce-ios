@@ -341,7 +341,7 @@ extension PushNotificationsManager {
                                             trigger: trigger)
         do {
             try await center.add(request)
-            ServiceLocator.analytics.track(.loginLocalNotificationScheduled, withProperties: [
+            ServiceLocator.analytics.track(.localNotificationScheduled, withProperties: [
                 "type": notification.scenario.identifier
             ])
         } catch {

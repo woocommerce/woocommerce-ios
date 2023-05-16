@@ -92,14 +92,11 @@ private extension StorePlanSynchronizer {
         guard let siteID = site?.siteID else {
             return
         }
-        guard plan.isFreeTrial else {
+        guard plan.isFreeTrial, let expiryDate = plan.expiryDate else {
             /// cancels any scheduled notifications
             return cancelFreeTrialExpirationNotifications(siteID: siteID)
         }
 
-        guard let expiryDate = plan.expiryDate else {
-            return
-        }
         let oneDayTimeInterval: TimeInterval = 86400
 
         if expiryDate.timeIntervalSinceNow - oneDayTimeInterval > 0 {

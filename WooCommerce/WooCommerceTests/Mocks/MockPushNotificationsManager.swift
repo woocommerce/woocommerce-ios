@@ -94,6 +94,8 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
         canceledLocalNotificationScenarios.append(scenarios)
+        requestedLocalNotifications.removeAll()
+        requestedLocalNotificationsIfNeeded.removeAll()
     }
 }
 

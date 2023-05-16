@@ -56,10 +56,15 @@ final class TapToPayReconnectionController {
     }
 }
 
+import Combine
+final class SilencingAlertsPresenter: CardPresentPaymentAlertsPresenting {
+    private var alertSubject: CurrentValueSubject<CardPresentPaymentsModalViewModel?, Never> = CurrentValueSubject(nil)
+    private var alertsPresenter: CardPresentPaymentAlertsPresenting?
 
-struct SilencingAlertsPresenter: CardPresentPaymentAlertsPresenting {
+    private var alertSubscription: AnyCancellable? = nil
+
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        // no-op
+        alertSubject.send(viewModel)
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
@@ -71,6 +76,25 @@ struct SilencingAlertsPresenter: CardPresentPaymentAlertsPresenting {
     }
 
     func dismiss() {
-        // no-op
+        alertSubject.send(nil)
+        alertsPresenter?.dismiss()
+    }
+
+    func startPresentingAlerts(from alertsPresenter: CardPresentPaymentAlertsPresenting) {
+        self.alertsPresenter = alertsPresenter
+        alertSubscription = alertSubject.share().sink { viewModel in
+            DispatchQueue.main.async {
+                guard let viewModel = viewModel else {
+                    alertsPresenter.dismiss()
+                    return
+                }
+                alertsPresenter.present(viewModel: viewModel)
+            }
+        }
+    }
+
+    func silenceAlerts() {
+        alertsPresenter = nil
+        alertSubscription?.cancel()
     }
 }

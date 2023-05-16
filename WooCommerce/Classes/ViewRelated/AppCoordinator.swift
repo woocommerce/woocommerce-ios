@@ -323,12 +323,14 @@ private extension AppCoordinator {
 
         switch response.notification.request.identifier {
         case let identifier where identifier.hasPrefix(oneDayBeforeFreeTrialExpiresIdentifier):
-            guard let siteID = Int64(identifier.replacingOccurrences(of: oneDayBeforeFreeTrialExpiresIdentifier, with: "")) else {
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let siteID = Int64(identifier.replacingOccurrences(of: oneDayBeforeFreeTrialExpiresIdentifier, with: "")) else {
                 return
             }
             openPlansPage(siteID: siteID)
         case let identifier where identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier):
-            guard let siteID = Int64(identifier.replacingOccurrences(of: oneDayAfterFreeTrialExpiresIdentifier, with: "")) else {
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let siteID = Int64(identifier.replacingOccurrences(of: oneDayAfterFreeTrialExpiresIdentifier, with: "")) else {
                 return
             }
             openPlansPage(siteID: siteID)

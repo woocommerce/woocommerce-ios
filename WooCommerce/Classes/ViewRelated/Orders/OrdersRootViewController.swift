@@ -66,7 +66,8 @@ final class OrdersRootViewController: UIViewController {
     private let featureFlagService: FeatureFlagService
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
-    
+
+
     private var skuBarcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 
     // MARK: View Lifecycle
@@ -191,15 +192,15 @@ final class OrdersRootViewController: UIViewController {
 
         let coordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                               onSKUBarcodeScanned: { [weak self] scannedBarcode in
-            
-            print("🍉 scan success: \(scannedBarcode)")
+
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
-                case .success:
-                    // We got a product from scanning
-                    break
+                case let .success(product):
+                    print("🍉 start order creation flow with Product \(product.productID)")
+                    self.presentOrderCreationFlow()
                 case .failure:
+                    print("🍉 something went wrong")
                     self.handleError()
                 }
             }
@@ -209,15 +210,20 @@ final class OrdersRootViewController: UIViewController {
     }
 
     ///
-    func handleScannedBarcode(_ scannedBarcode: String, onCompletion: ((Result<Product, Error>) -> Void)? = nil) {
+    ///
+    func handleScannedBarcode(_ scannedBarcode: String, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
+        print("🍉 barcode detected: \(scannedBarcode)")
         let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: scannedBarcode) { result in
             switch result {
             case let .success(matchedProduct):
-                onCompletion?(.success(matchedProduct))
+                print("🍉 retrieval success: Product \(matchedProduct.productID)")
+                onCompletion(.success(matchedProduct))
             case let .failure(error):
-                onCompletion?(.failure(error))
+                print("🍉 retrieval error: \(error)")
+                onCompletion(.failure(error))
             }
         }
+        ServiceLocator.stores.dispatch(action)
     }
 
     ///

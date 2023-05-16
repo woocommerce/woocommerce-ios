@@ -4,7 +4,7 @@ import WordPressUI
 
 /// Type to handle the privacy banner presentation.
 ///
-final class PrivacySettingsBannerPresenter {
+final class PrivacyBannerPresenter {
 
     /// User Defaults database
     ///
@@ -29,6 +29,7 @@ final class PrivacySettingsBannerPresenter {
         }, saveAction: {
             print("Saved tapped") // TODO: perform network request
         })
+
 
         let bottomSheetViewController = BottomSheetViewController(childViewController: privacyBanner)
         bottomSheetViewController.show(from: viewController)

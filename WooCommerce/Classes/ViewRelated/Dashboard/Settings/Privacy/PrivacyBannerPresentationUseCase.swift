@@ -22,7 +22,7 @@ struct PrivacyBannerPresentationUseCase {
     /// Currently it is shown if the user is in the EU zone & privacy choices have not been saved.
     ///
     func shouldShowPrivacyBanner() -> Bool {
-        let isCountryInEU = Country.EUCountryCodes.contains(countryCode)
+        let isCountryInEU = Country.GDPRCountryCodes.contains(countryCode)
         let hasSavedPrivacySettings = defaults.hasSavedPrivacyBannerSettings
         return isCountryInEU && !hasSavedPrivacySettings
     }

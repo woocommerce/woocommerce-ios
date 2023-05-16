@@ -11,7 +11,7 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
 
         // When & Then
-        for euCode in Country.EUCountryCodes {
+        for euCode in Country.GDPRCountryCodes {
             let useCase = PrivacyBannerPresentationUseCase(countryCode: euCode, defaults: defaults)
             XCTAssertTrue(useCase.shouldShowPrivacyBanner())
         }

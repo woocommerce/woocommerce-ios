@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// Type who informs us if the privacy banner should be shown or not.
 ///
@@ -21,7 +22,14 @@ struct PrivacyBannerPresentationUseCase {
     /// Currently it is shown if the user is in the EU zone & privacy choices have not been saved.
     ///
     func shouldShowPrivacyBanner() -> Bool {
-        // TODO: Implement
-        return true
+        let isCountryInEU = Country.EUCountryCodes.contains(countryCode)
+        let hasSavedPrivacySettings = defaults.hasSavedPrivacyBannerSettings
+        return isCountryInEU && !hasSavedPrivacySettings
+    }
+}
+
+private extension UserDefaults {
+    @objc dynamic var hasSavedPrivacyBannerSettings: Bool {
+        bool(forKey: Key.hasSavedPrivacyBannerSettings.rawValue)
     }
 }

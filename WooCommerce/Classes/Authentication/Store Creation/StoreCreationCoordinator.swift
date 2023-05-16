@@ -868,7 +868,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func loadSite(siteID: Int64) async throws -> Site {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(SiteAction.loadSite(siteID: siteID) { result in
+            stores.dispatch(SiteAction.syncSite(siteID: siteID) { result in
                 continuation.resume(with: result)
             })
         }

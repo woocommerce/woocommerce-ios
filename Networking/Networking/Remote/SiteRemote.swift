@@ -226,7 +226,8 @@ extension SiteRemote {
         }
         enum Options {
             static let key = "options"
-            static let value = "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
+            static let value =
+            "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
         }
     }
 }

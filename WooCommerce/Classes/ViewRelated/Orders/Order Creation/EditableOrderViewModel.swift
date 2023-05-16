@@ -1294,8 +1294,8 @@ extension EditableOrderViewModel {
             switch result {
             case let .success(product):
                 onCompletion(.success(product.productID))
-            case .failure:
-                onCompletion(.failure(NSError()))
+            case let .failure(error):
+                onCompletion(.failure(error))
             }
         })
         stores.dispatch(action)

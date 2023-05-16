@@ -350,7 +350,6 @@ private extension AppCoordinator {
             let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
             self?.window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
         }
-        
     }
 }
 

@@ -38,9 +38,6 @@ public enum WooAnalyticsStat: String {
     case loginEmailFormViewed = "login_email_form_viewed"
     case loginJetpackRequiredScreenViewed = "login_jetpack_required_screen_viewed"
     case loginJetpackRequiredViewInstructionsButtonTapped = "login_jetpack_required_view_instructions_button_tapped"
-    case loginLocalNotificationTapped = "login_local_notification_tapped"
-    case loginLocalNotificationDismissed = "login_local_notification_dismissed"
-    case loginLocalNotificationScheduled = "login_local_notification_scheduled"
     case loginWhatIsJetpackHelpScreenViewed = "login_what_is_jetpack_help_screen_viewed"
     case loginWhatIsJetpackHelpScreenOkButtonTapped = "login_what_is_jetpack_help_screen_ok_button_tapped"
     case loginWhatIsJetpackHelpScreenLearnMoreButtonTapped = "login_what_is_jetpack_help_screen_learn_more_button_tapped"
@@ -128,6 +125,12 @@ public enum WooAnalyticsStat: String {
     case loginJetpackNoMatchedSiteErrorViewed = "login_jetpack_no_matched_site_error_viewed"
     case loginJetpackNoMatchedSiteErrorTryAgainButtonTapped = "login_jetpack_no_matched_site_error_try_again_button_tapped"
     case loginJetpackNoMatchedSiteErrorContactSupportButtonTapped = "login_jetpack_no_matched_site_error_contact_support_button_tapped"
+
+    // MARK: Local notifications
+    //
+    case localNotificationTapped = "local_notification_tapped"
+    case localNotificationDismissed = "local_notification_dismissed"
+    case localNotificationScheduled = "local_notification_scheduled"
 
     // MARK: Dashboard View Events
     //

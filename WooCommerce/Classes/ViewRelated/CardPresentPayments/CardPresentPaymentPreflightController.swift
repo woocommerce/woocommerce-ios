@@ -170,13 +170,20 @@ final class CardPresentPaymentPreflightController {
             await promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
         case (.bluetoothScan, _),
             (.none, false):
+            #warning("Cancel any ongoing reconnection")
             connectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         case (.localMobile, true):
-            builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
-                self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
-            })
+            if ServiceLocator.tapToPayReconnectionController.isReconnecting {
+                ServiceLocator.tapToPayReconnectionController.showAlertsForReconnection(from: alertsPresenter, onCompletion: { [weak self] result in
+                    self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+                })
+            } else {
+                builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
+                    self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+                })
+            }
         case (.localMobile, false):
             handlePreflightFailure(error: CardPresentPaymentPreflightError.localMobileReaderNotSupported)
         }

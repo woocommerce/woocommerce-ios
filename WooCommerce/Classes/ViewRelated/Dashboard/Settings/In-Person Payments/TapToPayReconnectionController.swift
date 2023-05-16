@@ -5,23 +5,37 @@ final class TapToPayReconnectionController {
 
     private let stores: StoresManager
     private let connectionController: BuiltInCardReaderConnectionController
-    private let configuration: CardPresentPaymentsConfiguration
+    private var configuration: CardPresentPaymentsConfiguration {
+        CardPresentConfigurationLoader().configuration
+    }
+    private let silencingAlertsPresenter: SilencingAlertsPresenter
+
+    private var siteID: Int64 {
+        stores.sessionManager.defaultStoreID ?? 0
+    }
+
+    private(set) var isReconnecting: Bool = false
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        self.configuration = CardPresentConfigurationLoader().configuration
+        let silencingAlertsPresenter = SilencingAlertsPresenter()
+        self.silencingAlertsPresenter = silencingAlertsPresenter
+        #warning("This needs to be recreated whenever we switch stores, or the configuration could be out of date")
         self.connectionController = BuiltInCardReaderConnectionController(forSiteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-                                          alertsPresenter: SilencingAlertsPresenter(),
+                                          alertsPresenter: silencingAlertsPresenter,
                                           alertsProvider: BuiltInReaderConnectionAlertsProvider(),
                                           configuration: CardPresentConfigurationLoader().configuration,
                                           analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: CardPresentConfigurationLoader().configuration))
     }
 
     func reconnectIfNeeded() async {
+        isReconnecting = true
         guard configuration.supportedReaders.contains(.appleBuiltIn),
             await localMobileReaderSupported(),
             await hasPreviousTapToPayUsage(),
             await connectedReader() == nil else {
+            isReconnecting = false
+            silencingAlertsPresenter.silenceAlerts()
             return
         }
         // since we've had a TTP transaction on this phone before, reconnect
@@ -54,13 +68,13 @@ final class TapToPayReconnectionController {
 
     @MainActor
     private func reconnectToTapToPayReader() {
-        connectionController.searchAndConnect(onCompletion: { result in
+        connectionController.searchAndConnect(onCompletion: { [weak self] result in
             DDLogInfo("💸 Reconnected to Tap to Pay \(result)")
+            self?.adoptedConnectionCompletionHandler?(result)
+            self?.silencingAlertsPresenter.silenceAlerts()
+            self?.adoptedConnectionCompletionHandler = nil
+            self?.isReconnecting = false
         })
-    }
-
-    private var siteID: Int64 {
-        stores.sessionManager.defaultStoreID ?? 0
     }
 
     @MainActor
@@ -75,23 +89,40 @@ final class TapToPayReconnectionController {
         }
     }
 
+    private var adoptedConnectionCompletionHandler: ((Result<CardReaderConnectionResult, Error>) -> Void)? = nil
+
+    func showAlertsForReconnection(from alertsPresenter: CardPresentPaymentAlertsPresenting,
+                                   onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
+        adoptedConnectionCompletionHandler = onCompletion
+        silencingAlertsPresenter.startPresentingAlerts(from: alertsPresenter)
+    }
 }
 
 
-struct SilencingAlertsPresenter: CardPresentPaymentAlertsPresenting {
+final class SilencingAlertsPresenter: CardPresentPaymentAlertsPresenting {
+    private var alertsPresenter: CardPresentPaymentAlertsPresenting?
+
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        // no-op
+        alertsPresenter?.present(viewModel: viewModel)
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
-        // no-op
+        alertsPresenter?.foundSeveralReaders(readerIDs: readerIDs, connect: connect, cancelSearch: cancelSearch)
     }
 
     func updateSeveralReadersList(readerIDs: [String]) {
-        // no-op
+        alertsPresenter?.updateSeveralReadersList(readerIDs: readerIDs)
     }
 
     func dismiss() {
-        // no-op
+        alertsPresenter?.dismiss()
+    }
+
+    func startPresentingAlerts(from alertsPresenter: CardPresentPaymentAlertsPresenting) {
+        self.alertsPresenter = alertsPresenter
+    }
+
+    func silenceAlerts() {
+        self.alertsPresenter = nil
     }
 }

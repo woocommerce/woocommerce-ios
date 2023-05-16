@@ -565,8 +565,7 @@ private extension DashboardViewController {
     }
 
     private func dismissModalJustInTimeMessage() {
-        guard let modalJustInTimeMessageHostingController = modalJustInTimeMessageHostingController
-        else {
+        guard modalJustInTimeMessageHostingController != nil else {
             return
         }
         dismiss(animated: true)

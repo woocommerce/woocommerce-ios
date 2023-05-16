@@ -18,7 +18,7 @@
         "primary": true,
         "link": "https:\/\/woocommerce.com\/products\/hardware\/US"
       },
-      "template": "default",
+      "template": "modal",
       "ttl": 300,
       "id": "woomobile_ipp_barcode_users",
       "feature_class": "woomobile_ipp",

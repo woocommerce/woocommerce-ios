@@ -126,8 +126,6 @@ private extension StorePlanSynchronizer {
             return
         }
         triggerDateComponents.day = day - 1
-        triggerDateComponents.timeZone = .current
-        triggerDateComponents.calendar = .current
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
             await localNotificationScheduler.schedule(notification: notification,
@@ -147,8 +145,6 @@ private extension StorePlanSynchronizer {
             return
         }
         triggerDateComponents.day = day + 1
-        triggerDateComponents.timeZone = .current
-        triggerDateComponents.calendar = .current
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
             await localNotificationScheduler.schedule(notification: notification,

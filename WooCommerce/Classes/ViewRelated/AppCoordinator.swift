@@ -23,6 +23,7 @@ final class AppCoordinator {
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
+    private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -58,6 +59,7 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
+        self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
 
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
 
@@ -344,8 +346,11 @@ private extension AppCoordinator {
 /// Local notification handling helper methods.
 private extension AppCoordinator {
     func openPlansPage(siteID: Int64) {
-        let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
-        window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
+        switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
+            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
+            self?.window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
+        }
+        
     }
 }
 

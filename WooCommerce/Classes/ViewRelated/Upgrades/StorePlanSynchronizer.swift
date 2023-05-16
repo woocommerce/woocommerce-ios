@@ -98,16 +98,16 @@ private extension StorePlanSynchronizer {
         }
 
         /// Normalizes expiry date to remove timezone difference
-        let timeZoneDifference = TimeZone.autoupdatingCurrent.secondsFromGMT()
+        let timeZoneDifference = TimeZone.current.secondsFromGMT()
         let normalizedDate = Date(timeInterval: -Double(timeZoneDifference), since: expiryDate)
         let oneDayTimeInterval: TimeInterval = 86400
 
         if normalizedDate.timeIntervalSinceNow - oneDayTimeInterval > 0 {
-            scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: expiryDate)
+            scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
 
         if normalizedDate.timeIntervalSinceNow + oneDayTimeInterval > 0 {
-            scheduleAfterExpirationNotification(siteID: siteID, expiryDate: expiryDate)
+            scheduleAfterExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
     }
 

@@ -180,6 +180,14 @@ final class OrdersRootViewController: UIViewController {
         orderDurationRecorder.startRecording()
     }
 
+    /// Will present the Order Creation flow when a product is scanned
+    /// Currently hidden behind feature flag: issue-9728
+    ///
+    @objc func presentOrderCreationFlowByProductScanning() {
+        let message = Localization.errorNoticeMessage
+        ordersViewController.showErrorNotice(with: message, in: self)
+    }
+
     /// Present `FilterListViewController`
     ///
     private func filterButtonTapped() {
@@ -251,13 +259,17 @@ private extension OrdersRootViewController {
 
     /// Sets navigation buttons.
     /// Search: Is always present.
+    /// Scan: Present when `.addProductToOrderViaSKUScanner` flag is enabled
     /// Add: Always present.
     ///
     func configureNavigationButtons() {
-        let buttons: [UIBarButtonItem] = [
+        var buttons: [UIBarButtonItem] = [
             createAddOrderItem(),
             createSearchBarButtonItem()
         ]
+        if featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner) {
+            buttons.insert(createAddOrderByProductScanningButtonItem(), at: 1)
+        }
         navigationItem.rightBarButtonItems = buttons
     }
 
@@ -393,6 +405,18 @@ private extension OrdersRootViewController {
         return button
     }
 
+    /// Creates a `UIBarButtonItem` to be used to create a new order by scanning a product
+    ///
+    func createAddOrderByProductScanningButtonItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .scanImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentOrderCreationFlowByProductScanning))
+        button.accessibilityTraits = .button
+        button.accessibilityIdentifier = "create-new-order-by-product-scanning"
+        return button
+    }
+
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order) {
@@ -424,8 +448,10 @@ private extension OrdersRootViewController {
             "Retrieves a list of orders that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
         )
-
         static let emptyOrderDetails = NSLocalizedString("No order selected",
                                                          comment: "Message on the detail view of the Orders tab before any order is selected")
+        static let errorNoticeMessage = NSLocalizedString("Product not found. Failed to create a New Order",
+                                                          comment: "Error message on the Order list view when the scanner cannot find a matching product " +
+                                                          "and create a new order")
     }
 }

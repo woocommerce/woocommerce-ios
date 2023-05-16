@@ -33,14 +33,20 @@ final class StorePlanSynchronizer: ObservableObject {
     ///
     private let localNotificationScheduler: LocalNotificationScheduler
 
+    /// Time zone used to scheduling local notifications.
+    ///
+    private let timeZone: TimeZone
+
     /// Observable subscription store.
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
     init(stores: StoresManager = ServiceLocator.stores,
+         timeZone: TimeZone = .current,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.stores = stores
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
+        self.timeZone = timeZone
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -98,15 +104,14 @@ private extension StorePlanSynchronizer {
         }
 
         /// Normalizes expiry date to remove timezone difference
-        let timeZoneDifference = TimeZone.current.secondsFromGMT()
+        let timeZoneDifference = timeZone.secondsFromGMT()
         let normalizedDate = Date(timeInterval: -Double(timeZoneDifference), since: expiryDate)
-        let oneDayTimeInterval: TimeInterval = 86400
 
-        if normalizedDate.timeIntervalSinceNow - oneDayTimeInterval > 0 {
+        if normalizedDate.timeIntervalSinceNow - Constants.oneDayTimeInterval > 0 {
             scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
 
-        if normalizedDate.timeIntervalSinceNow + oneDayTimeInterval > 0 {
+        if normalizedDate.timeIntervalSinceNow + Constants.oneDayTimeInterval > 0 {
             scheduleAfterExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
     }
@@ -124,11 +129,7 @@ private extension StorePlanSynchronizer {
             return
         }
         /// Scheduled for 1 day before the expiry date
-        var triggerDateComponents = expiryDate.dateAndTimeComponents()
-        guard let day = triggerDateComponents.day else {
-            return
-        }
-        triggerDateComponents.day = day - 1
+        let triggerDateComponents = expiryDate.addingTimeInterval(-Constants.oneDayTimeInterval).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
             await localNotificationScheduler.schedule(notification: notification,
@@ -143,11 +144,7 @@ private extension StorePlanSynchronizer {
             return
         }
         /// Scheduled for 1 day after the expiry date
-        var triggerDateComponents = expiryDate.dateAndTimeComponents()
-        guard let day = triggerDateComponents.day else {
-            return
-        }
-        triggerDateComponents.day = day + 1
+        let triggerDateComponents = expiryDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
             await localNotificationScheduler.schedule(notification: notification,
@@ -155,5 +152,11 @@ private extension StorePlanSynchronizer {
                                                       remoteFeatureFlag: .oneDayAfterFreeTrialExpiresNotification,
                                                       shouldSkipIfScheduled: true)
         }
+    }
+}
+
+private extension StorePlanSynchronizer {
+    enum Constants {
+        static let oneDayTimeInterval: TimeInterval = 86400
     }
 }

@@ -80,10 +80,11 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.planState, .failed)
     }
 
-    func test_local_notifications_are_scheduled_if_the_site_has_trial_plan_with_expiry_date_at_least_2_days_away() {
+    func test_local_notifications_are_scheduled_if_the_site_has_trial_plan_with_expiry_date_at_least_2_days_away() throws {
         // Given
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let pushNotesManager = MockPushNotificationsManager()
-        let expiryDate = Date(timeIntervalSinceNow: 86400 * 5) // 5 days from now
+        let expiryDate = Date().normalizedDate().addingTimeInterval(86400 * 5) // 5 days from now
         let trialPlan = WPComSitePlan(id: "1052", hasDomainCredit: false, expiryDate: expiryDate)
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
@@ -102,7 +103,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
 
         // When
-        _ = StorePlanSynchronizer(stores: stores, pushNotesManager: pushNotesManager)
+        _ = StorePlanSynchronizer(stores: stores, timeZone: timeZone, pushNotesManager: pushNotesManager)
 
         // Then
         waitUntil(timeout: 3) {
@@ -114,12 +115,22 @@ final class StorePlanSynchronizerTests: XCTestCase {
             LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(sampleSiteID)",
         ]
         assertEqual(expectedIDs, ids)
+
+        let triggers = pushNotesManager.triggersForRequestedLocalNotificationsIfNeeded
+        let beforeExpirationTrigger = try XCTUnwrap(triggers.first as? UNCalendarNotificationTrigger)
+        let beforeExpirationTriggerDate = try XCTUnwrap(Calendar.current.date(from: beforeExpirationTrigger.dateComponents))
+        assertEqual(86400, expiryDate.timeIntervalSince(beforeExpirationTriggerDate)) // 1 day
+
+        let afterExpirationTrigger = try XCTUnwrap(triggers.last as? UNCalendarNotificationTrigger)
+        let afterExpirationTriggerDate = try XCTUnwrap(Calendar.current.date(from: afterExpirationTrigger.dateComponents))
+        assertEqual(86400, afterExpirationTriggerDate.timeIntervalSince(expiryDate)) // 1 day
     }
 
-    func test_expired_trial_plan_local_notification_is_scheduled_if_the_site_has_trial_plan_being_expired_for_at_most_1_day() {
+    func test_expired_trial_plan_local_notification_is_scheduled_if_the_site_has_trial_plan_being_expired_for_at_most_1_day() throws {
         // Given
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let pushNotesManager = MockPushNotificationsManager()
-        let expiryDate = Date(timeIntervalSinceNow: -86400/2) // expired for half a day
+        let expiryDate = Date().normalizedDate().addingTimeInterval(-86400/2) // expired for half a day
         let trialPlan = WPComSitePlan(id: "1052", hasDomainCredit: false, expiryDate: expiryDate)
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
@@ -138,7 +149,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
 
         // When
-        _ = StorePlanSynchronizer(stores: stores, pushNotesManager: pushNotesManager)
+        _ = StorePlanSynchronizer(stores: stores, timeZone: timeZone, pushNotesManager: pushNotesManager)
 
         // Then
         waitUntil(timeout: 3) {
@@ -151,10 +162,11 @@ final class StorePlanSynchronizerTests: XCTestCase {
         assertEqual(expectedIDs, ids)
     }
 
-    func test_local_notifications_are_canceled_after_the_site_is_upgraded() {
+    func test_local_notifications_are_canceled_after_the_site_is_upgraded() throws {
         // Given
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let pushNotesManager = MockPushNotificationsManager()
-        let expiryDate = Date(timeIntervalSinceNow: 86400 * 5) // 5 days from now
+        let expiryDate = Date().normalizedDate().addingTimeInterval(86400 * 5) // 5 days from now
         var expectedPlan = WPComSitePlan(id: "1052", hasDomainCredit: false, expiryDate: expiryDate)
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
@@ -173,7 +185,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
 
         // When
-        let synchronizer = StorePlanSynchronizer(stores: stores, pushNotesManager: pushNotesManager)
+        let synchronizer = StorePlanSynchronizer(stores: stores, timeZone: timeZone, pushNotesManager: pushNotesManager)
 
         // Then
         waitUntil(timeout: 3) {

@@ -89,7 +89,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                         "selling_venues": profilerData.sellingStatus?.rawValue as Any?,
                         "other_platform": profilerData.sellingPlatforms as Any?
                     ].compactMapValues { $0 }
-                ]
+                ] as [String : Any]
             ]
         }
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)

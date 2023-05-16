@@ -7,7 +7,7 @@ import Networking
 //
 public enum AccountAction: Action {
     case loadAccount(userID: Int64, onCompletion: (Account?) -> Void)
-    case loadAndSynchronizeSite(siteID: Int64, forcedUpdate: Bool, onCompletion: (Result<Site, Error>) -> Void)
+    case loadAndSynchronizeSite(siteID: Int64, forcedUpdate: Bool, supportsJCPSite: Bool, onCompletion: (Result<Site, Error>) -> Void)
     case synchronizeAccount(onCompletion: (Result<Account, Error>) -> Void)
     case synchronizeAccountSettings(userID: Int64, onCompletion: (Result<AccountSettings, Error>) -> Void)
     /// The boolean in the completion block indicates whether the sites contain any JCP sites (connected to Jetpack without Jetpack-the-plugin).

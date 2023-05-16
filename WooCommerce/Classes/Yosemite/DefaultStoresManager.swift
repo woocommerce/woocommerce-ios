@@ -577,7 +577,8 @@ private extension DefaultStoresManager {
     func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
         let action = AccountAction
             .loadAndSynchronizeSite(siteID: siteID,
-                                    forcedUpdate: false) { [weak self] result in
+                                    forcedUpdate: false,
+                                    supportsJCPSite: true) { [weak self] result in
             guard let self = self else { return }
             guard case .success(let site) = result else {
                 return

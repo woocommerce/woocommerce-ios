@@ -18,6 +18,8 @@ final class SitePluginStoreTests: XCTestCase {
     ///
     private var network: MockNetwork!
 
+    private var remote: MockSitePluginsRemote!
+
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
     private var viewStorage: StorageType {
@@ -33,6 +35,15 @@ final class SitePluginStoreTests: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
+        remote = MockSitePluginsRemote()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        remote = nil
+        network = nil
+        storageManager = nil
+        dispatcher = nil
     }
 
     func test_synchronizeSitePlugins_stores_plugins_correctly() {
@@ -160,5 +171,61 @@ final class SitePluginStoreTests: XCTestCase {
         let plugins = viewStorage.loadPlugins(siteID: sampleSiteID)
         XCTAssertEqual(plugins.count, 1) // the installed plugin
         XCTAssertEqual(plugins.first?.plugin, "jetpack/jetpack")
+    }
+
+    // MARK: - `isPluginActive`
+
+    func test_isPluginActive_for_jetpack_returns_true_when_site_has_jetpack_plugin() throws {
+        // Given
+        remote.whenLoadingPluginsFromWPCOM(thenReturn: .success([.init(id: "jetpack/jetpack", isActive: true)]))
+        let store = SitePluginStore(remote: remote, dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(SitePluginAction.isPluginActive(siteID: 122, plugin: .jetpack) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let isJetpackActive = try XCTUnwrap(result.get())
+        XCTAssertTrue(isJetpackActive)
+    }
+
+    func test_isPluginActive_for_jetpack_returns_false_when_site_does_not_have_jetpack_plugin() throws {
+        // Given
+        remote.whenLoadingPluginsFromWPCOM(thenReturn: .success([.init(id: "automatewoo/automatewoo", isActive: true)]))
+        let store = SitePluginStore(remote: remote, dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(SitePluginAction.isPluginActive(siteID: 122, plugin: .jetpack) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let isJetpackActive = try XCTUnwrap(result.get())
+        XCTAssertFalse(isJetpackActive)
+    }
+
+    func test_isPluginActive_for_jetpack_returns_error_when_loadPluginsFromWPCOM_fails() throws {
+        // Given
+        remote.whenLoadingPluginsFromWPCOM(thenReturn: .failure(NetworkError.invalidURL))
+        let store = SitePluginStore(remote: remote, dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(SitePluginAction.isPluginActive(siteID: 122, plugin: .jetpack) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .invalidURL)
     }
 }

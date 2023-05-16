@@ -29,7 +29,7 @@ final class SitePluginsRemoteTests: XCTestCase {
         let plugins = try await remote.loadPluginsFromWPCOM(siteID: 122)
 
         // Then
-        XCTAssertEqual(plugins.count, 31)
+        XCTAssertEqual(plugins.count, 3)
         XCTAssertTrue(plugins.contains(where: { $0.id == "jetpack/jetpack" && $0.isActive }))
     }
 

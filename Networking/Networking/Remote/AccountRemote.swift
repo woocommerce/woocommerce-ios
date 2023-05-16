@@ -86,8 +86,8 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
     public func loadSites() -> AnyPublisher<Result<[Site], Error>, Never> {
         let path = "me/sites"
         let parameters = [
-            SiteParameter.Fields.key: SiteParameter.Fields.value,
-            SiteParameter.Options.key: SiteParameter.Options.value
+            SiteRemote.SiteParameter.Fields.key: SiteRemote.SiteParameter.Fields.value,
+            SiteRemote.SiteParameter.Options.key: SiteRemote.SiteParameter.Options.value
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)

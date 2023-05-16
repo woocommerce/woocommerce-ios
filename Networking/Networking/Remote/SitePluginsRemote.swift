@@ -115,7 +115,6 @@ private struct DotcomSitePluginsResponse: Decodable {
     }
 }
 
-
 // MARK: - Constants!
 //
 private extension SitePluginsRemote {

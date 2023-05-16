@@ -17,6 +17,9 @@ public protocol SiteRemoteProtocol {
     ///
     func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws
 
+    /// Loads a site.
+    /// - Parameter siteID: Remote ID of the site to load.
+    /// - Returns: The site that matches the site ID.
     func loadSite(siteID: Int64) async throws -> Site
 }
 

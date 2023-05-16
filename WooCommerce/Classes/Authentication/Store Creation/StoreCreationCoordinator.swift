@@ -884,7 +884,9 @@ private extension StoreCreationCoordinator {
             })
         }
     }
+}
 
+private extension StoreCreationCoordinator {
     func scheduleLocalNotificationWhenStoreIsReady() {
         guard let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete, stores: stores) else {
             return

@@ -45,10 +45,9 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
-        case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let supportsJCPSite, let onCompletion):
+        case .loadAndSynchronizeSite(let siteID, let forcedUpdate, let onCompletion):
             loadAndSynchronizeSite(siteID: siteID,
                                    forcedUpdate: forcedUpdate,
-                                   supportsJCPSite: supportsJCPSite,
                                    onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
@@ -103,43 +102,18 @@ private extension AccountStore {
     /// Returns the site if it exists in storage already and if forced update is not required.
     /// Otherwise, it synchronizes the WordPress.com sites and returns the site if it exists.
     ///
-    /// - Parameters:
-    ///   - siteID: ID of the site to sync.
-    ///   - forcedUpdate: Whether it always sync from the remote instead of checking storage first.
-    ///   - supportsJCPSite: Whether the sync supports JCP sites (connected to Jetpack with Jetpack Connection Package, not with Jetpack-the-plugin).
-    ///   - onCompletion: Called when the load/sync completes.
     func loadAndSynchronizeSite(siteID: Int64,
                                 forcedUpdate: Bool,
-                                supportsJCPSite: Bool,
                                 onCompletion: @escaping (Result<Site, Error>) -> Void) {
         if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly(), !forcedUpdate {
             onCompletion(.success(site))
-        } else if supportsJCPSite {
+        } else {
             synchronizeSites(selectedSiteID: siteID) { [weak self] result in
                 guard let self = self else { return }
                 guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
                     return onCompletion(.failure(SynchronizeSiteError.unknownSite))
                 }
                 onCompletion(.success(site))
-            }
-        } else {
-            Task { @MainActor in
-                do {
-                    let site = try await remote.loadSite(siteID: siteID)
-                    await upsertStoredSiteInBackground(readOnlySite: site)
-                    guard let syncedSite = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
-                        return await MainActor.run {
-                            onCompletion(.failure(SynchronizeSiteError.unknownSite))
-                        }
-                    }
-                    await MainActor.run {
-                        onCompletion(.success(syncedSite))
-                    }
-                } catch {
-                    await MainActor.run {
-                        onCompletion(.failure(error))
-                    }
-                }
             }
         }
     }
@@ -214,15 +188,6 @@ private extension AccountStore {
                     onCompletion(.failure(error))
                 }
             }.store(in: &cancellables)
-    }
-
-    func synchronizeSite(siteID: Int64, completion: @escaping (Result<Site, Error>) -> Void) {
-        Task { @MainActor in
-            let result = await Result { try await remote.loadSite(siteID: siteID) }
-            await MainActor.run {
-                completion(result)
-            }
-        }
     }
 
     /// Loads the site plan for the default site.
@@ -337,20 +302,6 @@ extension AccountStore {
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    func upsertStoredSiteInBackground(readOnlySite: Networking.Site) async {
-        await withCheckedContinuation { continuation in
-            let derivedStorage = sharedDerivedStorage
-            derivedStorage.perform {
-                let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
-                storageSite.update(with: readOnlySite)
-            }
-
-            storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-                DispatchQueue.main.async(execute: { continuation.resume() })
-            }
         }
     }
 }

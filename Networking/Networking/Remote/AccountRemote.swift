@@ -10,7 +10,6 @@ public protocol AccountRemoteProtocol {
     func loadAccountSettings(for userID: Int64, completion: @escaping (Result<AccountSettings, Error>) -> Void)
     func updateAccountSettings(for userID: Int64, tracksOptOut: Bool, completion: @escaping (Result<AccountSettings, Error>) -> Void)
     func loadSites() -> AnyPublisher<Result<[Site], Error>, Never>
-    func loadSite(siteID: Int64) async throws -> Site
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never>
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
     func loadSitePlan(for siteID: Int64, completion: @escaping (Result<SitePlan, Error>) -> Void)
@@ -87,27 +86,14 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
     public func loadSites() -> AnyPublisher<Result<[Site], Error>, Never> {
         let path = "me/sites"
         let parameters = [
-            SiteParameter.Fields.key: SiteParameter.Fields.value,
-            SiteParameter.Options.key: SiteParameter.Options.value
+            "fields": "ID,name,description,URL,options,jetpack,jetpack_connection",
+            "options": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteListMapper()
 
         return enqueue(request, mapper: mapper)
-    }
-
-    /// Loads the site given a site ID.
-    ///
-    public func loadSite(siteID: Int64) async throws -> Site {
-        let path = "sites/\(siteID)"
-        let parameters = [
-            SiteParameter.Fields.key: SiteParameter.Fields.value,
-            SiteParameter.Options.key: SiteParameter.Options.value
-        ]
-
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        return try await enqueue(request)
     }
 
     /// Checks the WooCommerce site settings endpoint to confirm if the WooCommerce plugin is available or not.
@@ -272,18 +258,5 @@ public enum CreateAccountError: Error, Equatable {
         static let invalidPassword = "password_invalid"
         static let usernameExists = "username_exists"
         static let invalidUsername = "username_invalid"
-    }
-}
-
-private extension AccountRemote {
-    enum SiteParameter {
-        enum Fields {
-            static let key = "fields"
-            static let value = "ID,name,description,URL,options,jetpack,jetpack_connection"
-        }
-        enum Options {
-            static let key = "options"
-            static let value = "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
-        }
     }
 }

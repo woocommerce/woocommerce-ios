@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View showing a list of products to select.
 ///
@@ -28,6 +29,8 @@ struct ProductSelectorView: View {
 
     @State private var showingFilters: Bool = false
 
+    @State private var searchHeaderisBeingEdited = false
+
     /// Title for the multi-selection button
     ///
     private var doneButtonTitle: String {
@@ -41,9 +44,20 @@ struct ProductSelectorView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
+            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+                searchHeaderisBeingEdited = isEditing
+            })
                 .padding(.horizontal, insets: safeAreaInsets)
                 .accessibilityIdentifier("product-selector-search-bar")
+            Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+                ForEach(ProductSearchFilter.allCases, id: \.self) { option in
+                    Text(option.title)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.leading)
+                        .padding(.trailing)
+                        .renderedIf(searchHeaderisBeingEdited)
             HStack {
                 Button(Localization.clearSelection) {
                     viewModel.clearSelection()
@@ -110,7 +124,7 @@ struct ProductSelectorView: View {
             case .empty:
                 EmptyState(title: Localization.emptyStateMessage, image: .emptyProductsTabImage)
                     .frame(maxHeight: .infinity)
-            case .firstPageSync:
+            case .loading:
                 List(viewModel.ghostRows) { rowViewModel in
                     ProductRow(viewModel: rowViewModel)
                         .redacted(reason: .placeholder)

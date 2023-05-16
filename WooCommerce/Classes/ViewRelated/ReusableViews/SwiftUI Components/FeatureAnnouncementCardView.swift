@@ -1,5 +1,4 @@
 import SwiftUI
-import WordPressUI // For GhostStyle defaults
 
 struct FeatureAnnouncementCardView: View {
     private let viewModel: AnnouncementCardViewModelProtocol
@@ -139,26 +138,5 @@ extension FeatureAnnouncementCardView {
         static let dontShowAgainButton = NSLocalizedString(
             "Don't show again",
             comment: "Alert button text on a feature announcement which prevents the banner being shown again")
-    }
-}
-
-fileprivate struct AnimatedPlaceholder: View {
-    @State var animate: Bool = false
-
-    var body: some View {
-        Rectangle()
-            .fill(animate ? Color(.listForeground(modal: false)) : Color(.ghostCellAnimationEndColor))
-            .aspectRatio(Constants.landscapeFourThirds, contentMode: .fit)
-            .animation(.easeInOut(duration: GhostStyle.Defaults.beatDuration)
-                .repeatForever(autoreverses: true), value: animate)
-            .onAppear {
-                animate.toggle()
-            }
-            .padding(Constants.placeholderPadding)
-    }
-
-    private enum Constants {
-        static var landscapeFourThirds: CGFloat = 4/3
-        static var placeholderPadding: CGFloat = 8
     }
 }

@@ -59,14 +59,22 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         return button
     }
 
+    private let viewDidLoadAction: ((InPersonPaymentsMenuViewController) -> Void)?
+
+    /// In Person Payments Menu View Controller contains the menu for managing and accepting payments with a card reader or Tap to Pay
+    /// - Parameters:
+    ///   - stores: stores manager – for handling actions
+    ///   - featureFlagService: feature flags which affect the view controller's behaviour will be loaded from here
+    ///   - viewDidLoadAction: Provided as a one-time callback on viewDidLoad, originally to handle universal link navigation correctly.
     init(stores: StoresManager = ServiceLocator.stores,
-        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
-    ) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         viewDidLoadAction: ((InPersonPaymentsMenuViewController) -> Void)? = nil) {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
         self.setUpFlowOnlyEnabledAfterOnboardingComplete = !featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2)
+        self.viewDidLoadAction = viewDidLoadAction
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -88,6 +96,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         configureTableReload()
         runCardPresentPaymentsOnboardingIfPossible()
         configureWebViewPresentation()
+        viewDidLoadAction?(self)
     }
 }
 

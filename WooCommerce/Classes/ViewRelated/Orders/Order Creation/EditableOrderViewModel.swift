@@ -1293,10 +1293,8 @@ extension EditableOrderViewModel {
         let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: { result in
             switch result {
             case let .success(product):
-                print("🍉 Success: retrieved product ID \(product.productID) from sku \(sku)")
                 onCompletion(.success(product.productID))
             case .failure:
-                DDLogError("🍉 Failed to retrieve productID from sku \(sku)")
                 onCompletion(.failure(NSError()))
             }
         })

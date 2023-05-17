@@ -425,10 +425,11 @@ final class AppCoordinatorTests: XCTestCase {
                                           featureFlagService: featureFlagService,
                                           purchasesManager: WebPurchasesForWPComPlans(stores: stores))
 
-        let storeName = "SampleStoreName"
+        let notificationUserInfo = [StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName: "sampleStoreName"]
+        let identifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: UNNotificationDefaultActionIdentifier,
-                                                              requestIdentifier: LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial,
-                                                              notificationUserInfo: [StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName: storeName]))
+                                                              requestIdentifier: identifier,
+                                                              notificationUserInfo: notificationUserInfo))
 
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             if case let .loadPlan(_, completion) = action {
@@ -468,10 +469,11 @@ final class AppCoordinatorTests: XCTestCase {
                                           featureFlagService: featureFlagService,
                                           purchasesManager: WebPurchasesForWPComPlans(stores: stores))
 
-        let storeName = "SampleStoreName"
+        let notificationUserInfo = [StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName: "sampleStoreName"]
+        let identifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: UNNotificationDefaultActionIdentifier,
-                                                              requestIdentifier: LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial,
-                                                              notificationUserInfo: [StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName: storeName]))
+                                                              requestIdentifier: identifier,
+                                                              notificationUserInfo: notificationUserInfo))
 
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             if case let .loadPlan(_, completion) = action {

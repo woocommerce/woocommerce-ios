@@ -20,7 +20,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     /// Whether shipping notice banner should be displayed.
     ///
-    @Published private(set) var shouldDisplayShippingNotice: Bool = false
+    @Published private(set) var isShippingNoticeVisible: Bool = false
 
     /// Associated order of the shipping label.
     ///
@@ -45,7 +45,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     /// Symbol of currency in the order.
     ///
     private let currencySymbol: String
-    
+
     /// Flags if it's a EU Shipping requiring specific Customs configuration
     ///
     private let isEUShippingScenario: Bool
@@ -81,7 +81,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         }()
         self.currencySymbol = currencySymbol
         self.isEUShippingScenario = isEUShippingScenario
-        self.shouldDisplayShippingNotice = isEUShippingScenario
+        self.isShippingNoticeVisible = isEUShippingScenario
         self.inputViewModels = customsForms.map { .init(customsForm: $0,
                                                         destinationCountry: destinationCountry,
                                                         countries: countries,
@@ -94,11 +94,11 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 //
 extension ShippingLabelCustomsFormListViewModel {
     func bannerDismissTapped() {
-        shouldDisplayShippingNotice = false
+        isShippingNoticeVisible = false
     }
 
     func onInfoTooltipTapped() {
-        shouldDisplayShippingNotice = true
+        isShippingNoticeVisible = true
     }
 }
 

@@ -54,12 +54,12 @@ struct ShippingLabelCustomsFormList: View {
                     .onLearnMore {
                         onLearnMoreTapped()
                     }
-                    .renderedIf(viewModel.shouldDisplayShippingNotice)
+                    .renderedIf(viewModel.isShippingNoticeVisible)
                     .fixedSize(horizontal: false, vertical: true)
 
                 ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
                     ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
-                                                  isEUShippingScenario: viewModel.shouldDisplayShippingNotice,
+                                                  isEUShippingScenario: viewModel.isShippingNoticeVisible,
                                                   packageNumber: index + 1,
                                                   safeAreaInsets: geometry.safeAreaInsets,
                                                   viewModel: item,

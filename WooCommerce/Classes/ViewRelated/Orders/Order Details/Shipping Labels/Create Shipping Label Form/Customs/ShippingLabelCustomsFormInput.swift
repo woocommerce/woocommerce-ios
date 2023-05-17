@@ -43,7 +43,7 @@ struct ShippingLabelCustomsFormInput: View {
                     viewModel.itemViewModels.first(where: { $0.productID == item.productID })
                         .map { inputModel in
                             ShippingLabelCustomsFormItemDetails(itemNumber: index + 1,
-                                                                isInfoTooltipActive: true,
+                                                                isInfoTooltipActive: index == 0,
                                                                 viewModel: inputModel,
                                                                 safeAreaInsets: safeAreaInsets)
                         }

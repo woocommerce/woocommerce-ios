@@ -21,13 +21,17 @@ final class PrivacyBannerPresenter {
             return
         }
 
-        let countryCode = Locale.current.regionCode ?? "" // TODO: Switch for the real user country code.
-        let useCase = PrivacyBannerPresentationUseCase(countryCode: countryCode, defaults: defaults)
-
-        guard useCase.shouldShowPrivacyBanner() else {
-            return
+        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults)
+        Task {
+            if await useCase.shouldShowPrivacyBanner() {
+                await presentPrivacyBanner(from: viewController)
+            }
         }
+    }
 
+    /// Presents the privacy banner using a `BottomSheetViewController`
+    ///
+    @MainActor private func presentPrivacyBanner(from viewController: UIViewController) {
         let privacyBanner = PrivacyBannerViewController(goToSettingsAction: {
             print("Go to settings tapped") // TODO: Navigate to settings
         }, saveAction: {

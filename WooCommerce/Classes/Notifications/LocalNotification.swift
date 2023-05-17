@@ -51,6 +51,17 @@ struct LocalNotification {
             }
         }
 
+        var identifierForAnalytics: String {
+            switch self {
+            case .oneDayBeforeFreeTrialExpires:
+                return IdentifierPrefix.oneDayBeforeFreeTrialExpires
+            case .oneDayAfterFreeTrialExpires:
+                return IdentifierPrefix.oneDayAfterFreeTrialExpires
+            default:
+                return identifier
+            }
+        }
+
         enum IdentifierPrefix {
             static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
             static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"

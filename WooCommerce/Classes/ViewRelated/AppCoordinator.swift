@@ -320,21 +320,30 @@ private extension AppCoordinator {
     }
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
+        let identifier = response.notification.request.identifier
+        let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayBeforeFreeTrialExpires
+        let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires
+        let identifierForAnalytics: String = {
+            if identifier.hasPrefix(oneDayBeforeFreeTrialExpiresIdentifier) {
+                return oneDayBeforeFreeTrialExpiresIdentifier
+            } else if identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier) {
+                return oneDayAfterFreeTrialExpiresIdentifier
+            }
+            return identifier
+        }()
+        
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
             analytics.track(.localNotificationDismissed, withProperties: [
-                "type": response.notification.request.identifier
+                "type": identifierForAnalytics
             ])
             return
         }
 
         analytics.track(.localNotificationTapped, withProperties: [
-            "type": response.notification.request.identifier
+            "type": identifierForAnalytics
         ])
 
-        let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayBeforeFreeTrialExpires
-        let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires
-
-        switch response.notification.request.identifier {
+        switch identifier {
         case let identifier where identifier.hasPrefix(oneDayBeforeFreeTrialExpiresIdentifier):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: oneDayBeforeFreeTrialExpiresIdentifier, with: "")) else {

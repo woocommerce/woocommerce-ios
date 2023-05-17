@@ -107,7 +107,8 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
                 .init(item: element,
                       countries: countries,
                       currency: currency,
-                      isEUShippingScenario: index == 0 && isEUShippingScenario)
+                      shouldEnforceEUCustomsDescription: isEUShippingScenario,
+                      isEUTooltipAvailable: index == 0 && isEUShippingScenario)
         }
 
         configureItemsValidation()

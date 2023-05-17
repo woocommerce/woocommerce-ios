@@ -13,10 +13,14 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     /// Weight unit used in store.
     ///
     let weightUnit: String
-    
-    /// Flags if the Customs are under the EU rules.
+
+    /// Flags if the Customs are under the EU description rules.
     ///
-    private let isEUShippingScenario: Bool
+    private let shouldEnforceEUCustomsDescription: Bool
+
+    /// Flags if the Customs info tooltip should be presented.
+    ///
+    private let isEUTooltipAvailable: Bool
 
     /// Description for the item.
     ///
@@ -86,7 +90,8 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     init(item: ShippingLabelCustomsForm.Item,
          countries: [Country],
          currency: String,
-         isEUShippingScenario: Bool,
+         shouldEnforceEUCustomsDescription: Bool,
+         isEUTooltipAvailable: Bool,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.quantity = item.quantity
         self.productID = item.productID
@@ -98,7 +103,8 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
         self.currency = currency
         self.weightUnit = weightUnit ?? ""
         self.originCountry = countries.first(where: { $0.code == item.originCountry }) ?? Country(code: "", name: "", states: [])
-        self.isEUShippingScenario = isEUShippingScenario
+        self.shouldEnforceEUCustomsDescription = shouldEnforceEUCustomsDescription
+        self.isEUTooltipAvailable = isEUTooltipAvailable
 
         configureValidatedTotalValue()
         configureValidatedHSTariffNumber()
@@ -128,9 +134,9 @@ extension ShippingLabelCustomsFormItemDetailsViewModel {
     var hasValidHSTariffNumber: Bool {
         getValidateHSTariffNumber(hsTariffNumber) != nil
     }
-    
+
     var canDisplayTooltipInfoIcon: Bool {
-        validatedItem != nil && isEUShippingScenario
+        validatedItem != nil && isEUTooltipAvailable
     }
 }
 

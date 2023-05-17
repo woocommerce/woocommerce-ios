@@ -227,7 +227,11 @@ struct ShippingLabelCustomsFormItemDetails_Previews: PreviewProvider {
                                                              originCountry: "US",
                                                              productID: 123)
 
-    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails, countries: [], currency: "$", isEUShippingScenario: false)
+    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails,
+                                                                              countries: [],
+                                                                              currency: "$",
+                                                                              shouldEnforceEUCustomsDescription: false,
+                                                                              isEUTooltipAvailable: false)
 
     static var previews: some View {
         ShippingLabelCustomsFormItemDetails(itemNumber: 1, viewModel: sampleViewModel, safeAreaInsets: .zero)

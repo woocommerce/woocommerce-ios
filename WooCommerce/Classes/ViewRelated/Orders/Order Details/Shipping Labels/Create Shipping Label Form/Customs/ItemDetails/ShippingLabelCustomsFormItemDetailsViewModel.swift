@@ -82,7 +82,9 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
                                              originCountry: originCountry.code,
                                              productID: productID)
     }
-    
+
+    /// Description validation error message. The message will be set depending of the `shouldEnforceEUCustomsDescription` value.
+    /// 
     var validationErrorMessage: String {
         if shouldEnforceEUCustomsDescription {
             return Localization.EUCustomsDescriptionError
@@ -250,9 +252,11 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
 
     enum Localization {
         static let commonDescriptionError = NSLocalizedString("Item description is required",
-                                                              comment: "Error message for missing value in Description row in Customs screen of Shipping Label flow")
-        
+                                                              comment: "Error message for missing value in Description row" +
+                                                              " in Customs screen of Shipping Label flow")
+
         static let EUCustomsDescriptionError = NSLocalizedString("You must provide a clear, specific description for every item.",
-                                                                 comment: "Error message for a short value in Description row in Customs screen of Shipping Label flow")
+                                                                 comment: "Error message for a short value in Description row" +
+                                                                 " in Customs screen of Shipping Label flow")
     }
 }

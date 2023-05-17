@@ -193,10 +193,11 @@ final class OrdersRootViewController: UIViewController {
                 switch result {
                 case let .success(product):
                     print("🍉 start order creation flow with Product \(product.productID)")
+                    navigationController.popViewController(animated: true)
                     self.presentOrderCreationFlow()
                 case .failure:
                     print("🍉 something went wrong")
-                    self.navigationController?.popViewController(animated: true)
+                    navigationController.popViewController(animated: true)
                     self.handleError()
                 }
             }

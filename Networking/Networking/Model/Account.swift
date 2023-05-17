@@ -25,15 +25,22 @@ public struct Account: Decodable, Equatable, GeneratedFakeable {
     ///
     public let gravatarUrl: String?
 
+    /// Users IP country Code
+    /// This setting is not stored in the Storage layer because we don't want to rely on stale value.
+    /// But there us no problem on add it later if we believe it will be useful.
+    ///
+    public let ipCountryCode: String
+
 
     /// Designated Initializer.
     ///
-    public init(userID: Int64, displayName: String, email: String, username: String, gravatarUrl: String?) {
+    public init(userID: Int64, displayName: String, email: String, username: String, gravatarUrl: String?, ipCountryCode: String) {
         self.userID = userID
         self.displayName = displayName
         self.email = email
         self.username = username
         self.gravatarUrl = gravatarUrl
+        self.ipCountryCode = ipCountryCode
     }
 }
 
@@ -48,5 +55,6 @@ private extension Account {
         case email          = "email"
         case username       = "username"
         case gravatarUrl    = "avatar_URL"
+        case ipCountryCode  = "user_ip_country_code"
     }
 }

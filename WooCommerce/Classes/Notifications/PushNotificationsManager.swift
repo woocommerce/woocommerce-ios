@@ -346,7 +346,7 @@ extension PushNotificationsManager {
         do {
             try await center.add(request)
             analytics.track(.localNotificationScheduled, withProperties: [
-                "type": notification.scenario.identifierForAnalytics
+                "type": LocalNotification.Scenario.identifierForAnalytics(notification.scenario.identifier)
             ])
         } catch {
             DDLogError("⛔️ Unable to request a local notification: \(error)")
@@ -367,7 +367,16 @@ extension PushNotificationsManager {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: scenarios.map { $0.identifier })
         scenarios.map(\.identifier).forEach { identifier in
-            analytics.track(.localNotificationCanceled, withProperties: ["type": identifier])
+            analytics.track(.localNotificationCanceled, withProperties: ["type": LocalNotification.Scenario.identifierForAnalytics(identifier)])
+        }
+    }
+
+    func cancelAllNotifications() async {
+        let center = configuration.userNotificationsCenter
+        let pendingNotifications = await center.pendingNotificationRequests()
+        removeAllNotifications()
+        pendingNotifications.map(\.identifier).forEach { identifier in
+            analytics.track(.localNotificationCanceled, withProperties: ["type": LocalNotification.Scenario.identifierForAnalytics(identifier)])
         }
     }
 }

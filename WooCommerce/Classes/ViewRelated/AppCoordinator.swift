@@ -323,24 +323,16 @@ private extension AppCoordinator {
         let identifier = response.notification.request.identifier
         let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayBeforeFreeTrialExpires
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires
-        let identifierForAnalytics: String = {
-            if identifier.hasPrefix(oneDayBeforeFreeTrialExpiresIdentifier) {
-                return oneDayBeforeFreeTrialExpiresIdentifier
-            } else if identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier) {
-                return oneDayAfterFreeTrialExpiresIdentifier
-            }
-            return identifier
-        }()
 
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
             analytics.track(.localNotificationDismissed, withProperties: [
-                "type": identifierForAnalytics
+                "type": LocalNotification.Scenario.identifierForAnalytics(identifier)
             ])
             return
         }
 
         analytics.track(.localNotificationTapped, withProperties: [
-            "type": identifierForAnalytics
+            "type": LocalNotification.Scenario.identifierForAnalytics(identifier)
         ])
 
         switch identifier {

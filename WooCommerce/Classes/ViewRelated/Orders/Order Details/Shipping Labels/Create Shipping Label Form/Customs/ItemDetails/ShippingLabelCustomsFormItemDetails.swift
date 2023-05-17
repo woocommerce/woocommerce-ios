@@ -54,7 +54,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .background(Color(.listForeground(modal: false)))
 
                 VStack(spacing: 0) {
-                    ValidationErrorRow(errorMessage: Localization.descriptionError)
+                    ValidationErrorRow(errorMessage: viewModel.validationErrorMessage)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -188,8 +188,6 @@ private extension ShippingLabelCustomsFormItemDetails {
         static let descriptionPlaceholder = NSLocalizedString("Enter description",
                                                               comment: "Placeholder of Description row of item details in " +
                                                                 "Customs screen of Shipping Label flow")
-        static let descriptionError = NSLocalizedString("Item description is required",
-                                                        comment: "Error message for missing value in Description row in Customs screen of Shipping Label flow")
         static let hsTariffNumberTitle = NSLocalizedString("HS Tariff Number",
                                                            comment: "Title of HS Tariff Number row in Package Content" +
                                                                 " section in Customs screen of Shipping Label flow")

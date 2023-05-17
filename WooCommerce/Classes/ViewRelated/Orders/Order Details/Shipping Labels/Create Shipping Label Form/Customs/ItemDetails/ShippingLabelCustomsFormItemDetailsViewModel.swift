@@ -82,6 +82,14 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
                                              originCountry: originCountry.code,
                                              productID: productID)
     }
+    
+    var validationErrorMessage: String {
+        if shouldEnforceEUCustomsDescription {
+            return Localization.EUCustomsDescriptionError
+        } else {
+            return Localization.commonDescriptionError
+        }
+    }
 
     /// Quantity of items to be declared.
     ///
@@ -238,5 +246,13 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
 private extension ShippingLabelCustomsFormItemDetailsViewModel {
     enum Constants {
         static let hsTariffNumberCharacterLimit = 6
+    }
+
+    enum Localization {
+        static let commonDescriptionError = NSLocalizedString("Item description is required",
+                                                              comment: "Error message for missing value in Description row in Customs screen of Shipping Label flow")
+        
+        static let EUCustomsDescriptionError = NSLocalizedString("You must provide a clear, specific description for every item.",
+                                                                 comment: "Error message for a short value in Description row in Customs screen of Shipping Label flow")
     }
 }

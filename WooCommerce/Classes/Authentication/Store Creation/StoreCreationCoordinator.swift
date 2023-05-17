@@ -7,6 +7,10 @@ import protocol Storage.StorageManagerType
 
 /// Coordinates navigation for store creation flow, with the assumption that the app is already authenticated with a WPCOM user.
 final class StoreCreationCoordinator: Coordinator {
+    enum LocalNotificationUserInfoKey {
+        static let storeName = "storeName"
+    }
+
     /// Navigation source to store creation.
     enum Source {
         /// Initiated from the logged-out state.

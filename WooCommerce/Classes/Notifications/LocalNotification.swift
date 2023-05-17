@@ -7,6 +7,7 @@ struct LocalNotification {
     let body: String
     let scenario: Scenario
     let actions: CategoryActions?
+    let userInfo: [AnyHashable: Any]
 
     /// A category of actions in a notification.
     struct CategoryActions {
@@ -78,7 +79,8 @@ extension LocalNotification {
     init?(scenario: Scenario,
           stores: StoresManager = ServiceLocator.stores,
           timeZone: TimeZone = .current,
-          locale: Locale = .current) {
+          locale: Locale = .current,
+          userInfo: [AnyHashable: Any] = [:]) {
         /// Name to display in notifications
         let name: String = {
             let sessionManager = stores.sessionManager
@@ -125,7 +127,8 @@ extension LocalNotification {
         self.init(title: title,
                   body: body,
                   scenario: scenario,
-                  actions: actions)
+                  actions: actions,
+                  userInfo: userInfo)
     }
 }
 

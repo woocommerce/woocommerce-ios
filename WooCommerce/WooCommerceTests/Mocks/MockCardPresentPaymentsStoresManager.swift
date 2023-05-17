@@ -62,7 +62,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
                 return
             }
             onReaderDiscovered(discoveredReaders)
-        case .connect(let reader, let onCompletion):
+        case .connect(let reader, _, let onCompletion):
             guard !failConnection else {
                 onCompletion(Result.failure(MockErrors.connectionFailure))
                 return

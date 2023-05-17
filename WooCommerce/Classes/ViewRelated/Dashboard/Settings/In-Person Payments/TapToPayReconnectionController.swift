@@ -60,6 +60,7 @@ final class TapToPayReconnectionController {
         }
         adoptedConnectionCompletionHandler = onCompletion
         silencingAlertsPresenter.startPresentingAlerts(from: alertsPresenter)
+        connectionController?.allowTermsOfServiceAcceptance = true
     }
 }
 
@@ -87,7 +88,8 @@ private extension TapToPayReconnectionController {
             alertsPresenter: silencingAlertsPresenter,
             alertsProvider: BuiltInReaderConnectionAlertsProvider(),
             configuration: configuration,
-            analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configuration))
+            analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configuration),
+            allowTermsOfServiceAcceptance: false)
     }
 
     func reset() {

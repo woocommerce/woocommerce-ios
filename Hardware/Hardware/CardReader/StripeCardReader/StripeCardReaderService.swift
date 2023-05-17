@@ -347,7 +347,7 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error> {
+    public func connect(_ reader: CardReader, options: CardReaderConnectionOptions?) -> AnyPublisher<CardReader, Error> {
         guard let stripeReader = discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
             return Future() { promise in
                 promise(.failure(CardReaderServiceError.connection()))
@@ -356,7 +356,7 @@ extension StripeCardReaderService: CardReaderService {
 
         switch stripeReader.deviceType {
         case .appleBuiltIn:
-            return getLocalMobileConfiguration(stripeReader).flatMap { configuration in
+            return getLocalMobileConfiguration(stripeReader, options: options).flatMap { configuration in
                 self.connect(stripeReader, configuration: configuration)
             }
             .share()
@@ -391,7 +391,8 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader) -> Future<LocalMobileConnectionConfiguration, Error> {
+    private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader,
+                                             options: CardReaderConnectionOptions?) -> Future<LocalMobileConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
@@ -403,7 +404,11 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    return promise(.success(LocalMobileConnectionConfiguration(locationId: locationId)))
+                    return promise(.success(LocalMobileConnectionConfiguration(
+                        locationId: locationId,
+                        merchantDisplayName: nil,
+                        onBehalfOf: nil,
+                        tosAcceptancePermitted: options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)))
                 case .failure(let error):
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))

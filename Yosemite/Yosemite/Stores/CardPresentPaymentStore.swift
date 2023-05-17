@@ -97,8 +97,8 @@ public final class CardPresentPaymentStore: Store {
                                      onError: onError)
         case .cancelCardReaderDiscovery(let completion):
             cancelCardReaderDiscovery(completion: completion)
-        case .connect(let reader, let completion):
-            connect(reader: reader, onCompletion: completion)
+        case .connect(let reader, let options, let completion):
+            connect(reader: reader, options: options, onCompletion: completion)
         case .disconnect(let completion):
             disconnect(onCompletion: completion)
         case .observeConnectedReaders(let completion):
@@ -202,11 +202,13 @@ private extension CardPresentPaymentStore {
             ))
     }
 
-    func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<Yosemite.CardReader, Error>) -> Void) {
+    func connect(reader: Yosemite.CardReader,
+                 options: CardReaderConnectionOptions?,
+                 onCompletion: @escaping (Result<Yosemite.CardReader, Error>) -> Void) {
         // We tiptoe around this for now. We will get into error handling later:
         // https://github.com/woocommerce/woocommerce-ios/issues/3734
         // https://github.com/woocommerce/woocommerce-ios/issues/3741
-        cardReaderService.connect(reader)
+        cardReaderService.connect(reader, options: options)
             .subscribe(Subscribers.Sink(receiveCompletion: { (completion) in
                 if case let .failure(underlyingError) = completion {
                     onCompletion(.failure(underlyingError))

@@ -157,14 +157,14 @@ final class OrdersRootViewController: UIViewController {
     /// We default to use -1 as sentinel value, due not having a Swift's Int64 optional primitive equivalent in Obj-C,
     /// and validate it when needed.
     ///
-    @objc func presentOrderCreationFlow(with initialItem: Int64 = -1) {
+    @objc func presentOrderCreationFlow(with initialProductID: Int64 = -1) {
         guard let navigationController = navigationController else {
             return
         }
 
-        let item: Int64? = validateSentinelValue(value: initialItem)
+        let productID: Int64? = validateSentinelValue(value: initialProductID)
 
-        let viewModel = EditableOrderViewModel(siteID: siteID, isCreatedFromScannedItem: item)
+        let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProductID: productID)
         viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
@@ -198,11 +198,9 @@ final class OrdersRootViewController: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case let .success(product):
-                    print("🍉 start order creation flow with Product \(product.productID)")
                     navigationController.popViewController(animated: true)
                     self.presentOrderCreationFlow(with: product.productID)
                 case .failure:
-                    print("🍉 something went wrong")
                     navigationController.popViewController(animated: true)
                     self.handleError()
                 }
@@ -214,14 +212,11 @@ final class OrdersRootViewController: UIViewController {
     ///
     ///
     func handleScannedBarcode(_ scannedBarcode: String, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
-        print("🍉 barcode detected: \(scannedBarcode)")
         let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: scannedBarcode) { result in
             switch result {
             case let .success(matchedProduct):
-                print("🍉 retrieval success: Product \(matchedProduct.productID)")
                 onCompletion(.success(matchedProduct))
             case let .failure(error):
-                print("🍉 retrieval error: \(error)")
                 onCompletion(.failure(error))
             }
         }
@@ -488,8 +483,10 @@ private extension OrdersRootViewController {
 
 // MARK: - Helpers
 private extension OrdersRootViewController {
-    /// Validates the passed value by returning nil or a value
+    /// Validates the passed value by returning nil if it's invalid, or the value if its valid
     ///
+    var invalidValue: Int64 { -1 }
+
     func validateSentinelValue(value: Int64) -> Int64? {
         value == -1 ? nil : value
     }

@@ -318,9 +318,9 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
+    /// Product ID given to the order when is created with a predetermined product, if any
     ///
-    ///
-    private let isCreatedFromScannedItem: Int64?
+    private let withInitialProductID: Int64?
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -333,7 +333,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         isCreatedFromScannedItem: Int64? = nil) {
+         withInitialProductID: Int64? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -344,7 +344,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
-        self.isCreatedFromScannedItem = isCreatedFromScannedItem
+        self.withInitialProductID = withInitialProductID
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -927,7 +927,7 @@ private extension EditableOrderViewModel {
     /// Configures product row view models for each item in `orderDetails`.
     ///
     func configureProductRowViewModels() {
-        configureInitialOrderFromScannedProductIfNeeded()
+        configureInitialOrderFromScannedItemIfNeeded()
         updateProductsResultsController()
         updateProductVariationsResultsController()
         orderSynchronizer.orderPublisher
@@ -940,10 +940,10 @@ private extension EditableOrderViewModel {
             .assign(to: &$productRows)
     }
 
+    /// If given, sends a product to the Order synchronizer during the initial Order creation setup
     ///
-    ///
-    func configureInitialOrderFromScannedProductIfNeeded() {
-        guard let productID = self.isCreatedFromScannedItem else {
+    func configureInitialOrderFromScannedItemIfNeeded() {
+        guard let productID = self.withInitialProductID else {
             return
         }
         orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))

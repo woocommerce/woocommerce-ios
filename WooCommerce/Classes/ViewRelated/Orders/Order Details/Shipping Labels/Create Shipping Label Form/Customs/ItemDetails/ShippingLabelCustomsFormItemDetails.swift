@@ -27,9 +27,15 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 Text(String(format: Localization.customLineTitle, itemNumber))
                     .bodyStyle()
                 Spacer()
-                Image(uiImage: .noticeImage)
-                    .foregroundColor(Color(.error))
-                    .renderedIf(viewModel.validatedItem == nil)
+                ZStack {
+                    Image(uiImage: .noticeImage)
+                        .foregroundColor(Color(.error))
+                        .renderedIf(viewModel.validatedItem == nil)
+
+                    Image(uiImage: .infoOutlineImage)
+                        .foregroundColor(Color(.accent))
+                        .renderedIf(viewModel.validatedItem != nil && isInfoTooltipActive)
+                }
             }
         }, content: {
             // Item Description

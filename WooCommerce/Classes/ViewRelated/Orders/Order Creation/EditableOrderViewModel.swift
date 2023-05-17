@@ -318,6 +318,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
+    ///
+    ///
+    private let isCreatedFromScannedItem: Int64?
+
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
     init(siteID: Int64,
@@ -328,7 +332,8 @@ final class EditableOrderViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker()) {
+         permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
+         isCreatedFromScannedItem: Int64? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -339,6 +344,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
+        self.isCreatedFromScannedItem = isCreatedFromScannedItem
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -921,6 +927,7 @@ private extension EditableOrderViewModel {
     /// Configures product row view models for each item in `orderDetails`.
     ///
     func configureProductRowViewModels() {
+        configureInitialOrderFromScannedProductIfNeeded()
         updateProductsResultsController()
         updateProductVariationsResultsController()
         orderSynchronizer.orderPublisher
@@ -931,6 +938,15 @@ private extension EditableOrderViewModel {
                 return self.createProductRows(items: items)
             }
             .assign(to: &$productRows)
+    }
+
+    ///
+    ///
+    func configureInitialOrderFromScannedProductIfNeeded() {
+        guard let productID = self.isCreatedFromScannedItem else {
+            return
+        }
+        orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
     }
 
     /// Updates customer data viewmodel based on order addresses.

@@ -153,12 +153,18 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow.
     ///
-    @objc func presentOrderCreationFlow() {
+    /// - parameter initialItem: Represents the product ID of an initial item to create the Order with, if given
+    /// We default to use -1 as sentinel value, due not having a Swift's Int64 optional primitive equivalent in Obj-C,
+    /// and validate it when needed.
+    ///
+    @objc func presentOrderCreationFlow(with initialItem: Int64 = -1) {
         guard let navigationController = navigationController else {
             return
         }
 
-        let viewModel = EditableOrderViewModel(siteID: siteID)
+        let item: Int64? = validateSentinelValue(value: initialItem)
+
+        let viewModel = EditableOrderViewModel(siteID: siteID, isCreatedFromScannedItem: item)
         viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
@@ -194,7 +200,7 @@ final class OrdersRootViewController: UIViewController {
                 case let .success(product):
                     print("🍉 start order creation flow with Product \(product.productID)")
                     navigationController.popViewController(animated: true)
-                    self.presentOrderCreationFlow()
+                    self.presentOrderCreationFlow(with: product.productID)
                 case .failure:
                     print("🍉 something went wrong")
                     navigationController.popViewController(animated: true)
@@ -477,6 +483,15 @@ private extension OrdersRootViewController {
         }
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+    }
+}
+
+// MARK: - Helpers
+private extension OrdersRootViewController {
+    /// Validates the passed value by returning nil or a value
+    ///
+    func validateSentinelValue(value: Int64) -> Int64? {
+        value == -1 ? nil : value
     }
 }
 

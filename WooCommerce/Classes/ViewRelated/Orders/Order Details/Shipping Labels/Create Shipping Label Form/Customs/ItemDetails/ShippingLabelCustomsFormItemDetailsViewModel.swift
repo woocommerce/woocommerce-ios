@@ -13,6 +13,10 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     /// Weight unit used in store.
     ///
     let weightUnit: String
+    
+    /// Flags if the Customs are under the EU rules.
+    ///
+    private let isEUShippingScenario: Bool
 
     /// Description for the item.
     ///
@@ -79,7 +83,11 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     private let quantity: Decimal
 
-    init(item: ShippingLabelCustomsForm.Item, countries: [Country], currency: String, weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+    init(item: ShippingLabelCustomsForm.Item,
+         countries: [Country],
+         currency: String,
+         isEUShippingScenario: Bool,
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.quantity = item.quantity
         self.productID = item.productID
         self.description = item.description
@@ -90,6 +98,7 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
         self.currency = currency
         self.weightUnit = weightUnit ?? ""
         self.originCountry = countries.first(where: { $0.code == item.originCountry }) ?? Country(code: "", name: "", states: [])
+        self.isEUShippingScenario = isEUShippingScenario
 
         configureValidatedTotalValue()
         configureValidatedHSTariffNumber()
@@ -118,6 +127,10 @@ extension ShippingLabelCustomsFormItemDetailsViewModel {
 
     var hasValidHSTariffNumber: Bool {
         getValidateHSTariffNumber(hsTariffNumber) != nil
+    }
+    
+    var canDisplayTooltipInfoIcon: Bool {
+        validatedItem != nil && isEUShippingScenario
     }
 }
 

@@ -4,7 +4,6 @@ import Yosemite
 struct ShippingLabelCustomsFormItemDetails: View {
     private let itemNumber: Int
     private let safeAreaInsets: EdgeInsets
-    private let isInfoTooltipActive: Bool
     private let infoTooltipTapped: () -> Void
 
     @State private var isCollapsed: Bool = true
@@ -14,13 +13,11 @@ struct ShippingLabelCustomsFormItemDetails: View {
     init(itemNumber: Int,
          viewModel: ShippingLabelCustomsFormItemDetailsViewModel,
          safeAreaInsets: EdgeInsets = .zero,
-         isInfoTooltipActive: Bool,
          infoTooltipTapped: @escaping () -> Void = {}) {
         self.itemNumber = itemNumber
-        self.isInfoTooltipActive = isInfoTooltipActive
         self.viewModel = viewModel
-        self.infoTooltipTapped = infoTooltipTapped
         self.safeAreaInsets = safeAreaInsets
+        self.infoTooltipTapped = infoTooltipTapped
     }
 
     var body: some View {
@@ -40,7 +37,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     }) {
                         Image(uiImage: .infoOutlineImage)
                             .foregroundColor(Color(.accent))
-                    }.renderedIf(viewModel.validatedItem != nil && isInfoTooltipActive)
+                    }.renderedIf(viewModel.canDisplayTooltipInfoIcon)
                 }
             }
         }, content: {
@@ -230,9 +227,9 @@ struct ShippingLabelCustomsFormItemDetails_Previews: PreviewProvider {
                                                              originCountry: "US",
                                                              productID: 123)
 
-    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails, countries: [], currency: "$")
+    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails, countries: [], currency: "$", isEUShippingScenario: false)
 
     static var previews: some View {
-        ShippingLabelCustomsFormItemDetails(itemNumber: 1, viewModel: sampleViewModel, safeAreaInsets: .zero, isInfoTooltipActive: false)
+        ShippingLabelCustomsFormItemDetails(itemNumber: 1, viewModel: sampleViewModel, safeAreaInsets: .zero)
     }
 }

@@ -85,7 +85,8 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.inputViewModels = customsForms.map { .init(customsForm: $0,
                                                         destinationCountry: destinationCountry,
                                                         countries: countries,
-                                                        currency: currencySymbol) }
+                                                        currency: currencySymbol,
+                                                        isEUShippingScenario: isEUShippingScenario) }
         configureFormsValidation()
     }
 }

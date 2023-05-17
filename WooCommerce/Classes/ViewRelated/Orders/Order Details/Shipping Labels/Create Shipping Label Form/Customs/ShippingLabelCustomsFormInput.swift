@@ -5,7 +5,6 @@ struct ShippingLabelCustomsFormInput: View {
     private let isCollapsible: Bool
     private let packageNumber: Int
     private let safeAreaInsets: EdgeInsets
-    private let isEUShippingScenario: Bool
     private let infoTooltipTapped: () -> Void
 
     @ObservedObject private var viewModel: ShippingLabelCustomsFormInputViewModel
@@ -17,10 +16,8 @@ struct ShippingLabelCustomsFormInput: View {
          packageNumber: Int,
          safeAreaInsets: EdgeInsets,
          viewModel: ShippingLabelCustomsFormInputViewModel,
-         isEUShippingScenario: Bool,
          infoTooltipTapped: @escaping () -> Void = {}) {
         self.isCollapsible = isCollapsible
-        self.isEUShippingScenario = isEUShippingScenario
         self.packageNumber = packageNumber
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
@@ -54,7 +51,6 @@ struct ShippingLabelCustomsFormInput: View {
                             ShippingLabelCustomsFormItemDetails(itemNumber: index + 1,
                                                                 viewModel: inputModel,
                                                                 safeAreaInsets: safeAreaInsets,
-                                                                isInfoTooltipActive: index == 0 && isEUShippingScenario,
                                                                 infoTooltipTapped: infoTooltipTapped)
                         }
                 }
@@ -235,15 +231,18 @@ struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormInputViewModel = {
         let sampleOrder = ShippingLabelSampleData.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", items: [])
-        return .init(customsForm: sampleForm, destinationCountry: Country(code: "VN", name: "Vietnam", states: []), countries: [], currency: "$")
+        return .init(customsForm: sampleForm,
+                     destinationCountry: Country(code: "VN", name: "Vietnam", states: []),
+                     countries: [],
+                     currency: "$",
+                     isEUShippingScenario: false)
     }()
 
     static var previews: some View {
         ShippingLabelCustomsFormInput(isCollapsible: true,
                                       packageNumber: 1,
                                       safeAreaInsets: .zero,
-                                      viewModel: sampleViewModel,
-                                      isEUShippingScenario: false)
+                                      viewModel: sampleViewModel)
     }
 }
 #endif

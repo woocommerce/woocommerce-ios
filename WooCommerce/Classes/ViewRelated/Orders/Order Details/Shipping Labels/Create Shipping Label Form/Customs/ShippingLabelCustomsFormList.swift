@@ -62,7 +62,6 @@ struct ShippingLabelCustomsFormList: View {
                                                   packageNumber: index + 1,
                                                   safeAreaInsets: geometry.safeAreaInsets,
                                                   viewModel: item,
-                                                  isEUShippingScenario: viewModel.isEUShippingScenario,
                                                   infoTooltipTapped: {
                         viewModel.onInfoTooltipTapped()
                     })

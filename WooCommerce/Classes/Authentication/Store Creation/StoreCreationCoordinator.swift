@@ -47,10 +47,12 @@ final class StoreCreationCoordinator: Coordinator {
     private let stores: StoresManager
     private let analytics: Analytics
     private let source: Source
+    private let prefillStoreName: String?
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
     private let localNotificationScheduler: LocalNotificationScheduler
+    private let pushNotesManager: PushNotesManager
     private var jetpackCheckRetryInterval: TimeInterval {
         isFreeTrialCreation ? 10 : 5
     }
@@ -59,6 +61,7 @@ final class StoreCreationCoordinator: Coordinator {
 
     init(source: Source,
          navigationController: UINavigationController,
+         prefillStoreName: String? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -67,6 +70,7 @@ final class StoreCreationCoordinator: Coordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.source = source
         self.navigationController = navigationController
+        self.prefillStoreName = prefillStoreName
         // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
         self.storePickerViewModel = .init(configuration: .standard,
                                           stores: stores,
@@ -78,6 +82,7 @@ final class StoreCreationCoordinator: Coordinator {
         self.featureFlagService = featureFlagService
         self.isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
+        self.pushNotesManager = pushNotesManager
 
         Task { @MainActor in
             if let purchasesManager {
@@ -180,7 +185,10 @@ private extension StoreCreationCoordinator {
                 }
             }
         }
-        let storeNameForm = StoreNameFormHostingController { storeName in
+        let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
+            if isFreeTrialEnabled {
+                self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
+            }
             continueAfterEnteringStoreName(storeName)
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)

@@ -321,13 +321,13 @@ private extension AppCoordinator {
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
-            analytics.track(.localNotificationDismissed,withProperties: [
+            analytics.track(.localNotificationDismissed, withProperties: [
                 "type": response.notification.request.identifier
             ])
             return
         }
 
-        analytics.track(.localNotificationTapped,withProperties: [
+        analytics.track(.localNotificationTapped, withProperties: [
             "type": response.notification.request.identifier
         ])
 

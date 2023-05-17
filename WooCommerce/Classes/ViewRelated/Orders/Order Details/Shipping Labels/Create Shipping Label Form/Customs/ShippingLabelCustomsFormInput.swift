@@ -42,7 +42,10 @@ struct ShippingLabelCustomsFormInput: View {
                 ForEach(Array(viewModel.items.enumerated()), id: \.element) { (index, item) in
                     viewModel.itemViewModels.first(where: { $0.productID == item.productID })
                         .map { inputModel in
-                            ShippingLabelCustomsFormItemDetails(itemNumber: index + 1, viewModel: inputModel, safeAreaInsets: safeAreaInsets)
+                            ShippingLabelCustomsFormItemDetails(itemNumber: index + 1,
+                                                                isInfoTooltipActive: true,
+                                                                viewModel: inputModel,
+                                                                safeAreaInsets: safeAreaInsets)
                         }
                 }
             }

@@ -61,6 +61,8 @@ final class CardPresentPaymentPreflightController {
 
     private let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
+    private let supportDeterminer: CardReaderSupportDeterminer
+
     init(siteID: Int64,
          discoveryMethod: CardReaderDiscoveryMethod?,
          configuration: CardPresentPaymentsConfiguration,
@@ -95,6 +97,8 @@ final class CardPresentPaymentPreflightController {
             alertsProvider: BuiltInReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
+
+        self.supportDeterminer = CardReaderSupportDeterminer(siteID: siteID, configuration: configuration, stores: stores)
     }
 
     @MainActor
@@ -163,7 +167,7 @@ final class CardPresentPaymentPreflightController {
 
 
     private func startReaderConnection(using paymentGatewayAccount: PaymentGatewayAccount) async {
-        let localMobileReaderSupported = await localMobileReaderSupported() && configuration.supportedReaders.contains(.appleBuiltIn)
+        let localMobileReaderSupported = await supportDeterminer.deviceSupportsLocalMobileReader() && supportDeterminer.siteSupportsLocalMobileReader()
 
         switch (discoveryMethod, localMobileReaderSupported) {
         case (.none, true):
@@ -223,19 +227,6 @@ final class CardPresentPaymentPreflightController {
         }
     }
 
-    @MainActor
-    private func localMobileReaderSupported() async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
-                                                                     cardReaderType: .appleBuiltIn,
-                                                                     discoveryMethod: .localMobile) { result in
-                continuation.resume(returning: result)
-            }
-            stores.dispatch(action)
-        }
-    }
-
-//    @MainActor
     private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>,
                                         paymentGatewayAccount: PaymentGatewayAccount) {
         let connectionResult = result.map { connection in

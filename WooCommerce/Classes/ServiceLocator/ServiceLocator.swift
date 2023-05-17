@@ -100,6 +100,8 @@ final class ServiceLocator {
     private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
+    private static var _tapToPayReconnectionController: TapToPayReconnectionController = TapToPayReconnectionController()
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -246,6 +248,10 @@ final class ServiceLocator {
 
     static var cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher {
         _cardPresentPaymentsOnboardingIPPUsersRefresher
+    }
+
+    static var tapToPayReconnectionController: TapToPayReconnectionController {
+        _tapToPayReconnectionController
     }
 }
 

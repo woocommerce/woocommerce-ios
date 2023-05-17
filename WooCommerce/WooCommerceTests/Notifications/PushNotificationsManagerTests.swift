@@ -673,6 +673,30 @@ final class PushNotificationsManagerTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
         assertEqual(LocalNotification.Scenario.storeCreationComplete.identifier, eventProperties["type"] as? String)
     }
+
+    func test_cancelAllNotifications_tracks_local_notification_canceled() async throws {
+        // Given
+        let mockCenter = MockUserNotificationsCenterAdapter()
+        let analytics = MockAnalyticsProvider()
+        let manager = PushNotificationsManager(configuration: .init(
+            application: UIApplication.shared,
+            defaults: .standard,
+            storesManager: MockStoresManager(sessionManager: .makeForTesting()),
+            userNotificationsCenter: mockCenter
+        ), analytics: WooAnalytics(analyticsProvider: analytics))
+        let siteID: Int64 = 123
+        let notification = try XCTUnwrap(LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)))
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
+
+        // When
+        await manager.requestLocalNotification(notification, trigger: trigger)
+        await manager.cancelAllNotifications()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationCanceled.rawValue }))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        assertEqual(LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+    }
 }
 
 

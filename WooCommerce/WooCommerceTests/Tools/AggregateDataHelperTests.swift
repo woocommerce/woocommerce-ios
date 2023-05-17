@@ -79,7 +79,9 @@ final class AggregateDataHelperTests: XCTestCase {
         let expectedCount = 7
         let actual = AggregateDataHelper.combineOrderItems(order.items, with: refunds)
 
-        XCTAssertEqual(expectedCount, actual.count)
+//        XCTAssertEqual(expectedCount, actual.count)
+        // purposely failing test
+        XCTAssertNotEqual(expectedCount, actual.count)
     }
 
     func test_AggregateOrderItem_has_attributes_from_OrderItem() {

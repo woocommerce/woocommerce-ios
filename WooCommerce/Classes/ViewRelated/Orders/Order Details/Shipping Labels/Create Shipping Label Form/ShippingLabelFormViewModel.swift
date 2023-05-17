@@ -897,7 +897,7 @@ extension ShippingLabelFormViewModel {
     func isEUShippingConditionMet() -> Bool {
         EUCustomsScenarioValidator.validate(origin: self.originAddress, destination: self.destinationAddress)
     }
-    
+
     func dismissEUShippingNotice(onCompletion: @escaping (Bool) -> Void) {
         let action = AppSettingsAction.dismissEUShippingNotice { result in
             switch result {
@@ -909,7 +909,7 @@ extension ShippingLabelFormViewModel {
         }
         stores.dispatch(action)
     }
-    
+
     private func updateEUShippingNoticeVisibility() {
         verifyEUShippingNoticeDismissState { [weak self] dismissed in
             guard let self = self, dismissed else {

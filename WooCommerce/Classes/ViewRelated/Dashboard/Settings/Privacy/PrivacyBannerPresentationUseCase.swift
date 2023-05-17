@@ -47,18 +47,12 @@ private extension PrivacyBannerPresentationUseCase {
     /// - If the user has a WPCOM account:
     ///   - Use the ip country code.
     /// - If the user does not has a WPCOM account:
-    ///   - Fetch the active carrier's country code.
-    ///   - If carrier is not available, use the locale country code.
+    ///   - Use the current locale country code.
     ///
     func fetchUsersCountryCode() async throws -> String {
         // Use ip country code for WPCom accounts
         if !stores.isAuthenticatedWithoutWPCom {
             return try await fetchIPCountryCode()
-        }
-
-        // Use carrier country code for non-WPCom accounts
-        if let carrierCode = fetchCarrierCountryCode() {
-            return carrierCode
         }
 
         // Use locale country code as a fallback
@@ -77,13 +71,6 @@ private extension PrivacyBannerPresentationUseCase {
                 stores.dispatch(action)
             }
         }
-    }
-
-    /// Fetches the country code from the first registered cellular provider.
-    ///
-    func fetchCarrierCountryCode() -> String? {
-        let networkCarrier = CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.first?.value
-        return networkCarrier?.isoCountryCode
     }
 
     /// Fetches the country code from the current locate.

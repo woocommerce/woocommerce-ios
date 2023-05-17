@@ -28,6 +28,14 @@ final class ProductSelectorViewModelTracker {
                                                                                                         isFilterActive: filtersAreActive))
     }
 
+    func trackSearchTriggered() {
+        guard let productSearchFilter = viewModel?.productSearchFilter else {
+            return
+        }
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorSearchTriggered(searchFilter: productSearchFilter))
+    }
+
     func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64) {
         guard productIDTrackingSources[productID] == nil else {
             productIDTrackingSources.removeValue(forKey: productID)

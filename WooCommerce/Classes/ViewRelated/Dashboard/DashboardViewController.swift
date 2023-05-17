@@ -104,6 +104,8 @@ final class DashboardViewController: UIViewController {
 
     private var announcementView: UIView?
 
+    private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
+
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
@@ -135,6 +137,10 @@ final class DashboardViewController: UIViewController {
     ///
     private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
 
+    /// Presenter for the privacy choices banner
+    ///
+    private lazy var privacyBannerPresenter = PrivacyBannerPresenter()
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -160,10 +166,12 @@ final class DashboardViewController: UIViewController {
         observeBottomJetpackBenefitsBannerVisibilityUpdates()
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
+        observeModalJustInTimeMessages()
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
         configureFreeTrialBannerPresenter()
+        presentPrivacyBannerIfNeeded()
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
@@ -420,6 +428,7 @@ private extension DashboardViewController {
         viewModel.$showWebViewSheet.sink { [weak self] viewModel in
             guard let self = self else { return }
             guard let viewModel = viewModel else { return }
+            self.dismissModalJustInTimeMessage()
             self.openWebView(viewModel: viewModel)
         }
         .store(in: &subscriptions)
@@ -429,13 +438,21 @@ private extension DashboardViewController {
         let webViewSheet = WebViewSheet(viewModel: viewModel) { [weak self] in
             guard let self = self else { return }
             self.dismiss(animated: true)
-            Task {
-                await self.viewModel.syncAnnouncements(for: self.siteID)
-            }
+            self.maybeSyncAnnouncementsAfterWebViewDismissed()
         }
         let hostingController = UIHostingController(rootView: webViewSheet)
         hostingController.presentationController?.delegate = self
         present(hostingController, animated: true, completion: nil)
+    }
+
+    private func maybeSyncAnnouncementsAfterWebViewDismissed() {
+        // If the web view was opened from a modal JITM, it was dismissed before the webview
+        // was presented. Syncing in that situation would result in it showing again.
+        if self.viewModel.modalJustInTimeMessageViewModel == nil {
+            Task {
+                await self.viewModel.syncAnnouncements(for: self.siteID)
+            }
+        }
     }
 
     /// Subscribes to the trigger to start the Add Product flow for products onboarding
@@ -527,6 +544,39 @@ private extension DashboardViewController {
         hostingController.view.layoutIfNeeded()
     }
 
+    private func observeModalJustInTimeMessages() {
+        viewModel.$modalJustInTimeMessageViewModel.sink { [weak self] viewModel in
+            guard let viewModel = viewModel else {
+                return
+            }
+
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.dismissModalJustInTimeMessage()
+                let modalController = ConstraintsUpdatingHostingController(
+                    rootView: JustInTimeMessageModal_UIKit(
+                        onDismiss: {
+                            self.dismiss(animated: true)
+                        },
+                        viewModel: viewModel))
+
+                self.modalJustInTimeMessageHostingController = modalController
+                modalController.view.backgroundColor = .clear
+                modalController.modalPresentationStyle = .overFullScreen
+                self.present(modalController, animated: true)
+            }
+        }
+        .store(in: &subscriptions)
+    }
+
+    private func dismissModalJustInTimeMessage() {
+        guard modalJustInTimeMessageHostingController != nil else {
+            return
+        }
+        dismiss(animated: true)
+        self.modalJustInTimeMessageHostingController = nil
+    }
+
     /// Display the error banner at the top of the dashboard content (below the site title)
     ///
     func showTopBannerView() {
@@ -613,14 +663,19 @@ private extension DashboardViewController {
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
     }
+
+
+    /// Presents the privacy banner if needed.
+    ///
+    func presentPrivacyBannerIfNeeded() {
+        privacyBannerPresenter.presentIfNeeded(from: self)
+    }
 }
 
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
-            Task {
-                await viewModel.syncAnnouncements(for: siteID)
-            }
+            maybeSyncAnnouncementsAfterWebViewDismissed()
         }
     }
 }

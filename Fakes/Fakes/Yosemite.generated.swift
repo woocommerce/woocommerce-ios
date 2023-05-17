@@ -20,8 +20,16 @@ extension Yosemite.JustInTimeMessage {
             backgroundImageUrl: .fake(),
             backgroundImageDarkUrl: .fake(),
             badgeImageUrl: .fake(),
-            badgeImageDarkUrl: .fake()
+            badgeImageDarkUrl: .fake(),
+            template: .fake()
         )
+    }
+}
+extension JustInTimeMessageTemplate {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> JustInTimeMessageTemplate {
+        .banner
     }
 }
 extension Yosemite.ProductReviewFromNoteParcel {

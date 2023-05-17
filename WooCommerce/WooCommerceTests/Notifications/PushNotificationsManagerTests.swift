@@ -583,6 +583,53 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications)
         XCTAssertTrue(userNotificationCenter.removeAllNotificationsWasCalled)
     }
+
+    func test_requestLocalNotificationIfNeeded_adds_new_notification_to_pending_list() async throws {
+        // Given
+        let mockCenter = MockUserNotificationsCenterAdapter()
+        let manager = PushNotificationsManager(configuration: .init(
+            application: UIApplication.shared,
+            defaults: .standard,
+            storesManager: MockStoresManager(sessionManager: .makeForTesting()),
+            userNotificationsCenter: mockCenter
+        ))
+        let siteID: Int64 = 123
+        let notification = try XCTUnwrap(LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)))
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
+
+        // When
+        await manager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
+
+        // Then
+        let requests = await mockCenter.pendingNotificationRequests()
+        assertEqual(1, requests.count)
+        let firstRequest = try XCTUnwrap(requests.first)
+        assertEqual(firstRequest.identifier, LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(siteID)")
+    }
+
+    func test_requestLocalNotificationIfNeeded_skips_adding_notification_with_the_same_idenfier() async throws {
+        // Given
+        let mockCenter = MockUserNotificationsCenterAdapter()
+        let manager = PushNotificationsManager(configuration: .init(
+            application: UIApplication.shared,
+            defaults: .standard,
+            storesManager: MockStoresManager(sessionManager: .makeForTesting()),
+            userNotificationsCenter: mockCenter
+        ))
+        let siteID: Int64 = 123
+        let notification = try XCTUnwrap(LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)))
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
+
+        // When
+        await manager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
+        await manager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
+
+        // Then
+        let requests = await mockCenter.pendingNotificationRequests()
+        assertEqual(1, requests.count)
+        let firstRequest = try XCTUnwrap(requests.first)
+        assertEqual(firstRequest.identifier, LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(siteID)")
+    }
 }
 
 

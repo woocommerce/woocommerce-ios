@@ -157,7 +157,7 @@ private extension ProductSearchUICommand {
     }
 }
 
-private extension ProductSearchFilter {
+extension ProductSearchFilter {
     var title: String {
         switch self {
         case .all:

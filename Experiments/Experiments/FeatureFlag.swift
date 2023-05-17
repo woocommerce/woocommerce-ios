@@ -203,4 +203,11 @@ public enum FeatureFlag: Int {
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///
     case euShippingNotification
+
+    /// Do not use the Google SDK when authenticating through a Google account.
+    ///
+    case sdkLessGoogleSignIn
+
+    /// Enables Scan to Pay as a payment method.
+    case scanToPay
 }

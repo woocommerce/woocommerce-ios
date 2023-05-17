@@ -3,6 +3,7 @@ import Yosemite
 import Combine
 import UIKit
 import WooFoundation
+import Experiments
 
 import protocol Storage.StorageManagerType
 
@@ -44,6 +45,10 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     var showPaymentLinkRow: Bool {
         paymentLink != nil
+    }
+
+    var showScanToPayRow: Bool {
+        featureFlagService.isFeatureFlagEnabled(.scanToPay) && paymentLink != nil
     }
 
     /// Defines if the Card Reader upsell banner should be shown based on country eligibility and dismissal/reminder preferences
@@ -90,6 +95,8 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
+    private let featureFlagService: FeatureFlagService
+
     /// Stored orders.
     /// We need to fetch this from our storage layer because we are only provide IDs as dependencies
     /// To keep previews/UIs decoupled from our business logic.
@@ -126,6 +133,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         let analytics: Analytics
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let orderDurationRecorder: OrderDurationRecorderProtocol
+        let featureFlagService: FeatureFlagService
 
         init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
@@ -133,7 +141,8 @@ final class PaymentMethodsViewModel: ObservableObject {
              storage: StorageManagerType = ServiceLocator.storageManager,
              analytics: Analytics = ServiceLocator.analytics,
              cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil,
-             orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
+             orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
+             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
             self.presentNoticeSubject = presentNoticeSubject
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
@@ -142,6 +151,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             let configuration = cardPresentPaymentsConfiguration ?? CardPresentConfigurationLoader(stores: stores).configuration
             self.cardPresentPaymentsConfiguration = configuration
             self.orderDurationRecorder = orderDurationRecorder
+            self.featureFlagService = featureFlagService
         }
     }
 
@@ -165,6 +175,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         storage = dependencies.storage
         analytics = dependencies.analytics
         cardPresentPaymentsConfiguration = dependencies.cardPresentPaymentsConfiguration
+        featureFlagService = dependencies.featureFlagService
         title = String(format: Localization.title, formattedTotal)
         showUpsellCardReaderFeatureBanner = cardPresentPaymentsConfiguration.isSupportedCountry
 

@@ -86,8 +86,8 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
     public func loadSites() -> AnyPublisher<Result<[Site], Error>, Never> {
         let path = "me/sites"
         let parameters = [
-            "fields": "ID,name,description,URL,options,jetpack,jetpack_connection",
-            "options": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
+            SiteRemote.SiteParameter.Fields.key: SiteRemote.SiteParameter.Fields.value,
+            SiteRemote.SiteParameter.Options.key: SiteRemote.SiteParameter.Options.value
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)

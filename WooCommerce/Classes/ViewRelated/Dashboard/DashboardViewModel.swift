@@ -15,6 +15,8 @@ final class DashboardViewModel {
 
     @Published var announcementViewModel: AnnouncementCardViewModelProtocol? = nil
 
+    @Published var modalJustInTimeMessageViewModel: JustInTimeMessageViewModel? = nil
+
     let storeOnboardingViewModel: StoreOnboardingViewModel
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
@@ -224,7 +226,16 @@ final class DashboardViewModel {
 
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
-        announcementViewModel = viewModel
+        switch viewModel?.template {
+        case .some(.banner):
+            announcementViewModel = viewModel
+        case .some(.modal):
+            modalJustInTimeMessageViewModel = viewModel
+        default:
+            announcementViewModel = nil
+            modalJustInTimeMessageViewModel = nil
+        }
+
     }
 
     /// Sets up observer to decide store onboarding task lists visibility

@@ -90,7 +90,14 @@ protocol PushNotesManager {
     /// - Parameters:
     ///   - notification: the notification content.
     ///   - trigger: if nil, the local notification is delivered immediately.
-    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?)
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async
+
+    /// Requests a local notification to be scheduled under a given trigger if no pending notification of the same identifier exists.
+    /// Skips otherwise.
+    /// - Parameters:
+    ///   - notification: the notification content.
+    ///   - trigger: if nil, the local notification is delivered immediately.
+    func requestLocalNotificationIfNeeded(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async
 
     /// Cancels a local notification that was previously scheduled.
     /// - Parameter scenarios: the scenarios of the notification to be cancelled.

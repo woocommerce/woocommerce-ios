@@ -1,1 +1,1 @@
-Questo rilascio include diverse correzioni ai bug e miglioramenti che rendono l'esperienza più agevole. Ci impegniamo a migliorare continuamente l'app WooCommerce e abbiamo alcuni interessanti aggiornamenti in arrivo nelle prossime settimane. Rimani aggiornato.
+Questa versione contiene alcuni miglioramenti minori per rendere la tua esperienza di gestione del prodotto più fluida, inclusa la possibilità di scansionare il codice SKU del prodotto. Speriamo si noti l'amore che mettiamo nel nostro software. Non perderti alcune interessanti novità in arrivo.

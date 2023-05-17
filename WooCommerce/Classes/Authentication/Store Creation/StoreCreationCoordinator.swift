@@ -46,6 +46,7 @@ final class StoreCreationCoordinator: Coordinator {
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
+    private let localNotificationScheduler: LocalNotificationScheduler
     private var jetpackCheckRetryInterval: TimeInterval {
         isFreeTrialCreation ? 10 : 5
     }
@@ -58,7 +59,8 @@ final class StoreCreationCoordinator: Coordinator {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) {
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.source = source
         self.navigationController = navigationController
         // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
@@ -71,6 +73,7 @@ final class StoreCreationCoordinator: Coordinator {
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
+        self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
 
         Task { @MainActor in
             if let purchasesManager {
@@ -724,6 +727,8 @@ private extension StoreCreationCoordinator {
         ///
         let waitingTimeStart = Date()
 
+        scheduleLocalNotificationWhenStoreIsReady()
+
         jetpackSiteSubscription = $siteIDFromStoreCreation
             .compactMap { $0 }
             .removeDuplicates()
@@ -733,7 +738,7 @@ private extension StoreCreationCoordinator {
                 }
                 // Waits some seconds before syncing sites every time.
                 try await Task.sleep(nanoseconds: UInt64(self.jetpackCheckRetryInterval * 1_000_000_000))
-                return try await self.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
+                return try await self.syncSite(siteID: siteID, expectedStoreName: expectedStoreName, haveTrackedOutOfSyncEvent: haveTrackedOutOfSyncEvent)
             }
             .receive(on: DispatchQueue.main)
             .handleEvents(receiveCompletion: { [weak self] output in
@@ -752,6 +757,9 @@ private extension StoreCreationCoordinator {
             .replaceError(with: nil)
             .sink { [weak self] site in
                 guard let self else { return }
+
+                self.cancelLocalNotificationWhenStoreIsReady()
+
                 guard let site else {
                     navigationController.dismiss(animated: true) { [weak self] in
                         guard let self else { return }
@@ -787,35 +795,24 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func syncSites(forSiteThatMatchesSiteID siteID: Int64, expectedStoreName: String) async throws -> Site {
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            self?.storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
-                guard let self else {
-                    return continuation.resume(throwing: StoreCreationCoordinatorError.selfDeallocated)
-                }
-                // The newly created site often has `isJetpackThePluginInstalled=false` initially,
-                // which results in a JCP site.
-                // In this case, we want to retry sites syncing.
-                guard let site = self.storePickerViewModel.site(thatMatchesSiteID: siteID) else {
-                    DDLogInfo("🔵 Retrying: Site unavailable...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
-                }
+    func syncSite(siteID: Int64, expectedStoreName: String, haveTrackedOutOfSyncEvent: Bool) async throws -> Site {
+        let isJetpackActive = try await isJetpackPluginActive(siteID: siteID)
 
-                guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
-                    DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
-                }
-
-                // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
-                // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
-                guard site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName else {
-                    DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotFullySynced)
-                }
-
-                continuation.resume(returning: site)
-            }
+        guard isJetpackActive else {
+            DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet for siteID \(siteID)...")
+            throw StoreCreationError.newSiteIsNotJetpackSite
         }
+
+        let site = try await loadSite(siteID: siteID)
+
+        // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
+        // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
+        guard (site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName) || haveTrackedOutOfSyncEvent else {
+            DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
+            throw StoreCreationError.newSiteIsNotFullySynced
+        }
+
+        return site
     }
 
     @MainActor
@@ -866,6 +863,45 @@ private extension StoreCreationCoordinator {
                                                           flow: flow,
                                                           isFreeTrial: isFreeTrialCreation,
                                                           waitingTime: waitingTime))
+    }
+}
+
+private extension StoreCreationCoordinator {
+    @MainActor
+    func loadSite(siteID: Int64) async throws -> Site {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SiteAction.syncSite(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func isJetpackPluginActive(siteID: Int64) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SitePluginAction.isPluginActive(siteID: siteID, plugin: .jetpack) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+}
+
+private extension StoreCreationCoordinator {
+    func scheduleLocalNotificationWhenStoreIsReady() {
+        guard let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete, stores: stores) else {
+            return
+        }
+        cancelLocalNotificationWhenStoreIsReady()
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      // 5 minutes from now when the site is most likely ready.
+                                                      trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5 * 60, repeats: false),
+                                                      remoteFeatureFlag: .storeCreationCompleteNotification)
+        }
+    }
+
+    func cancelLocalNotificationWhenStoreIsReady() {
+        localNotificationScheduler.cancel(scenario: Constants.LocalNotificationScenario.storeCreationComplete)
     }
 }
 
@@ -981,6 +1017,11 @@ private extension StoreCreationCoordinator {
         // TODO: 8108 - update the identifier to production value when it's ready
         static let iapPlanIdentifier = "debug.woocommerce.ecommerce.monthly"
         static let webPlanIdentifier = "1021"
+
+        /// Local notification scenarios during store creation.
+        enum LocalNotificationScenario {
+            static let storeCreationComplete: LocalNotification.Scenario = .storeCreationComplete
+        }
     }
 
     /// Error scenarios when purchasing a WPCOM plan.

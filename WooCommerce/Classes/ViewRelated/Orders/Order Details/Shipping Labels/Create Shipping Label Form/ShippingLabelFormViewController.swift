@@ -17,6 +17,7 @@ final class ShippingLabelFormViewController: UIViewController {
     ///
     private lazy var topBannerView: TopBannerView = {
         EUShippingNoticeTopBannerFactory.createTopBanner(
+                infoType: .warning,
                 onDismissPressed: { [weak self] in
                     self?.viewModel.dismissEUShippingNotice { [weak self] success in
                         if success {
@@ -488,7 +489,7 @@ private extension ShippingLabelFormViewController {
                                                                              customsForms: viewModel.customsForms,
                                                                              destinationCountry: country,
                                                                              countries: viewModel.countries,
-                                                                             shouldDisplayShippingNotice: viewModel.shouldPresentEUShippingNotice,
+                                                                             shouldDisplayShippingNotice: viewModel.isEUShippingConditionMet(),
                                                                              onCompletion: { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
         })

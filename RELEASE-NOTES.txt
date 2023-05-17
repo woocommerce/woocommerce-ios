@@ -3,6 +3,10 @@
 13.7
 -----
 - [Internal] Adds guidance for new Customs rule when shipping to some EU countries. [https://github.com/woocommerce/woocommerce-ios/pull/9715]
+- [*] JITMs: Added modal-style Just in Time Message support on the dashboard [https://github.com/woocommerce/woocommerce-ios/pull/9694]
+- [*] Order Creation: Products can be searched by SKU when adding products to an order. [https://github.com/woocommerce/woocommerce-ios/pull/9711]
+- [*] Orders: Fixes order details so separate order items are not combined just because they are the same product or variation. [https://github.com/woocommerce/woocommerce-ios/pull/9710]
+- [Internal] Store creation: starting May 4, store creation used to time out while waiting for the site to be ready (become a Jetpack/Woo site). A workaround was implemented to wait for the site differently. [https://github.com/woocommerce/woocommerce-ios/pull/9731]
 
 13.6
 -----

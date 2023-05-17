@@ -16,6 +16,11 @@ public protocol SiteRemoteProtocol {
     /// Enables a free trial plan for a site.
     ///
     func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws
+
+    /// Loads a site.
+    /// - Parameter siteID: Remote ID of the site to load.
+    /// - Returns: The site that matches the site ID.
+    func loadSite(siteID: Int64) async throws -> Site
 }
 
 /// Site: Remote Endpoints
@@ -89,10 +94,20 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                         "selling_venues": profilerData.sellingStatus?.rawValue as Any?,
                         "other_platform": profilerData.sellingPlatforms as Any?
                     ].compactMapValues { $0 }
-                ]
+                ] as [String: Any]
             ]
         }
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        return try await enqueue(request)
+    }
+
+    public func loadSite(siteID: Int64) async throws -> Site {
+        let path = Path.loadSite(siteID: siteID)
+        let parameters = [
+            SiteParameter.Fields.key: SiteParameter.Fields.value,
+            SiteParameter.Options.key: SiteParameter.Options.value
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         return try await enqueue(request)
     }
 }
@@ -206,6 +221,20 @@ public struct SiteProfilerData {
     }
 }
 
+extension SiteRemote {
+    enum SiteParameter {
+        enum Fields {
+            static let key = "fields"
+            static let value = "ID,name,description,URL,options,jetpack,jetpack_connection"
+        }
+        enum Options {
+            static let key = "options"
+            static let value =
+            "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
+        }
+    }
+}
+
 // MARK: - Constants
 //
 private extension SiteRemote {
@@ -219,6 +248,10 @@ private extension SiteRemote {
         ///
         static func enableFreeTrial(siteID: Int64) -> String {
             "sites/\(siteID)/ecommerce-trial/add/ecommerce-trial-bundle-monthly"
+        }
+
+        static func loadSite(siteID: Int64) -> String {
+            "sites/\(siteID)"
         }
     }
 }

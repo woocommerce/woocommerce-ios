@@ -197,6 +197,11 @@ private extension StoreCreationCoordinator {
         }
         navigationController.pushViewController(storeNameForm, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
+
+        // Navigate to profiler question screen when store name is prefilled upon launching app from local notification
+        if let prefillStoreName {
+            continueAfterEnteringStoreName(prefillStoreName)
+        }
     }
 
     @MainActor

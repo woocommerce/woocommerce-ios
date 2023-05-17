@@ -39,7 +39,7 @@ public struct NoOpCardReaderService: CardReaderService {
 
     /// Connects to a card reader
     /// - Parameter reader: The card reader we want to connect to.
-    public func connect(_ reader: CardReader) -> AnyPublisher <CardReader, Error> {
+    public func connect(_ reader: CardReader, options: CardReaderConnectionOptions?) -> AnyPublisher <CardReader, Error> {
         return Future() { promise in
             promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()

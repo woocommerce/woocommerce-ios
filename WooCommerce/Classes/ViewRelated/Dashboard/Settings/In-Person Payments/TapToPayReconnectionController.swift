@@ -21,11 +21,13 @@ final class TapToPayReconnectionController {
         let silencingAlertsPresenter = SilencingAlertsPresenter()
         self.silencingAlertsPresenter = silencingAlertsPresenter
         #warning("This needs to be recreated whenever we switch stores, or the configuration could be out of date")
-        self.connectionController = BuiltInCardReaderConnectionController(forSiteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-                                          alertsPresenter: silencingAlertsPresenter,
-                                          alertsProvider: BuiltInReaderConnectionAlertsProvider(),
-                                          configuration: CardPresentConfigurationLoader().configuration,
-                                          analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: CardPresentConfigurationLoader().configuration))
+        self.connectionController = BuiltInCardReaderConnectionController(
+            forSiteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+            alertsPresenter: silencingAlertsPresenter,
+            alertsProvider: BuiltInReaderConnectionAlertsProvider(),
+            configuration: CardPresentConfigurationLoader().configuration,
+            analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: CardPresentConfigurationLoader().configuration),
+            allowTermsOfServiceAcceptance: false)
     }
 
     func reconnectIfNeeded() async {
@@ -34,8 +36,10 @@ final class TapToPayReconnectionController {
             await localMobileReaderSupported(),
             await hasPreviousTapToPayUsage(),
             await connectedReader() == nil else {
-            isReconnecting = false
             silencingAlertsPresenter.silenceAlerts()
+            adoptedConnectionCompletionHandler = nil
+            connectionController.allowTermsOfServiceAcceptance = false
+            isReconnecting = false
             return
         }
         // since we've had a TTP transaction on this phone before, reconnect
@@ -73,6 +77,7 @@ final class TapToPayReconnectionController {
             self?.adoptedConnectionCompletionHandler?(result)
             self?.silencingAlertsPresenter.silenceAlerts()
             self?.adoptedConnectionCompletionHandler = nil
+            self?.connectionController.allowTermsOfServiceAcceptance = false
             self?.isReconnecting = false
         })
     }
@@ -93,6 +98,7 @@ final class TapToPayReconnectionController {
 
     func showAlertsForReconnection(from alertsPresenter: CardPresentPaymentAlertsPresenting,
                                    onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
+        connectionController.allowTermsOfServiceAcceptance = true
         adoptedConnectionCompletionHandler = onCompletion
         silencingAlertsPresenter.startPresentingAlerts(from: alertsPresenter)
     }

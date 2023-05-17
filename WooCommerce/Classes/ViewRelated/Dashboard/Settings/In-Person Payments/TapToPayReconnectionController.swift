@@ -1,6 +1,30 @@
 import Foundation
 import Yosemite
 
+protocol BuiltInCardReaderConnectionControllerBuilding {
+    func createConnectionController(forSiteID: Int64,
+                                    alertsPresenter: CardPresentPaymentAlertsPresenting,
+                                    configuration: CardPresentPaymentsConfiguration,
+                                    analyticsTracker: CardReaderConnectionAnalyticsTracker,
+                                    allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling
+}
+
+fileprivate class BuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding {
+    func createConnectionController(forSiteID siteID: Int64,
+                                    alertsPresenter: CardPresentPaymentAlertsPresenting,
+                                    configuration: CardPresentPaymentsConfiguration,
+                                    analyticsTracker: CardReaderConnectionAnalyticsTracker,
+                                    allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling {
+        BuiltInCardReaderConnectionController(
+            forSiteID: siteID,
+            alertsPresenter: alertsPresenter,
+            alertsProvider: BuiltInReaderConnectionAlertsProvider(),
+            configuration: configuration,
+            analyticsTracker: analyticsTracker,
+            allowTermsOfServiceAcceptance: allowTermsOfServiceAcceptance)
+    }
+}
+
 final class TapToPayReconnectionController {
 
     private let stores: StoresManager
@@ -13,14 +37,18 @@ final class TapToPayReconnectionController {
         stores.sessionManager.defaultStoreID ?? 0
     }
 
-    private var connectionController: BuiltInCardReaderConnectionController? = nil
+    private let connectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding
+
+    private var connectionController: BuiltInCardReaderConnectionControlling? = nil
 
     private var silencingAlertsPresenter: SilenceablePassthroughCardPresentPaymentAlertsPresenter
 
     private var adoptedConnectionCompletionHandler: ((Result<CardReaderConnectionResult, Error>) -> Void)? = nil
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         connectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding = BuiltInCardReaderConnectionControllerFactory()) {
         self.stores = stores
+        self.connectionControllerFactory = connectionControllerFactory
         self.silencingAlertsPresenter = SilenceablePassthroughCardPresentPaymentAlertsPresenter()
     }
 
@@ -29,10 +57,13 @@ final class TapToPayReconnectionController {
     /// Reconnects to the built in Tap to Pay on iPhone reader if:
     /// - it's supported,
     /// - it has been used on this device and site before, and
-    /// - there's no other connected readers.
-    func reconnectIfNeeded() {
+    /// - there's no other connected
+    /// - Parameters:
+    ///   - supportDeterminer: Overridable for testing purposes
+
+    func reconnectIfNeeded(supportDeterminer: CardReaderSupportDetermining? = nil) {
         isReconnecting = true
-        let supportDeterminer = CardReaderSupportDeterminer(siteID: siteID)
+        let supportDeterminer = supportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID)
         Task { @MainActor in
             guard supportDeterminer.siteSupportsLocalMobileReader(),
                   await supportDeterminer.deviceSupportsLocalMobileReader(),
@@ -60,7 +91,6 @@ final class TapToPayReconnectionController {
         }
         adoptedConnectionCompletionHandler = onCompletion
         silencingAlertsPresenter.startPresentingAlerts(from: alertsPresenter)
-        connectionController?.allowTermsOfServiceAcceptance = true
     }
 }
 
@@ -72,24 +102,18 @@ private extension TapToPayReconnectionController {
             return
         }
 
-        createConnectionController()
-
-        connectionController?.searchAndConnect(onCompletion: { [weak self] result in
-            guard let self = self else { return }
-            DDLogInfo("💸 Reconnected to Tap to Pay \(result)")
-            self.adoptedConnectionCompletionHandler?(result)
-            self.reset()
-        })
-    }
-
-    func createConnectionController() {
-        connectionController = BuiltInCardReaderConnectionController(
+        connectionController = connectionControllerFactory.createConnectionController(
             forSiteID: siteID,
             alertsPresenter: silencingAlertsPresenter,
-            alertsProvider: BuiltInReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configuration),
             allowTermsOfServiceAcceptance: false)
+
+        connectionController?.searchAndConnect(onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.adoptedConnectionCompletionHandler?(result)
+            self.reset()
+        })
     }
 
     func reset() {

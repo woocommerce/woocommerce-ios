@@ -7,7 +7,12 @@ import Yosemite
 
 /// Facilitates connecting to a card reader
 ///
-final class BuiltInCardReaderConnectionController {
+
+protocol BuiltInCardReaderConnectionControlling {
+    func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void)
+}
+
+final class BuiltInCardReaderConnectionController: BuiltInCardReaderConnectionControlling {
     private enum ControllerState {
         /// Initial state of the controller
         ///
@@ -102,7 +107,7 @@ final class BuiltInCardReaderConnectionController {
         }
     }
 
-    var allowTermsOfServiceAcceptance: Bool
+    private var allowTermsOfServiceAcceptance: Bool
 
     init(
         forSiteID: Int64,

@@ -230,16 +230,20 @@ extension StripeCardReaderService: CardReaderService {
             /// If the disconnect succeeds, the completion block is called with nil.
             /// If the disconnect fails, the completion block is called with an error.
             /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)disconnectReader:
+            /// The completion block for disconnect, apparently, is called when the SDK has not really transitioned to an idle state.
+            /// Clients might need to dispatch operations that rely on this completion block to start a second operation on the card reader.
+            /// (for example, starting a `localMobile` connection after a BlueTooth reader has been disconnected)
             Terminal.shared.disconnectReader { error in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    if let error = error {
+                        let underlyingError = UnderlyingError(with: error)
+                        promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
+                    }
 
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
-                }
-
-                if error == nil {
-                    self.connectedReadersSubject.send([])
-                    promise(.success(()))
+                    if error == nil {
+                        self.connectedReadersSubject.send([])
+                        promise(.success(()))
+                    }
                 }
             }
         }

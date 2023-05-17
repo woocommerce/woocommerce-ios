@@ -14,9 +14,14 @@ final class PrivacyBannerPresentationUseCase {
     ///
     private let stores: StoresManager
 
-    init(defaults: UserDefaults = UserDefaults.standard, stores: StoresManager = ServiceLocator.stores) {
+    /// Users current locale.
+    ///
+    private let currentLocale: Locale
+
+    init(defaults: UserDefaults = UserDefaults.standard, stores: StoresManager = ServiceLocator.stores, currentLocale: Locale = .autoupdatingCurrent) {
         self.defaults = defaults
         self.stores = stores
+        self.currentLocale = currentLocale
     }
 
     /// Returns `true` if the privacy banner should be shown.
@@ -84,7 +89,7 @@ private extension PrivacyBannerPresentationUseCase {
     /// Fetches the country code from the current locate.
     ///
     func fetchLocaleCountryCode() -> String {
-        Locale.autoupdatingCurrent.identifier
+        currentLocale.regionCode ?? ""
     }
 }
 

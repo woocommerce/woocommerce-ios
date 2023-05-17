@@ -45,6 +45,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     /// Symbol of currency in the order.
     ///
     private let currencySymbol: String
+    
+    /// Flags if it's a EU Shipping requiring specific Customs configuration
+    ///
+    private let isEUShippingScenario: Bool
 
     /// Validation states of all customs forms by indices of the forms.
     ///
@@ -62,7 +66,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
          customsForms: [ShippingLabelCustomsForm],
          destinationCountry: Country,
          countries: [Country],
-         shouldDisplayShippingNotice: Bool = false,
+         isEUShippingScenario: Bool = false,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.multiplePackagesDetected = customsForms.count > 1
@@ -76,7 +80,8 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
             return ServiceLocator.currencySettings.symbol(from: currencyCode)
         }()
         self.currencySymbol = currencySymbol
-        self.shouldDisplayShippingNotice = shouldDisplayShippingNotice
+        self.isEUShippingScenario = isEUShippingScenario
+        self.shouldDisplayShippingNotice = isEUShippingScenario
         self.inputViewModels = customsForms.map { .init(customsForm: $0,
                                                         destinationCountry: destinationCountry,
                                                         countries: countries,

@@ -397,6 +397,99 @@ final class AppCoordinatorTests: XCTestCase {
             self.window.rootViewController?.topmostPresentedViewController is UpgradePlanCoordinatingController
         }
     }
+
+    // MARK: - Notification to subscribe to free trail after entering store name
+    func test_store_creation_flow_starts_upon_tapping_oneDayAfterStoreCreationNameWithoutFreeTrial_notification_when_valid_store_is_selected_already() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true,
+                                                        isStoreCreationM2WithInAppPurchasesEnabled: false,
+                                                        isStoreCreationM3ProfilerEnabled: true)
+
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
+                return
+            }
+            // any failure except `.insufficientRole` will be treated as having an eligible status.
+            completion(.failure(SampleError.first))
+        }
+        let site = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
+        storageManager.insertSampleSite(readOnlySite: site)
+        sessionManager.defaultStoreID = 123
+
+        let coordinator = makeCoordinator(window: window,
+                                          stores: stores,
+                                          authenticationManager: authenticationManager,
+                                          pushNotesManager: pushNotesManager,
+                                          featureFlagService: featureFlagService,
+                                          purchasesManager: WebPurchasesForWPComPlans(stores: stores))
+
+        let storeName = "SampleStoreName"
+        let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: UNNotificationDefaultActionIdentifier,
+                                                              requestIdentifier: LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial,
+                                                              notificationUserInfo: [StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName: storeName]))
+
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            if case let .loadPlan(_, completion) = action {
+                completion(.success(.init(productID: 1021, name: "", formattedPrice: "")))
+            }
+        }
+
+        // When
+        coordinator.start()
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        let tabBarController = try XCTUnwrap(window.rootViewController as? MainTabBarController)
+        let tabBarNavigationController = try XCTUnwrap(tabBarController.selectedViewController as? UINavigationController)
+        waitUntil {
+            let storeCreationNavigationController = tabBarNavigationController.topmostPresentedViewController as? WooNavigationController
+            return storeCreationNavigationController?.topViewController is StoreCreationCategoryQuestionHostingController
+        }
+    }
+
+    func test_store_creation_flow_starts_upon_tapping_oneDayAfterStoreCreationNameWithoutFreeTrial_notification_when_no_valid_store_available() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true,
+                                                        isStoreCreationM2WithInAppPurchasesEnabled: false,
+                                                        isStoreCreationM3ProfilerEnabled: true)
+        // Authenticates the app without selecting a site, so that the store picker is shown.
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        sessionManager.defaultStoreID = nil
+
+        let site = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
+        storageManager.insertSampleSite(readOnlySite: site)
+        let coordinator = makeCoordinator(window: window,
+                                          stores: stores,
+                                          authenticationManager: authenticationManager,
+                                          pushNotesManager: pushNotesManager,
+                                          featureFlagService: featureFlagService,
+                                          purchasesManager: WebPurchasesForWPComPlans(stores: stores))
+
+        let storeName = "SampleStoreName"
+        let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: UNNotificationDefaultActionIdentifier,
+                                                              requestIdentifier: LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial,
+                                                              notificationUserInfo: [StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName: storeName]))
+
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            if case let .loadPlan(_, completion) = action {
+                completion(.success(.init(productID: 1021, name: "", formattedPrice: "")))
+            }
+        }
+
+        // When
+        coordinator.start()
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        let storePickerNavigationController = try XCTUnwrap(window.rootViewController?.presentedViewController as? UINavigationController)
+        waitUntil {
+            let storeCreationNavigationController = storePickerNavigationController.topmostPresentedViewController as? WooNavigationController
+            return storeCreationNavigationController?.topViewController is StoreCreationCategoryQuestionHostingController
+        }
+    }
 }
 
 private extension AppCoordinatorTests {
@@ -408,7 +501,8 @@ private extension AppCoordinatorTests {
                          analytics: Analytics = ServiceLocator.analytics,
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-                         featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> AppCoordinator {
+                         featureFlagService: FeatureFlagService = MockFeatureFlagService(),
+                         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               storageManager: storageManager ?? self.storageManager,
@@ -417,6 +511,7 @@ private extension AppCoordinatorTests {
                               analytics: analytics,
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
-                              featureFlagService: featureFlagService)
+                              featureFlagService: featureFlagService,
+                              purchasesManager: purchasesManager ?? nil)
     }
 }

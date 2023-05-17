@@ -5,6 +5,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
     private let itemNumber: Int
     private let isInfoTooltipActive: Bool
     private let safeAreaInsets: EdgeInsets
+    private let infoTooltipTapped: () -> Void
 
     @State private var isCollapsed: Bool = true
     @State private var isShowingCountries: Bool = false
@@ -13,10 +14,12 @@ struct ShippingLabelCustomsFormItemDetails: View {
     init(itemNumber: Int,
          isInfoTooltipActive: Bool,
          viewModel: ShippingLabelCustomsFormItemDetailsViewModel,
-         safeAreaInsets: EdgeInsets = .zero) {
+         safeAreaInsets: EdgeInsets = .zero,
+         infoTooltipTapped: @escaping () -> Void = {}) {
         self.itemNumber = itemNumber
         self.isInfoTooltipActive = isInfoTooltipActive
         self.viewModel = viewModel
+        self.infoTooltipTapped = infoTooltipTapped
         self.safeAreaInsets = safeAreaInsets
     }
 

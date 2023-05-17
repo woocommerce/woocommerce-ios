@@ -16,7 +16,8 @@ extension WooCommerce.AggregateOrderItem {
         sku: NullableCopiableProp<String> = .copy,
         total: NullableCopiableProp<NSDecimalNumber> = .copy,
         imageURL: NullableCopiableProp<URL> = .copy,
-        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy,
+        parent: NullableCopiableProp<Int64> = .copy
     ) -> WooCommerce.AggregateOrderItem {
         let itemID = itemID ?? self.itemID
         let productID = productID ?? self.productID
@@ -28,6 +29,7 @@ extension WooCommerce.AggregateOrderItem {
         let total = total ?? self.total
         let imageURL = imageURL ?? self.imageURL
         let attributes = attributes ?? self.attributes
+        let parent = parent ?? self.parent
 
         return WooCommerce.AggregateOrderItem(
             itemID: itemID,
@@ -39,7 +41,8 @@ extension WooCommerce.AggregateOrderItem {
             sku: sku,
             total: total,
             imageURL: imageURL,
-            attributes: attributes
+            attributes: attributes,
+            parent: parent
         )
     }
 }

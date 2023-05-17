@@ -231,15 +231,16 @@ extension StripeCardReaderService: CardReaderService {
             /// If the disconnect fails, the completion block is called with an error.
             /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)disconnectReader:
             Terminal.shared.disconnectReader { error in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    if let error = error {
+                        let underlyingError = UnderlyingError(with: error)
+                        promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
+                    }
 
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
-                }
-
-                if error == nil {
-                    self.connectedReadersSubject.send([])
-                    promise(.success(()))
+                    if error == nil {
+                        self.connectedReadersSubject.send([])
+                        promise(.success(()))
+                    }
                 }
             }
         }

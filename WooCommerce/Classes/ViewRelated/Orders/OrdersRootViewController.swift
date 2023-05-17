@@ -202,15 +202,19 @@ final class OrdersRootViewController: UIViewController {
                     self.presentOrderCreationFlow(with: product.productID)
                 case .failure:
                     navigationController.popViewController(animated: true)
-                    self.handleError()
+                    self.displayErrorNotice()
                 }
             }
         })
         navigationController.pushViewController(productScannerViewController, animated: true)
     }
 
+    
+    /// Handles the result of scanning a barcode
     ///
-    ///
+    /// - Parameters:
+    ///   - scannedBarcode: The scanned barcode
+    ///   - onCompletion: The closure to be trigged when the scanning completes. Succeeds with a Product, or fails with an Error.
     func handleScannedBarcode(_ scannedBarcode: String, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
         let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: scannedBarcode) { result in
             switch result {
@@ -223,9 +227,9 @@ final class OrdersRootViewController: UIViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
+    /// Presents an Error notice
     ///
-    ///
-    func handleError() {
+    private func displayErrorNotice() {
         let message = Localization.errorNoticeMessage
         ordersViewController.showErrorNotice(with: message, in: self)
     }
@@ -483,17 +487,18 @@ private extension OrdersRootViewController {
 
 // MARK: - Helpers
 private extension OrdersRootViewController {
-    /// Validates the passed value by returning nil if it's invalid, or the value if its valid
+    /// Validates the passed value by returning nil if it's invalid, or the passed value otherwise
     ///
-    var invalidValue: Int64 { -1 }
-
     func validateSentinelValue(value: Int64) -> Int64? {
-        value == -1 ? nil : value
+        value == Constants.invalidValue ? nil : value
     }
 }
 
 // MARK: - Constants
 private extension OrdersRootViewController {
+    enum Constants {
+        static let invalidValue: Int64 = -1
+    }
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
         static let accessibilityLabelSearchOrders = NSLocalizedString("Search orders", comment: "Search Orders")

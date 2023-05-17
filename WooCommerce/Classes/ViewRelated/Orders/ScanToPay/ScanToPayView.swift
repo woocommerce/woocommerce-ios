@@ -9,16 +9,16 @@ struct ScanToPayView: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.5).edgesIgnoringSafeArea(.all)
+            Color.black.opacity(Layout.backgroundOpacity).edgesIgnoringSafeArea(.all)
             VStack {
-                VStack(alignment: .center, spacing: 20) {
+                VStack(alignment: .center, spacing: Layout.scanToPayBoxSpacing) {
                     if let qrCodeImage = viewModel.generateQRCodeImage() {
                         Text(Localization.title)
                             .foregroundColor(.white)
                         Image(uiImage: qrCodeImage)
                             .interpolation(.none)
                             .resizable()
-                            .frame(width: 270, height: 300)
+                            .frame(width: Layout.qrCodeWidth, height: Layout.qrCodeHeight)
                         DoneButton() {
                             onSuccess()
                             dismiss()
@@ -33,13 +33,13 @@ struct ScanToPayView: View {
                         }
                     }
                 }
-                .padding(20)
+                .padding(Layout.scanToPayBoxSpacing)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .background(Color(.gray(.shade70)))
-                .cornerRadius(8)
+                .cornerRadius(Layout.scanToPayBoxCornerRadius)
 
             }
-            .padding(50)
+            .padding(Layout.scanToPayBoxOutterPadding)
             .frame(maxWidth: .infinity, alignment: .center)
         }
     }
@@ -61,5 +61,14 @@ extension ScanToPayView {
         static let doneButtontitle = NSLocalizedString("Done", comment: "Button title to close the Scan to Pay screen")
         static let errorMessage = NSLocalizedString("Error generating QR Code. Please try again later",
                                                     comment: "Error message in the Scan to Pay screen when the code cannot be generated.")
+    }
+
+    enum Layout {
+        static let backgroundOpacity: CGFloat = 0.5
+        static let scanToPayBoxSpacing: CGFloat = 20
+        static let qrCodeWidth: CGFloat = 270
+        static let qrCodeHeight: CGFloat = 300
+        static let scanToPayBoxCornerRadius: CGFloat = 8
+        static let scanToPayBoxOutterPadding: CGFloat = 50
     }
 }

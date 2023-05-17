@@ -366,6 +366,9 @@ extension PushNotificationsManager {
     func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: scenarios.map { $0.identifier })
+        scenarios.map(\.identifier).forEach { identifier in
+            analytics.track(.localNotificationCanceled, withProperties: ["type": identifier])
+        }
     }
 }
 

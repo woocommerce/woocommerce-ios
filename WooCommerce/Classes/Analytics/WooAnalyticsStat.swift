@@ -131,6 +131,7 @@ public enum WooAnalyticsStat: String {
     case localNotificationTapped = "local_notification_tapped"
     case localNotificationDismissed = "local_notification_dismissed"
     case localNotificationScheduled = "local_notification_scheduled"
+    case localNotificationCanceled = "local_notification_canceled"
 
     // MARK: Dashboard View Events
     //

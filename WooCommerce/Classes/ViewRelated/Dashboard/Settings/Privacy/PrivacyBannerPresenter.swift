@@ -17,6 +17,10 @@ final class PrivacyBannerPresenter {
     /// Present the banner when the appropriate conditions are met.
     ///
     func presentIfNeeded(from viewController: UIViewController) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices) else {
+            return
+        }
+
         let countryCode = Locale.current.regionCode ?? "" // TODO: Switch for the real user country code.
         let useCase = PrivacyBannerPresentationUseCase(countryCode: countryCode, defaults: defaults)
 

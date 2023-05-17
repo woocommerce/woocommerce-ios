@@ -14,6 +14,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     let inputViewModels: [ShippingLabelCustomsFormInputViewModel]
 
+    /// Flags if it's a EU Shipping requiring specific Customs configuration
+    ///
+    let isEUShippingScenario: Bool
+
     /// Whether done button should be enabled.
     ///
     @Published private(set) var doneButtonEnabled: Bool = false
@@ -45,10 +49,6 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     /// Symbol of currency in the order.
     ///
     private let currencySymbol: String
-
-    /// Flags if it's a EU Shipping requiring specific Customs configuration
-    ///
-    private let isEUShippingScenario: Bool
 
     /// Validation states of all customs forms by indices of the forms.
     ///

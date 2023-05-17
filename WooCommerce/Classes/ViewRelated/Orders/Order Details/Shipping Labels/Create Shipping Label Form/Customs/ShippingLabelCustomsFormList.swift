@@ -59,7 +59,7 @@ struct ShippingLabelCustomsFormList: View {
 
                 ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
                     ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
-                                                  isEUShippingScenario: viewModel.isShippingNoticeVisible,
+                                                  isEUShippingScenario: viewModel.isEUShippingScenario,
                                                   packageNumber: index + 1,
                                                   safeAreaInsets: geometry.safeAreaInsets,
                                                   viewModel: item,

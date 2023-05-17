@@ -61,7 +61,9 @@ struct ShippingLabelCustomsFormList: View {
                     ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                   packageNumber: index + 1,
                                                   safeAreaInsets: geometry.safeAreaInsets,
-                                                  viewModel: item)
+                                                  viewModel: item) {
+                        viewModel.onInfoTooltipTapped()
+                    }
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }

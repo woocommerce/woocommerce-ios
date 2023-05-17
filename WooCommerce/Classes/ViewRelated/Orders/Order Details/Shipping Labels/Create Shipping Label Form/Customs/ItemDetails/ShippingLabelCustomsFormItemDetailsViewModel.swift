@@ -144,7 +144,11 @@ extension ShippingLabelCustomsFormItemDetailsViewModel {
 //
 private extension ShippingLabelCustomsFormItemDetailsViewModel {
     func validateDescription(_ description: String) -> Bool {
-        description.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+        if shouldEnforceEUCustomsDescription {
+            return description.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
+        } else {
+            return description.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+        }
     }
 
     func getValidatedValue(from value: String) -> Double? {

@@ -67,6 +67,8 @@ final class OrdersRootViewController: UIViewController {
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
+    private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+
     // MARK: View Lifecycle
 
     init(siteID: Int64,
@@ -193,23 +195,22 @@ final class OrdersRootViewController: UIViewController {
             return
         }
 
-        let productScannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] scannedBarcode in
+        let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                                                      onSKUBarcodeScanned: { [weak self] scannedBarcode in
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case let .success(product):
-                    navigationController.popViewController(animated: true)
                     self.presentOrderCreationFlow(with: product.productID)
                 case .failure:
-                    navigationController.popViewController(animated: true)
                     self.displayErrorNotice()
                 }
             }
         })
-        navigationController.pushViewController(productScannerViewController, animated: true)
+        barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
+        productSKUBarcodeScannerCoordinator.start()
     }
 
-    
     /// Handles the result of scanning a barcode
     ///
     /// - Parameters:

@@ -512,6 +512,7 @@ private extension StoreCreationCoordinator {
             let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID, profilerData: profilerData)
             switch freeTrialResult {
             case .success:
+                cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
                 // Wait for jetpack to be installed
                 DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
                 waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)

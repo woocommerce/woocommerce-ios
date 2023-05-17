@@ -331,7 +331,7 @@ private extension AppCoordinator {
             }
             return identifier
         }()
-        
+
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
             analytics.track(.localNotificationDismissed, withProperties: [
                 "type": identifierForAnalytics

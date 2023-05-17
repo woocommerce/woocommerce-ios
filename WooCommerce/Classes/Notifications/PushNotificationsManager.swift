@@ -100,12 +100,16 @@ final class PushNotificationsManager: PushNotesManager {
         configuration.storesManager
     }
 
+    private let analytics: Analytics
+
     /// Initializes the PushNotificationsManager.
     ///
     /// - Parameter configuration: PushNotificationsConfiguration Instance that should be used.
     ///
-    init(configuration: PushNotificationsConfiguration = .default) {
+    init(configuration: PushNotificationsConfiguration = .default,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
+        self.analytics = analytics
     }
 }
 
@@ -121,20 +125,20 @@ extension PushNotificationsManager {
     func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {
         let nc = configuration.userNotificationsCenter
 
-        nc.loadAuthorizationStatus(queue: .main) { status in
+        nc.loadAuthorizationStatus(queue: .main) { [weak self] status in
             guard status == .notDetermined || status == .provisional else {
                 onCompletion?(status == .authorized)
                 return
             }
 
-            nc.requestAuthorization(queue: .main, includesProvisionalAuth: includesProvisionalAuth) { allowed in
+            nc.requestAuthorization(queue: .main, includesProvisionalAuth: includesProvisionalAuth) { [weak self] allowed in
                 let stat: WooAnalyticsStat = allowed ? .pushNotificationOSAlertAllowed : .pushNotificationOSAlertDenied
-                ServiceLocator.analytics.track(stat)
+                self?.analytics.track(stat)
 
                 onCompletion?(allowed)
             }
 
-            ServiceLocator.analytics.track(.pushNotificationOSAlertShown)
+            self?.analytics.track(.pushNotificationOSAlertShown)
         }
     }
 
@@ -261,7 +265,7 @@ extension PushNotificationsManager {
                     guard let self = self else { return }
                     self.presentDetails(for: foregroundNotification)
                     self.foregroundNotificationsToViewSubject.send(foregroundNotification)
-                    ServiceLocator.analytics.track(.viewInAppPushNotificationPressed,
+                    self.analytics.track(.viewInAppPushNotificationPressed,
                                                    withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                 }
 
@@ -341,7 +345,7 @@ extension PushNotificationsManager {
                                             trigger: trigger)
         do {
             try await center.add(request)
-            ServiceLocator.analytics.track(.localNotificationScheduled, withProperties: [
+            analytics.track(.localNotificationScheduled, withProperties: [
                 "type": notification.scenario.identifierForAnalytics
             ])
         } catch {
@@ -572,10 +576,10 @@ private extension PushNotificationsManager {
 
         switch applicationState {
         case .inactive:
-            ServiceLocator.analytics.track(.pushNotificationAlertPressed, withProperties: properties)
+            analytics.track(.pushNotificationAlertPressed, withProperties: properties)
         default:
             properties[AnalyticKey.appState] = applicationState.rawValue
-            ServiceLocator.analytics.track(.pushNotificationReceived, withProperties: properties)
+            analytics.track(.pushNotificationReceived, withProperties: properties)
         }
     }
 }

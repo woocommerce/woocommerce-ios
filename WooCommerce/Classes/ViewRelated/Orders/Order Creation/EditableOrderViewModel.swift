@@ -927,7 +927,6 @@ private extension EditableOrderViewModel {
     /// Configures product row view models for each item in `orderDetails`.
     ///
     func configureProductRowViewModels() {
-        configureInitialOrderFromScannedItemIfNeeded()
         updateProductsResultsController()
         updateProductVariationsResultsController()
         orderSynchronizer.orderPublisher
@@ -938,12 +937,19 @@ private extension EditableOrderViewModel {
                 return self.createProductRows(items: items)
             }
             .assign(to: &$productRows)
+        configureInitialOrderFromScannedItemIfNeeded()
     }
 
     /// If given, sends a product to the Order synchronizer during the initial Order creation setup
     ///
     func configureInitialOrderFromScannedItemIfNeeded() {
         guard let productID = self.withInitialProductID else {
+            return
+        }
+
+        // Validate the scanned productID is an existing product
+        guard allProducts.contains(where: { $0.productID == productID }) else {
+            DDLogError("\(ScannerError.productNotFound)")
             return
         }
         orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))

@@ -216,7 +216,7 @@ final class OrdersRootViewController: UIViewController {
     /// - Parameters:
     ///   - scannedBarcode: The scanned barcode
     ///   - onCompletion: The closure to be trigged when the scanning completes. Succeeds with a Product, or fails with an Error.
-    func handleScannedBarcode(_ scannedBarcode: String, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
+    private func handleScannedBarcode(_ scannedBarcode: String, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
         let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: scannedBarcode) { result in
             switch result {
             case let .success(matchedProduct):

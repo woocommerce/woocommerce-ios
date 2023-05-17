@@ -5,18 +5,24 @@ struct ShippingLabelCustomsFormInput: View {
     private let isCollapsible: Bool
     private let packageNumber: Int
     private let safeAreaInsets: EdgeInsets
+    private let infoTooltipTapped: () -> Void
 
     @ObservedObject private var viewModel: ShippingLabelCustomsFormInputViewModel
     @State private var showingContentTypes = false
     @State private var showingRestrictionTypes = false
     @State private var isCollapsed: Bool = false
 
-    init(isCollapsible: Bool, packageNumber: Int, safeAreaInsets: EdgeInsets, viewModel: ShippingLabelCustomsFormInputViewModel) {
+    init(isCollapsible: Bool,
+         packageNumber: Int,
+         safeAreaInsets: EdgeInsets,
+         viewModel: ShippingLabelCustomsFormInputViewModel,
+         infoTooltipTapped: @escaping () -> Void = {}) {
         self.isCollapsible = isCollapsible
         self.packageNumber = packageNumber
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
         self.isCollapsed = packageNumber > 1
+        self.infoTooltipTapped = infoTooltipTapped
     }
 
     var body: some View {
@@ -45,7 +51,8 @@ struct ShippingLabelCustomsFormInput: View {
                             ShippingLabelCustomsFormItemDetails(itemNumber: index + 1,
                                                                 isInfoTooltipActive: index == 0,
                                                                 viewModel: inputModel,
-                                                                safeAreaInsets: safeAreaInsets)
+                                                                safeAreaInsets: safeAreaInsets,
+                                                                infoTooltipTapped: infoTooltipTapped)
                         }
                 }
             }

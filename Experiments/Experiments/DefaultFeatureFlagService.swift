@@ -97,6 +97,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .sdkLessGoogleSignIn:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .scanToPay:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

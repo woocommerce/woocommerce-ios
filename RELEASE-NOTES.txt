@@ -2,7 +2,9 @@
 
 13.7
 -----
-
+- [*] JITMs: Added modal-style Just in Time Message support on the dashboard [https://github.com/woocommerce/woocommerce-ios/pull/9694]
+- [*] Order Creation: Products can be searched by SKU when adding products to an order. [https://github.com/woocommerce/woocommerce-ios/pull/9711]
+- [*] Orders: Fixes order details so separate order items are not combined just because they are the same product or variation. [https://github.com/woocommerce/woocommerce-ios/pull/9710]
 
 13.6
 -----

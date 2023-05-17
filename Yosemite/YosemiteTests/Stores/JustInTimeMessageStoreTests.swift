@@ -72,7 +72,8 @@ final class JustInTimeMessageStoreTests: XCTestCase {
             backgroundImageUrl: URL(string: "https://example.net/images/background-light@2x.png"),
             backgroundImageDarkUrl: nil,
             badgeImageUrl: nil,
-            badgeImageDarkUrl: nil
+            badgeImageDarkUrl: nil,
+            template: .modal
         )
 
         // Then

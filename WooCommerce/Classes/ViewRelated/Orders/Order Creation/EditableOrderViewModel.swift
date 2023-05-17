@@ -304,6 +304,12 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.order.status
     }
 
+    /// Current OrderItems
+    /// 
+    var currentOrderItems: [OrderItem] {
+        orderSynchronizer.order.items
+    }
+
     /// Analytics engine.
     ///
     private let analytics: Analytics
@@ -410,9 +416,11 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setProduct.send(input)
 
         if item.variationID != 0 {
-            productSelectorViewModel.changeSelectionStateForVariation(with: item.variationID, productID: item.productID)
+            productSelectorViewModel.toggleSelection(id: item.variationID)
+            selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
         } else if item.productID != 0 {
-            productSelectorViewModel.changeSelectionStateForProduct(with: item.productID)
+            productSelectorViewModel.toggleSelection(id: item.productID)
+            selectedProducts.removeAll(where: { $0.productID == item.productID })
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -1238,6 +1246,11 @@ extension EditableOrderViewModel {
         case notDetermined
     }
 
+    enum ScannerError: Error {
+        case nilSKU
+        case productNotFound
+    }
+
     /// Returns the current app permission status to capture media
     ///
     var capturePermissionStatus: CapturePermissionStatus {
@@ -1254,6 +1267,39 @@ extension EditableOrderViewModel {
 
     func requestCameraAccess(onCompletion: @escaping ((Bool) -> Void)) {
         permissionChecker.requestAccess(for: .video, completionHandler: onCompletion)
+    }
+
+    /// Attempts to add a Product to the current Order by SKU search
+    ///
+    func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        guard let sku = sku else {
+            return onCompletion(.failure(ScannerError.nilSKU))
+        }
+
+        mapFromSKUtoProductID(sku: sku) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(productID):
+                self.orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
+                onCompletion(.success(()))
+            case .failure:
+                onCompletion(.failure(ScannerError.productNotFound))
+            }
+        }
+    }
+
+    /// Attempts to map SKU to product ID
+    ///
+    private func mapFromSKUtoProductID(sku: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: { result in
+            switch result {
+            case let .success(product):
+                onCompletion(.success(product.productID))
+            case let .failure(error):
+                onCompletion(.failure(error))
+            }
+        })
+        stores.dispatch(action)
     }
 }
 

@@ -17,7 +17,8 @@ extension Yosemite.JustInTimeMessage {
         backgroundImageUrl: NullableCopiableProp<URL> = .copy,
         backgroundImageDarkUrl: NullableCopiableProp<URL> = .copy,
         badgeImageUrl: NullableCopiableProp<URL> = .copy,
-        badgeImageDarkUrl: NullableCopiableProp<URL> = .copy
+        badgeImageDarkUrl: NullableCopiableProp<URL> = .copy,
+        template: CopiableProp<JustInTimeMessageTemplate> = .copy
     ) -> Yosemite.JustInTimeMessage {
         let siteID = siteID ?? self.siteID
         let messageID = messageID ?? self.messageID
@@ -30,6 +31,7 @@ extension Yosemite.JustInTimeMessage {
         let backgroundImageDarkUrl = backgroundImageDarkUrl ?? self.backgroundImageDarkUrl
         let badgeImageUrl = badgeImageUrl ?? self.badgeImageUrl
         let badgeImageDarkUrl = badgeImageDarkUrl ?? self.badgeImageDarkUrl
+        let template = template ?? self.template
 
         return Yosemite.JustInTimeMessage(
             siteID: siteID,
@@ -42,7 +44,8 @@ extension Yosemite.JustInTimeMessage {
             backgroundImageUrl: backgroundImageUrl,
             backgroundImageDarkUrl: backgroundImageDarkUrl,
             badgeImageUrl: badgeImageUrl,
-            badgeImageDarkUrl: badgeImageDarkUrl
+            badgeImageDarkUrl: badgeImageDarkUrl,
+            template: template
         )
     }
 }

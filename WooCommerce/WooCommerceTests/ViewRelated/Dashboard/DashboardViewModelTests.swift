@@ -288,7 +288,7 @@ final class DashboardViewModelTests: XCTestCase {
         prepareStoresToShowJustInTimeMessage(.success([]))
 
         let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
-        viewModel.announcementViewModel = JustInTimeMessageAnnouncementCardViewModel(
+        viewModel.announcementViewModel = JustInTimeMessageViewModel(
             justInTimeMessage: .fake(),
             screenName: "my_store",
             siteID: sampleSiteID)

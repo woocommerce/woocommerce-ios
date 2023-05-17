@@ -364,6 +364,7 @@ public enum WooAnalyticsStat: String {
     case orderCreationProductSelectorItemUnselected = "order_creation_product_selector_item_unselected"
     case orderCreationProductSelectorConfirmButtonTapped = "order_creation_product_selector_confirm_button_tapped"
     case orderCreationProductSelectorClearSelectionButtonTapped = "order_creation_product_selector_clear_selection_button_tapped"
+    case orderCreationProductSelectorSearchTriggered = "order_creation_product_selector_search_triggered"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"

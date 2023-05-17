@@ -127,14 +127,12 @@ extension HubMenuCoordinator {
         case .paymentsMenu:
             _ = hubMenuController.showPaymentsMenu()
         case .simplePayments:
-            let viewController = hubMenuController.showPaymentsMenu()
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-                viewController.openSimplePaymentsAmountFlow()
+            _ = hubMenuController.showPaymentsMenu { paymentsMenu in
+                paymentsMenu.openSimplePaymentsAmountFlow()
             }
         case .tapToPayOnIPhone:
-            let viewController = hubMenuController.showPaymentsMenu()
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-                viewController.presentSetUpTapToPayOnIPhoneViewController()
+            _ = hubMenuController.showPaymentsMenu { paymentsMenu in
+                paymentsMenu.presentSetUpTapToPayOnIPhoneViewController()
             }
         }
     }

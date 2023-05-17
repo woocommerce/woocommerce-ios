@@ -232,6 +232,10 @@ extension UIImage {
         UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
 
+    static var scanToPayIcon: UIImage {
+        UIImage(systemName: "qrcode.viewfinder")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
+    }
+
     /// Customize Icon
     ///
     static var customizeImage: UIImage {

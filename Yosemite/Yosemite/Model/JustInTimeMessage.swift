@@ -39,6 +39,8 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
 
     public let badgeImageDarkUrl: URL?
 
+    public let template: JustInTimeMessageTemplate
+
     public init(siteID: Int64,
                 messageID: String,
                 featureClass: String,
@@ -49,7 +51,8 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
                 backgroundImageUrl: URL?,
                 backgroundImageDarkUrl: URL?,
                 badgeImageUrl: URL?,
-                badgeImageDarkUrl: URL?) {
+                badgeImageDarkUrl: URL?,
+                template: JustInTimeMessageTemplate) {
         self.siteID = siteID
         self.messageID = messageID
         self.featureClass = featureClass
@@ -61,6 +64,7 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
         self.backgroundImageDarkUrl = backgroundImageDarkUrl
         self.badgeImageUrl = badgeImageUrl
         self.badgeImageDarkUrl = badgeImageDarkUrl
+        self.template = template
     }
 
     init(message: Networking.JustInTimeMessage) {
@@ -74,8 +78,14 @@ public struct JustInTimeMessage: GeneratedFakeable, GeneratedCopiable, Equatable
                   backgroundImageUrl: message.assets[ImageAssetKind.background.baseUrlKey],
                   backgroundImageDarkUrl: message.assets[ImageAssetKind.background.darkUrlKey],
                   badgeImageUrl: message.assets[ImageAssetKind.badge.baseUrlKey],
-                  badgeImageDarkUrl: message.assets[ImageAssetKind.badge.darkUrlKey])
+                  badgeImageDarkUrl: message.assets[ImageAssetKind.badge.darkUrlKey],
+                  template: JustInTimeMessageTemplate(rawValue: message.template) ?? .banner)
     }
+}
+
+public enum JustInTimeMessageTemplate: String, GeneratedFakeable, GeneratedCopiable {
+    case banner
+    case modal
 }
 
 private extension JustInTimeMessage {

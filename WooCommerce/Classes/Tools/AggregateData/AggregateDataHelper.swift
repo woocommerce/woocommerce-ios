@@ -20,17 +20,16 @@ final class AggregateDataHelper {
     /// Combine all refunded products into a single data source
     ///
     static func combineRefundedProducts(from refunds: [Refund], orderItems: [OrderItem]) -> [AggregateOrderItem]? {
-        /// OrderItemRefund.orderItemID isn't useful for finding duplicates
-        /// because multiple refunds cause orderItemIDs to be unique.
-        /// Instead, we need to find duplicate *Products*.
         let items = refunds.flatMap { $0.items }
         let currency = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
-        // Creates an array of dictionaries, with the hash value as the key.
-        // Example: [hashValue: [item, item], hashvalue: [item]]
+        // Creates an array of dictionaries, with the refunded order item ID as the key.
+        // Example: [refundedItemID: [item, item], refundedItemID: [item]]
         // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.
         let grouped = Dictionary(grouping: items) { (item) in
-            return item.hashValue
+            // There should always be a refunded item ID (the ID for the refunded `OrderItem`).
+            // As a fallback, use the `OrderItemRefund` ID as a unique ID for the refund.
+            return item.refundedItemID ?? item.itemID.description
         }
 
         let unsortedResult = grouped.compactMap { (key, items) -> AggregateOrderItem? in
@@ -58,6 +57,7 @@ final class AggregateDataHelper {
             })?.attributes ?? []
 
             return AggregateOrderItem(
+                itemID: key,
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -69,9 +69,7 @@ final class AggregateDataHelper {
             )
         }
 
-        let sorted = unsortedResult.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
-
-        return sorted
+        return unsortedResult.sorted()
     }
 
     /// Combine original order items with refunded products
@@ -87,6 +85,7 @@ final class AggregateDataHelper {
         let convertedItems = items.map { item -> AggregateOrderItem in
             let total = currency.convertToDecimal(item.total) ?? NSDecimalNumber.zero
             return AggregateOrderItem(
+                itemID: item.itemID.description,
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -101,7 +100,7 @@ final class AggregateDataHelper {
         let allItems = convertedItems + refundedProducts
 
         let grouped = Dictionary(grouping: allItems) { (item) in
-            return item.hashValue
+            return item.itemID
         }
 
         let unsortedResult: [AggregateOrderItem] = grouped.compactMap { (key, items) in
@@ -121,6 +120,7 @@ final class AggregateDataHelper {
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
             return AggregateOrderItem(
+                itemID: item.itemID,
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -134,20 +134,6 @@ final class AggregateDataHelper {
 
         var filtered = unsortedResult.filter { $0.quantity > 0 }
 
-        // Sort elements following the previous order of the items.
-        var sorted: [AggregateOrderItem] = []
-        for item in allItems {
-            if let find = filtered.first(where: {
-                $0.hashValue == item.hashValue
-            }) {
-                sorted.append(find)
-            }
-
-            filtered.removeAll {
-                $0.hashValue == item.hashValue
-            }
-        }
-
-        return sorted
+        return filtered.sorted()
     }
 }

@@ -121,13 +121,9 @@ private extension SitePluginStore {
             do {
                 let plugins = try await remote.loadPluginsFromWPCOM(siteID: siteID)
                 let isJetpackActive = plugins.contains(where: { $0.id == plugin.id && $0.isActive })
-                await MainActor.run {
-                    completion(.success(isJetpackActive))
-                }
+                completion(.success(isJetpackActive))
             } catch {
-                await MainActor.run {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }

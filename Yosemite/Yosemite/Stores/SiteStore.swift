@@ -112,17 +112,11 @@ private extension SiteStore {
                 let site = try await remote.loadSite(siteID: siteID)
                 await upsertStoredSiteInBackground(readOnlySite: site)
                 guard let syncedSite = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
-                    return await MainActor.run {
-                        completion(.failure(SynchronizeSiteError.unknownSite))
-                    }
+                    return completion(.failure(SynchronizeSiteError.unknownSite))
                 }
-                await MainActor.run {
-                    completion(.success(syncedSite))
-                }
+                completion(.success(syncedSite))
             } catch {
-                await MainActor.run {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }

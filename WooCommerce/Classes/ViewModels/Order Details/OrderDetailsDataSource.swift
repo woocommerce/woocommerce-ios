@@ -817,7 +817,8 @@ private extension OrderDetailsDataSource {
         let addOns = filterAddOns(of: aggregateItem)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
                                                         currency: order.currency,
-                                                        hasAddOns: addOns.isNotEmpty)
+                                                        hasAddOns: addOns.isNotEmpty,
+                                                        shouldDisplayProductHierarchy: true)
 
         cell.configure(item: itemViewModel, imageService: imageService)
         cell.accessibilityIdentifier = "single-product-cell"

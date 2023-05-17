@@ -79,6 +79,10 @@ struct ProductDetailsCellViewModel {
     ///
     let hasAddOns: Bool
 
+    /// Whether the view should adjust its layout for a child product
+    ///
+    let isChildProduct: Bool
+
     // MARK: - Initializers
 
     private init(currency: String,
@@ -90,7 +94,8 @@ struct ProductDetailsCellViewModel {
                  price: NSDecimalNumber?,
                  skuText: String?,
                  attributes: [VariationAttributeViewModel],
-                 hasAddOns: Bool) {
+                 hasAddOns: Bool,
+                 isChildProduct: Bool) {
         self.imageURL = imageURL
         self.name = name
         let quantity = NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
@@ -117,6 +122,8 @@ struct ProductDetailsCellViewModel {
             let itemPrice = currencyFormatter.formatAmount(price, with: currency) ?? String()
             return Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)
         }()
+
+        self.isChildProduct = isChildProduct
     }
 
     /// Order Item initializer
@@ -125,7 +132,8 @@ struct ProductDetailsCellViewModel {
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil,
-         hasAddOns: Bool) {
+         hasAddOns: Bool,
+         shouldDisplayProductHierarchy: Bool = false) {
         self.init(currency: currency,
                   currencyFormatter: formatter,
                   imageURL: product?.imageURL,
@@ -135,7 +143,8 @@ struct ProductDetailsCellViewModel {
                   price: item.price,
                   skuText: item.sku,
                   attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
-                  hasAddOns: hasAddOns)
+                  hasAddOns: hasAddOns,
+                  isChildProduct: shouldDisplayProductHierarchy && item.parent != nil)
     }
 
     /// Aggregate Order Item initializer
@@ -144,7 +153,8 @@ struct ProductDetailsCellViewModel {
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil,
-         hasAddOns: Bool) {
+         hasAddOns: Bool,
+         shouldDisplayProductHierarchy: Bool = false) {
         self.init(currency: currency,
                   currencyFormatter: formatter,
                   imageURL: aggregateItem.imageURL ?? product?.imageURL,
@@ -154,7 +164,8 @@ struct ProductDetailsCellViewModel {
                   price: aggregateItem.price,
                   skuText: aggregateItem.sku,
                   attributes: aggregateItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
-                  hasAddOns: hasAddOns)
+                  hasAddOns: hasAddOns,
+                  isChildProduct: shouldDisplayProductHierarchy && aggregateItem.parent != nil)
     }
 
     /// Refunded Order Item initializer
@@ -172,7 +183,8 @@ struct ProductDetailsCellViewModel {
                   price: refundedItem.price,
                   skuText: refundedItem.sku,
                   attributes: [], // Attributes are not supported for a refund item yet.
-                  hasAddOns: false) // AddOns are not supported for a refund item yet.
+                  hasAddOns: false, // AddOns are not supported for a refund item yet.
+                  isChildProduct: false) // Refunds do not have parent/child relationship
     }
 }
 

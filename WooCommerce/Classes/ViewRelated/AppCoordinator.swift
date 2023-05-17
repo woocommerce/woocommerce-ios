@@ -24,11 +24,13 @@ final class AppCoordinator {
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
+    private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
+    private var storeCreationCoordinator: StoreCreationCoordinator?
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -42,7 +44,8 @@ final class AppCoordinator {
          analytics: Analytics = ServiceLocator.analytics,
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -59,6 +62,7 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
+        self.purchasesManager = purchasesManager
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
 
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
@@ -350,6 +354,34 @@ private extension AppCoordinator {
             let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
             self?.window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
         }
+    }
+
+    func startStoreCreationFlow(storeName: String) {
+        // Fetch the navigation controller for store selected or not selected cases
+        guard let navigationController: UINavigationController = {
+            // If logged in with a valid store, tab bar will have a viewcontroller selected.
+            if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+                return navigationController
+            } // If logged in with no valid stores, store picker will be displayed.
+            else if let navigationController = window.rootViewController?.topmostPresentedViewController as? UINavigationController {
+                return navigationController
+            } else {
+                return nil
+            }
+        }() else {
+            return
+        }
+
+        let coordinator = StoreCreationCoordinator(source: .storePicker,
+                                                   navigationController: navigationController,
+                                                   prefillStoreName: storeName,
+                                                   storageManager: storageManager,
+                                                   stores: stores,
+                                                   featureFlagService: featureFlagService,
+                                                   purchasesManager: purchasesManager,
+                                                   pushNotesManager: pushNotesManager)
+        self.storeCreationCoordinator = coordinator
+        coordinator.start()
     }
 }
 

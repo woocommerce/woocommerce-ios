@@ -22,6 +22,12 @@ public enum SiteAction: Action {
     /// Enables a free trial plan for a site.
     ///
     case enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?, completion: (Result<Void, Error>) -> Void)
+
+    /// Syncs a site from WPCOM to storage.
+    /// - Parameter:
+    ///   - siteID: ID of the site to load.
+    ///   - completion: Called when the result of the synced site is available.
+    case syncSite(siteID: Int64, completion: (Result<Site, Error>) -> Void)
 }
 
 /// The result of site creation including necessary site information.

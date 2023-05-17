@@ -21,6 +21,18 @@ final class SitePluginsRemoteTests: XCTestCase {
 
     // MARK: - Load plugins tests
 
+    func test_loadPluginsFromWPCOM_returns_plugins_that_include_jetpack() async throws {
+        let remote = SitePluginsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "plugins", filename: "dotcom-plugins")
+
+        // When
+        let plugins = try await remote.loadPluginsFromWPCOM(siteID: 122)
+
+        // Then
+        XCTAssertEqual(plugins.count, 3)
+        XCTAssertTrue(plugins.contains(where: { $0.id == "jetpack/jetpack" && $0.isActive }))
+    }
+
     /// Verifies that loadPlugins properly parses the sample response.
     ///
     func test_loadPlugins_properly_returns_plugins() throws {

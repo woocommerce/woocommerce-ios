@@ -3,14 +3,19 @@ import Yosemite
 
 struct ShippingLabelCustomsFormItemDetails: View {
     private let itemNumber: Int
+    private let isInfoTooltipActive: Bool
     private let safeAreaInsets: EdgeInsets
 
     @State private var isCollapsed: Bool = true
     @State private var isShowingCountries: Bool = false
     @ObservedObject private var viewModel: ShippingLabelCustomsFormItemDetailsViewModel
 
-    init(itemNumber: Int, viewModel: ShippingLabelCustomsFormItemDetailsViewModel, safeAreaInsets: EdgeInsets = .zero) {
+    init(itemNumber: Int,
+         isInfoTooltipActive: Bool,
+         viewModel: ShippingLabelCustomsFormItemDetailsViewModel,
+         safeAreaInsets: EdgeInsets = .zero) {
         self.itemNumber = itemNumber
+        self.isInfoTooltipActive = isInfoTooltipActive
         self.viewModel = viewModel
         self.safeAreaInsets = safeAreaInsets
     }
@@ -216,6 +221,6 @@ struct ShippingLabelCustomsFormItemDetails_Previews: PreviewProvider {
     static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails, countries: [], currency: "$")
 
     static var previews: some View {
-        ShippingLabelCustomsFormItemDetails(itemNumber: 1, viewModel: sampleViewModel, safeAreaInsets: .zero)
+        ShippingLabelCustomsFormItemDetails(itemNumber: 1, isInfoTooltipActive: false, viewModel: sampleViewModel, safeAreaInsets: .zero)
     }
 }

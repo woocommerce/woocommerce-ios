@@ -102,6 +102,12 @@ final class MockPushNotificationsManager: PushNotesManager {
         requestedLocalNotificationsIfNeeded.removeAll()
         triggersForRequestedLocalNotificationsIfNeeded.removeAll()
     }
+
+    func cancelAllNotifications() {
+        requestedLocalNotifications.removeAll()
+        requestedLocalNotificationsIfNeeded.removeAll()
+        triggersForRequestedLocalNotificationsIfNeeded.removeAll()
+    }
 }
 
 extension MockPushNotificationsManager {

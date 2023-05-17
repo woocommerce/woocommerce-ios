@@ -3,9 +3,9 @@ import Yosemite
 
 struct ShippingLabelCustomsFormInput: View {
     private let isCollapsible: Bool
-    private let isEUShippingScenario: Bool
     private let packageNumber: Int
     private let safeAreaInsets: EdgeInsets
+    private let isEUShippingScenario: Bool
     private let infoTooltipTapped: () -> Void
 
     @ObservedObject private var viewModel: ShippingLabelCustomsFormInputViewModel
@@ -14,10 +14,10 @@ struct ShippingLabelCustomsFormInput: View {
     @State private var isCollapsed: Bool = false
 
     init(isCollapsible: Bool,
-         isEUShippingScenario: Bool,
          packageNumber: Int,
          safeAreaInsets: EdgeInsets,
          viewModel: ShippingLabelCustomsFormInputViewModel,
+         isEUShippingScenario: Bool,
          infoTooltipTapped: @escaping () -> Void = {}) {
         self.isCollapsible = isCollapsible
         self.isEUShippingScenario = isEUShippingScenario
@@ -52,9 +52,9 @@ struct ShippingLabelCustomsFormInput: View {
                     viewModel.itemViewModels.first(where: { $0.productID == item.productID })
                         .map { inputModel in
                             ShippingLabelCustomsFormItemDetails(itemNumber: index + 1,
-                                                                isInfoTooltipActive: index == 0 && isEUShippingScenario,
                                                                 viewModel: inputModel,
                                                                 safeAreaInsets: safeAreaInsets,
+                                                                isInfoTooltipActive: index == 0 && isEUShippingScenario,
                                                                 infoTooltipTapped: infoTooltipTapped)
                         }
                 }
@@ -240,10 +240,10 @@ struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
 
     static var previews: some View {
         ShippingLabelCustomsFormInput(isCollapsible: true,
-                                      isEUShippingScenario: false,
                                       packageNumber: 1,
                                       safeAreaInsets: .zero,
-                                      viewModel: sampleViewModel)
+                                      viewModel: sampleViewModel,
+                                      isEUShippingScenario: false)
     }
 }
 #endif

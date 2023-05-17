@@ -160,7 +160,7 @@ private extension StoreCreationCoordinator {
 
         let isProfilerEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM3Profiler)
         let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
-        let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
+        let continueAfterEnteringStoreName = { [weak self] storeName in
             if isProfilerEnabled {
                 /// `storeCreationM3Profiler` is currently disabled.
                 /// Before enabling it again, make sure the onboarding questions are properly sent on the trial flow around line `343`.
@@ -179,6 +179,9 @@ private extension StoreCreationCoordinator {
                                              planToPurchase: planToPurchase)
                 }
             }
+        }
+        let storeNameForm = StoreNameFormHostingController { storeName in
+            continueAfterEnteringStoreName(storeName)
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
         } onSupport: { [weak self] in

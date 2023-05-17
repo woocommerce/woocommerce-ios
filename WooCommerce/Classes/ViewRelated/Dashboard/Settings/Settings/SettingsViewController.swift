@@ -455,7 +455,7 @@ private extension SettingsViewController {
 
     func logOutUser() {
         Task { @MainActor in
-            // Waits to track all the canceled notification before deauthenticating or the events will not be logged.
+            // Waits to track all the canceled notifications before deauthenticating or the events will not be logged.
             await pushNotesManager.cancelAllNotifications()
             ServiceLocator.stores.deauthenticate()
             navigationController?.popToRootViewController(animated: true)

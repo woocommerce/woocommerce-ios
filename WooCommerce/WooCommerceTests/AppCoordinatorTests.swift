@@ -355,6 +355,48 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         _ = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginOnboardingShown.rawValue}))
     }
+
+    // MARK: - Handle local notification response
+
+    func test_plans_page_is_displayed_when_tapping_on_oneDayBeforeFreeTrialExpires_notification() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: Date()).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            self.window.rootViewController?.topmostPresentedViewController is UpgradePlanCoordinatingController
+        }
+    }
+
+    func test_plans_page_is_displayed_when_tapping_on_oneDayAfterFreeTrialExpiresIdentifier_notification() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            self.window.rootViewController?.topmostPresentedViewController is UpgradePlanCoordinatingController
+        }
+    }
 }
 
 private extension AppCoordinatorTests {

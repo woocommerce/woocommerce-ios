@@ -2065,6 +2065,7 @@
 		DECE13FC27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */; };
 		DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13FF279A595200816ECD /* Coupon+Woo.swift */; };
 		DEDAE30B2A0B523F00F9635F /* LocalNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */; };
+		DEDAE30D2A12091500F9635F /* UpgradePlanCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
 		DEE183ED292BD900008818AB /* JetpackSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */; };
@@ -4355,6 +4356,7 @@
 		DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndSubtitleAndStatusTableViewCell.xib; sourceTree = "<group>"; };
 		DECE13FF279A595200816ECD /* Coupon+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Woo.swift"; sourceTree = "<group>"; };
 		DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationTests.swift; sourceTree = "<group>"; };
+		DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlanCoordinatingController.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
 		DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageAttributes.swift; sourceTree = "<group>"; };
 		DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupViewModelTests.swift; sourceTree = "<group>"; };
@@ -6107,6 +6109,7 @@
 				264957A229C520860095AA4C /* UpgradesView.swift */,
 				261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */,
 				267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */,
+				DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */,
 			);
 			name = Upgrades;
 			path = Classes/ViewRelated/Upgrades;
@@ -11272,6 +11275,7 @@
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
 				B9B7E2E629FBF96100F9CED1 /* ProductSelectorViewModelTracker.swift in Sources */,
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,
+				DEDAE30D2A12091500F9635F /* UpgradePlanCoordinatingController.swift in Sources */,
 				DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */,
 				450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */,
 				B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */,

@@ -910,6 +910,27 @@ private extension StoreCreationCoordinator {
     func cancelLocalNotificationWhenStoreIsReady() {
         localNotificationScheduler.cancel(scenario: Constants.LocalNotificationScenario.storeCreationComplete)
     }
+
+    func scheduleLocalNotificationToSubscribeFreeTrial(storeName: String) {
+        guard let notification = LocalNotification(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName),
+                                                   stores: stores,
+                                                   userInfo: [LocalNotificationUserInfoKey.storeName: storeName]) else {
+            return
+        }
+
+        cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      // Notify after 24 hours
+                                                      trigger: UNTimeIntervalNotificationTrigger(timeInterval: 24 * 60 * 60,
+                                                                                                 repeats: false),
+                                                      remoteFeatureFlag: .oneDayAfterStoreCreationNameWithoutFreeTrial)
+        }
+    }
+
+    func cancelLocalNotificationToSubscribeFreeTrial(storeName: String) {
+        localNotificationScheduler.cancel(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName))
+    }
 }
 
 private extension StoreCreationCoordinator {

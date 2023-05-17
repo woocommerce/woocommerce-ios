@@ -13,6 +13,9 @@ final class MockSiteRemote {
     /// The results to return in `enableFreeTrial`.
     private var enableFreeTrialResult: Result<Void, Error>?
 
+    /// The results to return in `loadSite`.
+    private var loadSiteResult: Result<Site, Error>?
+
     /// Returns the value when `createSite` is called.
     func whenCreatingSite(thenReturn result: Result<SiteCreationResponse, Error>) {
         createSiteResult = result
@@ -26,6 +29,11 @@ final class MockSiteRemote {
     /// Returns the value when `enableFreeTrial` is called.
     func whenEnablingFreeTrial(thenReturn result: Result<Void, Error>) {
         enableFreeTrialResult = result
+    }
+
+    /// Returns the value when `loadSite` is called.
+    func whenLoadingSite(thenReturn result: Result<Site, Error>) {
+        loadSiteResult = result
     }
 }
 
@@ -51,6 +59,15 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws {
         guard let result = enableFreeTrialResult else {
             XCTFail("Could not find result for enabling a trial.")
+            throw NetworkError.notFound
+        }
+
+        return try result.get()
+    }
+
+    func loadSite(siteID: Int64) async throws -> Site {
+        guard let result = loadSiteResult else {
+            XCTFail("Could not find result for loading a site.")
             throw NetworkError.notFound
         }
 

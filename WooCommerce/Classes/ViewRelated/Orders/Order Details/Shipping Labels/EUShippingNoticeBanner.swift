@@ -38,6 +38,7 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIView, context: Context) {
         context.coordinator.bannerWrapper.width = width
+        context.coordinator.bannerWrapper.invalidateIntrinsicContentSize()
     }
 
     /// Returns a copy of the view with `onDismissTapped` handling.

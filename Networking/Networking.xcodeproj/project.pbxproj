@@ -80,6 +80,8 @@
 		02A26F1B2744F5FC008E4EDB /* wc-site-settings-partial.json in Resources */ = {isa = PBXBuildFile; fileRef = 02A26F192744F5FC008E4EDB /* wc-site-settings-partial.json */; };
 		02A26F1C2744F5FC008E4EDB /* wp-site-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 02A26F1A2744F5FC008E4EDB /* wp-site-settings.json */; };
 		02AAD53F250092A400BA1E26 /* product-add-or-delete.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AAD53E250092A300BA1E26 /* product-add-or-delete.json */; };
+		02AAFCD22A132C1D00F05E60 /* DotcomSitePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AAFCD12A132C1D00F05E60 /* DotcomSitePlugin.swift */; };
+		02AAFCD42A13517800F05E60 /* dotcom-plugins.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AAFCD32A13517800F05E60 /* dotcom-plugins.json */; };
 		02AF07EA27492DBC00B2D81E /* WordPressMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AF07E927492DBC00B2D81E /* WordPressMedia.swift */; };
 		02AF07EC27492FDD00B2D81E /* media-library-from-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */; };
 		02AF07EE27493AE700B2D81E /* media-upload-to-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */; };
@@ -1010,6 +1012,8 @@
 		02A26F192744F5FC008E4EDB /* wc-site-settings-partial.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wc-site-settings-partial.json"; sourceTree = "<group>"; };
 		02A26F1A2744F5FC008E4EDB /* wp-site-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wp-site-settings.json"; sourceTree = "<group>"; };
 		02AAD53E250092A300BA1E26 /* product-add-or-delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-add-or-delete.json"; sourceTree = "<group>"; };
+		02AAFCD12A132C1D00F05E60 /* DotcomSitePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotcomSitePlugin.swift; sourceTree = "<group>"; };
+		02AAFCD32A13517800F05E60 /* dotcom-plugins.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "dotcom-plugins.json"; sourceTree = "<group>"; };
 		02AF07E927492DBC00B2D81E /* WordPressMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMedia.swift; sourceTree = "<group>"; };
 		02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library-from-wordpress-site.json"; sourceTree = "<group>"; };
 		02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-upload-to-wordpress-site.json"; sourceTree = "<group>"; };
@@ -2382,6 +2386,7 @@
 				E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */,
 				DE2E8E9C29530EEF002E4B14 /* WordPressSite.swift */,
 				EE2C09C729AF6357009396F9 /* StoreOnboardingTask.swift */,
+				02AAFCD12A132C1D00F05E60 /* DotcomSitePlugin.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2394,6 +2399,7 @@
 				DEC2B092297AA60D003923FB /* category-without-data.json */,
 				DEC2B090297AA5A6003923FB /* categories-all-without-data.json */,
 				02C4325C298A55D100F14AEE /* domain-contact-info.json */,
+				02AAFCD32A13517800F05E60 /* dotcom-plugins.json */,
 				0286981829ED324900853B88 /* generative-text-failure.json */,
 				0286981729ED324900853B88 /* generative-text-success.json */,
 				DEC2B08E297AA123003923FB /* reviews-single-without-data.json */,
@@ -3388,6 +3394,7 @@
 				31054728262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json in Resources */,
 				DE42F9612967C88400D514C2 /* report-orders-total.json in Resources */,
 				31A451CC27863A2E00FE81AA /* stripe-account-rejected-fraud.json in Resources */,
+				02AAFCD42A13517800F05E60 /* dotcom-plugins.json in Resources */,
 				31A451D827863A2E00FE81AA /* stripe-account-restricted-overdue.json in Resources */,
 				D865CE69278CA245002C8520 /* stripe-payment-intent-unknown-status.json in Resources */,
 				DE66C5572976913C00DAA978 /* wcpay-charge-card-present-without-data.json in Resources */,
@@ -4033,6 +4040,7 @@
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				CCA1D60629437D8F00B40560 /* SiteSummaryStatsMapper.swift in Sources */,
 				CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */,
+				02AAFCD22A132C1D00F05E60 /* DotcomSitePlugin.swift in Sources */,
 				45CCFCE427A2DC270012E8CB /* InboxAction.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				D88D5A49230BC8C7007B6E01 /* ProductReviewStatus.swift in Sources */,

@@ -1,0 +1,46 @@
+{
+    "plugins": [
+        {
+            "id": "gutenberg/gutenberg",
+            "slug": "gutenberg",
+            "active": true,
+            "name": "Gutenberg",
+            "plugin_url": "https://github.com/WordPress/gutenberg",
+            "version": "15.7.1",
+            "description": "Printing since 1440. This is the development plugin for the block editor, site editor, and other future WordPress core functionality.",
+            "author": "Gutenberg Team",
+            "author_url": "",
+            "network": false,
+            "autoupdate": false
+        },
+        {
+            "id": "jetpack/jetpack",
+            "slug": "jetpack",
+            "active": true,
+            "name": "Jetpack",
+            "plugin_url": "https://jetpack.com",
+            "version": "12.2-a.5",
+            "description": "Security, performance, and marketing tools made by WordPress experts. Jetpack keeps your site protected so you can focus on more important things.",
+            "author": "Automattic",
+            "author_url": "https://jetpack.com",
+            "network": false,
+            "autoupdate": false
+        },
+        {
+            "id": "woocommerce/woocommerce",
+            "slug": "woocommerce",
+            "active": true,
+            "name": "WooCommerce",
+            "plugin_url": "https://woocommerce.com/",
+            "version": "7.7.0",
+            "description": "An eCommerce toolkit that helps you sell anything. Beautifully.",
+            "author": "Automattic",
+            "author_url": "https://woocommerce.com",
+            "network": false,
+            "autoupdate": false,
+            "action_links": {
+                "Settings": "https://woo-perfectly-dazzling-chopshop.wpcomstaging.com/wp-admin/admin.php?page=wc-settings"
+            }
+        }
+    ]
+}

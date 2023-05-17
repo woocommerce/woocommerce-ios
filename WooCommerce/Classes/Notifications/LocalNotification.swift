@@ -34,7 +34,7 @@ struct LocalNotification {
             case .storeCreationComplete:
                 return "store_creation_complete"
             case .oneDayAfterStoreCreationNameWithoutFreeTrial:
-                return "one_day_after_store_creation_name_without_free_trial"
+                return IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
             case let .oneDayBeforeFreeTrialExpires(siteID, _):
                 return IdentifierPrefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
             case .oneDayAfterFreeTrialExpires(let siteID):
@@ -53,6 +53,7 @@ struct LocalNotification {
         }
 
         enum IdentifierPrefix {
+            static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
             static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
             static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
         }

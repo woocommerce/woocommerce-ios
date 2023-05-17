@@ -324,6 +324,7 @@ private extension AppCoordinator {
     }
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
+        let oneDayAfterStoreCreationNameWithoutFreeTrialIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
         let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayBeforeFreeTrialExpires
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires
 
@@ -340,6 +341,13 @@ private extension AppCoordinator {
                 return
             }
             openPlansPage(siteID: siteID)
+        case let identifier where identifier.hasPrefix(oneDayAfterStoreCreationNameWithoutFreeTrialIdentifier):
+            let storeNameKey = StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let storeName = response.notification.request.content.userInfo.string(forKey: storeNameKey) else {
+                return
+            }
+            startStoreCreationFlow(storeName: storeName)
         default:
             // TODO: 9665 - handle actions on other local notifications
             break

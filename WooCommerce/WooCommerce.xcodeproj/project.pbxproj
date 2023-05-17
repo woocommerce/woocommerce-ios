@@ -612,9 +612,9 @@
 		03EF250228C615A5006A033E /* InPersonPaymentsMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF250128C615A5006A033E /* InPersonPaymentsMenuViewModel.swift */; };
 		03EF250428C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF250328C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift */; };
 		03EF250628C75838006A033E /* PurchaseCardReaderWebViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EF250528C75838006A033E /* PurchaseCardReaderWebViewViewModel.swift */; };
-		03F5CB832A0C3A1A0026877A /* AnimatedPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F5CB822A0C3A1A0026877A /* AnimatedPlaceholder.swift */; };
 		03F5CAFF2A0BA37C0026877A /* JustInTimeMessageModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F5CAFE2A0BA37C0026877A /* JustInTimeMessageModal.swift */; };
 		03F5CB012A0BA3D40026877A /* ModalOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F5CB002A0BA3D40026877A /* ModalOverlay.swift */; };
+		03F5CB832A0C3A1A0026877A /* AnimatedPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F5CB822A0C3A1A0026877A /* AnimatedPlaceholder.swift */; };
 		03FBDA9D263AD49200ACE257 /* CouponListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA9C263AD49100ACE257 /* CouponListViewController.swift */; };
 		03FBDAA3263AED2F00ACE257 /* CouponListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */; };
 		03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */; };
@@ -1575,6 +1575,8 @@
 		B958B4DA2983E3F40010286B /* OrderDurationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
+		B99686E02A13C8CC00D1AF62 /* ScanToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */; };
+		B99686E32A13C98200D1AF62 /* ScanToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
 		B9B0391A28A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */; };
@@ -2889,9 +2891,9 @@
 		03EF250128C615A5006A033E /* InPersonPaymentsMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenuViewModel.swift; sourceTree = "<group>"; };
 		03EF250328C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenuViewModelTests.swift; sourceTree = "<group>"; };
 		03EF250528C75838006A033E /* PurchaseCardReaderWebViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseCardReaderWebViewViewModel.swift; sourceTree = "<group>"; };
-		03F5CB822A0C3A1A0026877A /* AnimatedPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedPlaceholder.swift; sourceTree = "<group>"; };
 		03F5CAFE2A0BA37C0026877A /* JustInTimeMessageModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageModal.swift; sourceTree = "<group>"; };
 		03F5CB002A0BA3D40026877A /* ModalOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalOverlay.swift; sourceTree = "<group>"; };
+		03F5CB822A0C3A1A0026877A /* AnimatedPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedPlaceholder.swift; sourceTree = "<group>"; };
 		03FBDA9C263AD49100ACE257 /* CouponListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewController.swift; sourceTree = "<group>"; };
 		03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CouponListViewController.xib; sourceTree = "<group>"; };
 		03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListViewModel.swift; sourceTree = "<group>"; };
@@ -3853,6 +3855,8 @@
 		B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDurationRecorder.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
+		B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayView.swift; sourceTree = "<group>"; };
+		B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayViewModel.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
 		B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
@@ -8409,6 +8413,15 @@
 			path = DurationRecorder;
 			sourceTree = "<group>";
 		};
+		B99686E12A13C8D200D1AF62 /* ScanToPay */ = {
+			isa = PBXGroup;
+			children = (
+				B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */,
+				B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */,
+			);
+			path = ScanToPay;
+			sourceTree = "<group>";
+		};
 		B9B0391B28A690DA00DC1C83 /* PermanentNotice */ = {
 			isa = PBXGroup;
 			children = (
@@ -8916,6 +8929,7 @@
 		CE1CCB4920570B05000EE3AC /* Orders */ = {
 			isa = PBXGroup;
 			children = (
+				B99686E12A13C8D200D1AF62 /* ScanToPay */,
 				CEE006022077D0F80079161F /* Cells */,
 				268FD44827580A92008FDF9B /* Collect Payments */,
 				CE35F1092343E482007B2A6B /* Order Details */,
@@ -11267,6 +11281,7 @@
 				CCD2F51C26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift in Sources */,
 				03076D38290C223E008EE839 /* WooNavigationSheet.swift in Sources */,
 				022CE91A29BB143000F210E0 /* ProductSelectorNavigationView.swift in Sources */,
+				B99686E02A13C8CC00D1AF62 /* ScanToPayView.swift in Sources */,
 				E107FCE326C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift in Sources */,
 				2662D90626E1571900E25611 /* ListSelector.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
@@ -11964,6 +11979,7 @@
 				45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */,
 				318853362639FC9C00F66A9C /* PaymentSettingsFlowPresentingViewController.swift in Sources */,
 				452FE64B25657EC100EB54A0 /* LinkedProductsViewController.swift in Sources */,
+				B99686E32A13C98200D1AF62 /* ScanToPayViewModel.swift in Sources */,
 				450C6EEA286F4334002DB168 /* SitePlugin+Woo.swift in Sources */,
 				45B9C64123A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift in Sources */,
 				038BC38129C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift in Sources */,

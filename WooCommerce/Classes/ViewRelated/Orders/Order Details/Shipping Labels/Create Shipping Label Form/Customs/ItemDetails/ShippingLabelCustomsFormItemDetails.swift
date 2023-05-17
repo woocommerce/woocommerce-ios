@@ -35,9 +35,12 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         .foregroundColor(Color(.error))
                         .renderedIf(viewModel.validatedItem == nil)
 
-                    Image(uiImage: .infoOutlineImage)
-                        .foregroundColor(Color(.accent))
-                        .renderedIf(viewModel.validatedItem != nil && isInfoTooltipActive)
+                    Button(action: {
+                        infoTooltipTapped()
+                    }) {
+                        Image(uiImage: .infoOutlineImage)
+                            .foregroundColor(Color(.accent))
+                    }.renderedIf(viewModel.validatedItem != nil && isInfoTooltipActive)
                 }
             }
         }, content: {

@@ -595,7 +595,7 @@ private extension LegacyCardReaderConnectionController {
                 }
             case .failure(let error):
                 self.analyticsTracker.connectionFailed(error: error,
-                                                       cardReaderModel: self.candidateReader.readerType.model)
+                                                       cardReaderModel: candidateReader.readerType.model)
                 self.state = .connectingFailed(error)
             }
         }

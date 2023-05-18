@@ -385,7 +385,7 @@ private extension LegacyCardReaderConnectionController {
             onError: { [weak self] error in
                 guard let self = self else { return }
 
-                analyticsTracker.discoveryFailed(error: error)
+                self.analyticsTracker.discoveryFailed(error: error)
                 self.state = .discoveryFailed(error)
             })
 
@@ -582,8 +582,8 @@ private extension LegacyCardReaderConnectionController {
             switch result {
             case .success(let reader):
                 self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
-                analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
-                                                   cardReaderModel: reader.readerType.model)
+                self.analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
+                                                        cardReaderModel: reader.readerType.model)
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
@@ -594,7 +594,8 @@ private extension LegacyCardReaderConnectionController {
                     self.returnSuccess(result: .connected)
                 }
             case .failure(let error):
-                analyticsTracker.connectionFailed(error: error, cardReaderModel: candidateReader.readerType.model)
+                self.analyticsTracker.connectionFailed(error: error,
+                                                       cardReaderModel: self.candidateReader.readerType.model)
                 self.state = .connectingFailed(error)
             }
         }

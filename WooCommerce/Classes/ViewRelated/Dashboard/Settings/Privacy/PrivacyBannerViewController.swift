@@ -13,7 +13,8 @@ final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
     var bannerIntrinsicHeight: CGFloat = 0
 
     init(goToSettingsAction: @escaping (() -> ()), saveAction: @escaping (() -> ())) {
-        super.init(rootView: PrivacyBanner(goToSettingsAction: goToSettingsAction, saveAction: saveAction))
+        let viewModel = PrivacyBannerViewModel()
+        super.init(rootView: PrivacyBanner(goToSettingsAction: goToSettingsAction, saveAction: saveAction, viewModel: viewModel))
     }
 
     /// Needed for protocol conformance.
@@ -59,6 +60,10 @@ struct PrivacyBanner: View {
     ///
     var shouldScroll: Bool = false
 
+    /// Main View Model.
+    ///
+    @StateObject var viewModel: PrivacyBannerViewModel
+
     var body: some View {
         if shouldScroll {
             ScrollView(showsIndicators: false) {
@@ -79,7 +84,7 @@ struct PrivacyBanner: View {
                 .foregroundColor(Color(.text))
                 .subheadlineStyle()
 
-            Toggle(Localization.analytics, isOn: .constant(true))
+            Toggle(Localization.analytics, isOn: $viewModel.analyticsEnabled)
                 .tint(Color(.primary))
                 .bodyStyle()
                 .padding(.vertical)
@@ -135,7 +140,7 @@ private extension PrivacyBanner {
 
 struct PrivacyBanner_Previews: PreviewProvider {
     static var previews: some View {
-        PrivacyBanner(goToSettingsAction: {}, saveAction: {})
+        PrivacyBanner(goToSettingsAction: {}, saveAction: {}, viewModel: .init())
             .previewLayout(.sizeThatFits)
     }
 }

@@ -41,7 +41,7 @@ struct FeatureAnnouncementCardView: View {
                         .bodyStyle()
                         .padding(.bottom, viewModel.buttonTitle == nil ? Layout.bottomNoButtonPadding : Layout.largeSpacing)
                         .fixedSize(horizontal: false, vertical: true)
-
+                    Spacer()
                     if let buttonTitle = viewModel.buttonTitle {
                         Button(buttonTitle) {
                             viewModel.ctaTapped()

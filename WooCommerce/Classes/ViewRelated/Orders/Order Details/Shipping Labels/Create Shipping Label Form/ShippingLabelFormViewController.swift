@@ -489,7 +489,7 @@ private extension ShippingLabelFormViewController {
                                                                              customsForms: viewModel.customsForms,
                                                                              destinationCountry: country,
                                                                              countries: viewModel.countries,
-                                                                             shouldDisplayShippingNotice: viewModel.shouldPresentEUShippingNotice,
+                                                                             shouldDisplayShippingNotice: viewModel.isEUShippingConditionMet(),
                                                                              onCompletion: { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
         })

@@ -137,6 +137,10 @@ final class DashboardViewController: UIViewController {
     ///
     private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
 
+    /// Presenter for the privacy choices banner
+    ///
+    private lazy var privacyBannerPresenter = PrivacyBannerPresenter()
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -167,6 +171,7 @@ final class DashboardViewController: UIViewController {
         observeAddProductTrigger()
         observeOnboardingVisibility()
         configureFreeTrialBannerPresenter()
+        presentPrivacyBannerIfNeeded()
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
@@ -565,8 +570,7 @@ private extension DashboardViewController {
     }
 
     private func dismissModalJustInTimeMessage() {
-        guard let modalJustInTimeMessageHostingController = modalJustInTimeMessageHostingController
-        else {
+        guard modalJustInTimeMessageHostingController != nil else {
             return
         }
         dismiss(animated: true)
@@ -658,6 +662,13 @@ private extension DashboardViewController {
 
         hostingController.didMove(toParent: self)
         hostingController.view.layoutIfNeeded()
+    }
+
+
+    /// Presents the privacy banner if needed.
+    ///
+    func presentPrivacyBannerIfNeeded() {
+        privacyBannerPresenter.presentIfNeeded(from: self)
     }
 }
 

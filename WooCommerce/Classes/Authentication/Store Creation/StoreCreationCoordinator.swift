@@ -52,7 +52,6 @@ final class StoreCreationCoordinator: Coordinator {
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
     private let localNotificationScheduler: LocalNotificationScheduler
-    private let pushNotesManager: PushNotesManager
     private var jetpackCheckRetryInterval: TimeInterval {
         isFreeTrialCreation ? 10 : 5
     }
@@ -82,7 +81,6 @@ final class StoreCreationCoordinator: Coordinator {
         self.featureFlagService = featureFlagService
         self.isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
-        self.pushNotesManager = pushNotesManager
 
         Task { @MainActor in
             if let purchasesManager {
@@ -197,8 +195,6 @@ private extension StoreCreationCoordinator {
         }
         navigationController.pushViewController(storeNameForm, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
-
-        pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
 
         // Navigate to profiler question screen when store name is prefilled upon launching app from local notification
         if let prefillStoreName {

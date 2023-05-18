@@ -968,6 +968,7 @@ extension WooAnalyticsEvent {
             case card
             case cash
             case paymentLink = "payment_link"
+            case scanToPay = "scan_to_pay"
         }
 
         /// Possible view sources
@@ -1001,15 +1002,18 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let flow = "flow"
             static let cardReaderType = "card_reader_type"
+            static let orderID = "order_id"
         }
 
         static func paymentsFlowCompleted(flow: Flow,
                                           amount: String,
                                           method: PaymentMethod,
+                                          orderID: Int64,
                                           cardReaderType: CardReaderType?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                                                                        Keys.amount: amount,
-                                                                       Keys.paymentMethod: method.rawValue]
+                                                                       Keys.paymentMethod: method.rawValue,
+                                                                       Keys.orderID: orderID]
 
             if let cardReaderType = cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue
@@ -1029,10 +1033,12 @@ extension WooAnalyticsEvent {
 
         static func paymentsFlowCollect(flow: Flow,
                                         method: PaymentMethod,
+                                        orderID: Int64,
                                         cardReaderType: CardReaderType?,
                                         millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
-                              Keys.paymentMethod: method.rawValue]
+                                                                       Keys.paymentMethod: method.rawValue,
+                                                                       Keys.orderID: orderID]
 
             if let cardReaderType = cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue

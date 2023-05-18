@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 
 struct ScanToPayView: View {
     let viewModel: ScanToPayViewModel

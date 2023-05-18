@@ -109,7 +109,7 @@ private extension StorePlanSynchronizer {
         let now = Date().normalizedDate() // with time removed
 
         /// Schedules pre-expiration notification if the plan is not expired in a day.
-        if normalizedDate.timeIntervalSince(now) - Constants.oneDayTimeInterval > 0 {
+        if normalizedDate.timeIntervalSince(now) > Constants.oneDayTimeInterval {
             scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
 

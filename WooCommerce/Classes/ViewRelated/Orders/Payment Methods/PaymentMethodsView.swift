@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct PaymentMethodsView: View {
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
@@ -22,6 +23,8 @@ struct PaymentMethodsView: View {
     @State var sharingPaymentLink = false
 
     @State private var showingPurchaseCardReaderView = false
+
+    @State private var showingScanToPayView = false
 
     private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentMethods)
 
@@ -88,7 +91,9 @@ struct PaymentMethodsView: View {
                         if viewModel.showScanToPayRow {
                             Divider()
 
-                            MethodRow(icon: .scanToPayIcon, title: Localization.scanToPay, accessibilityID: Accessibility.scanToPayMethod) {}
+                            MethodRow(icon: .scanToPayIcon, title: Localization.scanToPay, accessibilityID: Accessibility.scanToPayMethod) {
+                                showingScanToPayView = true
+                            }
                         }
                     }
                     .padding(.horizontal)
@@ -149,6 +154,13 @@ struct PaymentMethodsView: View {
                     viewModel.performLinkSharedTasks()
                 }
             }
+        }
+        .fullScreenCover(isPresented: $showingScanToPayView) {
+            ScanToPayView(viewModel: ScanToPayViewModel(paymentURL: viewModel.paymentLink)) {
+                dismiss()
+                viewModel.performScanToPayFinishedTasks()
+            }
+                .background(FullScreenCoverClearBackgroundView())
         }
     }
 }

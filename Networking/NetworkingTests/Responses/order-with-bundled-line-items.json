@@ -1,0 +1,252 @@
+{
+    "data": {
+        "id": 357,
+        "parent_id": 0,
+        "status": "processing",
+        "currency": "USD",
+        "version": "7.4.0",
+        "prices_include_tax": false,
+        "date_created": "2023-02-23T13:57:10",
+        "date_modified": "2023-02-23T13:57:25",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "0.00",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "120.20",
+        "total_tax": "0.00",
+        "customer_id": 27375286,
+        "order_key": "wc_order_abcd1234",
+        "billing": {
+            "first_name": "Erich",
+            "last_name": "Crist",
+            "company": "",
+            "address_1": "102 Rosalee Orchard",
+            "address_2": "632 O&#8217;Conner Skyway",
+            "city": "Fort Ethelyn",
+            "state": "DF",
+            "postcode": "01089",
+            "country": "MX",
+            "email": "atorresveiga@gmail.com",
+            "phone": "015-993-9088"
+        },
+        "shipping": {
+            "first_name": "Erich",
+            "last_name": "Crist",
+            "company": "",
+            "address_1": "102 Rosalee Orchard",
+            "address_2": "632 O&#8217;Conner Skyway",
+            "city": "Fort Ethelyn",
+            "state": "DF",
+            "postcode": "01089",
+            "country": "MX",
+            "phone": "015-993-9088"
+        },
+        "payment_method": "woocommerce_payments",
+        "payment_method_title": "Visa credit card",
+        "transaction_id": "pi_3MefIVFmpgWy4Lrl1eZCLGrm",
+        "customer_ip_address": "189.216.205.207",
+        "customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+        "created_via": "store-api",
+        "customer_note": "",
+        "date_completed": null,
+        "date_paid": "2023-02-23T13:57:25",
+        "cart_hash": "816f3fcdccd585b054222bea8f31272a",
+        "number": "357",
+        "meta_data": [],
+        "line_items": [
+            {
+                "id": 752,
+                "name": "Super Awesome Bundle",
+                "product_id": 190,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "59.00",
+                "subtotal_tax": "0.00",
+                "total": "59.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6658,
+                        "key": "_bundled_items",
+                        "value": [
+                            "5b80e38944256bfe5e9eb074d3bcfff8",
+                            "f8b79dd71d1563311efc117f41121a13",
+                            "36bf426113c0860d2ec75e17c6b8c6d6"
+                        ],
+                        "display_key": "_bundled_items",
+                        "display_value": [
+                            "5b80e38944256bfe5e9eb074d3bcfff8",
+                            "f8b79dd71d1563311efc117f41121a13",
+                            "36bf426113c0860d2ec75e17c6b8c6d6"
+                        ]
+                    },
+                    {
+                        "id": 6659,
+                        "key": "_bundle_group_mode",
+                        "value": "parent",
+                        "display_key": "_bundle_group_mode",
+                        "display_value": "parent"
+                    },
+                    {
+                        "id": 6661,
+                        "key": "_bundle_cart_key",
+                        "value": "1db10061a611971d149015d71d7cb0ff",
+                        "display_key": "_bundle_cart_key",
+                        "display_value": "1db10061a611971d149015d71d7cb0ff"
+                    },
+                    {
+                        "id": 6662,
+                        "key": "_wcsatt_scheme",
+                        "value": "0",
+                        "display_key": "_wcsatt_scheme",
+                        "display_value": "0"
+                    }
+                ],
+                "sku": "",
+                "price": 59,
+                "image": {
+                    "id": "60",
+                    "src": "https://example.com/wp-content/uploads/2023/01/logo-1.jpg"
+                },
+                "parent_name": null,
+                "composite_parent": "",
+                "composite_children": [],
+                "bundled_by": "",
+                "bundled_item_title": "",
+                "bundled_items": [
+                    753
+                ]
+            },
+            {
+                "id": 753,
+                "name": "Beanie with Logo",
+                "product_id": 36,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "clothing-20010",
+                "subtotal": "16.20",
+                "subtotal_tax": "0.00",
+                "total": "16.20",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6674,
+                        "key": "_bundled_by",
+                        "value": "1db10061a611971d149015d71d7cb0ff",
+                        "display_key": "_bundled_by",
+                        "display_value": "1db10061a611971d149015d71d7cb0ff"
+                    },
+                    {
+                        "id": 6675,
+                        "key": "_bundled_item_id",
+                        "value": "6",
+                        "display_key": "_bundled_item_id",
+                        "display_value": "6"
+                    },
+                    {
+                        "id": 6676,
+                        "key": "_bundled_item_priced_individually",
+                        "value": "yes",
+                        "display_key": "_bundled_item_priced_individually",
+                        "display_value": "yes"
+                    },
+                    {
+                        "id": 6678,
+                        "key": "_bundle_cart_key",
+                        "value": "5b80e38944256bfe5e9eb074d3bcfff8",
+                        "display_key": "_bundle_cart_key",
+                        "display_value": "5b80e38944256bfe5e9eb074d3bcfff8"
+                    },
+                    {
+                        "id": 6679,
+                        "key": "_bundled_item_needs_shipping",
+                        "value": "yes",
+                        "display_key": "_bundled_item_needs_shipping",
+                        "display_value": "yes"
+                    },
+                    {
+                        "id": 6680,
+                        "key": "_wcsatt_scheme",
+                        "value": "0",
+                        "display_key": "_wcsatt_scheme",
+                        "display_value": "0"
+                    },
+                    {
+                        "id": 6729,
+                        "key": "_reduced_stock",
+                        "value": "1",
+                        "display_key": "_reduced_stock",
+                        "display_value": "1"
+                    }
+                ],
+                "sku": "Woo-beanie-logo",
+                "price": 16.2,
+                "image": {
+                    "id": "59",
+                    "src": "https://example.com/wp-content/uploads/2023/01/beanie-with-logo-1.jpg"
+                },
+                "parent_name": null,
+                "composite_parent": "",
+                "composite_children": [],
+                "bundled_by": 752,
+                "bundled_item_title": "Super Awesome Beanie",
+                "bundled_items": []
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [
+            {
+                "id": 757,
+                "method_title": "Free shipping",
+                "method_id": "free_shipping",
+                "instance_id": "9",
+                "total": "0.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 6728,
+                        "key": "Items",
+                        "value": "Hoodie - Blue, Yes &times; 1, Beanie with Logo &times; 1, T-Shirt with Logo &times; 1, Hoodie with Logo &times; 1",
+                        "display_key": "Items",
+                        "display_value": "Hoodie - Blue, Yes &times; 1, Beanie with Logo &times; 1, T-Shirt with Logo &times; 1, Hoodie with Logo &times; 1"
+                    }
+                ]
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [],
+        "payment_url": "https://example.com/checkout/order-pay/357/?pay_for_order=true&key=wc_order_abcd1234",
+        "is_editable": false,
+        "needs_payment": false,
+        "needs_processing": true,
+        "date_created_gmt": "2023-02-23T13:57:10",
+        "date_modified_gmt": "2023-02-23T13:57:25",
+        "date_completed_gmt": null,
+        "date_paid_gmt": "2023-02-23T13:57:25",
+        "gift_cards": [],
+        "currency_symbol": "$",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders/357"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/customers/27375286"
+                }
+            ]
+        }
+    }
+}

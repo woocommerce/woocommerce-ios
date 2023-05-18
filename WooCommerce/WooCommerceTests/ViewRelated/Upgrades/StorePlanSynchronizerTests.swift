@@ -111,8 +111,8 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
         let expectedIDs = [
-            LocalNotification.Scenario.IdentifierPrefix.oneDayBeforeFreeTrialExpires + "\(sampleSiteID)",
-            LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(sampleSiteID)",
+            LocalNotification.Scenario.Identifier.Prefix.oneDayBeforeFreeTrialExpires + "\(sampleSiteID)",
+            LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(sampleSiteID)",
         ]
         assertEqual(expectedIDs, ids)
 
@@ -153,11 +153,11 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.count == 1
+            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
         }
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
         let expectedIDs = [
-            LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(sampleSiteID)",
+            LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(sampleSiteID)",
         ]
         assertEqual(expectedIDs, ids)
     }

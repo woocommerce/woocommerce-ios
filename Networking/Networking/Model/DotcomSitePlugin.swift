@@ -10,6 +10,11 @@ public struct DotcomSitePlugin: Decodable, GeneratedFakeable, GeneratedCopiable 
 
     /// Whether the plugin is activated.
     public let isActive: Bool
+
+    public init(id: String, isActive: Bool) {
+        self.id = id
+        self.isActive = isActive
+    }
 }
 
 /// Defines all of the DotcomSitePlugin CodingKeys.

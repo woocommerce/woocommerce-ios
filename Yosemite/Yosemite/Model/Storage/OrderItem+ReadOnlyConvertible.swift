@@ -47,6 +47,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          taxes: orderItemTaxes,
                          total: total ?? "",
                          totalTax: totalTax ?? "",
-                         attributes: attributes)
+                         attributes: attributes,
+                         parent: nil) // TODO: 8962 - Convert parent property
     }
 }

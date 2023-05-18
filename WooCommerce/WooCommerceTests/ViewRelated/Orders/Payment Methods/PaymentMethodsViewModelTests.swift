@@ -660,6 +660,33 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedCompleted)
     }
 
+    func test_view_model_attempts_created_notice_after_scan_to_pay() {
+        // Given
+        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject)
+        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
+                                                dependencies: dependencies)
+
+        // When
+        let receivedCompleted: Bool = waitFor { promise in
+            noticeSubject.sink { intent in
+                switch intent {
+                case .error, .completed:
+                    promise(false)
+                case .created:
+                    promise(true)
+                }
+            }
+            .store(in: &self.subscriptions)
+            viewModel.performScanToPayFinishedTasks()
+        }
+
+        // Then
+        XCTAssertTrue(receivedCompleted)
+    }
+
     func test_view_model_attempts_completed_notice_after_collecting_payment() {
         // Given
         let storage = MockStorageManager()

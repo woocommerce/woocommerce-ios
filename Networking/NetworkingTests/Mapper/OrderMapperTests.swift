@@ -399,6 +399,21 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(giftCard.code, "SU9F-MGB5-KS5V-EZFT")
         XCTAssertEqual(giftCard.amount, 20)
     }
+
+    func test_order_line_items_parse_bundled_item_parent_correctly() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithBundledLineItems())
+
+        // When
+        let lineItems = order.items
+        XCTAssertEqual(lineItems.count, 2)
+
+        // Then
+        let bundleItem = try XCTUnwrap(lineItems.first { $0.itemID == 752 })
+        let bundledItem = try XCTUnwrap(lineItems.first { $0.itemID == 753 })
+        XCTAssertNil(bundleItem.parent)
+        XCTAssertEqual(bundledItem.parent, 752)
+    }
 }
 
 
@@ -487,6 +502,12 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithGiftCards() -> Order? {
         return mapOrder(from: "order-with-gift-cards")
+    }
+
+    /// Returns the Order output upon receiving `order-with-bundled-line-items`
+    ///
+    func mapLoadOrderWithBundledLineItems() -> Order? {
+        return mapOrder(from: "order-with-bundled-line-items")
     }
 
 }

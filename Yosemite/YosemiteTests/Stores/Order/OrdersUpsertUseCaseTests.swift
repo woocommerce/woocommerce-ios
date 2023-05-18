@@ -267,7 +267,8 @@ private extension OrdersUpsertUseCaseTests {
                   taxes: taxes,
                   total: "",
                   totalTax: "",
-                  attributes: [])
+                  attributes: [],
+                  parent: nil)
     }
 
     func makeOrder() -> Networking.Order {
@@ -288,6 +289,7 @@ private extension OrdersUpsertUseCaseTests {
               taxes: [],
               total: "-18.00",
               totalTax: "0.00",
-              attributes: attributes)
+              attributes: attributes,
+              parent: nil)
     }
 }

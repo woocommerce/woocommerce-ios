@@ -23,6 +23,7 @@ extension OrderItem {
     @NSManaged public var order: Order
     @NSManaged public var taxes: Set<OrderItemTax>?
     @NSManaged public var attributes: NSOrderedSet?
+    @NSManaged public var parent: NSNumber?
 
 }
 

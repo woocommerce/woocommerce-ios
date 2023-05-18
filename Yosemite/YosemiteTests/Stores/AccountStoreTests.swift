@@ -606,7 +606,8 @@ final class AccountStoreTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(account)
-        XCTAssertEqual(account, sampleAccountPristine())
+        //XCTAssertEqual(account, sampleAccountPristine())
+        assertEqual(account, sampleAccountPristine())
     }
 
     func test_loadAccount_returns_nil_for_unknown_account() {
@@ -877,7 +878,8 @@ private extension AccountStoreTests {
                        displayName: "Sample",
                        email: "email@email.com",
                        username: "Username!",
-                       gravatarUrl: "https://automattic.com/superawesomegravatar.png")
+                       gravatarUrl: "https://automattic.com/superawesomegravatar.png",
+                       ipCountryCode: "")
     }
 
     /// Sample Account: Mark II
@@ -887,7 +889,8 @@ private extension AccountStoreTests {
                        displayName: "Yosemite",
                        email: "yosemite@yosemite.com",
                        username: "YOLO",
-                       gravatarUrl: "https://automattic.com/yosemite.png")
+                       gravatarUrl: "https://automattic.com/yosemite.png",
+                       ipCountryCode: "")
     }
 
     func sampleAccountSettings() -> Networking.AccountSettings {

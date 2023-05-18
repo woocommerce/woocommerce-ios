@@ -88,6 +88,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Cache onboarding state to speed IPP process
         refreshCardPresentPaymentsOnboardingIfNeeded()
 
+        // Silently connect to Tap to Pay if previously connected, to speed up IPP
+        reconnectToTapToPayReaderIfNeeded()
+
         return true
     }
 
@@ -176,6 +179,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Cache onboarding state to speed IPP process
         refreshCardPresentPaymentsOnboardingIfNeeded()
+
+        // Silently connect to Tap to Pay if previously connected, to speed up IPP
+        reconnectToTapToPayReaderIfNeeded()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -320,20 +326,12 @@ private extension AppDelegate {
     /// Push Notifications: Authorization + Registration!
     ///
     func setupPushNotificationsManagerIfPossible() {
-        let loginErrorNotifications: [LocalNotification.Scenario] = [
-            .loginSiteAddressError,
-            .invalidEmailFromSiteAddressLogin,
-            .invalidEmailFromWPComLogin,
-            .invalidPasswordFromWPComLogin,
-            .invalidPasswordFromSiteAddressWPComLogin
-        ]
         let stores = ServiceLocator.stores
         guard stores.isAuthenticated,
               stores.needsDefaultStore == false,
               stores.isAuthenticatedWithoutWPCom == false else {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) {
                 ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
-                ServiceLocator.pushNotesManager.cancelLocalNotification(scenarios: loginErrorNotifications)
             }
             return
         }
@@ -344,7 +342,6 @@ private extension AppDelegate {
             let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
-            pushNotesManager.cancelLocalNotification(scenarios: loginErrorNotifications)
         #endif
     }
 
@@ -424,6 +421,10 @@ private extension AppDelegate {
 
     func refreshCardPresentPaymentsOnboardingIfNeeded() {
         ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState()
+    }
+
+    func reconnectToTapToPayReaderIfNeeded() {
+        ServiceLocator.tapToPayReconnectionController.reconnectIfNeeded()
     }
 
     /// Tracks if the application was opened via a widget tap.

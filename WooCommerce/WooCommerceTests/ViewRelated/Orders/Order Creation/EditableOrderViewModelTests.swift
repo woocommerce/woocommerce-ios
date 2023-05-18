@@ -1481,8 +1481,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.multipleLinesMessage)
     }
 
-    func test_capturePermissionStatus_is_notDetermined_when_no_permission_is_checked() {
-        // Given, Then
+    func test_capturePermissionStatus_is_notDetermined_when_permissionChecker_is_notDetermined() {
+        // Given
+        let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, permissionChecker: permissionChecker)
+
+        // Then
         XCTAssertEqual(viewModel.capturePermissionStatus, .notDetermined)
     }
 
@@ -1639,6 +1643,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             })
         }
 
+        // Then
         XCTAssertEqual(expectedError, .productNotFound)
     }
 
@@ -1703,6 +1708,36 @@ final class EditableOrderViewModelTests: XCTestCase {
             return XCTFail("Expected 1 item, but got none")
         }
         XCTAssertEqual(item.productID, sampleProductID)
+    }
+
+    func test_order_creation_when_withInitialProductID_is_nil_then_currentOrderItems_are_zero() {
+        // Given, When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, withInitialProductID: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
+    func test_order_creation_when_withInitialProductID_is_not_nil_but_product_does_not_exist_then_currentOrderItems_are_zero() {
+        // Given, When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, withInitialProductID: sampleProductID)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
+    func test_order_creation_when_withInitialProductID_is_not_nil_and_product_exists_then_product_is_added_to_the_order() {
+        // Given, When
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        // Confidence check
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProductID: sampleProductID)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 1)
     }
 }
 

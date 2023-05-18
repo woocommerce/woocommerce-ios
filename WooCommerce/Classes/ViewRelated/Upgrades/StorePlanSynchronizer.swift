@@ -106,12 +106,15 @@ private extension StorePlanSynchronizer {
         /// Normalizes expiry date to remove timezone difference
         let timeZoneDifference = timeZone.secondsFromGMT()
         let normalizedDate = Date(timeInterval: -Double(timeZoneDifference), since: expiryDate)
+        let now = Date().normalizedDate() // with time removed
 
-        if normalizedDate.timeIntervalSinceNow - Constants.oneDayTimeInterval > 0 {
+        /// Schedules pre-expiration notification if the plan is not expired in a day.
+        if normalizedDate.timeIntervalSince(now) > Constants.oneDayTimeInterval {
             scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
 
-        if normalizedDate.timeIntervalSinceNow + Constants.oneDayTimeInterval > 0 {
+        /// Schedules post-expiration notification if the plan hasn't expired for a day.
+        if now.timeIntervalSince(normalizedDate) < Constants.oneDayTimeInterval {
             scheduleAfterExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
     }
@@ -125,9 +128,8 @@ private extension StorePlanSynchronizer {
     }
 
     func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {
-        guard let notification = LocalNotification(scenario: .oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: expiryDate)) else {
-            return
-        }
+        let notification = LocalNotification(scenario: .oneDayBeforeFreeTrialExpires(siteID: siteID,
+                                                                                     expiryDate: expiryDate))
         /// Scheduled for 1 day before the expiry date
         let triggerDateComponents = expiryDate.addingTimeInterval(-Constants.oneDayTimeInterval).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
@@ -140,9 +142,7 @@ private extension StorePlanSynchronizer {
     }
 
     func scheduleAfterExpirationNotification(siteID: Int64, expiryDate: Date) {
-        guard let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)) else {
-            return
-        }
+        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
         /// Scheduled for 1 day after the expiry date
         let triggerDateComponents = expiryDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)

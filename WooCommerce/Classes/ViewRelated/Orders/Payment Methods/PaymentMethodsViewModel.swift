@@ -374,11 +374,20 @@ final class PaymentMethodsViewModel: ObservableObject {
         trackCollectIntention(method: .paymentLink, cardReaderType: .none)
     }
 
+    func trackCollectByScanToPay() {
+        trackCollectIntention(method: .scanToPay, cardReaderType: .none)
+    }
+
     /// Perform the necesary tasks after a link is shared.
     ///
     func performLinkSharedTasks() {
         presentNoticeSubject.send(.created)
         trackFlowCompleted(method: .paymentLink, cardReaderType: .none)
+    }
+
+    func performScanToPayFinishedTasks() {
+        presentNoticeSubject.send(.created)
+        trackFlowCompleted(method: .scanToPay, cardReaderType: .none)
     }
 
     /// Track the flow cancel scenario.
@@ -459,6 +468,7 @@ private extension PaymentMethodsViewModel {
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow,
                                                                                     amount: formattedTotal,
                                                                                     method: method,
+                                                                                    orderID: orderID,
                                                                                     cardReaderType: cardReaderType))
     }
 
@@ -481,6 +491,7 @@ private extension PaymentMethodsViewModel {
 
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCollect(flow: flow,
                                                                                   method: method,
+                                                                                  orderID: orderID,
                                                                                   cardReaderType: cardReaderType,
                                                                                   millisecondsSinceOrderAddNew:
                                                                                     try? orderDurationRecorder.millisecondsSinceOrderAddNew()))

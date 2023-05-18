@@ -450,10 +450,15 @@ extension InPersonPaymentsMenuViewController {
         guard enableManageCardReaderCell else {
             return
         }
+        guard let siteID = stores.sessionManager.defaultStoreID else {
+            DDLogError("⛔️ Could not open card reader settings – StoreID could not be determined")
+            return
+        }
 
         ServiceLocator.analytics.track(.paymentsMenuManageCardReadersTapped)
 
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration)
+        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList(configuration: viewModel.cardPresentPaymentsConfiguration,
+                                                                         siteID: siteID)
         let viewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
     }

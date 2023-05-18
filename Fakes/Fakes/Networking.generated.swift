@@ -27,7 +27,8 @@ extension Networking.Account {
             displayName: .fake(),
             email: .fake(),
             username: .fake(),
-            gravatarUrl: .fake()
+            gravatarUrl: .fake(),
+            ipCountryCode: .fake()
         )
     }
 }
@@ -247,6 +248,16 @@ extension DotcomError {
     ///
     public static func fake() -> DotcomError {
         .empty
+    }
+}
+extension Networking.DotcomSitePlugin {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.DotcomSitePlugin {
+        .init(
+            id: .fake(),
+            isActive: .fake()
+        )
     }
 }
 extension Networking.DotcomUser {
@@ -567,7 +578,8 @@ extension Networking.OrderItem {
             taxes: .fake(),
             total: .fake(),
             totalTax: .fake(),
-            attributes: .fake()
+            attributes: .fake(),
+            parent: .fake()
         )
     }
 }

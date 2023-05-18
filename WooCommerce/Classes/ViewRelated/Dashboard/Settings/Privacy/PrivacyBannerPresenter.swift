@@ -17,17 +17,27 @@ final class PrivacyBannerPresenter {
     /// Present the banner when the appropriate conditions are met.
     ///
     func presentIfNeeded(from viewController: UIViewController) {
+        // Do not present the privacy banner  when running UI tests.
+        let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
+        guard isUITesting == false else {
+            return
+        }
+
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices) else {
             return
         }
 
-        let countryCode = Locale.current.regionCode ?? "" // TODO: Switch for the real user country code.
-        let useCase = PrivacyBannerPresentationUseCase(countryCode: countryCode, defaults: defaults)
-
-        guard useCase.shouldShowPrivacyBanner() else {
-            return
+        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults)
+        Task {
+            if await useCase.shouldShowPrivacyBanner() {
+                await presentPrivacyBanner(from: viewController)
+            }
         }
+    }
 
+    /// Presents the privacy banner using a `BottomSheetViewController`
+    ///
+    @MainActor private func presentPrivacyBanner(from viewController: UIViewController) {
         let privacyBanner = PrivacyBannerViewController(goToSettingsAction: {
             print("Go to settings tapped") // TODO: Navigate to settings
         }, saveAction: {

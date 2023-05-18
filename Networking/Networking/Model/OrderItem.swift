@@ -26,6 +26,12 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
 
     public let attributes: [OrderItemAttribute]
 
+    /// Item ID of parent `OrderItem`, if any.
+    ///
+    /// An `OrderItem` can have a parent if, for example, it is a bundled item within a product bundle.
+    ///
+    public let parent: Int64?
+
     /// OrderItem struct initializer.
     ///
     public init(itemID: Int64,
@@ -41,7 +47,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                 taxes: [OrderItemTax],
                 total: String,
                 totalTax: String,
-                attributes: [OrderItemAttribute]) {
+                attributes: [OrderItemAttribute],
+                parent: Int64?) {
         self.itemID = itemID
         self.name = name
         self.productID = productID
@@ -56,6 +63,7 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         self.total = total
         self.totalTax = totalTax
         self.attributes = attributes
+        self.parent = parent
     }
 
     /// The public initializer for OrderItem.
@@ -92,6 +100,11 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         let allAttributes = container.failsafeDecodeIfPresent(lossyList: [OrderItemAttribute].self, forKey: .attributes)
         attributes = allAttributes.filter { !$0.name.hasPrefix("_") } // Exclude private items (marked with an underscore)
 
+        // Product Bundle extension properties:
+        // If the order item is part of a product bundle, `bundledBy` is the parent order item (product bundle).
+        // If it's not a bundled item, the API returns an empty string for `bundledBy` and the value will be `nil`.
+        let bundledBy = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundledBy)
+
         // initialize the struct
         self.init(itemID: itemID,
                   name: name,
@@ -106,7 +119,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                   taxes: taxes,
                   total: total,
                   totalTax: totalTax,
-                  attributes: attributes)
+                  attributes: attributes,
+                  parent: bundledBy)
     }
 
     /// Encodes an order item.
@@ -153,6 +167,7 @@ extension OrderItem {
         case taxes
         case total
         case totalTax       = "total_tax"
+        case bundledBy      = "bundled_by"
     }
 }
 

@@ -155,7 +155,6 @@ final class StorePlanSynchronizerTests: XCTestCase {
         waitUntil(timeout: 3) {
             pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
         }
-        assertEqual(1, pushNotesManager.requestedLocalNotificationsIfNeeded.count)
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
         let expectedIDs = [
             LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(sampleSiteID)",

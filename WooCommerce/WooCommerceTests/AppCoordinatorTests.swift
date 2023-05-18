@@ -418,7 +418,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationDismissed.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
     }
 
     func test_local_notification_tap_is_tracked() throws {
@@ -441,7 +441,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationTapped.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
     }
 
     // MARK: - Notification to subscribe to free trial after entering store name
@@ -472,7 +472,7 @@ final class AppCoordinatorTests: XCTestCase {
                                           purchasesManager: WebPurchasesForWPComPlans(stores: stores))
 
         let notificationUserInfo = [LocalNotification.UserInfoKey.storeName: "sampleStoreName"]
-        let identifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
+        let identifier = LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: UNNotificationDefaultActionIdentifier,
                                                               requestIdentifier: identifier,
                                                               notificationUserInfo: notificationUserInfo))
@@ -516,7 +516,7 @@ final class AppCoordinatorTests: XCTestCase {
                                           purchasesManager: WebPurchasesForWPComPlans(stores: stores))
 
         let notificationUserInfo = [LocalNotification.UserInfoKey.storeName: "sampleStoreName"]
-        let identifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
+        let identifier = LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: UNNotificationDefaultActionIdentifier,
                                                               requestIdentifier: identifier,
                                                               notificationUserInfo: notificationUserInfo))

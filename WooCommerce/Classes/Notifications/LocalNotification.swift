@@ -34,11 +34,11 @@ struct LocalNotification {
             case .storeCreationComplete:
                 return "store_creation_complete"
             case .oneDayAfterStoreCreationNameWithoutFreeTrial:
-                return IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
+                return Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
             case let .oneDayBeforeFreeTrialExpires(siteID, _):
-                return IdentifierPrefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
+                return Identifier.Prefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
             case .oneDayAfterFreeTrialExpires(let siteID):
-                return IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(siteID)"
+                return Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)"
             case .loginSiteAddressError:
                 return "site_address_error"
             case .invalidEmailFromSiteAddressLogin:
@@ -52,18 +52,20 @@ struct LocalNotification {
             }
         }
 
-        enum IdentifierPrefix {
+        enum Identifier {
+            enum Prefix {
+                static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
+                static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
+            }
             static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
-            static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
-            static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
         }
 
         /// Helper method to remove postfix from notification identifiers if needed.
         static func identifierForAnalytics(_ identifier: String) -> String {
-            if identifier.hasPrefix(IdentifierPrefix.oneDayBeforeFreeTrialExpires) {
-                return IdentifierPrefix.oneDayBeforeFreeTrialExpires
-            } else if identifier.hasPrefix(IdentifierPrefix.oneDayAfterFreeTrialExpires) {
-                return IdentifierPrefix.oneDayAfterFreeTrialExpires
+            if identifier.hasPrefix(Identifier.Prefix.oneDayBeforeFreeTrialExpires) {
+                return Identifier.Prefix.oneDayBeforeFreeTrialExpires
+            } else if identifier.hasPrefix(Identifier.Prefix.oneDayAfterFreeTrialExpires) {
+                return Identifier.Prefix.oneDayAfterFreeTrialExpires
             }
             return identifier
         }

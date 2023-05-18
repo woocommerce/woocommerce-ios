@@ -364,6 +364,10 @@ private extension AppCoordinator {
     }
 
     func startStoreCreationFlow(storeName: String) {
+        guard stores.isAuthenticated else {
+            return
+        }
+
         // Fetch the navigation controller for store selected or not selected cases
         guard let navigationController: UINavigationController = {
             // If logged in with a valid store, tab bar will have a viewcontroller selected.

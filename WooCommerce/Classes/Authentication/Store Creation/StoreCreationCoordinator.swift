@@ -53,6 +53,7 @@ final class StoreCreationCoordinator: Coordinator {
     }
 
     private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
+    private var statusChecker: StoreCreationStatusChecker?
 
     init(source: Source,
          navigationController: UINavigationController,
@@ -507,6 +508,7 @@ private extension StoreCreationCoordinator {
             switch freeTrialResult {
             case .success:
                 cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
+                scheduleLocalNotificationWhenStoreIsReady()
                 // Wait for jetpack to be installed
                 DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
                 waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)
@@ -742,92 +744,59 @@ private extension StoreCreationCoordinator {
         ///
         let waitingTimeStart = Date()
 
-        scheduleLocalNotificationWhenStoreIsReady()
-
-        jetpackSiteSubscription = $siteIDFromStoreCreation
-            .compactMap { $0 }
-            .removeDuplicates()
-            .asyncMap { [weak self] siteID -> Site? in
-                guard let self else {
-                    return nil
-                }
-                // Waits some seconds before syncing sites every time.
-                try await Task.sleep(nanoseconds: UInt64(self.jetpackCheckRetryInterval * 1_000_000_000))
-                return try await self.syncSite(siteID: siteID, expectedStoreName: expectedStoreName, haveTrackedOutOfSyncEvent: haveTrackedOutOfSyncEvent)
-            }
-            .receive(on: DispatchQueue.main)
-            .handleEvents(receiveCompletion: { [weak self] output in
+        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: isFreeTrialCreation, stores: stores)
+        self.statusChecker = statusChecker
+        jetpackSiteSubscription = statusChecker.waitForSiteToBeReady(siteID: siteID)
+            .sink { [weak self] completion in
                 guard let self else { return }
-                self.storeCreationProgressViewModel?.incrementProgress()
-
-                // Track when a properties out of sync event occur, but only track it once.
-                if self.isPropertiesOutOfSyncError(output) && !haveTrackedOutOfSyncEvent {
-                    self.analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
-                    haveTrackedOutOfSyncEvent = true
+                switch completion {
+                case .failure:
+                    self.storeCreationProgressViewModel?.incrementProgress()
+                case .finished:
+                    self.handleCompletionStatus(site: nil, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
                 }
-            })
-            // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
-            // in the WPCOM `/me/sites` response.
-            .retry(10)
-            .replaceError(with: nil)
-            .sink { [weak self] site in
+            } receiveValue: { [weak self] site in
                 guard let self else { return }
-
-                self.cancelLocalNotificationWhenStoreIsReady()
-
-                guard let site else {
-                    navigationController.dismiss(animated: true) { [weak self] in
-                        guard let self else { return }
-                        self.showJetpackSiteTimeoutAlert(from: self.navigationController)
-                    }
-                    return
-                }
-
-                self.storeCreationProgressViewModel?.markAsComplete()
-                self.trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
-
-                /// Free trial stores should land directly on the dashboard and not show any success view.
-                ///
-                if self.isFreeTrialCreation {
-                    self.continueWithSelectedSite(site: site)
-                } else {
-                    self.showSuccessView(from: navigationController, site: site)
-                }
+                self.handleCompletionStatus(site: site, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
             }
+    }
+
+    @MainActor
+    func handleCompletionStatus(site: Site?, waitingTimeStart: Date, expectedStoreName: String) {
+        cancelLocalNotificationWhenStoreIsReady()
+        guard let site else {
+            return navigationController.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+                self.showJetpackSiteTimeoutAlert(from: self.navigationController)
+            }
+        }
+
+        // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
+        // Track when a properties out of sync event occur, but only track it once.
+        // https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
+        if !(site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName) {
+            DDLogInfo("🔵 Site available but properties are not yet in sync...")
+            analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
+        }
+
+        storeCreationProgressViewModel?.markAsComplete()
+        trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
+
+        /// Free trial stores should land directly on the dashboard and not show any success view.
+        ///
+        if isFreeTrialCreation {
+            continueWithSelectedSite(site: site)
+        } else {
+            showSuccessView(from: navigationController, site: site)
+        }
     }
 
     /// Determines if a given Subscriber.Completion entity contains a `StoreCreationError.newSiteIsNotFullySynced` error.
     ///
     @MainActor
-    func isPropertiesOutOfSyncError(_ output: Subscribers.Completion<Error>) -> Bool {
-        switch output {
-        case .failure(let error):
-            guard let creationError = error as? StoreCreationError else { return false }
-            return creationError == .newSiteIsNotFullySynced
-        case .finished:
-            return false
-        }
-    }
-
-    @MainActor
-    func syncSite(siteID: Int64, expectedStoreName: String, haveTrackedOutOfSyncEvent: Bool) async throws -> Site {
-        let isJetpackActive = try await isJetpackPluginActive(siteID: siteID)
-
-        guard isJetpackActive else {
-            DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet for siteID \(siteID)...")
-            throw StoreCreationError.newSiteIsNotJetpackSite
-        }
-
-        let site = try await loadSite(siteID: siteID)
-
-        // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
-        // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
-        guard (site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName) || haveTrackedOutOfSyncEvent else {
-            DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
-            throw StoreCreationError.newSiteIsNotFullySynced
-        }
-
-        return site
+    func isPropertiesOutOfSyncError(error: Error) -> Bool {
+        guard let creationError = error as? StoreCreationError else { return false }
+        return creationError == .newSiteIsNotFullySynced
     }
 
     @MainActor
@@ -878,26 +847,6 @@ private extension StoreCreationCoordinator {
                                                           flow: flow,
                                                           isFreeTrial: isFreeTrialCreation,
                                                           waitingTime: waitingTime))
-    }
-}
-
-private extension StoreCreationCoordinator {
-    @MainActor
-    func loadSite(siteID: Int64) async throws -> Site {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(SiteAction.syncSite(siteID: siteID) { result in
-                continuation.resume(with: result)
-            })
-        }
-    }
-
-    @MainActor
-    func isJetpackPluginActive(siteID: Int64) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(SitePluginAction.isPluginActive(siteID: siteID, plugin: .jetpack) { result in
-                continuation.resume(with: result)
-            })
-        }
     }
 }
 

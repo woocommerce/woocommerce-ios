@@ -29,7 +29,8 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
         cardReaderConnectionAnalyticsTracker = .init(configuration: configuration,
-                                                     siteID: siteID)
+                                                     siteID: siteID,
+                                                     connectionType: .userInitiated)
         onboardingUseCase.statePublisher.share().sink { [weak self] onboardingState in
             guard case .completed(let plugin) = onboardingState else {
                 return

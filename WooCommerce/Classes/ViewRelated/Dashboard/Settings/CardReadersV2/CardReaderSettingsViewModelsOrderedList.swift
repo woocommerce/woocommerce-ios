@@ -26,7 +26,8 @@ final class CardReaderSettingsViewModelsOrderedList: PaymentSettingsFlowPrioriti
         knownReaderProvider = CardReaderSettingsKnownReaderStorage()
 
         cardReaderConnectionAnalyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
-                                                                                    siteID: siteID)
+                                                                                    siteID: siteID,
+                                                                                    connectionType: .userInitiated)
 
         /// Instantiate and add each viewmodel related to card reader settings to the
         /// array. Viewmodels will be evaluated for shouldShow starting at the top

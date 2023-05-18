@@ -28,6 +28,7 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
             configuration: TestConstants.mockConfiguration,
             cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
                                                         siteID: 0,
+                                                        connectionType: .userInitiated,
                                                         stores: mockStoresManager))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -53,6 +54,7 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
             configuration: TestConstants.mockConfiguration,
             cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
                                                         siteID: 0,
+                                                        connectionType: .userInitiated,
                                                         stores: mockStoresManager))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)

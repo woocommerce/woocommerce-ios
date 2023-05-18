@@ -113,7 +113,8 @@ private extension TapToPayReconnectionController {
             alertsPresenter: silencingAlertsPresenter,
             configuration: configuration,
             analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configuration,
-                                                                   siteID: siteID),
+                                                                   siteID: siteID,
+                                                                   connectionType: .automaticReconnection),
             allowTermsOfServiceAcceptance: false)
 
         connectionController?.searchAndConnect(onCompletion: { [weak self] result in

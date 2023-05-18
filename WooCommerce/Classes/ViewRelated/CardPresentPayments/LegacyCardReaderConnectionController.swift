@@ -385,12 +385,7 @@ private extension LegacyCardReaderConnectionController {
             onError: { [weak self] error in
                 guard let self = self else { return }
 
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(forGatewayID: self.gatewayID,
-                                                                                        error: error,
-                                                                                        countryCode: self.configuration.countryCode,
-                                                                                        siteID: self.siteID)
-                )
+                analyticsTracker.discoveryFailed(error: error)
                 self.state = .discoveryFailed(error)
             })
 
@@ -587,13 +582,8 @@ private extension LegacyCardReaderConnectionController {
             switch result {
             case .success(let reader):
                 self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments
-                        .cardReaderConnectionSuccess(forGatewayID: self.gatewayID,
-                                                     batteryLevel: reader.batteryLevel,
-                                                     countryCode: self.configuration.countryCode,
-                                                     cardReaderModel: reader.readerType.model)
-                )
+                analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
+                                                   cardReaderModel: reader.readerType.model)
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
@@ -604,13 +594,7 @@ private extension LegacyCardReaderConnectionController {
                     self.returnSuccess(result: .connected)
                 }
             case .failure(let error):
-                ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardReaderConnectionFailed(forGatewayID: self.gatewayID,
-                                                                                         error: error,
-                                                                                         countryCode: self.configuration.countryCode,
-                                                                                         cardReaderModel: candidateReader.readerType.model,
-                                                                                         siteID: self.siteID)
-                )
+                analyticsTracker.connectionFailed(error: error, cardReaderModel: candidateReader.readerType.model)
                 self.state = .connectingFailed(error)
             }
         }

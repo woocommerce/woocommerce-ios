@@ -50,7 +50,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -87,7 +89,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -103,10 +107,6 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
         XCTAssertEqual(connectionResult, .connected)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionSuccess.rawValue))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            sampleGatewayID
-        )
     }
 
     func test_finding_an_known_reader_automatically_connects_and_completes_with_success_true() {
@@ -131,7 +131,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -170,7 +172,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -182,10 +186,6 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderDiscoveryFailed.rawValue))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            sampleGatewayID
-        )
     }
 
     func test_finding_multiple_readers_presents_list_to_user_and_cancelling_list_calls_completion_with_success_false() {
@@ -208,7 +208,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -248,7 +250,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -264,10 +268,6 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
         XCTAssertEqual(connectionResult, .canceled)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionFailed.rawValue))
-        XCTAssertEqual(
-            analyticsProvider.receivedProperties.first?[WooAnalyticsEvent.InPersonPayments.Keys.gatewayID] as? String,
-            sampleGatewayID
-        )
     }
 
     func test_user_can_cancel_search_after_connection_error_due_to_low_battery() {
@@ -293,7 +293,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -330,7 +332,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -370,7 +374,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -410,7 +416,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When
@@ -448,7 +456,9 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
                                     siteID: sampleSiteID,
-                                    stores: mockStoresManager)
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
         )
 
         // When

@@ -35,12 +35,16 @@ final class CardReaderConnectionAnalyticsTracker {
 
     private let siteID: Int64
 
+    let connectionType: ConnectionType
+
     init(configuration: CardPresentPaymentsConfiguration,
          siteID: Int64,
+         connectionType: ConnectionType,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
         self.siteID = siteID
+        self.connectionType = connectionType
         self.stores = stores
         self.analytics = analytics
 
@@ -107,7 +111,8 @@ final class CardReaderConnectionAnalyticsTracker {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments
             .cardReaderAutomaticDisconnect(cardReaderModel: cardReaderModel,
                                            forGatewayID: gatewayID,
-                                           countryCode: configuration.countryCode))
+                                           countryCode: configuration.countryCode,
+                                           connectionType: connectionType.rawValue))
     }
 
     func connectionSuccess(batteryLevel: Float?, cardReaderModel: String?) {
@@ -115,7 +120,8 @@ final class CardReaderConnectionAnalyticsTracker {
             .cardReaderConnectionSuccess(forGatewayID: gatewayID,
                                          batteryLevel: batteryLevel,
                                          countryCode: configuration.countryCode,
-                                         cardReaderModel: cardReaderModel))
+                                         cardReaderModel: cardReaderModel,
+                                         connectionType: connectionType.rawValue))
     }
 
     func connectionFailed(error: Error, cardReaderModel: String?) {
@@ -125,7 +131,8 @@ final class CardReaderConnectionAnalyticsTracker {
                                             error: error,
                                             countryCode: configuration.countryCode,
                                             cardReaderModel: cardReaderModel,
-                                            siteID: siteID))
+                                            siteID: siteID,
+                                            connectionType: connectionType.rawValue))
     }
 
     func discoveryFailed(error: Error) {
@@ -134,8 +141,14 @@ final class CardReaderConnectionAnalyticsTracker {
                 forGatewayID: gatewayID,
                 error: error,
                 countryCode: configuration.countryCode,
-                siteID: siteID)
+                siteID: siteID,
+                connectionType: connectionType.rawValue)
         )
+    }
+
+    enum ConnectionType: String {
+        case automaticReconnection = "automatic_reconnection"
+        case userInitiated = "user_initiated"
     }
 }
 

@@ -189,7 +189,7 @@ struct SetUpTapToPayPaymentPromptView_Previews: PreviewProvider {
         let viewModel = SetUpTapToPayTryPaymentPromptViewModel(
             didChangeShouldShow: nil,
             connectionAnalyticsTracker: .init(configuration: config,
-                                             siteID: 0))
+                                              siteID: 0, connectionType: .userInitiated))
         SetUpTapToPayPaymentPromptView(viewModel: viewModel)
     }
 }

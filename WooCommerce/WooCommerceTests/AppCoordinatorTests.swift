@@ -425,7 +425,7 @@ final class AppCoordinatorTests: XCTestCase {
                                           featureFlagService: featureFlagService,
                                           purchasesManager: WebPurchasesForWPComPlans(stores: stores))
 
-        let notificationUserInfo = [StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName: "sampleStoreName"]
+        let notificationUserInfo = [LocalNotification.UserInfoKey.storeName: "sampleStoreName"]
         let identifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: UNNotificationDefaultActionIdentifier,
                                                               requestIdentifier: identifier,
@@ -469,7 +469,7 @@ final class AppCoordinatorTests: XCTestCase {
                                           featureFlagService: featureFlagService,
                                           purchasesManager: WebPurchasesForWPComPlans(stores: stores))
 
-        let notificationUserInfo = [StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName: "sampleStoreName"]
+        let notificationUserInfo = [LocalNotification.UserInfoKey.storeName: "sampleStoreName"]
         let identifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: UNNotificationDefaultActionIdentifier,
                                                               requestIdentifier: identifier,

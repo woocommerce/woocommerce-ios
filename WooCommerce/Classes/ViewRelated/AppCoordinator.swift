@@ -342,7 +342,7 @@ private extension AppCoordinator {
             }
             openPlansPage(siteID: siteID)
         case let identifier where identifier.hasPrefix(oneDayAfterStoreCreationNameWithoutFreeTrialIdentifier):
-            let storeNameKey = StoreCreationCoordinator.LocalNotificationUserInfoKey.storeName
+            let storeNameKey = LocalNotification.UserInfoKey.storeName
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let storeName = response.notification.request.content.userInfo.string(forKey: storeNameKey) else {
                 return

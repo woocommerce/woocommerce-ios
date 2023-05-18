@@ -7,10 +7,6 @@ import protocol Storage.StorageManagerType
 
 /// Coordinates navigation for store creation flow, with the assumption that the app is already authenticated with a WPCOM user.
 final class StoreCreationCoordinator: Coordinator {
-    enum LocalNotificationUserInfoKey {
-        static let storeName = "storeName"
-    }
-
     /// Navigation source to store creation.
     enum Source {
         /// Initiated from the logged-out state.
@@ -926,7 +922,7 @@ private extension StoreCreationCoordinator {
     func scheduleLocalNotificationToSubscribeFreeTrial(storeName: String) {
         guard let notification = LocalNotification(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName),
                                                    stores: stores,
-                                                   userInfo: [LocalNotificationUserInfoKey.storeName: storeName]) else {
+                                                   userInfo: [LocalNotification.UserInfoKey.storeName: storeName]) else {
             return
         }
 

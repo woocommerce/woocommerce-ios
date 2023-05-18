@@ -74,6 +74,11 @@ struct LocalNotification {
             return ""
         }
     }
+
+    /// Holds `userInfo` dictionary keys
+    enum UserInfoKey {
+        static let storeName = "storeName"
+    }
 }
 
 extension LocalNotification {

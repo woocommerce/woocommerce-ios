@@ -1886,6 +1886,52 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(result.isFailure, true)
         XCTAssertEqual(error, ProductLoadError.notFound)
     }
+
+    func test_retrieveFirstProductMatchFromSKU_when_unsuccessful_SKU_match_then_does_not_upsert_product_to_storage() throws {
+        // Given
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
+
+        // When
+        let nonExistingProductSKU = "non-existing-product-sku"
+        let onFailure = waitFor { promise in
+            let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: self.sampleSiteID,
+                                                                        sku: nonExistingProductSKU,
+                                                                        onCompletion: { product in
+                promise(false)
+            })
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(onFailure)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 0)
+    }
+
+    func test_retrieveFirstProductMatchFromSKU_when_successful_SKU_match_then_upserts_product_to_storage() {
+         // Given
+         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+         let expectedProductSKU = "chocobars"
+         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
+
+         // Confidence check:
+         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 0)
+
+         // When
+         let onSuccess: Bool = waitFor { promise in
+             let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: self.sampleSiteID, sku: expectedProductSKU, onCompletion: { product in
+                 promise(true)
+             })
+             store.onAction(action)
+         }
+
+         let storedProduct = viewStorage.allObjects(ofType: StorageProduct.self, matching: nil, sortedBy: nil).map { $0 }.first
+
+         // Then
+         XCTAssertTrue(onSuccess)
+         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
+         XCTAssertEqual(storedProduct?.sku, expectedProductSKU)
+     }
 }
 
 // MARK: - Private Helpers

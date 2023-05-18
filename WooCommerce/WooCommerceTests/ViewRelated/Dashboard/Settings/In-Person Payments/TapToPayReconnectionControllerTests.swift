@@ -9,6 +9,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
     private var connectionControllerFactory: MockBuiltInCardReaderConnectionControllerFactory!
+    private var onboardingCache: CardPresentPaymentOnboardingStateCache!
     private var sut: TapToPayReconnectionController!
     private let sampleSiteID: Int64 = 12891
     private let sampleConfiguration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: "US")
@@ -18,8 +19,11 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         sessionManager.setStoreId(sampleSiteID)
         stores = MockStoresManager(sessionManager: sessionManager)
         connectionControllerFactory = MockBuiltInCardReaderConnectionControllerFactory()
+        onboardingCache = CardPresentPaymentOnboardingStateCache()
+        onboardingCache.update(.completed(plugin: .wcPayPreferred))
         sut = TapToPayReconnectionController(stores: stores,
-                                             connectionControllerFactory: connectionControllerFactory)
+                                             connectionControllerFactory: connectionControllerFactory,
+                                             onboardingCache: onboardingCache)
         storageManager = MockStorageManager()
         setSiteAddressCountry()
     }

@@ -37,6 +37,8 @@ final class TapToPayReconnectionController {
         stores.sessionManager.defaultStoreID ?? 0
     }
 
+    private let onboardingCache: CardPresentPaymentOnboardingStateCache
+
     private let connectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding
 
     private var connectionController: BuiltInCardReaderConnectionControlling? = nil
@@ -46,10 +48,12 @@ final class TapToPayReconnectionController {
     private var adoptedConnectionCompletionHandler: ((Result<CardReaderConnectionResult, Error>) -> Void)? = nil
 
     init(stores: StoresManager = ServiceLocator.stores,
-         connectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding = BuiltInCardReaderConnectionControllerFactory()) {
+         connectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding = BuiltInCardReaderConnectionControllerFactory(),
+         onboardingCache: CardPresentPaymentOnboardingStateCache = .shared) {
         self.stores = stores
         self.connectionControllerFactory = connectionControllerFactory
         self.silencingAlertsPresenter = SilenceablePassthroughCardPresentPaymentAlertsPresenter()
+        self.onboardingCache = onboardingCache
     }
 
     private(set) var isReconnecting: Bool = false
@@ -57,7 +61,8 @@ final class TapToPayReconnectionController {
     /// Reconnects to the built in Tap to Pay on iPhone reader if:
     /// - it's supported,
     /// - it has been used on this device and site before, and
-    /// - there's no other connected
+    /// - there's no other reader connected
+    /// - In Person Payments onboarding is cached as `.completed`
     /// - Parameters:
     ///   - supportDeterminer: Overridable for testing purposes
 
@@ -68,7 +73,8 @@ final class TapToPayReconnectionController {
             guard supportDeterminer.siteSupportsLocalMobileReader(),
                   await supportDeterminer.deviceSupportsLocalMobileReader(),
                   await supportDeterminer.hasPreviousTapToPayUsage(),
-                  await supportDeterminer.connectedReader() == nil else {
+                  await supportDeterminer.connectedReader() == nil,
+                  case .completed = onboardingCache.value else {
                 reset()
                 return
             }

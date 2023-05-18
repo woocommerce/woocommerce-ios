@@ -398,6 +398,52 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
+    func test_local_notification_dismissal_is_tracked() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let analytics = MockAnalyticsProvider()
+        let appCoordinator = makeCoordinator(window: window,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             pushNotesManager: pushNotesManager)
+        let siteID: Int64 = 123
+
+        // When
+        appCoordinator.start()
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDismissActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationDismissed.rawValue }))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        assertEqual(LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+    }
+
+    func test_local_notification_tap_is_tracked() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let analytics = MockAnalyticsProvider()
+        let appCoordinator = makeCoordinator(window: window,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             pushNotesManager: pushNotesManager)
+        let siteID: Int64 = 123
+
+        // When
+        appCoordinator.start()
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationTapped.rawValue }))
+        let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
+        assertEqual(LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+    }
+
     // MARK: - Notification to subscribe to free trial after entering store name
     func test_store_creation_flow_starts_upon_tapping_oneDayAfterStoreCreationNameWithoutFreeTrial_notification_when_valid_store_is_selected_already() throws {
         // Given

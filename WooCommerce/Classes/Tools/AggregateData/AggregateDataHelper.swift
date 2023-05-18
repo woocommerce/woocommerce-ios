@@ -132,7 +132,7 @@ final class AggregateDataHelper {
             )
         }
 
-        var filtered = unsortedResult.filter { $0.quantity > 0 }
+        let filtered = unsortedResult.filter { $0.quantity > 0 }
 
         return filtered.sorted()
     }

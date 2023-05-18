@@ -40,12 +40,16 @@ final class SettingsViewController: UIViewController {
     }
 
     private let stores: StoresManager
+    private let pushNotesManager: PushNotesManager
 
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
-    init(viewModel: ViewModel = SettingsViewModel(), stores: StoresManager = ServiceLocator.stores) {
+    init(viewModel: ViewModel = SettingsViewModel(),
+         stores: StoresManager = ServiceLocator.stores,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.viewModel = viewModel
         self.stores = stores
+        self.pushNotesManager = pushNotesManager
         super.init(nibName: nil, bundle: nil)
         self.viewModel.presenter = self
     }
@@ -450,8 +454,12 @@ private extension SettingsViewController {
     }
 
     func logOutUser() {
-        ServiceLocator.stores.deauthenticate()
-        navigationController?.popToRootViewController(animated: true)
+        Task { @MainActor in
+            // Waits to track all the canceled notifications before deauthenticating or the events will not be logged.
+            await pushNotesManager.cancelAllNotifications()
+            ServiceLocator.stores.deauthenticate()
+            navigationController?.popToRootViewController(animated: true)
+        }
     }
 
     func weAreHiringWasPressed(url: URL) {

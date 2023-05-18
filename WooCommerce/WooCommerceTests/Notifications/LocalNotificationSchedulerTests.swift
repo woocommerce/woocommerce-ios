@@ -29,7 +29,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        let notification = LocalNotification(scenario: .storeCreationComplete)
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: .storeCreationCompleteNotification)
 
         // Then
@@ -49,7 +49,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        let notification = LocalNotification(scenario: .storeCreationComplete)
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: .storeCreationCompleteNotification)
 
         // Then
@@ -62,7 +62,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         let scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager, stores: stores)
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        let notification = LocalNotification(scenario: .storeCreationComplete)
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: nil)
 
         // Then
@@ -82,7 +82,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        let notification = LocalNotification(scenario: .storeCreationComplete)
         await scheduler.schedule(notification: notification,
                                  trigger: nil,
                                  remoteFeatureFlag: .storeCreationCompleteNotification,

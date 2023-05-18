@@ -78,7 +78,7 @@ struct LocalNotification {
 }
 
 extension LocalNotification {
-    init?(scenario: Scenario,
+    init(scenario: Scenario,
           stores: StoresManager = ServiceLocator.stores,
           timeZone: TimeZone = .current,
           locale: Locale = .current,
@@ -122,8 +122,6 @@ extension LocalNotification {
             title = Localization.OneDayAfterFreeTrialExpires.title
             body = String.localizedStringWithFormat(Localization.OneDayAfterFreeTrialExpires.body, name)
 
-        default:
-            return nil
         }
 
         self.init(title: title,

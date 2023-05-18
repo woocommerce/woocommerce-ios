@@ -17,6 +17,12 @@ final class PrivacyBannerPresenter {
     /// Present the banner when the appropriate conditions are met.
     ///
     func presentIfNeeded(from viewController: UIViewController) {
+        // Do not present the privacy banner  when running UI tests.
+        let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
+        guard isUITesting == false else {
+            return
+        }
+
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices) else {
             return
         }

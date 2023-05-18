@@ -319,6 +319,7 @@ extension PushNotificationsManager {
         let content = UNMutableNotificationContent()
         content.title = notification.title
         content.body = notification.body
+        content.userInfo = notification.userInfo
 
         if let categoryAndActions = notification.actions {
             let categoryIdentifier = categoryAndActions.category.rawValue

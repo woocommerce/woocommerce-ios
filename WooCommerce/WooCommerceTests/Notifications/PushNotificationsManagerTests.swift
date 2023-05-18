@@ -604,7 +604,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let requests = await mockCenter.pendingNotificationRequests()
         assertEqual(1, requests.count)
         let firstRequest = try XCTUnwrap(requests.first)
-        assertEqual(firstRequest.identifier, LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(siteID)")
+        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)")
     }
 
     func test_requestLocalNotificationIfNeeded_skips_adding_notification_with_the_same_idenfier() async throws {
@@ -628,7 +628,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let requests = await mockCenter.pendingNotificationRequests()
         assertEqual(1, requests.count)
         let firstRequest = try XCTUnwrap(requests.first)
-        assertEqual(firstRequest.identifier, LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(siteID)")
+        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)")
     }
 
     func test_requestLocalNotification_tracks_local_notification_scheduled() async throws {
@@ -651,7 +651,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationScheduled.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
     }
 
     func test_cancelLocalNotification_tracks_local_notification_canceled() throws {
@@ -695,7 +695,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationCanceled.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
     }
 }
 

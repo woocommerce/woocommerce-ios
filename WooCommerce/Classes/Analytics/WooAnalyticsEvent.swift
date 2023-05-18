@@ -1002,7 +1002,7 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let flow = "flow"
             static let cardReaderType = "card_reader_type"
-            static let order_id = "order_id"
+            static let orderID = "order_id"
         }
 
         static func paymentsFlowCompleted(flow: Flow,
@@ -1013,7 +1013,7 @@ extension WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                                                                        Keys.amount: amount,
                                                                        Keys.paymentMethod: method.rawValue,
-                                                                       Keys.order_id: orderID]
+                                                                       Keys.orderID: orderID]
 
             if let cardReaderType = cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue
@@ -1038,7 +1038,7 @@ extension WooAnalyticsEvent {
                                         millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                                                                        Keys.paymentMethod: method.rawValue,
-                                                                       Keys.order_id: orderID]
+                                                                       Keys.orderID: orderID]
 
             if let cardReaderType = cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue

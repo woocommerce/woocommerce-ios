@@ -234,9 +234,11 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         }
 
         let analytics = MockAnalyticsProvider()
+        let orderID: Int64 = 232
         let dependencies = Dependencies(stores: stores,
                                         analytics: WooAnalytics(analyticsProvider: analytics))
-        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+        let viewModel = PaymentMethodsViewModel(orderID: orderID,
+                                                formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
@@ -249,12 +251,14 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
     func test_completed_event_is_tracked_after_collecting_payment_successfully() {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleOrder(readOnlyOrder: .fake())
+        let insertOrder = Order.fake()
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             if case let .selectedPaymentGatewayAccount(onCompletion) = action {
@@ -270,7 +274,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             stores: stores,
             storage: storage,
             analytics: WooAnalytics(analyticsProvider: analytics))
-        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+        let viewModel = PaymentMethodsViewModel(orderID: insertOrder.orderID,
+                                                formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
@@ -283,13 +288,16 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.last?["payment_method"] as? String, "card")
         assertEqual(analytics.receivedProperties.last?["amount"] as? String, "$12.00")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, insertOrder.orderID)
     }
 
     func test_completed_event_is_tracked_after_sharing_a_link() {
         // Given
         let analytics = MockAnalyticsProvider()
+        let orderID: Int64 = 232
         let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
-        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+        let viewModel = PaymentMethodsViewModel(orderID: orderID,
+                                                formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
@@ -302,6 +310,29 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "payment_link")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
+    }
+
+    func test_completed_event_is_tracked_after_scanning_to_pay() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let orderID: Int64 = 232
+        let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = PaymentMethodsViewModel(orderID: orderID,
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
+                                                dependencies: dependencies)
+
+        // When
+        viewModel.performScanToPayFinishedTasks()
+
+        // Then
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "scan_to_pay")
+        assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
     func test_failed_event_is_tracked_after_failing_to_mark_order_as_paid() {
@@ -371,10 +402,12 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     func test_collect_event_is_tracked_when_paying_by_cash() {
         // Given
         let analytics = MockAnalyticsProvider()
+        let orderID: Int64 = 232
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let dependencies = Dependencies(stores: stores,
                                         analytics: WooAnalytics(analyticsProvider: analytics))
-        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+        let viewModel = PaymentMethodsViewModel(orderID: orderID,
+                                                formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
@@ -386,13 +419,16 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents, [WooAnalyticsStat.paymentsFlowCollect.rawValue])
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
     func test_collect_event_is_tracked_when_sharing_payment_links() {
         // Given
         let analytics = MockAnalyticsProvider()
+        let orderID: Int64 = 232
         let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
-        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+        let viewModel = PaymentMethodsViewModel(orderID: orderID,
+                                                formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
@@ -404,11 +440,34 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents, [WooAnalyticsStat.paymentsFlowCollect.rawValue])
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "payment_link")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
+    }
+
+    func test_collect_event_is_tracked_when_scanning_to_pay() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let orderID: Int64 = 232
+        let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = PaymentMethodsViewModel(orderID: orderID,
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
+                                                dependencies: dependencies)
+
+        // When
+        viewModel.trackCollectByScanToPay()
+
+        // Then
+        assertEqual(analytics.receivedEvents, [WooAnalyticsStat.paymentsFlowCollect.rawValue])
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "scan_to_pay")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
     func test_collect_event_is_tracked_when_collecting_payment() {
         // Given
         let analytics = MockAnalyticsProvider()
+        let orderID: Int64 = 232
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
@@ -416,7 +475,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analytics))
-        let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
+        let viewModel = PaymentMethodsViewModel(orderID: orderID,
+                                                formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
@@ -428,6 +488,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents.last, WooAnalyticsStat.paymentsFlowCollect.rawValue)
         assertEqual(analytics.receivedProperties.last?["payment_method"] as? String, "card")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
     func test_card_row_is_shown_for_eligible_order_and_country_even_when_ttp_is_not_supported() {

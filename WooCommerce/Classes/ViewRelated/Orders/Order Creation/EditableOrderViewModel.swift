@@ -318,6 +318,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
+    /// Product ID given to the order when is created with a predetermined product, if any
+    ///
+    private let withInitialProductID: Int64?
+
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
     init(siteID: Int64,
@@ -328,7 +332,8 @@ final class EditableOrderViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker()) {
+         permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
+         withInitialProductID: Int64? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -339,6 +344,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
+        self.withInitialProductID = withInitialProductID
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -931,6 +937,22 @@ private extension EditableOrderViewModel {
                 return self.createProductRows(items: items)
             }
             .assign(to: &$productRows)
+        configureInitialOrderFromScannedItemIfNeeded()
+    }
+
+    /// If given, sends a product to the Order synchronizer during the initial Order creation setup
+    ///
+    func configureInitialOrderFromScannedItemIfNeeded() {
+        guard let productID = self.withInitialProductID else {
+            return
+        }
+
+        // Validate the scanned productID is an existing product
+        guard allProducts.contains(where: { $0.productID == productID }) else {
+            DDLogError("\(ScannerError.productNotFound)")
+            return
+        }
+        orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
     }
 
     /// Updates customer data viewmodel based on order addresses.

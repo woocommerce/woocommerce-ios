@@ -20,8 +20,10 @@ struct ScanToPayView: View {
                             .resizable()
                             .frame(width: Layout.qrCodeWidth, height: Layout.qrCodeHeight)
                         DoneButton() {
-                            onSuccess()
                             dismiss()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.onSuccessCallDelayAfterDismiss) {
+                                onSuccess()
+                            }
                         }
                         .buttonStyle(PrimaryButtonStyle())
                     } else {
@@ -56,6 +58,9 @@ struct ScanToPayView: View {
 }
 
 extension ScanToPayView {
+    enum Constants {
+        static let onSuccessCallDelayAfterDismiss: TimeInterval = 1
+    }
     enum Localization {
         static let title = NSLocalizedString("Scan QR and follow instructions", comment: "Title text on the Scan to Pay screen")
         static let doneButtontitle = NSLocalizedString("Done", comment: "Button title to close the Scan to Pay screen")

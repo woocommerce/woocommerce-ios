@@ -324,7 +324,6 @@ private extension AppCoordinator {
     }
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
-        let oneDayAfterStoreCreationNameWithoutFreeTrialIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial
         let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayBeforeFreeTrialExpires
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires
 
@@ -341,7 +340,7 @@ private extension AppCoordinator {
                 return
             }
             openPlansPage(siteID: siteID)
-        case let identifier where identifier.hasPrefix(oneDayAfterStoreCreationNameWithoutFreeTrialIdentifier):
+        case LocalNotification.Scenario.IdentifierPrefix.oneDayAfterStoreCreationNameWithoutFreeTrial:
             let storeNameKey = LocalNotification.UserInfoKey.storeName
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let storeName = response.notification.request.content.userInfo.string(forKey: storeNameKey) else {

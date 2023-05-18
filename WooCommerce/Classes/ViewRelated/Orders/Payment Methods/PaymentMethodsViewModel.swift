@@ -381,6 +381,10 @@ final class PaymentMethodsViewModel: ObservableObject {
         trackFlowCompleted(method: .paymentLink, cardReaderType: .none)
     }
 
+    func performScanToPayFinishedTasks() {
+        presentNoticeSubject.send(.created)
+    }
+
     /// Track the flow cancel scenario.
     ///
     func userDidCancelFlow() {

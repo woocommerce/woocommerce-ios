@@ -34,6 +34,7 @@
 		AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */; };
 		B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97190D0292CF3BC0065E413 /* Result+Extensions.swift */; };
 		B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
+		B99686DE2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686DD2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift */; };
 		B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* WooFoundation.framework */; };
 		B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
 		B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */; };
@@ -82,6 +83,7 @@
 		AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
 		B97190D0292CF3BC0065E413 /* Result+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extensions.swift"; sourceTree = "<group>"; };
 		B987B06E284540D300C53CF6 /* CurrencyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyCode.swift; sourceTree = "<group>"; };
+		B99686DD2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenCoverClearBackgroundView.swift; sourceTree = "<group>"; };
 		B9AED558283E7553002A2668 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9AED55B283E755A002A2668 /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9C9C635283E703C001B879F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,6 +155,7 @@
 		686BE910288EE09B00967C86 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				B99686DD2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift */,
 				686BE911288EE0D300967C86 /* TypedPredicates.swift */,
 				03597A9328F85686005E4A98 /* UTMParameters.swift */,
 				03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */,
@@ -499,6 +502,7 @@
 				26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */,
 				26AF1F5428B8362800937BA9 /* ColorStudio.swift in Sources */,
 				68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */,
+				B99686DE2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

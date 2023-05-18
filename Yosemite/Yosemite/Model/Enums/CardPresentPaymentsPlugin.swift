@@ -27,7 +27,7 @@ public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
     }
 }
 
-public struct PaymentPluginVersionSupport {
+public struct PaymentPluginVersionSupport: Equatable {
     public let plugin: CardPresentPaymentsPlugin
     public let minimumVersion: String
 }

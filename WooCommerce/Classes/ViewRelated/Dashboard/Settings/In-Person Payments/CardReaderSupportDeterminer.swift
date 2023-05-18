@@ -1,7 +1,14 @@
 import Foundation
 import Yosemite
 
-final class CardReaderSupportDeterminer {
+protocol CardReaderSupportDetermining {
+    func connectedReader() async -> CardReader?
+    func hasPreviousTapToPayUsage() async -> Bool
+    func siteSupportsLocalMobileReader() -> Bool
+    func deviceSupportsLocalMobileReader() async -> Bool
+}
+
+final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     private let stores: StoresManager
     private let configuration: CardPresentPaymentsConfiguration
     private let siteID: Int64

@@ -126,7 +126,7 @@ struct SetUpTapToPayCompleteView_Previews: PreviewProvider {
         let config = CardPresentConfigurationLoader().configuration
         let viewModel = SetUpTapToPayCompleteViewModel(
             didChangeShouldShow: nil,
-            connectionAnalyticsTracker: .init(configuration: config))
+            connectionAnalyticsTracker: .init(configuration: config, siteID: 0, connectionType: .userInitiated))
         SetUpTapToPayCompleteView(viewModel: viewModel)
     }
 }

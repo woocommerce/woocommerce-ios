@@ -1107,6 +1107,7 @@ extension WooAnalyticsEvent {
             static let cancellationSource = "cancellation_source"
             static let millisecondsSinceCardCollectPaymentFlow = "milliseconds_since_card_collect_payment_flow"
             static let siteID = "site_id"
+            static let connectionType = "connection_type"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1191,12 +1192,15 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func cardReaderAutomaticDisconnect(cardReaderModel: String?, forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func cardReaderAutomaticDisconnect(cardReaderModel: String?,
+                                                  forGatewayID: String?, countryCode: String,
+                                                  connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderAutomaticDisconnect,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.connectionType: connectionType
                               ]
             )
         }
@@ -1211,13 +1215,15 @@ extension WooAnalyticsEvent {
         static func cardReaderDiscoveryFailed(forGatewayID: String?,
                                               error: Error,
                                               countryCode: String,
-                                              siteID: Int64) -> WooAnalyticsEvent {
+                                              siteID: Int64,
+                                              connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
                               properties: [
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription,
-                                Keys.siteID: siteID
+                                Keys.siteID: siteID,
+                                Keys.connectionType: connectionType
                               ]
             )
         }
@@ -1233,11 +1239,13 @@ extension WooAnalyticsEvent {
         static func cardReaderConnectionSuccess(forGatewayID: String?,
                                                 batteryLevel: Float?,
                                                 countryCode: String,
-                                                cardReaderModel: String?) -> WooAnalyticsEvent {
+                                                cardReaderModel: String?,
+                                                connectionType: String) -> WooAnalyticsEvent {
             var properties = [
                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                 Keys.countryCode: countryCode,
-                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.connectionType: connectionType
             ]
 
             if let batteryLevel = batteryLevel {
@@ -1259,14 +1267,16 @@ extension WooAnalyticsEvent {
                                                error: Error,
                                                countryCode: String,
                                                cardReaderModel: String?,
-                                               siteID: Int64) -> WooAnalyticsEvent {
+                                               siteID: Int64,
+                                               connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription,
-                                Keys.siteID: siteID
+                                Keys.siteID: siteID,
+                                Keys.connectionType: connectionType
                               ]
             )
         }

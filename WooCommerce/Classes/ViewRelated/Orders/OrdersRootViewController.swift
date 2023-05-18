@@ -67,6 +67,8 @@ final class OrdersRootViewController: UIViewController {
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
+    private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+
     // MARK: View Lifecycle
 
     init(siteID: Int64,
@@ -153,12 +155,18 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow.
     ///
-    @objc func presentOrderCreationFlow() {
+    /// - parameter initialProductID: Represents the product ID of an initial item to create the Order with, if given
+    /// We default to use -1 as an invalid productID sentinel value, due not having a Swift's Int64 optional primitive equivalent in Obj-C,
+    /// and validate it when needed.
+    ///
+    @objc func presentOrderCreationFlow(with initialProductID: Int64 = -1) {
         guard let navigationController = navigationController else {
             return
         }
 
-        let viewModel = EditableOrderViewModel(siteID: siteID)
+        let productID: Int64? = validateSentinelValue(value: initialProductID)
+
+        let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProductID: productID)
         viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
@@ -180,10 +188,49 @@ final class OrdersRootViewController: UIViewController {
         orderDurationRecorder.startRecording()
     }
 
-    /// Will present the Order Creation flow when a product is scanned
-    /// Currently hidden behind feature flag: issue-9728
+    /// Presents the Order Creation flow when a product is scanned
     ///
     @objc func presentOrderCreationFlowByProductScanning() {
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                                                      onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case let .success(product):
+                    self.presentOrderCreationFlow(with: product.productID)
+                case .failure:
+                    self.displayErrorNotice()
+                }
+            }
+        })
+        barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
+        productSKUBarcodeScannerCoordinator.start()
+    }
+
+    /// Handles the result of scanning a barcode
+    ///
+    /// - Parameters:
+    ///   - scannedBarcode: The scanned barcode
+    ///   - onCompletion: The closure to be trigged when the scanning completes. Succeeds with a Product, or fails with an Error.
+    private func handleScannedBarcode(_ scannedBarcode: String, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
+        let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: scannedBarcode) { result in
+            switch result {
+            case let .success(matchedProduct):
+                onCompletion(.success(matchedProduct))
+            case let .failure(error):
+                onCompletion(.failure(error))
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Presents an Error notice
+    ///
+    private func displayErrorNotice() {
         let message = Localization.errorNoticeMessage
         ordersViewController.showErrorNotice(with: message, in: self)
     }
@@ -439,8 +486,20 @@ private extension OrdersRootViewController {
     }
 }
 
+// MARK: - Helpers
+private extension OrdersRootViewController {
+    /// Validates the passed value by returning nil if it's invalid, or the passed value otherwise
+    ///
+    func validateSentinelValue(value: Int64) -> Int64? {
+        value == Constants.invalidProductID ? nil : value
+    }
+}
+
 // MARK: - Constants
 private extension OrdersRootViewController {
+    enum Constants {
+        static let invalidProductID: Int64 = -1
+    }
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
         static let accessibilityLabelSearchOrders = NSLocalizedString("Search orders", comment: "Search Orders")

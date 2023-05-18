@@ -7,6 +7,7 @@ struct LocalNotification {
     let body: String
     let scenario: Scenario
     let actions: CategoryActions?
+    let userInfo: [AnyHashable: Any]
 
     /// A category of actions in a notification.
     struct CategoryActions {
@@ -21,39 +22,36 @@ struct LocalNotification {
         case oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: String)
         case oneDayBeforeFreeTrialExpires(siteID: Int64, expiryDate: Date)
         case oneDayAfterFreeTrialExpires(siteID: Int64)
-        // The following notifications are deprecated and are canceled in the first release.
-        case loginSiteAddressError
-        case invalidEmailFromSiteAddressLogin
-        case invalidEmailFromWPComLogin
-        case invalidPasswordFromSiteAddressWPComLogin
-        case invalidPasswordFromWPComLogin
 
         var identifier: String {
             switch self {
             case .storeCreationComplete:
                 return "store_creation_complete"
             case .oneDayAfterStoreCreationNameWithoutFreeTrial:
-                return "one_day_after_store_creation_name_without_free_trial"
+                return Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
             case let .oneDayBeforeFreeTrialExpires(siteID, _):
-                return IdentifierPrefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
+                return Identifier.Prefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
             case .oneDayAfterFreeTrialExpires(let siteID):
-                return IdentifierPrefix.oneDayAfterFreeTrialExpires + "\(siteID)"
-            case .loginSiteAddressError:
-                return "site_address_error"
-            case .invalidEmailFromSiteAddressLogin:
-                return "site_address_email_error"
-            case .invalidEmailFromWPComLogin:
-                return "wpcom_email_error"
-            case .invalidPasswordFromSiteAddressWPComLogin:
-                return "site_address_wpcom_password_error"
-            case .invalidPasswordFromWPComLogin:
-                return "wpcom_password_error"
+                return Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)"
             }
         }
 
-        enum IdentifierPrefix {
-            static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
-            static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
+        enum Identifier {
+            enum Prefix {
+                static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
+                static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
+            }
+            static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
+        }
+
+        /// Helper method to remove postfix from notification identifiers if needed.
+        static func identifierForAnalytics(_ identifier: String) -> String {
+            if identifier.hasPrefix(Identifier.Prefix.oneDayBeforeFreeTrialExpires) {
+                return Identifier.Prefix.oneDayBeforeFreeTrialExpires
+            } else if identifier.hasPrefix(Identifier.Prefix.oneDayAfterFreeTrialExpires) {
+                return Identifier.Prefix.oneDayAfterFreeTrialExpires
+            }
+            return identifier
         }
     }
 
@@ -72,13 +70,19 @@ struct LocalNotification {
             return ""
         }
     }
+
+    /// Holds `userInfo` dictionary keys
+    enum UserInfoKey {
+        static let storeName = "storeName"
+    }
 }
 
 extension LocalNotification {
-    init?(scenario: Scenario,
+    init(scenario: Scenario,
           stores: StoresManager = ServiceLocator.stores,
           timeZone: TimeZone = .current,
-          locale: Locale = .current) {
+          locale: Locale = .current,
+          userInfo: [AnyHashable: Any] = [:]) {
         /// Name to display in notifications
         let name: String = {
             let sessionManager = stores.sessionManager
@@ -118,14 +122,13 @@ extension LocalNotification {
             title = Localization.OneDayAfterFreeTrialExpires.title
             body = String.localizedStringWithFormat(Localization.OneDayAfterFreeTrialExpires.body, name)
 
-        default:
-            return nil
         }
 
         self.init(title: title,
                   body: body,
                   scenario: scenario,
-                  actions: actions)
+                  actions: actions,
+                  userInfo: userInfo)
     }
 }
 

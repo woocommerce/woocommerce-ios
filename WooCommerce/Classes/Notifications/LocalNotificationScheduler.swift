@@ -34,7 +34,7 @@ final class LocalNotificationScheduler {
             await pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
         } else {
             await pushNotesManager.requestLocalNotification(notification,
-                                                      trigger: trigger)
+                                                            trigger: trigger)
         }
     }
 

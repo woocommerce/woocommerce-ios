@@ -151,6 +151,7 @@ private extension ProductInputTransformer {
                          taxes: [],
                          total: parameters.total,
                          totalTax: "",
-                         attributes: [])
+                         attributes: [],
+                         parent: nil)
     }
 }

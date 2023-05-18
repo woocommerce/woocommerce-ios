@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 87 (Release 13.7.0.0)
+- @rachelmcr 2023-05-17
+    - Added `parent` attribute to `OrderItem` entity.
+
 ## Model 86 (Release 13.4.0.0)
 - @rachelmcr 2023-04-27
     - Added `minAllowedQuantity` attribute to `Product` and `ProductVariation` entities.

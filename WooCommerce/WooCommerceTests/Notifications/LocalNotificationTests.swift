@@ -10,7 +10,7 @@ final class LocalNotificationTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, displayName: testName))
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: scenario, stores: stores))
+        let notification = LocalNotification(scenario: scenario, stores: stores)
 
         // Then
         assertEqual(LocalNotification.Localization.StoreCreationComplete.title, notification.title)
@@ -27,7 +27,7 @@ final class LocalNotificationTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, displayName: testName))
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: scenario, stores: stores))
+        let notification = LocalNotification(scenario: scenario, stores: stores)
 
         // Then
         assertEqual(LocalNotification.Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.title, notification.title)
@@ -50,7 +50,7 @@ final class LocalNotificationTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, displayName: testName))
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: scenario, stores: stores, timeZone: timeZone, locale: locale))
+        let notification = LocalNotification(scenario: scenario, stores: stores, timeZone: timeZone, locale: locale)
 
         // Then
         let expectedTitle = LocalNotification.Localization.OneDayBeforeFreeTrialExpires.title
@@ -67,7 +67,7 @@ final class LocalNotificationTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, displayName: testName))
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: scenario, stores: stores))
+        let notification = LocalNotification(scenario: scenario, stores: stores)
 
         // Then
         let expectedTitle = LocalNotification.Localization.OneDayAfterFreeTrialExpires.title

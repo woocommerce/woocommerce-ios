@@ -1878,6 +1878,41 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(migratedVariation.value(forKey: "groupOfQuantity") as? String), quantityValue)
         XCTAssertTrue(try XCTUnwrap(migratedVariation.value(forKey: "overrideProductQuantities") as? Bool))
     }
+
+    func test_migrating_from_86_to_87_adds_OrderItem_parent_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 86")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        let orderItem = insertOrderItem(to: sourceContext)
+        orderItem.setValue(order, forKey: "order")
+        try sourceContext.save()
+
+        // Attribute does not exist in Model 86.
+        XCTAssertEqual(try sourceContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderItem"), 1)
+        XCTAssertNil(orderItem.entity.attributesByName["parent"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 87")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let migratedOrderItem = try XCTUnwrap(targetContext.first(entityName: "OrderItem"))
+
+        // Migrated order item has expected default nil parent attribute.
+        XCTAssertNil(migratedOrderItem.value(forKey: "parent"))
+
+        // Set value for new parent attribute.
+        let parentID: Int64 = 1234
+        migratedOrderItem.setValue(parentID, forKey: "parent")
+        try targetContext.save()
+
+        // New value is set correctly for parent attribute.
+        XCTAssertEqual(try XCTUnwrap(migratedOrderItem.value(forKey: "parent") as? Int64), parentID)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

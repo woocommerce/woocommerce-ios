@@ -104,7 +104,8 @@ private extension ProductLoaderViewControllerModelTests {
                   taxes: [],
                   total: "",
                   totalTax: "",
-                  attributes: [])
+                  attributes: [],
+                  parent: nil)
     }
 
     func makeOrderItemRefund(productID: Int64, variationID: Int64) -> OrderItemRefund {

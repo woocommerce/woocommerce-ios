@@ -10,6 +10,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isStoreCreationMVPEnabled: Bool
     private let isStoreCreationM2Enabled: Bool
     private let isStoreCreationM2WithInAppPurchasesEnabled: Bool
+    private let isStoreCreationM3ProfilerEnabled: Bool
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let isAddCouponToOrderEnabled: Bool
@@ -34,6 +35,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isStoreCreationMVPEnabled: Bool = true,
          isStoreCreationM2Enabled: Bool = false,
          isStoreCreationM2WithInAppPurchasesEnabled: Bool = false,
+         isStoreCreationM3ProfilerEnabled: Bool = false,
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          isAddCouponToOrderEnabled: Bool = false,
@@ -57,6 +59,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isStoreCreationMVPEnabled = isStoreCreationMVPEnabled
         self.isStoreCreationM2Enabled = isStoreCreationM2Enabled
         self.isStoreCreationM2WithInAppPurchasesEnabled = isStoreCreationM2WithInAppPurchasesEnabled
+        self.isStoreCreationM3ProfilerEnabled = isStoreCreationM3ProfilerEnabled
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isAddCouponToOrderEnabled = isAddCouponToOrderEnabled
@@ -92,6 +95,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isStoreCreationM2Enabled
         case .storeCreationM2WithInAppPurchasesEnabled:
             return isStoreCreationM2WithInAppPurchasesEnabled
+        case .storeCreationM3Profiler:
+            return isStoreCreationM3ProfilerEnabled
         case .domainSettings:
             return isDomainSettingsEnabled
         case .supportRequests:

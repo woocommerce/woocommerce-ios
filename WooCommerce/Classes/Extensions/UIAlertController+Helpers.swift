@@ -130,7 +130,8 @@ private enum BarcodeScannerNoCameraPermissionAlert {
         NSLocalizedString("Allow camera access",
                           comment: "Title of alert that links to settings for camera access.")
         static let message =
-        NSLocalizedString("Please change your camera permissions in device settings.",
+        NSLocalizedString("Camera access is required for barcode scanning. " +
+                          "Please enable camera permissions in your device settings",
                           comment: "Message of alert that links to settings for camera access.")
     }
 }

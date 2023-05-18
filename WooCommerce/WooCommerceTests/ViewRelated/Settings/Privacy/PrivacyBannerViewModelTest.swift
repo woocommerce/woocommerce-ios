@@ -8,23 +8,23 @@ final class PrivacyBannerViewModelTest: XCTestCase {
 
     func test_analytics_state_has_correct_initial_value_when_user_has_opt_out() {
         // Given
-        let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
-        analytics.setUserHasOptedOut(true)
+        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        analytics.userHasOptedIn = false
 
         // When
-        let viewModel = PrivacyBannerViewModel(analyticsProvider: analytics)
+        let viewModel = PrivacyBannerViewModel(analytics: analytics)
 
         // Then
         XCTAssertFalse(viewModel.analyticsEnabled)
     }
 
-    func test_analytics_state_has_correct_initial_value_when_user_has_opt_int() {
+    func test_analytics_state_has_correct_initial_value_when_user_has_opt_in() {
         // Given
-        let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
-        analytics.setUserHasOptedOut(false)
+        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        analytics.userHasOptedIn = true
 
         // When
-        let viewModel = PrivacyBannerViewModel(analyticsProvider: analytics)
+        let viewModel = PrivacyBannerViewModel(analytics: analytics)
 
         // Then
         XCTAssertTrue(viewModel.analyticsEnabled)

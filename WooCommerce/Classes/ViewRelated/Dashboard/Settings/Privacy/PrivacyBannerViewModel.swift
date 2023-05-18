@@ -9,7 +9,7 @@ final class PrivacyBannerViewModel: ObservableObject {
     ///
     @Published var analyticsEnabled: Bool = false
 
-    init(analyticsProvider: Analytics = ServiceLocator.analytics) {
-        self.analyticsEnabled = analyticsProvider.userHasOptedIn
+    init(analytics: Analytics = ServiceLocator.analytics) {
+        self.analyticsEnabled = analytics.userHasOptedIn
     }
 }

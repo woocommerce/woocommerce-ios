@@ -104,7 +104,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
         let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
 
-        let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
+        let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil, ipCountryCode: "US")
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .loadWPComAccount(_, onCompletion):
@@ -133,7 +133,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
         let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
 
-        let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
+        let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil, ipCountryCode: "US")
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .loadWPComAccount(_, onCompletion):
@@ -162,7 +162,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
         let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
 
-        let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
+        let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil, ipCountryCode: "US")
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .loadWPComAccount(_, onCompletion):

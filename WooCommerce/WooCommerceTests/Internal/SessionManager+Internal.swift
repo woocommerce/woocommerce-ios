@@ -31,7 +31,12 @@ extension SessionManager {
         manager.setStoreId(nil)
         manager.defaultRoles = defaultRoles
         if let displayName {
-            manager.defaultAccount = Account(userID: 123, displayName: displayName, email: "", username: credentials.username, gravatarUrl: nil)
+            manager.defaultAccount = Account(userID: 123,
+                                             displayName: displayName,
+                                             email: "",
+                                             username: credentials.username,
+                                             gravatarUrl: nil,
+                                             ipCountryCode: "US")
         }
         return manager
     }

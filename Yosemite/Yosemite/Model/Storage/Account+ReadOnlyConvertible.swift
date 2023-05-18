@@ -23,6 +23,7 @@ extension Storage.Account: ReadOnlyConvertible {
                        displayName: displayName ?? "",
                        email: email ?? "",
                        username: username ?? "",
-                       gravatarUrl: gravatarUrl)
+                       gravatarUrl: gravatarUrl,
+                       ipCountryCode: "")
     }
 }

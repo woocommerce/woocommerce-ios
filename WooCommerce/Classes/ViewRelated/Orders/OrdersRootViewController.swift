@@ -155,8 +155,8 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow.
     ///
-    /// - parameter initialItem: Represents the product ID of an initial item to create the Order with, if given
-    /// We default to use -1 as sentinel value, due not having a Swift's Int64 optional primitive equivalent in Obj-C,
+    /// - parameter initialProductID: Represents the product ID of an initial item to create the Order with, if given
+    /// We default to use -1 as an invalid productID sentinel value, due not having a Swift's Int64 optional primitive equivalent in Obj-C,
     /// and validate it when needed.
     ///
     @objc func presentOrderCreationFlow(with initialProductID: Int64 = -1) {
@@ -491,14 +491,14 @@ private extension OrdersRootViewController {
     /// Validates the passed value by returning nil if it's invalid, or the passed value otherwise
     ///
     func validateSentinelValue(value: Int64) -> Int64? {
-        value == Constants.invalidValue ? nil : value
+        value == Constants.invalidProductID ? nil : value
     }
 }
 
 // MARK: - Constants
 private extension OrdersRootViewController {
     enum Constants {
-        static let invalidValue: Int64 = -1
+        static let invalidProductID: Int64 = -1
     }
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "The title of the Orders tab.")

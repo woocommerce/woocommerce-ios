@@ -320,10 +320,22 @@ private extension AppCoordinator {
     }
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
+        let identifier = response.notification.request.identifier
         let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayBeforeFreeTrialExpires
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.IdentifierPrefix.oneDayAfterFreeTrialExpires
 
-        switch response.notification.request.identifier {
+        guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
+            analytics.track(.localNotificationDismissed, withProperties: [
+                "type": LocalNotification.Scenario.identifierForAnalytics(identifier)
+            ])
+            return
+        }
+
+        analytics.track(.localNotificationTapped, withProperties: [
+            "type": LocalNotification.Scenario.identifierForAnalytics(identifier)
+        ])
+
+        switch identifier {
         case let identifier where identifier.hasPrefix(oneDayBeforeFreeTrialExpiresIdentifier):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: oneDayBeforeFreeTrialExpiresIdentifier, with: "")) else {

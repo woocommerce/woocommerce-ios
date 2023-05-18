@@ -55,6 +55,16 @@ struct LocalNotification {
             static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
             static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
         }
+
+        /// Helper method to remove postfix from notification identifiers if needed.
+        static func identifierForAnalytics(_ identifier: String) -> String {
+            if identifier.hasPrefix(IdentifierPrefix.oneDayBeforeFreeTrialExpires) {
+                return IdentifierPrefix.oneDayBeforeFreeTrialExpires
+            } else if identifier.hasPrefix(IdentifierPrefix.oneDayAfterFreeTrialExpires) {
+                return IdentifierPrefix.oneDayAfterFreeTrialExpires
+            }
+            return identifier
+        }
     }
 
     /// The category of actions for a local notification.

@@ -18,7 +18,8 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     private let shouldEnforceEUCustomsDescription: Bool
 
-    /// Flags if the Customs info tooltip should be presented.
+    /// Flags if the Customs info tooltip can be displayed in this item when possible.
+    /// The visibility itself will be controlled by the `canDisplayTooltipInfoIcon` computed property
     ///
     private let isEUTooltipAvailable: Bool
 

@@ -395,6 +395,15 @@ private extension AppCoordinator {
             return
         }
 
+        // Do nothing if any one of the store creation screens is being presented already.
+        if navigationController.topViewController is StoreNameFormHostingController ||
+            navigationController.topViewController is StoreCreationCategoryQuestionHostingController ||
+            navigationController.topViewController is StoreCreationSellingStatusQuestionHostingController ||
+            navigationController.topViewController is StoreCreationCountryQuestionHostingController ||
+            navigationController.topViewController is FreeTrialSummaryHostingController {
+            return
+        }
+
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
                                                    prefillStoreName: storeName,

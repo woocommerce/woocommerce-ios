@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-class CardReaderSupportDeterminer {
+final class CardReaderSupportDeterminer {
     private let stores: StoresManager
     private let configuration: CardPresentPaymentsConfiguration
     private let siteID: Int64

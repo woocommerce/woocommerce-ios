@@ -398,7 +398,7 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
-    // MARK: - Notification to subscribe to free trail after entering store name
+    // MARK: - Notification to subscribe to free trial after entering store name
     func test_store_creation_flow_starts_upon_tapping_oneDayAfterStoreCreationNameWithoutFreeTrial_notification_when_valid_store_is_selected_already() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()

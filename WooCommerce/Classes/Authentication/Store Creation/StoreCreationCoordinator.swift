@@ -735,11 +735,6 @@ private extension StoreCreationCoordinator {
         ///
         siteIDFromStoreCreation = siteID
 
-        /// Determines if the `.siteCreationPropertiesOutOfSync` event has already been tracked.
-        /// Needed because we should only track this event once per store creation process.
-        ///
-        var haveTrackedOutOfSyncEvent = false
-
         /// Timestamp when we start observing times. Needed to track the store creating waiting duration.
         ///
         let waitingTimeStart = Date()
@@ -747,14 +742,17 @@ private extension StoreCreationCoordinator {
         let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: isFreeTrialCreation, stores: stores)
         self.statusChecker = statusChecker
         jetpackSiteSubscription = statusChecker.waitForSiteToBeReady(siteID: siteID)
+            .handleEvents(receiveCompletion: { [weak self] completion in
+                guard let self, case .failure = completion else {
+                    return
+                }
+                self.storeCreationProgressViewModel?.incrementProgress()
+            })
+            // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack/Woo site.
+            .retry(10)
             .sink { [weak self] completion in
                 guard let self else { return }
-                switch completion {
-                case .failure:
-                    self.storeCreationProgressViewModel?.incrementProgress()
-                case .finished:
-                    self.handleCompletionStatus(site: nil, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
-                }
+                self.handleCompletionStatus(site: nil, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
             } receiveValue: { [weak self] site in
                 guard let self else { return }
                 self.handleCompletionStatus(site: site, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)

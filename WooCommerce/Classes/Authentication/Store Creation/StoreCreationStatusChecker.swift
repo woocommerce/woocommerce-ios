@@ -5,19 +5,16 @@ import protocol Storage.StorageManagerType
 
 final class StoreCreationStatusChecker {
     private let stores: StoresManager
-    private let analytics: Analytics
     private let isFreeTrialCreation: Bool
     private let jetpackCheckRetryInterval: TimeInterval
 
     @Published private var siteIDFromStoreCreation: Int64?
 
     init(isFreeTrialCreation: Bool,
-         stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.isFreeTrialCreation = isFreeTrialCreation
         self.jetpackCheckRetryInterval = isFreeTrialCreation ? 10 : 5
         self.stores = stores
-        self.analytics = analytics
     }
 
     @MainActor
@@ -39,8 +36,6 @@ final class StoreCreationStatusChecker {
             }
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack/Woo site.
-            .retry(10)
             .eraseToAnyPublisher()
     }
 }

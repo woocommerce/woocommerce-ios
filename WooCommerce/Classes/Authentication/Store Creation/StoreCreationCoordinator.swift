@@ -903,9 +903,8 @@ private extension StoreCreationCoordinator {
 
 private extension StoreCreationCoordinator {
     func scheduleLocalNotificationWhenStoreIsReady() {
-        guard let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete, stores: stores) else {
-            return
-        }
+        let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete,
+                                             stores: stores)
         cancelLocalNotificationWhenStoreIsReady()
         Task {
             await localNotificationScheduler.schedule(notification: notification,
@@ -920,11 +919,9 @@ private extension StoreCreationCoordinator {
     }
 
     func scheduleLocalNotificationToSubscribeFreeTrial(storeName: String) {
-        guard let notification = LocalNotification(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName),
+        let notification = LocalNotification(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName),
                                                    stores: stores,
-                                                   userInfo: [LocalNotification.UserInfoKey.storeName: storeName]) else {
-            return
-        }
+                                                   userInfo: [LocalNotification.UserInfoKey.storeName: storeName])
 
         cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
         Task {

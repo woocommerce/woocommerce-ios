@@ -29,7 +29,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        let notification = LocalNotification(scenario: .storeCreationComplete)
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: .storeCreationCompleteNotification)
 
         // Then
@@ -49,7 +49,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        let notification = LocalNotification(scenario: .storeCreationComplete)
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: .storeCreationCompleteNotification)
 
         // Then
@@ -62,7 +62,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         let scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager, stores: stores)
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        let notification = LocalNotification(scenario: .storeCreationComplete)
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: nil)
 
         // Then
@@ -82,7 +82,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = try XCTUnwrap(LocalNotification(scenario: .storeCreationComplete))
+        let notification = LocalNotification(scenario: .storeCreationComplete)
         await scheduler.schedule(notification: notification,
                                  trigger: nil,
                                  remoteFeatureFlag: .storeCreationCompleteNotification,
@@ -107,12 +107,7 @@ extension LocalNotification: Equatable {
 extension LocalNotification.Scenario: Equatable {
     public static func ==(lhs: LocalNotification.Scenario, rhs: LocalNotification.Scenario) -> Bool {
         switch (lhs, rhs) {
-        case (.storeCreationComplete, .storeCreationComplete),
-            (.loginSiteAddressError, .loginSiteAddressError),
-            (.invalidEmailFromSiteAddressLogin, .invalidEmailFromSiteAddressLogin),
-            (.invalidEmailFromWPComLogin, .invalidEmailFromWPComLogin),
-            (.invalidPasswordFromSiteAddressWPComLogin, .invalidPasswordFromSiteAddressWPComLogin),
-            (.invalidPasswordFromWPComLogin, .invalidPasswordFromWPComLogin):
+        case (.storeCreationComplete, .storeCreationComplete):
             return true
         case let (.oneDayAfterStoreCreationNameWithoutFreeTrial(lhsStoreName), .oneDayAfterStoreCreationNameWithoutFreeTrial(rhsStoreName)):
             return lhsStoreName == rhsStoreName

@@ -594,7 +594,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ))
         let siteID: Int64 = 123
-        let notification = try XCTUnwrap(LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)))
+        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -617,7 +617,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ))
         let siteID: Int64 = 123
-        let notification = try XCTUnwrap(LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)))
+        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -642,7 +642,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ), analytics: WooAnalytics(analyticsProvider: analytics))
         let siteID: Int64 = 123
-        let notification = try XCTUnwrap(LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)))
+        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -685,7 +685,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ), analytics: WooAnalytics(analyticsProvider: analytics))
         let siteID: Int64 = 123
-        let notification = try XCTUnwrap(LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID)))
+        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When

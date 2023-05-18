@@ -1093,6 +1093,7 @@ private extension ProductVariationStoreTests {
               taxes: [.init(taxID: 1, subtotal: "2", total: "1.2")],
               total: "30.00",
               totalTax: "1.20",
-              attributes: [])
+              attributes: [],
+              parent: nil)
     }
 }

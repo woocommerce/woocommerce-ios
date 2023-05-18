@@ -17,7 +17,8 @@ public struct MockOrderItem {
                                   taxes: [OrderItemTax] = [],
                                   total: String = "0",
                                   totalTax: String = "0",
-                                  attributes: [OrderItemAttribute] = []) -> OrderItem {
+                                  attributes: [OrderItemAttribute] = [],
+                                  parent: Int64? = nil) -> OrderItem {
         return OrderItem(itemID: itemID,
                          name: name,
                          productID: productID,
@@ -31,6 +32,7 @@ public struct MockOrderItem {
                          taxes: taxes,
                          total: total,
                          totalTax: totalTax,
-                         attributes: attributes)
+                         attributes: attributes,
+                         parent: nil)
     }
 }

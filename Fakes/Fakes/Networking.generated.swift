@@ -249,6 +249,16 @@ extension DotcomError {
         .empty
     }
 }
+extension Networking.DotcomSitePlugin {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.DotcomSitePlugin {
+        .init(
+            id: .fake(),
+            isActive: .fake()
+        )
+    }
+}
 extension Networking.DotcomUser {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -567,7 +577,8 @@ extension Networking.OrderItem {
             taxes: .fake(),
             total: .fake(),
             totalTax: .fake(),
-            attributes: .fake()
+            attributes: .fake(),
+            parent: .fake()
         )
     }
 }

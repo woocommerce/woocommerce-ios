@@ -20,13 +20,15 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         let expectation = self.expectation(description: #function)
-        let _ = CardReaderSettingsSearchingViewModel(didChangeShouldShow: { shouldShow in
-            XCTAssertTrue(shouldShow == .isTrue)
-            expectation.fulfill()
-        }, knownReaderProvider: mockKnownReaderProvider,
-                                                     configuration: TestConstants.mockConfiguration,
-                                                     cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
-                                                                                                 stores: mockStoresManager))
+        let _ = CardReaderSettingsSearchingViewModel(
+            didChangeShouldShow: { shouldShow in
+                XCTAssertTrue(shouldShow == .isTrue)
+                expectation.fulfill()
+            }, knownReaderProvider: mockKnownReaderProvider,
+            configuration: TestConstants.mockConfiguration,
+            cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                        siteID: 0,
+                                                        stores: mockStoresManager))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -43,13 +45,15 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
 
         let expectation = self.expectation(description: #function)
 
-        let _ = CardReaderSettingsSearchingViewModel(didChangeShouldShow: { shouldShow in
-            XCTAssertTrue(shouldShow == .isFalse)
-            expectation.fulfill()
-        }, knownReaderProvider: mockKnownReaderProvider,
-                                                     configuration: TestConstants.mockConfiguration,
-                                                     cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
-                                                                                                 stores: mockStoresManager))
+        let _ = CardReaderSettingsSearchingViewModel(
+            didChangeShouldShow: { shouldShow in
+                XCTAssertTrue(shouldShow == .isFalse)
+                expectation.fulfill()
+            }, knownReaderProvider: mockKnownReaderProvider,
+            configuration: TestConstants.mockConfiguration,
+            cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                        siteID: 0,
+                                                        stores: mockStoresManager))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }

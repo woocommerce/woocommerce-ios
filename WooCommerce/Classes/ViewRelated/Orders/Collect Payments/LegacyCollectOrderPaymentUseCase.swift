@@ -93,6 +93,7 @@ final class LegacyCollectOrderPaymentUseCase: NSObject, LegacyCollectOrderPaymen
                                        alertsProvider: CardReaderSettingsAlerts(),
                                        configuration: configuration,
                                        analyticsTracker: CardReaderConnectionAnalyticsTracker(configuration: configuration,
+                                                                                              siteID: siteID,
                                                                                               stores: stores,
                                                                                               analytics: analytics))
     }()

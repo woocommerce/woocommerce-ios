@@ -33,10 +33,14 @@ final class CardReaderConnectionAnalyticsTracker {
     private let stores: StoresManager
     private let analytics: Analytics
 
+    private let siteID: Int64
+
     init(configuration: CardPresentPaymentsConfiguration,
+         siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
+        self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
 
@@ -47,7 +51,6 @@ final class CardReaderConnectionAnalyticsTracker {
     func setGatewayID(gatewayID: String?) {
         self.gatewayID = gatewayID
     }
-
     func setCandidateReader(_ reader: CardReader?) {
         candidateReader = reader
         if reader != nil {
@@ -105,6 +108,34 @@ final class CardReaderConnectionAnalyticsTracker {
             .cardReaderAutomaticDisconnect(cardReaderModel: cardReaderModel,
                                            forGatewayID: gatewayID,
                                            countryCode: configuration.countryCode))
+    }
+
+    func connectionSuccess(batteryLevel: Float?, cardReaderModel: String?) {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+            .cardReaderConnectionSuccess(forGatewayID: gatewayID,
+                                         batteryLevel: batteryLevel,
+                                         countryCode: configuration.countryCode,
+                                         cardReaderModel: cardReaderModel))
+    }
+
+    func connectionFailed(error: Error, cardReaderModel: String?) {
+        analytics.track(
+            event: WooAnalyticsEvent.InPersonPayments
+                .cardReaderConnectionFailed(forGatewayID: gatewayID,
+                                            error: error,
+                                            countryCode: configuration.countryCode,
+                                            cardReaderModel: cardReaderModel,
+                                            siteID: siteID))
+    }
+
+    func discoveryFailed(error: Error) {
+        analytics.track(
+            event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(
+                forGatewayID: gatewayID,
+                error: error,
+                countryCode: configuration.countryCode,
+                siteID: siteID)
+        )
     }
 }
 

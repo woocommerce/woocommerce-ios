@@ -85,6 +85,7 @@ final class CardPresentPaymentPreflightController {
         self.analytics = analytics
         self.connectedReader = nil
         self.analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
+                                                                     siteID: siteID,
                                                                      stores: stores,
                                                                      analytics: analytics)
         self.connectionController = CardReaderConnectionController(

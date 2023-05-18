@@ -79,6 +79,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                                    alertsProvider: cardReaderConnectionAlerts,
                                    configuration: cardPresentConfiguration,
                                    analyticsTracker: .init(configuration: cardPresentConfiguration,
+                                                           siteID: order.siteID,
                                                            stores: stores,
                                                            analytics: analytics))
 

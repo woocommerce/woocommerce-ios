@@ -49,6 +49,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -85,6 +86,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -128,6 +130,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -166,6 +169,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -203,6 +207,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -242,6 +247,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -286,6 +292,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -322,6 +329,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -361,6 +369,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -400,6 +409,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 
@@ -437,6 +447,7 @@ final class LegacyCardReaderConnectionControllerTests: XCTestCase {
             alertsProvider: mockAlerts,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
                                     stores: mockStoresManager)
         )
 

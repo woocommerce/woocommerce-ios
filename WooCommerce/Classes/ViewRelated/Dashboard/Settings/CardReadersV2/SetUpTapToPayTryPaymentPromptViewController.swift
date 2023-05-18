@@ -188,7 +188,8 @@ struct SetUpTapToPayPaymentPromptView_Previews: PreviewProvider {
         let config = CardPresentConfigurationLoader().configuration
         let viewModel = SetUpTapToPayTryPaymentPromptViewModel(
             didChangeShouldShow: nil,
-            connectionAnalyticsTracker: .init(configuration: config))
+            connectionAnalyticsTracker: .init(configuration: config,
+                                             siteID: 0))
         SetUpTapToPayPaymentPromptView(viewModel: viewModel)
     }
 }

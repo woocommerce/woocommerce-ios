@@ -215,7 +215,7 @@ struct SetUpTapToPayInformationView_Previews: PreviewProvider {
             configuration: config,
             didChangeShouldShow: nil,
             onboardingStatePublisher: publisher,
-            connectionAnalyticsTracker: .init(configuration: config))
+            connectionAnalyticsTracker: .init(configuration: config, siteID: 0))
         SetUpTapToPayInformationView(viewModel: viewModel)
     }
 }

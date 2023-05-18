@@ -102,6 +102,8 @@ final class BuiltInCardReaderConnectionController {
         }
     }
 
+    var allowTermsOfServiceAcceptance: Bool
+
     init(
         forSiteID: Int64,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -109,7 +111,8 @@ final class BuiltInCardReaderConnectionController {
         alertsPresenter: CardPresentPaymentAlertsPresenting,
         alertsProvider: CardReaderConnectionAlertsProviding,
         configuration: CardPresentPaymentsConfiguration,
-        analyticsTracker: CardReaderConnectionAnalyticsTracker
+        analyticsTracker: CardReaderConnectionAnalyticsTracker,
+        allowTermsOfServiceAcceptance: Bool = true
     ) {
         siteID = forSiteID
         self.storageManager = storageManager
@@ -119,6 +122,7 @@ final class BuiltInCardReaderConnectionController {
         self.alertsProvider = alertsProvider
         self.configuration = configuration
         self.analyticsTracker = analyticsTracker
+        self.allowTermsOfServiceAcceptance = allowTermsOfServiceAcceptance
 
         configureResultsControllers()
     }
@@ -356,8 +360,10 @@ private extension BuiltInCardReaderConnectionController {
             .store(in: &self.subscriptions)
         }
         stores.dispatch(softwareUpdateAction)
+        let options = CardReaderConnectionOptions(
+            builtInOptions: BuiltInCardReaderConnectionOptions(termsOfServiceAcceptancePermitted: allowTermsOfServiceAcceptance))
 
-        let action = CardPresentPaymentAction.connect(reader: candidateReader) { [weak self] result in
+        let action = CardPresentPaymentAction.connect(reader: candidateReader, options: options) { [weak self] result in
             guard let self = self else { return }
 
             self.analyticsTracker.setCandidateReader(nil)

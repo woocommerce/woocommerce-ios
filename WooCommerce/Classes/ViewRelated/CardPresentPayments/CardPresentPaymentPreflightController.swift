@@ -61,12 +61,17 @@ final class CardPresentPaymentPreflightController {
 
     private let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
+    private let supportDeterminer: CardReaderSupportDeterminer
+
+    private let tapToPayReconnectionController: TapToPayReconnectionController
+
     init(siteID: Int64,
          discoveryMethod: CardReaderDiscoveryMethod?,
          configuration: CardPresentPaymentsConfiguration,
          rootViewController: UIViewController,
          alertsPresenter: CardPresentPaymentAlertsPresenting,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
+         tapToPayReconnectionController: TapToPayReconnectionController = ServiceLocator.tapToPayReconnectionController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
@@ -75,6 +80,7 @@ final class CardPresentPaymentPreflightController {
         self.rootViewController = rootViewController
         self.alertsPresenter = alertsPresenter
         self.onboardingPresenter = onboardingPresenter
+        self.tapToPayReconnectionController = tapToPayReconnectionController
         self.stores = stores
         self.analytics = analytics
         self.connectedReader = nil
@@ -95,6 +101,8 @@ final class CardPresentPaymentPreflightController {
             alertsProvider: BuiltInReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
+
+        self.supportDeterminer = CardReaderSupportDeterminer(siteID: siteID, configuration: configuration, stores: stores)
     }
 
     @MainActor
@@ -163,7 +171,10 @@ final class CardPresentPaymentPreflightController {
 
 
     private func startReaderConnection(using paymentGatewayAccount: PaymentGatewayAccount) async {
-        let localMobileReaderSupported = await localMobileReaderSupported() && configuration.supportedReaders.contains(.appleBuiltIn)
+        guard !tapToPayReconnectionController.isReconnecting else {
+            return adoptReconnection(using: paymentGatewayAccount)
+        }
+        let localMobileReaderSupported = await supportDeterminer.deviceSupportsLocalMobileReader() && supportDeterminer.siteSupportsLocalMobileReader()
 
         switch (discoveryMethod, localMobileReaderSupported) {
         case (.none, true):
@@ -179,6 +190,21 @@ final class CardPresentPaymentPreflightController {
             })
         case (.localMobile, false):
             handlePreflightFailure(error: CardPresentPaymentPreflightError.localMobileReaderNotSupported)
+        }
+    }
+
+    private func adoptReconnection(using paymentGatewayAccount: PaymentGatewayAccount) {
+        tapToPayReconnectionController.showAlertsForReconnection(from: alertsPresenter) { [weak self] result in
+            guard let self = self else { return }
+            switch self.discoveryMethod {
+            case .bluetoothScan:
+                Task { [weak self] in
+                    try await self?.automaticallyDisconnectFromReader()
+                    await self?.startReaderConnection(using: paymentGatewayAccount)
+                }
+            case .localMobile, .none:
+                self.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+            }
         }
     }
 
@@ -223,19 +249,6 @@ final class CardPresentPaymentPreflightController {
         }
     }
 
-    @MainActor
-    private func localMobileReaderSupported() async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
-                                                                     cardReaderType: .appleBuiltIn,
-                                                                     discoveryMethod: .localMobile) { result in
-                continuation.resume(returning: result)
-            }
-            stores.dispatch(action)
-        }
-    }
-
-//    @MainActor
     private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>,
                                         paymentGatewayAccount: PaymentGatewayAccount) {
         let connectionResult = result.map { connection in

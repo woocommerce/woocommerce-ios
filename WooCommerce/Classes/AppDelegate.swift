@@ -88,6 +88,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Cache onboarding state to speed IPP process
         refreshCardPresentPaymentsOnboardingIfNeeded()
 
+        // Silently connect to Tap to Pay if previously connected, to speed up IPP
+        reconnectToTapToPayReaderIfNeeded()
+
         return true
     }
 
@@ -176,6 +179,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Cache onboarding state to speed IPP process
         refreshCardPresentPaymentsOnboardingIfNeeded()
+
+        // Silently connect to Tap to Pay if previously connected, to speed up IPP
+        reconnectToTapToPayReaderIfNeeded()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -424,6 +430,10 @@ private extension AppDelegate {
 
     func refreshCardPresentPaymentsOnboardingIfNeeded() {
         ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState()
+    }
+
+    func reconnectToTapToPayReaderIfNeeded() {
+        ServiceLocator.tapToPayReconnectionController.reconnectIfNeeded()
     }
 
     /// Tracks if the application was opened via a widget tap.

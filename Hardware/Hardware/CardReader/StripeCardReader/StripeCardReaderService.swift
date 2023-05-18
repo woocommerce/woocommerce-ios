@@ -230,16 +230,20 @@ extension StripeCardReaderService: CardReaderService {
             /// If the disconnect succeeds, the completion block is called with nil.
             /// If the disconnect fails, the completion block is called with an error.
             /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)disconnectReader:
+            /// The completion block for disconnect, apparently, is called when the SDK has not really transitioned to an idle state.
+            /// Clients might need to dispatch operations that rely on this completion block to start a second operation on the card reader.
+            /// (for example, starting a `localMobile` connection after a BlueTooth reader has been disconnected)
             Terminal.shared.disconnectReader { error in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    if let error = error {
+                        let underlyingError = UnderlyingError(with: error)
+                        promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
+                    }
 
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
-                }
-
-                if error == nil {
-                    self.connectedReadersSubject.send([])
-                    promise(.success(()))
+                    if error == nil {
+                        self.connectedReadersSubject.send([])
+                        promise(.success(()))
+                    }
                 }
             }
         }
@@ -343,7 +347,7 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error> {
+    public func connect(_ reader: CardReader, options: CardReaderConnectionOptions?) -> AnyPublisher<CardReader, Error> {
         guard let stripeReader = discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
             return Future() { promise in
                 promise(.failure(CardReaderServiceError.connection()))
@@ -352,7 +356,7 @@ extension StripeCardReaderService: CardReaderService {
 
         switch stripeReader.deviceType {
         case .appleBuiltIn:
-            return getLocalMobileConfiguration(stripeReader).flatMap { configuration in
+            return getLocalMobileConfiguration(stripeReader, options: options).flatMap { configuration in
                 self.connect(stripeReader, configuration: configuration)
             }
             .share()
@@ -387,7 +391,8 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader) -> Future<LocalMobileConnectionConfiguration, Error> {
+    private func getLocalMobileConfiguration(_ reader: StripeTerminal.Reader,
+                                             options: CardReaderConnectionOptions?) -> Future<LocalMobileConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
@@ -399,7 +404,11 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    return promise(.success(LocalMobileConnectionConfiguration(locationId: locationId)))
+                    return promise(.success(LocalMobileConnectionConfiguration(
+                        locationId: locationId,
+                        merchantDisplayName: nil,
+                        onBehalfOf: nil,
+                        tosAcceptancePermitted: options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)))
                 case .failure(let error):
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))

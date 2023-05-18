@@ -261,4 +261,34 @@ class ShippingLabelCustomsFormItemDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.validItem)
         XCTAssertNil(viewModel.validatedItem)
     }
+
+    func test_description_validation_fails_when_is_EU_Shipping_Scenario_if_description_is_not_long_enough() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake(),
+                                                                     countries: [],
+                                                                     currency: "",
+                                                                     shouldEnforceEUCustomsDescription: true,
+                                                                     isEUTooltipAvailable: false)
+
+        // When
+        viewModel.description = "No"
+
+        // Then
+        XCTAssertFalse(viewModel.hasValidDescription)
+    }
+
+    func test_description_validation_succeeds_when_is_EU_Shipping_Scenario_if_description_is_long_enough() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake(),
+                                                                     countries: [],
+                                                                     currency: "",
+                                                                     shouldEnforceEUCustomsDescription: true,
+                                                                     isEUTooltipAvailable: false)
+
+        // When
+        viewModel.description = "Yes"
+
+        // Then
+        XCTAssertTrue(viewModel.hasValidDescription)
+    }
 }

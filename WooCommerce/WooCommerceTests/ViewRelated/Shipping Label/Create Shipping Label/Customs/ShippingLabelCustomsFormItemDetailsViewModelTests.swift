@@ -291,4 +291,64 @@ class ShippingLabelCustomsFormItemDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasValidDescription)
     }
+
+    func test_canDisplayTooltipInfoIcon_is_true_when_available_if_item_is_validated() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake(),
+                                                                     countries: [],
+                                                                     currency: "",
+                                                                     shouldEnforceEUCustomsDescription: true,
+                                                                     isEUTooltipAvailable: true)
+
+        // When
+        viewModel.description = "Yes"
+        viewModel.value = "10"
+        viewModel.weight = "1.5"
+        viewModel.hsTariffNumber = ""
+        viewModel.originCountry = Country(code: "AT", name: "Austria", states: [])
+
+        // Then
+        XCTAssertTrue(viewModel.validatedItem != nil)
+        XCTAssertTrue(viewModel.canDisplayTooltipInfoIcon)
+    }
+
+    func test_canDisplayTooltipInfoIcon_is_false_when_available_if_item_is_not_validated() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake(),
+                                                                     countries: [],
+                                                                     currency: "",
+                                                                     shouldEnforceEUCustomsDescription: true,
+                                                                     isEUTooltipAvailable: true)
+
+        // When
+        viewModel.description = "No"
+        viewModel.value = "10"
+        viewModel.weight = "1.5"
+        viewModel.hsTariffNumber = ""
+        viewModel.originCountry = Country(code: "AT", name: "Austria", states: [])
+
+        // Then
+        XCTAssertTrue(viewModel.validatedItem == nil)
+        XCTAssertFalse(viewModel.canDisplayTooltipInfoIcon)
+    }
+
+    func test_canDisplayTooltipInfoIcon_is_false_when_isEUTooltipAvailable_is_false() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake(),
+                                                                     countries: [],
+                                                                     currency: "",
+                                                                     shouldEnforceEUCustomsDescription: true,
+                                                                     isEUTooltipAvailable: false)
+
+        // When
+        viewModel.description = "Yes"
+        viewModel.value = "10"
+        viewModel.weight = "1.5"
+        viewModel.hsTariffNumber = ""
+        viewModel.originCountry = Country(code: "AT", name: "Austria", states: [])
+
+        // Then
+        XCTAssertTrue(viewModel.validatedItem != nil)
+        XCTAssertFalse(viewModel.canDisplayTooltipInfoIcon)
+    }
 }

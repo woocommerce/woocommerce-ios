@@ -370,8 +370,8 @@ private extension BuiltInCardReaderConnectionController {
 
             switch result {
             case .success(let reader):
-                analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
-                                                   cardReaderModel: reader.readerType.model)
+                self.analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
+                                                        cardReaderModel: reader.readerType.model)
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
@@ -387,8 +387,8 @@ private extension BuiltInCardReaderConnectionController {
                 if case .connection(.appleBuiltInReaderTOSAcceptanceCanceled) = error as? CardReaderServiceError {
                     return self.state = .cancel(.appleTOSAcceptance)
                 } else {
-                    analyticsTracker.connectionFailed(error: error,
-                                                      cardReaderModel: candidateReader.readerType.model)
+                    self.analyticsTracker.connectionFailed(error: error,
+                                                           cardReaderModel: candidateReader.readerType.model)
 
                     self.state = .connectingFailed(error)
                 }

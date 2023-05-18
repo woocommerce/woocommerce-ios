@@ -93,6 +93,7 @@ struct PaymentMethodsView: View {
 
                             MethodRow(icon: .scanToPayIcon, title: Localization.scanToPay, accessibilityID: Accessibility.scanToPayMethod) {
                                 showingScanToPayView = true
+                                viewModel.trackCollectByScanToPay()
                             }
                         }
                     }

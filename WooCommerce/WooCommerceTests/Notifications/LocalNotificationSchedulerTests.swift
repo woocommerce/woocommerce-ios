@@ -107,12 +107,7 @@ extension LocalNotification: Equatable {
 extension LocalNotification.Scenario: Equatable {
     public static func ==(lhs: LocalNotification.Scenario, rhs: LocalNotification.Scenario) -> Bool {
         switch (lhs, rhs) {
-        case (.storeCreationComplete, .storeCreationComplete),
-            (.loginSiteAddressError, .loginSiteAddressError),
-            (.invalidEmailFromSiteAddressLogin, .invalidEmailFromSiteAddressLogin),
-            (.invalidEmailFromWPComLogin, .invalidEmailFromWPComLogin),
-            (.invalidPasswordFromSiteAddressWPComLogin, .invalidPasswordFromSiteAddressWPComLogin),
-            (.invalidPasswordFromWPComLogin, .invalidPasswordFromWPComLogin):
+        case (.storeCreationComplete, .storeCreationComplete):
             return true
         case let (.oneDayAfterStoreCreationNameWithoutFreeTrial(lhsStoreName), .oneDayAfterStoreCreationNameWithoutFreeTrial(rhsStoreName)):
             return lhsStoreName == rhsStoreName

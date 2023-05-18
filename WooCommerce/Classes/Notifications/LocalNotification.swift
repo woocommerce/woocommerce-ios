@@ -22,12 +22,6 @@ struct LocalNotification {
         case oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: String)
         case oneDayBeforeFreeTrialExpires(siteID: Int64, expiryDate: Date)
         case oneDayAfterFreeTrialExpires(siteID: Int64)
-        // The following notifications are deprecated and are canceled in the first release.
-        case loginSiteAddressError
-        case invalidEmailFromSiteAddressLogin
-        case invalidEmailFromWPComLogin
-        case invalidPasswordFromSiteAddressWPComLogin
-        case invalidPasswordFromWPComLogin
 
         var identifier: String {
             switch self {
@@ -39,16 +33,6 @@ struct LocalNotification {
                 return Identifier.Prefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
             case .oneDayAfterFreeTrialExpires(let siteID):
                 return Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)"
-            case .loginSiteAddressError:
-                return "site_address_error"
-            case .invalidEmailFromSiteAddressLogin:
-                return "site_address_email_error"
-            case .invalidEmailFromWPComLogin:
-                return "wpcom_email_error"
-            case .invalidPasswordFromSiteAddressWPComLogin:
-                return "site_address_wpcom_password_error"
-            case .invalidPasswordFromWPComLogin:
-                return "wpcom_password_error"
             }
         }
 

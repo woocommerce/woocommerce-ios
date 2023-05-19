@@ -79,6 +79,7 @@ steps:
   # UI Tests
   #################
   - label: "🔬 UI Tests (iPhone)"
+    key: ui-tests-iphone
     command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 14'
     depends_on: "build"
     env: *common_env
@@ -99,3 +100,12 @@ steps:
     notify:
       - github_commit_status:
           context: "UI Tests (iPad)"
+
+  #################
+  # Send Slack Notification
+  #################
+  - label: "Send Notification for UI Tests Failures"
+    command: .buildkite/commands/slack-notification-failed-ui-tests.sh
+    depends_on: "ui-tests-iphone"
+    env: *common_env
+    plugins: *common_plugins

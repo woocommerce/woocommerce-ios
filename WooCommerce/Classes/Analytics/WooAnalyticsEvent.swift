@@ -2362,3 +2362,21 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - EU Shipping Notice Banner
+//
+extension WooAnalyticsEvent {
+    enum EUShippingNotice {
+        static func onEUShippingNoticeBannerShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .euShippingNoticeShown, properties: [:])
+        }
+
+        static func onEUShippingNoticeBannerDismissed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .euShippingNoticeDismissed, properties: [:])
+        }
+
+        static func onEUShippingNoticeLearnMoreTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .euShippingNoticeLearnMoreTapped, properties: [:])
+        }
+    }
+}

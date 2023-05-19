@@ -591,6 +591,7 @@ private extension ShippingLabelFormViewController {
     /// Present a Top Banner View containing the EU Shipping Notice.
     ///
     func showTopBannerView() {
+        ServiceLocator.analytics.track(event: .EUShippingNotice.onEUShippingNoticeBannerShown())
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(self.tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)
         headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)

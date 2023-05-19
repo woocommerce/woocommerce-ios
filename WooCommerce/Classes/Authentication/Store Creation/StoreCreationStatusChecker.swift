@@ -68,7 +68,7 @@ private extension StoreCreationStatusChecker {
     @MainActor
     func isJetpackPluginActive(siteID: Int64) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(SitePluginAction.isPluginActive(siteID: siteID, plugin: .jetpack) { result in
+            stores.dispatch(SitePluginAction.arePluginsActive(siteID: siteID, plugins: [.jetpack, .woo]) { result in
                 continuation.resume(with: result)
             })
         }

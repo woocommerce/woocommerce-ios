@@ -37,7 +37,6 @@ final class StoreCreationCoordinator: Coordinator {
         }
     }()
 
-    @Published private var siteIDFromStoreCreation: Int64?
     private var jetpackSiteSubscription: AnyCancellable?
 
     private let stores: StoresManager
@@ -731,10 +730,6 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64, expectedStoreName: String) {
-        /// Free trial sites need more waiting time that regular sites.
-        ///
-        siteIDFromStoreCreation = siteID
-
         /// Timestamp when we start observing times. Needed to track the store creating waiting duration.
         ///
         let waitingTimeStart = Date()
@@ -787,14 +782,6 @@ private extension StoreCreationCoordinator {
         } else {
             showSuccessView(from: navigationController, site: site)
         }
-    }
-
-    /// Determines if a given Subscriber.Completion entity contains a `StoreCreationError.newSiteIsNotFullySynced` error.
-    ///
-    @MainActor
-    func isPropertiesOutOfSyncError(error: Error) -> Bool {
-        guard let creationError = error as? StoreCreationError else { return false }
-        return creationError == .newSiteIsNotFullySynced
     }
 
     @MainActor

@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.7
+You’ve asked for it, and now it’s here! You can not seearch for an order using SKU when creating an order on the go. We have also made updates to the product selection so it's easier to search variations of a product. Awesome, right?
+
 ## 13.6
 This release includes several bug fixes and improvements to your product management experience, including fixing stock statuses for Product Bundles so that backordered bundles and bundle stock quantities are displayed as expected. We've also added the option for you to automatically generate product description based on the a few key words.
 

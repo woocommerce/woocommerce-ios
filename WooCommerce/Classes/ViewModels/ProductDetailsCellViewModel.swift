@@ -79,7 +79,7 @@ struct ProductDetailsCellViewModel {
     ///
     let hasAddOns: Bool
 
-    /// Whether the view should adjust its layout for a child product
+    /// Whether the item is a child with a parent item.
     ///
     let isChildProduct: Bool
 
@@ -133,7 +133,7 @@ struct ProductDetailsCellViewModel {
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil,
          hasAddOns: Bool,
-         shouldDisplayProductHierarchy: Bool = false) {
+         isChildWithParent: Bool) {
         self.init(currency: currency,
                   currencyFormatter: formatter,
                   imageURL: product?.imageURL,
@@ -144,7 +144,7 @@ struct ProductDetailsCellViewModel {
                   skuText: item.sku,
                   attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
                   hasAddOns: hasAddOns,
-                  isChildProduct: shouldDisplayProductHierarchy && item.parent != nil)
+                  isChildProduct: isChildWithParent)
     }
 
     /// Aggregate Order Item initializer
@@ -154,7 +154,7 @@ struct ProductDetailsCellViewModel {
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil,
          hasAddOns: Bool,
-         shouldDisplayProductHierarchy: Bool = false) {
+         isChildWithParent: Bool) {
         self.init(currency: currency,
                   currencyFormatter: formatter,
                   imageURL: aggregateItem.imageURL ?? product?.imageURL,
@@ -165,7 +165,7 @@ struct ProductDetailsCellViewModel {
                   skuText: aggregateItem.sku,
                   attributes: aggregateItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
                   hasAddOns: hasAddOns,
-                  isChildProduct: shouldDisplayProductHierarchy && aggregateItem.parent != nil)
+                  isChildProduct: isChildWithParent)
     }
 
     /// Refunded Order Item initializer
@@ -184,7 +184,7 @@ struct ProductDetailsCellViewModel {
                   skuText: refundedItem.sku,
                   attributes: [], // Attributes are not supported for a refund item yet.
                   hasAddOns: false, // AddOns are not supported for a refund item yet.
-                  isChildProduct: false) // Refunds do not have parent/child relationship
+                  isChildProduct: false) // Parent/child relationships are not supported for a refund item.
     }
 }
 

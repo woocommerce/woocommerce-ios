@@ -815,10 +815,11 @@ private extension OrderDetailsDataSource {
         }()
 
         let addOns = filterAddOns(of: aggregateItem)
+        let isChildWithParent = AggregateDataHelper.isChildItemWithParent(aggregateItem, in: aggregateOrderItems)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
                                                         currency: order.currency,
                                                         hasAddOns: addOns.isNotEmpty,
-                                                        shouldDisplayProductHierarchy: true)
+                                                        isChildWithParent: isChildWithParent)
 
         cell.configure(item: itemViewModel, imageService: imageService)
         cell.accessibilityIdentifier = "single-product-cell"

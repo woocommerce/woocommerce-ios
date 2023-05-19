@@ -666,29 +666,13 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.paymentLink)
     }
 
-    func test_scanToPayRow_is_hidden_if_feature_flag_is_disabled() {
+    func test_scanToPayRow_is_shown_if_payment_link_is_not_nil() {
         // Given
         let paymentURL = URL(string: "http://www.automattic.com")
-        let dependencies = Dependencies(featureFlagService: MockFeatureFlagService(isScanToPayEnabled: false))
         let viewModel = PaymentMethodsViewModel(paymentLink: paymentURL,
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
-                                                isTapToPayOnIPhoneEnabled: false,
-                                                dependencies: dependencies)
-
-        // Then
-        XCTAssertFalse(viewModel.showScanToPayRow)
-    }
-
-    func test_scanToPayRow_is_shown_if_feature_flag_is_enabled_and_payment_link_not_nil() {
-        // Given
-        let paymentURL = URL(string: "http://www.automattic.com")
-        let dependencies = Dependencies(featureFlagService: MockFeatureFlagService(isScanToPayEnabled: true))
-        let viewModel = PaymentMethodsViewModel(paymentLink: paymentURL,
-                                                formattedTotal: "$12.00",
-                                                flow: .simplePayment,
-                                                isTapToPayOnIPhoneEnabled: false,
-                                                dependencies: dependencies)
+                                                isTapToPayOnIPhoneEnabled: false)
 
         // Then
         XCTAssertTrue(viewModel.showScanToPayRow)

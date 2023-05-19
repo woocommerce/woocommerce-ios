@@ -48,8 +48,8 @@ public final class SitePluginStore: Store {
             activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
         case .getPluginDetails(let siteID, let pluginName, let onCompletion):
             getPluginDetails(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
-        case .isPluginActive(let siteID, let plugin, let completion):
-            isPluginActive(siteID: siteID, plugin: plugin, completion: completion)
+        case .arePluginsActive(let siteID, let plugins, let completion):
+            arePluginsActive(siteID: siteID, plugins: plugins, completion: completion)
         }
     }
 }
@@ -116,12 +116,14 @@ private extension SitePluginStore {
         }
     }
 
-    func isPluginActive(siteID: Int64, plugin: SitePluginAction.Plugin, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func arePluginsActive(siteID: Int64, plugins: [SitePluginAction.Plugin], completion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let plugins = try await remote.loadPluginsFromWPCOM(siteID: siteID)
-                let isJetpackActive = plugins.contains(where: { $0.id == plugin.id && $0.isActive })
-                completion(.success(isJetpackActive))
+                let sitePlugins = try await remote.loadPluginsFromWPCOM(siteID: siteID)
+                let arePluginsActive = plugins.allSatisfy { plugin in
+                    sitePlugins.contains(where: { $0.id == plugin.id && $0.isActive })
+                }
+                completion(.success(arePluginsActive))
             } catch {
                 completion(.failure(error))
             }
@@ -176,6 +178,8 @@ private extension SitePluginAction.Plugin {
         switch self {
         case .jetpack:
             return "jetpack/jetpack"
+        case .woo:
+            return "woocommerce/woocommerce"
         }
     }
 }

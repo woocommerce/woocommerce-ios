@@ -48,7 +48,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 
     var showScanToPayRow: Bool {
-        featureFlagService.isFeatureFlagEnabled(.scanToPay) && paymentLink != nil
+        paymentLink != nil
     }
 
     /// Defines if the Card Reader upsell banner should be shown based on country eligibility and dismissal/reminder preferences

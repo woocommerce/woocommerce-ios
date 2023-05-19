@@ -947,12 +947,14 @@ private extension EditableOrderViewModel {
             return
         }
 
-        // Validate the scanned productID is an existing product
-        guard allProducts.contains(where: { $0.productID == productID }) else {
-            DDLogError("\(ScannerError.productNotFound)")
-            return
+        // Validate if the scanned ID we receive from the coordinator it's a product, or a productVariation:
+        if let product = allProducts.first(where: { $0.productID == productID }) {
+            orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+        } else if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {
+            orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
+        } else {
+            DDLogError("The given ID \(productID) does not match any product or variation in local storage: \(ScannerError.productNotFoundInLocalStorage)")
         }
-        orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1271,6 +1273,7 @@ extension EditableOrderViewModel {
     enum ScannerError: Error {
         case nilSKU
         case productNotFound
+        case productNotFoundInLocalStorage
     }
 
     /// Returns the current app permission status to capture media

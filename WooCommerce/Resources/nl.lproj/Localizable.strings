@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-16 11:54:03+0000 */
+/* Translation-Revision-Date: 2023-05-19 17:14:16+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -112,7 +112,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$@, %2$@" = "%1$@, %2$@";
 
 /* Message on the local notification to remind the user of the expired free trial plan.The placeholder is the name of the user. */
-"%1$@, we have paused your store, but you can continue by picking a plan that suits you best." = "%$1@, we hebben je winkel even stilgezet, maar je kan doorgaan door het abonnement te kiezen dat het beste bij je past.";
+"%1$@, we have paused your store, but you can continue by picking a plan that suits you best." = "%1$@, we hebben je winkel even stilgezet, maar je kan doorgaan door het abonnement te kiezen dat het beste bij je past.";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -3264,7 +3264,7 @@ which should be translated separately and considered part of this sentence. */
 "Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business." = "Hoi %1$@, %2$@ staat voor je klaar! Begin je 14-daagse proefabonnement van Woo Express op de juiste manier en start jouw online bedrijf met één klik.";
 
 /* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Hoi $1@, welkom bij je 14-daagse proefabonnement van Woo Express. Op deze centrale plek vind je alles wat je nodig hebt om een succesvolle online onderneming te starten en te laten groeien. Klaar om op ontdekkingsreis te gaan?";
+"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Hoi %1$@, welkom bij je 14-daagse proefabonnement van Woo Express. Op deze centrale plek vind je alles wat je nodig hebt om een succesvolle online onderneming te starten en te laten groeien. Klaar om op ontdekkingsreis te gaan?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -7300,7 +7300,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Hiermee voltooid u uw bestelling indien u deze van een andere partij dan WooCommerce heeft ontvangen (totaal)";
 
 /* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "De tijd is bijna om,%$1@!";
+"Time’s almost up, %1$@!" = "De tijd is bijna om, %1$@!";
 
 /* Country option for a site address. */
 "Timor-Leste" = "Oost-Timor";

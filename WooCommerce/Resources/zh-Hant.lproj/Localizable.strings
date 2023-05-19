@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-16 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-05-19 17:28:08+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -3264,7 +3264,7 @@ which should be translated separately and considered part of this sentence. */
 "Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business." = "%1$@，你好，%2$@ 已準備就緒！ 只要按一下即可開始免費試用 14 天 Woo Express，展開你的線上事業。";
 
 /* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "1$@，你好，歡迎免費試用 14 天 Woo Express：建立及發展成功線上事業所需的一切工具，這裡通通都有。 準備好開始探索了嗎？";
+"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "%1$@，你好，歡迎免費試用 14 天 Woo Express：建立及發展成功線上事業所需的一切工具，這裡通通都有。 準備好開始探索了嗎？";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */

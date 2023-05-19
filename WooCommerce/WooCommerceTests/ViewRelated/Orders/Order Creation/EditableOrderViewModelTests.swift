@@ -1739,6 +1739,43 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.currentOrderItems.count, 1)
     }
+
+    func test_order_created_when_initial_productID_is_product_type_then_initial_order_contains_product() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProductID: sampleProductID)
+        let orderItem = viewModel.currentOrderItems.first(where: { $0.productID == product.productID})
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 1)
+        XCTAssertEqual(orderItem?.productID, sampleProductID)
+        XCTAssertEqual(orderItem?.variationID, 0) // Parent products do not have variation ID
+        XCTAssertEqual(orderItem?.quantity, 1)
+    }
+
+    func test_order_created_when_initial_productID_is_productVariation_type_then_initial_order_contains_productVariation() {
+        // Given
+        let variationID: Int64 = 33
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productTypeKey: "variable", variations: [variationID])
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                            productID: sampleProductID,
+                                                            productVariationID: variationID)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
+
+        //When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProductID: variationID)
+        let orderItem = viewModel.currentOrderItems.first(where: { $0.productOrVariationID == variationID})
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 1)
+        XCTAssertEqual(orderItem?.productID, sampleProductID)
+        XCTAssertEqual(orderItem?.variationID, variationID)
+        XCTAssertEqual(orderItem?.quantity, 1)
+    }
 }
 
 private extension MockStorageManager {

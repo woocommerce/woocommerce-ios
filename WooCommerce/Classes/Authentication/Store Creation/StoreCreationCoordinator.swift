@@ -745,13 +745,13 @@ private extension StoreCreationCoordinator {
             })
             // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack/Woo site.
             .retry(10)
-            .sink { [weak self] completion in
+            .sink (receiveCompletion: { [weak self] completion in
                 guard let self else { return }
                 self.handleCompletionStatus(site: nil, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
-            } receiveValue: { [weak self] site in
+            }, receiveValue: { [weak self] site in
                 guard let self else { return }
                 self.handleCompletionStatus(site: site, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
-            }
+            })
     }
 
     @MainActor

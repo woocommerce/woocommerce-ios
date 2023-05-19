@@ -40,9 +40,9 @@ final class StoreCreationStatusChecker {
 private extension StoreCreationStatusChecker {
     @MainActor
     func syncSite(siteID: Int64) async throws -> Site {
-        let isJetpackActive = try await isJetpackPluginActive(siteID: siteID)
+        let arePluginsActive = try await areJetpackAndWooPluginsActive(siteID: siteID)
 
-        guard isJetpackActive else {
+        guard arePluginsActive else {
             DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet for siteID \(siteID)...")
             throw StoreCreationError.newSiteIsNotJetpackSite
         }
@@ -63,7 +63,7 @@ private extension StoreCreationStatusChecker {
     }
 
     @MainActor
-    func isJetpackPluginActive(siteID: Int64) async throws -> Bool {
+    func areJetpackAndWooPluginsActive(siteID: Int64) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(SitePluginAction.arePluginsActive(siteID: siteID, plugins: [.jetpack, .woo]) { result in
                 continuation.resume(with: result)

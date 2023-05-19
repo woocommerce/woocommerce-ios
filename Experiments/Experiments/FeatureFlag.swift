@@ -207,7 +207,4 @@ public enum FeatureFlag: Int {
     /// Do not use the Google SDK when authenticating through a Google account.
     ///
     case sdkLessGoogleSignIn
-
-    /// Enables Scan to Pay as a payment method.
-    case scanToPay
 }

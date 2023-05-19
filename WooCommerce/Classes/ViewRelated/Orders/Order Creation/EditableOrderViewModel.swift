@@ -940,22 +940,13 @@ private extension EditableOrderViewModel {
         configureInitialOrderFromScannedItemIfNeeded()
     }
 
-    /// If given, sends a product to the Order synchronizer during the initial Order creation setup
+    /// If given an initial item during the Order creation setup, sync this product with the Order
     ///
     func configureInitialOrderFromScannedItemIfNeeded() {
         guard let productID = self.withInitialProductID else {
             return
         }
-
-        // Validate if the scanned ID we receive from the coordinator it's a product, or a productVariation:
-        if let product = allProducts.first(where: { $0.productID == productID }) {
-            orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
-        } else if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {
-            orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
-        } else {
-            self.notice = NoticeFactory.createOrderFromScannedProductErrorNotice(for: productID)
-            DDLogError("⛔️ ID \(productID) not found. \(ScannerError.productNotFoundInLocalStorage)")
-        }
+        syncOrderWithProduct(for: productID)
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1306,7 +1297,7 @@ extension EditableOrderViewModel {
             guard let self = self else { return }
             switch result {
             case let .success(productID):
-                self.orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
+                self.syncOrderWithProduct(for: productID)
                 onCompletion(.success(()))
             case .failure:
                 onCompletion(.failure(ScannerError.productNotFound))
@@ -1326,6 +1317,20 @@ extension EditableOrderViewModel {
             }
         })
         stores.dispatch(action)
+    }
+
+    /// Validates if the given productID can be found in local storage, and updates the Order with the correspondent product or variation.
+    /// Display a notice error otherwise.
+    ///
+    private func syncOrderWithProduct(for productID: Int64) {
+        if let product = allProducts.first(where: { $0.productID == productID }) {
+            orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+        } else if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {
+            orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
+        } else {
+            self.notice = NoticeFactory.createOrderFromScannedProductErrorNotice(for: productID)
+            DDLogError("⛔️ ID \(productID) not found. \(ScannerError.productNotFoundInLocalStorage)")
+        }
     }
 }
 

@@ -149,6 +149,9 @@ public enum UnderlyingError: Error, Equatable {
     /// There was no refund in progress to cancel
     case noRefundInProgress
 
+    /// Connection attempt invalidated while it was in progress – e.g. the store was changed during a connection
+    case connectionAttemptInvalidated
+
     // MARK: - Tap to Pay on iPhone related errors
 
     /// The device must have a passcode in order to use Tap to Pay on iPhone
@@ -408,6 +411,9 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("Sorry, this refund could not be canceled",
                                      comment: "Error message shown when a refund could not be canceled (likely because " +
                                      "it had already completed)")
+        case .connectionAttemptInvalidated:
+            return NSLocalizedString("Sorry, we could not connect to the reader. Please try again.",
+                                     comment: "Error message shown when an in-progress connection is cancelled by the system")
 
             // MARK: - Tap to Pay on iPhone errors
         case .passcodeNotEnabled:

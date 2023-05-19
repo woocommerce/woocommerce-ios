@@ -15,6 +15,7 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
+    private var connectionAttemptInvalidated: Bool = false
 
     /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
     /// see
@@ -287,6 +288,10 @@ extension StripeCardReaderService: CardReaderService {
             return
         }
 
+        if Terminal.shared.connectionStatus == .connecting {
+            connectionAttemptInvalidated = true
+        }
+
         Terminal.shared.clearCachedCredentials()
     }
 
@@ -354,6 +359,7 @@ extension StripeCardReaderService: CardReaderService {
             }.eraseToAnyPublisher()
         }
 
+        connectionAttemptInvalidated = false
         switch stripeReader.deviceType {
         case .appleBuiltIn:
             return getLocalMobileConfiguration(stripeReader, options: options).flatMap { configuration in
@@ -448,6 +454,10 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let reader = reader {
+                    if self.connectionAttemptInvalidated {
+                        _ = self.disconnect()
+                        promise(.failure(CardReaderServiceError.connection(underlyingError: .connectionAttemptInvalidated)))
+                    }
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
                     promise(.success(CardReader(reader: reader)))
@@ -482,6 +492,10 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let reader = reader {
+                    if self.connectionAttemptInvalidated {
+                        _ = self.disconnect()
+                        promise(.failure(CardReaderServiceError.connection(underlyingError: .connectionAttemptInvalidated)))
+                    }
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
                     promise(.success(CardReader(reader: reader)))

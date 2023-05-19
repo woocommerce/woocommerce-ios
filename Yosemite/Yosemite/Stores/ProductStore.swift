@@ -343,7 +343,9 @@ private extension ProductStore {
                 guard let product = products.first(where: { $0.sku == sku }) else {
                     return onCompletion(.failure(ProductLoadError.notFound))
                 }
-                onCompletion(.success(product))
+                self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID, onCompletion: {
+                    onCompletion(.success(product))
+                })
             case .failure:
                 onCompletion(.failure(ProductLoadError.notFound))
             }

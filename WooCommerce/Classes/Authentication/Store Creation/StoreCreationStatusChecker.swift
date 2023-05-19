@@ -1,31 +1,28 @@
 import Combine
 import Foundation
 import Yosemite
-import protocol Storage.StorageManagerType
 
+/// Checks the ready status of store creation once the store has been created.
 final class StoreCreationStatusChecker {
     private let stores: StoresManager
-    private let isFreeTrialCreation: Bool
     private let jetpackCheckRetryInterval: TimeInterval
 
-    @Published private var siteIDFromStoreCreation: Int64?
-
-    init(isFreeTrialCreation: Bool,
+    convenience init(isFreeTrialCreation: Bool,
          stores: StoresManager = ServiceLocator.stores) {
-        self.isFreeTrialCreation = isFreeTrialCreation
-        self.jetpackCheckRetryInterval = isFreeTrialCreation ? 10 : 5
+        self.init(jetpackCheckRetryInterval: isFreeTrialCreation ? 10 : 5, stores: stores)
+    }
+
+    init(jetpackCheckRetryInterval: TimeInterval, stores: StoresManager) {
+        self.jetpackCheckRetryInterval = jetpackCheckRetryInterval
         self.stores = stores
     }
 
+    /// Waits for the site to have both Jetpack and WooCommerce plugins active, and the loads the latest site afterward.
+    /// - Parameter siteID: WPCOM ID of the created site.
+    /// - Returns: An observable value of either the created site when it's ready or an error.
     @MainActor
     func waitForSiteToBeReady(siteID: Int64) -> AnyPublisher<Site, Error> {
-        /// Free trial sites need more waiting time that regular sites.
-        ///
-        siteIDFromStoreCreation = siteID
-
-        return $siteIDFromStoreCreation
-            .compactMap { $0 }
-            .removeDuplicates()
+        Just(siteID)
             .asyncMap { [weak self] siteID -> Site? in
                 guard let self else {
                     return nil

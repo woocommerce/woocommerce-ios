@@ -13,9 +13,14 @@ final class UpdateAnalyticsSettingUseCase {
     ///
     private let analytics: Analytics
 
-    init(stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics) {
+    /// Defaults database
+    ///
+    private let userDefaults: UserDefaults
+
+    init(stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics, userDefaults: UserDefaults = .standard) {
         self.stores = stores
         self.analytics = analytics
+        self.userDefaults = userDefaults
     }
 
     /// Async function that updates analytics choices.
@@ -25,7 +30,7 @@ final class UpdateAnalyticsSettingUseCase {
     func update(optOut: Bool) async throws {
         // If we can't find an account(non-jp sites), lets commit the change immediately.
         guard let defaultAccount = stores.sessionManager.defaultAccount else {
-            return analytics.setUserHasOptedOut(optOut)
+            return updateLocally(optOut: optOut)
         }
 
         let userID = defaultAccount.userID
@@ -33,13 +38,11 @@ final class UpdateAnalyticsSettingUseCase {
             let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: optOut) { [weak self] result in
                 switch result {
                 case .success:
-                    self?.analytics.setUserHasOptedOut(optOut)
+                    self?.updateLocally(optOut: optOut)
                     continuation.resume()
                 case .failure(let error):
                     DDLogError("⛔️ Error saving the privacy choices: \(error)")
                     continuation.resume(with: .failure(error))
-                    // TODO: Migrate - self?.collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
-                    // TODO: Migrate - self?.presentErrorUpdatingAccountSettingsNotice(optInValue: newValue)
                 }
             }
 
@@ -47,5 +50,12 @@ final class UpdateAnalyticsSettingUseCase {
                 stores.dispatch(action)
             }
         }
+    }
+
+    /// Updates the local analytics setting
+    ///
+    private func updateLocally(optOut: Bool) {
+        analytics.setUserHasOptedOut(optOut)
+        userDefaults[.hasSavedPrivacyBannerSettings] = true
     }
 }

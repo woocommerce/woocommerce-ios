@@ -6,12 +6,12 @@ final class EUShippingNoticeTopBannerFactory {
                                 onLearnMorePressed: @escaping () -> Void) -> TopBannerView {
         let learnMoreAction = TopBannerViewModel.ActionButton(title: Localization.learnMore) { _ in
             onLearnMorePressed()
-            ServiceLocator.analytics.track(.euShippingNoticeLearnMoreTapped)
+            ServiceLocator.analytics.track(event: .EUShippingNotice.onEUShippingNoticeLearnMoreTapped())
         }
 
         let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) { _ in
             onDismissPressed()
-            ServiceLocator.analytics.track(.euShippingNoticeDismissed)
+            ServiceLocator.analytics.track(event: .EUShippingNotice.onEUShippingNoticeBannerDismissed())
         }
 
         let viewModel = TopBannerViewModel(title: nil,

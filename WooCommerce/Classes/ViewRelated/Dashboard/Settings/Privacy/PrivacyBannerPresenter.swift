@@ -38,12 +38,22 @@ final class PrivacyBannerPresenter {
     /// Presents the privacy banner using a `BottomSheetViewController`
     ///
     @MainActor private func presentPrivacyBanner(from viewController: UIViewController) {
-        let privacyBanner = PrivacyBannerViewController(goToSettingsAction: {
-            print("Go to settings tapped") // TODO: Navigate to settings
-        }, saveAction: {
-            print("Saved tapped") // TODO: perform network request
+        let privacyBanner = PrivacyBannerViewController(onCompletion: { result in
+            switch result {
+            case .success(let destination):
+                switch destination {
+                case .dismiss:
+                    print("Dismiss banner")
+                case .settings:
+                    print("Dismiss and Go to settings")
+                }
+            case .failure(let error):
+                switch error {
+                case .sync(let analyticsOptOut):
+                    print("Present notice with retry opt-out: \(analyticsOptOut)")
+                }
+            }
         })
-
 
         let bottomSheetViewController = BottomSheetViewController(childViewController: privacyBanner)
         bottomSheetViewController.show(from: viewController)

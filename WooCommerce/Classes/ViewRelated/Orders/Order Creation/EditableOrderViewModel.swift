@@ -946,7 +946,7 @@ private extension EditableOrderViewModel {
         guard let productID = self.withInitialProductID else {
             return
         }
-        syncOrderWithProduct(for: productID)
+        updateOrderWithProduct(productID)
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1297,7 +1297,7 @@ extension EditableOrderViewModel {
             guard let self = self else { return }
             switch result {
             case let .success(productID):
-                self.syncOrderWithProduct(for: productID)
+                self.updateOrderWithProduct(productID)
                 onCompletion(.success(()))
             case .failure:
                 onCompletion(.failure(ScannerError.productNotFound))
@@ -1322,7 +1322,7 @@ extension EditableOrderViewModel {
     /// Validates if the given productID can be found in local storage, and updates the Order with the correspondent product or variation.
     /// Display a notice error otherwise.
     ///
-    private func syncOrderWithProduct(for productID: Int64) {
+    private func updateOrderWithProduct(_ productID: Int64) {
         if let product = allProducts.first(where: { $0.productID == productID }) {
             orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
         } else if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {

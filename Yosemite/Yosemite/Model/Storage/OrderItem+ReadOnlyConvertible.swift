@@ -26,6 +26,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
         total = orderItem.total
         totalTax = orderItem.totalTax
         variationID = orderItem.variationID
+        parent = orderItem.parent.map { NSNumber(value: $0) }
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -48,6 +49,6 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          total: total ?? "",
                          totalTax: totalTax ?? "",
                          attributes: attributes,
-                         parent: nil) // TODO: 8962 - Convert parent property
+                         parent: parent?.int64Value)
     }
 }

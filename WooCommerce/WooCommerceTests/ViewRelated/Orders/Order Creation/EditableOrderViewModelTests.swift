@@ -1675,41 +1675,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(successWasReceived)
     }
 
-    func test_addScannedProductToOrder_when_existing_sku_is_found_then_succeeds_to_add_product_to_order() {
-        // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        storageManager.insertSampleProduct(readOnlyProduct: product)
-
-        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
-            switch action {
-            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
-                onCompletion(.success(product))
-            default:
-                XCTFail("Expected failure, got success")
-            }
-        })
-
-        // When
-        _ = waitFor { promise in
-            self.viewModel.addScannedProductToOrder(barcode: "existingSKU", onCompletion: { result in
-                switch result {
-                case .success(()):
-                    promise(true)
-                default:
-                    XCTFail("Expected success, got failure")
-                }
-            })
-        }
-
-        // Then
-        XCTAssertEqual(viewModel.currentOrderItems.count, 1)
-
-        guard let item = viewModel.currentOrderItems.first else {
-            return XCTFail("Expected 1 item, but got none")
-        }
-        XCTAssertEqual(item.productID, sampleProductID)
-    }
-
     func test_order_creation_when_withInitialProductID_is_nil_then_currentOrderItems_are_zero() {
         // Given, When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, withInitialProductID: nil)

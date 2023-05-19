@@ -14,13 +14,17 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     let inputViewModels: [ShippingLabelCustomsFormInputViewModel]
 
+    /// Flags if it's a EU Shipping requiring specific Customs configuration
+    ///
+    let isEUShippingScenario: Bool
+
     /// Whether done button should be enabled.
     ///
     @Published private(set) var doneButtonEnabled: Bool = false
 
     /// Whether shipping notice banner should be displayed.
     ///
-    @Published private(set) var shouldDisplayShippingNotice: Bool = false
+    @Published private(set) var isShippingNoticeVisible: Bool = false
 
     /// Associated order of the shipping label.
     ///
@@ -62,7 +66,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
          customsForms: [ShippingLabelCustomsForm],
          destinationCountry: Country,
          countries: [Country],
-         shouldDisplayShippingNotice: Bool = false,
+         isEUShippingScenario: Bool = false,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.multiplePackagesDetected = customsForms.count > 1
@@ -76,11 +80,13 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
             return ServiceLocator.currencySettings.symbol(from: currencyCode)
         }()
         self.currencySymbol = currencySymbol
-        self.shouldDisplayShippingNotice = shouldDisplayShippingNotice
+        self.isEUShippingScenario = isEUShippingScenario
+        self.isShippingNoticeVisible = isEUShippingScenario
         self.inputViewModels = customsForms.map { .init(customsForm: $0,
                                                         destinationCountry: destinationCountry,
                                                         countries: countries,
-                                                        currency: currencySymbol) }
+                                                        currency: currencySymbol,
+                                                        isEUShippingScenario: isEUShippingScenario) }
         configureFormsValidation()
     }
 }
@@ -89,7 +95,11 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 //
 extension ShippingLabelCustomsFormListViewModel {
     func bannerDismissTapped() {
-        shouldDisplayShippingNotice = false
+        isShippingNoticeVisible = false
+    }
+
+    func onInfoTooltipTapped() {
+        isShippingNoticeVisible = true
     }
 }
 

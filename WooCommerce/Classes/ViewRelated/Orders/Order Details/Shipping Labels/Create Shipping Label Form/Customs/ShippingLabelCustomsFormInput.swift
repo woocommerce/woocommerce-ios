@@ -5,18 +5,24 @@ struct ShippingLabelCustomsFormInput: View {
     private let isCollapsible: Bool
     private let packageNumber: Int
     private let safeAreaInsets: EdgeInsets
+    private let infoTooltipTapped: () -> Void
 
     @ObservedObject private var viewModel: ShippingLabelCustomsFormInputViewModel
     @State private var showingContentTypes = false
     @State private var showingRestrictionTypes = false
     @State private var isCollapsed: Bool = false
 
-    init(isCollapsible: Bool, packageNumber: Int, safeAreaInsets: EdgeInsets, viewModel: ShippingLabelCustomsFormInputViewModel) {
+    init(isCollapsible: Bool,
+         packageNumber: Int,
+         safeAreaInsets: EdgeInsets,
+         viewModel: ShippingLabelCustomsFormInputViewModel,
+         infoTooltipTapped: @escaping () -> Void = {}) {
         self.isCollapsible = isCollapsible
         self.packageNumber = packageNumber
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
         self.isCollapsed = packageNumber > 1
+        self.infoTooltipTapped = infoTooltipTapped
     }
 
     var body: some View {
@@ -42,7 +48,10 @@ struct ShippingLabelCustomsFormInput: View {
                 ForEach(Array(viewModel.items.enumerated()), id: \.element) { (index, item) in
                     viewModel.itemViewModels.first(where: { $0.productID == item.productID })
                         .map { inputModel in
-                            ShippingLabelCustomsFormItemDetails(itemNumber: index + 1, viewModel: inputModel, safeAreaInsets: safeAreaInsets)
+                            ShippingLabelCustomsFormItemDetails(itemNumber: index + 1,
+                                                                viewModel: inputModel,
+                                                                safeAreaInsets: safeAreaInsets,
+                                                                infoTooltipTapped: infoTooltipTapped)
                         }
                 }
             }
@@ -222,11 +231,18 @@ struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormInputViewModel = {
         let sampleOrder = ShippingLabelSampleData.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", items: [])
-        return .init(customsForm: sampleForm, destinationCountry: Country(code: "VN", name: "Vietnam", states: []), countries: [], currency: "$")
+        return .init(customsForm: sampleForm,
+                     destinationCountry: Country(code: "VN", name: "Vietnam", states: []),
+                     countries: [],
+                     currency: "$",
+                     isEUShippingScenario: false)
     }()
 
     static var previews: some View {
-        ShippingLabelCustomsFormInput(isCollapsible: true, packageNumber: 1, safeAreaInsets: .zero, viewModel: sampleViewModel)
+        ShippingLabelCustomsFormInput(isCollapsible: true,
+                                      packageNumber: 1,
+                                      safeAreaInsets: .zero,
+                                      viewModel: sampleViewModel)
     }
 }
 #endif

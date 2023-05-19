@@ -486,11 +486,11 @@ private extension ShippingLabelFormViewController {
             fatalError("⛔️ Destination country is not found")
         }
         let hostingVC = ShippingCustomsFormListHostingController(order: viewModel.order,
-                                                                             customsForms: viewModel.customsForms,
-                                                                             destinationCountry: country,
-                                                                             countries: viewModel.countries,
-                                                                             shouldDisplayShippingNotice: viewModel.isEUShippingConditionMet(),
-                                                                             onCompletion: { [weak self] forms in
+                                                                 customsForms: viewModel.customsForms,
+                                                                 destinationCountry: country,
+                                                                 countries: viewModel.countries,
+                                                                 isEUShippingScenario: viewModel.isEUShippingConditionMet(),
+                                                                 onCompletion: { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
         })
 

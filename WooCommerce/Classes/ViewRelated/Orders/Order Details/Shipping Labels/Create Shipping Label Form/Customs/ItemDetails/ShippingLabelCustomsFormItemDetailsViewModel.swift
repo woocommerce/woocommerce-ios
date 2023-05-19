@@ -14,6 +14,15 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     let weightUnit: String
 
+    /// Flags if the Customs are under the EU description rules.
+    ///
+    private let shouldEnforceEUCustomsDescription: Bool
+
+    /// Flags if the Customs info tooltip can be displayed in this item when possible.
+    /// The visibility itself will be controlled by the `canDisplayTooltipInfoIcon` computed property
+    ///
+    private let isEUTooltipAvailable: Bool
+
     /// Description for the item.
     ///
     @Published var description: String
@@ -75,11 +84,26 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
                                              productID: productID)
     }
 
+    /// Description validation error message. The message will be set depending of the `shouldEnforceEUCustomsDescription` value.
+    /// 
+    var validationErrorMessage: String {
+        if shouldEnforceEUCustomsDescription {
+            return Localization.EUCustomsDescriptionError
+        } else {
+            return Localization.commonDescriptionError
+        }
+    }
+
     /// Quantity of items to be declared.
     ///
     private let quantity: Decimal
 
-    init(item: ShippingLabelCustomsForm.Item, countries: [Country], currency: String, weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+    init(item: ShippingLabelCustomsForm.Item,
+         countries: [Country],
+         currency: String,
+         shouldEnforceEUCustomsDescription: Bool,
+         isEUTooltipAvailable: Bool,
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.quantity = item.quantity
         self.productID = item.productID
         self.description = item.description
@@ -90,6 +114,8 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
         self.currency = currency
         self.weightUnit = weightUnit ?? ""
         self.originCountry = countries.first(where: { $0.code == item.originCountry }) ?? Country(code: "", name: "", states: [])
+        self.shouldEnforceEUCustomsDescription = shouldEnforceEUCustomsDescription
+        self.isEUTooltipAvailable = isEUTooltipAvailable
 
         configureValidatedTotalValue()
         configureValidatedHSTariffNumber()
@@ -119,13 +145,21 @@ extension ShippingLabelCustomsFormItemDetailsViewModel {
     var hasValidHSTariffNumber: Bool {
         getValidateHSTariffNumber(hsTariffNumber) != nil
     }
+
+    var canDisplayTooltipInfoIcon: Bool {
+        validatedItem != nil && isEUTooltipAvailable
+    }
 }
 
 // MARK: - Helper methods
 //
 private extension ShippingLabelCustomsFormItemDetailsViewModel {
     func validateDescription(_ description: String) -> Bool {
-        description.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+        if shouldEnforceEUCustomsDescription {
+            return description.trimmingCharacters(in: .whitespacesAndNewlines).count >= 3
+        } else {
+            return description.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+        }
     }
 
     func getValidatedValue(from value: String) -> Double? {
@@ -215,5 +249,15 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
 private extension ShippingLabelCustomsFormItemDetailsViewModel {
     enum Constants {
         static let hsTariffNumberCharacterLimit = 6
+    }
+
+    enum Localization {
+        static let commonDescriptionError = NSLocalizedString("Item description is required",
+                                                              comment: "Error message for missing value in Description row" +
+                                                              " in Customs screen of Shipping Label flow")
+
+        static let EUCustomsDescriptionError = NSLocalizedString("You must provide a clear, specific description for every item.",
+                                                                 comment: "Error message for a short value in Description row" +
+                                                                 " in Customs screen of Shipping Label flow")
     }
 }

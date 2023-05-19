@@ -953,7 +953,8 @@ private extension EditableOrderViewModel {
         } else if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {
             orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
         } else {
-            DDLogError("The given ID \(productID) does not match any product or variation in local storage: \(ScannerError.productNotFoundInLocalStorage)")
+            self.notice = NoticeFactory.createOrderFromScannedProductErrorNotice(for: productID)
+            DDLogError("⛔️ ID \(productID) not found. \(ScannerError.productNotFoundInLocalStorage)")
         }
     }
 
@@ -1340,6 +1341,12 @@ extension EditableOrderViewModel {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
             return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
+        }
+
+        /// Returns an error notice when the given product ID cannot be found in local storage
+        ///
+        static func createOrderFromScannedProductErrorNotice(for ID: Int64) -> Notice {
+            return Notice(title: Localization.errorMessageEditOrderSync, feedbackType: .error)
         }
 
         /// Returns an order sync error notice.

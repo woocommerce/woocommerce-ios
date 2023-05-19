@@ -1776,6 +1776,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(orderItem?.variationID, variationID)
         XCTAssertEqual(orderItem?.quantity, 1)
     }
+
+    func test_order_created_when_initial_productID_does_not_match_existing_product_then_initial_order_contains_no_items_and_displays_error_notice() {
+        // Given, When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProductID: sampleProductID)
+        let expectedNotice = Notice(title: "Unable to save changes. Please try again.", feedbackType: .error)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+        XCTAssertEqual(viewModel.notice, expectedNotice)
+    }
 }
 
 private extension MockStorageManager {

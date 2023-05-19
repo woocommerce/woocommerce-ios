@@ -175,50 +175,69 @@ final class SitePluginStoreTests: XCTestCase {
 
     // MARK: - `isPluginActive`
 
-    func test_isPluginActive_for_jetpack_returns_true_when_site_has_jetpack_plugin() throws {
+    func test_arePluginsActive_for_jetpack_woo_returns_true_when_site_has_both_plugins() throws {
         // Given
-        remote.whenLoadingPluginsFromWPCOM(thenReturn: .success([.init(id: "jetpack/jetpack", isActive: true)]))
+        remote.whenLoadingPluginsFromWPCOM(thenReturn: .success([.init(id: "jetpack/jetpack", isActive: true),
+                                                                 .init(id: "woocommerce/woocommerce", isActive: true)]))
         let store = SitePluginStore(remote: remote, dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let result = waitFor { promise in
-            store.onAction(SitePluginAction.isPluginActive(siteID: 122, plugin: .jetpack) { result in
+            store.onAction(SitePluginAction.arePluginsActive(siteID: 122, plugins: [.jetpack, .woo]) { result in
                 promise(result)
             })
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let isJetpackActive = try XCTUnwrap(result.get())
-        XCTAssertTrue(isJetpackActive)
+        let arePluginsActive = try XCTUnwrap(result.get())
+        XCTAssertTrue(arePluginsActive)
     }
 
-    func test_isPluginActive_for_jetpack_returns_false_when_site_does_not_have_jetpack_plugin() throws {
+    func test_arePluginsActive_for_jetpack_woo_returns_false_when_site_does_not_have_both_plugins() throws {
         // Given
         remote.whenLoadingPluginsFromWPCOM(thenReturn: .success([.init(id: "automatewoo/automatewoo", isActive: true)]))
         let store = SitePluginStore(remote: remote, dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let result = waitFor { promise in
-            store.onAction(SitePluginAction.isPluginActive(siteID: 122, plugin: .jetpack) { result in
+            store.onAction(SitePluginAction.arePluginsActive(siteID: 122, plugins: [.jetpack, .woo]) { result in
                 promise(result)
             })
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let isJetpackActive = try XCTUnwrap(result.get())
-        XCTAssertFalse(isJetpackActive)
+        let arePluginsActive = try XCTUnwrap(result.get())
+        XCTAssertFalse(arePluginsActive)
     }
 
-    func test_isPluginActive_for_jetpack_returns_error_when_loadPluginsFromWPCOM_fails() throws {
+    func test_arePluginsActive_for_jetpack_woo_returns_false_when_site_only_has_one_plugin() throws {
+        // Given
+        remote.whenLoadingPluginsFromWPCOM(thenReturn: .success([.init(id: "jetpack/jetpack", isActive: true)]))
+        let store = SitePluginStore(remote: remote, dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(SitePluginAction.arePluginsActive(siteID: 122, plugins: [.jetpack, .woo]) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let arePluginsActive = try XCTUnwrap(result.get())
+        XCTAssertFalse(arePluginsActive)
+    }
+
+    func test_arePluginsActive_for_jetpack_returns_error_when_loadPluginsFromWPCOM_fails() throws {
         // Given
         remote.whenLoadingPluginsFromWPCOM(thenReturn: .failure(NetworkError.invalidURL))
         let store = SitePluginStore(remote: remote, dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let result = waitFor { promise in
-            store.onAction(SitePluginAction.isPluginActive(siteID: 122, plugin: .jetpack) { result in
+            store.onAction(SitePluginAction.arePluginsActive(siteID: 122, plugins: [.jetpack, .woo]) { result in
                 promise(result)
             })
         }

@@ -48,13 +48,16 @@ final class AggregateDataHelper {
                 .compactMap { currency.convertToDecimal($0.total) }
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-            let attributes = orderItems.first(where: {
+            // Find the order item matching this refund, to get its properties
+            let matchingOrderItem = orderItems.first(where: {
                 guard let refundedItemID = item.refundedItemID else {
                     return false
                 }
 
                 return $0.itemID == Int64(refundedItemID)
-            })?.attributes ?? []
+            })
+            let attributes = matchingOrderItem?.attributes ?? []
+            let parent = matchingOrderItem?.parent
 
             return AggregateOrderItem(
                 itemID: key,
@@ -65,7 +68,8 @@ final class AggregateDataHelper {
                 quantity: totalQuantity,
                 sku: item.sku,
                 total: total,
-                attributes: attributes
+                attributes: attributes,
+                parent: parent
             )
         }
 
@@ -93,7 +97,8 @@ final class AggregateDataHelper {
                 quantity: item.quantity,
                 sku: item.sku,
                 total: total,
-                attributes: item.attributes
+                attributes: item.attributes,
+                parent: item.parent
             )
         }
 
@@ -128,7 +133,8 @@ final class AggregateDataHelper {
                 quantity: totalQuantity,
                 sku: item.sku,
                 total: total,
-                attributes: item.attributes
+                attributes: item.attributes,
+                parent: item.parent
             )
         }
 

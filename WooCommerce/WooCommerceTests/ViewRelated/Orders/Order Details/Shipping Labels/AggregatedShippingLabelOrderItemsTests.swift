@@ -17,7 +17,16 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(shippingLabelOrderItems, [
-            .init(itemID: "0", productID: 0, variationID: 0, name: "Password protected!", price: nil, quantity: 0, sku: nil, total: nil, attributes: [])
+            .init(itemID: "0",
+                  productID: 0,
+                  variationID: 0,
+                  name: "Password protected!",
+                  price: nil,
+                  quantity: 0,
+                  sku: nil,
+                  total: nil,
+                  attributes: [],
+                  parent: nil)
         ])
         XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
     }
@@ -50,10 +59,20 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
                   sku: orderItem1.sku,
                   total: 59.2,
                   imageURL: imageURL1,
-                  attributes: orderItem1.attributes),
+                  attributes: orderItem1.attributes,
+                  parent: nil),
             // Product with ID 3013 does not have a matching OrderItem so the price and SKU come from the Product.
             // Since a Product's name could change, the name falls back to the name in shipping label's `productNames`.
-                .init(itemID: "0", productID: 3013, variationID: 0, name: "PW", price: 25.9, quantity: 3, sku: product2.sku, total: 77.7, attributes: [])
+                .init(itemID: "0",
+                      productID: 3013,
+                      variationID: 0,
+                      name: "PW",
+                      price: 25.9,
+                      quantity: 3,
+                      sku: product2.sku,
+                      total: 77.7,
+                      attributes: [],
+                      parent: nil)
         ])
         XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
         XCTAssertEqual(shippingLabelOrderItems[1], aggregatedOrderItems.orderItem(of: shippingLabel, at: 1))
@@ -97,7 +116,8 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
                   sku: orderItem.sku,
                   total: 25.9,
                   imageURL: imageURL,
-                  attributes: orderItem.attributes)
+                  attributes: orderItem.attributes,
+                  parent: nil)
         ])
         XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
     }
@@ -131,7 +151,8 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
                   sku: variation.sku,
                   total: 62,
                   imageURL: imageURL,
-                  attributes: [])
+                  attributes: [],
+                  parent: nil)
         ])
         XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
     }

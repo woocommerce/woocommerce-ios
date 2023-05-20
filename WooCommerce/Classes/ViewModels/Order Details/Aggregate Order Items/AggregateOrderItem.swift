@@ -26,6 +26,10 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
 
     let attributes: [OrderItemAttribute]
 
+    /// Item ID of the parent order item, if any.
+    ///
+    let parent: Int64?
+
     /// Designated initializer.
     ///
     init(itemID: String,
@@ -37,7 +41,8 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
          sku: String?,
          total: NSDecimalNumber?,
          imageURL: URL? = nil,
-         attributes: [OrderItemAttribute]) {
+         attributes: [OrderItemAttribute],
+         parent: Int64?) {
         self.itemID = itemID
         self.productID = productID
         self.variationID = variationID
@@ -48,6 +53,7 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
         self.total = total
         self.imageURL = imageURL
         self.attributes = attributes
+        self.parent = parent
     }
 }
 

@@ -1154,6 +1154,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cambodia" = "Cambodia";
 
+/* Message of alert that links to settings for camera access. */
+"Camera access is required for barcode scanning. Please enable camera permissions in your device settings" = "Camera access is required for barcode scanning. Please enable camera permissions in your device settings";
+
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "Camera access is required for SKU scanning. Please enable camera permissions in your device settings";
 
@@ -2277,6 +2280,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "Don't show again";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title to close the Scan to Pay screen
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2719,6 +2723,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "Error fetching user information.";
 
+/* Error message in the Scan to Pay screen when the code cannot be generated. */
+"Error generating QR Code. Please try again later" = "Error generating QR Code. Please try again later";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Error in finding the address in Apple Maps";
 
@@ -2751,6 +2758,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option in the store creation selling platforms question. */
 "Etsy" = "Etsy";
+
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "Shipping to countries that follow European Union (EU) customs rules now requires you clearly describe every item. For example, if you are sending clothing, you must indicate what type of clothing (e.g., men’s shirts, girl’s vest, boy’s jacket) for the description to be acceptable. Otherwise, shipments may be delayed or interrupted at customs.";
 
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
@@ -2824,9 +2834,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Expires %1$@";
-
-/* Action on the local notification to remind the user of a newly created store. */
-"Explore" = "Explore";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Explore how you can increase your store sales";
@@ -4135,6 +4142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Maximum spend of %1$@";
 
+/* Dismiss button title for modally presented Just in Time Messages */
+"Maybe Later" = "Maybe Later";
+
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
 
@@ -4989,9 +4999,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Placing your product in the trash...";
 
-/* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Please change your camera permissions in device settings.";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Please charge reader";
 
@@ -5312,6 +5319,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Privacy settings screen title */
 "Privacy Settings" = "Privacy Settings";
 
+/* Subtitle for the privacy banner */
+"privacy_banner_subtitle" = "Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you can customize from your Settings.";
+
 /* One of the possible options in Product Visibility */
 "Private" = "Private";
 
@@ -5368,6 +5378,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Product link";
+
+/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
+"Product not found. Failed to create a New Order" = "Product not found. Failed to create a New Order";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Product published";
@@ -5920,6 +5933,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Scan Products */
 "Scan products" = "Scan products";
+
+/* Title text on the Scan to Pay screen */
+"Scan QR and follow instructions" = "Scan QR and follow instructions";
+
+/* Scan to Pay method title on the select payment method screen */
+"Scan to Pay" = "Scan to Pay";
 
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Scanning for readers";
@@ -6501,6 +6520,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Sorry, we cannot create support requests right now, please try again later.";
 
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "Sorry, we could not connect to the reader. Please try again.";
+
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "Sorry, we could not create your support request, please try again later.";
 
@@ -6690,9 +6712,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Submit Support Request";
-
-/* Action on the local notification to suggest the user to subscribe to the trial plan. */
-"Subscribe" = "Subscribe";
 
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
@@ -7434,9 +7453,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Top Performers section title - this year */
 "This Year" = "This Year";
 
-/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "Time’s almost up, %1$@!";
-
 /* Country option for a site address. */
 "Timor-Leste" = "Timor-Leste";
 
@@ -8058,8 +8074,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Updating your products...";
 
-/* Action on the local notification to remind the user of the expiring free trial plan. */
-"Upgrade" = "Upgrade";
+/* Title for the WebView when upgrading a free trial plan */
+"Upgrade Now" = "Upgrade Now";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8678,6 +8694,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments.";
 
+/* Error message for a short value in Description row in Customs screen of Shipping Label flow */
+"You must provide a clear, specific description for every item." = "You must provide a clear, specific description for every item.";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "You need to add a password to make your product password-protected";
 
@@ -8732,9 +8751,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Your phone will be ready to collect payments in a moment...";
 
-/* Title for the privacy banner */
-"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you can customize from your Settings." = "Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you can customize from your Settings.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Your reader will automatically restart and reconnect after the update is complete.";
 
@@ -8763,12 +8779,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Your store is live!";
 
-/* Title of the local notification about a newly created store */
-"Your store is ready!" = "Your store is ready!";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"Your store is waiting!" = "Your store is waiting!";
-
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Your store will be created based on the options of your choice!";
 
@@ -8778,8 +8788,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Your support request has landed safely in our inbox. We will reply via email as quickly as we can.";
 
-/* Message of the free trial banner when there are no days left
-   Title of the local notification to remind the user of the expired free trial plan. */
+/* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Your trial has ended.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8797,8 +8806,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Log in with Google.";
 
+/* Title of the local notification to remind the user of expiring free trial plan. */
+"⏰ Time’s running out on your free trial!" = "⏰ Time’s running out on your free trial!";
+
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ AI content generator available.";
+
+/* Title of the local notification to remind the user of the expired free trial plan. */
+"🌟 Keep your business going with our plan!" = "🌟 Keep your business going with our plan!";
 
 /* Notice text after completing a simple payment order */
 "🎉 Order completed" = "🎉 Order completed";
@@ -8811,6 +8826,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Products successfully refunded";
+
+/* Title of the local notification about a newly created store */
+"🎉 Your store is ready!" = "🎉 Your store is ready!";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"🛍️ Your store is waiting!" = "🛍️ Your store is waiting!";
 
 
 /* MARK: - InfoPlist.strings */

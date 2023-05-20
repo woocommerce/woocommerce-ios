@@ -2759,6 +2759,9 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Etsy" = "Etsy";
 
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "Shipping to countries that follow European Union (EU) customs rules now requires you clearly describe every item. For example, if you are sending clothing, you must indicate what type of clothing (e.g., men’s shirts, girl’s vest, boy’s jacket) for the description to be acceptable. Otherwise, shipments may be delayed or interrupted at customs.";
+
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Everyone loves a deal";
@@ -6266,9 +6269,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Shipping Refund";
-
-/* The EU notice banner content describing how the shipping customs shall be configured */
-"Shipping to countries that follow European Union (EU) customs rules now requires you clearly describe every item. For example, if you are sending clothing, you must indicate what type of clothing (e.g., men’s shirts, girl’s vest, boy’s jacket) for the description to be acceptable. Otherwise, shipments may be delayed or interrupted at customs. " = "Shipping to countries that follow European Union (EU) customs rules now requires you clearly describe every item. For example, if you are sending clothing, you must indicate what type of clothing (e.g., men’s shirts, girl’s vest, boy’s jacket) for the description to be acceptable. Otherwise, shipments may be delayed or interrupted at customs. ";
 
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Shop and search results";

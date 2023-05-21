@@ -109,4 +109,9 @@ import TestKit
         // Then
         XCTAssertTrue(completionCalled)
     }
+
+    override class func tearDown() {
+        super.tearDown()
+        SessionManager.removeTestingDatabase()
+    }
 }

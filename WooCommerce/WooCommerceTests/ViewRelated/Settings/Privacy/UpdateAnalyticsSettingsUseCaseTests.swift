@@ -4,9 +4,9 @@ import TestKit
 @testable import WooCommerce
 @testable import Yosemite
 
-@MainActor final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
+final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
 
-    func test_using_a_wpcom_account_opt_in_analytics_updates_analytics_state() async throws {
+    @MainActor func test_using_a_wpcom_account_opt_in_analytics_updates_analytics_state() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, displayName: "Test Account"))
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
@@ -29,7 +29,7 @@ import TestKit
         XCTAssertEqual(userDefaults[.hasSavedPrivacyBannerSettings], true)
     }
 
-    func test_using_a_wpcom_account_opt_out_analytics_updates_analytics_state() async throws {
+    @MainActor func test_using_a_wpcom_account_opt_out_analytics_updates_analytics_state() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, displayName: "Test Account"))
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
@@ -52,7 +52,7 @@ import TestKit
         XCTAssertEqual(userDefaults[.hasSavedPrivacyBannerSettings], true)
     }
 
-    func test_using_a_non_wpcom_account_opt_in_analytics_updates_analytics_state() async throws {
+    @MainActor func test_using_a_non_wpcom_account_opt_in_analytics_updates_analytics_state() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let analytics = WaitingTimeTrackerTests.TestAnalytics()
@@ -67,7 +67,7 @@ import TestKit
         XCTAssertEqual(userDefaults[.hasSavedPrivacyBannerSettings], true)
     }
 
-    func test_using_a_non_wpcom_account_opt_out_analytics_updates_analytics_state() async throws {
+    @MainActor func test_using_a_non_wpcom_account_opt_out_analytics_updates_analytics_state() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let analytics = WaitingTimeTrackerTests.TestAnalytics()
@@ -80,5 +80,10 @@ import TestKit
         // Then
         XCTAssertFalse(analytics.userHasOptedIn)
         XCTAssertEqual(userDefaults[.hasSavedPrivacyBannerSettings], true)
+    }
+
+    override class func tearDown() {
+        super.tearDown()
+        SessionManager.removeTestingDatabase()
     }
 }

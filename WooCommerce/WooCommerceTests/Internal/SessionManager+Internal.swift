@@ -40,6 +40,13 @@ extension SessionManager {
         }
         return manager
     }
+
+    /// Removes the contents of the user defaults testing database.
+    /// Useful to not cause conflicts with other tests that rely on the same database.
+    ///
+    static func removeTestingDatabase() {
+        SessionSettings.defaults.removePersistentDomain(forName: "storesManagerTests")
+    }
 }
 
 // MARK: - SessionManagerProtocol: Testing Methods

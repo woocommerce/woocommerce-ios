@@ -179,6 +179,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    private var addProductCoordinator: AddProductCoordinator?
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -269,10 +271,12 @@ private extension ProductsViewController {
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {
-        addProduct(sourceBarButtonItem: sender)
+        addProduct(sourceBarButtonItem: sender, isFirstProduct: false)
     }
 
-    func addProduct(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
+    func addProduct(sourceBarButtonItem: UIBarButtonItem? = nil,
+                    sourceView: UIView? = nil,
+                    isFirstProduct: Bool) {
         guard let navigationController = navigationController, sourceBarButtonItem != nil || sourceView != nil else {
             return
         }
@@ -283,17 +287,20 @@ private extension ProductsViewController {
             coordinatingController = AddProductCoordinator(siteID: siteID,
                                                            source: source,
                                                            sourceBarButtonItem: sourceBarButtonItem,
-                                                           sourceNavigationController: navigationController)
+                                                           sourceNavigationController: navigationController,
+                                                           isFirstProduct: isFirstProduct)
         } else if let sourceView = sourceView {
             coordinatingController = AddProductCoordinator(siteID: siteID,
                                                            source: source,
                                                            sourceView: sourceView,
-                                                           sourceNavigationController: navigationController)
+                                                           sourceNavigationController: navigationController,
+                                                           isFirstProduct: isFirstProduct)
         } else {
             fatalError("No source view for adding a product")
         }
 
         coordinatingController.start()
+        self.addProductCoordinator = coordinatingController
     }
 }
 
@@ -1022,7 +1029,7 @@ private extension ProductsViewController {
             details: details,
             buttonTitle: buttonTitle,
             onTap: { [weak self] button in
-                self?.addProduct(sourceView: button)
+                self?.addProduct(sourceView: button, isFirstProduct: true)
             },
             onPullToRefresh: { [weak self] refreshControl in
                 self?.pullToRefresh(sender: refreshControl)

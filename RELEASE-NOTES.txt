@@ -3,6 +3,7 @@
 13.8
 -----
 - [*] Product form: a share action is shown in the navigation bar if the product can be shared and no more than one action is displayed, in addition to the more menu > Share. [https://github.com/woocommerce/woocommerce-ios/pull/9789]
+- [*] Orders: Fixes a bug where the Orders list would not load if an order had a non-integer gift card amount applied to the order (with the Gift Cards extension). [https://github.com/woocommerce/woocommerce-ios/pull/9795]
 
 13.7
 -----

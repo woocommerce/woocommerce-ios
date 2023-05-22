@@ -5,12 +5,10 @@ import SwiftUI
 struct HighlightModifier: ViewModifier {
     let highlighted: Binding<Bool>
     let color: Color
-    let repeatCount: Int
-    let duration: Double
 
     private var animationActive: Binding<Bool> {
         Binding<Bool>(get: {
-            DispatchQueue.main.asyncAfter(deadline: .now() + self.duration) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.highlightBlinkDuration) {
                 self.highlighted.wrappedValue = false
             }
             return self.highlighted.wrappedValue
@@ -19,21 +17,29 @@ struct HighlightModifier: ViewModifier {
         })
     }
 
+    private var animation: Animation {
+        Animation.linear(duration: Constants.highlightBlinkDuration)
+            .repeatCount(Constants.highlightBlinkRepetition)
+    }
+
     func body(content: Content) -> some View {
         content
             .border(self.animationActive.wrappedValue ? self.color : Color.clear, width: 3.0)
-            .animation(Animation.linear(duration: self.duration).repeatCount(self.repeatCount),
-                       value: animationActive.wrappedValue)
+            .animation(animation, value: animationActive.wrappedValue)
     }
 }
 
 // MARK: View extension
 extension View {
-    func highlight(on highlighted: Binding<Bool>, color: Color,
-                     repeatCount: Int = 3, duration: Double = 0.5) -> some View {
-        self.modifier(HighlightModifier(highlighted: highlighted,
-                                        color: color,
-                                        repeatCount: repeatCount,
-                                        duration: duration))
+    func highlight(on highlighted: Binding<Bool>, color: Color) -> some View {
+        self.modifier(HighlightModifier(highlighted: highlighted, color: color))
+    }
+}
+
+private extension HighlightModifier {
+    enum Constants {
+        static let highlightBlinkDuration = 0.5
+        static let highlightBlinkRepetition = 3
+        static let highlightBorderWidth = 3.0
     }
 }

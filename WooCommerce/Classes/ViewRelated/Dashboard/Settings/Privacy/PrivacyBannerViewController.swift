@@ -122,10 +122,11 @@ private extension PrivacyBanner {
         static let goToSettings = NSLocalizedString("Go to Settings", comment: "Title for the 'Go To Settings' button in the privacy banner")
         static let save = NSLocalizedString("Save", comment: "Title for the 'Save' button in the privacy banner")
         static let bannerSubtitle = NSLocalizedString(
-            "Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app " +
+            "privacy_banner_subtitle",
+            value: "Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app " +
             "(and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you can " +
             "customize from your Settings.",
-            comment: "Title for the privacy banner"
+            comment: "Subtitle for the privacy banner"
         )
         static let toggleSubtitle = NSLocalizedString(
             "Allow us to optimize performance by collecting information on how users interact with our mobile apps.",

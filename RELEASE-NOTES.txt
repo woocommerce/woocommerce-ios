@@ -1,7 +1,12 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.8
+-----
+- [Internal] Orders: Bundled products (within a product bundle) are now indented, to show their relationship to the parent bundle. [https://github.com/woocommerce/woocommerce-ios/pull/9778]
+
 13.7
 -----
+- [Internal] Adds guidance for new Customs rule when shipping to some EU countries. [https://github.com/woocommerce/woocommerce-ios/pull/9715]
 - [*] JITMs: Added modal-style Just in Time Message support on the dashboard [https://github.com/woocommerce/woocommerce-ios/pull/9694]
 - [**] Order Creation: Products can be searched by SKU when adding products to an order. [https://github.com/woocommerce/woocommerce-ios/pull/9711]
 - [*] Orders: Fixes order details so separate order items are not combined just because they are the same product or variation. [https://github.com/woocommerce/woocommerce-ios/pull/9710]

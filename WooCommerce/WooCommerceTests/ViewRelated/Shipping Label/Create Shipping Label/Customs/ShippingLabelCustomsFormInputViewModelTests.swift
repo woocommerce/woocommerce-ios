@@ -9,7 +9,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.contentsType = .documents
@@ -24,7 +25,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.contentsType = .other
@@ -39,7 +41,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.contentsType = .other
@@ -54,7 +57,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.restrictionType = .quarantine
@@ -69,7 +73,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.restrictionType = .other
@@ -84,7 +89,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.restrictionType = .other
@@ -99,7 +105,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.itn = ""
@@ -113,7 +120,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country(code: "IR", name: "Iran", states: []),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.itn = ""
@@ -127,7 +135,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.itn = "AES X20080930987654"
@@ -141,7 +150,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.itn = "X2014@"
@@ -156,7 +166,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.itn = ""
@@ -172,7 +183,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.contentsType = .other
@@ -188,7 +200,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.restrictionType = .other
@@ -205,7 +218,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.contentsType = .other
@@ -236,7 +250,8 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
                                                                destinationCountry: Country.fake(),
                                                                countries: [],
-                                                               currency: "$")
+                                                               currency: "$",
+                                                               isEUShippingScenario: false)
 
         // When
         viewModel.contentsType = .other

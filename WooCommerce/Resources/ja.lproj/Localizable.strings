@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-10 10:54:04+0000 */
+/* Translation-Revision-Date: 2023-05-17 10:54:32+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -110,6 +110,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
 "%1$@, %2$@" = "%1$@、%2$@";
+
+/* Message on the local notification to remind the user of the expired free trial plan.The placeholder is the name of the user. */
+"%1$@, we have paused your store, but you can continue by picking a plan that suits you best." = "%1$@ さん、ストアは休止されていますが、最適なプランをお選びいただくと再開できます。";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -451,6 +454,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the screen to add a product to an order */
 "Add Product" = "商品を追加";
 
+/* Title text of the button to add a single product via SKU scanning */
+"Add Product via SKU scanner" = "SKU スキャナーで商品を追加";
+
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
    Navigation bar title for selecting multiple products.
@@ -662,6 +668,10 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "複数のユーザーに WooCommerce モバイルへのアクセスを許可します。";
 
+/* Analytics toggle description in the privacy screen.
+   Description for the analytics toggle in the privacy banner */
+"Allow us to optimize performance by collecting information on how users interact with our mobile apps." = "パフォーマンス最適化のために、当社モバイルアプリの利用状況に関する情報の収集を許可します。";
+
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "許可し、顧客に通知する";
 
@@ -757,6 +767,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Analytics toggle title in the privacy screen.
    Title for the Analytics Hub screen.
+   Title for the analytics toggle in the privacy banner
    Title of analytics as part of Jetpack benefits. */
 "Analytics" = "アナリティクス";
 
@@ -1144,8 +1155,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cambodia" = "カンボジア";
 
+/* Message of the action sheet button that links to settings for camera access */
+"Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "SKU スキャンではカメラアクセスが必要です。 デバイス設定でカメラの権限を有効にしてください。";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "カメラのキャプチャ機能は次のメディアタイプに対応していません ：%@";
+
+/* Title of the action sheet button that links to settings for camera access */
+"Camera permissions" = "カメラの権限";
 
 /* Country option for a site address. */
 "Cameroon" = "カメルーン";
@@ -1158,9 +1175,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "%1$d回使用可能";
-
-/* Local notification title when the user encounters an error with WP.com password. */
-"Can't remember your password?" = "パスワードを忘れた場合";
 
 /* Country option for a site address. */
 "Canada" = "カナダ";
@@ -1660,7 +1674,6 @@ which should be translated separately and considered part of this sentence. */
 "Contact Support" = "サポートに問い合わせる";
 
 /* Action button to contact support on enable analytics screen
-   Local notification action to contact support.
    The title of the button to contact support in the Error Loading Data banner */
 "Contact support" = "サポートに問い合わせる";
 
@@ -1720,6 +1733,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Cook Islands" = "クック諸島";
+
+/* Cookie Policy text on the privacy screen */
+"Cookie Policy" = "Cookie ポリシー";
 
 /* Text in the notice after copying the generated text in the product description AI generator view. */
 "Copied!" = "コピーしました。";
@@ -2162,6 +2178,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the action sheet
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
+   Label for the banner Dismiss button
    The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
    The title of the button to dismiss the Orders top banner
@@ -2755,6 +2772,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "%1$@に期限切れ";
 
+/* Action on the local notification to remind the user of a newly created store. */
+"Explore" = "おすすめ";
+
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "ストアの売り上げを伸ばす方法を見つけましょう";
 
@@ -3028,9 +3048,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the feature announcement banner intended to upsell card readers */
 "Get ready to accept payments with a card reader." = "カードリーダーで支払いを受け取れるようにしてください。";
 
-/* Local notification body when the user encounters an error logging in with site address. */
-"Get some help!" = "サポートを利用する";
-
 /* Title for the account creation form. */
 "Get started in minutes" = "すぐに始められます";
 
@@ -3081,6 +3098,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
+
+/* Title for the 'Go To Settings' button in the privacy banner */
+"Go to Settings" = "「設定」に移動";
 
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "ストアに移動";
@@ -3239,6 +3259,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "注目! このリンクから WooCommerce アプリをダウンロードできます。とても楽しく、どなたにも気に入ってもらえると思います。";
+
+/* Message on the local notification suggesting a trial plan subscription.The placeholders are the name of the user and the store name. */
+"Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business." = "%1$@さん、%2$@ の準備ができました。 Woo Express の14日間の無料お試しを開始して、ワンクリックでオンラインビジネスを立ち上げましょう。";
+
+/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
+"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "%1$@ さん、Woo Express の14日間のお試し期間にようこそ。Woo Express では、成功するオンラインビジネスを立ち上げて大きく育てるために必要なものが、すべて1か所にそろっています。 Woo Express を使う準備はできましたか ?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3694,12 +3720,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "ストアを立ち上げる";
 
-/* Title of the secondary button on the store onboarding payments setup screen. */
+/* Title of the secondary button on the store onboarding payments setup screen.
+   Title on the button to upgrade a free trial plan. */
 "Learn More" = "さらに詳しく";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
+   Label for the banner Learn more button
    Settings > Privacy Settings. A text link to the cookie policy.
    Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -3724,6 +3752,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "権限グループと権限の詳細";
+
+/* Usage Tracker description section in the privacy screen. */
+"Learn more about the data we collect about your store and your options to control this data sharing." = "ストアに関して当社が収集しているデータと、このデータ共有をコントロールするオプションについて、詳細をご確認ください。";
 
 /* Country option for a site address. */
 "Lebanon" = "レバノン";
@@ -3904,9 +3935,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A generic error during site credential login */
 "Login failed. Please try again." = "ログインに失敗しました。 もう一度お試しください。";
 
-/* Local notification action to log in with WordPress.com. */
-"Login with WordPress.com" = "WordPress.com にログイン";
-
 /* Button title. Takes the user to the Enter account password screen. */
 "Login with account password" = "アカウントパスワードでログイン";
 
@@ -3971,6 +3999,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the primary button on the store creation success screen to continue to the newly created store. */
 "Manage My Store" = "自分のストアを管理";
+
+/* Title for the privacy banner */
+"Manage Privacy" = "プライバシーを管理";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "外出先でも注文を管理・編集";
@@ -4129,9 +4160,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the More Options section on Product Settings screen */
 "More Options" = "追加オプション";
 
+/* Title of the more privacy options section on the privacy screen */
+"More Privacy Options" = "その他のプライバシーオプション";
+
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "追加オプション";
+
+/* More Privacy toggle section in the privacy screen. */
+"More privacy options available for woocommerce.com users. Check here to learn more." = "WooCommerce.com ユーザー向けのその他のプライバシーオプションを利用できます。 こちらをクリックして詳細をご確認ください。";
 
 /* Country option for a site address. */
 "Morocco" = "モロッコ";
@@ -4529,7 +4566,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Open Map action in Shipping Label Address Validation. */
 "Open Map" = "マップを開く";
 
-/* Button title to open device settings in an alert */
+/* Button title to open device settings in an action sheet
+   Button title to open device settings in an alert */
 "Open Settings" = "設定を開く";
 
 /* Label for the description of openening a link using a new window */
@@ -5195,7 +5233,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "カリフォルニア州のユーザーへのプライバシー通知";
 
-/* Title of button that displays the App's privacy policy */
+/* Privacy Policy text on the privacy screen
+   Title of button that displays the App's privacy policy */
 "Privacy Policy" = "個人情報保護方針";
 
 /* Navigates to Privacy Settings screen
@@ -5210,9 +5249,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's private status */
 "Privately published" = "非公開";
-
-/* Local notification title when the user encounters an error logging in with site address. */
-"Problems with logging in?" = "ログインで問題がある場合";
 
 /* Display label for processing order status. */
 "Processing" = "処理中";
@@ -5609,9 +5645,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "アクティビティログをリセット";
 
-/* Local notification action to reset password. */
-"Reset password" = "パスワードをリセット";
-
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
@@ -5648,6 +5681,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry Action on the notice when loading product categories fails
    Retry action title
    Retry button on the error notice for the upgrade view
+   Retry button title for the privacy screen notices
    Retry the last action */
 "Retry" = "再度試す";
 
@@ -5793,7 +5827,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action for saving a Product remotely
    Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar.
-   Button title that save the price selection for bulk variation update */
+   Button title that save the price selection for bulk variation update
+   Title for the 'Save' button in the privacy banner */
 "Save" = "保存";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -6521,6 +6556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "サポートリクエストを送信";
 
+/* Action on the local notification to suggest the user to subscribe to the trial plan. */
+"Subscribe" = "購読";
+
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
    Title for the subscription settings in a subscription product. */
@@ -7135,6 +7173,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error shown when failing to fetch the plan details in the upgrades view. */
 "There was an error fetching your plan details, please try again later." = "プランの詳細を取得する際にエラーが発生しました。後でもう一度お試しください。";
 
+/* Error notice when failing to fetch account settings on the privacy screen. */
+"There was an error fetching your privacy settings" = "プライバシー設定の取得でエラーが発生しました";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "返金の実行中にエラーが発生しました";
 
@@ -7154,6 +7195,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "注文の更新中にエラーが発生しました";
 
+/* Error notice when failing to update account settings on the privacy screen. */
+"There was an error updating your privacy settings" = "プライバシー設定の更新でエラーが発生しました";
+
 /* Text when there is an error while marking the order as paid for during payment. */
 "There was an error while marking the order as paid." = "注文を支払い済みとしてマークする際にエラーが発生しました。";
 
@@ -7165,9 +7209,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "リスクは一切ありません。30日以内にキャンセルすれば全額が返金されます。";
-
-/* Analytics toggle description in the privacy screen. */
-"These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps." = "これらの Cookie を使用することにより、ユーザーによる当社モバイルアプリの利用状況に関する情報が収集され、パフォーマンスが最適化されます。";
 
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
@@ -7258,6 +7299,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "WooCommerce 外部で (合計) を受け取った場合は、注文が完了済みとしてマークされます";
 
+/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
+"Time’s almost up, %1$@!" = "%1$@ さん、もうすぐ終了です。";
+
 /* Country option for a site address. */
 "Timor-Leste" = "東ティモール";
 
@@ -7304,6 +7348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
 "To launch your store, you need to upgrade to our plan. %1$@" = "ストアを公開するには、プランのアップグレードが必要です。%1$@";
+
+/* Footer of the more privacy options section on the privacy screen */
+"To learn more about how we use your data to optimize our mobile apps, enhance your experience, and deliver relevant marketing, please review our Privacy Policy and Cookie Policy.\n" = "モバイルアプリの最適化、操作性の向上、関連性のあるマーケティングの送信のために個人データをどのように使用しているかについての詳細は、プライバシーポリシーと Cookie ポリシーをご確認ください。\n";
 
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "この Apple ID で先に進むには、まず WordPress.com パスワードを使用してログインしてください。 これは一度しか尋ねられません。";
@@ -7871,12 +7918,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "商品を更新中...";
 
-/* Title on the button to upgrade a free trial plan. */
+/* Action on the local notification to remind the user of the expiring free trial plan. */
 "Upgrade" = "アップグレード";
-
-/* Title for the button to upgrade from a free trial
-   Title for the WebView when upgrading a free trial plan */
-"Upgrade Now" = "今すぐアップグレード";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -7896,6 +7939,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Field in the view for adding or editing a coupon. */
 "Usage Restrictions" = "利用制限";
+
+/* Usage tracker title in the privacy screen. */
+"Usage Tracking" = "使用状況の追跡";
 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "利用状況の詳細";
@@ -8168,7 +8214,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "サードパーティのものを含め、他の追跡ツールを使用します。それらについての詳細と設定方法についてお読みください。";
 
 /* Main description on the privacy screen. */
-"We value your privacy. Your personal data is used to optimize our mobile apps, improve security, conduct analytics and marketing activities, and enhance your user experience." = "WordPress はプライバシーを重視します。 利用者の個人データは、当社モバイルアプリの最適化、セキュリティの向上、分析およびマーケティング活動の実施、利用者のユーザーエクスペリエンス向上のために使用されます。";
+"We value your privacy. Your personal data is used to optimize our mobile apps, improve security, conduct analytics, and enhance your user experience." = "当社はプライバシーを重視します。 個人データは当社モバイルアプリの最適化、セキュリティの改善、分析の実施、ユーザーエクスペリエンスの向上のために使用されます。";
 
 /* Message explaining that WordPress was not detected. */
 "We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "入力されたアドレスでは、WordPress サイトを検出できませんでした。 WordPress がインストールされていて、入手可能な最新のバージョンで実行されていることを確認してください。";
@@ -8220,6 +8266,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "新しい WordPress.com アカウントを作成するための登録リンクをメールでお送りしました。 このデバイスでメールをチェックして、WordPress.com から届いたメールにあるリンクをタップしてください。";
+
+/* More Privacy Options section title in the privacy screen. */
+"Web Options" = "ウェブオプション";
 
 /* Title of a button linking to the app's website */
 "Website" = "サイト";
@@ -8287,6 +8336,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce で配送ラベルを購入する際には、業務用価格の割引が適用されます。";
+
+/* The EU notice banner content describing why some countries require special customs description */
+"When shipping to countries that follow European Union (EU) customs rules, you must provide a clear, specific description of every item. Otherwise, shipments may be delayed or interrupted at customs." = "欧州連合 (EU) の関税法規則に従う国に発送する場合、すべての品目について明確で具体的な説明を記載する必要があります。 これを怠ると、配送が税関で遅延または中断されることがあります。";
 
 /* Title of the store creation profiler question about the store selling status. */
 "Where are you on your commerce journey?" = "現在、ストア販売プロセスのどの段階ですか ?";
@@ -8491,6 +8543,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info details for an expired free trial */
 "Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "お試し期間が終了しました。すべての機能へのアクセスが制限されています。 今すぐ Woo Express Performance プランのサブスクリプションを契約しましょう。";
 
+/* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
+"Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Woo Express の無料お試し期間は明日 (%1$@) までです。 今こそ、未来を自分で創るときです。プランを選び、大きく成長する第一歩を踏み出しましょう。";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone をカードリーダーとして使用するか、Bluetooth 経由で外付けリーダーに接続できます。";
 
@@ -8508,6 +8563,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "まもなくお使いのスマートフォンで支払いを受け取ることができるようになります...";
+
+/* Title for the privacy banner */
+"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "当社はユーザーのプライバシーを常に重要視しています。 アプリ (そしてアプリの操作性) を最適化するために、個人データをさまざまな形で使用、保存、処理しています。 個人データの使用用途の一部は、アプリが機能するために必須のものです。それ以外の用途については設定でカスタマイズできます。";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "更新が完了すると、Reader が自動的に再度起動し接続されます";
@@ -8533,6 +8591,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "あなたのストアが公開されました。";
 
+/* Title of the local notification about a newly created store */
+"Your store is ready!" = "ストアの準備ができました。";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"Your store is waiting!" = "ストアを利用できます。";
+
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "選択したオプションに基づいてストアが作成されます。";
 
@@ -8542,7 +8606,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "サポートリクエストを受信しました。 できるだけ早くメールで返信いたします。";
 
-/* Message of the free trial banner when there are no days left */
+/* Message of the free trial banner when there are no days left
+   Title of the local notification to remind the user of the expired free trial plan. */
 "Your trial has ended." = "お試し期間が終了しました。";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8747,6 +8812,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "オーランド諸島";
+
+/* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
+"✨ AI content generator available." = "✨ AI によるコンテンツ生成を利用できます。";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 注文完了";

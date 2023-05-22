@@ -1266,7 +1266,6 @@ extension EditableOrderViewModel {
     enum ScannerError: Error {
         case nilSKU
         case productNotFound
-        case productNotFoundInLocalStorage
     }
 
     /// Returns the current app permission status to capture media

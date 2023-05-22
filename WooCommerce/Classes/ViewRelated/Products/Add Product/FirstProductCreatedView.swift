@@ -15,6 +15,7 @@ struct FirstProductCreatedView: View {
                 Image(uiImage: .welcomeImage)
                 Text(Localization.message)
                     .secondaryBodyStyle()
+                    .multilineTextAlignment(.center)
                 Button(Localization.shareAction) {
                     // TODO
                 }
@@ -23,7 +24,7 @@ struct FirstProductCreatedView: View {
                 Spacer()
             }
             .padding()
-            .background(Color(uiColor: .systemBackground))
+            .scrollVerticallyIfNeeded()
             .confettiCannon(counter: $confettiCounter,
                             num: Constants.confettiCount,
                             rainHeight: proxy.size.height,
@@ -32,12 +33,13 @@ struct FirstProductCreatedView: View {
         .onAppear {
             confettiCounter += 1
         }
+        .background(Color(uiColor: .systemBackground))
     }
 }
 
 private extension FirstProductCreatedView {
     enum Constants {
-        static let verticalSpacing: CGFloat = 48
+        static let verticalSpacing: CGFloat = 40
         static let confettiCount: Int = 100
     }
     enum Localization {
@@ -62,5 +64,6 @@ struct FirstProductCreatedView_Previews: PreviewProvider {
             .environment(\.colorScheme, .light)
         FirstProductCreatedView()
             .environment(\.colorScheme, .dark)
+            .previewInterfaceOrientation(.landscapeLeft)
     }
 }

@@ -13,6 +13,28 @@ private enum SiteIDSourceType: String, Equatable, CaseIterable {
             return "Environment variable"
         }
     }
+
+    var noSourceIDFoundHint: String {
+        switch self {
+        case .appUser:
+            return "Please make sure that the user has a valid Site ID"
+        case .environmentVariable:
+            return "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName)."
+        }
+    }
+
+    func retrieveUpgradingSiteID() -> Int64? {
+        switch self {
+        case .appUser:
+            return ServiceLocator.stores.sessionManager.defaultStoreID
+        case .environmentVariable:
+            guard let stringSiteID = ProcessInfo.processInfo.environment[Constants.siteIdEnvironmentVariableName] else {
+                return nil
+            }
+
+            return Int64(stringSiteID)
+        }
+    }
 }
 
 @MainActor
@@ -30,14 +52,7 @@ struct InAppPurchasesDebugView: View {
     }
     @State var presentAlert = false
 
-    var noSourceIDFoundHint: String {
-        switch selectedSiteIDSourceType {
-        case .appUser:
-            return "Please make sure that the user has a valid Site ID"
-        case .environmentVariable:
-            "Please set your Int64 test site id to the Xcode environment variable with name \(Constants.siteIdEnvironmentVariableName)."
-        }
-    }
+
 
     var body: some View {
         List {
@@ -63,7 +78,7 @@ struct InAppPurchasesDebugView: View {
                     Text("No products")
                 } else if isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                } else if let siteID = retrieveUpgradingSiteID() {
+                } else if let siteID = selectedSiteIDSourceType.retrieveUpgradingSiteID() {
                     ForEach(products, id: \.id) { product in
                         Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
                             Task {
@@ -81,7 +96,7 @@ struct InAppPurchasesDebugView: View {
                         .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
                     }
                 } else {
-                    Text("No valid site id could be retrieved to purchase product. " + noSourceIDFoundHint)
+                    Text("No valid site id could be retrieved to purchase product. " + selectedSiteIDSourceType.noSourceIDFoundHint)
                     .foregroundColor(.red)
                 }
             }
@@ -115,19 +130,6 @@ struct InAppPurchasesDebugView: View {
             Task {
                 await loadUserEntitlements()
             }
-        }
-    }
-
-    private func retrieveUpgradingSiteID() -> Int64? {
-        switch selectedSiteIDSourceType {
-        case .appUser:
-            return ServiceLocator.stores.sessionManager.defaultStoreID
-        case .environmentVariable:
-            guard let stringSiteID = ProcessInfo.processInfo.environment[Constants.siteIdEnvironmentVariableName] else {
-                return nil
-            }
-
-            return Int64(stringSiteID)
         }
     }
 

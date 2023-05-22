@@ -2,7 +2,7 @@
 
 13.8
 -----
-
+- [Internal] Orders: Bundled products (within a product bundle) are now indented, to show their relationship to the parent bundle. [https://github.com/woocommerce/woocommerce-ios/pull/9778]
 
 13.7
 -----
@@ -14,7 +14,6 @@
 - [**] Mobile Payments: Tap to Pay is initialised on launch or foreground, to speed up payments [https://github.com/woocommerce/woocommerce-ios/pull/9750]
 - [*] Store Creation: Local notifications are used to support users during the store creation process. [https://github.com/woocommerce/woocommerce-ios/pull/9717, https://github.com/woocommerce/woocommerce-ios/pull/9719, https://github.com/woocommerce/woocommerce-ios/pull/9749]
 - [**] Mobile Payments: Merchants can now collect in-person payments by showing a QR code to their customers. [https://github.com/woocommerce/woocommerce-ios/pull/9762]
-- [Internal] Orders: Bundled products (within a product bundle) are now indented, to show their relationship to the parent bundle. [https://github.com/woocommerce/woocommerce-ios/pull/9778]
 
 13.6
 -----

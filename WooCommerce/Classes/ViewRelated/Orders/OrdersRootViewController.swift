@@ -156,40 +156,24 @@ final class OrdersRootViewController: UIViewController {
     /// Presents the Order Creation flow.
     ///
     @objc func presentOrderCreationFlow() {
-        guard let navigationController = navigationController else {
-            return
-        }
-
         let viewModel = EditableOrderViewModel(siteID: siteID)
-        viewModel.onFinished = { [weak self] order in
-            guard let self = self else { return }
-
-            self.dismiss(animated: true) {
-                self.navigateToOrderDetail(order)
-            }
-        }
-
         let viewController = OrderFormHostingController(viewModel: viewModel)
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
-            navigationController.present(newOrderNavigationController, animated: true)
-        } else {
-            viewController.hidesBottomBarWhenPushed = true
-            navigationController.pushViewController(viewController, animated: true)
-        }
-
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
-        orderDurationRecorder.startRecording()
+        setupNavigation(viewModel: viewModel, viewController: viewController)
     }
 
     /// Presents the Order Creation flow with a scanned Product
     ///
     private func presentOrderCreationFlowWithScannedProduct(with product: Product) {
+        let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProduct: product)
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        setupNavigation(viewModel: viewModel, viewController: viewController)
+    }
+
+    private func setupNavigation(viewModel: EditableOrderViewModel, viewController: OrderFormHostingController) {
         guard let navigationController = navigationController else {
             return
         }
 
-        let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProduct: product)
         viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
@@ -198,7 +182,6 @@ final class OrdersRootViewController: UIViewController {
             }
         }
 
-        let viewController = OrderFormHostingController(viewModel: viewModel)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
             let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
             navigationController.present(newOrderNavigationController, animated: true)

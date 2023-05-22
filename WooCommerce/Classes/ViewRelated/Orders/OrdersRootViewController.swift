@@ -169,6 +169,8 @@ final class OrdersRootViewController: UIViewController {
         setupNavigation(viewModel: viewModel, viewController: viewController)
     }
 
+    /// Coordinates the navigation between the different views involved in Order Creation, Editing, and Details
+    ///
     private func setupNavigation(viewModel: EditableOrderViewModel, viewController: OrderFormHostingController) {
         guard let navigationController = navigationController else {
             return

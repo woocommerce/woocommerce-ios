@@ -318,9 +318,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
-    /// Product given to the order when is created, if any
+    /// Yosemite.Product given to the order when is created, if any
+    /// It can be either a Product or ProductVariation entity
     ///
-    private let withInitialProduct: Product?
+    private let withInitialProduct: Yosemite.Product?
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -333,7 +334,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         withInitialProduct: Product? = nil) {
+         withInitialProduct: Yosemite.Product? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores

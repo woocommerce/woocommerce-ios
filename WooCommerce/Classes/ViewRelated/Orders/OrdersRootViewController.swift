@@ -155,18 +155,41 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow.
     ///
-    /// - parameter initialProductID: Represents the product ID of an initial item to create the Order with, if given
-    /// We default to use -1 as an invalid productID sentinel value, due not having a Swift's Int64 optional primitive equivalent in Obj-C,
-    /// and validate it when needed.
-    ///
-    @objc func presentOrderCreationFlow(with initialProductID: Int64 = -1) {
+    @objc func presentOrderCreationFlow() {
         guard let navigationController = navigationController else {
             return
         }
 
-        let productID: Int64? = validateSentinelValue(value: initialProductID)
+        let viewModel = EditableOrderViewModel(siteID: siteID)
+        viewModel.onFinished = { [weak self] order in
+            guard let self = self else { return }
 
-        let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProductID: productID)
+            self.dismiss(animated: true) {
+                self.navigateToOrderDetail(order)
+            }
+        }
+
+        let viewController = OrderFormHostingController(viewModel: viewModel)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
+            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
+            navigationController.present(newOrderNavigationController, animated: true)
+        } else {
+            viewController.hidesBottomBarWhenPushed = true
+            navigationController.pushViewController(viewController, animated: true)
+        }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        orderDurationRecorder.startRecording()
+    }
+
+    /// Presents the Order Creation flow with a scanned Product
+    ///
+    private func presentOrderCreationFlowWithScannedProduct(with product: Product) {
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProduct: product)
         viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }
 
@@ -201,7 +224,7 @@ final class OrdersRootViewController: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case let .success(product):
-                    self.presentOrderCreationFlow(with: product.productID)
+                    self.presentOrderCreationFlowWithScannedProduct(with: product)
                 case .failure:
                     self.displayErrorNotice()
                 }
@@ -486,20 +509,8 @@ private extension OrdersRootViewController {
     }
 }
 
-// MARK: - Helpers
-private extension OrdersRootViewController {
-    /// Validates the passed value by returning nil if it's invalid, or the passed value otherwise
-    ///
-    func validateSentinelValue(value: Int64) -> Int64? {
-        value == Constants.invalidProductID ? nil : value
-    }
-}
-
 // MARK: - Constants
 private extension OrdersRootViewController {
-    enum Constants {
-        static let invalidProductID: Int64 = -1
-    }
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
         static let accessibilityLabelSearchOrders = NSLocalizedString("Search orders", comment: "Search Orders")

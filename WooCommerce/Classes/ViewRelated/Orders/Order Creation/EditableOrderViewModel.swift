@@ -318,9 +318,9 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
-    /// Product ID given to the order when is created with a predetermined product, if any
+    /// Product given to the order when is created, if any
     ///
-    private let withInitialProductID: Int64?
+    private let withInitialProduct: Product?
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -333,7 +333,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         withInitialProductID: Int64? = nil) {
+         withInitialProduct: Product? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -344,7 +344,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
-        self.withInitialProductID = withInitialProductID
+        self.withInitialProduct = withInitialProduct
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -943,10 +943,10 @@ private extension EditableOrderViewModel {
     /// If given an initial item during the Order creation setup, sync this product with the Order
     ///
     func configureInitialOrderFromScannedItemIfNeeded() {
-        guard let productID = self.withInitialProductID else {
+        guard let product = self.withInitialProduct else {
             return
         }
-        updateOrderWithProduct(productID)
+        updateOrderWithProduct(product)
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1293,11 +1293,11 @@ extension EditableOrderViewModel {
             return onCompletion(.failure(ScannerError.nilSKU))
         }
 
-        mapFromSKUtoProductID(sku: sku) { [weak self] result in
+        mapFromSKUtoProduct(sku: sku) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case let .success(productID):
-                self.updateOrderWithProduct(productID)
+            case let .success(product):
+                self.updateOrderWithProduct(product)
                 onCompletion(.success(()))
             case .failure:
                 onCompletion(.failure(ScannerError.productNotFound))
@@ -1305,13 +1305,13 @@ extension EditableOrderViewModel {
         }
     }
 
-    /// Attempts to map SKU to product ID
+    /// Attempts to map SKU to Product
     ///
-    private func mapFromSKUtoProductID(sku: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+    private func mapFromSKUtoProduct(sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: { result in
             switch result {
             case let .success(product):
-                onCompletion(.success(product.productID))
+                onCompletion(.success(product))
             case let .failure(error):
                 onCompletion(.failure(error))
             }
@@ -1319,17 +1319,13 @@ extension EditableOrderViewModel {
         stores.dispatch(action)
     }
 
-    /// Validates if the given productID can be found in local storage, and updates the Order with the correspondent product or variation.
-    /// Display a notice error otherwise.
+    /// Validates if the given product entity is a product or a productVariation, and updates the Order with the correspondent item
     ///
-    private func updateOrderWithProduct(_ productID: Int64) {
-        if let product = allProducts.first(where: { $0.productID == productID }) {
-            orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
-        } else if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {
+    private func updateOrderWithProduct(_ product: Product) {
+        if let productVariation = product.toProductVariation() {
             orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
         } else {
-            self.notice = NoticeFactory.createOrderFromScannedProductErrorNotice(for: productID)
-            DDLogError("⛔️ ID \(productID) not found. \(ScannerError.productNotFoundInLocalStorage)")
+            orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
         }
     }
 }
@@ -1346,12 +1342,6 @@ extension EditableOrderViewModel {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
             return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
-        }
-
-        /// Returns an error notice when the given product ID cannot be found in local storage
-        ///
-        static func createOrderFromScannedProductErrorNotice(for ID: Int64) -> Notice {
-            return Notice(title: Localization.errorMessageEditOrderSync, feedbackType: .error)
         }
 
         /// Returns an order sync error notice.

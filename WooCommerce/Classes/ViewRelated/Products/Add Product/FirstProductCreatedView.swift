@@ -2,8 +2,12 @@ import ConfettiSwiftUI
 import SwiftUI
 
 final class FirstProductCreatedHostingController: UIHostingController<FirstProductCreatedView> {
-    init(productURL: String) {
-        super.init(rootView: FirstProductCreatedView(productURL: productURL))
+    init(productURL: URL) {
+        super.init(rootView: FirstProductCreatedView())
+        rootView.onSharingProduct = { [weak self] in
+            guard let self else { return }
+            SharingHelper.shareURL(url: productURL, from: self.view, in: self)
+        }
     }
 
     @available(*, unavailable)
@@ -25,14 +29,14 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
 
 private extension FirstProductCreatedHostingController {
     enum Localization {
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the first created product screen")
     }
 }
 
 /// Celebratory screen after creating the first product 🎉
 ///
 struct FirstProductCreatedView: View {
-    let productURL: String
+    var onSharingProduct: () -> Void = {}
     @State private var confettiCounter: Int = 0
 
     var body: some View {
@@ -45,11 +49,10 @@ struct FirstProductCreatedView: View {
                 Text(Localization.message)
                     .secondaryBodyStyle()
                     .multilineTextAlignment(.center)
-                Button(Localization.shareAction) {
-                    // TODO
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal)
+                Button(Localization.shareAction,
+                       action: onSharingProduct)
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(.horizontal)
                 Spacer()
             }
             .padding()
@@ -88,10 +91,11 @@ private extension FirstProductCreatedView {
 
 struct FirstProductCreatedView_Previews: PreviewProvider {
     static var previews: some View {
-        FirstProductCreatedView(productURL: "https://example.com")
-            .environment(\.colorScheme, .light)
-        FirstProductCreatedView(productURL: "https://example.com")
-            .environment(\.colorScheme, .dark)
-            .previewInterfaceOrientation(.landscapeLeft)
+        FirstProductCreatedView()
+        .environment(\.colorScheme, .light)
+
+        FirstProductCreatedView()
+        .environment(\.colorScheme, .dark)
+        .previewInterfaceOrientation(.landscapeLeft)
     }
 }

@@ -33,11 +33,11 @@ final class ShippingCustomsFormListHostingController: UIHostingController<Shippi
 struct ShippingLabelCustomsFormList: View {
     @Environment(\.presentationMode) var presentation
     @ObservedObject private var viewModel: ShippingLabelCustomsFormListViewModel
-    @State private var shippingNoticeBannerID = UUID()
     @State private var isShippingNoticeBannerHighlighted = false
 
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
-
+    private var shippingNoticeBannerID = UUID()
+    
     var onLearnMoreTapped: () -> Void = {}
 
     init(viewModel: ShippingLabelCustomsFormListViewModel,

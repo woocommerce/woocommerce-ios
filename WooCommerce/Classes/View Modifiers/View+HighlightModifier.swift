@@ -24,7 +24,8 @@ struct HighlightModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .border(self.animationActive.wrappedValue ? self.color : Color.clear, width: 3.0)
+            .border(animationActive.wrappedValue ? color : Color.clear,
+                    width: Constants.highlightBorderWidth)
             .animation(animation, value: animationActive.wrappedValue)
     }
 }

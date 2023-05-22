@@ -34,6 +34,7 @@ struct ShippingLabelCustomsFormList: View {
     @Environment(\.presentationMode) var presentation
     @ObservedObject private var viewModel: ShippingLabelCustomsFormListViewModel
     @State private var shippingNoticeBannerID = UUID()
+    @State private var isShippingNoticeBannerHighlighted = false
 
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
 
@@ -70,6 +71,7 @@ struct ShippingLabelCustomsFormList: View {
                             viewModel.onInfoTooltipTapped()
                             withAnimation {
                                 scrollProxy.scrollTo(shippingNoticeBannerID, anchor: .top)
+                                isShippingNoticeBannerHighlighted = true
                             }
                         })
                     }

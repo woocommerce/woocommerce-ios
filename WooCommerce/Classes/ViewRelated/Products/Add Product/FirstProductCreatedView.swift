@@ -1,40 +1,52 @@
+import ConfettiSwiftUI
 import SwiftUI
 
 /// Celebratory screen after creating the first product 🎉
 ///
 struct FirstProductCreatedView: View {
+    @State private var confettiCounter: Int = 0
+
     var body: some View {
-        VStack(spacing: Layout.verticalSpacing) {
-            Spacer()
-            VStack {
+        GeometryReader { proxy in
+            VStack(spacing: Constants.verticalSpacing) {
+                Spacer()
                 Text(Localization.title)
                     .titleStyle()
+                Image(uiImage: .welcomeImage)
                 Text(Localization.message)
                     .secondaryBodyStyle()
+                Button(Localization.shareAction) {
+                    // TODO
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal)
+                Spacer()
             }
-            Image(uiImage: .welcomeImage)
-            Button(Localization.shareAction) {
-                // TODO
-            }
-            .buttonStyle(PrimaryButtonStyle())
-            Spacer()
+            .padding()
+            .background(Color(uiColor: .systemBackground))
+            .confettiCannon(counter: $confettiCounter,
+                            num: Constants.confettiCount,
+                            rainHeight: proxy.size.height,
+                            radius: proxy.size.width)
         }
-        .padding()
-        .background(Color(uiColor: .systemBackground))
+        .onAppear {
+            confettiCounter += 1
+        }
     }
 }
 
 private extension FirstProductCreatedView {
-    enum Layout {
-        static let verticalSpacing: CGFloat = 32
+    enum Constants {
+        static let verticalSpacing: CGFloat = 48
+        static let confettiCount: Int = 100
     }
     enum Localization {
         static let title = NSLocalizedString(
-            "Congratulations 🎉",
+            "First product created 🎉",
             comment: "Title of the celebratory screen after creating the first product"
         )
         static let message = NSLocalizedString(
-            "Great work on your first product!",
+            "Congratulations! You're one step closer to get the new store ready.",
             comment: "Message on the celebratory screen after creating first product"
         )
         static let shareAction = NSLocalizedString(

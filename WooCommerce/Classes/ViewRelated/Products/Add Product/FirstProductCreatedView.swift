@@ -1,14 +1,43 @@
 import ConfettiSwiftUI
 import SwiftUI
 
+final class FirstProductCreatedHostingController: UIHostingController<FirstProductCreatedView> {
+    init(productURL: String) {
+        super.init(rootView: FirstProductCreatedView(productURL: productURL))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureTransparentNavigationBar()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+    }
+
+    @objc
+    private func dismissView() {
+        dismiss(animated: true)
+    }
+}
+
+private extension FirstProductCreatedHostingController {
+    enum Localization {
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
+    }
+}
+
 /// Celebratory screen after creating the first product 🎉
 ///
 struct FirstProductCreatedView: View {
+    let productURL: String
     @State private var confettiCounter: Int = 0
 
     var body: some View {
         GeometryReader { proxy in
-            VStack(spacing: Constants.verticalSpacing) {
+            ScrollableVStack(spacing: Constants.verticalSpacing) {
                 Spacer()
                 Text(Localization.title)
                     .titleStyle()
@@ -24,7 +53,6 @@ struct FirstProductCreatedView: View {
                 Spacer()
             }
             .padding()
-            .scrollVerticallyIfNeeded()
             .confettiCannon(counter: $confettiCounter,
                             num: Constants.confettiCount,
                             rainHeight: proxy.size.height,
@@ -60,9 +88,9 @@ private extension FirstProductCreatedView {
 
 struct FirstProductCreatedView_Previews: PreviewProvider {
     static var previews: some View {
-        FirstProductCreatedView()
+        FirstProductCreatedView(productURL: "https://example.com")
             .environment(\.colorScheme, .light)
-        FirstProductCreatedView()
+        FirstProductCreatedView(productURL: "https://example.com")
             .environment(\.colorScheme, .dark)
             .previewInterfaceOrientation(.landscapeLeft)
     }

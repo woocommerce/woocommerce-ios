@@ -4,15 +4,20 @@ import Yosemite
 struct ShippingLabelCustomsFormItemDetails: View {
     private let itemNumber: Int
     private let safeAreaInsets: EdgeInsets
+    private let infoTooltipTapped: () -> Void
 
     @State private var isCollapsed: Bool = true
     @State private var isShowingCountries: Bool = false
     @ObservedObject private var viewModel: ShippingLabelCustomsFormItemDetailsViewModel
 
-    init(itemNumber: Int, viewModel: ShippingLabelCustomsFormItemDetailsViewModel, safeAreaInsets: EdgeInsets = .zero) {
+    init(itemNumber: Int,
+         viewModel: ShippingLabelCustomsFormItemDetailsViewModel,
+         safeAreaInsets: EdgeInsets = .zero,
+         infoTooltipTapped: @escaping () -> Void = {}) {
         self.itemNumber = itemNumber
         self.viewModel = viewModel
         self.safeAreaInsets = safeAreaInsets
+        self.infoTooltipTapped = infoTooltipTapped
     }
 
     var body: some View {
@@ -22,9 +27,18 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 Text(String(format: Localization.customLineTitle, itemNumber))
                     .bodyStyle()
                 Spacer()
-                Image(uiImage: .noticeImage)
-                    .foregroundColor(Color(.error))
-                    .renderedIf(viewModel.validatedItem == nil)
+                ZStack {
+                    Image(uiImage: .noticeImage)
+                        .foregroundColor(Color(.error))
+                        .renderedIf(viewModel.validatedItem == nil)
+
+                    Button(action: {
+                        infoTooltipTapped()
+                    }) {
+                        Image(uiImage: .infoOutlineImage)
+                            .foregroundColor(Color(.accent))
+                    }.renderedIf(viewModel.canDisplayTooltipInfoIcon)
+                }
             }
         }, content: {
             // Item Description
@@ -40,7 +54,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .background(Color(.listForeground(modal: false)))
 
                 VStack(spacing: 0) {
-                    ValidationErrorRow(errorMessage: Localization.descriptionError)
+                    ValidationErrorRow(errorMessage: viewModel.validationErrorMessage)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -174,8 +188,6 @@ private extension ShippingLabelCustomsFormItemDetails {
         static let descriptionPlaceholder = NSLocalizedString("Enter description",
                                                               comment: "Placeholder of Description row of item details in " +
                                                                 "Customs screen of Shipping Label flow")
-        static let descriptionError = NSLocalizedString("Item description is required",
-                                                        comment: "Error message for missing value in Description row in Customs screen of Shipping Label flow")
         static let hsTariffNumberTitle = NSLocalizedString("HS Tariff Number",
                                                            comment: "Title of HS Tariff Number row in Package Content" +
                                                                 " section in Customs screen of Shipping Label flow")
@@ -213,7 +225,11 @@ struct ShippingLabelCustomsFormItemDetails_Previews: PreviewProvider {
                                                              originCountry: "US",
                                                              productID: 123)
 
-    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails, countries: [], currency: "$")
+    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails,
+                                                                              countries: [],
+                                                                              currency: "$",
+                                                                              shouldEnforceEUCustomsDescription: false,
+                                                                              isEUTooltipAvailable: false)
 
     static var previews: some View {
         ShippingLabelCustomsFormItemDetails(itemNumber: 1, viewModel: sampleViewModel, safeAreaInsets: .zero)

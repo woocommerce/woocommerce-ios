@@ -86,7 +86,11 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     private var cancellables: Set<AnyCancellable> = []
 
-    init(customsForm: ShippingLabelCustomsForm, destinationCountry: Country, countries: [Country], currency: String) {
+    init(customsForm: ShippingLabelCustomsForm,
+         destinationCountry: Country,
+         countries: [Country],
+         currency: String,
+         isEUShippingScenario: Bool) {
         self.packageID = customsForm.packageID
         self.packageName = customsForm.packageName
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
@@ -99,7 +103,13 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.destinationCountry = destinationCountry
         self.allCountries = countries
         self.currency = currency
-        self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries, currency: currency) }
+        self.itemViewModels = customsForm.items.enumerated().map { index, element in
+                .init(item: element,
+                      countries: countries,
+                      currency: currency,
+                      shouldEnforceEUCustomsDescription: isEUShippingScenario,
+                      isEUTooltipAvailable: index == 0 && isEUShippingScenario)
+        }
 
         configureItemsValidation()
         configureFormValidation()

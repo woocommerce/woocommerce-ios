@@ -282,55 +282,59 @@ private struct ProductsSection: View {
                     Divider()
                 }
 
-                Button(OrderForm.Localization.addProducts) {
-                    showAddProduct.toggle()
-                }
-                .id(addProductButton)
-                .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
-                .buttonStyle(PlusButtonStyle())
-                .sheet(isPresented: $showAddProduct, onDismiss: {
-                    scroll.scrollTo(addProductButton)
-                }, content: {
-                    ProductSelectorNavigationView(
-                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                        isPresented: $showAddProduct,
-                        viewModel: viewModel.productSelectorViewModel)
-                    .onDisappear {
-                        viewModel.productSelectorViewModel.clearSearchAndFilters()
-                        navigationButtonID = UUID()
+                HStack {
+                    Button(OrderForm.Localization.addProducts) {
+                        showAddProduct.toggle()
                     }
-                })
-                Button(OrderForm.Localization.addProductViaSKUScanner) {
-                    let capturePermissionStatus = viewModel.capturePermissionStatus
-                    switch capturePermissionStatus {
-                    case .notPermitted:
-                        logPermissionStatus(status: .notPermitted)
-                        self.showPermissionsSheet = true
-                    case .notDetermined:
-                        logPermissionStatus(status: .notDetermined)
-                        viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
-                            if isPermissionGranted {
-                                showAddProductViaSKUScanner = true
-                                logPermissionStatus(status: .permitted)
-                            }
-                        })
-                    case .permitted:
-                        showAddProductViaSKUScanner = true
-                        logPermissionStatus(status: .permitted)
-                    }
-                }
-                .accessibilityIdentifier(OrderForm.Accessibility.addProductViaSKUScannerButtonIdentifier)
-                .buttonStyle(PlusButtonStyle())
-                .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
-                    scroll.scrollTo(addProductViaSKUScannerButton)
-                }, content: {
-                    ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                        viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                            showAddProductViaSKUScanner.toggle()
+                    .id(addProductButton)
+                    .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                    .buttonStyle(PlusButtonStyle())
+                    .sheet(isPresented: $showAddProduct, onDismiss: {
+                        scroll.scrollTo(addProductButton)
+                    }, content: {
+                        ProductSelectorNavigationView(
+                            configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                            isPresented: $showAddProduct,
+                            viewModel: viewModel.productSelectorViewModel)
+                        .onDisappear {
+                            viewModel.productSelectorViewModel.clearSearchAndFilters()
+                            navigationButtonID = UUID()
+                        }
+                    })
+
+                    Button(action: {
+                        let capturePermissionStatus = viewModel.capturePermissionStatus
+                        switch capturePermissionStatus {
+                        case .notPermitted:
+                            logPermissionStatus(status: .notPermitted)
+                            self.showPermissionsSheet = true
+                        case .notDetermined:
+                            logPermissionStatus(status: .notDetermined)
+                            viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                                if isPermissionGranted {
+                                    showAddProductViaSKUScanner = true
+                                    logPermissionStatus(status: .permitted)
+                                }
+                            })
+                        case .permitted:
+                            showAddProductViaSKUScanner = true
+                            logPermissionStatus(status: .permitted)
+                        }
+                    }, label: {
+                        Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                            .foregroundColor(Color(.brand))
+                    })
+                    .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
+                        scroll.scrollTo(addProductViaSKUScannerButton)
+                    }, content: {
+                        ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                            viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                                showAddProductViaSKUScanner.toggle()
+                            })
                         })
                     })
-                })
-                .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+                    .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+                }
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
@@ -368,8 +372,6 @@ private extension OrderForm {
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
-        static let addProductViaSKUScanner = NSLocalizedString("Add Product via SKU scanner",
-                                                                   comment: "Title text of the button to add a single product via SKU scanning")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
         static let permissionsTitle =

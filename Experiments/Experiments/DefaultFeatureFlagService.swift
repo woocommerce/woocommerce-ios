@@ -94,7 +94,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .storeCreationNotifications:
             return true
         case .euShippingNotification:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .sdkLessGoogleSignIn:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

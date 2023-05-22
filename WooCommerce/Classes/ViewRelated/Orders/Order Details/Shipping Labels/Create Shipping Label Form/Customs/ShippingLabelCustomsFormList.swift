@@ -46,30 +46,32 @@ struct ShippingLabelCustomsFormList: View {
 
     var body: some View {
         GeometryReader { geometry in
-            ScrollView {
-                EUShippingNoticeBanner(width: geometry.size.width)
-                    .onDismiss {
-                        viewModel.bannerDismissTapped()
+            ScrollViewReader { scrollProxy in
+                ScrollView {
+                    EUShippingNoticeBanner(width: geometry.size.width)
+                        .onDismiss {
+                            viewModel.bannerDismissTapped()
+                        }
+                        .onLearnMore {
+                            onLearnMoreTapped()
+                        }
+                        .renderedIf(viewModel.isShippingNoticeVisible)
+                        .fixedSize(horizontal: false, vertical: true)
+                    
+                    ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
+                        ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
+                                                      packageNumber: index + 1,
+                                                      safeAreaInsets: geometry.safeAreaInsets,
+                                                      viewModel: item,
+                                                      infoTooltipTapped: {
+                            viewModel.onInfoTooltipTapped()
+                        })
                     }
-                    .onLearnMore {
-                        onLearnMoreTapped()
-                    }
-                    .renderedIf(viewModel.isShippingNoticeVisible)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
-                    ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
-                                                  packageNumber: index + 1,
-                                                  safeAreaInsets: geometry.safeAreaInsets,
-                                                  viewModel: item,
-                                                  infoTooltipTapped: {
-                        viewModel.onInfoTooltipTapped()
-                    })
+                    .padding(.bottom, insets: geometry.safeAreaInsets)
                 }
-                .padding(.bottom, insets: geometry.safeAreaInsets)
+                .background(Color(.listBackground))
+                .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             }
-            .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.navigationTitle)
         .toolbar {

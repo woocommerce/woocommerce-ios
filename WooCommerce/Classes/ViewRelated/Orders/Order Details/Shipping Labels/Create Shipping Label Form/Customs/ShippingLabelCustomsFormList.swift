@@ -37,7 +37,7 @@ struct ShippingLabelCustomsFormList: View {
 
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
     private var shippingNoticeBannerID = UUID()
-    
+
     var onLearnMoreTapped: () -> Void = {}
 
     init(viewModel: ShippingLabelCustomsFormListViewModel,

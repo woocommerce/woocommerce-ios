@@ -30,7 +30,8 @@ struct HighlightModifier: ViewModifier {
     }
 }
 
-// MARK: View extension
+// MARK: - View extension
+//
 extension View {
     func highlight(on highlighted: Binding<Bool>, color: Color) -> some View {
         self.modifier(HighlightModifier(highlighted: highlighted, color: color))

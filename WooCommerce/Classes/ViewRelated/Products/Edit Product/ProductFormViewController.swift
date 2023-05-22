@@ -470,6 +470,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
     }
 
+    @objc private func shareProduct() {
+        ServiceLocator.analytics.track(.productDetailShareButtonTapped)
+        displayShareProduct()
+    }
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let section = tableViewModel.sections[section]
         switch section {
@@ -1003,6 +1008,8 @@ private extension ProductFormViewController {
                 return createSaveBarButtonItem()
             case .more:
                 return createMoreOptionsBarButtonItem()
+            case .share:
+                return createShareBarButtonItem()
             }
         }
 
@@ -1047,6 +1054,12 @@ private extension ProductFormViewController {
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
+    }
+
+    func createShareBarButtonItem() -> UIBarButtonItem {
+        UIBarButtonItem(barButtonSystemItem: .action,
+                        target: self,
+                        action: #selector(shareProduct))
     }
 }
 

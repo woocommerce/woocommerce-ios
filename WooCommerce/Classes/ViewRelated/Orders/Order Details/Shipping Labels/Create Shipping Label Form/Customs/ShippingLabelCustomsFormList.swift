@@ -34,7 +34,7 @@ struct ShippingLabelCustomsFormList: View {
     @Environment(\.presentationMode) var presentation
     @ObservedObject private var viewModel: ShippingLabelCustomsFormListViewModel
     @State private var shippingNoticeBannerID = UUID()
-    
+
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
 
     var onLearnMoreTapped: () -> Void = {}
@@ -60,7 +60,7 @@ struct ShippingLabelCustomsFormList: View {
                         .renderedIf(viewModel.isShippingNoticeVisible)
                         .fixedSize(horizontal: false, vertical: true)
                         .id(shippingNoticeBannerID)
-                    
+
                     ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
                         ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                       packageNumber: index + 1,
@@ -68,6 +68,9 @@ struct ShippingLabelCustomsFormList: View {
                                                       viewModel: item,
                                                       infoTooltipTapped: {
                             viewModel.onInfoTooltipTapped()
+                            withAnimation {
+                                scrollProxy.scrollTo(shippingNoticeBannerID, anchor: .top)
+                            }
                         })
                     }
                     .padding(.bottom, insets: geometry.safeAreaInsets)

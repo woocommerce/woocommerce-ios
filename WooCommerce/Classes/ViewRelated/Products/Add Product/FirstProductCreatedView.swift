@@ -7,7 +7,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
         rootView.onSharingProduct = { [weak self] in
             guard let self else { return }
             SharingHelper.shareURL(url: productURL, from: self.view, in: self)
-            ServiceLocator.analytics.track(.firstCreatedProductShared)
+            ServiceLocator.analytics.track(.firstCreatedProductShareTapped)
         }
     }
 

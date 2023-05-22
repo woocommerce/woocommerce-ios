@@ -715,7 +715,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: First created product events
     case firstCreatedProductShown = "first_created_product_shown"
-    case firstCreatedProductShared = "first_created_product_shared"
+    case firstCreatedProductShareTapped = "first_created_product_share_tapped"
 
     // MARK: Jetpack Tunnel Events
     //

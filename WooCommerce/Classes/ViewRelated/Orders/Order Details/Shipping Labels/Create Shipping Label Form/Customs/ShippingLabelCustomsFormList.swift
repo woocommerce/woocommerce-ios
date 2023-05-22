@@ -60,6 +60,7 @@ struct ShippingLabelCustomsFormList: View {
                         }
                         .renderedIf(viewModel.isShippingNoticeVisible)
                         .fixedSize(horizontal: false, vertical: true)
+                        .blinkBorder(on: $isShippingNoticeBannerHighlighted, color: Color.red)
                         .id(shippingNoticeBannerID)
 
                     ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in

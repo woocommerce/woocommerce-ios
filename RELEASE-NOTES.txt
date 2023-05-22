@@ -2,6 +2,7 @@
 
 13.8
 -----
+- [*] Add Products: A new view is display to celebrate when the first product is created in a store. [https://github.com/woocommerce/woocommerce-ios/pull/9790]
 
 
 13.7

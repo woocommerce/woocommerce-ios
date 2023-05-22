@@ -89,7 +89,7 @@ private extension StoreOnboardingCoordinator {
                                                 sourceNavigationController: navigationController,
                                                 isFirstProduct: true)
         self.addProductCoordinator = coordinator
-        coordinator.onProductCreated = { [weak self] product in
+        coordinator.onProductCreated = { [weak self] _ in
             self?.onTaskCompleted(.addFirstProduct)
         }
         coordinator.start()

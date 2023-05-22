@@ -2,7 +2,7 @@
 
 13.8
 -----
-
+- [*] Product form: a share action is shown in the navigation bar if the product can be shared and no more than one action is displayed, in addition to the more menu > Share. [https://github.com/woocommerce/woocommerce-ios/pull/9789]
 
 13.7
 -----

@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 88 (Release 13.8.0.0)
+- @rachelmcr 2023-05-22
+    - Update `amount` attribute on `OrderGiftCard` entity to `Double` type.
+
 ## Model 87 (Release 13.7.0.0)
 - @rachelmcr 2023-05-17
     - Added `parent` attribute to `OrderItem` entity.

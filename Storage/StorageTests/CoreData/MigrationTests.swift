@@ -1913,6 +1913,30 @@ final class MigrationTests: XCTestCase {
         // New value is set correctly for parent attribute.
         XCTAssertEqual(try XCTUnwrap(migratedOrderItem.value(forKey: "parent") as? Int64), parentID)
     }
+
+    func test_migrating_from_87_to_88_updates_gift_card_amount_to_Double() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 87")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderGiftCard = insertOrderGiftCard(to: sourceContext)
+        orderGiftCard.setValue(1, forKey: "amount")
+        try sourceContext.save()
+
+        // Value for gift card amount is Int64.
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderGiftCard"), 1)
+        XCTAssertEqual(try XCTUnwrap(orderGiftCard.value(forKey: "amount") as? Int64), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 88")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrderGiftCard = try XCTUnwrap(targetContext.first(entityName: "OrderGiftCard"))
+
+        // Migrated value for gift card amount is Double.
+        XCTAssertEqual(try XCTUnwrap(migratedOrderGiftCard.value(forKey: "amount") as? Double), 1.0)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

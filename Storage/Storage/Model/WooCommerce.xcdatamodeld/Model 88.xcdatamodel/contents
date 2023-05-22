@@ -218,7 +218,7 @@
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItemTax" inverseName="feeLine" inverseEntity="OrderItemTax"/>
     </entity>
     <entity name="OrderGiftCard" representedClassName="OrderGiftCard" syncable="YES">
-        <attribute name="amount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="amount" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="code" attributeType="String" defaultValueString=""/>
         <attribute name="giftCardID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="appliedGiftCards" inverseEntity="Order"/>

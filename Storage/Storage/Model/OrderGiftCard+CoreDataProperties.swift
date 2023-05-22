@@ -10,7 +10,7 @@ extension OrderGiftCard {
 
     @NSManaged public var giftCardID: Int64
     @NSManaged public var code: String?
-    @NSManaged public var amount: Int64
+    @NSManaged public var amount: Double
     @NSManaged public var order: Order?
 
 }

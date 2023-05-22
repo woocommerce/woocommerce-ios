@@ -7,6 +7,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
         rootView.onSharingProduct = { [weak self] in
             guard let self else { return }
             SharingHelper.shareURL(url: productURL, from: self.view, in: self)
+            ServiceLocator.analytics.track(.firstCreatedProductShared)
         }
     }
 
@@ -19,6 +20,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
         super.viewDidLoad()
         configureTransparentNavigationBar()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+        ServiceLocator.analytics.track(.firstCreatedProductShown)
     }
 
     @objc
@@ -83,7 +85,7 @@ private extension FirstProductCreatedView {
             comment: "Message on the celebratory screen after creating first product"
         )
         static let shareAction = NSLocalizedString(
-            "Spread the word",
+            "Share Product",
             comment: "Title of the action button to share the first created product"
         )
     }

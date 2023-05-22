@@ -314,10 +314,11 @@ private extension OrdersRootViewController {
             createAddOrderItem(),
             createSearchBarButtonItem()
         ]
-        if featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner) {
-            buttons.insert(createAddOrderByProductScanningButtonItem(), at: 1)
-        }
         navigationItem.rightBarButtonItems = buttons
+
+        if featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner) {
+            navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+        }
     }
 
     func configureFiltersBar() {

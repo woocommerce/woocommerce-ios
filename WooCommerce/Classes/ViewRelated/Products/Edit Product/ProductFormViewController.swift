@@ -281,8 +281,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canShareProduct() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailShareButtonTapped)
-                self?.displayShareProduct()
+                self?.displayShareProduct(source: .moreMenu)
             }
         }
 
@@ -471,8 +470,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     @objc private func shareProduct() {
-        ServiceLocator.analytics.track(.productDetailShareButtonTapped)
-        displayShareProduct()
+        displayShareProduct(source: .productForm)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -863,7 +861,9 @@ private extension ProductFormViewController {
         WebviewHelper.launch(url, with: self)
     }
 
-    func displayShareProduct() {
+    func displayShareProduct(source: WooAnalyticsEvent.ProductForm.ShareProductSource) {
+        ServiceLocator.analytics.track(event: .ProductForm.productDetailShareButtonTapped(source: source))
+
         guard let url = URL(string: product.permalink) else {
             return
         }

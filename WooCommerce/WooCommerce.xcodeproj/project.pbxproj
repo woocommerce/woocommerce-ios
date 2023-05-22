@@ -191,6 +191,7 @@
 		02490D1E284F3226002096EF /* ProductImagesSaverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02490D1D284F3226002096EF /* ProductImagesSaverTests.swift */; };
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
+		024D4E842A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024D4E832A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift */; };
 		024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3042372ADCD006658FE /* KeyboardScrollable.swift */; };
 		024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3062372C18D006658FE /* AztecUIConfigurator.swift */; };
 		024DF3092372CA00006658FE /* EditorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3082372CA00006658FE /* EditorViewProperties.swift */; };
@@ -2481,6 +2482,7 @@
 		02490D1D284F3226002096EF /* ProductImagesSaverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesSaverTests.swift; sourceTree = "<group>"; };
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
+		024D4E832A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductForm.swift"; sourceTree = "<group>"; };
 		024DF3042372ADCD006658FE /* KeyboardScrollable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardScrollable.swift; sourceTree = "<group>"; };
 		024DF3062372C18D006658FE /* AztecUIConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecUIConfigurator.swift; sourceTree = "<group>"; };
 		024DF3082372CA00006658FE /* EditorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewProperties.swift; sourceTree = "<group>"; };
@@ -7451,6 +7453,7 @@
 				02B21C5629C9EEF900C5623B /* WooAnalyticsEvent+StoreOnboarding.swift */,
 				DE621F6929D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift */,
 				02E222C729FBA60F004579A1 /* WooAnalyticsEvent+ProductFormAI.swift */,
+				024D4E832A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -11178,6 +11181,7 @@
 				03BB9EA5292E2D0C00251E9E /* CardReaderConnectionController.swift in Sources */,
 				B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */,
 				7E6A019F2725CD76001668D5 /* FilterProductCategoryListViewModel.swift in Sources */,
+				024D4E842A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift in Sources */,
 				CC53FB3C2757EC7200C4CA4F /* ProductSelectorViewModel.swift in Sources */,
 				CCA1D5FE293F537400B40560 /* DeltaPercentage.swift in Sources */,
 				4569D3C325DC008700CDC3E2 /* SiteAddress.swift in Sources */,

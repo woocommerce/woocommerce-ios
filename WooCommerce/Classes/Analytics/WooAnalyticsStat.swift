@@ -405,6 +405,15 @@ public enum WooAnalyticsStat: String {
     //
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
 
+    // MARK: Barcode Scanning events
+    //
+    case orderCreationProductBarcodeScanningTapped = "order_creation_product_barcode_scanning_tapped"
+    case orderListProductBarcodeScanningTapped = "order_list_product_barcode_scanning_tapped"
+    case orderProductBarcodeScanningSuccess = "order_product_barcode_scanning_success"
+    case orderProductBarcodeScanningFailed = "order_product_barcode_scanning_failed"
+    case orderProductSearchViaSKUSuccess = "order_product_search_via_sku_success"
+    case orderProductSearchViaSKUFailure = "order_product_search_via_sku_failure"
+
     // MARK: Shipping Labels Events
     //
     case shippingLabelRefundRequested = "shipping_label_refund_requested"

@@ -466,6 +466,13 @@ extension WooAnalyticsEvent {
             case variation
         }
 
+        /// Possible methods to add items to an Order
+        ///
+        enum EntryMethods: String {
+            case manually
+            case barcode
+        }
+
         enum GlobalKeys {
             static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
         }
@@ -489,6 +496,7 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let isFilterActive = "is_filter_active"
             static let searchFilter = "search_filter"
+            static let addedVia = "added_via"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -510,10 +518,11 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderProductAdd(flow: Flow, productCount: Int) -> WooAnalyticsEvent {
+        static func orderProductAdd(flow: Flow, productCount: Int, entryMethod: EntryMethods = .manually) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [
                 Keys.flow: flow.rawValue,
-                Keys.productCount: Int64(productCount)
+                Keys.productCount: Int64(productCount),
+                Keys.addedVia: entryMethod.rawValue
             ])
         }
 

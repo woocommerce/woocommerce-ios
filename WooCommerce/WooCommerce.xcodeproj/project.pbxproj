@@ -765,6 +765,8 @@
 		269098B827D68CCD001FEB07 /* FeesInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269098B727D68CCD001FEB07 /* FeesInputTransformer.swift */; };
 		269098BA27D6922E001FEB07 /* FeesInputTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269098B927D6922E001FEB07 /* FeesInputTransformerTests.swift */; };
 		269A2F47295CC683000828A8 /* GenerateVariationsSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269A2F46295CC683000828A8 /* GenerateVariationsSelectorCommand.swift */; };
+		269B46622A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269B46612A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift */; };
+		269B46642A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269B46632A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift */; };
 		26A630ED253F3B5C00CBC3B1 /* RefundCreationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */; };
 		26A630F3253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630F2253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift */; };
 		26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630FD253F63C300CBC3B1 /* RefundableOrderItem.swift */; };
@@ -3054,6 +3056,8 @@
 		269098B727D68CCD001FEB07 /* FeesInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeesInputTransformer.swift; sourceTree = "<group>"; };
 		269098B927D6922E001FEB07 /* FeesInputTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeesInputTransformerTests.swift; sourceTree = "<group>"; };
 		269A2F46295CC683000828A8 /* GenerateVariationsSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationsSelectorCommand.swift; sourceTree = "<group>"; };
+		269B46612A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnalyticsSettingsUseCase.swift; sourceTree = "<group>"; };
+		269B46632A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnalyticsSettingsUseCaseTests.swift; sourceTree = "<group>"; };
 		26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCreationUseCase.swift; sourceTree = "<group>"; };
 		26A630F2253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCreationUseCaseTests.swift; sourceTree = "<group>"; };
 		26A630FD253F63C300CBC3B1 /* RefundableOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundableOrderItem.swift; sourceTree = "<group>"; };
@@ -6028,6 +6032,7 @@
 			children = (
 				2609797B2A13D31500442249 /* PrivacyBannerPresentationUseCaseTests.swift */,
 				263EAF9B2A15E1F3008C66CB /* PrivacyBannerViewModelTest.swift */,
+				269B46632A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -9101,6 +9106,7 @@
 				263EAF992A15D513008C66CB /* PrivacyBannerViewModel.swift */,
 				26B233D02A14208800926EAD /* PrivacyBannerPresenter.swift */,
 				260979782A12E20900442249 /* PrivacyBannerPresentationUseCase.swift */,
+				269B46612A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -11213,6 +11219,7 @@
 				022F2FA8295E7A14003A0A46 /* StoreCreationCountryButton.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
 				CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */,
+				269B46622A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift in Sources */,
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
 				31B19B67263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift in Sources */,
 				265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */,
@@ -12843,6 +12850,7 @@
 				B5718D6521B56B400026C9F0 /* PushNotificationsManagerTests.swift in Sources */,
 				EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */,
 				D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */,
+				269B46642A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift in Sources */,
 				AEFF77A829786A2900667F7A /* PriceInputViewControllerTests.swift in Sources */,
 				02C2756F24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift in Sources */,
 				571FDDAE24C768DC00D486A5 /* MockZendeskManager.swift in Sources */,

@@ -17,7 +17,9 @@ final class AddProductImageCollectionViewCellTests: XCTestCase {
     }
 
     func testImageViewIsNotEmpty() {
-        XCTAssertNotNil(cell?.imageView.image)
+//        XCTAssertNotNil(cell?.imageView.image)
+//        intentional fail for testing
+        XCTAssertNil(cell?.imageView.image)
     }
 
     func testImageViewConfiguration() {

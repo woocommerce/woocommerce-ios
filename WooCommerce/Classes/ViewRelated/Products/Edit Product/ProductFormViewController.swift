@@ -53,6 +53,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         presentationStyle.createExitForm(viewController: self)
     }()
 
+    private lazy var shareBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action,
+                                                          target: self,
+                                                          action: #selector(shareProduct))
+
     private let presentationStyle: ProductFormPresentationStyle
     private let navigationRightBarButtonItemsSubject = PassthroughSubject<[UIBarButtonItem], Never>()
     private var navigationRightBarButtonItems: AnyPublisher<[UIBarButtonItem], Never> {
@@ -281,8 +285,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canShareProduct() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailShareButtonTapped)
-                self?.displayShareProduct()
+                self?.displayShareProduct(from: sender, analyticSource: .moreMenu)
             }
         }
 
@@ -468,6 +471,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 return
             }
         }
+    }
+
+    @objc private func shareProduct() {
+        displayShareProduct(from: shareBarButtonItem, analyticSource: .productForm)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -858,12 +865,14 @@ private extension ProductFormViewController {
         WebviewHelper.launch(url, with: self)
     }
 
-    func displayShareProduct() {
+    func displayShareProduct(from sourceView: UIBarButtonItem, analyticSource: WooAnalyticsEvent.ProductForm.ShareProductSource) {
+        ServiceLocator.analytics.track(event: .ProductForm.productDetailShareButtonTapped(source: analyticSource))
+
         guard let url = URL(string: product.permalink) else {
             return
         }
 
-        SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+        SharingHelper.shareURL(url: url, title: product.name, from: sourceView, in: self)
     }
 
     func duplicateProduct() {
@@ -1003,6 +1012,8 @@ private extension ProductFormViewController {
                 return createSaveBarButtonItem()
             case .more:
                 return createMoreOptionsBarButtonItem()
+            case .share:
+                return shareBarButtonItem
             }
         }
 

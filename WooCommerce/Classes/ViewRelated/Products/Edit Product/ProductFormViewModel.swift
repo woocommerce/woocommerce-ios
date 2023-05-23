@@ -168,6 +168,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             buttons.append(.more)
         }
 
+        // Share button if up to one button is visible.
+        if canShareProduct() && buttons.count <= 1 {
+            buttons.insert(.share, at: 0)
+        }
+
         return buttons
     }
 

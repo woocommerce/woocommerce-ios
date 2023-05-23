@@ -44,6 +44,7 @@ private extension AddProductCoordinatorTests {
         return AddProductCoordinator(siteID: 100,
                                      source: .productsTab,
                                      sourceView: view,
-                                     sourceNavigationController: navigationController)
+                                     sourceNavigationController: navigationController,
+                                     isFirstProduct: false)
     }
 }

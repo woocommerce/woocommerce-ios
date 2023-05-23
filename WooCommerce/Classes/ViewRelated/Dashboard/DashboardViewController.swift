@@ -319,6 +319,10 @@ private extension DashboardViewController {
     }
 
     func configureShareButton() {
+        // Only show share button if the site is public.
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite, site.isPublic else {
+            return
+        }
         navigationItem.rightBarButtonItem = shareButton
     }
 

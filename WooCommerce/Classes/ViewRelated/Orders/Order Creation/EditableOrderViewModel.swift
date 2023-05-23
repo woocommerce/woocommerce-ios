@@ -941,7 +941,7 @@ private extension EditableOrderViewModel {
         configureInitialOrderFromScannedItemIfNeeded()
     }
 
-    /// If given an initial item during the Order creation setup, sync this product with the Order
+    /// If given an initial Product or ProductVariation on initialization, updates the Order with the item
     ///
     func configureInitialOrderFromScannedItemIfNeeded() {
         guard let product = self.withInitialProduct else {

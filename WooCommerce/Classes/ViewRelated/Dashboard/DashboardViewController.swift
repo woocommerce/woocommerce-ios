@@ -329,6 +329,7 @@ private extension DashboardViewController {
             return
         }
         SharingHelper.shareURL(url: url, from: shareButton, in: self)
+        ServiceLocator.analytics.track(.dashboardShareStoreButtonTapped)
     }
 
     func configureContainerStackView() {

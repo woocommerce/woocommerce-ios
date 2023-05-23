@@ -57,6 +57,22 @@ final class PrivacyBannerViewModel: ObservableObject {
         // Revert Loading state
         isLoading = false
         isViewEnabled = true
+
+        // Analytics
+        trackAnalyticsFrom(destination: destination)
+    }
+
+    /// Track analytics based on the destination provided by the view.
+    /// Dismiss ----> Save
+    /// Settings ----> Settings
+    ///
+    private func trackAnalyticsFrom(destination: Destination) {
+        switch destination {
+        case .dismiss:
+            analytics.track(event: .PrivacyChoicesBanner.saveButtonTapped())
+        case .settings:
+            analytics.track(event: .PrivacyChoicesBanner.settingsButtonTapped())
+        }
     }
 }
 

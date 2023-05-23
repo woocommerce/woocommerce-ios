@@ -920,6 +920,11 @@ public enum WooAnalyticsStat: String {
     case jetpackSetupFlow = "jetpack_setup_flow"
     case jetpackSetupCompleted = "jetpack_setup_completed"
     case jetpackSetupSynchronizationCompleted = "jetpack_setup_synchronization_completed"
+
+    // MARK: Privacy Banner
+    case privacyChoicesBannerPresented = "privacy_choices_banner_presented"
+    case privacyChoicesSettingsButtonTapped = "privacy_choices_banner_settings_button_tapped"
+    case privacyChoicesSaveButtonTapped = "privacy_choices_banner_save_button_tapped"
 }
 
 public extension WooAnalyticsStat {

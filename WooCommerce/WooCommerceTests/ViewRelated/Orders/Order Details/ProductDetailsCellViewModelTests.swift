@@ -21,7 +21,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         let viewModel = ProductDetailsCellViewModel(item: item,
                                                     currency: "$",
                                                     formatter: currencyFormatter,
-                                                    hasAddOns: false)
+                                                    hasAddOns: false,
+                                                    isChildWithParent: true)
 
         // Then
         XCTAssertEqual(viewModel.imageURL, nil)
@@ -32,6 +33,7 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "$3.50")
         XCTAssertEqual(viewModel.subtitle, subtitle)
         XCTAssertEqual(viewModel.sku, String.localizedStringWithFormat(Localization.skuFormat, sku))
+        XCTAssertTrue(viewModel.isChildProduct)
     }
 
     // MARK: `AggregateOrderItem`
@@ -54,7 +56,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         let viewModel = ProductDetailsCellViewModel(aggregateItem: item,
                                                     currency: "$",
                                                     formatter: currencyFormatter,
-                                                    hasAddOns: false)
+                                                    hasAddOns: false,
+                                                    isChildWithParent: true)
 
         // Then
         XCTAssertEqual(viewModel.imageURL, item.imageURL)
@@ -65,6 +68,7 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         let subtitle = String.localizedStringWithFormat(Localization.subtitleWithAttributesFormat, "Wao, Waoo", quantity, "$3.50")
         XCTAssertEqual(viewModel.subtitle, subtitle)
         XCTAssertEqual(viewModel.sku, String.localizedStringWithFormat(Localization.skuFormat, sku))
+        XCTAssertTrue(viewModel.isChildProduct)
     }
 
     func test_total_and_subtitle_are_empty_if_price_and_total_are_nil() {
@@ -73,7 +77,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductDetailsCellViewModel(aggregateItem: item, currency: "$",
-                                                    hasAddOns: false)
+                                                    hasAddOns: false,
+                                                    isChildWithParent: false)
         let total = viewModel.total
         let subtitle = viewModel.subtitle
 
@@ -88,7 +93,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductDetailsCellViewModel(aggregateItem: item, currency: "$",
-                                                    hasAddOns: false)
+                                                    hasAddOns: false,
+                                                    isChildWithParent: false)
         let total = viewModel.total
         let subtitle = viewModel.subtitle
 
@@ -108,7 +114,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         let viewModel = ProductDetailsCellViewModel(item: item,
                                                     currency: "$",
                                                     formatter: CurrencyFormatter(currencySettings: CurrencySettings()),
-                                                    hasAddOns: false)
+                                                    hasAddOns: false,
+                                                    isChildWithParent: false)
         let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
         let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "$10.00")
         // Then
@@ -127,7 +134,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         let viewModel = ProductDetailsCellViewModel(item: item,
                                                     currency: "$",
                                                     formatter: CurrencyFormatter(currencySettings: CurrencySettings()),
-                                                    hasAddOns: false)
+                                                    hasAddOns: false,
+                                                    isChildWithParent: false)
         let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
         let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, quantity, "-$10.00")
         // Then

@@ -713,6 +713,10 @@ public enum WooAnalyticsStat: String {
     case productDescriptionAIGenerationSuccess = "product_description_ai_generation_success"
     case productDescriptionAIGenerationFailed = "product_description_ai_generation_failed"
 
+    // MARK: First created product events
+    case firstCreatedProductShown = "first_created_product_shown"
+    case firstCreatedProductShareTapped = "first_created_product_share_tapped"
+
     // MARK: Jetpack Tunnel Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"

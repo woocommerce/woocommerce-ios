@@ -29,6 +29,7 @@ final class AddProductCoordinator: Coordinator {
     private let sourceView: UIView?
     private let productImageUploader: ProductImageUploaderProtocol
     private let storage: StorageManagerType
+    private let isFirstProduct: Bool
 
     /// ResultController to to track the current product count.
     ///
@@ -48,7 +49,8 @@ final class AddProductCoordinator: Coordinator {
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         isFirstProduct: Bool) {
         self.siteID = siteID
         self.source = source
         self.sourceBarButtonItem = sourceBarButtonItem
@@ -56,6 +58,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.isFirstProduct = isFirstProduct
     }
 
     init(siteID: Int64,
@@ -63,7 +66,8 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         isFirstProduct: Bool) {
         self.siteID = siteID
         self.source = source
         self.sourceBarButtonItem = nil
@@ -71,6 +75,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.isFirstProduct = isFirstProduct
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -235,7 +240,13 @@ private extension AddProductCoordinator {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .add,
                                              productImageActionHandler: productImageActionHandler)
-        viewModel.onProductCreated = onProductCreated
+        viewModel.onProductCreated = { [weak self] product in
+            guard let self else { return }
+            self.onProductCreated(product)
+            if self.isFirstProduct, let url = URL(string: product.permalink) {
+                self.showFirstProductCreatedView(productURL: url)
+            }
+        }
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
@@ -288,5 +299,12 @@ private extension AddProductCoordinator {
             }
         }()
         ServiceLocator.analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
+    }
+
+    /// Presents the celebratory view for the first created product.
+    ///
+    func showFirstProductCreatedView(productURL: URL) {
+        let viewController = FirstProductCreatedHostingController(productURL: productURL)
+        navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 }

@@ -105,6 +105,11 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         // If it's not a bundled item, the API returns an empty string for `bundledBy` and the value will be `nil`.
         let bundledBy = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundledBy)
 
+        // Composite Products extension properties:
+        // If the order item is a composite component, `compositeParent` is the parent order item (composite product).
+        // If it's not a composite component, the API returns an empty string for `compositeParent` and the value will be `nil`.
+        let compositeParent = container.failsafeDecodeIfPresent(Int64.self, forKey: .compositeParent)
+
         // initialize the struct
         self.init(itemID: itemID,
                   name: name,
@@ -120,7 +125,7 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                   total: total,
                   totalTax: totalTax,
                   attributes: attributes,
-                  parent: bundledBy)
+                  parent: bundledBy ?? compositeParent)
     }
 
     /// Encodes an order item.
@@ -168,6 +173,7 @@ extension OrderItem {
         case total
         case totalTax       = "total_tax"
         case bundledBy      = "bundled_by"
+        case compositeParent = "composite_parent"
     }
 }
 

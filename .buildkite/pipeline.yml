@@ -2,7 +2,7 @@
 common_params:
   # Common plugin settings to use with the `plugins` key.
   - &common_plugins
-    - automattic/a8c-ci-toolkit#2.16.0
+    - automattic/a8c-ci-toolkit#1be9e9a4a02c3955740f0c63c83ba6aaf9c48d9c
     - automattic/git-s3-cache#1.1.4:
         bucket: "a8c-repo-mirrors"
         # This is not necessarily the actual name of the repo or the GitHub organization

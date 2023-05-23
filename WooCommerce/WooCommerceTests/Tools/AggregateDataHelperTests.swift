@@ -145,6 +145,30 @@ final class AggregateDataHelperTests: XCTestCase {
         // Then
         XCTAssertEqual(aggregatedRefunds?.count, 2)
     }
+
+    func test_isChildItemWithParent_returns_true_when_parent_is_in_items() {
+        // Given
+        let parentItem = sampleAggregateOrderItem.copy(itemID: "11")
+        let childItem = sampleAggregateOrderItem.copy(parent: 11)
+        let items = [parentItem, childItem]
+
+        // When
+        let isChildWithParent = AggregateDataHelper.isChildItemWithParent(childItem, in: items)
+
+        // Then
+        XCTAssertTrue(isChildWithParent)
+    }
+
+    func test_isChildItemWithParent_returns_false_when_parent_is_not_in_items() {
+        // Given
+        let childItem = sampleAggregateOrderItem.copy(parent: 11)
+
+        // When
+        let isChildWithParent = AggregateDataHelper.isChildItemWithParent(childItem, in: [childItem])
+
+        // Then
+        XCTAssertFalse(isChildWithParent)
+    }
 }
 
 
@@ -152,6 +176,19 @@ private extension AggregateDataHelperTests {
     /// Used when testing that the item attributes are properly retrieved, for order items and refunds
     var testOrderItemAttributes: [OrderItemAttribute] {
         [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Yes")]
+    }
+
+    var sampleAggregateOrderItem: AggregateOrderItem {
+        AggregateOrderItem(itemID: "",
+                           productID: 1,
+                           variationID: 0,
+                           name: "",
+                           price: 0,
+                           quantity: 1,
+                           sku: "",
+                           total: 0,
+                           attributes: [],
+                           parent: nil)
     }
 
     /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)

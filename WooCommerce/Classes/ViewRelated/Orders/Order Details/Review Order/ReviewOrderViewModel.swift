@@ -198,7 +198,12 @@ extension ReviewOrderViewModel {
     func productDetailsCellViewModel(for item: AggregateOrderItem) -> ProductDetailsCellViewModel {
         let product = filterProduct(for: item)
         let addOns = filterAddons(for: item)
-        return ProductDetailsCellViewModel(aggregateItem: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)
+        let isChildWithParent = AggregateDataHelper.isChildItemWithParent(item, in: aggregateOrderItems)
+        return ProductDetailsCellViewModel(aggregateItem: item,
+                                           currency: order.currency,
+                                           product: product,
+                                           hasAddOns: !addOns.isEmpty,
+                                           isChildWithParent: isChildWithParent)
     }
 
     /// Get shipment tracking at specified index of order.

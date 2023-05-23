@@ -40,6 +40,10 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var viewAddOnsIndicator: UIImageView!
 
+    /// The leading constraint for the productImageView.
+    ///
+    @IBOutlet var productImageLeadingConstraint: NSLayoutConstraint!
+
     /// Assign this closure to be notified when the "viewAddOns" button us tapped
     ///
     var onViewAddOnsTouchUp: (() -> Void)?
@@ -124,6 +128,16 @@ private extension ProductDetailsTableViewCell {
     func configureSelectionStyle() {
         selectionStyle = .none
     }
+
+    /// Adds padding between the leading margin and the product image if the product is a child product.
+    ///
+    func configureChildProductPadding(isChildProduct: Bool) {
+        if isChildProduct {
+            productImageLeadingConstraint.constant = Constants.childProductLeadingPadding
+        } else {
+            productImageLeadingConstraint.constant = 0
+        }
+    }
 }
 
 
@@ -144,6 +158,7 @@ extension ProductDetailsTableViewCell {
         subtitleLabel.text = item.subtitle
         skuLabel.text = item.sku
         viewAddOnsStackView.isHidden = !item.hasAddOns
+        configureChildProductPadding(isChildProduct: item.isChildProduct)
     }
 }
 
@@ -151,5 +166,9 @@ extension ProductDetailsTableViewCell {
 private extension ProductDetailsTableViewCell {
     enum Localization {
         static let viewAddOns = NSLocalizedString("View Add-Ons", comment: "Title of the button on the order detail item to navigate to add-ons")
+    }
+
+    enum Constants {
+        static let childProductLeadingPadding: CGFloat = 44
     }
 }

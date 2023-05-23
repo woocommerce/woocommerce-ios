@@ -113,10 +113,12 @@ private extension RefundedProductsDataSource {
     func configureRefundedProduct(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let refundedProduct = refundedProducts[indexPath.row]
         let product = lookUpProduct(by: refundedProduct.productOrVariationID)
+        let isChildWithParent = AggregateDataHelper.isChildItemWithParent(refundedProduct, in: refundedProducts)
         let refundedProductViewModel = ProductDetailsCellViewModel(aggregateItem: refundedProduct,
-                                                                    currency: order.currency,
-                                                                    product: product,
-                                                                    hasAddOns: false)
+                                                                   currency: order.currency,
+                                                                   product: product,
+                                                                   hasAddOns: false,
+                                                                   isChildWithParent: isChildWithParent)
         let imageService = ServiceLocator.imageService
 
         cell.selectionStyle = .default

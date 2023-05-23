@@ -414,6 +414,21 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertNil(bundleItem.parent)
         XCTAssertEqual(bundledItem.parent, 752)
     }
+
+    func test_order_line_items_parse_composite_product_component_parent_correctly() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithCompositeProduct())
+
+        // When
+        let lineItems = order.items
+        XCTAssertEqual(lineItems.count, 4)
+
+        // Then
+        let compositeProduct = try XCTUnwrap(lineItems.first { $0.itemID == 830 })
+        let component = try XCTUnwrap(lineItems.first { $0.itemID == 831 })
+        XCTAssertNil(compositeProduct.parent)
+        XCTAssertEqual(component.parent, 830)
+    }
 }
 
 
@@ -508,6 +523,12 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithBundledLineItems() -> Order? {
         return mapOrder(from: "order-with-bundled-line-items")
+    }
+
+    /// Returns the Order output upon receiving `order-with-composite-product`
+    ///
+    func mapLoadOrderWithCompositeProduct() -> Order? {
+        return mapOrder(from: "order-with-composite-product")
     }
 
 }

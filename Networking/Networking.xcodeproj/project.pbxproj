@@ -659,6 +659,7 @@
 		CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BFEE92236E191005C79FB /* ProductType.swift */; };
 		CE6D666C2379E19D007835A1 /* Array+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6D666B2379E19D007835A1 /* Array+Woo.swift */; };
 		CE6D666F2379E82A007835A1 /* ArrayWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6D666E2379E82A007835A1 /* ArrayWooTests.swift */; };
+		CE831FE72A17FC1800E8BEFB /* order-with-composite-product.json in Resources */ = {isa = PBXBuildFile; fileRef = CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */; };
 		CEC4BF8F234E382F008D9195 /* RefundMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4BF8E234E382F008D9195 /* RefundMapperTests.swift */; };
 		CEC4BF91234E40B5008D9195 /* refund-single.json in Resources */ = {isa = PBXBuildFile; fileRef = CEC4BF90234E40B5008D9195 /* refund-single.json */; };
 		CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CEC4BF92234E7EE0008D9195 /* refunds-all.json */; };
@@ -1596,6 +1597,7 @@
 		CE6BFEE92236E191005C79FB /* ProductType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductType.swift; sourceTree = "<group>"; };
 		CE6D666B2379E19D007835A1 /* Array+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Woo.swift"; sourceTree = "<group>"; };
 		CE6D666E2379E82A007835A1 /* ArrayWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayWooTests.swift; sourceTree = "<group>"; };
+		CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-composite-product.json"; sourceTree = "<group>"; };
 		CEC4BF8E234E382F008D9195 /* RefundMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundMapperTests.swift; sourceTree = "<group>"; };
 		CEC4BF90234E40B5008D9195 /* refund-single.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "refund-single.json"; sourceTree = "<group>"; };
 		CEC4BF92234E7EE0008D9195 /* refunds-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "refunds-all.json"; sourceTree = "<group>"; };
@@ -2565,6 +2567,7 @@
 				CE12AE9429F29F4F0056DD17 /* order-with-subscription-renewal.json */,
 				CEE9188029F7DC23004B23FF /* order-with-gift-cards.json */,
 				CE6B96992A0BCD09003C4B27 /* order-with-bundled-line-items.json */,
+				CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */,
 				261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */,
 				0313651A28AE60E000EEE571 /* payment-gateway-cod.json */,
 				261CF2CA255C50010090D8D3 /* payment-gateway-list-half.json */,
@@ -3652,6 +3655,7 @@
 				45AB8B0F24AA29DC00B5B36E /* product-tags-created.json in Resources */,
 				3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */,
 				621D043B29C9D4280040EC08 /* product-variation-alternative-types.json in Resources */,
+				CE831FE72A17FC1800E8BEFB /* order-with-composite-product.json in Resources */,
 				314EDF2B27C02CD300A56B6F /* stripe-account-complete-null-descriptor.json in Resources */,
 				31054720262E2F9D00C5C02B /* wcpay-payment-intent-processing.json in Resources */,
 				0239306D291A973F00B2632F /* domain-suggestions.json in Resources */,

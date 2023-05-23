@@ -81,7 +81,7 @@ private extension FirstProductCreatedView {
             comment: "Title of the celebratory screen after creating the first product"
         )
         static let message = NSLocalizedString(
-            "Congratulations! You're one step closer to get the new store ready.",
+            "Congratulations! You're one step closer to getting the new store ready.",
             comment: "Message on the celebratory screen after creating first product"
         )
         static let shareAction = NSLocalizedString(

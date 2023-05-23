@@ -920,6 +920,25 @@ extension ProductsViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
+
+    /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
+    ///
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let product = resultsController.object(at: indexPath)
+        guard let url = URL(string: product.permalink),
+            let cell = tableView.cellForRow(at: indexPath) else {
+            return nil
+        }
+        let shareAction = UIContextualAction(style: .normal, title: Localization.shareAction, handler: { [weak self] _, _, completionHandler in
+            guard let self else { return }
+            SharingHelper.shareURL(url: url, from: cell, in: self)
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        shareAction.backgroundColor = .brand
+        shareAction.image = .init(systemName: "square.and.arrow.up")
+
+        return UISwipeActionsConfiguration(actions: [shareAction])
+    }
 }
 
 private extension ProductsViewController {
@@ -1361,5 +1380,6 @@ private extension ProductsViewController {
                                                            comment: "Title of the notice when a user updated price for selected products")
         static let updateErrorNotice = NSLocalizedString("Cannot update products",
                                                          comment: "Title of the notice when there is an error updating selected products")
+        static let shareAction = NSLocalizedString("Share", comment: "Title for the button to share a selected product.")
     }
 }

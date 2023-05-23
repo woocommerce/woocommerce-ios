@@ -181,6 +181,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var addProductCoordinator: AddProductCoordinator?
 
+    /// Tracks if the swipe actions have been glanced to the user.
+    ///
+    private var swipeActionsGlanced = false
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -699,6 +703,16 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
+
+    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
+    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
+    ///
+    func glanceTrailingActionsIfNeeded() {
+        if !swipeActionsGlanced {
+            swipeActionsGlanced = true
+            tableView.glanceTrailingSwipeActions()
+        }
+    }
 
     /// Displays an error banner if there is an error loading products data.
     ///
@@ -1247,7 +1261,7 @@ private extension ProductsViewController {
                 hideTopBannerView()
             }
         case .results:
-            break
+            glanceTrailingActionsIfNeeded()
         }
     }
 

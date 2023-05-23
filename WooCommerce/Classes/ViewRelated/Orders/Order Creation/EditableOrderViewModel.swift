@@ -1286,8 +1286,8 @@ extension EditableOrderViewModel {
         permissionChecker.requestAccess(for: .video, completionHandler: onCompletion)
     }
 
-    func trackProductBarcodeScanningTapped() {
-        analytics.track(.orderCreationProductBarcodeScanningTapped)
+    func trackProductBarcodeScanningTapped(from flow: WooAnalyticsEvent.Orders.Flow) {
+        analytics.track(flow == .list ? .orderListProductBarcodeScanningTapped : .orderCreationProductBarcodeScanningTapped)
     }
 
     /// Attempts to add a Product to the current Order by SKU search

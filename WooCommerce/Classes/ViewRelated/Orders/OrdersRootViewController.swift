@@ -164,6 +164,7 @@ final class OrdersRootViewController: UIViewController {
     ///
     private func presentOrderCreationFlowWithScannedProduct(with product: Product) {
         let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProduct: product)
+        viewModel.trackProductBarcodeScanningTapped(from: .creation)
         setupNavigation(viewModel: viewModel)
     }
 

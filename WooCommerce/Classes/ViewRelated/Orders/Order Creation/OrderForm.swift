@@ -320,6 +320,7 @@ private struct ProductsSection: View {
                             showAddProductViaSKUScanner = true
                             logPermissionStatus(status: .permitted)
                         }
+                        viewModel.trackProductBarcodeScanningTapped()
                     }, label: {
                         Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
                             .foregroundColor(Color(.brand))

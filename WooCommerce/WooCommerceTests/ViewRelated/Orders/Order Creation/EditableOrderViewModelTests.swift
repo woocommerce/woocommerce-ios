@@ -1773,7 +1773,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(orderItem.quantity, 1)
     }
 
-    func test_order_creation_when_contains_initial_product_then_added_via_barcode_property_is_tracked() {
+    func test_event_when_order_creation_contains_initial_product_then_added_via_barcode_property_is_tracked() {
         // Given, When
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -1797,7 +1797,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
-    func test_order_creation_when_does_not_contain_initial_product_then_added_via_barcode_property_is_nil() {
+    func test_event_when_order_creation_does_not_contain_initial_product_then_added_via_barcode_property_is_nil() {
         // Given, When
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
@@ -1815,6 +1815,20 @@ final class EditableOrderViewModelTests: XCTestCase {
             XCTAssertEqual(property.valueAsString(forKey: "flow"), "creation")
             XCTAssertNil(property.valueAsString(forKey: "added_via"))
         }
+    }
+
+    func test_event_when_order_creation_scanner_button_is_tapped_then_logs_correct_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackProductBarcodeScanningTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, "order_creation_product_barcode_scanning_tapped")
     }
 }
 

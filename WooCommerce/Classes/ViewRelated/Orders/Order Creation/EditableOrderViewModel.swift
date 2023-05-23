@@ -1286,6 +1286,10 @@ extension EditableOrderViewModel {
         permissionChecker.requestAccess(for: .video, completionHandler: onCompletion)
     }
 
+    func trackProductBarcodeScanningTapped() {
+        analytics.track(.orderCreationProductBarcodeScanningTapped)
+    }
+
     /// Attempts to add a Product to the current Order by SKU search
     ///
     func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void) {

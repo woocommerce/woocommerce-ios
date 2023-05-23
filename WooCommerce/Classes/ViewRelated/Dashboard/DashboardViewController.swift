@@ -471,7 +471,8 @@ private extension DashboardViewController {
         let coordinator = AddProductCoordinator(siteID: siteID,
                                                 source: .productOnboarding,
                                                 sourceView: announcementView,
-                                                sourceNavigationController: navigationController)
+                                                sourceNavigationController: navigationController,
+                                                isFirstProduct: true)
         coordinator.onProductCreated = { [weak self] _ in
             guard let self else { return }
             self.viewModel.announcementViewModel = nil // Remove the products onboarding banner

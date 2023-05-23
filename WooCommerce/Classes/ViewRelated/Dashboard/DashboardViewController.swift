@@ -79,6 +79,8 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
+    private lazy var shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareStore))
+
     /// Stores an animator for showing/hiding the header view while there is an animation in progress
     /// so we can interrupt and reverse if needed
     private var headerAnimator: UIViewPropertyAnimator?
@@ -303,6 +305,7 @@ private extension DashboardViewController {
         configureTitle()
         configureContainerStackView()
         configureHeaderStackView()
+        configureShareButton()
     }
 
     func configureTabBarItem() {
@@ -313,6 +316,19 @@ private extension DashboardViewController {
 
     func configureTitle() {
         navigationItem.title = Localization.title
+    }
+
+    func configureShareButton() {
+        navigationItem.rightBarButtonItem = shareButton
+    }
+
+    @objc
+    func shareStore() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite,
+              let url = URL(string: site.url) else {
+            return
+        }
+        SharingHelper.shareURL(url: url, from: shareButton, in: self)
     }
 
     func configureContainerStackView() {

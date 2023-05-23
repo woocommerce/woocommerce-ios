@@ -51,7 +51,7 @@ final class PrivacyBannerViewModel: ObservableObject {
             try await useCase.update(optOut: !analyticsEnabled)
             onCompletion(.success(destination))
         } catch {
-            onCompletion(.failure(.sync(analyticsOptOut: !analyticsEnabled)))
+            onCompletion(.failure(.sync(analyticsOptOut: !analyticsEnabled, intendedDestination: destination)))
         }
 
         // Revert Loading state
@@ -72,6 +72,6 @@ extension PrivacyBannerViewModel {
     /// Defined errors.
     ///
     enum Error: Swift.Error {
-        case sync(analyticsOptOut: Bool)
+        case sync(analyticsOptOut: Bool, intendedDestination: Destination)
     }
 }

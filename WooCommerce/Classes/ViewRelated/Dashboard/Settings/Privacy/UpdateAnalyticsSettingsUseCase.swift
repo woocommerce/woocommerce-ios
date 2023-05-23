@@ -28,6 +28,11 @@ final class UpdateAnalyticsSettingUseCase {
     /// For NON-WPCOM stores: Updates locally.
     ///
     func update(optOut: Bool) async throws {
+        // There is no need to perform any request if the user hasn't changed the current analytic setting.
+        guard analytics.userHasOptedIn == optOut else {
+            return updateLocally(optOut: optOut)
+        }
+
         // If we can't find an account(non-jp sites), lets commit the change immediately.
         guard let defaultAccount = stores.sessionManager.defaultAccount else {
             return updateLocally(optOut: optOut)

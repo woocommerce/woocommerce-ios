@@ -86,7 +86,9 @@ struct PrivacyBanner: View {
 
             HStack {
                 Button(Localization.goToSettings) {
-                    print("Tapped Settings")
+                    Task {
+                        await viewModel.submitChanges(destination: .settings)
+                    }
                 }
                 .buttonStyle(SecondaryButtonStyle())
 

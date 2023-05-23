@@ -1290,12 +1290,12 @@ extension EditableOrderViewModel {
         analytics.track(flow == .list ? .orderListProductBarcodeScanningTapped : .orderCreationProductBarcodeScanningTapped)
     }
 
-    func trackProductBarcodeScanned(with result: Result<Void, Error>, _ reason: String? = nil) {
+    func trackProductBarcodeScanned(with result: Result<Void, Error>, reason: String = "") {
         switch result {
         case .success:
             analytics.track(.orderProductBarcodeScanningSuccess)
         case .failure:
-            analytics.track(.orderProductBarcodeScanningFailed)
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductBarcodeScannerFailed(reason: reason))
         }
     }
 

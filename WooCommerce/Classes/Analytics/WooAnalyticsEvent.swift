@@ -653,6 +653,18 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        static func orderProductSearchViaSKUFailed(reason: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: [
+                "reason": reason
+            ])
+        }
+
+        static func orderProductBarcodeScannerFailed(reason: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductBarcodeScanningFailed, properties: [
+                "reason": reason
+            ])
+        }
+
         /// Tracked when the user taps to collect a payment
         ///
         static func collectPaymentTapped() -> WooAnalyticsEvent {

@@ -1867,10 +1867,14 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.trackProductBarcodeScanned(with: .failure(NSError()))
+        viewModel.trackProductBarcodeScanned(with: .failure(NSError()), reason: "some reason to fail")
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, "order_product_barcode_scanning_failed")
+
+        let _ = analytics.receivedProperties.map { property in
+            XCTAssertEqual(property.valueAsString(forKey: "reason"), "some reason to fail")
+        }
     }
 
 }

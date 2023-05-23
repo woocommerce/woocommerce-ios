@@ -31,7 +31,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
 
 private extension FirstProductCreatedHostingController {
     enum Localization {
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the first created product screen")
+        static let cancel = NSLocalizedString("Dismiss", comment: "Button to dismiss the first created product screen")
     }
 }
 

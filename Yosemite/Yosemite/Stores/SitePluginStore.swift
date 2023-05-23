@@ -5,11 +5,24 @@ import Storage
 // Handles `SitePluginAction` actions
 //
 public final class SitePluginStore: Store {
-    private let remote: SitePluginsRemote
+    private let remote: SitePluginsRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = SitePluginsRemote(network: network)
+    public init(remote: SitePluginsRemoteProtocol,
+                dispatcher: Dispatcher,
+                storageManager: StorageManagerType,
+                network: Network) {
+        self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
+    public override convenience init(dispatcher: Dispatcher,
+                            storageManager: StorageManagerType,
+                            network: Network) {
+        let remote = SitePluginsRemote(network: network)
+        self.init(remote: remote,
+                  dispatcher: dispatcher,
+                  storageManager: storageManager,
+                  network: network)
     }
 
     /// Registers to support `SitePluginAction`
@@ -35,6 +48,8 @@ public final class SitePluginStore: Store {
             activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
         case .getPluginDetails(let siteID, let pluginName, let onCompletion):
             getPluginDetails(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
+        case .arePluginsActive(let siteID, let plugins, let completion):
+            arePluginsActive(siteID: siteID, plugins: plugins, completion: completion)
         }
     }
 }
@@ -100,6 +115,20 @@ private extension SitePluginStore {
             }
         }
     }
+
+    func arePluginsActive(siteID: Int64, plugins: [SitePluginAction.Plugin], completion: @escaping (Result<Bool, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let sitePlugins = try await remote.loadPluginsFromWPCOM(siteID: siteID)
+                let arePluginsActive = plugins.allSatisfy { plugin in
+                    sitePlugins.contains(where: { $0.id == plugin.id && $0.isActive })
+                }
+                completion(.success(arePluginsActive))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
 // MARK: - Storage
@@ -141,6 +170,17 @@ private extension SitePluginStore {
         // remove stale plugins
         let installedPluginNames = readonlyPlugins.map(\.name)
         storage.deleteStalePlugins(siteID: siteID, installedPluginNames: installedPluginNames)
+    }
+}
+
+private extension SitePluginAction.Plugin {
+    var id: String {
+        switch self {
+        case .jetpack:
+            return "jetpack/jetpack"
+        case .woo:
+            return "woocommerce/woocommerce"
+        }
     }
 }
 

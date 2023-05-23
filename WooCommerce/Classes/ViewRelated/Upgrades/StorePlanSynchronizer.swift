@@ -29,12 +29,24 @@ final class StorePlanSynchronizer: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Handles local notifications for free trial plan expiration
+    ///
+    private let localNotificationScheduler: LocalNotificationScheduler
+
+    /// Time zone used to scheduling local notifications.
+    ///
+    private let timeZone: TimeZone
+
     /// Observable subscription store.
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         timeZone: TimeZone = .current,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.stores = stores
+        self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
+        self.timeZone = timeZone
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -69,11 +81,82 @@ final class StorePlanSynchronizer: ObservableObject {
             switch result {
             case .success(let plan):
                 self.planState = .loaded(plan)
+                self.scheduleOrCancelNotificationsIfNeeded(for: plan)
             case .failure(let error):
                 self.planState = .failed
                 DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")
             }
         }
         stores.dispatch(action)
+    }
+}
+
+// MARK: - Local notifications about trial plan expiration
+//
+private extension StorePlanSynchronizer {
+    func scheduleOrCancelNotificationsIfNeeded(for plan: WPComSitePlan) {
+        guard let siteID = site?.siteID else {
+            return
+        }
+        guard plan.isFreeTrial, let expiryDate = plan.expiryDate else {
+            /// cancels any scheduled notifications
+            return cancelFreeTrialExpirationNotifications(siteID: siteID)
+        }
+
+        /// Normalizes expiry date to remove timezone difference
+        let timeZoneDifference = timeZone.secondsFromGMT()
+        let normalizedDate = Date(timeInterval: -Double(timeZoneDifference), since: expiryDate)
+        let now = Date().normalizedDate() // with time removed
+
+        /// Schedules pre-expiration notification if the plan is not expired in a day.
+        if normalizedDate.timeIntervalSince(now) > Constants.oneDayTimeInterval {
+            scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
+        }
+
+        /// Schedules post-expiration notification if the plan hasn't expired for a day.
+        if now.timeIntervalSince(normalizedDate) < Constants.oneDayTimeInterval {
+            scheduleAfterExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
+        }
+    }
+
+    func cancelFreeTrialExpirationNotifications(siteID: Int64) {
+        localNotificationScheduler.cancel(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
+        localNotificationScheduler.cancel(scenario: .oneDayBeforeFreeTrialExpires(
+            siteID: siteID,
+            expiryDate: Date() // placeholder date, irrelevant to the notification identifier
+        ))
+    }
+
+    func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {
+        let notification = LocalNotification(scenario: .oneDayBeforeFreeTrialExpires(siteID: siteID,
+                                                                                     expiryDate: expiryDate))
+        /// Scheduled for 1 day before the expiry date
+        let triggerDateComponents = expiryDate.addingTimeInterval(-Constants.oneDayTimeInterval).dateAndTimeComponents()
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      trigger: trigger,
+                                                      remoteFeatureFlag: .oneDayBeforeFreeTrialExpiresNotification,
+                                                      shouldSkipIfScheduled: true)
+        }
+    }
+
+    func scheduleAfterExpirationNotification(siteID: Int64, expiryDate: Date) {
+        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
+        /// Scheduled for 1 day after the expiry date
+        let triggerDateComponents = expiryDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      trigger: trigger,
+                                                      remoteFeatureFlag: .oneDayAfterFreeTrialExpiresNotification,
+                                                      shouldSkipIfScheduled: true)
+        }
+    }
+}
+
+private extension StorePlanSynchronizer {
+    enum Constants {
+        static let oneDayTimeInterval: TimeInterval = 86400
     }
 }

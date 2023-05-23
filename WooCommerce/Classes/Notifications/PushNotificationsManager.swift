@@ -100,12 +100,16 @@ final class PushNotificationsManager: PushNotesManager {
         configuration.storesManager
     }
 
+    private let analytics: Analytics
+
     /// Initializes the PushNotificationsManager.
     ///
     /// - Parameter configuration: PushNotificationsConfiguration Instance that should be used.
     ///
-    init(configuration: PushNotificationsConfiguration = .default) {
+    init(configuration: PushNotificationsConfiguration = .default,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
+        self.analytics = analytics
     }
 }
 
@@ -121,20 +125,20 @@ extension PushNotificationsManager {
     func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {
         let nc = configuration.userNotificationsCenter
 
-        nc.loadAuthorizationStatus(queue: .main) { status in
+        nc.loadAuthorizationStatus(queue: .main) { [weak self] status in
             guard status == .notDetermined || status == .provisional else {
                 onCompletion?(status == .authorized)
                 return
             }
 
-            nc.requestAuthorization(queue: .main, includesProvisionalAuth: includesProvisionalAuth) { allowed in
+            nc.requestAuthorization(queue: .main, includesProvisionalAuth: includesProvisionalAuth) { [weak self] allowed in
                 let stat: WooAnalyticsStat = allowed ? .pushNotificationOSAlertAllowed : .pushNotificationOSAlertDenied
-                ServiceLocator.analytics.track(stat)
+                self?.analytics.track(stat)
 
                 onCompletion?(allowed)
             }
 
-            ServiceLocator.analytics.track(.pushNotificationOSAlertShown)
+            self?.analytics.track(.pushNotificationOSAlertShown)
         }
     }
 
@@ -261,7 +265,7 @@ extension PushNotificationsManager {
                     guard let self = self else { return }
                     self.presentDetails(for: foregroundNotification)
                     self.foregroundNotificationsToViewSubject.send(foregroundNotification)
-                    ServiceLocator.analytics.track(.viewInAppPushNotificationPressed,
+                    self.analytics.track(.viewInAppPushNotificationPressed,
                                                    withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                 }
 
@@ -304,58 +308,77 @@ extension PushNotificationsManager {
         return await synchronizeNotifications()
     }
 
-    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
-        Task {
-            // TODO: 7318 - tech debt - replace `UNUserNotificationCenter.current()` with
-            // `configuration.userNotificationsCenter` for unit testing
-            let center = UNUserNotificationCenter.current()
-            let settings = await center.notificationSettings()
-            guard settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional else {
-                DDLogError("⛔️ Unable to request a local notification due to invalid authorization status: \(settings.authorizationStatus)")
-                return
-            }
-
-            let content = UNMutableNotificationContent()
-            content.title = notification.title
-            content.body = notification.body
-
-            if let categoryAndActions = notification.actions {
-                let categoryIdentifier = categoryAndActions.category.rawValue
-                let actions = categoryAndActions.actions.map {
-                    UNNotificationAction(identifier: $0.rawValue,
-                                         title: $0.title,
-                                         options: .foreground)
-                }
-                let category = UNNotificationCategory(identifier: categoryIdentifier,
-                                                      actions: actions,
-                                                      intentIdentifiers: [],
-                                                      hiddenPreviewsBodyPlaceholder: nil,
-                                                      categorySummaryFormat: nil,
-                                                      // `customDismissAction` option is required for the dismiss action callback in
-                                                      // `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)`
-                                                      // with action identifier `UNNotificationDismissActionIdentifier`.
-                                                      options: .customDismissAction)
-                center.setNotificationCategories([category])
-                content.categoryIdentifier = categoryIdentifier
-            }
-
-            let request = UNNotificationRequest(identifier: notification.scenario.identifier,
-                                                content: content,
-                                                trigger: trigger)
-            do {
-                try await center.add(request)
-                ServiceLocator.analytics.track(.loginLocalNotificationScheduled, withProperties: [
-                    "type": notification.scenario.identifier
-                ])
-            } catch {
-                DDLogError("⛔️ Unable to request a local notification: \(error)")
-            }
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {
+        let center = configuration.userNotificationsCenter
+        let settings = await center.notificationSettings()
+        guard settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional else {
+            DDLogError("⛔️ Unable to request a local notification due to invalid authorization status: \(settings.authorizationStatus)")
+            return
         }
+
+        let content = UNMutableNotificationContent()
+        content.title = notification.title
+        content.body = notification.body
+        content.userInfo = notification.userInfo
+
+        if let categoryAndActions = notification.actions {
+            let categoryIdentifier = categoryAndActions.category.rawValue
+            let actions = categoryAndActions.actions.map {
+                UNNotificationAction(identifier: $0.rawValue,
+                                     title: $0.title,
+                                     options: .foreground)
+            }
+            let category = UNNotificationCategory(identifier: categoryIdentifier,
+                                                  actions: actions,
+                                                  intentIdentifiers: [],
+                                                  hiddenPreviewsBodyPlaceholder: nil,
+                                                  categorySummaryFormat: nil,
+                                                  // `customDismissAction` option is required for the dismiss action callback in
+                                                  // `UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:)`
+                                                  // with action identifier `UNNotificationDismissActionIdentifier`.
+                                                  options: .customDismissAction)
+            center.setNotificationCategories([category])
+            content.categoryIdentifier = categoryIdentifier
+        }
+
+        let request = UNNotificationRequest(identifier: notification.scenario.identifier,
+                                            content: content,
+                                            trigger: trigger)
+        do {
+            try await center.add(request)
+            analytics.track(.localNotificationScheduled, withProperties: [
+                "type": LocalNotification.Scenario.identifierForAnalytics(notification.scenario.identifier)
+            ])
+        } catch {
+            DDLogError("⛔️ Unable to request a local notification: \(error)")
+        }
+    }
+
+    func requestLocalNotificationIfNeeded(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {
+        let center = configuration.userNotificationsCenter
+        let pendingNotifications = await center.pendingNotificationRequests()
+        let identifier = notification.scenario.identifier
+        if pendingNotifications.map(\.identifier).contains(identifier) {
+            return
+        }
+        await requestLocalNotification(notification, trigger: trigger)
     }
 
     func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: scenarios.map { $0.identifier })
+        scenarios.map(\.identifier).forEach { identifier in
+            analytics.track(.localNotificationCanceled, withProperties: ["type": LocalNotification.Scenario.identifierForAnalytics(identifier)])
+        }
+    }
+
+    func cancelAllNotifications() async {
+        let center = configuration.userNotificationsCenter
+        let pendingNotifications = await center.pendingNotificationRequests()
+        removeAllNotifications()
+        pendingNotifications.map(\.identifier).forEach { identifier in
+            analytics.track(.localNotificationCanceled, withProperties: ["type": LocalNotification.Scenario.identifierForAnalytics(identifier)])
+        }
     }
 }
 
@@ -566,10 +589,10 @@ private extension PushNotificationsManager {
 
         switch applicationState {
         case .inactive:
-            ServiceLocator.analytics.track(.pushNotificationAlertPressed, withProperties: properties)
+            analytics.track(.pushNotificationAlertPressed, withProperties: properties)
         default:
             properties[AnalyticKey.appState] = applicationState.rawValue
-            ServiceLocator.analytics.track(.pushNotificationReceived, withProperties: properties)
+            analytics.track(.pushNotificationReceived, withProperties: properties)
         }
     }
 }

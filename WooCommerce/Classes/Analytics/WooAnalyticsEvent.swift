@@ -968,6 +968,7 @@ extension WooAnalyticsEvent {
             case card
             case cash
             case paymentLink = "payment_link"
+            case scanToPay = "scan_to_pay"
         }
 
         /// Possible view sources
@@ -1001,15 +1002,18 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let flow = "flow"
             static let cardReaderType = "card_reader_type"
+            static let orderID = "order_id"
         }
 
         static func paymentsFlowCompleted(flow: Flow,
                                           amount: String,
                                           method: PaymentMethod,
+                                          orderID: Int64,
                                           cardReaderType: CardReaderType?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                                                                        Keys.amount: amount,
-                                                                       Keys.paymentMethod: method.rawValue]
+                                                                       Keys.paymentMethod: method.rawValue,
+                                                                       Keys.orderID: orderID]
 
             if let cardReaderType = cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue
@@ -1029,10 +1033,12 @@ extension WooAnalyticsEvent {
 
         static func paymentsFlowCollect(flow: Flow,
                                         method: PaymentMethod,
+                                        orderID: Int64,
                                         cardReaderType: CardReaderType?,
                                         millisecondsSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
-                              Keys.paymentMethod: method.rawValue]
+                                                                       Keys.paymentMethod: method.rawValue,
+                                                                       Keys.orderID: orderID]
 
             if let cardReaderType = cardReaderType {
                 properties[Keys.cardReaderType] = cardReaderType.rawValue
@@ -1101,6 +1107,7 @@ extension WooAnalyticsEvent {
             static let cancellationSource = "cancellation_source"
             static let millisecondsSinceCardCollectPaymentFlow = "milliseconds_since_card_collect_payment_flow"
             static let siteID = "site_id"
+            static let connectionType = "connection_type"
         }
 
         static let unknownGatewayID = "unknown"
@@ -1185,12 +1192,15 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func cardReaderAutomaticDisconnect(cardReaderModel: String?, forGatewayID: String?, countryCode: String) -> WooAnalyticsEvent {
+        static func cardReaderAutomaticDisconnect(cardReaderModel: String?,
+                                                  forGatewayID: String?, countryCode: String,
+                                                  connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderAutomaticDisconnect,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
-                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                                Keys.connectionType: connectionType
                               ]
             )
         }
@@ -1205,13 +1215,15 @@ extension WooAnalyticsEvent {
         static func cardReaderDiscoveryFailed(forGatewayID: String?,
                                               error: Error,
                                               countryCode: String,
-                                              siteID: Int64) -> WooAnalyticsEvent {
+                                              siteID: Int64,
+                                              connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderDiscoveryFailed,
                               properties: [
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription,
-                                Keys.siteID: siteID
+                                Keys.siteID: siteID,
+                                Keys.connectionType: connectionType
                               ]
             )
         }
@@ -1227,11 +1239,13 @@ extension WooAnalyticsEvent {
         static func cardReaderConnectionSuccess(forGatewayID: String?,
                                                 batteryLevel: Float?,
                                                 countryCode: String,
-                                                cardReaderModel: String?) -> WooAnalyticsEvent {
+                                                cardReaderModel: String?,
+                                                connectionType: String) -> WooAnalyticsEvent {
             var properties = [
                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                 Keys.countryCode: countryCode,
-                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID)
+                Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
+                Keys.connectionType: connectionType
             ]
 
             if let batteryLevel = batteryLevel {
@@ -1253,14 +1267,16 @@ extension WooAnalyticsEvent {
                                                error: Error,
                                                countryCode: String,
                                                cardReaderModel: String?,
-                                               siteID: Int64) -> WooAnalyticsEvent {
+                                               siteID: Int64,
+                                               connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderConnectionFailed,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode,
                                 Keys.gatewayID: gatewayID(forGatewayID: forGatewayID),
                                 Keys.errorDescription: error.localizedDescription,
-                                Keys.siteID: siteID
+                                Keys.siteID: siteID,
+                                Keys.connectionType: connectionType
                               ]
             )
         }
@@ -2330,6 +2346,7 @@ extension WooAnalyticsEvent {
         enum Source: String {
             case banner
             case upgradesScreen = "upgrades_screen"
+            case localNotification = "local_notification"
         }
 
         static func freeTrialUpgradeNowTapped(source: Source) -> WooAnalyticsEvent {
@@ -2342,6 +2359,24 @@ extension WooAnalyticsEvent {
 
         static func planUpgradeAbandoned(source: Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .planUpgradeAbandoned, properties: [Keys.source.rawValue: source.rawValue])
+        }
+    }
+}
+
+// MARK: - EU Shipping Notice Banner
+//
+extension WooAnalyticsEvent {
+    enum EUShippingNotice {
+        static func onEUShippingNoticeBannerShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .euShippingNoticeShown, properties: [:])
+        }
+
+        static func onEUShippingNoticeBannerDismissed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .euShippingNoticeDismissed, properties: [:])
+        }
+
+        static func onEUShippingNoticeLearnMoreTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .euShippingNoticeLearnMoreTapped, properties: [:])
         }
     }
 }

@@ -15,4 +15,15 @@ public enum SitePluginAction: Action {
 
     /// Get details for the plugin with the specified name for a site given its ID
     case getPluginDetails(siteID: Int64, pluginName: String, onCompletion: (Result<SitePlugin, Error>) -> Void)
+
+    /// Whether the site already has the specified plugins installed and activated.
+    case arePluginsActive(siteID: Int64, plugins: [Plugin], onCompletion: (Result<Bool, Error>) -> Void)
+}
+
+public extension SitePluginAction {
+    /// Common plugins of a WooCommerce site.
+    enum Plugin {
+        case jetpack
+        case woo
+    }
 }

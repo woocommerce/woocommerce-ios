@@ -37,12 +37,12 @@ final class StoreCreationCoordinator: Coordinator {
         }
     }()
 
-    @Published private var siteIDFromStoreCreation: Int64?
     private var jetpackSiteSubscription: AnyCancellable?
 
     private let stores: StoresManager
     private let analytics: Analytics
     private let source: Source
+    private let prefillStoreName: String?
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
@@ -52,9 +52,11 @@ final class StoreCreationCoordinator: Coordinator {
     }
 
     private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
+    private var statusChecker: StoreCreationStatusChecker?
 
     init(source: Source,
          navigationController: UINavigationController,
+         prefillStoreName: String? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -63,6 +65,7 @@ final class StoreCreationCoordinator: Coordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.source = source
         self.navigationController = navigationController
+        self.prefillStoreName = prefillStoreName
         // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
         self.storePickerViewModel = .init(configuration: .standard,
                                           stores: stores,
@@ -156,7 +159,7 @@ private extension StoreCreationCoordinator {
 
         let isProfilerEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM3Profiler)
         let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
-        let storeNameForm = StoreNameFormHostingController { [weak self] storeName in
+        let continueAfterEnteringStoreName = { [weak self] storeName in
             if isProfilerEnabled {
                 /// `storeCreationM3Profiler` is currently disabled.
                 /// Before enabling it again, make sure the onboarding questions are properly sent on the trial flow around line `343`.
@@ -175,6 +178,12 @@ private extension StoreCreationCoordinator {
                                              planToPurchase: planToPurchase)
                 }
             }
+        }
+        let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
+            if isFreeTrialEnabled {
+                self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
+            }
+            continueAfterEnteringStoreName(storeName)
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
         } onSupport: { [weak self] in
@@ -182,6 +191,11 @@ private extension StoreCreationCoordinator {
         }
         navigationController.pushViewController(storeNameForm, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
+
+        // Navigate to profiler question screen when store name is prefilled upon launching app from local notification
+        if let prefillStoreName {
+            continueAfterEnteringStoreName(prefillStoreName)
+        }
     }
 
     @MainActor
@@ -492,6 +506,8 @@ private extension StoreCreationCoordinator {
             let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID, profilerData: profilerData)
             switch freeTrialResult {
             case .success:
+                cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
+                scheduleLocalNotificationWhenStoreIsReady()
                 // Wait for jetpack to be installed
                 DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
                 waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)
@@ -714,115 +730,59 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func waitForSiteToBecomeJetpackSite(from navigationController: UINavigationController, siteID: Int64, expectedStoreName: String) {
-        /// Free trial sites need more waiting time that regular sites.
-        ///
-        siteIDFromStoreCreation = siteID
-
-        /// Determines if the `.siteCreationPropertiesOutOfSync` event has already been tracked.
-        /// Needed because we should only track this event once per store creation process.
-        ///
-        var haveTrackedOutOfSyncEvent = false
-
         /// Timestamp when we start observing times. Needed to track the store creating waiting duration.
         ///
         let waitingTimeStart = Date()
 
-        scheduleLocalNotificationWhenStoreIsReady()
-
-        jetpackSiteSubscription = $siteIDFromStoreCreation
-            .compactMap { $0 }
-            .removeDuplicates()
-            .asyncMap { [weak self] siteID -> Site? in
-                guard let self else {
-                    return nil
-                }
-                // Waits some seconds before syncing sites every time.
-                try await Task.sleep(nanoseconds: UInt64(self.jetpackCheckRetryInterval * 1_000_000_000))
-                return try await self.syncSites(forSiteThatMatchesSiteID: siteID, expectedStoreName: expectedStoreName)
-            }
-            .receive(on: DispatchQueue.main)
-            .handleEvents(receiveCompletion: { [weak self] output in
-                guard let self else { return }
-                self.storeCreationProgressViewModel?.incrementProgress()
-
-                // Track when a properties out of sync event occur, but only track it once.
-                if self.isPropertiesOutOfSyncError(output) && !haveTrackedOutOfSyncEvent {
-                    self.analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
-                    haveTrackedOutOfSyncEvent = true
-                }
-            })
-            // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack site
-            // in the WPCOM `/me/sites` response.
-            .retry(10)
-            .replaceError(with: nil)
-            .sink { [weak self] site in
-                guard let self else { return }
-
-                self.cancelLocalNotificationWhenStoreIsReady()
-
-                guard let site else {
-                    navigationController.dismiss(animated: true) { [weak self] in
-                        guard let self else { return }
-                        self.showJetpackSiteTimeoutAlert(from: self.navigationController)
-                    }
+        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: isFreeTrialCreation, stores: stores)
+        self.statusChecker = statusChecker
+        jetpackSiteSubscription = statusChecker.waitForSiteToBeReady(siteID: siteID)
+            .handleEvents(receiveCompletion: { [weak self] completion in
+                guard let self, case .failure = completion else {
                     return
                 }
-
-                self.storeCreationProgressViewModel?.markAsComplete()
-                self.trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
-
-                /// Free trial stores should land directly on the dashboard and not show any success view.
-                ///
-                if self.isFreeTrialCreation {
-                    self.continueWithSelectedSite(site: site)
-                } else {
-                    self.showSuccessView(from: navigationController, site: site)
+                self.storeCreationProgressViewModel?.incrementProgress()
+            })
+            // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack/Woo site.
+            .retry(10)
+            .sink (receiveCompletion: { [weak self] completion in
+                guard let self, case .failure = completion else {
+                    return
                 }
-            }
+                self.handleCompletionStatus(site: nil, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
+            }, receiveValue: { [weak self] site in
+                guard let self else { return }
+                self.handleCompletionStatus(site: site, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
+            })
     }
 
-    /// Determines if a given Subscriber.Completion entity contains a `StoreCreationError.newSiteIsNotFullySynced` error.
-    ///
     @MainActor
-    func isPropertiesOutOfSyncError(_ output: Subscribers.Completion<Error>) -> Bool {
-        switch output {
-        case .failure(let error):
-            guard let creationError = error as? StoreCreationError else { return false }
-            return creationError == .newSiteIsNotFullySynced
-        case .finished:
-            return false
+    func handleCompletionStatus(site: Site?, waitingTimeStart: Date, expectedStoreName: String) {
+        cancelLocalNotificationWhenStoreIsReady()
+        guard let site else {
+            return navigationController.dismiss(animated: true) { [weak self] in
+                guard let self else { return }
+                self.showJetpackSiteTimeoutAlert(from: self.navigationController)
+            }
         }
-    }
 
-    @MainActor
-    func syncSites(forSiteThatMatchesSiteID siteID: Int64, expectedStoreName: String) async throws -> Site {
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            self?.storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
-                guard let self else {
-                    return continuation.resume(throwing: StoreCreationCoordinatorError.selfDeallocated)
-                }
-                // The newly created site often has `isJetpackThePluginInstalled=false` initially,
-                // which results in a JCP site.
-                // In this case, we want to retry sites syncing.
-                guard let site = self.storePickerViewModel.site(thatMatchesSiteID: siteID) else {
-                    DDLogInfo("🔵 Retrying: Site unavailable...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
-                }
+        // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
+        // Track when a properties out of sync event occur, but only track it once.
+        // https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
+        if !(site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName) {
+            DDLogInfo("🔵 Site available but properties are not yet in sync...")
+            analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
+        }
 
-                guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
-                    DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
-                }
+        storeCreationProgressViewModel?.markAsComplete()
+        trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
 
-                // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.
-                // In this case, let's keep retrying sites syncing. https://github.com/woocommerce/woocommerce-ios/pull/9317#issuecomment-1488035433
-                guard site.isWordPressComStore && site.isWooCommerceActive && site.name == expectedStoreName else {
-                    DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotFullySynced)
-                }
-
-                continuation.resume(returning: site)
-            }
+        /// Free trial stores should land directly on the dashboard and not show any success view.
+        ///
+        if isFreeTrialCreation {
+            continueWithSelectedSite(site: site)
+        } else {
+            showSuccessView(from: navigationController, site: site)
         }
     }
 
@@ -879,9 +839,8 @@ private extension StoreCreationCoordinator {
 
 private extension StoreCreationCoordinator {
     func scheduleLocalNotificationWhenStoreIsReady() {
-        guard let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete, stores: stores) else {
-            return
-        }
+        let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete,
+                                             stores: stores)
         cancelLocalNotificationWhenStoreIsReady()
         Task {
             await localNotificationScheduler.schedule(notification: notification,
@@ -893,6 +852,25 @@ private extension StoreCreationCoordinator {
 
     func cancelLocalNotificationWhenStoreIsReady() {
         localNotificationScheduler.cancel(scenario: Constants.LocalNotificationScenario.storeCreationComplete)
+    }
+
+    func scheduleLocalNotificationToSubscribeFreeTrial(storeName: String) {
+        let notification = LocalNotification(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName),
+                                                   stores: stores,
+                                                   userInfo: [LocalNotification.UserInfoKey.storeName: storeName])
+
+        cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      // Notify after 24 hours
+                                                      trigger: UNTimeIntervalNotificationTrigger(timeInterval: 24 * 60 * 60,
+                                                                                                 repeats: false),
+                                                      remoteFeatureFlag: .oneDayAfterStoreCreationNameWithoutFreeTrial)
+        }
+    }
+
+    func cancelLocalNotificationToSubscribeFreeTrial(storeName: String) {
+        localNotificationScheduler.cancel(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName))
     }
 }
 

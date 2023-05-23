@@ -6,13 +6,13 @@ final class ShippingCustomsFormListHostingController: UIHostingController<Shippi
          customsForms: [ShippingLabelCustomsForm],
          destinationCountry: Country,
          countries: [Country],
-         shouldDisplayShippingNotice: Bool,
+         isEUShippingScenario: Bool,
          onCompletion: @escaping ([ShippingLabelCustomsForm]) -> Void) {
         let viewModel = ShippingLabelCustomsFormListViewModel(order: order,
                                                               customsForms: customsForms,
                                                               destinationCountry: destinationCountry,
                                                               countries: countries,
-                                                              shouldDisplayShippingNotice: shouldDisplayShippingNotice)
+                                                              isEUShippingScenario: isEUShippingScenario)
         super.init(rootView: .init(viewModel: viewModel, onCompletion: onCompletion))
 
         rootView.onLearnMoreTapped = { [weak self] in
@@ -54,14 +54,17 @@ struct ShippingLabelCustomsFormList: View {
                     .onLearnMore {
                         onLearnMoreTapped()
                     }
-                    .renderedIf(viewModel.shouldDisplayShippingNotice)
+                    .renderedIf(viewModel.isShippingNoticeVisible)
                     .fixedSize(horizontal: false, vertical: true)
 
                 ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
                     ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                   packageNumber: index + 1,
                                                   safeAreaInsets: geometry.safeAreaInsets,
-                                                  viewModel: item)
+                                                  viewModel: item,
+                                                  infoTooltipTapped: {
+                        viewModel.onInfoTooltipTapped()
+                    })
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }

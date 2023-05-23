@@ -20,12 +20,14 @@ final class CardReaderSettingsViewModelsOrderedList: PaymentSettingsFlowPrioriti
 
     private let cardReaderConnectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
 
-    init(configuration: CardPresentPaymentsConfiguration) {
+    init(configuration: CardPresentPaymentsConfiguration, siteID: Int64) {
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
         knownReaderProvider = CardReaderSettingsKnownReaderStorage()
 
-        cardReaderConnectionAnalyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration)
+        cardReaderConnectionAnalyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
+                                                                                    siteID: siteID,
+                                                                                    connectionType: .userInitiated)
 
         /// Instantiate and add each viewmodel related to card reader settings to the
         /// array. Viewmodels will be evaluated for shouldShow starting at the top

@@ -28,6 +28,7 @@ extension UserDefaults {
         case completedAllStoreOnboardingTasks
         case shouldHideStoreOnboardingTaskList
         case storePhoneNumber
+        case hasSavedPrivacyBannerSettings
     }
 }
 

@@ -89,7 +89,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             }
             discoveredReaders.fulfill()
             readerService.cancelDiscovery().discard()
-            readerService.connect(firstReader).sink { completion in
+            readerService.connect(firstReader, options: nil).sink { completion in
                 readerService.cancelDiscovery().discard()
             } receiveValue: { _ in
                 readerService.cancelDiscovery()

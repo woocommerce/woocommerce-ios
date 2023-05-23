@@ -10,6 +10,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
 
     private var viewModel: BluetoothCardReaderSettingsConnectedViewModel!
 
+    private let sampleSiteID: Int64 = 1234
+
     override func setUpWithError() throws {
         mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
@@ -23,6 +25,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         ServiceLocator.setAnalytics(analytics)
 
         analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: Mocks.configuration,
+                                                                siteID: sampleSiteID,
+                                                                connectionType: .userInitiated,
                                                                 stores: mockStoresManager,
                                                                 analytics: analytics)
         analyticsTracker.setCandidateReader(MockCardReader.wisePad3())
@@ -50,6 +54,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             },
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 
@@ -66,6 +72,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             },
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 
@@ -77,6 +85,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "50% Battery")
     }
@@ -93,6 +103,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "Unknown Battery Level")
@@ -103,6 +115,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
@@ -120,6 +134,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
@@ -169,6 +185,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 
@@ -472,6 +490,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 
@@ -492,6 +512,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 
@@ -514,6 +536,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
                 didChangeShouldShow: { promise($0) },
                 configuration: Mocks.configuration,
                 analyticsTracker: .init(configuration: Mocks.configuration,
+                                        siteID: self.sampleSiteID,
+                                        connectionType: .userInitiated,
                                         stores: self.mockStoresManager),
                 delayToShowUpdateSuccessMessage: .milliseconds(1))
         }
@@ -536,6 +560,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 
@@ -564,6 +590,8 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             didChangeShouldShow: nil,
             configuration: Mocks.configuration,
             analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
                                     stores: mockStoresManager),
             delayToShowUpdateSuccessMessage: .milliseconds(1))
 

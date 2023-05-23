@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-09 11:54:03+0000 */
+/* Translation-Revision-Date: 2023-05-16 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -110,6 +110,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
 "%1$@, %2$@" = "%1$@, %2$@";
+
+/* Message on the local notification to remind the user of the expired free trial plan.The placeholder is the name of the user. */
+"%1$@, we have paused your store, but you can continue by picking a plan that suits you best." = "%1$@, wir haben deinen Shop deaktiviert, aber du kannst ihn wieder aktivieren, indem du einen für dich passenden Tarif auswählst.";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -451,6 +454,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the screen to add a product to an order */
 "Add Product" = "Produkt hinzufügen";
 
+/* Title text of the button to add a single product via SKU scanning */
+"Add Product via SKU scanner" = "Produkt per SKU-Scanner hinzufügen";
+
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
    Navigation bar title for selecting multiple products.
@@ -662,6 +668,10 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "Erlaube mehreren Benutzen, auf WooCommerce Mobile zuzugreifen. ";
 
+/* Analytics toggle description in the privacy screen.
+   Description for the analytics toggle in the privacy banner */
+"Allow us to optimize performance by collecting information on how users interact with our mobile apps." = "Mit deiner Zustimmung können wir die Performance optimieren, indem wir Informationen zur Interaktion von Benutzern mit unseren Mobil-Apps sammeln.";
+
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "Zulassen, aber Kunden benachrichtigen";
 
@@ -757,6 +767,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Analytics toggle title in the privacy screen.
    Title for the Analytics Hub screen.
+   Title for the analytics toggle in the privacy banner
    Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Statistiken";
 
@@ -1144,8 +1155,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cambodia" = "Kambodscha";
 
+/* Message of the action sheet button that links to settings for camera access */
+"Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "Zum Scannen von Artikelnummern ist Kamerazugriff erforderlich. Bitte aktiviere die Kameraberechtigungen in deinen Geräteeinstellungen";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "Die Kameraaufnahme unterstützt den folgenden Medientyp wahrscheinlich nicht: %@";
+
+/* Title of the action sheet button that links to settings for camera access */
+"Camera permissions" = "Kameraberechtigungen";
 
 /* Country option for a site address. */
 "Cameroon" = "Kamerun";
@@ -1158,9 +1175,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "Kann %1$d Mal verwendet werden";
-
-/* Local notification title when the user encounters an error with WP.com password. */
-"Can't remember your password?" = "Hast du dein Passwort vergessen?";
 
 /* Country option for a site address. */
 "Canada" = "Kanada";
@@ -1660,7 +1674,6 @@ which should be translated separately and considered part of this sentence. */
 "Contact Support" = "Support kontaktieren";
 
 /* Action button to contact support on enable analytics screen
-   Local notification action to contact support.
    The title of the button to contact support in the Error Loading Data banner */
 "Contact support" = "Support kontaktieren";
 
@@ -1720,6 +1733,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Cook Islands" = "Cookinseln";
+
+/* Cookie Policy text on the privacy screen */
+"Cookie Policy" = "Cookie-Richtlinie";
 
 /* Text in the notice after copying the generated text in the product description AI generator view. */
 "Copied!" = "Kopiert!";
@@ -2162,6 +2178,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the action sheet
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
+   Label for the banner Dismiss button
    The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
    The title of the button to dismiss the Orders top banner
@@ -2755,6 +2772,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Läuft ab am: %1$@";
 
+/* Action on the local notification to remind the user of a newly created store. */
+"Explore" = "Erkunden";
+
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Erkundige dich, wie du deine Verkäufe im Store steigern kannst.";
 
@@ -3028,9 +3048,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the feature announcement banner intended to upsell card readers */
 "Get ready to accept payments with a card reader." = "Empfange Zahlungen mit einem Kartenlesegerät.";
 
-/* Local notification body when the user encounters an error logging in with site address. */
-"Get some help!" = "Hol dir Hilfe!";
-
 /* Title for the account creation form. */
 "Get started in minutes" = "In nur wenigen Minuten beginnen";
 
@@ -3081,6 +3098,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
+
+/* Title for the 'Go To Settings' button in the privacy banner */
+"Go to Settings" = "Zu den Einstellungen";
 
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "Shop aufrufen";
@@ -3239,6 +3259,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Hallo! Hier ist ein Link zum Herunterladen der WooCommerce-App. Mir gefällt sie sehr gut und ich dachte, sie könnte dir auch gefallen.";
+
+/* Message on the local notification suggesting a trial plan subscription.The placeholders are the name of the user and the store name. */
+"Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business." = "Hallo %1$@, %2$@ ist bereit für dich! Starte deinen 14-tägigen Gratis-Test von Woo Express mit nur einem Klick, um dein Online-Geschäft aufzubauen.";
+
+/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
+"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Hallo %1$@, willkommen zu deinem 14-tägigen Gratis-Test von Woo Express – alles, was du brauchst, um ein erfolgreiches Online-Geschäft zu starten und auszubauen, an einem zentralen Ort. Bereit, mehr zu entdecken?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3694,12 +3720,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Starte deinen Shop";
 
-/* Title of the secondary button on the store onboarding payments setup screen. */
+/* Title of the secondary button on the store onboarding payments setup screen.
+   Title on the button to upgrade a free trial plan. */
 "Learn More" = "Mehr erfahren";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
+   Label for the banner Learn more button
    Settings > Privacy Settings. A text link to the cookie policy.
    Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -3724,6 +3752,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Weitere Informationen zu Rollen und Berechtigungen";
+
+/* Usage Tracker description section in the privacy screen. */
+"Learn more about the data we collect about your store and your options to control this data sharing." = "Weitere Informationen zu den Daten, die wir über deinen Shop erfassen, sowie deinen Optionen zum Kontrollieren dieser Datenfreigabe.";
 
 /* Country option for a site address. */
 "Lebanon" = "Libanon";
@@ -3904,9 +3935,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A generic error during site credential login */
 "Login failed. Please try again." = "Anmeldung fehlgeschlagen. Bitte versuche es erneut.";
 
-/* Local notification action to log in with WordPress.com. */
-"Login with WordPress.com" = "Mit WordPress.com anmelden";
-
 /* Button title. Takes the user to the Enter account password screen. */
 "Login with account password" = "Mit Konto-Passwort anmelden";
 
@@ -3971,6 +3999,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the primary button on the store creation success screen to continue to the newly created store. */
 "Manage My Store" = "Meinen Shop verwalten";
+
+/* Title for the privacy banner */
+"Manage Privacy" = "Privatsphäre verwalten";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Verwalte und bearbeite Bestellungen auch unterwegs";
@@ -4129,9 +4160,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the More Options section on Product Settings screen */
 "More Options" = "Weitere Optionen";
 
+/* Title of the more privacy options section on the privacy screen */
+"More Privacy Options" = "Weitere Privatsphäre-Optionen";
+
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Weitere Optionen";
+
+/* More Privacy toggle section in the privacy screen. */
+"More privacy options available for woocommerce.com users. Check here to learn more." = "Weitere Privatsphäre-Optionen für woocommerce.com-Benutzer verfügbar. Hier erfährst du mehr.";
 
 /* Country option for a site address. */
 "Morocco" = "Marokko";
@@ -4529,7 +4566,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Open Map action in Shipping Label Address Validation. */
 "Open Map" = "Karte öffnen";
 
-/* Button title to open device settings in an alert */
+/* Button title to open device settings in an action sheet
+   Button title to open device settings in an alert */
 "Open Settings" = "Einstellungen öffnen";
 
 /* Label for the description of openening a link using a new window */
@@ -5195,7 +5233,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Datenschutzhinweis für Benutzer in Kalifornien";
 
-/* Title of button that displays the App's privacy policy */
+/* Privacy Policy text on the privacy screen
+   Title of button that displays the App's privacy policy */
 "Privacy Policy" = "Datenschutzerklärung";
 
 /* Navigates to Privacy Settings screen
@@ -5210,9 +5249,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's private status */
 "Privately published" = "Privat veröffentlicht";
-
-/* Local notification title when the user encounters an error logging in with site address. */
-"Problems with logging in?" = "Hast du Probleme bei der Anmeldung?";
 
 /* Display label for processing order status. */
 "Processing" = "In Bearbeitung";
@@ -5609,9 +5645,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Aktivitätsprotokoll zurücksetzen";
 
-/* Local notification action to reset password. */
-"Reset password" = "Passwort zurücksetzen";
-
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
@@ -5648,6 +5681,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry Action on the notice when loading product categories fails
    Retry action title
    Retry button on the error notice for the upgrade view
+   Retry button title for the privacy screen notices
    Retry the last action */
 "Retry" = "Erneut versuchen";
 
@@ -5793,7 +5827,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action for saving a Product remotely
    Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar.
-   Button title that save the price selection for bulk variation update */
+   Button title that save the price selection for bulk variation update
+   Title for the 'Save' button in the privacy banner */
 "Save" = "Speichern";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -6521,6 +6556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Supportanfrage senden";
 
+/* Action on the local notification to suggest the user to subscribe to the trial plan. */
+"Subscribe" = "Abonnieren";
+
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
    Title for the subscription settings in a subscription product. */
@@ -7135,6 +7173,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error shown when failing to fetch the plan details in the upgrades view. */
 "There was an error fetching your plan details, please try again later." = "Beim Abrufen deiner Tarifdetails ist ein Fehler aufgetreten. Bitte versuche es später erneut.";
 
+/* Error notice when failing to fetch account settings on the privacy screen. */
+"There was an error fetching your privacy settings" = "Beim Abrufen deiner Privatsphäre-Einstellungen ist ein Fehler aufgetreten";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Beim Bearbeiten der Rückerstattung ist ein Fehler aufgetreten.";
 
@@ -7154,6 +7195,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Fehler beim Aktualisieren der Bestellung";
 
+/* Error notice when failing to update account settings on the privacy screen. */
+"There was an error updating your privacy settings" = "Beim Aktualisieren deiner Privatsphäre-Einstellungen ist ein Fehler aufgetreten";
+
 /* Text when there is an error while marking the order as paid for during payment. */
 "There was an error while marking the order as paid." = "Beim Markieren der Bestellung als bezahlt ist ein Fehler aufgetreten.";
 
@@ -7165,9 +7209,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Es besteht kein Risiko, du kannst innerhalb von 30 Tagen kündigen und erhältst eine vollständige Rückerstattung.";
-
-/* Analytics toggle description in the privacy screen. */
-"These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps." = "Mithilfe dieser Cookies können wir die Performance optimieren, indem wir Informationen zur Interaktion von Benutzern mit unseren Mobil-Apps sammeln.";
 
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
@@ -7258,6 +7299,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Dadurch wird deine Bestellung als abgeschlossen markiert, wenn du die Gesamtsumme außerhalb von WooCommerce erhalten hast";
 
+/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
+"Time’s almost up, %1$@!" = "Die Zeit ist fast um, %1$@!";
+
 /* Country option for a site address. */
 "Timor-Leste" = "Osttimor";
 
@@ -7304,6 +7348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
 "To launch your store, you need to upgrade to our plan. %1$@" = "Zum Starten deines Shops ist ein Upgrade auf unseren Tarif erforderlich. %1$@";
+
+/* Footer of the more privacy options section on the privacy screen */
+"To learn more about how we use your data to optimize our mobile apps, enhance your experience, and deliver relevant marketing, please review our Privacy Policy and Cookie Policy.\n" = "Wenn du mehr darüber erfahren willst, wie wir deine Daten zur Optimierung unserer Mobil-Apps, zur Verbesserung deines Erlebnisses und zum Liefern relevanter Marketingmaterialien verwenden, lies dir unsere Datenschutzerklärung und Cookie-Richtlinie durch.\n";
 
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "Bitte melde dich zuerst mit deinem WordPress.com-Passwort an, um mit dieser Apple-ID fortzufahren. Es wird nur einmal benötigt.";
@@ -7871,12 +7918,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Deine Produkte werden aktualisiert …";
 
-/* Title on the button to upgrade a free trial plan. */
+/* Action on the local notification to remind the user of the expiring free trial plan. */
 "Upgrade" = "Upgrade durchführen";
-
-/* Title for the button to upgrade from a free trial
-   Title for the WebView when upgrading a free trial plan */
-"Upgrade Now" = "Jetzt Upgrade durchführen";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -7896,6 +7939,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Field in the view for adding or editing a coupon. */
 "Usage Restrictions" = "Nutzungseinschränkungen";
+
+/* Usage tracker title in the privacy screen. */
+"Usage Tracking" = "Nutzungsaufzeichnung";
 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "Nutzungsdetails";
@@ -8168,7 +8214,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Wir verwenden andere Werkzeuge zum Tracking, darunter auch welche von Drittanbietern. Hier erhältst du weitere Informationen und Tipps, wie du sie kontrollierst.";
 
 /* Main description on the privacy screen. */
-"We value your privacy. Your personal data is used to optimize our mobile apps, improve security, conduct analytics and marketing activities, and enhance your user experience." = "Der Schutz deiner Daten ist uns wichtig. Deine persönlichen Daten werden verwendet, um unsere Mobil-Apps zu optimieren, die Sicherheit zu verbessern, Analysen und Marketingaktivitäten durchzuführen und dein Benutzererlebnis zu verbessern.";
+"We value your privacy. Your personal data is used to optimize our mobile apps, improve security, conduct analytics, and enhance your user experience." = "Der Schutz deiner Daten ist uns wichtig. Deine personenbezogenen Daten werden verwendet, um unsere Mobil-Apps zu optimieren, die Sicherheit zu verbessern, Analysen durchzuführen und dein Benutzererlebnis zu verbessern.";
 
 /* Message explaining that WordPress was not detected. */
 "We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "An der von dir eingegeben Adresse konnten wir keine WordPress-Website finden. Bitte stelle sicher, dass WordPress installiert ist und du über die aktuelle Version verfügst.";
@@ -8220,6 +8266,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Wir haben dir einen Anmeldelink per E-Mail gesendet, um dein neues WordPress.com-Konto zu erstellen. Überprüfe deine E-Mails auf diesem Gerät und tippe auf den Link in der E-Mail, die du von WordPress.com erhalten hast.";
+
+/* More Privacy Options section title in the privacy screen. */
+"Web Options" = "Web-Optionen";
 
 /* Title of a button linking to the app's website */
 "Website" = "Website";
@@ -8287,6 +8336,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "Wenn du Versandetiketten mit WooCommerce kaufst, profitierst von reduzierten gewerblichen Preisen.";
+
+/* The EU notice banner content describing why some countries require special customs description */
+"When shipping to countries that follow European Union (EU) customs rules, you must provide a clear, specific description of every item. Otherwise, shipments may be delayed or interrupted at customs." = "Beim Versand in Länder, die den Zollvorschriften der Europäischen Union unterliegen, musst du eine klare, spezifische Beschreibung aller Artikel angeben. Ansonsten kann es zu Verzögerungen oder Unterbrechungen von Lieferungen durch den Zoll kommen.";
 
 /* Title of the store creation profiler question about the store selling status. */
 "Where are you on your commerce journey?" = "An welchem Punkt deiner Commerce-Reise befindest du dich?";
@@ -8491,6 +8543,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info details for an expired free trial */
 "Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "Dein Gratis-Test ist abgelaufen. Deshalb hast du jetzt nur noch eingeschränkten Zugriff auf alle Funktionen. Abonniere jetzt den Tarif Woo Express Performance.";
 
+/* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
+"Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Dein Gratis-Test von Woo Express läuft morgen (%1$@) ab. Jetzt ist es an der Zeit, deine Zukunft selbst zu gestalten – wähle einen Tarif und bereite dich darauf vor, zu wachsen.";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Du kannst dein iPhone als Kartenlesegerät nutzen oder per Bluetooth eine Verbindung zu einem externen Lesegerät herstellen.";
 
@@ -8508,6 +8563,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Dein Telefon ist gleich zum Empfang von Zahlungen bereit …";
+
+/* Title for the privacy banner */
+"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "Der Schutz deiner personenbezogenen Daten hat für uns seit jeher einen hohen Stellenwert. Wir verwenden, speichern und verarbeiten deine personenbezogenen Daten, um unsere App (und dein Erlebnis) auf vielfältige Weise zu optimieren. Einige dieser Verwendungszwecke deiner Daten sind absolut notwendig für die Funktionsweise, andere wiederum kannst du in deinen Einstellungen anpassen.";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Dein Kartenlesegerät wird nach Abschluss des Updates automatisch neu gestartet und neu verbunden";
@@ -8533,6 +8591,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Dein Shop ist live!";
 
+/* Title of the local notification about a newly created store */
+"Your store is ready!" = "Dein Shop ist einsatzbereit!";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"Your store is waiting!" = "Dein Shop wartet!";
+
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Dein Shop wird basierend auf deinen ausgewählten Optionen eingerichtet!";
 
@@ -8542,7 +8606,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Deine Supportanfrage ist bei uns eingegangen. Wir antworten dir so schnell wie möglich per E-Mail.";
 
-/* Message of the free trial banner when there are no days left */
+/* Message of the free trial banner when there are no days left
+   Title of the local notification to remind the user of the expired free trial plan. */
 "Your trial has ended." = "Dein Gratis-Test ist abgelaufen.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8747,6 +8812,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "Ålandinseln";
+
+/* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
+"✨ AI content generator available." = "✨ KI-Inhaltsgenerator verfügbar.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Bestellung fertiggestellt";

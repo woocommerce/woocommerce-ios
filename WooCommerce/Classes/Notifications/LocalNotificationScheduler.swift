@@ -18,13 +18,24 @@ final class LocalNotificationScheduler {
     ///   - trigger: When the local notification is scheduled to arrive.
     ///   - remoteFeatureFlag: If non-nil, the local notification is only scheduled when the remote feature flag is enabled (disabled by default).
     ///     If nil, the local notification is always scheduled.
+    ///   - shouldSkipIfScheduled: Make sure that no pending notifications have the same identifier
+    ///    before scheduling the notification.
+    ///    
     @MainActor
-    func schedule(notification: LocalNotification, trigger: UNNotificationTrigger?, remoteFeatureFlag: RemoteFeatureFlag?) async {
+    func schedule(notification: LocalNotification,
+                  trigger: UNNotificationTrigger?,
+                  remoteFeatureFlag: RemoteFeatureFlag?,
+                  shouldSkipIfScheduled: Bool = false) async {
         if let remoteFeatureFlag, await isRemoteFeatureFlagEnabled(remoteFeatureFlag) == false {
-                return
-            }
-        pushNotesManager.requestLocalNotification(notification,
-                                                  trigger: trigger)
+            return
+        }
+
+        if shouldSkipIfScheduled {
+            await pushNotesManager.requestLocalNotificationIfNeeded(notification, trigger: trigger)
+        } else {
+            await pushNotesManager.requestLocalNotification(notification,
+                                                            trigger: trigger)
+        }
     }
 
     /// Cancels a local notification of the given scenario.

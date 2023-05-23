@@ -10,6 +10,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isStoreCreationMVPEnabled: Bool
     private let isStoreCreationM2Enabled: Bool
     private let isStoreCreationM2WithInAppPurchasesEnabled: Bool
+    private let isStoreCreationM3ProfilerEnabled: Bool
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let isAddCouponToOrderEnabled: Bool
@@ -24,7 +25,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isReadOnlyGiftCardsEnabled: Bool
     private let isHideStoreOnboardingTaskListFeatureEnabled: Bool
     private let isAddProductToOrderViaSKUScannerEnabled: Bool
-    private let isScanToPayEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -34,6 +34,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isStoreCreationMVPEnabled: Bool = true,
          isStoreCreationM2Enabled: Bool = false,
          isStoreCreationM2WithInAppPurchasesEnabled: Bool = false,
+         isStoreCreationM3ProfilerEnabled: Bool = false,
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          isAddCouponToOrderEnabled: Bool = false,
@@ -47,8 +48,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
          isHideStoreOnboardingTaskListFeatureEnabled: Bool = false,
-         isAddProductToOrderViaSKUScannerEnabled: Bool = false,
-         isScanToPayEnabled: Bool = false) {
+         isAddProductToOrderViaSKUScannerEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -57,6 +57,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isStoreCreationMVPEnabled = isStoreCreationMVPEnabled
         self.isStoreCreationM2Enabled = isStoreCreationM2Enabled
         self.isStoreCreationM2WithInAppPurchasesEnabled = isStoreCreationM2WithInAppPurchasesEnabled
+        self.isStoreCreationM3ProfilerEnabled = isStoreCreationM3ProfilerEnabled
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isAddCouponToOrderEnabled = isAddCouponToOrderEnabled
@@ -71,7 +72,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.isHideStoreOnboardingTaskListFeatureEnabled = isHideStoreOnboardingTaskListFeatureEnabled
         self.isAddProductToOrderViaSKUScannerEnabled = isAddProductToOrderViaSKUScannerEnabled
-        self.isScanToPayEnabled = isScanToPayEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -92,6 +92,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isStoreCreationM2Enabled
         case .storeCreationM2WithInAppPurchasesEnabled:
             return isStoreCreationM2WithInAppPurchasesEnabled
+        case .storeCreationM3Profiler:
+            return isStoreCreationM3ProfilerEnabled
         case .domainSettings:
             return isDomainSettingsEnabled
         case .supportRequests:
@@ -120,8 +122,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isHideStoreOnboardingTaskListFeatureEnabled
         case .addProductToOrderViaSKUScanner:
             return isAddProductToOrderViaSKUScannerEnabled
-        case .scanToPay:
-            return isScanToPayEnabled
         default:
             return false
         }

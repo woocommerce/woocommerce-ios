@@ -1,10 +1,40 @@
 import Foundation
 
+/// Protocol for `SitePluginsRemote` mainly used for mocking.
+public protocol SitePluginsRemoteProtocol {
+    /// Retrieves all of the plugins for a given site ID from WPCOM.
+    ///
+    /// - Parameter siteID: Site for which we'll fetch the plugins.
+    /// - Returns: An array of site plugins.
+    func loadPluginsFromWPCOM(siteID: Int64) async throws -> [DotcomSitePlugin]
+
+    func loadPlugins(for siteID: Int64,
+                     completion: @escaping (Result<[SitePlugin], Error>) -> Void)
+
+    func installPlugin(for siteID: Int64,
+                       slug: String,
+                       completion: @escaping (Result<SitePlugin, Error>) -> Void)
+
+    func activatePlugin(for siteID: Int64,
+                        pluginName: String,
+                        completion: @escaping (Result<SitePlugin, Error>) -> Void)
+
+    func getPluginDetails(for siteID: Int64,
+                          pluginName: String,
+                          completion: @escaping (Result<SitePlugin, Error>) -> Void)
+}
+
 /// SitePlugins: Remote Endpoints
 ///
-public class SitePluginsRemote: Remote {
+public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol {
+    public func loadPluginsFromWPCOM(siteID: Int64) async throws -> [DotcomSitePlugin] {
+        let path = Path.wpcomPlugins(siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
+        let response: DotcomSitePluginsResponse = try await enqueue(request)
+        return response.plugins
+    }
 
-    /// Retrieves all of the `SitePlugin`s for a given site.
+    /// Retrieves all of the `SitePlugin`s for a given site from the site directly.
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the plugins.
@@ -77,6 +107,13 @@ public class SitePluginsRemote: Remote {
     }
 }
 
+private struct DotcomSitePluginsResponse: Decodable {
+    let plugins: [DotcomSitePlugin]
+
+    enum CodingKeys: String, CodingKey {
+        case plugins
+    }
+}
 
 // MARK: - Constants!
 //
@@ -86,5 +123,11 @@ private extension SitePluginsRemote {
         static let slugParameter: String = "slug"
         static let statusParameter: String = "status"
         static let statusActive: String = "active"
+    }
+
+    enum Path {
+        static func wpcomPlugins(siteID: Int64) -> String {
+            "sites/\(siteID)/plugins"
+        }
     }
 }

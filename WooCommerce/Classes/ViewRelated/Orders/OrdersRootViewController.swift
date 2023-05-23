@@ -313,19 +313,19 @@ private extension OrdersRootViewController {
     }
 
     /// Sets navigation buttons.
-    /// Search: Is always present.
     /// Scan: Present when `.addProductToOrderViaSKUScanner` flag is enabled
+    /// Search: Always present.
     /// Add: Always present.
     ///
     func configureNavigationButtons() {
-        var buttons: [UIBarButtonItem] = [
+        if featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner) {
+            navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+        }
+
+        navigationItem.rightBarButtonItems = [
             createAddOrderItem(),
             createSearchBarButtonItem()
         ]
-        if featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner) {
-            buttons.insert(createAddOrderByProductScanningButtonItem(), at: 1)
-        }
-        navigationItem.rightBarButtonItems = buttons
     }
 
     func configureFiltersBar() {

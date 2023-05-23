@@ -2,10 +2,12 @@ import SwiftUI
 
 /// Hosting controller that wraps the `StoreNameForm`.
 final class StoreNameFormHostingController: UIHostingController<StoreNameForm> {
-    init(onContinue: @escaping (String) -> Void,
+    init(prefillStoreName: String? = nil,
+         onContinue: @escaping (String) -> Void,
          onClose: @escaping () -> Void,
          onSupport: @escaping () -> Void) {
-        super.init(rootView: StoreNameForm(onContinue: onContinue,
+        super.init(rootView: StoreNameForm(prefillStoreName: prefillStoreName,
+                                           onContinue: onContinue,
                                            onClose: onClose,
                                            onSupport: onSupport))
     }
@@ -28,7 +30,17 @@ struct StoreNameForm: View {
     let onClose: () -> Void
     let onSupport: () -> Void
 
-    @State private var name: String = ""
+    @State private var name: String
+
+    init(prefillStoreName: String? = nil,
+         onContinue: @escaping (String) -> Void,
+         onClose: @escaping () -> Void,
+         onSupport: @escaping () -> Void) {
+        self.name = prefillStoreName ?? ""
+        self.onContinue = onContinue
+        self.onClose = onClose
+        self.onSupport = onSupport
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {

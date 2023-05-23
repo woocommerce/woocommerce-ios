@@ -98,6 +98,23 @@ final class AggregateDataHelperTests: XCTestCase {
         XCTAssertEqual(aggregatedOrderItems[0].attributes, testOrderItemAttributes)
     }
 
+    func test_refunded_AggregateOrderItem_has_parent_from_OrderItem() throws {
+        // Given
+        let productID: Int64 = 1
+        let parentID: Int64 = 61
+        let orderItems = [MockOrderItem.sampleItem(itemID: parentID, productID: productID, quantity: 1),
+                          MockOrderItem.sampleItem(itemID: 62, productID: productID, quantity: 1, parent: parentID)]
+        let refundItems = [MockRefunds.sampleRefundItem(productID: productID, refundedItemID: "62", quantity: 1)]
+        let refunds = [MockRefunds.sampleRefund(items: refundItems)]
+
+        // When
+        let aggregatedRefundItems = AggregateDataHelper.combineRefundedProducts(from: refunds, orderItems: orderItems)
+
+        // Then
+        let actualParentID = try XCTUnwrap(aggregatedRefundItems?.first).parent
+        XCTAssertEqual(actualParentID, parentID)
+    }
+
     func test_two_order_items_with_same_productID_and_different_itemIDs_create_two_AggregateOrderItems() {
         // Given
         let productID: Int64 = 1
@@ -183,7 +200,8 @@ private extension AggregateDataHelperTests {
             quantity: -1,
             sku: "HOODIE-HAPPY-NINJA",
             total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
-            attributes: []
+            attributes: [],
+            parent: nil
         )
 
         let item1 = AggregateOrderItem(
@@ -195,7 +213,8 @@ private extension AggregateDataHelperTests {
             quantity: -1,
             sku: "T-SHIRT-NINJA-SILHOUETTE",
             total: currencyFormatter.convertToDecimal("-18.00") ?? NSDecimalNumber.zero,
-            attributes: []
+            attributes: [],
+            parent: nil
         )
 
         let item2 = AggregateOrderItem(
@@ -207,7 +226,8 @@ private extension AggregateDataHelperTests {
             quantity: -1,
             sku: "HOODIE-SHIP-YOUR-IDEA-BLACK-L",
             total: currencyFormatter.convertToDecimal("-31.50") ?? NSDecimalNumber.zero,
-            attributes: testOrderItemAttributes
+            attributes: testOrderItemAttributes,
+            parent: nil
         )
 
         let item3 = AggregateOrderItem(
@@ -219,7 +239,8 @@ private extension AggregateDataHelperTests {
             quantity: -2,
             sku: "HOODIE-WOO-LOGO",
             total: currencyFormatter.convertToDecimal("-63.00") ?? NSDecimalNumber.zero,
-            attributes: []
+            attributes: [],
+            parent: nil
         )
 
         let item4 = AggregateOrderItem(
@@ -231,7 +252,8 @@ private extension AggregateDataHelperTests {
             quantity: -3,
             sku: "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
             total: currencyFormatter.convertToDecimal("-81.00") ?? NSDecimalNumber.zero,
-            attributes: []
+            attributes: [],
+            parent: nil
         )
 
         return [item0, item1, item2, item3, item4]

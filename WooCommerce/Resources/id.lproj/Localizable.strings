@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-09 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-05-16 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -110,6 +110,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
 "%1$@, %2$@" = "%1$@, %2$@";
+
+/* Message on the local notification to remind the user of the expired free trial plan.The placeholder is the name of the user. */
+"%1$@, we have paused your store, but you can continue by picking a plan that suits you best." = "%1$@, kami menjeda operasi toko Anda. Anda dapat melanjutkannya dengan memilih paket yang paling sesuai untuk Anda.";
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
@@ -451,6 +454,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the screen to add a product to an order */
 "Add Product" = "Tambahkan Produk";
 
+/* Title text of the button to add a single product via SKU scanning */
+"Add Product via SKU scanner" = "Tambahkan Produk melalui pemindai SKU";
+
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
    Navigation bar title for selecting multiple products.
@@ -662,6 +668,10 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of user profiles as part of Jetpack benefits. */
 "Allow multiple users to access WooCommerce Mobile." = "Izinkan banyak pengguna untuk mengakses WooCommerce Mobile.";
 
+/* Analytics toggle description in the privacy screen.
+   Description for the analytics toggle in the privacy banner */
+"Allow us to optimize performance by collecting information on how users interact with our mobile apps." = "Izinkan kami untuk mengoptimalkan performa dengan mengumpulkan informasi tentang cara pengguna berinteraksi dengan aplikasi seluler kami.";
+
 /* Display label for the product's inventory backorders setting option */
 "Allow, but notify customer" = "Izinkan, tetapi beri tahu pelanggan";
 
@@ -757,6 +767,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Analytics toggle title in the privacy screen.
    Title for the Analytics Hub screen.
+   Title for the analytics toggle in the privacy banner
    Title of analytics as part of Jetpack benefits. */
 "Analytics" = "Analytics";
 
@@ -1144,8 +1155,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cambodia" = "Kamboja";
 
+/* Message of the action sheet button that links to settings for camera access */
+"Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "Akses kamera diwajibkan untuk pemindaian SKU. Harap aktifkan izin penggunaan kamera di pengaturan perangkat Anda";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "Tangkapan kamera tidak mendukung jenis media: %@";
+
+/* Title of the action sheet button that links to settings for camera access */
+"Camera permissions" = "Izin kamera";
 
 /* Country option for a site address. */
 "Cameroon" = "Kamerun";
@@ -1158,9 +1175,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "Dapat digunakan %1$d kali";
-
-/* Local notification title when the user encounters an error with WP.com password. */
-"Can't remember your password?" = "Lupa kata sandi Anda?";
 
 /* Country option for a site address. */
 "Canada" = "Kanada";
@@ -1660,7 +1674,6 @@ which should be translated separately and considered part of this sentence. */
 "Contact Support" = "Hubungi Dukungan";
 
 /* Action button to contact support on enable analytics screen
-   Local notification action to contact support.
    The title of the button to contact support in the Error Loading Data banner */
 "Contact support" = "Hubungi dukungan";
 
@@ -1720,6 +1733,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Cook Islands" = "Kepulauan Cook";
+
+/* Cookie Policy text on the privacy screen */
+"Cookie Policy" = "Kebijakan Cookie";
 
 /* Text in the notice after copying the generated text in the product description AI generator view. */
 "Copied!" = "Disalin.";
@@ -2162,6 +2178,7 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the action sheet
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
+   Label for the banner Dismiss button
    The title of the button to dismiss the banner in order details
    The title of the button to dismiss the banner on the products tab
    The title of the button to dismiss the Orders top banner
@@ -2755,6 +2772,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Kedaluwarsa %1$@";
 
+/* Action on the local notification to remind the user of a newly created store. */
+"Explore" = "Telusuri";
+
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Cari tahu bagaimana Anda dapat meningkatkan penjualan toko Anda";
 
@@ -3028,9 +3048,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the feature announcement banner intended to upsell card readers */
 "Get ready to accept payments with a card reader." = "Bersiaplah menerima pembayaran menggunakan pembaca kartu.";
 
-/* Local notification body when the user encounters an error logging in with site address. */
-"Get some help!" = "Minta bantuan!";
-
 /* Title for the account creation form. */
 "Get started in minutes" = "Mulai dalam sekejap";
 
@@ -3081,6 +3098,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
+
+/* Title for the 'Go To Settings' button in the privacy banner */
+"Go to Settings" = "Buka Pengaturan";
 
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "Kunjungi Toko";
@@ -3239,6 +3259,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Hei! Berikut tautan untuk mengunduh aplikasi WooCommerce. Saya sangat suka aplikasi ini dan saya rasa Anda juga akan suka.";
+
+/* Message on the local notification suggesting a trial plan subscription.The placeholders are the name of the user and the store name. */
+"Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business." = "Hai %1$@, %2$@ sudah siap untuk Anda! Mulai percobaan gratis 14 hari Woo Express hanya dengan satu kali klik untuk memulai bisnis online Anda.";
+
+/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
+"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Hai %1$@, selamat datang di periode percobaan 14 hari Woo Express! Inilah tempat segala kebutuhan Anda untuk memulai dan menumbuhkan bisnis online yang sukses. Siap menjelajahi?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3694,12 +3720,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Luncurkan toko Anda";
 
-/* Title of the secondary button on the store onboarding payments setup screen. */
+/* Title of the secondary button on the store onboarding payments setup screen.
+   Title on the button to upgrade a free trial plan. */
 "Learn More" = "Pelajari Lebih Lanjut";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
+   Label for the banner Learn more button
    Settings > Privacy Settings. A text link to the cookie policy.
    Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
@@ -3724,6 +3752,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Pelajari lebih lanjut tentang peran dan izin";
+
+/* Usage Tracker description section in the privacy screen. */
+"Learn more about the data we collect about your store and your options to control this data sharing." = "Pelajari selengkapnya tentang data yang kami kumpulkan seputar toko Anda dan pilihan Anda dalam mengelola pembagian data.";
 
 /* Country option for a site address. */
 "Lebanon" = "Lebanon";
@@ -3904,9 +3935,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A generic error during site credential login */
 "Login failed. Please try again." = "Login gagal. Harap coba lagi.";
 
-/* Local notification action to log in with WordPress.com. */
-"Login with WordPress.com" = "Login dengan WordPress.com";
-
 /* Button title. Takes the user to the Enter account password screen. */
 "Login with account password" = "Login dengan kata sandi akun";
 
@@ -3971,6 +3999,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the primary button on the store creation success screen to continue to the newly created store. */
 "Manage My Store" = "Kelola Toko Saya";
+
+/* Title for the privacy banner */
+"Manage Privacy" = "Kelola Privasi";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Kelola dan sunting pesanan dari mana saja";
@@ -4129,9 +4160,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the More Options section on Product Settings screen */
 "More Options" = "Pilihan Lainnya";
 
+/* Title of the more privacy options section on the privacy screen */
+"More Privacy Options" = "Pilihan Privasi Lainnya";
+
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
 "More options" = "Pilihan lainnya";
+
+/* More Privacy toggle section in the privacy screen. */
+"More privacy options available for woocommerce.com users. Check here to learn more." = "Tersedia pilihan privasi lainnya untuk pengguna woocommerce.com. Lihat di sini untuk mempelajari lebih lanjut.";
 
 /* Country option for a site address. */
 "Morocco" = "Maroko";
@@ -4529,7 +4566,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Open Map action in Shipping Label Address Validation. */
 "Open Map" = "Buka Peta";
 
-/* Button title to open device settings in an alert */
+/* Button title to open device settings in an action sheet
+   Button title to open device settings in an alert */
 "Open Settings" = "Buka Pengaturan";
 
 /* Label for the description of openening a link using a new window */
@@ -5195,7 +5233,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button that displays the California Privacy Notice */
 "Privacy Notice for California Users" = "Pemberitahuan Privasi untuk Pengguna di California";
 
-/* Title of button that displays the App's privacy policy */
+/* Privacy Policy text on the privacy screen
+   Title of button that displays the App's privacy policy */
 "Privacy Policy" = "Kebijakan Privasi";
 
 /* Navigates to Privacy Settings screen
@@ -5210,9 +5249,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for the product's private status */
 "Privately published" = "Diterbitkan secara privat";
-
-/* Local notification title when the user encounters an error logging in with site address. */
-"Problems with logging in?" = "Mengalami masalah terkait login?";
 
 /* Display label for processing order status. */
 "Processing" = "Memproses";
@@ -5609,9 +5645,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Log Aktivitas";
 
-/* Local notification action to reset password. */
-"Reset password" = "Atur ulang kata sandi";
-
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
@@ -5648,6 +5681,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry Action on the notice when loading product categories fails
    Retry action title
    Retry button on the error notice for the upgrade view
+   Retry button title for the privacy screen notices
    Retry the last action */
 "Retry" = "Coba Lagi";
 
@@ -5793,7 +5827,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Action for saving a Product remotely
    Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar.
-   Button title that save the price selection for bulk variation update */
+   Button title that save the price selection for bulk variation update
+   Title for the 'Save' button in the privacy banner */
 "Save" = "Simpan";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -6521,6 +6556,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Daftarkan Permohonan Dukungan";
 
+/* Action on the local notification to suggest the user to subscribe to the trial plan. */
+"Subscribe" = "Berlangganan";
+
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
    Title for the subscription settings in a subscription product. */
@@ -7135,6 +7173,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error shown when failing to fetch the plan details in the upgrades view. */
 "There was an error fetching your plan details, please try again later." = "Terjadi error saat mengambil detail paket Anda. Harap coba lagi nanti.";
 
+/* Error notice when failing to fetch account settings on the privacy screen. */
+"There was an error fetching your privacy settings" = "Terjadi error saat mengambil pengaturan privasi Anda";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Terjadi error saat meminta pengembalian dana";
 
@@ -7154,6 +7195,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Terjadi error saat memperbarui pesanan";
 
+/* Error notice when failing to update account settings on the privacy screen. */
+"There was an error updating your privacy settings" = "Terjadi error saat memperbarui pengaturan privasi Anda";
+
 /* Text when there is an error while marking the order as paid for during payment. */
 "There was an error while marking the order as paid." = "Terjadi error saat menandai pesanan sebagai dibayar.";
 
@@ -7165,9 +7209,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Refund policy under the purchase button on the store creation plan screen. */
 "There’s no risk, you can cancel for a full refund within 30 days." = "Bebas risiko, Anda dapat membatalkan paket dan mendapat pengembalian dana penuh dalam 30 hari.";
-
-/* Analytics toggle description in the privacy screen. */
-"These cookies allow us to optimize performance by collecting information on how users interact with our mobile apps." = "Cookie ini memungkinkan kami untuk mengoptimalkan performa dengan mengumpulkan informasi tentang cara pengguna berinteraksi dengan aplikasi seluler kami.";
 
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
@@ -7258,6 +7299,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Pesanan akan ditandai sebagai selesai jika Anda telah menerima (total) tanpa melalui WooCommerce";
 
+/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
+"Time’s almost up, %1$@!" = "Waktu hampir habis, %1$@!";
+
 /* Country option for a site address. */
 "Timor-Leste" = "Timor Leste";
 
@@ -7304,6 +7348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message to ask the user to upgrade free trial plan to launch store.Reads - To launch your store, you need to upgrade to our plan. Upgrade */
 "To launch your store, you need to upgrade to our plan. %1$@" = "Untuk meluncurkan toko, Anda harus upgrade ke paket kami. %1$@ ";
+
+/* Footer of the more privacy options section on the privacy screen */
+"To learn more about how we use your data to optimize our mobile apps, enhance your experience, and deliver relevant marketing, please review our Privacy Policy and Cookie Policy.\n" = "Untuk mempelajari lebih lanjut cara kami menggunakan data Anda untuk mengoptimalkan aplikasi seluler kami, meningkatkan pengalaman Anda, dan menampilkan pemasaran yang relevan, baca Kebijakan Privasi dan Kebijakan Cookie kami.\n";
 
 /* Instructional text shown when requesting the user's password for Apple login. */
 "To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "Untuk melanjutkan dengan ID Apple ini, harap login terlebih dahulu dengan kata sandi WordPress.com Anda. Hal ini hanya akan ditanyakan sekali.";
@@ -7871,12 +7918,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Memperbarui produk Anda...";
 
-/* Title on the button to upgrade a free trial plan. */
+/* Action on the local notification to remind the user of the expiring free trial plan. */
 "Upgrade" = "Upgrade";
-
-/* Title for the button to upgrade from a free trial
-   Title for the WebView when upgrading a free trial plan */
-"Upgrade Now" = "Upgrade Sekarang";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -7896,6 +7939,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Field in the view for adding or editing a coupon. */
 "Usage Restrictions" = "Pembatasan Penggunaan";
+
+/* Usage tracker title in the privacy screen. */
+"Usage Tracking" = "Pelacakan Penggunaan";
 
 /* Title of the Usage details row in Coupon Details screen */
 "Usage details" = "Detail penggunaan";
@@ -8168,7 +8214,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Kami menggunakan alat pelacakan lainnya, termasuk beberapa dari pihak ketiga. Baca tentang hal ini dan cara mengontrolnya.";
 
 /* Main description on the privacy screen. */
-"We value your privacy. Your personal data is used to optimize our mobile apps, improve security, conduct analytics and marketing activities, and enhance your user experience." = "Kami menghargai privasi Anda. Data pribadi Anda digunakan untuk mengoptimalkan aplikasi seluler kami, meningkatkan keamanan, menjalankan proses analitik dan kegiatan pemasaran, dan menyempurnakan pengalaman pengguna Anda.";
+"We value your privacy. Your personal data is used to optimize our mobile apps, improve security, conduct analytics, and enhance your user experience." = "Kami menghargai privasi Anda. Data pribadi Anda digunakan untuk mengoptimalkan aplikasi seluler kami, meningkatkan keamanan, menjalankan proses analitik, dan menyempurnakan pengalaman Anda.";
 
 /* Message explaining that WordPress was not detected. */
 "We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "Kami tidak dapat mendeteksi situs WordPress di alamat yang Anda masukkan. Pastikan WordPress terinstal dan Anda menggunakan versi terbaru yang tersedia.";
@@ -8220,6 +8266,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Kami telah mengirimi Anda email berisi tautan pendaftaran untuk membuat akun WordPress.com baru. Periksa email Anda di perangkat ini, dan ketuk tautan dalam email yang Anda terima dari WordPress.com";
+
+/* More Privacy Options section title in the privacy screen. */
+"Web Options" = "Pilihan Web";
 
 /* Title of a button linking to the app's website */
 "Website" = "Situs web";
@@ -8287,6 +8336,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "Jika membeli label pengiriman dengan WooCommerce, Anda dapat memperoleh harga diskon.";
+
+/* The EU notice banner content describing why some countries require special customs description */
+"When shipping to countries that follow European Union (EU) customs rules, you must provide a clear, specific description of every item. Otherwise, shipments may be delayed or interrupted at customs." = "Ketika mengirimkan barang ke negara yang menerapkan aturan bea cukai Uni Eropa (UE), Anda harus memberikan deskripsi yang jelas dan spesifik tentang setiap item. Jika tidak, pengiriman akan tertunda atau tertahan di bea cukai.";
 
 /* Title of the store creation profiler question about the store selling status. */
 "Where are you on your commerce journey?" = "Di mana posisi Anda dalam perjalanan perdagangan Anda?";
@@ -8491,6 +8543,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info details for an expired free trial */
 "Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "Percobaan gratis Anda sudah berakhir! Kini, Anda dapat mengakses semua fitur secara terbatas. Berlangganan Paket Woo Express Performance sekarang.";
 
+/* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
+"Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Periode percobaan Woo Express gratis Anda berakhir besok (%1$@). Sekarang saatnya menggapai impian Anda – pilih paket dan bersiaplah untuk tumbuh.";
+
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "iPhone dapat digunakan sebagai pembaca kartu, atau Anda dapat menghubungkan pembaca eksternal via bluetooth. ";
 
@@ -8508,6 +8563,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Beberapa saat lagi, ponsel Anda siap digunakan untuk menerima pembayaran...";
+
+/* Title for the privacy banner */
+"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "Privasi Anda selalu kami utamakan. Kami menggunakan, menyimpan, dan memproses data pribadi Anda untuk mengoptimalkan aplikasi kami (dan pengalaman Anda) dengan beragam cara. Sebagian penggunaan data Anda sangat kami butuhkan agar aplikasi berjalan optimal, dan sisanya dapat Anda sesuaikan dari Pengaturan.";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Pembaca akan otomatis dimulai ulang dan dihubungkan kembali setelah pembaruan selesai.";
@@ -8533,6 +8591,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Toko Anda telah aktif!";
 
+/* Title of the local notification about a newly created store */
+"Your store is ready!" = "Toko Anda sudah siap!";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"Your store is waiting!" = "Toko Anda sudah menunggu!";
+
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Toko akan dibuat berdasarkan pilihan yang Anda tentukan! ";
 
@@ -8542,7 +8606,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Permintaan dukungan Anda sudah masuk ke inbox kami. Kami akan mengirimkan email balasan secepatnya.";
 
-/* Message of the free trial banner when there are no days left */
+/* Message of the free trial banner when there are no days left
+   Title of the local notification to remind the user of the expired free trial plan. */
 "Your trial has ended." = "Masa percobaan Anda telah berakhir.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8747,6 +8812,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "Kepulauan Åland";
+
+/* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
+"✨ AI content generator available." = "✨ Pembuat konten AI tersedia.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Pesanan Selesai";

@@ -11,6 +11,12 @@ final class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
     ///
     var authorizationStatus: UNAuthorizationStatus = .notDetermined
 
+    var settingsCoder = MockNSCoder()
+
+    private(set) var notificationCategories: Set<UNNotificationCategory> = []
+
+    private var notificationRequests: [UNNotificationRequest] = []
+
     /// Indicates if `requestAuthorization` was called
     ///
     var requestAuthorizationWasCalled = false
@@ -46,5 +52,35 @@ final class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
         authorizationStatus = .notDetermined
         requestAuthorizationWasCalled = false
         requestAuthorizationIsSuccessful = false
+    }
+
+    func notificationSettings() async -> UNNotificationSettings {
+        UNNotificationSettings(coder: settingsCoder)!
+    }
+
+    func pendingNotificationRequests() async -> [UNNotificationRequest] {
+        notificationRequests
+    }
+
+    func setNotificationCategories(_ categories: Set<UNNotificationCategory>) {
+        notificationCategories = categories
+    }
+
+    func add(_ request: UNNotificationRequest) async throws {
+        notificationRequests.append(request)
+    }
+}
+
+/// Mock coder to initialize UNNotificationSettings
+///
+final class MockNSCoder: NSCoder {
+    var authorizationStatus = UNAuthorizationStatus.authorized.rawValue
+
+    override func decodeInt64(forKey key: String) -> Int64 {
+        return Int64(authorizationStatus)
+    }
+
+    override func decodeBool(forKey key: String) -> Bool {
+        return true
     }
 }

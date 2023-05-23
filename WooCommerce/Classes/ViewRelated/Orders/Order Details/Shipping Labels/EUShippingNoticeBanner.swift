@@ -21,7 +21,7 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UIViewType {
-        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner {
+        let topBannerView = EUShippingNoticeTopBannerFactory.createTopBanner(infoType: .instructions) {
             onDismissTapped?()
         } onLearnMorePressed: {
             onLearnMoreTapped?()
@@ -38,6 +38,7 @@ struct EUShippingNoticeBanner: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIView, context: Context) {
         context.coordinator.bannerWrapper.width = width
+        context.coordinator.bannerWrapper.invalidateIntrinsicContentSize()
     }
 
     /// Returns a copy of the view with `onDismissTapped` handling.

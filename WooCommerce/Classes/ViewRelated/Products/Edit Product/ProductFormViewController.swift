@@ -281,8 +281,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canShareProduct() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailShareButtonTapped)
-                self?.displayShareProduct()
+                self?.displayShareProduct(source: .moreMenu)
             }
         }
 
@@ -468,6 +467,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 return
             }
         }
+    }
+
+    @objc private func shareProduct() {
+        displayShareProduct(source: .productForm)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -858,7 +861,9 @@ private extension ProductFormViewController {
         WebviewHelper.launch(url, with: self)
     }
 
-    func displayShareProduct() {
+    func displayShareProduct(source: WooAnalyticsEvent.ProductForm.ShareProductSource) {
+        ServiceLocator.analytics.track(event: .ProductForm.productDetailShareButtonTapped(source: source))
+
         guard let url = URL(string: product.permalink) else {
             return
         }
@@ -1003,6 +1008,8 @@ private extension ProductFormViewController {
                 return createSaveBarButtonItem()
             case .more:
                 return createMoreOptionsBarButtonItem()
+            case .share:
+                return createShareBarButtonItem()
             }
         }
 
@@ -1047,6 +1054,12 @@ private extension ProductFormViewController {
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
+    }
+
+    func createShareBarButtonItem() -> UIBarButtonItem {
+        UIBarButtonItem(barButtonSystemItem: .action,
+                        target: self,
+                        action: #selector(shareProduct))
     }
 }
 

@@ -894,15 +894,8 @@ extension ShippingLabelFormViewModel {
 
 // MARK: - Shipping Notice dismiss state handling
 extension ShippingLabelFormViewModel {
-    private func updateEUShippingNoticeVisibility() {
-        verifyEUShippingNoticeDismissState { [weak self] dismissed in
-            guard let self = self, dismissed else {
-                self?.shouldPresentEUShippingNotice = false
-                return
-            }
-
-            self.shouldPresentEUShippingNotice = EUCustomsScenarioValidator.validate(origin: self.originAddress, destination: self.destinationAddress)
-        }
+    func isEUShippingConditionMet() -> Bool {
+        EUCustomsScenarioValidator.validate(origin: self.originAddress, destination: self.destinationAddress)
     }
 
     func dismissEUShippingNotice(onCompletion: @escaping (Bool) -> Void) {
@@ -915,6 +908,17 @@ extension ShippingLabelFormViewModel {
             }
         }
         stores.dispatch(action)
+    }
+
+    private func updateEUShippingNoticeVisibility() {
+        verifyEUShippingNoticeDismissState { [weak self] dismissed in
+            guard let self = self, dismissed else {
+                self?.shouldPresentEUShippingNotice = false
+                return
+            }
+
+            self.shouldPresentEUShippingNotice = self.isEUShippingConditionMet()
+        }
     }
 
     private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {

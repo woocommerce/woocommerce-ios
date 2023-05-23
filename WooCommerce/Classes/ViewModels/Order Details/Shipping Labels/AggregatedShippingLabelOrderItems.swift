@@ -109,7 +109,7 @@ private extension AggregatedShippingLabelOrderItems {
     func orderItem(from model: OrderItemModel, quantity: Int) -> AggregateOrderItem {
         switch model {
         case .productName(let name):
-            return .init(itemID: "0", productID: 0, variationID: 0, name: name, price: nil, quantity: 0, sku: nil, total: nil, attributes: [])
+            return .init(itemID: "0", productID: 0, variationID: 0, name: name, price: nil, quantity: 0, sku: nil, total: nil, attributes: [], parent: nil)
         case .product(let product, let orderItem, let name):
             let itemID = orderItem?.itemID.description ?? "0"
             let productName = orderItem?.name ?? name
@@ -131,7 +131,8 @@ private extension AggregatedShippingLabelOrderItems {
                          sku: orderItem?.sku ?? product.sku,
                          total: totalPrice,
                          imageURL: imageURL,
-                         attributes: orderItem?.attributes ?? [])
+                         attributes: orderItem?.attributes ?? [],
+                         parent: orderItem?.parent)
         case .productVariation(let variation, let orderItem, let name):
             let itemID = orderItem?.itemID.description ?? "0"
             let productName = orderItem?.name ?? name
@@ -153,7 +154,8 @@ private extension AggregatedShippingLabelOrderItems {
                          sku: orderItem?.sku ?? variation.sku,
                          total: totalPrice,
                          imageURL: imageURL,
-                         attributes: orderItem?.attributes ?? [])
+                         attributes: orderItem?.attributes ?? [],
+                         parent: orderItem?.parent)
         }
     }
 

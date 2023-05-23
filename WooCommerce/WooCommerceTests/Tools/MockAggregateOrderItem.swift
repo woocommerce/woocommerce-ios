@@ -14,6 +14,7 @@ public struct MockAggregateOrderItem {
               quantity: 0,
               sku: nil,
               total: nil,
-              attributes: [])
+              attributes: [],
+              parent: nil)
     }
 }

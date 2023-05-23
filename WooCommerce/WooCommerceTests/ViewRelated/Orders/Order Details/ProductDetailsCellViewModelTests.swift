@@ -216,7 +216,8 @@ private extension ProductDetailsCellViewModelTests {
                   taxes: [],
                   total: total,
                   totalTax: "",
-                  attributes: attributes)
+                  attributes: attributes,
+                  parent: nil)
     }
 
     func makeAggregateOrderItem(quantity: Decimal,
@@ -224,7 +225,8 @@ private extension ProductDetailsCellViewModelTests {
                                 total: NSDecimalNumber?,
                                 sku: String = "",
                                 imageURL: URL? = nil,
-                                attributes: [OrderItemAttribute] = []) -> AggregateOrderItem {
+                                attributes: [OrderItemAttribute] = [],
+                                parent: Int64? = nil) -> AggregateOrderItem {
         AggregateOrderItem(itemID: "2",
                            productID: 1,
                            variationID: 6,
@@ -234,7 +236,8 @@ private extension ProductDetailsCellViewModelTests {
                            sku: sku,
                            total: total,
                            imageURL: imageURL,
-                           attributes: attributes)
+                           attributes: attributes,
+                           parent: parent)
     }
 
     func makeOrderItemRefund(quantity: Decimal,

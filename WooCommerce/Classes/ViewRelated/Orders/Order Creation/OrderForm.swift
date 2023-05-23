@@ -329,7 +329,13 @@ private struct ProductsSection: View {
                         scroll.scrollTo(addProductViaSKUScannerButton)
                     }, content: {
                         ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                            viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                            viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { result in
+                                switch result {
+                                case .success:
+                                    viewModel.trackProductBarcodeScanned(with: .success(()))
+                                case let .failure(error):
+                                    viewModel.trackProductBarcodeScanned(with: .failure(error))
+                                }
                                 showAddProductViaSKUScanner.toggle()
                             })
                         })

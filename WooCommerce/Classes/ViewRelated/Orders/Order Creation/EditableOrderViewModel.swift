@@ -1290,6 +1290,15 @@ extension EditableOrderViewModel {
         analytics.track(flow == .list ? .orderListProductBarcodeScanningTapped : .orderCreationProductBarcodeScanningTapped)
     }
 
+    func trackProductBarcodeScanned(with result: Result<Void, Error>, _ reason: String? = nil) {
+        switch result {
+        case .success:
+            analytics.track(.orderProductBarcodeScanningSuccess)
+        case .failure:
+            analytics.track(.orderProductBarcodeScanningFailed)
+        }
+    }
+
     /// Attempts to add a Product to the current Order by SKU search
     ///
     func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void) {

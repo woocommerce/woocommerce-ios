@@ -1772,6 +1772,50 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(orderItem.variationID, variationID)
         XCTAssertEqual(orderItem.quantity, 1)
     }
+
+    func test_order_creation_when_contains_initial_product_then_added_via_barcode_property_is_tracked() {
+        // Given, When
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics),
+                                               withInitialProduct: product)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 1)
+
+        XCTAssertTrue(analytics.receivedEvents.contains(where: {
+            $0.description == WooAnalyticsStat.orderProductAdd.rawValue
+        }))
+
+        let _ = analytics.receivedProperties.map { property in
+            XCTAssertEqual(property.valueAsString(forKey: "flow"), "creation")
+            XCTAssertEqual(property.valueAsString(forKey: "added_via"), "barcode")
+        }
+    }
+
+    func test_order_creation_when_does_not_contain_initial_product_then_added_via_barcode_property_is_nil() {
+        // Given, When
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+
+        XCTAssertFalse(analytics.receivedEvents.contains(where: {
+            $0.description == WooAnalyticsStat.orderProductAdd.rawValue
+        }))
+
+        let _ = analytics.receivedProperties.map { property in
+            XCTAssertEqual(property.valueAsString(forKey: "flow"), "creation")
+            XCTAssertNil(property.valueAsString(forKey: "added_via"))
+        }
+    }
 }
 
 private extension MockStorageManager {

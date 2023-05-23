@@ -1327,6 +1327,7 @@ extension EditableOrderViewModel {
         } else {
             orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
         }
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: 1, entryMethod: .barcode))
     }
 }
 

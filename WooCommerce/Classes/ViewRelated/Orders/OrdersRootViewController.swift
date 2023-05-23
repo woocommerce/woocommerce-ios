@@ -230,8 +230,10 @@ final class OrdersRootViewController: UIViewController {
             switch result {
             case let .success(matchedProduct):
                 onCompletion(.success(matchedProduct))
+                ServiceLocator.analytics.track(.orderProductSearchViaSKUSuccess)
             case let .failure(error):
                 onCompletion(.failure(error))
+                ServiceLocator.analytics.track(.orderProductSearchViaSKUFailure)
             }
         }
         ServiceLocator.stores.dispatch(action)

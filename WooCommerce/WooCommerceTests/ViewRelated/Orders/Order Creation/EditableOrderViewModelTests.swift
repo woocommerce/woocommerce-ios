@@ -1877,6 +1877,37 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    func test_event_when_SKU_is_found_successfully_then_logs_scanning_success_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackProductSearchViaSKU(with: .success(()))
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, "order_product_search_via_sku_success")
+    }
+
+    func test_event_when_SKU_is_not_found_then_logs_scanning_failure_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackProductSearchViaSKU(with: .failure(NSError()), reason: "some reason to fail")
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, "order_product_search_via_sku_failure")
+
+        let _ = analytics.receivedProperties.map { property in
+            XCTAssertEqual(property.valueAsString(forKey: "reason"), "some reason to fail")
+        }
+    }
 }
 
 private extension MockStorageManager {

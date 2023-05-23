@@ -1299,6 +1299,15 @@ extension EditableOrderViewModel {
         }
     }
 
+    func trackProductSearchViaSKU(with result: Result<Void, Error>, reason: String = "") {
+        switch result {
+        case .success:
+            analytics.track(.orderProductSearchViaSKUSuccess)
+        case .failure:
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUFailed(reason: reason))
+        }
+    }
+
     /// Attempts to add a Product to the current Order by SKU search
     ///
     func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -1325,8 +1334,10 @@ extension EditableOrderViewModel {
             switch result {
             case let .success(product):
                 onCompletion(.success(product))
+                self.analytics.track(.orderProductSearchViaSKUSuccess)
             case let .failure(error):
                 onCompletion(.failure(error))
+                self.analytics.track(.orderProductSearchViaSKUFailure)
             }
         })
         stores.dispatch(action)

@@ -946,6 +946,7 @@ extension ProductsViewController: UITableViewDelegate {
         let shareAction = UIContextualAction(style: .normal, title: Localization.shareAction, handler: { [weak self] _, _, completionHandler in
             guard let self else { return }
             SharingHelper.shareURL(url: url, from: cell, in: self)
+            ServiceLocator.analytics.track(.productListShareButtonTapped)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })
         shareAction.backgroundColor = .brand

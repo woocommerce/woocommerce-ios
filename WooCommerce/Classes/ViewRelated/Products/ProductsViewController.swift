@@ -939,11 +939,13 @@ extension ProductsViewController: UITableViewDelegate {
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let product = resultsController.object(at: indexPath)
-        guard let url = URL(string: product.permalink),
+        guard ServiceLocator.stores.sessionManager.defaultSite?.isPublic == true,
+              product.productStatus == .published,
+              let url = URL(string: product.permalink),
             let cell = tableView.cellForRow(at: indexPath) else {
             return nil
         }
-        let shareAction = UIContextualAction(style: .normal, title: Localization.shareAction, handler: { [weak self] _, _, completionHandler in
+        let shareAction = UIContextualAction(style: .normal, title: nil, handler: { [weak self] _, _, completionHandler in
             guard let self else { return }
             SharingHelper.shareURL(url: url, from: cell, in: self)
             ServiceLocator.analytics.track(.productListShareButtonTapped)
@@ -1395,6 +1397,5 @@ private extension ProductsViewController {
                                                            comment: "Title of the notice when a user updated price for selected products")
         static let updateErrorNotice = NSLocalizedString("Cannot update products",
                                                          comment: "Title of the notice when there is an error updating selected products")
-        static let shareAction = NSLocalizedString("Share", comment: "Title for the button to share a selected product.")
     }
 }

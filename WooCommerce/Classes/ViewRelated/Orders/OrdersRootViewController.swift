@@ -157,24 +157,24 @@ final class OrdersRootViewController: UIViewController {
     ///
     @objc func presentOrderCreationFlow() {
         let viewModel = EditableOrderViewModel(siteID: siteID)
-        let viewController = OrderFormHostingController(viewModel: viewModel)
-        setupNavigation(viewModel: viewModel, viewController: viewController)
+        setupNavigation(viewModel: viewModel)
     }
 
     /// Presents the Order Creation flow with a scanned Product
     ///
     private func presentOrderCreationFlowWithScannedProduct(with product: Product) {
         let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProduct: product)
-        let viewController = OrderFormHostingController(viewModel: viewModel)
-        setupNavigation(viewModel: viewModel, viewController: viewController)
+        setupNavigation(viewModel: viewModel)
     }
 
     /// Coordinates the navigation between the different views involved in Order Creation, Editing, and Details
     ///
-    private func setupNavigation(viewModel: EditableOrderViewModel, viewController: OrderFormHostingController) {
+    private func setupNavigation(viewModel: EditableOrderViewModel) {
         guard let navigationController = navigationController else {
             return
         }
+
+        let viewController = OrderFormHostingController(viewModel: viewModel)
 
         viewModel.onFinished = { [weak self] order in
             guard let self = self else { return }

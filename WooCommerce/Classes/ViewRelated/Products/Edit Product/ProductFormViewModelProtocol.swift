@@ -14,6 +14,7 @@ enum ActionButtonType {
     case publish
     case save
     case more
+    case share
 }
 
 /// The type of save message when saving a product.

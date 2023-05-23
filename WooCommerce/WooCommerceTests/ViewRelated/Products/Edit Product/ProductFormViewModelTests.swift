@@ -357,7 +357,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.more])
+        XCTAssertEqual(actionButtons, [.share, .more])
     }
 
     func test_action_buttons_for_existing_draft_product_and_pending_changes() {
@@ -425,7 +425,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.more])
+        XCTAssertEqual(actionButtons, [.share, .more])
     }
 
     func test_no_preview_button_for_existing_draft_product_on_site_with_no_frame_nonce() {

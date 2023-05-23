@@ -27,7 +27,7 @@ final class UpdateAnalyticsSettingUseCase {
     /// For WPCOM stores: Updates remotely and locally. - The local update only happens after a successful remote update.
     /// For NON-WPCOM stores: Updates locally.
     ///
-    func update(optOut: Bool) async throws {
+    @MainActor func update(optOut: Bool) async throws {
         // There is no need to perform any request if the user hasn't changed the current analytic setting.
         guard analytics.userHasOptedIn == optOut else {
             return updateLocally(optOut: optOut)
@@ -59,7 +59,7 @@ final class UpdateAnalyticsSettingUseCase {
 
     /// Updates the local analytics setting
     ///
-    private func updateLocally(optOut: Bool) {
+    @MainActor private func updateLocally(optOut: Bool) {
         analytics.setUserHasOptedOut(optOut)
         userDefaults[.hasSavedPrivacyBannerSettings] = true
     }

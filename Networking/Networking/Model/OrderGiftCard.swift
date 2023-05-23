@@ -15,11 +15,11 @@ public struct OrderGiftCard: Codable, Equatable, GeneratedFakeable, GeneratedCop
 
     /// Amount applied to the order
     ///
-    public let amount: Int64
+    public let amount: Double
 
     /// OrderGiftCard struct initializer.
     ///
-    public init(giftCardID: Int64, code: String, amount: Int64) {
+    public init(giftCardID: Int64, code: String, amount: Double) {
         self.giftCardID = giftCardID
         self.code = code
         self.amount = amount

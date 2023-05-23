@@ -56,16 +56,14 @@ struct InAppPurchasesDebugView: View {
 
     var body: some View {
         List {
-            Section("Upgrading Site ID Source") {
+             Section("Upgrading Site ID Source") {
                 Picker(selection: $selectedSiteIDSourceType, label: EmptyView()) {
                     ForEach(SiteIDSourceType.allCases, id: \.self) { option in
                         Text(option.title)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-
+                    }
+                }
+                .pickerStyle(.segmented)
             }
-
             Section {
                 Button("Reload products") {
                     Task {

@@ -7,6 +7,7 @@ import enum Yosemite.JustInTimeMessageAction
 import struct Yosemite.JustInTimeMessage
 import struct Yosemite.StoreOnboardingTask
 import enum Yosemite.StoreOnboardingTasksAction
+import struct Yosemite.Site
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -465,6 +466,35 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.showOnboarding)
+    }
+
+    func test_siteURLToShare_return_nil_if_site_is_not_public() {
+        // Given
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: false)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = DashboardViewModel(siteID: 123, stores: stores)
+
+        // When
+        let siteURLToShare = viewModel.siteURLToShare
+
+        // Then
+        XCTAssertNil(siteURLToShare)
+    }
+
+    func test_siteURLToShare_return_url_if_site_is_public() {
+        // Given
+        let sessionManager = SessionManager.makeForTesting()
+        let expectedURL = "https://example.com"
+        sessionManager.defaultSite = Site.fake().copy(url: expectedURL, isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = DashboardViewModel(siteID: 123, stores: stores)
+
+        // When
+        let siteURLToShare = viewModel.siteURLToShare
+
+        // Then
+        assertEqual(expectedURL, siteURLToShare?.absoluteString)
     }
 }
 

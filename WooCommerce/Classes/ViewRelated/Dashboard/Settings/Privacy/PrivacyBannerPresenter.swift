@@ -46,7 +46,8 @@ final class PrivacyBannerPresenter {
                     viewController.dismiss(animated: true)
 
                 case .settings:
-                    print("Dismiss and Go to settings")
+                    viewController.dismiss(animated: true)
+                    MainTabBarController.navigateToPrivacySettings()
                 }
             case .failure(let error):
                 switch error {

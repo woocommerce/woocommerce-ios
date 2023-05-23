@@ -28,7 +28,8 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         configuration = CardPresentPaymentsConfiguration(country: "US")
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
-                                            cardPresentPaymentsConfiguration: configuration)
+                                            cardPresentPaymentsConfiguration: configuration,
+                                            shouldShowBadgeOnSetUpTapToPay: false)
     }
 
     func test_viewDidLoad_synchronizes_payment_gateways() throws {
@@ -91,7 +92,8 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                              stripeSmallestCurrencyUnitMultiplier: 100)
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
-                                            cardPresentPaymentsConfiguration: configuration)
+                                            cardPresentPaymentsConfiguration: configuration,
+                                            shouldShowBadgeOnSetUpTapToPay: false)
 
         // When
         sut.viewDidLoad()
@@ -116,7 +118,8 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                              stripeSmallestCurrencyUnitMultiplier: 100)
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
-                                            cardPresentPaymentsConfiguration: configuration)
+                                            cardPresentPaymentsConfiguration: configuration,
+                                            shouldShowBadgeOnSetUpTapToPay: false)
 
         waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in

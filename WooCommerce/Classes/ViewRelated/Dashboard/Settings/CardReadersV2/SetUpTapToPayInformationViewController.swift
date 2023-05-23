@@ -1,5 +1,11 @@
 import SwiftUI
 
+extension NSNotification.Name {
+    /// Posted whenever the hub menu view did appear.
+    ///
+    public static let setUpTapToPayViewDidAppear = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.setUpTapToPayViewDidAppear")
+}
+
 /// This view controller is used when no reader is connected. It assists
 /// the merchant in connecting to a reader.
 ///
@@ -129,6 +135,7 @@ struct SetUpTapToPayInformationView: View {
             .scrollVerticallyIfNeeded()
         }
         .padding()
+        .onAppear(perform: viewModel.viewDidAppear)
     }
 }
 

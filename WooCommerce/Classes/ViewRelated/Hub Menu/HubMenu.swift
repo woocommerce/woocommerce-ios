@@ -32,7 +32,8 @@ struct HubMenu: View {
                     viewModel.presentSwitchStore()
                 } label: {
                     Row(title: viewModel.storeTitle,
-                        badge: viewModel.planName,
+                        titleBadge: viewModel.planName,
+                        iconBadge: nil,
                         description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
                         icon: .remote(viewModel.avatarURL),
                         chevron: viewModel.switchStoreEnabled ? .down : .none,
@@ -51,7 +52,8 @@ struct HubMenu: View {
                         handleTap(menu: menu)
                     } label: {
                         Row(title: menu.title,
-                            badge: nil,
+                            titleBadge: nil,
+                            iconBadge: menu.iconBadge,
                             description: menu.description,
                             icon: .local(menu.icon),
                             chevron: .leading)
@@ -68,7 +70,8 @@ struct HubMenu: View {
                         handleTap(menu: menu)
                     } label: {
                         Row(title: menu.title,
-                            badge: nil,
+                            titleBadge: nil,
+                            iconBadge: menu.iconBadge,
                             description: menu.description,
                             icon: .local(menu.icon),
                             chevron: .leading)
@@ -102,7 +105,7 @@ struct HubMenu: View {
             EmptyView()
         }.hidden()
         NavigationLink(destination:
-                        InPersonPaymentsMenu()
+                        InPersonPaymentsMenu(shouldShowBadgeOnSetUpTapToPay: viewModel.shouldShowNewFeatureBadgeOnPayments)
             .navigationTitle(InPersonPaymentsView.Localization.title),
                        isActive: $showingPayments) {
             EmptyView()
@@ -198,9 +201,13 @@ private extension HubMenu {
         ///
         let title: String
 
-        /// Optional badge text. Render next to `title`
+        /// Text badge displayed adjacent to the title
         ///
-        let badge: String?
+        let titleBadge: String?
+
+        /// Badge displayed on the icon.
+        ///
+        let iconBadge: HubMenuBadgeType?
 
         /// Row Description
         ///
@@ -225,31 +232,42 @@ private extension HubMenu {
 
                 HStack(spacing: .zero) {
                     /// iOS 16, aligns the list dividers to the first text position.
-                    /// This tricks the system by rendering an empty text and forcing the list lo align the divider to it.
+                    /// This tricks the system by rendering an empty text and forcing the list to align the divider to it.
                     /// Without this, the divider will be rendered from the title and will not cover the icon.
                     /// Ideally we would want to use the `alignmentGuide` modifier but that is only available on iOS 16.
                     ///
                     Text("")
 
-                    // Icon
-                    Group {
-                        switch icon {
-                        case .local(let asset):
-                            Circle()
-                                .fill(Color(.init(light: .listBackground, dark: .secondaryButtonBackground)))
-                                .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
-                                .overlay {
-                                    Image(uiImage: asset)
-                                        .resizable()
-                                        .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
-                                }
+                    ZStack {
+                        // Icon
+                        Group {
+                            switch icon {
+                            case .local(let asset):
+                                Circle()
+                                    .fill(Color(.init(light: .listBackground, dark: .secondaryButtonBackground)))
+                                    .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+                                    .overlay {
+                                        Image(uiImage: asset)
+                                            .resizable()
+                                            .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
+                                    }
 
-                        case .remote(let url):
-                            KFImage(url)
-                                .placeholder { Image(uiImage: .gravatarPlaceholderImage).resizable() }
-                                .resizable()
-                                .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
-                                .clipShape(Circle())
+                            case .remote(let url):
+                                KFImage(url)
+                                    .placeholder { Image(uiImage: .gravatarPlaceholderImage).resizable() }
+                                    .resizable()
+                                    .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+                                    .clipShape(Circle())
+                            }
+                        }
+                        .overlay(alignment: .topTrailing) {
+                            // Badge
+                            if case .dot = iconBadge {
+                                Circle()
+                                    .fill(Color(.accent))
+                                    .frame(width: HubMenu.Constants.dotBadgeSize)
+                                    .padding(HubMenu.Constants.dotBadgePadding)
+                            }
                         }
                     }
                 }
@@ -263,8 +281,8 @@ private extension HubMenu {
                             .headlineStyle()
                             .accessibilityIdentifier(titleAccessibilityID ?? "")
 
-                        if let badge, badge.isNotEmpty {
-                            BadgeView(text: badge)
+                        if let titleBadge, titleBadge.isNotEmpty {
+                            BadgeView(text: titleBadge)
                         }
                     }
 
@@ -298,6 +316,8 @@ private extension HubMenu {
         static let chevronSize: CGFloat = 20
         static let iconSize: CGFloat = 20
         static let trackingOptionKey = "option"
+        static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
+        static let dotBadgeSize: CGFloat = 6
 
         /// Spacing for the badge view in the avatar row.
         ///

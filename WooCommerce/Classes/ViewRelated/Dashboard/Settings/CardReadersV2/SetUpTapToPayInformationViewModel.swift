@@ -129,6 +129,12 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
         dismiss?()
     }
 
+    func viewDidAppear() {
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .tapToPayHubMenuBadge, remindAfterDays: nil, onCompletion: nil)
+        stores.dispatch(action)
+        NotificationCenter.default.post(name: .setUpTapToPayViewDidAppear, object: nil)
+    }
+
     /// Updates whether the view this viewModel is associated with should be shown or not
     /// Notifies the viewModel owner if a change occurs via didChangeShouldShow
     ///

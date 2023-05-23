@@ -242,7 +242,7 @@ final class MainTabBarControllerTests: XCTestCase {
         pushNotificationsManager.sendInactiveNotification(pushNotification)
 
         // Simulate that the network call returns a parcel
-        let receivedAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
+        let receivedAction = try XCTUnwrap(storesManager.receivedActions.first(where: { $0 is ProductReviewAction }) as? ProductReviewAction)
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
             return XCTFail("Expected retrieveProductReviewFromNote action.")
         }

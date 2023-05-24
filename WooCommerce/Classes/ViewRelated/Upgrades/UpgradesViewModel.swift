@@ -19,6 +19,10 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private(set) var planInfo = ""
 
+    /// Defines if the view should show the "Upgrade Now" button.
+    ///
+    private(set) var shouldShowUpgradeButton = false
+
     /// Defines if the view should show the Full Plan features..
     ///
     private(set) var shouldShowFreeTrialFeatures = false
@@ -96,14 +100,16 @@ private extension UpgradesViewModel {
     func updateViewProperties(from plan: WPComSitePlan) {
         planName = Self.getPlanName(from: plan)
         planInfo = Self.getPlanInfo(from: plan)
+        shouldShowUpgradeButton = Self.getUpgradeNowButtonVisibility(from: plan, featureFlagService: featureFlagService)
         errorNotice = nil
         showLoadingIndicator = false
-        shouldShowFreeTrialFeatures = plan.isFreeTrial
+        shouldShowFreeTrialFeatures = plan.isFreeTrial && !featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
     }
 
     func updateLoadingViewProperties() {
         planName = ""
         planInfo = ""
+        shouldShowUpgradeButton = false
         errorNotice = nil
         showLoadingIndicator = true
         shouldShowFreeTrialFeatures = false
@@ -112,6 +118,7 @@ private extension UpgradesViewModel {
     func updateFailedViewProperties() {
         planName = ""
         planInfo = ""
+        shouldShowUpgradeButton = false
         errorNotice = createErrorNotice()
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = false
@@ -159,6 +166,12 @@ private extension UpgradesViewModel {
 
         let expireText = DateFormatter.mediumLengthLocalizedDateFormatter.string(from: expireDate)
         return Localization.planInfo(planName: planName, expirationDate: expireText)
+    }
+
+    /// Only allow to upgrade the plan if we are on a free trial.
+    ///
+    static func getUpgradeNowButtonVisibility(from plan: WPComSitePlan, featureFlagService: FeatureFlagService) -> Bool {
+        plan.isFreeTrial && featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
     }
 
     /// Returns a site plan duration in days.

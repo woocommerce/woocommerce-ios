@@ -70,6 +70,7 @@ extension FreeTrialBanner {
 
     enum Localization {
         static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
     }
 }
 

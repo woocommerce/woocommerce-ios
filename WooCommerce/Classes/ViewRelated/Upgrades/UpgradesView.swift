@@ -12,6 +12,11 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
         let viewModel = UpgradesViewModel()
         super.init(rootView: .init(viewModel: viewModel))
 
+        // Assign after of `init` for `self` to be properly initialized.
+        rootView.onUpgradeNowTapped = { [weak self] in
+            self?.showUpgradePlanWebView(siteID: siteID, viewModel: viewModel)
+        }
+
         rootView.onReportIssueTapped = { [weak self] in
             self?.showContactSupportForm()
         }
@@ -19,6 +24,15 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    /// Shows a web view for the merchant to update their site plan.
+    ///
+    private func showUpgradePlanWebView(siteID: Int64, viewModel: UpgradesViewModel) {
+        let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .upgradesScreen, onSuccess: {
+            viewModel.loadPlan()
+        })
+        present(upgradeController, animated: true)
     }
 
     private func showContactSupportForm() {
@@ -35,6 +49,10 @@ struct UpgradesView: View {
     ///
     @StateObject var viewModel: UpgradesViewModel
 
+    /// Closure to be invoked when the "Upgrade Now" button is tapped.
+    ///
+    var onUpgradeNowTapped: (() -> ())?
+
     /// Closure to be invoked when the "Report Issue" button is tapped.
     ///
     var onReportIssueTapped: (() -> ())?
@@ -44,6 +62,12 @@ struct UpgradesView: View {
             Section(content: {
                 Text(Localization.currentPlan(viewModel.planName))
                     .bodyStyle()
+
+                Button(Localization.upgradeNow) {
+                    onUpgradeNowTapped?()
+                }
+                .linkStyle()
+                .renderedIf(viewModel.shouldShowUpgradeButton)
 
             }, header: {
                 Text(Localization.subscriptionStatus)
@@ -100,6 +124,7 @@ private extension UpgradesView {
     enum Localization {
         static let title = NSLocalizedString("Subscriptions", comment: "Title for the Subscriptions / Upgrades view")
         static let subscriptionStatus = NSLocalizedString("SUBSCRIPTION STATUS", comment: "Title for the plan section on the subscriptions view. Uppercased")
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title for the button to upgrade from a free trial")
         static let experienceFeatures = NSLocalizedString("Experience more of our features and services beyond the app",
                                                     comment: "Title for the features list in the Subscriptions Screen")
         static let cancelTrial = NSLocalizedString("Cancel Free Trial", comment: "Title for the button to cancel a free trial")

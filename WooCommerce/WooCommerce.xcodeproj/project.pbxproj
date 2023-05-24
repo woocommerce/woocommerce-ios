@@ -679,6 +679,7 @@
 		261B526E29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B526D29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift */; };
 		261E91A029C961EE00A5C118 /* UpgradesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */; };
 		261E91A329C9882600A5C118 /* UpgradesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E91A229C9882600A5C118 /* UpgradesViewModelTests.swift */; };
+		261E91A529CA592E00A5C118 /* UpgradePlanCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E91A429CA592E00A5C118 /* UpgradePlanCoordinatingController.swift */; };
 		261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */; };
 		261F1A7C29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */; };
 		26281776278F0B0100C836D3 /* View+NoticesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26281775278F0B0100C836D3 /* View+NoticesModifier.swift */; };
@@ -2969,6 +2970,7 @@
 		261B526D29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportFormMetadataProvider.swift; sourceTree = "<group>"; };
 		261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModel.swift; sourceTree = "<group>"; };
 		261E91A229C9882600A5C118 /* UpgradesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModelTests.swift; sourceTree = "<group>"; };
+		261E91A429CA592E00A5C118 /* UpgradePlanCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlanCoordinatingController.swift; sourceTree = "<group>"; };
 		261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerViewModel.swift; sourceTree = "<group>"; };
 		261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerViewModelTests.swift; sourceTree = "<group>"; };
 		26281775278F0B0100C836D3 /* View+NoticesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+NoticesModifier.swift"; sourceTree = "<group>"; };
@@ -6150,6 +6152,7 @@
 			children = (
 				264957A229C520860095AA4C /* UpgradesView.swift */,
 				261E919F29C961EE00A5C118 /* UpgradesViewModel.swift */,
+				261E91A429CA592E00A5C118 /* UpgradePlanCoordinatingController.swift */,
 				267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */,
 				DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */,
 			);
@@ -12235,6 +12238,7 @@
 				D8610CE2257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift in Sources */,
 				038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */,
 				03E471CE293F63B4001A58AD /* PaymentCaptureOrchestrator.swift in Sources */,
+				261E91A529CA592E00A5C118 /* UpgradePlanCoordinatingController.swift in Sources */,
 				B5980A6321AC879F00EBF596 /* Bundle+Woo.swift in Sources */,
 				B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */,
 				02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */,

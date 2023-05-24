@@ -30,10 +30,18 @@ final class FreeTrialBannerPresenter {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Flag reflecting when it's possible to upgrade a store plan from the app.
+    ///
+    private let inAppStoreUpgradeEnabled: Bool
+
     /// String for the banner action button text
     ///
     private var bannerActionText: String {
-        return Localization.learnMore
+        if inAppStoreUpgradeEnabled {
+            return Localization.upgradeNow
+        } else {
+            return Localization.learnMore
+        }
     }
 
     /// - Parameters:
@@ -48,6 +56,7 @@ final class FreeTrialBannerPresenter {
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
+        self.inAppStoreUpgradeEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrialUpgrade)
         observeStorePlan()
         observeConnectivity()
     }
@@ -146,13 +155,23 @@ private extension FreeTrialBannerPresenter {
     ///
     func showUpgradesView() {
         guard let viewController else { return }
-        let upgradeController = UpgradesHostingController(siteID: siteID)
-        viewController.show(upgradeController, sender: self)
+
+        if inAppStoreUpgradeEnabled {
+            let upgradeController = UpgradePlanCoordinatingController(siteID: siteID, source: .banner, onSuccess: { [weak self] in
+                self?.removeBanner() // Removes the banner immediately.
+                self?.reloadBannerVisibility() // Reloads the plan again in case the plan didn't update as expected.
+            })
+            viewController.present(upgradeController, animated: true)
+        } else {
+            let upgradeController = UpgradesHostingController(siteID: siteID)
+            viewController.show(upgradeController, sender: self)
+        }
     }
 }
 
 private extension FreeTrialBannerPresenter {
     enum Localization {
         static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
     }
 }

@@ -66,10 +66,10 @@ final class StorePlanSynchronizer: ObservableObject {
         }
 
         // If the site is not a WPCom store set the state to `.unavailable`
-        guard site.isWordPressComStore else {
-            planState = .unavailable
-            return
-        }
+//        guard site.isWordPressComStore else {
+//            planState = .unavailable
+//            return
+//        }
 
         // Do not fetch the plan if the plan it is already being loaded.
         guard planState != .loading else { return }

@@ -112,7 +112,7 @@ private extension StoreOnboardingCoordinator {
                                                                 isLaunched: task.isComplete,
                                                                 navigationController: navigationController,
                                                                 onLearnMoreTapped: { [weak self] in
-            self?.showPlanView()
+            self?.showUpgradePlanWebView()
         },
                                                                 onStoreLaunched: { [weak self] in
             self?.onTaskCompleted(.launchStore)
@@ -149,8 +149,13 @@ private extension StoreOnboardingCoordinator {
 private extension StoreOnboardingCoordinator {
     /// Navigates the user to the plan detail view.
     ///
-    func showPlanView() {
-        let upgradeController = UpgradesHostingController(siteID: site.siteID)
-        navigationController.show(upgradeController, sender: self)
+    func showUpgradePlanWebView() {
+        let upgradeController = UpgradePlanCoordinatingController(siteID: site.siteID,
+                                                                  source: .banner,
+                                                                  onSuccess: { [weak self] in
+            self?.onUpgradePlan?()
+            self?.reloadTasks()
+        })
+        navigationController.present(upgradeController, animated: true)
     }
 }

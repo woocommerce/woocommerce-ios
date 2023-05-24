@@ -125,6 +125,7 @@ private extension HubMenuCoordinatorTests {
                            storesManager: storesManager,
                            noticePresenter: noticePresenter,
                            switchStoreUseCase: switchStoreUseCase,
+                           tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                            willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }
 }

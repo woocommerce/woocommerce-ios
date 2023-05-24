@@ -62,6 +62,7 @@ final class PrivacyBannerPresenter {
         })
 
         let bottomSheetViewController = BottomSheetViewController(childViewController: privacyBanner)
+        bottomSheetViewController.isModalInPresentation = true
         bottomSheetViewController.show(from: viewController)
     }
 

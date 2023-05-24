@@ -1739,6 +1739,44 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.currentOrderItems.count, 1)
     }
+
+    func test_order_with_no_products_when_updateOrderWithProduct_is_invoked_then_product_is_added() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Confidence check
+        let orderItem = viewModel.currentOrderItems.first
+        XCTAssertNil(orderItem)
+
+        // When
+        viewModel.updateOrderWithProduct(productID: sampleProductID)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 1)
+        XCTAssertEqual(viewModel.currentOrderItems.first?.quantity, 1)
+        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 1)
+    }
+
+    func test_order_with_products_when_updateOrderWithProduct_is_invoked_then_product_quantity_is_updated() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProductID: sampleProductID)
+
+        // Confidence check
+        let orderItem = viewModel.currentOrderItems.first
+        XCTAssertEqual(orderItem?.quantity, 1)
+
+        // When
+        viewModel.updateOrderWithProduct(productID: sampleProductID)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 1)
+        XCTAssertEqual(viewModel.currentOrderItems.first?.quantity, 2)
+        XCTAssertEqual(viewModel.productRows[safe: 0]?.quantity, 2)
+    }
 }
 
 private extension MockStorageManager {

@@ -789,16 +789,18 @@ private extension AppSettingsStore {
 
 extension AppSettingsStore {
 
+    /// Dismisses a feature announcement campaign, optionally reminding the user after the specified number of days elapses,
+    /// by marking the campaign as visible again.
+    /// - Parameters:
+    ///   - campaign: campaign to dismiss
+    ///   - remindAfterDays: optionally remind the user after this many days. If nil is passed, the campaign is permanently dismissed
+    ///   - onCompletion: completion handler
     func setFeatureAnnouncementDismissed(
         campaign: FeatureAnnouncementCampaign,
         remindAfterDays: Int?,
         onCompletion: ((Result<Bool, Error>) -> ())?) {
             do {
-                guard let remindAfterDays else {
-                    return
-                }
-                let remindAfter = Date().addingDays(remindAfterDays)
-                let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: remindAfter)
+                let newSettings = FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: date(adding: remindAfterDays))
 
                 let settings = generalAppSettings.settings
                 let settingsToSave = settings.replacing(featureAnnouncementSettings: newSettings, for: campaign)
@@ -809,6 +811,13 @@ extension AppSettingsStore {
                 onCompletion?(.failure(error))
             }
         }
+
+    private func date(adding days: Int?) -> Date? {
+        guard let days else {
+            return nil
+        }
+        return NSCalendar.current.date(byAdding: .day, value: days, to: Date())
+    }
 
     func getFeatureAnnouncementVisibility(campaign: FeatureAnnouncementCampaign, onCompletion: (Result<Bool, Error>) -> ()) {
         guard let campaignSettings = generalAppSettings.value(for: \.featureAnnouncementCampaignSettings)[campaign] else {

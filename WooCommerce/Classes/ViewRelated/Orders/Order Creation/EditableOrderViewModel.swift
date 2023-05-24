@@ -441,15 +441,7 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        var variation = allProductVariations.first(where: { $0.productVariationID == item.variationID })
-
-        if variation == nil {
-            let product = allProducts.first(where: { $0.productID == item.variationID })
-            variation = product?.toProductVariation()
-        }
-
-        if item.variationID != 0,
-            let variation = variation {
+        if item.variationID != 0, let variation = retrieveVariation(for: item) {
             let parent = allProducts.first(where: { $0.productID == item.parent })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
             return ProductRowViewModel(id: item.itemID,
@@ -1387,6 +1379,20 @@ extension EditableOrderViewModel {
                 return false
             }
         }
+    }
+}
+
+private extension EditableOrderViewModel {
+    // Attempts to retrieve the product variation associated with a given OrderItem, if any, from locally stored variations.
+    // If none is found, falls back to attempt to retrieve the variation from a model parent
+    // If none is found, returns nil
+    // https://github.com/woocommerce/woocommerce-ios/issues/9808
+    func retrieveVariation(for item: OrderItem) -> ProductVariation? {
+        guard let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) else {
+            let product = allProducts.first(where: { $0.productID == item.variationID })
+            return product?.toProductVariation()
+        }
+        return variation
     }
 }
 

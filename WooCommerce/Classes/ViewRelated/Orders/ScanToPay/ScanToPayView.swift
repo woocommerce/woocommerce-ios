@@ -3,6 +3,7 @@ import SwiftUI
 struct ScanToPayView: View {
     let viewModel: ScanToPayViewModel
     let onSuccess: (() -> Void)
+    let previousBrightness = UIScreen.main.brightness
 
     @Environment(\.dismiss) var dismiss
 
@@ -42,6 +43,12 @@ struct ScanToPayView: View {
             }
             .padding(Layout.scanToPayBoxOutterPadding)
             .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .onAppear {
+            UIScreen.main.brightness = 1.0
+        }
+        .onDisappear {
+            UIScreen.main.brightness = previousBrightness
         }
     }
 

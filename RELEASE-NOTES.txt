@@ -6,6 +6,7 @@
 - [Internal] Orders: Composite components (within a composite product) are now indented, to show their relationship to the parent composite product. [https://github.com/woocommerce/woocommerce-ios/pull/9780]
 - [*] Add Products: A new view is display to celebrate when the first product is created in a store. [https://github.com/woocommerce/woocommerce-ios/pull/9790]
 - [*] Product form: a share action is shown in the navigation bar if the product can be shared and no more than one action is displayed, in addition to the more menu > Share. [https://github.com/woocommerce/woocommerce-ios/pull/9789]
+- [*] Payments: show badges leading to Set up Tap to Pay on iPhone for eligible stores and devices [https://github.com/woocommerce/woocommerce-ios/pull/9812]
 
 13.7
 -----

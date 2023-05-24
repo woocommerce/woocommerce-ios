@@ -10,6 +10,7 @@
 - [*] Orders: Fixes a bug where the Orders list would not load if an order had a non-integer gift card amount applied to the order (with the Gift Cards extension). [https://github.com/woocommerce/woocommerce-ios/pull/9795]
 
 - [*] My Store: A new button to share the current store is added on the top right of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/9796]
+- [*] Mobile Payments: The screen brightness is increased when showing the Scan to Pay view so the QR code can be scanned more easily [https://github.com/woocommerce/woocommerce-ios/pull/9807]
  
 13.7
 -----

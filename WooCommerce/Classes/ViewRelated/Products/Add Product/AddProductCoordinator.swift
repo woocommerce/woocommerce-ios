@@ -309,7 +309,8 @@ private extension AddProductCoordinator {
     /// Presents the celebratory view for the first created product.
     ///
     func showFirstProductCreatedView(productURL: URL) {
-        let viewController = FirstProductCreatedHostingController(productURL: productURL)
+        let viewController = FirstProductCreatedHostingController(productURL: productURL,
+                                                                  showShareProductButton: stores.sessionManager.defaultSite?.isPublic ?? false)
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 }

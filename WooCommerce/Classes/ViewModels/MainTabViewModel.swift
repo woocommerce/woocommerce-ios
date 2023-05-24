@@ -236,7 +236,7 @@ private extension MainTabViewModel {
             guard let self = self else { return }
             switch result {
             case .success(let visible):
-                self.shouldShowNewFeatureBadgeOnHubMenuTab = visible && featureFlagService.isFeatureFlagEnabled(.tapToPayBadge)
+                self.shouldShowNewFeatureBadgeOnHubMenuTab = visible && self.featureFlagService.isFeatureFlagEnabled(.tapToPayBadge)
             case .failure:
                 self.shouldShowNewFeatureBadgeOnHubMenuTab = false
             }

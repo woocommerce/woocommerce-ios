@@ -153,7 +153,7 @@ final class HubMenuViewModel: ObservableObject {
             guard let self = self else { return }
             switch result {
             case .success(let visible):
-                self.shouldShowNewFeatureBadgeOnPayments = visible && featureFlagService.isFeatureFlagEnabled(.tapToPayBadge)
+                self.shouldShowNewFeatureBadgeOnPayments = visible && self.featureFlagService.isFeatureFlagEnabled(.tapToPayBadge)
             case .failure:
                 self.shouldShowNewFeatureBadgeOnPayments = false
             }

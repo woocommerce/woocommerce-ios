@@ -146,7 +146,7 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
         return .enabled(
             .init(
                 // FIXME: Is there a way to control this via feature flags?
-                sampler: { 0.1 },
+                sampler: { 0.01 },
                 trackCoreData: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringCoreData),
                 trackFileIO: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringFileIO),
                 trackNetwork: featureFlagService.isFeatureFlagEnabled(.performanceMonitoringNetworking),

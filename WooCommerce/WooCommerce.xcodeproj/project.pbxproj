@@ -565,6 +565,7 @@
 		0373A12B2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0373A12A2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib */; };
 		0373A12D2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0373A12C2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift */; };
 		0373A12F2A1D1F2100731236 /* DotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0373A12E2A1D1F2100731236 /* DotView.swift */; };
+		0373A1312A1E3FD700731236 /* TapToPayBadgePromotionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0373A1302A1E3FD700731236 /* TapToPayBadgePromotionChecker.swift */; };
 		0375799928201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */; };
 		0375799B28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */; };
 		0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */; };
@@ -2864,6 +2865,7 @@
 		0373A12A2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BadgedLeftImageTableViewCell.xib; sourceTree = "<group>"; };
 		0373A12C2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgedLeftImageTableViewCell.swift; sourceTree = "<group>"; };
 		0373A12E2A1D1F2100731236 /* DotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
+		0373A1302A1E3FD700731236 /* TapToPayBadgePromotionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayBadgePromotionChecker.swift; sourceTree = "<group>"; };
 		0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsReadinessUseCase.swift; sourceTree = "<group>"; };
 		0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
 		0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
@@ -10168,6 +10170,7 @@
 				03B9E5202A13971F005C77F5 /* TapToPayReconnectionController.swift */,
 				03B9E5282A14F136005C77F5 /* SilenceablePassthroughCardPresentPaymentAlertsPresenter.swift */,
 				03B9E5262A14EA89005C77F5 /* CardReaderSupportDeterminer.swift */,
+				0373A1302A1E3FD700731236 /* TapToPayBadgePromotionChecker.swift */,
 				B90C65CC29ACE2D6004CAB9E /* CardPresentPaymentOnboardingStateCache.swift */,
 				B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */,
 			);
@@ -12183,6 +12186,7 @@
 				B932847429A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift in Sources */,
 				AE3AA889290C303B00BE422D /* WebKitViewController.swift in Sources */,
 				4535EE7A281ADD56004212B4 /* CouponCodeInputFormatter.swift in Sources */,
+				0373A1312A1E3FD700731236 /* TapToPayBadgePromotionChecker.swift in Sources */,
 				DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */,
 				035DBA45292D0164003E5125 /* CollectOrderPaymentUseCase.swift in Sources */,
 				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,

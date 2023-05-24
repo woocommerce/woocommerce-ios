@@ -41,18 +41,22 @@ final class PrivacyBannerPresenter {
         let privacyBanner = PrivacyBannerViewController(onCompletion: { [weak self] result in
             switch result {
             case .success(let destination):
-                switch destination {
-                case .dismiss:
-                    viewController.dismiss(animated: true)
-
-                case .settings:
-                    print("Dismiss and Go to settings")
+                viewController.dismiss(animated: true)
+                if destination == .settings {
+                    MainTabBarController.navigateToPrivacySettings()
                 }
+
             case .failure(let error):
                 switch error {
-                case .sync(let analyticsOptOut):
+                case .sync(let analyticsOptOut, let intendedDestination):
                     viewController.dismiss(animated: true)
                     self?.showErrorNotice(optOut: analyticsOptOut)
+
+                    /// Even if we fail, we should redirect the user to settings screen so they can further customize their privacy settings
+                    ///
+                    if intendedDestination == .settings {
+                        MainTabBarController.navigateToPrivacySettings()
+                    }
                 }
             }
         })

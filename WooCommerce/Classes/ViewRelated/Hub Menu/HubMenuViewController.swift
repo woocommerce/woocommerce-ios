@@ -35,6 +35,20 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         return inPersonPaymentsMenuViewController
     }
 
+    /// Pushes the Settings & Privacy screen onto the navigation stack.
+    ///
+    func showPrivacySettings() {
+        guard let navigationController else {
+            return DDLogError("⛔️ Could not find a navigation controller context.")
+        }
+        guard let privacy = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+            return DDLogError("⛔️ Could not instantiate PrivacySettingsViewController")
+        }
+
+        let settings = SettingsViewController()
+        navigationController.setViewControllers(navigationController.viewControllers + [settings, privacy], animated: true)
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 

@@ -49,6 +49,7 @@ import TestKit
             }
 
             // When
+            viewModel.analyticsEnabled = false
             Task {
                 await viewModel.submitChanges(destination: .dismiss)
             }

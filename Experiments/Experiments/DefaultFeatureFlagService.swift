@@ -49,8 +49,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
                 .performanceMonitoringNetworking,
                 .performanceMonitoringViewController,
                 .performanceMonitoringUserInteraction:
-            // Disabled by default to avoid costs spikes, unless in internal testing builds.
-            return buildConfig == .alpha
+            // Disabled for development builds.
+            return buildConfig == .alpha || buildConfig == .appStore
         case .tapToPayOnIPhone:
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.

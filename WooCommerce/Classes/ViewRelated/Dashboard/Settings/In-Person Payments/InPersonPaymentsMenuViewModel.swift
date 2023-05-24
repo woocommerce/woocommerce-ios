@@ -39,7 +39,7 @@ final class InPersonPaymentsMenuViewModel {
 
     @Published private(set) var isEligibleForTapToPayOnIPhone: Bool = false
     @Published private(set) var shouldShowTapToPayOnIPhoneFeedbackRow: Bool = false
-    @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool
+    @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
 
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 

@@ -424,7 +424,10 @@ private extension InPersonPaymentsMenuViewController {
 
         viewModel.$shouldBadgeTapToPayOnIPhone.sink { [weak self] _ in
             self?.configureSections()
-            self?.tableView.reloadData()
+            // ensures that the cell will be configured with the correct value for the badge
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
         }.store(in: &cancellables)
     }
 

@@ -436,26 +436,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
-        guard item.quantity > 0, // Don't render any item with `.zero` quantity.
-              let product = allProducts.first(where: { $0.productID == item.productID }) else {
+        guard item.quantity > 0 else {
+            // Don't render any item with `.zero` quantity.
             return nil
         }
 
-        if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
-            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
-            return ProductRowViewModel(id: item.itemID,
-                                       productVariation: variation,
-                                       name: product.name,
-                                       quantity: item.quantity,
-                                       canChangeQuantity: canChangeQuantity,
-                                       displayMode: .attributes(attributes),
-                                       quantityUpdatedCallback: { [weak self] _ in
-                guard let self = self else { return }
-                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
-            },
-                                       removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)})
-        } else {
+        if let product = allProducts.first(where: { $0.productID == item.productID }) {
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
                                        quantity: item.quantity,
@@ -466,6 +452,26 @@ final class EditableOrderViewModel: ObservableObject {
             },
                                        removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
+        }
+
+        if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+            let parent = allProducts.first(where: { $0.parentID == item.parent })
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
+            return ProductRowViewModel(id: item.itemID,
+                                       productVariation: variation,
+                                       name: item.name,
+                                       quantity: item.quantity,
+                                       canChangeQuantity: canChangeQuantity,
+                                       displayMode: .attributes(attributes),
+                                       quantityUpdatedCallback: { [weak self] _ in
+                guard let self = self else { return }
+                self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
+            },
+                                       removeProductIntent: { [weak self] in
+                self?.removeItemFromOrder(item)})
+        } else {
+            DDLogInfo("No product or variation found. Couldn't create the product row")
+            return nil
         }
     }
 

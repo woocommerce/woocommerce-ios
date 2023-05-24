@@ -64,6 +64,10 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhoneMilestone2
 
+    /// Enables badging the route to Set up Tap to Pay on iPhone on eligible devices
+    ///
+    case tapToPayBadge
+
     /// Store creation MVP.
     ///
     case storeCreationMVP

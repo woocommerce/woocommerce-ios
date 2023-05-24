@@ -441,7 +441,15 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+        var variation = allProductVariations.first(where: { $0.productVariationID == item.variationID })
+
+        if variation == nil {
+            let product = allProducts.first(where: { $0.productID == item.variationID })
+            variation = product?.toProductVariation()
+        }
+
+        if item.variationID != 0,
+            let variation = variation {
             let parent = allProducts.first(where: { $0.productID == item.parent })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
             return ProductRowViewModel(id: item.itemID,

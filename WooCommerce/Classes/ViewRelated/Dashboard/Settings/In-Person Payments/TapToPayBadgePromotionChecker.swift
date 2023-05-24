@@ -17,14 +17,9 @@ final class TapToPayBadgePromotionChecker {
         self.stores = stores
 
         listenToTapToPayBadgeReloadRequired()
-//        Task { @MainActor in
-//            await checkTapToPayBadgeVisibility()
-//        }
-        stores.siteID.sink { [checkTapToPayBadgeVisibility] siteID in
-            Task {
-                await checkTapToPayBadgeVisibility(siteID)
-            }
-        }.store(in: &cancellables)
+        Task {
+            await checkTapToPayBadgeVisibility()
+        }
     }
 
     func hideTapToPayBadge() {
@@ -37,10 +32,11 @@ final class TapToPayBadgePromotionChecker {
     }
 
     @MainActor
-    private func checkTapToPayBadgeVisibility(siteID: Int64?) async {
-        guard let siteID else {
+    private func checkTapToPayBadgeVisibility() async {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
             return shouldShowTapToPayBadges = false
         }
+
         let supportDeterminer = CardReaderSupportDeterminer(siteID: siteID)
         guard supportDeterminer.siteSupportsLocalMobileReader(),
               await supportDeterminer.deviceSupportsLocalMobileReader(),
@@ -66,10 +62,24 @@ final class TapToPayBadgePromotionChecker {
                                                selector: #selector(setUpTapToPayViewDidAppear),
                                                name: .setUpTapToPayViewDidAppear,
                                                object: nil)
-
+        // It's not ideal that we need this, and the notification should be removed when we remove this badge.
+        // Changing the store recreates this class, so we check for support again... however, the store country is
+        // fetched by the CardPresentPaymentsConfigurationLoader, from the `ServiceLocator.selectedSiteSettings`.
+        // The site settings are not updated until slightly later, so we need to refresh the badge logic when they are.
+        // Ideally, we would improve the CardPresentConfigurationLoader to accurately get the current country.
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshBadgeVisibility),
+                                               name: .selectedSiteSettingsRefreshed,
+                                               object: nil)
     }
 
     @objc private func setUpTapToPayViewDidAppear() {
         hideTapToPayBadge()
+    }
+
+    @objc private func refreshBadgeVisibility() {
+        Task {
+            await checkTapToPayBadgeVisibility()
+        }
     }
 }

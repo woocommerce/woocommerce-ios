@@ -3,6 +3,14 @@ import Yosemite
 import Storage
 import WooFoundation
 
+
+extension Notification.Name {
+
+    /// Posted whenever the selectedSiteSettings are refreshed.
+    ///
+    public static let selectedSiteSettingsRefreshed = Notification.Name(rawValue: "selectedSiteSettingsRefreshed")
+}
+
 /// Settings for the selected Site
 ///
 final class SelectedSiteSettings: NSObject {
@@ -62,6 +70,8 @@ extension SelectedSiteSettings {
         fetchedObjects.forEach {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
+
+        NotificationCenter.default.post(name: .selectedSiteSettingsRefreshed, object: nil)
 
         // Needed to correcly format the widget data.
         UserDefaults.group?[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(ServiceLocator.currencySettings)

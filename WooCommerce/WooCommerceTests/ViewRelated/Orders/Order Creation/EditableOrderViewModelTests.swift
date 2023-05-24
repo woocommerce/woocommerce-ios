@@ -372,6 +372,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                      canChangeQuantity: false,
                                                      displayMode: .stock)
         XCTAssertEqual(productRow?.name, expectedProductRow.name)
+        XCTAssertEqual(productRow?.skuLabel, expectedProductRow.skuLabel)
         XCTAssertEqual(productRow?.quantity, expectedProductRow.quantity)
         XCTAssertEqual(productRow?.canChangeQuantity, expectedProductRow.canChangeQuantity)
     }

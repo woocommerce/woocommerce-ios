@@ -59,14 +59,14 @@ final class PrivacyBannerViewModel: ObservableObject {
         isViewEnabled = true
 
         // Analytics
-        trackAnalyticsFrom(destination: destination)
+        trackAnalytics(from: destination)
     }
 
     /// Track analytics based on the destination provided by the view.
     /// Dismiss ----> Save
     /// Settings ----> Settings
     ///
-    private func trackAnalyticsFrom(destination: Destination) {
+    private func trackAnalytics(from destination: Destination) {
         switch destination {
         case .dismiss:
             analytics.track(event: .PrivacyChoicesBanner.saveButtonTapped())

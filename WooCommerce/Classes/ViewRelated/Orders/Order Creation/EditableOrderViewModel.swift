@@ -1302,7 +1302,7 @@ extension EditableOrderViewModel {
             guard let self = self else { return }
             switch result {
             case let .success(productID):
-                self.orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
+                self.updateOrderWithProductID(productID: productID)
                 onCompletion(.success(()))
             case .failure:
                 onCompletion(.failure(ScannerError.productNotFound))
@@ -1322,6 +1322,17 @@ extension EditableOrderViewModel {
             }
         })
         stores.dispatch(action)
+    }
+
+    /// Updates the Order with the given product and quantity
+    ///
+    private func updateOrderWithProductID(productID: Int64) {
+        if orderSynchronizer.order.items.contains(where: { $0.productID == productID }) {
+            let match = productRows.first(where: { $0.productOrVariationID == productID })
+            match?.incrementQuantity()
+        } else {
+            orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
+        }
     }
 }
 

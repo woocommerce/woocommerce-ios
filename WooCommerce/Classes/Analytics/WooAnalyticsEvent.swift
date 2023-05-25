@@ -2386,3 +2386,22 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+
+// MARK: - Privacy Choices Banner
+//
+extension WooAnalyticsEvent {
+    enum PrivacyChoicesBanner {
+        static func bannerPresented() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .privacyChoicesBannerPresented, properties: [:])
+        }
+
+        static func settingsButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .privacyChoicesSettingsButtonTapped, properties: [:])
+        }
+
+        static func saveButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .privacyChoicesSaveButtonTapped, properties: [:])
+        }
+    }
+}

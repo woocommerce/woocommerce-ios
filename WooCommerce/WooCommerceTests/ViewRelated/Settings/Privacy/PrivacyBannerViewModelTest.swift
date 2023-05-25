@@ -111,6 +111,32 @@ import TestKit
         XCTAssertTrue(completionCalled)
     }
 
+    @MainActor func test_tapping_go_to_settings_tracks_analytic_event() async {
+        // Given
+        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let viewModel = PrivacyBannerViewModel(analytics: analytics, stores: stores, onCompletion: { _ in })
+
+        // When
+        await viewModel.submitChanges(destination: .settings)
+
+        // Then
+        XCTAssertEqual(analytics.lastReceivedStat, WooAnalyticsStat.privacyChoicesSettingsButtonTapped)
+    }
+
+    @MainActor func test_tapping_go_to_save_tracks_analytic_event() async {
+        // Given
+        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let viewModel = PrivacyBannerViewModel(analytics: analytics, stores: stores, onCompletion: { _ in })
+
+        // When
+        await viewModel.submitChanges(destination: .dismiss)
+
+        // Then
+        XCTAssertEqual(analytics.lastReceivedStat, WooAnalyticsStat.privacyChoicesSaveButtonTapped)
+    }
+
     override class func tearDown() {
         super.tearDown()
         SessionManager.removeTestingDatabase()

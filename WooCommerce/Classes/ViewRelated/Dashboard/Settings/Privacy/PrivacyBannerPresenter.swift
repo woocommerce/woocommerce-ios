@@ -10,8 +10,13 @@ final class PrivacyBannerPresenter {
     ///
     private let defaults: UserDefaults
 
-    init(defaults: UserDefaults = UserDefaults.standard) {
+    /// Analytics manager.
+    ///
+    private let analytics: Analytics
+
+    init(defaults: UserDefaults = UserDefaults.standard, analytics: Analytics = ServiceLocator.analytics) {
         self.defaults = defaults
+        self.analytics = analytics
     }
 
     /// Present the banner when the appropriate conditions are met.
@@ -63,6 +68,8 @@ final class PrivacyBannerPresenter {
 
         let bottomSheetViewController = BottomSheetViewController(childViewController: privacyBanner)
         bottomSheetViewController.show(from: viewController)
+
+        analytics.track(event: .PrivacyChoicesBanner.bannerPresented())
     }
 
     /// Presents an error notice and provide a retry action to update the analytics setting.

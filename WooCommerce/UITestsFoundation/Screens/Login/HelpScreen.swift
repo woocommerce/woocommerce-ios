@@ -84,8 +84,12 @@ public final class HelpScreen: ScreenObject {
     }
 
     public func verifySubmitButtonEnabled() throws {
-//        XCTAssertTrue(submitButton.isEnabled)
-//        intentional fail for testing
-        XCTAssertFalse(submitButton.isEnabled)
+
+//        intentional fail on iPhone for testing
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            XCTAssertFalse(submitButton.isEnabled)
+        } else {
+            XCTAssertTrue(submitButton.isEnabled)
+        }
     }
 }

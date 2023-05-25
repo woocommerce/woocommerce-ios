@@ -1324,13 +1324,21 @@ extension EditableOrderViewModel {
 
     /// Updates the Order with the given product
     ///
-    func updateOrderWithProduct(productID: Int64) {
-        if currentOrderItems.contains(where: { $0.productOrVariationID == productID }) {
-            let match = productRows.first(where: { $0.productOrVariationID == productID })
-            match?.incrementQuantity()
-        } else {
-            orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
+    func updateOrderWithProductID(_ productID: Int64) {
+        guard currentOrderItems.contains(where: { $0.productOrVariationID == productID }) else {
+            // If it's not part of the current order, send the correct productType to the synchronizer
+            if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {
+                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
+            } else if let product = allProducts.first(where: { $0.productID == productID }) {
+                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+            } else {
+                DDLogError("⛔️ID \(productID) not found")
+            }
+            return
         }
+        // Increase quantity if exists
+        let match = productRows.first(where: { $0.productOrVariationID == productID })
+        match?.incrementQuantity()
     }
 }
 

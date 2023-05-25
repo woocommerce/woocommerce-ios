@@ -1782,7 +1782,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNil(orderItem)
 
         // When
-        viewModel.updateOrderWithProduct(productID: sampleProductID)
+        viewModel.updateOrderWithProductID(sampleProductID)
 
         // Then
         XCTAssertEqual(viewModel.currentOrderItems.count, 1)
@@ -1794,14 +1794,14 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProductID: sampleProductID)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialProductID: sampleProductID)
 
         // Confidence check
         let orderItem = viewModel.currentOrderItems.first
         XCTAssertEqual(orderItem?.quantity, 1)
 
         // When
-        viewModel.updateOrderWithProduct(productID: sampleProductID)
+        viewModel.updateOrderWithProductID(sampleProductID)
 
         // Then
         XCTAssertEqual(viewModel.currentOrderItems.count, 1)

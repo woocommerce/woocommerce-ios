@@ -1677,48 +1677,49 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_order_creation_when_withInitialProduct_is_nil_then_currentOrderItems_are_zero() {
         // Given, When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, withInitialProduct: nil)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, initialProductID: nil)
 
         // Then
         XCTAssertEqual(viewModel.currentOrderItems.count, 0)
     }
 
     func test_addScannedProductToOrder_when_existing_sku_is_found_then_succeeds_to_add_product_to_order() {
-         // Given
-         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-         storageManager.insertSampleProduct(readOnlyProduct: product)
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
 
-         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
-             switch action {
-             case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
-                 onCompletion(.success(product))
-             default:
-                 XCTFail("Expected failure, got success")
-             }
-         })
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+                onCompletion(.success(product))
+            default:
+                XCTFail("Expected failure, got success")
+            }
+        })
 
-         // When
-         _ = waitFor { promise in
-             self.viewModel.addScannedProductToOrder(barcode: "existingSKU", onCompletion: { result in
-                 switch result {
-                 case .success(()):
-                     promise(true)
-                 default:
-                     XCTFail("Expected success, got failure")
-                 }
-             })
-         }
+        // When
+        let initialProductID: Int64? = waitFor { promise in
+            self.viewModel.addScannedProductToOrder(barcode: "existingSKU", onCompletion: { result in
+                switch result {
+                case .success(()):
+                    promise(self.sampleProductID)
+                default:
+                    XCTFail("Expected success, got failure")
+                }
+            })
+        }
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialProductID: initialProductID)
 
-         // Then
-         XCTAssertEqual(viewModel.currentOrderItems.count, 1)
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 1)
 
-         guard let item = viewModel.currentOrderItems.first else {
-             return XCTFail("Expected 1 item, but got none")
-         }
-         XCTAssertEqual(item.productID, sampleProductID)
-     }
+        guard let item = viewModel.currentOrderItems.first else {
+            return XCTFail("Expected 1 item, but got none")
+        }
+        XCTAssertEqual(item.productID, sampleProductID)
+    }
 
-    func test_order_creation_when_withInitialProduct_is_not_nil_and_product_exists_then_product_is_added_to_the_order() {
+    func test_order_creation_when_initialProduct_is_not_nil_and_product_exists_then_product_is_added_to_the_order() {
         // Given, When
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -1726,19 +1727,19 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Confidence check
         XCTAssertEqual(viewModel.currentOrderItems.count, 0)
 
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialProductID: product.productID)
 
         // Then
         XCTAssertEqual(viewModel.currentOrderItems.count, 1)
     }
 
-    func test_order_created_when_initial_product_is_product_type_then_initial_order_contains_product() {
+    func test_order_created_when_initialProduct_is_product_type_then_initial_order_contains_product() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialProductID: product.productID)
         let orderItem = viewModel.currentOrderItems.first(where: { $0.productID == product.productID})
 
         // Then
@@ -1748,20 +1749,17 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(orderItem?.quantity, 1)
     }
 
-    func test_order_created_when_initial_product_is_productVariation_type_then_initial_order_contains_productVariation() {
+    func test_order_created_when_initialProduct_is_productVariation_type_then_initial_order_contains_productVariation() {
         // Given
         let variationID: Int64 = 33
-        // We test the ProductVariation case through the Product properties, rather than using ProductVariation.fake()
-        // as the EditableOrderViewModel signature accepts a Yosemite.Product and makes the filtering later on
-        // we can't pass a ProductVariation model directly to the initializer to test if the variation was correctly added
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productTypeKey: "variable", variations: [variationID])
-        let productVariation = Product.fake().copy(siteID: sampleSiteID, productID: variationID, productTypeKey: "variation", parentID: product.productID)
+        let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID, productID: sampleProductID, productVariationID: variationID)
 
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        storageManager.insertSampleProduct(readOnlyProduct: productVariation)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
 
         //When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, withInitialProduct: productVariation)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialProductID: variationID)
         guard let orderItem = viewModel.currentOrderItems.first else {
             XCTFail("The Order should contain one item")
             return

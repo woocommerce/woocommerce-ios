@@ -162,8 +162,8 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow with a scanned Product
     ///
-    private func presentOrderCreationFlowWithScannedProduct(with product: Product) {
-        let viewModel = EditableOrderViewModel(siteID: siteID, withInitialProduct: product)
+    private func presentOrderCreationFlowWithScannedProduct(with productID: Int64) {
+        let viewModel = EditableOrderViewModel(siteID: siteID, initialProductID: productID)
         setupNavigation(viewModel: viewModel)
     }
 
@@ -209,7 +209,7 @@ final class OrdersRootViewController: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case let .success(product):
-                    self.presentOrderCreationFlowWithScannedProduct(with: product)
+                    self.presentOrderCreationFlowWithScannedProduct(with: product.productID)
                 case .failure:
                     self.displayErrorNotice()
                 }

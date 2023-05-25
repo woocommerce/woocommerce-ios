@@ -318,10 +318,9 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
-    /// Yosemite.Product given to the order when is created, if any
-    /// It can be either a Product or ProductVariation entity
+    /// Initial product ID given to the order when is created, if any
     ///
-    private let withInitialProduct: Yosemite.Product?
+    private let initialProductID: Int64?
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -334,7 +333,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         withInitialProduct: Yosemite.Product? = nil) {
+         initialProductID: Int64? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -345,7 +344,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
-        self.withInitialProduct = withInitialProduct
+        self.initialProductID = initialProductID
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -945,13 +944,13 @@ private extension EditableOrderViewModel {
         configureInitialOrderFromScannedItemIfNeeded()
     }
 
-    /// If given an initial Product or ProductVariation on initialization, updates the Order with the item
+    /// If given an initial product ID on initialization, updates the Order with the item
     ///
     func configureInitialOrderFromScannedItemIfNeeded() {
-        guard let product = self.withInitialProduct else {
+        guard let productID = self.initialProductID else {
             return
         }
-        updateOrderWithProduct(product)
+        updateOrderWithProductID(productID)
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1301,7 +1300,7 @@ extension EditableOrderViewModel {
             guard let self = self else { return }
             switch result {
             case let .success(product):
-                self.updateOrderWithProduct(product)
+                self.updateOrderWithProductID(product.productID)
                 onCompletion(.success(()))
             case .failure:
                 onCompletion(.failure(ScannerError.productNotFound))
@@ -1323,13 +1322,15 @@ extension EditableOrderViewModel {
         stores.dispatch(action)
     }
 
-    /// Validates if the given product entity is a product or a productVariation, and updates the Order with the correspondent item
+    /// Validates if the given product ID  is a product or a productVariation, and updates the Order with the correspondent item
     ///
-    private func updateOrderWithProduct(_ product: Product) {
-        if let productVariation = product.toProductVariation() {
+    private func updateOrderWithProductID(_ productID: Int64) {
+        if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {
             orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
-        } else {
+        } else if let product = allProducts.first(where: { $0.productID == productID }) {
             orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+        } else {
+            DDLogError("⛔️ID \(productID) not found")
         }
     }
 }

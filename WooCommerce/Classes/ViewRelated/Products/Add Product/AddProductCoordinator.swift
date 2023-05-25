@@ -29,7 +29,6 @@ final class AddProductCoordinator: Coordinator {
     private let sourceView: UIView?
     private let productImageUploader: ProductImageUploaderProtocol
     private let storage: StorageManagerType
-    private let stores: StoresManager
     private let isFirstProduct: Bool
 
     /// ResultController to to track the current product count.
@@ -50,7 +49,6 @@ final class AddProductCoordinator: Coordinator {
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -60,7 +58,6 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
-        self.stores = stores
         self.isFirstProduct = isFirstProduct
     }
 
@@ -69,7 +66,6 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -79,7 +75,6 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
-        self.stores = stores
         self.isFirstProduct = isFirstProduct
     }
 

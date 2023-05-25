@@ -683,7 +683,7 @@ extension Networking.OrderGiftCard {
     public func copy(
         giftCardID: CopiableProp<Int64> = .copy,
         code: CopiableProp<String> = .copy,
-        amount: CopiableProp<Int64> = .copy
+        amount: CopiableProp<Double> = .copy
     ) -> Networking.OrderGiftCard {
         let giftCardID = giftCardID ?? self.giftCardID
         let code = code ?? self.code

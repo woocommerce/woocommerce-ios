@@ -399,24 +399,17 @@ private extension PrivacySettingsViewController {
     func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
 
-        // If we can't find an account(non-jp sites), lets commit the change immediately.
-        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
-            ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
-            return
-        }
-
-        let userID = defaultAccount.userID
-
-        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { [weak self] result in
-            switch result {
-            case .success:
-                ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
-            case .failure:
-                self?.collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
-                self?.presentErrorUpdatingAccountSettingsNotice(optInValue: newValue)
+        let useCase = UpdateAnalyticsSettingUseCase()
+        Task {
+            do {
+                try await useCase.update(optOut: userOptedOut)
+            } catch {
+                Task { @MainActor in
+                    collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
+                    presentErrorUpdatingAccountSettingsNotice(optInValue: newValue)
+                }
             }
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {

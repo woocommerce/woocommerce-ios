@@ -12,9 +12,9 @@ final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
     ///
     var bannerIntrinsicHeight: CGFloat = 0
 
-    init(goToSettingsAction: @escaping (() -> ()), saveAction: @escaping (() -> ())) {
-        let viewModel = PrivacyBannerViewModel()
-        super.init(rootView: PrivacyBanner(goToSettingsAction: goToSettingsAction, saveAction: saveAction, viewModel: viewModel))
+    init(onCompletion: @escaping (Result<PrivacyBannerViewModel.Destination, PrivacyBannerViewModel.Error>) -> ()) {
+        let viewModel = PrivacyBannerViewModel(onCompletion: onCompletion)
+        super.init(rootView: PrivacyBanner(viewModel: viewModel))
     }
 
     /// Needed for protocol conformance.
@@ -48,14 +48,6 @@ extension PrivacyBannerViewController: DrawerPresentable {
 /// Banner View for the privacy settings.
 ///
 struct PrivacyBanner: View {
-    /// Closure to be invoked when the go to settings button is pressed.
-    ///
-    let goToSettingsAction: (() -> ())
-
-    /// Closure to be invoked when the save button is pressed.
-    ///
-    let saveAction: (() -> ())
-
     /// Determines in the banner should be scrollable on it's parent container.
     ///
     var shouldScroll: Bool = false
@@ -94,15 +86,19 @@ struct PrivacyBanner: View {
 
             HStack {
                 Button(Localization.goToSettings) {
-                    print("Tapped Settings")
+                    Task {
+                        await viewModel.submitChanges(destination: .settings)
+                    }
                 }
                 .buttonStyle(SecondaryButtonStyle())
 
 
                 Button(Localization.save) {
-                    print("Tapped Save")
+                    Task {
+                        await viewModel.submitChanges(destination: .dismiss)
+                    }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
             }
             .padding(.top)
 
@@ -111,6 +107,7 @@ struct PrivacyBanner: View {
             Spacer()
         }
         .padding()
+        .disabled(!viewModel.isViewEnabled)
     }
 }
 
@@ -141,7 +138,7 @@ private extension PrivacyBanner {
 
 struct PrivacyBanner_Previews: PreviewProvider {
     static var previews: some View {
-        PrivacyBanner(goToSettingsAction: {}, saveAction: {}, viewModel: .init())
+        PrivacyBanner(viewModel: .init(onCompletion: { _ in }))
             .previewLayout(.sizeThatFits)
     }
 }

@@ -448,6 +448,17 @@ extension MainTabBarController {
             viewController?.openSimplePaymentsAmountFlow()
         }
     }
+
+    /// Switches to the hub Menu & Navigates to the Privacy Settings Screen.
+    ///
+    static func navigateToPrivacySettings() {
+        switchToHubMenuTab {
+            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+                return DDLogError("⛔️ Could not switch to the Hub Menu")
+            }
+            hubMenuViewController.showPrivacySettings()
+        }
+    }
 }
 
 // MARK: - DeeplinkForwarder

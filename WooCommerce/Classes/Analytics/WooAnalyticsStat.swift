@@ -530,6 +530,7 @@ public enum WooAnalyticsStat: String {
     case productListMenuSearchTapped = "product_list_menu_search_tapped"
     case productListAddProductTapped = "product_list_add_product_button_tapped"
     case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
+    case productListShareButtonTapped = "product_list_share_button_tapped"
 
     // MARK: Product List Bulk Editing Events
     //

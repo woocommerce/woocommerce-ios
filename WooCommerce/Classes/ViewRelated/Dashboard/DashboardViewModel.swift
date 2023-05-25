@@ -32,6 +32,15 @@ final class DashboardViewModel {
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
 
+    var siteURLToShare: URL? {
+        if let site = stores.sessionManager.defaultSite,
+           site.isPublic, // only show share button if the site is public.
+           let url = URL(string: site.url) {
+            return url
+        }
+        return nil
+    }
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,

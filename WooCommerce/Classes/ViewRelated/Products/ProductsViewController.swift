@@ -181,6 +181,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var addProductCoordinator: AddProductCoordinator?
 
+    /// Tracks if the swipe actions have been glanced to the user.
+    ///
+    private var swipeActionsGlanced = false
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -700,6 +704,16 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
 
+    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
+    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
+    ///
+    func glanceTrailingActionsIfNeeded() {
+        if !swipeActionsGlanced {
+            swipeActionsGlanced = true
+            tableView.glanceTrailingSwipeActions()
+        }
+    }
+
     /// Displays an error banner if there is an error loading products data.
     ///
     func showTopBannerViewIfNeeded() {
@@ -919,6 +933,28 @@ extension ProductsViewController: UITableViewDelegate {
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+    }
+
+    /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
+    ///
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let product = resultsController.object(at: indexPath)
+        guard ServiceLocator.stores.sessionManager.defaultSite?.isPublic == true,
+              product.productStatus == .published,
+              let url = URL(string: product.permalink),
+            let cell = tableView.cellForRow(at: indexPath) else {
+            return nil
+        }
+        let shareAction = UIContextualAction(style: .normal, title: nil, handler: { [weak self] _, _, completionHandler in
+            guard let self else { return }
+            SharingHelper.shareURL(url: url, from: cell, in: self)
+            ServiceLocator.analytics.track(.productListShareButtonTapped)
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        shareAction.backgroundColor = .brand
+        shareAction.image = .init(systemName: "square.and.arrow.up")
+
+        return UISwipeActionsConfiguration(actions: [shareAction])
     }
 }
 
@@ -1228,7 +1264,7 @@ private extension ProductsViewController {
                 hideTopBannerView()
             }
         case .results:
-            break
+            glanceTrailingActionsIfNeeded()
         }
     }
 

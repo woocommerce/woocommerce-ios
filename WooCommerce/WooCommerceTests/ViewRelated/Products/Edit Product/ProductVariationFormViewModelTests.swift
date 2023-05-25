@@ -69,6 +69,21 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         XCTAssertTrue(canShareProduct)
     }
 
+    func test_edit_product_form_with_non_public_site_cannot_share_product() {
+        // Given
+        let product = ProductVariation.fake().copy(status: ProductStatus.published)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: false)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertFalse(canShareProduct)
+    }
+
     func test_add_product_variation_form_with_published_status_cannot_share_product() {
         // Given
         let product = ProductVariation.fake().copy(status: ProductStatus.published)
@@ -104,7 +119,6 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(canShareProduct)
     }
-
 }
 
 private extension ProductVariationFormViewModelTests {

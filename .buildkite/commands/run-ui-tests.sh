@@ -47,6 +47,6 @@ else
   echo "The UI Tests, which ran inside the '🧪 Testing' section above in the logs, have failed."
   echo "For more details about the failed tests, check the Buildkite annotation, the logs under the '🧪 Testing' section and the \`.xcresult\` and test reports in Buildkite artifacts."
 fi
-annotate_test_failures "fastlane/test_output/WooCommerce.xml"
+annotate_test_failures "fastlane/test_output/WooCommerce.xml" "true"
 
 exit $TESTS_EXIT_STATUS

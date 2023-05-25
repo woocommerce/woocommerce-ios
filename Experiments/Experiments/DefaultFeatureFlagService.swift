@@ -92,7 +92,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .readOnlyMinMaxQuantities:
             return true
         case .privacyChoices:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .storeCreationNotifications:
             return true
         case .euShippingNotification:

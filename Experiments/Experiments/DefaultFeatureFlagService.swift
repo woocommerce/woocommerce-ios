@@ -57,6 +57,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .appStore
         case .tapToPayOnIPhoneMilestone2:
             return true
+        case .tapToPayBadge:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .domainSettings:
             return true
         case .jetpackSetupWithApplicationPassword:

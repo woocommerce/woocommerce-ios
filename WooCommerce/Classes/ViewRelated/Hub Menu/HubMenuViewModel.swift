@@ -61,6 +61,10 @@ final class HubMenuViewModel: ObservableObject {
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
+
+    private var cancellables: Set<AnyCancellable> = []
+
     init(siteID: Int64,
          navigationController: UINavigationController? = nil,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -74,6 +78,8 @@ final class HubMenuViewModel: ObservableObject {
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         observeSiteForUIUpdates()
         observePlanName()
+        listenToNewFeatureBadgeReloadRequired()
+        retrieveShouldShowNewFeatureBadgeOnPaymentsValue()
     }
 
     func viewDidAppear() {
@@ -97,7 +103,10 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func setupGeneralElements() {
-        generalElements = [Payments(), WoocommerceAdmin(), ViewStore(), Reviews()]
+        generalElements = [Payments(iconBadge: shouldShowNewFeatureBadgeOnPayments ? .dot : nil),
+                           WoocommerceAdmin(),
+                           ViewStore(),
+                           Reviews()]
         if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
             generalElements.append(InAppPurchases())
         }
@@ -127,6 +136,36 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         stores.dispatch(action)
+    }
+
+    private func listenToNewFeatureBadgeReloadRequired() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(setUpTapToPayViewDidAppear),
+                                               name: .setUpTapToPayViewDidAppear,
+                                               object: nil)
+
+    }
+
+    /// Retrieves whether we should show the new feature badge on the Menu button
+    ///
+    func retrieveShouldShowNewFeatureBadgeOnPaymentsValue() {
+        let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .tapToPayHubMenuBadge) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let visible):
+                self.shouldShowNewFeatureBadgeOnPayments = visible && self.featureFlagService.isFeatureFlagEnabled(.tapToPayBadge)
+            case .failure:
+                self.shouldShowNewFeatureBadgeOnPayments = false
+            }
+        }
+
+        stores.dispatch(action)
+    }
+
+    /// Updates the badge after the Set up Tap to Pay flow did appear
+    ///
+    @objc private func setUpTapToPayViewDidAppear() {
+        self.shouldShowNewFeatureBadgeOnPayments = false
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
@@ -214,6 +253,10 @@ final class HubMenuViewModel: ObservableObject {
         }
         .assign(to: &$planName)
     }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
+    }
 }
 
 protocol HubMenuItem {
@@ -224,6 +267,7 @@ protocol HubMenuItem {
     var iconColor: UIColor { get }
     var accessibilityIdentifier: String { get }
     var trackingOption: String { get }
+    var iconBadge: HubMenuBadgeType? { get }
 }
 
 extension HubMenuItem {
@@ -243,6 +287,7 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "dashboard-settings-button"
         let trackingOption: String = "settings"
+        let iconBadge: HubMenuBadgeType? = nil
     }
 
     struct Payments: HubMenuItem {
@@ -255,6 +300,11 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .withColorStudio(.orange)
         let accessibilityIdentifier: String = "menu-payments"
         let trackingOption: String = "payments"
+        let iconBadge: HubMenuBadgeType?
+
+        init(iconBadge: HubMenuBadgeType? = nil) {
+            self.iconBadge = iconBadge
+        }
     }
 
     struct WoocommerceAdmin: HubMenuItem {
@@ -266,6 +316,7 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .wooBlue
         let accessibilityIdentifier: String = "menu-woocommerce-admin"
         let trackingOption: String = "admin_menu"
+        let iconBadge: HubMenuBadgeType? = nil
     }
 
     struct ViewStore: HubMenuItem {
@@ -277,6 +328,7 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .accent
         let accessibilityIdentifier: String = "menu-view-store"
         let trackingOption: String = "view_store"
+        let iconBadge: HubMenuBadgeType? = nil
     }
 
     struct Inbox: HubMenuItem {
@@ -288,6 +340,7 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .withColorStudio(.blue, shade: .shade40)
         let accessibilityIdentifier: String = "menu-inbox"
         let trackingOption: String = "inbox"
+        let iconBadge: HubMenuBadgeType? = nil
     }
 
     struct Coupons: HubMenuItem {
@@ -300,6 +353,7 @@ extension HubMenuViewModel {
                                          dark: .withColorStudio(.green, shade: .shade50))
         let accessibilityIdentifier: String = "menu-coupons"
         let trackingOption: String = "coupons"
+        let iconBadge: HubMenuBadgeType? = nil
     }
 
     struct Reviews: HubMenuItem {
@@ -311,6 +365,7 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-reviews"
         let trackingOption: String = "reviews"
+        let iconBadge: HubMenuBadgeType? = nil
     }
 
     struct InAppPurchases: HubMenuItem {
@@ -322,6 +377,7 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .red
         let accessibilityIdentifier: String = "menu-iap"
         let trackingOption: String = "debug-iap"
+        let iconBadge: HubMenuBadgeType? = nil
     }
 
     struct Subscriptions: HubMenuItem {
@@ -333,6 +389,7 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"
+        let iconBadge: HubMenuBadgeType? = nil
     }
 
     enum Localization {
@@ -358,4 +415,8 @@ extension HubMenuViewModel {
         static let subscriptions = NSLocalizedString("Subscriptions", comment: "Title of one of the hub menu options")
         static let subscriptionsDescription = NSLocalizedString("Manage your subscription", comment: "Description of one of the hub menu options")
     }
+}
+
+enum HubMenuBadgeType {
+    case dot
 }

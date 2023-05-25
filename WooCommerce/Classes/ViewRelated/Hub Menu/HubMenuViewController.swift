@@ -7,7 +7,8 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
 
     init(siteID: Int64, navigationController: UINavigationController?) {
-        self.viewModel = HubMenuViewModel(siteID: siteID, navigationController: navigationController)
+        self.viewModel = HubMenuViewModel(siteID: siteID,
+                                          navigationController: navigationController)
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
     }
@@ -29,7 +30,9 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     func showPaymentsMenu(onCompletion: ((InPersonPaymentsMenuViewController) -> Void)? = nil) -> InPersonPaymentsMenuViewController {
-        let inPersonPaymentsMenuViewController = InPersonPaymentsMenuViewController(viewDidLoadAction: onCompletion)
+        let inPersonPaymentsMenuViewController = InPersonPaymentsMenuViewController(
+            shouldShowBadgeOnSetUpTapToPay: viewModel.shouldShowNewFeatureBadgeOnPayments,
+            viewDidLoadAction: onCompletion)
         show(inPersonPaymentsMenuViewController, sender: self)
 
         return inPersonPaymentsMenuViewController

@@ -528,6 +528,8 @@ private extension MainTabBarController {
         }
         hubMenuTabCoordinator?.activate(siteID: siteID)
 
+        viewModel.loadHubMenuTabBadge()
+
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex()
     }

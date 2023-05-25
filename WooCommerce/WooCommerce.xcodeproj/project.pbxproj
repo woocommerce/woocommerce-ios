@@ -562,6 +562,9 @@
 		0371C3682875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */; };
 		0371C36A2876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */; };
 		0371C36E2876E92D00277E2C /* UpsellCardReadersCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0371C36D2876E92D00277E2C /* UpsellCardReadersCampaign.swift */; };
+		0373A12B2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0373A12A2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib */; };
+		0373A12D2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0373A12C2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift */; };
+		0373A12F2A1D1F2100731236 /* DotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0373A12E2A1D1F2100731236 /* DotView.swift */; };
 		0375799928201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */; };
 		0375799B28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */; };
 		0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */; };
@@ -2861,6 +2864,9 @@
 		0371C3672875E47B00277E2C /* FeatureAnnouncementCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModel.swift; sourceTree = "<group>"; };
 		0371C3692876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardViewModelTests.swift; sourceTree = "<group>"; };
 		0371C36D2876E92D00277E2C /* UpsellCardReadersCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpsellCardReadersCampaign.swift; sourceTree = "<group>"; };
+		0373A12A2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BadgedLeftImageTableViewCell.xib; sourceTree = "<group>"; };
+		0373A12C2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgedLeftImageTableViewCell.swift; sourceTree = "<group>"; };
+		0373A12E2A1D1F2100731236 /* DotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotView.swift; sourceTree = "<group>"; };
 		0375799828201F750083F2E1 /* CardPresentPaymentsReadinessUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsReadinessUseCase.swift; sourceTree = "<group>"; };
 		0375799A28227EDE0083F2E1 /* CardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
 		0375799C2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsOnboardingPresenter.swift; sourceTree = "<group>"; };
@@ -9426,6 +9432,8 @@
 				CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */,
 				CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */,
 				CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */,
+				0373A12C2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift */,
+				0373A12A2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib */,
 				E16058F8285876E600E471D4 /* LeftImageTitleSubtitleTableViewCell.swift */,
 				E16058F6285876DE00E471D4 /* LeftImageTitleSubtitleTableViewCell.xib */,
 				0304E36528BE1EED00A80191 /* LeftImageTitleSubtitleToggleTableViewCell.swift */,
@@ -9486,6 +9494,7 @@
 				AE6C4FDE28A15BFE00EAC00D /* FeatureAnnouncementCardCell.xib */,
 				B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */,
 				0204F0C929C047A400CFC78F /* SelfSizingHostingController.swift */,
+				0373A12E2A1D1F2100731236 /* DotView.swift */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -10695,6 +10704,7 @@
 				D843D5C822434A08001BFA55 /* ManualTrackingViewController.xib in Resources */,
 				3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */,
 				027D4A8E2526FD1800108626 /* SettingsViewController.xib in Resources */,
+				0373A12B2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib in Resources */,
 				B6E851F7276331110041D1BA /* RefundFeesDetailsTableViewCell.xib in Resources */,
 				7441EBCA226A71AA008BF83D /* TitleBodyTableViewCell.xib in Resources */,
 				740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */,
@@ -11204,6 +11214,7 @@
 				02BBD6E729A268F300243BE2 /* StoreOnboardingViewModel.swift in Sources */,
 				B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */,
 				DEC6C51827466B59006832D3 /* StoreStatsEmptyView.swift in Sources */,
+				0373A12D2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift in Sources */,
 				31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */,
 				02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */,
 				E11228BE2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift in Sources */,
@@ -11935,6 +11946,7 @@
 				CCF87BC02790582500461C43 /* ProductVariationSelector.swift in Sources */,
 				02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */,
 				021A84E0257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift in Sources */,
+				0373A12F2A1D1F2100731236 /* DotView.swift in Sources */,
 				DE279BA826E9C8E3002BA963 /* ShippingLabelSinglePackage.swift in Sources */,
 				DEC2962726C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift in Sources */,
 				26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */,

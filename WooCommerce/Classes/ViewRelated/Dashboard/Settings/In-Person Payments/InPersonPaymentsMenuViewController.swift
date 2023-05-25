@@ -22,7 +22,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentsMenu)
 
-    private let viewModel: InPersonPaymentsMenuViewModel = InPersonPaymentsMenuViewModel()
+    private let viewModel: InPersonPaymentsMenuViewModel
 
     private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
 
@@ -68,9 +68,11 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     ///   - viewDidLoadAction: Provided as a one-time callback on viewDidLoad, originally to handle universal link navigation correctly.
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         shouldShowBadgeOnSetUpTapToPay: Bool,
          viewDidLoadAction: ((InPersonPaymentsMenuViewController) -> Void)? = nil) {
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.viewModel = InPersonPaymentsMenuViewModel(shouldShowBadgeOnSetUpTapToPay: shouldShowBadgeOnSetUpTapToPay)
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
         self.setUpFlowOnlyEnabledAfterOnboardingComplete = !featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2)
@@ -304,7 +306,7 @@ private extension InPersonPaymentsMenuViewController {
             configureCollectPayment(cell: cell)
         case let cell as LeftImageTitleSubtitleToggleTableViewCell where row == .toggleEnableCashOnDelivery:
             configureToggleEnableCashOnDelivery(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .setUpTapToPayOnIPhone:
+        case let cell as BadgedLeftImageTableViewCell where row == .setUpTapToPayOnIPhone:
             configureSetUpTapToPayOnIPhone(cell: cell)
         case let cell as LeftImageTableViewCell where row == .tapToPayOnIPhoneFeedback:
             configureTapToPayOnIPhoneFeedback(cell: cell)
@@ -366,11 +368,12 @@ private extension InPersonPaymentsMenuViewController {
         })
     }
 
-    func configureSetUpTapToPayOnIPhone(cell: LeftImageTableViewCell) {
+    func configureSetUpTapToPayOnIPhone(cell: BadgedLeftImageTableViewCell) {
         prepareForReuse(cell)
         cell.accessibilityIdentifier = "set-up-tap-to-pay"
         cell.configure(image: .tapToPayOnIPhoneIcon,
-                       text: Localization.tapToPayOnIPhone)
+                       text: Localization.tapToPayOnIPhone,
+                       showBadge: viewModel.shouldBadgeTapToPayOnIPhone)
 
         if setUpFlowOnlyEnabledAfterOnboardingComplete {
             cell.accessoryType = enableSetUpTapToPayOnIPhoneCell ? .disclosureIndicator : .none
@@ -417,6 +420,14 @@ private extension InPersonPaymentsMenuViewController {
         viewModel.$shouldShowTapToPayOnIPhoneFeedbackRow.sink { [weak self] shouldShowFeedbackRow in
             self?.configureSections(shouldShowTapToPayOnIPhoneFeedback: shouldShowFeedbackRow)
             self?.tableView.reloadData()
+        }.store(in: &cancellables)
+
+        viewModel.$shouldBadgeTapToPayOnIPhone.sink { [weak self] _ in
+            self?.configureSections()
+            // ensures that the cell will be configured with the correct value for the badge
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
         }.store(in: &cancellables)
     }
 
@@ -732,6 +743,8 @@ private enum Row: CaseIterable {
             return LeftImageTitleSubtitleTableViewCell.self
         case .toggleEnableCashOnDelivery:
             return LeftImageTitleSubtitleToggleTableViewCell.self
+        case .setUpTapToPayOnIPhone:
+            return BadgedLeftImageTableViewCell.self
         default:
             return LeftImageTableViewCell.self
         }
@@ -754,8 +767,10 @@ private extension InPersonPaymentsMenuViewController {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
+    let shouldShowBadgeOnSetUpTapToPay: Bool
+
     func makeUIViewController(context: Context) -> some UIViewController {
-        InPersonPaymentsMenuViewController()
+        InPersonPaymentsMenuViewController(shouldShowBadgeOnSetUpTapToPay: shouldShowBadgeOnSetUpTapToPay)
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

@@ -147,28 +147,29 @@ struct CardReaderSettingsSearchingView: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.bottom, 8)
 
-            InPersonPaymentsLearnMore()
-                .customOpenURL(action: { url in
-                    switch url {
-                    case LearnMoreViewModel.learnMoreURL:
-                        if let url = learnMoreUrl {
-                            showURL?(url)
-                        }
-                    default:
+            InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(
+                tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .manageCardReader)))
+            .customOpenURL(action: { url in
+                switch url {
+                case LearnMoreViewModel.learnMoreURL:
+                    if let url = learnMoreUrl {
                         showURL?(url)
                     }
-                })
-        }
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity
-            )
-            .padding()
-            .if(isCompact || isSizeCategoryLargeThanExtraLarge) {content in
-                ScrollView(.vertical) {
-                    content
+                default:
+                    showURL?(url)
                 }
+            })
+        }
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
+        .padding()
+        .if(isCompact || isSizeCategoryLargeThanExtraLarge) {content in
+            ScrollView(.vertical) {
+                content
             }
+        }
     }
 }
 

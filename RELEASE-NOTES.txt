@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+13.9
+-----
+- [*] Payments: Location permissions request is not shown to TTP users who grant "Allow once" permission on first foregrounding the app any more [https://github.com/woocommerce/woocommerce-ios/pull/9821]
+
 13.8
 -----
 - [Internal] Orders: Bundled products (within a product bundle) are now indented, to show their relationship to the parent bundle. [https://github.com/woocommerce/woocommerce-ios/pull/9778]

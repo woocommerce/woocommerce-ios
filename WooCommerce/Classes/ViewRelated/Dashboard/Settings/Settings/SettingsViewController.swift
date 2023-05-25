@@ -486,6 +486,11 @@ private extension SettingsViewController {
         hiddenSettingsMenu.addAction(crashDebugMenuCrashAction)
         hiddenSettingsMenu.addAction(crashDebugMenuCancelAction)
 
+        if let popoverController = hiddenSettingsMenu.popoverPresentationController {
+            popoverController.sourceView = sender?.view
+            popoverController.sourceRect = sender?.view?.bounds ?? .zero
+        }
+
         present(hiddenSettingsMenu, animated: true, completion: nil)
     }
 

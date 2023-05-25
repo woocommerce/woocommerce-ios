@@ -3,6 +3,8 @@ import SwiftUI
 struct ScanToPayView: View {
     let viewModel: ScanToPayViewModel
     let onSuccess: (() -> Void)
+    /// We keep this value to reset the screen brightness after increasing it for better QR readability. Only works on phsycal device.
+    /// 
     let screenBrightnessAtViewCreation = UIScreen.main.brightness
 
     @Environment(\.dismiss) var dismiss

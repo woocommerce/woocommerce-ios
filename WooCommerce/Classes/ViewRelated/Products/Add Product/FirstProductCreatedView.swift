@@ -2,8 +2,9 @@ import ConfettiSwiftUI
 import SwiftUI
 
 final class FirstProductCreatedHostingController: UIHostingController<FirstProductCreatedView> {
-    init(productURL: URL) {
-        super.init(rootView: FirstProductCreatedView())
+    init(productURL: URL,
+         showShareProductButton: Bool) {
+        super.init(rootView: FirstProductCreatedView(showShareProductButton: showShareProductButton))
         rootView.onSharingProduct = { [weak self] in
             guard let self else { return }
             SharingHelper.shareURL(url: productURL, from: self.view, in: self)
@@ -38,6 +39,7 @@ private extension FirstProductCreatedHostingController {
 /// Celebratory screen after creating the first product 🎉
 ///
 struct FirstProductCreatedView: View {
+    let showShareProductButton: Bool
     var onSharingProduct: () -> Void = {}
     @State private var confettiCounter: Int = 0
 
@@ -51,10 +53,13 @@ struct FirstProductCreatedView: View {
                 Text(Localization.message)
                     .secondaryBodyStyle()
                     .multilineTextAlignment(.center)
+
                 Button(Localization.shareAction,
                        action: onSharingProduct)
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding(.horizontal)
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal)
+                .renderedIf(showShareProductButton)
+
                 Spacer()
             }
             .padding()
@@ -93,11 +98,14 @@ private extension FirstProductCreatedView {
 
 struct FirstProductCreatedView_Previews: PreviewProvider {
     static var previews: some View {
-        FirstProductCreatedView()
-        .environment(\.colorScheme, .light)
+        FirstProductCreatedView(showShareProductButton: true)
+            .environment(\.colorScheme, .light)
 
-        FirstProductCreatedView()
-        .environment(\.colorScheme, .dark)
-        .previewInterfaceOrientation(.landscapeLeft)
+        FirstProductCreatedView(showShareProductButton: false)
+            .environment(\.colorScheme, .light)
+
+        FirstProductCreatedView(showShareProductButton: false)
+            .environment(\.colorScheme, .dark)
+            .previewInterfaceOrientation(.landscapeLeft)
     }
 }

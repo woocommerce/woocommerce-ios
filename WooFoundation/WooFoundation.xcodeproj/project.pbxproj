@@ -35,6 +35,9 @@
 		B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97190D0292CF3BC0065E413 /* Result+Extensions.swift */; };
 		B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
 		B99686DE2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686DD2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift */; };
+		B99BC2122A1FAE5100E6008A /* CIImage+ImageCombination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BC2112A1FAE5100E6008A /* CIImage+ImageCombination.swift */; };
+		B99BC2142A1FAEBC00E6008A /* URL+QRCodeGeneration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BC2132A1FAEBC00E6008A /* URL+QRCodeGeneration.swift */; };
+		B99BC2162A1FB21700E6008A /* UIImage+Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99BC2152A1FB21700E6008A /* UIImage+Background.swift */; };
 		B9C9C63F283E703C001B879F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C9C635283E703C001B879F /* WooFoundation.framework */; };
 		B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
 		B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */; };
@@ -84,6 +87,9 @@
 		B97190D0292CF3BC0065E413 /* Result+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extensions.swift"; sourceTree = "<group>"; };
 		B987B06E284540D300C53CF6 /* CurrencyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyCode.swift; sourceTree = "<group>"; };
 		B99686DD2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenCoverClearBackgroundView.swift; sourceTree = "<group>"; };
+		B99BC2112A1FAE5100E6008A /* CIImage+ImageCombination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CIImage+ImageCombination.swift"; sourceTree = "<group>"; };
+		B99BC2132A1FAEBC00E6008A /* URL+QRCodeGeneration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+QRCodeGeneration.swift"; sourceTree = "<group>"; };
+		B99BC2152A1FB21700E6008A /* UIImage+Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Background.swift"; sourceTree = "<group>"; };
 		B9AED558283E7553002A2668 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9AED55B283E755A002A2668 /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9C9C635283E703C001B879F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -252,6 +258,9 @@
 				68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */,
 				03B8C3882914083F002235B1 /* Bundle+Woo.swift */,
 				B97190D0292CF3BC0065E413 /* Result+Extensions.swift */,
+				B99BC2112A1FAE5100E6008A /* CIImage+ImageCombination.swift */,
+				B99BC2132A1FAEBC00E6008A /* URL+QRCodeGeneration.swift */,
+				B99BC2152A1FB21700E6008A /* UIImage+Background.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -481,7 +490,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */,
+				B99BC2122A1FAE5100E6008A /* CIImage+ImageCombination.swift in Sources */,
 				B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */,
+				B99BC2162A1FB21700E6008A /* UIImage+Background.swift in Sources */,
 				26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */,
 				03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */,
 				B9C9C663283E7296001B879F /* Logging.swift in Sources */,
@@ -502,6 +513,7 @@
 				26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */,
 				26AF1F5428B8362800937BA9 /* ColorStudio.swift in Sources */,
 				68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */,
+				B99BC2142A1FAEBC00E6008A /* URL+QRCodeGeneration.swift in Sources */,
 				B99686DE2A13B38B00D1AF62 /* FullScreenCoverClearBackgroundView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

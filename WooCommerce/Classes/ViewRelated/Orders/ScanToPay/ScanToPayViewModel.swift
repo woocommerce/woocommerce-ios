@@ -1,6 +1,6 @@
 import Foundation
-import CoreImage.CIFilterBuiltins
 import UIKit
+import WooFoundation
 
 struct ScanToPayViewModel {
     private let paymentURL: URL?
@@ -10,19 +10,12 @@ struct ScanToPayViewModel {
     }
 
     func generateQRCodeImage() -> UIImage? {
-        guard let paymentURLString = paymentURL?.absoluteString else {
-            return nil
+        guard let logoImage = UIImage
+            .wooLogoImage()?
+            .withBackground(color: .black) else {
+            return paymentURL?.generateQRCode()
         }
 
-        let context = CIContext()
-        let filter = CIFilter.qrCodeGenerator()
-        filter.message = Data(paymentURLString.utf8)
-
-        guard let outputImage = filter.outputImage,
-              let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else {
-            return nil
-        }
-
-        return UIImage(cgImage: cgImage)
+        return paymentURL?.generateQRCode(combinedWith: logoImage)
     }
 }

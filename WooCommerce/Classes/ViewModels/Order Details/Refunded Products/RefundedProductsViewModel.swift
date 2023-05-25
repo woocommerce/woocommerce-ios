@@ -16,8 +16,7 @@ final class RefundedProductsViewModel {
     /// The datasource that will be used to render the Refunded Products screen.
     ///
     private(set) lazy var dataSource: RefundedProductsDataSource = {
-        let sortedItems = refundedProducts.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
-        return RefundedProductsDataSource(order: order, refundedProducts: sortedItems)
+        RefundedProductsDataSource(order: order, refundedProducts: refundedProducts)
     }()
 
     /// Designated initializer.

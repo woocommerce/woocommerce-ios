@@ -73,10 +73,12 @@ extension AggregatedProductListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
         let product = viewModel.lookUpProduct(by: item.productOrVariationID)
+        let isChildWithParent = AggregateDataHelper.isChildItemWithParent(item, in: items)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: item,
                                                         currency: viewModel.order.currency,
                                                         product: product,
-                                                        hasAddOns: false)
+                                                        hasAddOns: false,
+                                                        isChildWithParent: isChildWithParent)
         let cell = tableView.dequeueReusableCell(PickListTableViewCell.self, for: indexPath)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)

@@ -125,4 +125,9 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldShowBanner)
     }
+
+    override class func tearDown() {
+        super.tearDown()
+        SessionManager.removeTestingDatabase()
+    }
 }

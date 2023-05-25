@@ -88,6 +88,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         }
 
         func setUserHasOptedOut(_ optedOut: Bool) {
+            userHasOptedIn = !optedOut
         }
 
         var userHasOptedIn: Bool = false

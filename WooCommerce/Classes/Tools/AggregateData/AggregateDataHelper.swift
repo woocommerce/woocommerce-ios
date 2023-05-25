@@ -142,4 +142,11 @@ final class AggregateDataHelper {
 
         return filtered.sorted()
     }
+
+    static func isChildItemWithParent(_ item: AggregateOrderItem, in items: [AggregateOrderItem]) -> Bool {
+        guard let parentID = item.parent else {
+            return false
+        }
+        return items.contains(where: { $0.itemID == parentID.description })
+    }
 }

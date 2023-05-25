@@ -530,6 +530,7 @@ public enum WooAnalyticsStat: String {
     case productListMenuSearchTapped = "product_list_menu_search_tapped"
     case productListAddProductTapped = "product_list_add_product_button_tapped"
     case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
+    case productListShareButtonTapped = "product_list_share_button_tapped"
 
     // MARK: Product List Bulk Editing Events
     //
@@ -712,6 +713,10 @@ public enum WooAnalyticsStat: String {
     case productDescriptionAICopyButtonTapped = "product_description_ai_copy_button_tapped"
     case productDescriptionAIGenerationSuccess = "product_description_ai_generation_success"
     case productDescriptionAIGenerationFailed = "product_description_ai_generation_failed"
+
+    // MARK: First created product events
+    case firstCreatedProductShown = "first_created_product_shown"
+    case firstCreatedProductShareTapped = "first_created_product_share_tapped"
 
     // MARK: Jetpack Tunnel Events
     //

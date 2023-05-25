@@ -2,8 +2,15 @@
 
 13.8
 -----
+- [Internal] Orders: Bundled products (within a product bundle) are now indented, to show their relationship to the parent bundle. [https://github.com/woocommerce/woocommerce-ios/pull/9778]
+- [Internal] Orders: Composite components (within a composite product) are now indented, to show their relationship to the parent composite product. [https://github.com/woocommerce/woocommerce-ios/pull/9780]
+- [*] Add Products: A new view is display to celebrate when the first product is created in a store. [https://github.com/woocommerce/woocommerce-ios/pull/9790]
+- [*] Product List: Added swipe-to-share gesture on product rows. [https://github.com/woocommerce/woocommerce-ios/pull/9799]
 - [*] Product form: a share action is shown in the navigation bar if the product can be shared and no more than one action is displayed, in addition to the more menu > Share. [https://github.com/woocommerce/woocommerce-ios/pull/9789]
+- [*] Orders: Fixes a bug where the Orders list would not load if an order had a non-integer gift card amount applied to the order (with the Gift Cards extension). [https://github.com/woocommerce/woocommerce-ios/pull/9795]
 
+- [*] My Store: A new button to share the current store is added on the top right of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/9796]
+ 
 13.7
 -----
 - [Internal] Adds guidance for new Customs rule when shipping to some EU countries. [https://github.com/woocommerce/woocommerce-ios/pull/9715]
@@ -14,6 +21,7 @@
 - [**] Mobile Payments: Tap to Pay is initialised on launch or foreground, to speed up payments [https://github.com/woocommerce/woocommerce-ios/pull/9750]
 - [*] Store Creation: Local notifications are used to support users during the store creation process. [https://github.com/woocommerce/woocommerce-ios/pull/9717, https://github.com/woocommerce/woocommerce-ios/pull/9719, https://github.com/woocommerce/woocommerce-ios/pull/9749]
 - [**] Mobile Payments: Merchants can now collect in-person payments by showing a QR code to their customers. [https://github.com/woocommerce/woocommerce-ios/pull/9762]
+- [Internal] Orders: Bundled products (within a product bundle) are now indented, to show their relationship to the parent bundle. [https://github.com/woocommerce/woocommerce-ios/pull/9778]
 
 13.6
 -----

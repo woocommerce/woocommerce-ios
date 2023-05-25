@@ -33,7 +33,10 @@ final class ShippingCustomsFormListHostingController: UIHostingController<Shippi
 struct ShippingLabelCustomsFormList: View {
     @Environment(\.presentationMode) var presentation
     @ObservedObject private var viewModel: ShippingLabelCustomsFormListViewModel
+    @State private var isShippingNoticeBannerHighlighted = false
+
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
+    private var shippingNoticeBannerID = UUID()
 
     var onLearnMoreTapped: () -> Void = {}
 
@@ -46,30 +49,38 @@ struct ShippingLabelCustomsFormList: View {
 
     var body: some View {
         GeometryReader { geometry in
-            ScrollView {
-                EUShippingNoticeBanner(width: geometry.size.width)
-                    .onDismiss {
-                        viewModel.bannerDismissTapped()
-                    }
-                    .onLearnMore {
-                        onLearnMoreTapped()
-                    }
-                    .renderedIf(viewModel.isShippingNoticeVisible)
-                    .fixedSize(horizontal: false, vertical: true)
+            ScrollViewReader { scrollProxy in
+                ScrollView {
+                    EUShippingNoticeBanner(width: geometry.size.width)
+                        .onDismiss {
+                            viewModel.bannerDismissTapped()
+                        }
+                        .onLearnMore {
+                            onLearnMoreTapped()
+                        }
+                        .renderedIf(viewModel.isShippingNoticeVisible)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .highlight(on: $isShippingNoticeBannerHighlighted, color: Color(.accent))
+                        .id(shippingNoticeBannerID)
 
-                ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
-                    ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
-                                                  packageNumber: index + 1,
-                                                  safeAreaInsets: geometry.safeAreaInsets,
-                                                  viewModel: item,
-                                                  infoTooltipTapped: {
-                        viewModel.onInfoTooltipTapped()
-                    })
+                    ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
+                        ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
+                                                      packageNumber: index + 1,
+                                                      safeAreaInsets: geometry.safeAreaInsets,
+                                                      viewModel: item,
+                                                      infoTooltipTapped: {
+                            viewModel.onInfoTooltipTapped()
+                            withAnimation {
+                                scrollProxy.scrollTo(shippingNoticeBannerID, anchor: .top)
+                                isShippingNoticeBannerHighlighted = true
+                            }
+                        })
+                    }
+                    .padding(.bottom, insets: geometry.safeAreaInsets)
                 }
-                .padding(.bottom, insets: geometry.safeAreaInsets)
+                .background(Color(.listBackground))
+                .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             }
-            .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.navigationTitle)
         .toolbar {

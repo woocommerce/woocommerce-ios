@@ -54,12 +54,11 @@ struct FirstProductCreatedView: View {
                     .secondaryBodyStyle()
                     .multilineTextAlignment(.center)
 
-                if showShareProductButton {
-                    Button(Localization.shareAction,
-                           action: onSharingProduct)
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding(.horizontal)
-                }
+                Button(Localization.shareAction,
+                       action: onSharingProduct)
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal)
+                .renderedIf(showShareProductButton)
 
                 Spacer()
             }

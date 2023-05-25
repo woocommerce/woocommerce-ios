@@ -318,9 +318,9 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
-    /// Product ID given to the order when is created with a predetermined product, if any
+    /// Initial product ID given to the order when is created, if any
     ///
-    private let withInitialProductID: Int64?
+    private let initialProductID: Int64?
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -333,7 +333,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         withInitialProductID: Int64? = nil) {
+         initialProductID: Int64? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -344,7 +344,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
-        self.withInitialProductID = withInitialProductID
+        self.initialProductID = initialProductID
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -435,16 +435,17 @@ final class EditableOrderViewModel: ObservableObject {
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
-        guard item.quantity > 0, // Don't render any item with `.zero` quantity.
-              let product = allProducts.first(where: { $0.productID == item.productID }) else {
+        guard item.quantity > 0 else {
+            // Don't render any item with `.zero` quantity.
             return nil
         }
 
-        if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
-            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: product.attributes)
+        if item.variationID != 0, let variation = retrieveVariation(for: item) {
+            let parent = allProducts.first(where: { $0.productID == item.parent })
+            let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
             return ProductRowViewModel(id: item.itemID,
                                        productVariation: variation,
-                                       name: product.name,
+                                       name: item.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        displayMode: .attributes(attributes),
@@ -454,7 +455,7 @@ final class EditableOrderViewModel: ObservableObject {
             },
                                        removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
-        } else {
+        } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
                                        quantity: item.quantity,
@@ -465,6 +466,9 @@ final class EditableOrderViewModel: ObservableObject {
             },
                                        removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
+        } else {
+            DDLogInfo("No product or variation found. Couldn't create the product row")
+            return nil
         }
     }
 
@@ -940,19 +944,13 @@ private extension EditableOrderViewModel {
         configureInitialOrderFromScannedItemIfNeeded()
     }
 
-    /// If given, sends a product to the Order synchronizer during the initial Order creation setup
+    /// If given an initial product ID on initialization, updates the Order with the item
     ///
     func configureInitialOrderFromScannedItemIfNeeded() {
-        guard let productID = self.withInitialProductID else {
+        guard let productID = self.initialProductID else {
             return
         }
-
-        // Validate the scanned productID is an existing product
-        guard allProducts.contains(where: { $0.productID == productID }) else {
-            DDLogError("\(ScannerError.productNotFound)")
-            return
-        }
-        orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
+        updateOrderWithProductID(productID)
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1298,11 +1296,11 @@ extension EditableOrderViewModel {
             return onCompletion(.failure(ScannerError.nilSKU))
         }
 
-        mapFromSKUtoProductID(sku: sku) { [weak self] result in
+        mapFromSKUtoProduct(sku: sku) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case let .success(productID):
-                self.orderSynchronizer.setProduct.send(.init(product: .productID(productID), quantity: 1))
+            case let .success(product):
+                self.updateOrderWithProductID(product.productID)
                 onCompletion(.success(()))
             case .failure:
                 onCompletion(.failure(ScannerError.productNotFound))
@@ -1310,18 +1308,30 @@ extension EditableOrderViewModel {
         }
     }
 
-    /// Attempts to map SKU to product ID
+    /// Attempts to map SKU to Product
     ///
-    private func mapFromSKUtoProductID(sku: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+    private func mapFromSKUtoProduct(sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: { result in
             switch result {
             case let .success(product):
-                onCompletion(.success(product.productID))
+                onCompletion(.success(product))
             case let .failure(error):
                 onCompletion(.failure(error))
             }
         })
         stores.dispatch(action)
+    }
+
+    /// Validates if the given product ID  is a product or a productVariation, and updates the Order with the correspondent item
+    ///
+    private func updateOrderWithProductID(_ productID: Int64) {
+        if let productVariation = allProductVariations.first(where: { $0.productVariationID == productID }) {
+            orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
+        } else if let product = allProducts.first(where: { $0.productID == productID }) {
+            orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+        } else {
+            DDLogError("⛔️ID \(productID) not found")
+        }
     }
 }
 
@@ -1370,6 +1380,20 @@ extension EditableOrderViewModel {
                 return false
             }
         }
+    }
+}
+
+private extension EditableOrderViewModel {
+    // Attempts to retrieve the product variation associated with a given OrderItem, if any, from locally stored variations.
+    // If none is found, falls back to attempt to retrieve the variation from a model parent
+    // If none is found, returns nil
+    // https://github.com/woocommerce/woocommerce-ios/issues/9808
+    func retrieveVariation(for item: OrderItem) -> ProductVariation? {
+        guard let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) else {
+            let product = allProducts.first(where: { $0.productID == item.variationID })
+            return product?.toProductVariation()
+        }
+        return variation
     }
 }
 

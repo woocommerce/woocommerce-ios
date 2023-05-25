@@ -120,7 +120,9 @@ struct SetUpTapToPayInformationView: View {
                 .disabled(!viewModel.enableSetup)
 
                 InPersonPaymentsLearnMore(
-                    viewModel: LearnMoreViewModel(formatText: Localization.learnMore))
+                    viewModel: LearnMoreViewModel(
+                        formatText: Localization.learnMore,
+                        tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
                 .customOpenURL(action: { url in
                     switch url {
                     case LearnMoreViewModel.learnMoreURL:

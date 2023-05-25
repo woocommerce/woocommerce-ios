@@ -1893,6 +1893,7 @@ extension WooAnalyticsEvent {
         enum LearnMoreLinkSource {
             case paymentsMenu
             case paymentMethods
+            case tapToPaySummary
 
             var trackingValue: String {
                 switch self {
@@ -1900,6 +1901,8 @@ extension WooAnalyticsEvent {
                     return "payments_menu"
                 case .paymentMethods:
                     return "payment_methods"
+                case .tapToPaySummary:
+                    return "tap_to_pay_summary"
                 }
             }
         }

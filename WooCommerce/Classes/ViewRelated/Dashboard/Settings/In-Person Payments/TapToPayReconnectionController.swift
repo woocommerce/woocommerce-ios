@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import CoreLocation
 
 protocol BuiltInCardReaderConnectionControllerBuilding {
     func createConnectionController(forSiteID: Int64,
@@ -48,8 +47,6 @@ final class TapToPayReconnectionController {
 
     private var adoptedConnectionCompletionHandler: ((Result<CardReaderConnectionResult, Error>) -> Void)? = nil
 
-    private var locationManager: CLLocationManager = CLLocationManager()
-
     init(stores: StoresManager = ServiceLocator.stores,
          connectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding = BuiltInCardReaderConnectionControllerFactory(),
          onboardingCache: CardPresentPaymentOnboardingStateCache = .shared) {
@@ -73,7 +70,7 @@ final class TapToPayReconnectionController {
         isReconnecting = true
         let supportDeterminer = supportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID)
         Task { @MainActor in
-            guard locationIsAuthorized,
+            guard supportDeterminer.locationIsAuthorized,
                   supportDeterminer.siteSupportsLocalMobileReader(),
                   await supportDeterminer.deviceSupportsLocalMobileReader(),
                   await supportDeterminer.hasPreviousTapToPayUsage(),
@@ -133,17 +130,6 @@ private extension TapToPayReconnectionController {
         adoptedConnectionCompletionHandler = nil
         connectionController = nil
         isReconnecting = false
-    }
-
-    var locationIsAuthorized: Bool {
-        switch locationManager.authorizationStatus {
-        case .notDetermined, .restricted, .denied:
-            return false
-        case .authorizedAlways, .authorizedWhenInUse:
-            return true
-        @unknown default:
-            return false
-        }
     }
 }
 

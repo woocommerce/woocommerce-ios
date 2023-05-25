@@ -2,6 +2,7 @@ import UIKit
 
 public extension UIImage {
     /// Adds a background color to the given UIImage, setting also whether it should be opaque or not
+    /// 
     func withBackground(color: UIColor, opaque: Bool = true) -> UIImage {
       UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
 
@@ -9,7 +10,7 @@ public extension UIImage {
                 let image = cgImage else {
           return self
       }
-        
+
       defer { UIGraphicsEndImageContext() }
 
       let rect = CGRect(origin: .zero, size: size)

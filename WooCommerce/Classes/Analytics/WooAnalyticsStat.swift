@@ -277,6 +277,7 @@ public enum WooAnalyticsStat: String {
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
     case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
+    case manageCardReaderLearnMoreTapped = "card_present_connection_learn_more_tapped"
 
     // MARK: Card Reader Software Update Events
     //

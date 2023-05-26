@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-16 11:54:03+0000 */
+/* Translation-Revision-Date: 2023-05-23 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -1158,6 +1158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "L'accesso alla fotocamera è richiesto per la scansione dello SKU. Attiva le autorizzazioni della fotocamera nelle impostazioni del dispositivo";
 
+/* Message of alert that links to settings for camera access. */
+"Camera access is required for barcode scanning. Please enable camera permissions in your device settings" = "L'accesso alla fotocamera è richiesto per la scansione del codice a barre. Attiva le autorizzazioni della fotocamera nelle impostazioni del dispositivo";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "L'acquisizione della fotocamera non supporta il tipo di elemento multimediale: %@";
 
@@ -2231,6 +2234,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "Non mostrare più";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title to close the Scan to Pay screen
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2670,6 +2674,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "Errore durante il recupero delle informazioni sull'utente.";
 
+/* Error message in the Scan to Pay screen when the code cannot be generated. */
+"Error generating QR Code. Please try again later" = "Errore durante la generazione del codice QR. Riprova più tardi";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Errore nella ricerca dell'indirizzo su Apple Maps";
 
@@ -2771,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Scade il giorno %1$@";
-
-/* Action on the local notification to remind the user of a newly created store. */
-"Explore" = "Esplora";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Scopri come puoi aumentare le vendite del tuo negozio";
@@ -4076,6 +4080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Spesa massima di %1$@";
 
+/* Dismiss button title for modally presented Just in Time Messages */
+"Maybe Later" = "Forse dopo";
+
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
 
@@ -4918,9 +4925,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Posizionamento del prodotto nel cestino...";
 
-/* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Modifica le autorizzazioni della fotocamera nelle impostazioni del dispositivo.";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Modifica il lettore";
 
@@ -5310,6 +5314,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Link del prodotto";
+
+/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
+"Product not found. Failed to create a New Order" = "Prodotto non trovato. Impossibile creare un nuovo ordine";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Prodotto pubblicato";
@@ -5859,6 +5866,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while saving a Variation remotely */
 "Saving your variation..." = "Salvataggio della tua variante in corso...";
 
+/* Title text on the Scan to Pay screen */
+"Scan QR and follow instructions" = "Scansiona il QR e segui le istruzioni";
+
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Esegui scansione del codice a barre per aggiornare lo SKU";
 
@@ -5867,6 +5877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Scan Products */
 "Scan products" = "Scansiona prodotti";
+
+/* Scan to Pay method title on the select payment method screen */
+"Scan to Pay" = "Scansiona per pagare";
 
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Ricerca di lettori";
@@ -6417,6 +6430,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Spiacenti, al momento non è possibile creare richieste di assistenza, riprova più tardi.";
 
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "Siamo spiacenti, impossibile connettersi al lettore. Riprova.";
+
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "Spiacenti, non è stato possibile creare la tua richiesta di assistenza, riprova più tardi.";
 
@@ -6555,9 +6571,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Invia la richiesta di supporto";
-
-/* Action on the local notification to suggest the user to subscribe to the trial plan. */
-"Subscribe" = "Abbonati";
 
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
@@ -7299,9 +7312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Questo contrassegnerà il tuo ordine come Completato se hai ricevuto (totale) al di fuori di WooCommerce";
 
-/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "Il tempo è quasi scaduto, %1$@.";
-
 /* Country option for a site address. */
 "Timor-Leste" = "Timor Est";
 
@@ -7918,8 +7928,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Aggiornamento dei prodotti in corso...";
 
-/* Action on the local notification to remind the user of the expiring free trial plan. */
-"Upgrade" = "Aggiorna";
+/* Title for the WebView when upgrading a free trial plan */
+"Upgrade Now" = "Aggiorna ora";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8510,6 +8520,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "C'è almeno un requisito scaduto sul tuo account. Completalo per riprendere a utilizzare Pagamenti di persona.";
 
+/* Error message for a short value in Description row in Customs screen of Shipping Label flow */
+"You must provide a clear, specific description for every item." = "Devi fornire una descrizione chiara e specifica per ogni elemento.";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Devi aggiungere una password per fare in modo che il tuo prodotto sia protetto da password";
 
@@ -8564,9 +8577,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Il telefono sarà pronto per riscuotere i pagamenti in un attimo...";
 
-/* Title for the privacy banner */
-"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "La privacy è di fondamentale importanza per noi e lo è sempre stata. Usiamo, archiviamo ed elaboriamo i dati personali per ottimizzare la nostra app (e la tua esperienza) in vari modi. Alcuni usi dei dati sono assolutamente necessari per un corretto funzionamento e altri puoi personalizzarli dalle Impostazioni.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Il lettore si riavvierà automaticamente e si riconnetterà al termine dell'aggiornamento";
 
@@ -8591,12 +8601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Il tuo negozio è attivo.";
 
-/* Title of the local notification about a newly created store */
-"Your store is ready!" = "Il tuo negozio è pronto.";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"Your store is waiting!" = "Il tuo negozio attende.";
-
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Il tuo negozio verrà creato in base alle opzioni che hai scelto!";
 
@@ -8606,8 +8610,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "La tua richiesta di assistenza è arrivata sana e salva nella nostra casella di posta. Ti risponderemo al più presto via e-mail.";
 
-/* Message of the free trial banner when there are no days left
-   Title of the local notification to remind the user of the expired free trial plan. */
+/* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "La tua prova è terminata.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8669,6 +8672,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "La spedizione in Paesi che seguono le regole doganali dell'Unione europea (UE) ora richiede la descrizione chiara di ogni elemento. Ad esempio, se stai inviando capi di vestiario, devi indicare il tipo di abbigliamento (come camicie da uomo, gilet da ragazza, giacca da ragazzo) affinché la descrizione sia accettabile. In caso contrario, le spedizioni potrebbero subire dei ritardi o essere fermate alla dogana.";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "esempio.com";
@@ -8708,6 +8714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pagamenti, tocca per pagare, woocommerce, woo, pagamenti di persona, pagamenti di persona riscuoti pagamento, pagamenti, lettore, lettore di carte, ordina lettore di carte";
+
+/* Subtitle for the privacy banner */
+"privacy_banner_subtitle" = "La privacy è di fondamentale importanza per noi e lo è sempre stata. Usiamo, archiviamo ed elaboriamo i dati personali per ottimizzare la nostra app (e la tua esperienza) in vari modi. Alcuni usi dei dati sono assolutamente necessari per un corretto funzionamento e altri puoi personalizzarli dalle Impostazioni.";
 
 /* Label shown on the launch store task. */
 "private" = "privato";
@@ -8813,8 +8822,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Isole Åland";
 
+/* Title of the local notification to remind the user of expiring free trial plan. */
+"⏰ Time’s running out on your free trial!" = "⏰ Il periodo della prova gratuita sta per scadere.";
+
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ Generatore di contenuti IA disponibile.";
+
+/* Title of the local notification to remind the user of the expired free trial plan. */
+"🌟 Keep your business going with our plan!" = "🌟 Mantieni attiva la tua attività con il nostro piano.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Ordine completato";
@@ -8827,4 +8842,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 prodotti rimborsati correttamente";
+
+/* Title of the local notification about a newly created store */
+"🎉 Your store is ready!" = "🎉 Il tuo negozio è pronto.";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"🛍️ Your store is waiting!" = "🛍️ Il tuo negozio attende.";
 

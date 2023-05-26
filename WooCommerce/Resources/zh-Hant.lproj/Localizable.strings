@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-19 17:28:08+0000 */
+/* Translation-Revision-Date: 2023-05-23 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -1158,6 +1158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "SKU 掃描需要相機存取權。 請在你的裝置設定中啟用相機權限";
 
+/* Message of alert that links to settings for camera access. */
+"Camera access is required for barcode scanning. Please enable camera permissions in your device settings" = "條碼掃瞄需要相機存取權。 請在你的裝置設定中啟用相機權限";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "攝影機擷取不應支援媒體類型：%@";
 
@@ -2231,6 +2234,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "不要再顯示";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title to close the Scan to Pay screen
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2670,6 +2674,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "擷取使用者資訊時發生錯誤。";
 
+/* Error message in the Scan to Pay screen when the code cannot be generated. */
+"Error generating QR Code. Please try again later" = "產生 QR 碼時發生錯誤。 請稍後再試一次";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "在 Apple 地圖中尋找位址時的錯誤";
 
@@ -2771,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "於 %1$@ 到期";
-
-/* Action on the local notification to remind the user of a newly created store. */
-"Explore" = "探索";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "探索如何增加商店銷售額";
@@ -4076,6 +4080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "消費金額上限為 %1$@";
 
+/* Dismiss button title for modally presented Just in Time Messages */
+"Maybe Later" = "稍後再說";
+
 /* Country option for a site address. */
 "Mayotte" = "馬約特";
 
@@ -4918,9 +4925,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "正在將你的商品放入垃圾桶…";
 
-/* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "請在裝置設定中變更你的相機權限。";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "請為讀卡機充電";
 
@@ -5310,6 +5314,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "產品連結";
+
+/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
+"Product not found. Failed to create a New Order" = "找不到產品。 無法建立新訂單";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "已上架商品";
@@ -5859,6 +5866,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while saving a Variation remotely */
 "Saving your variation..." = "正在儲存你的款式…";
 
+/* Title text on the Scan to Pay screen */
+"Scan QR and follow instructions" = "掃瞄 QR 碼並按照指示操作";
+
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "掃瞄條碼以更新貨號";
 
@@ -5867,6 +5877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Scan Products */
 "Scan products" = "掃描產品";
+
+/* Scan to Pay method title on the select payment method screen */
+"Scan to Pay" = "掃瞄付款";
 
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "正在掃瞄讀卡機";
@@ -6417,6 +6430,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "抱歉，我們目前無法建立支援請求，請稍後再試一次。";
 
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "抱歉，我們無法連線至閱讀器。 請再試一次。";
+
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "抱歉，我們無法建立你的支援請求，請稍後再試一次。";
 
@@ -6555,9 +6571,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "提交支援請求";
-
-/* Action on the local notification to suggest the user to subscribe to the trial plan. */
-"Subscribe" = "訂購";
 
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
@@ -7299,9 +7312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "如果你在 WooCommerce 以外收到 (總額)，這麼做會將你的訂單標示為完成";
 
-/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "%1$@，免費試用即將到期！";
-
 /* Country option for a site address. */
 "Timor-Leste" = "東帝汶";
 
@@ -7918,8 +7928,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "正在更新你的產品...";
 
-/* Action on the local notification to remind the user of the expiring free trial plan. */
-"Upgrade" = "升級";
+/* Title for the WebView when upgrading a free trial plan */
+"Upgrade Now" = "立即升級";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8510,6 +8520,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "你的帳號中有至少一個逾期要求。 請處理此要求以繼續使用親自收款功能。";
 
+/* Error message for a short value in Description row in Customs screen of Shipping Label flow */
+"You must provide a clear, specific description for every item." = "你必須針對每件商品提供清楚明確的說明。";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "你需要新增密碼，才能讓產品受密碼保護";
 
@@ -8564,9 +8577,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "你的手機快要可以收款了…";
 
-/* Title for the privacy banner */
-"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "你的隱私權對我們而言至關重要，而且始終如此。 我們會使用、儲存及處理你的個人資料，並以各種方式最佳化我們的應用程式 (和你的體驗)。 我們必須使用某些資料來讓一切順利運作，其餘則可由你透過「設定」來自訂使用方式。";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "更新完成後，你的讀卡機會自動重新啟動並重新連線";
 
@@ -8591,12 +8601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "你的商店已上線！";
 
-/* Title of the local notification about a newly created store */
-"Your store is ready!" = "你的商店已準備就緒！";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"Your store is waiting!" = "你的商店蓄勢待發！";
-
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "系統會根據你選擇的選項建立你的商店！";
 
@@ -8606,8 +8610,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "我們已收到你的支援請求， 並會盡快透過電子郵件回覆你。";
 
-/* Message of the free trial banner when there are no days left
-   Title of the local notification to remind the user of the expired free trial plan. */
+/* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "你的試用已結束。";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8669,6 +8672,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "電子商務";
 
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "如需運送至遵循歐盟 (EU) 海關規定的國家\/地區，現在必須清楚描述每件商品。 舉例來說，若要寄送衣服，你必須指明衣服種類 (例如，男性襯衫、女童背心、男童外套)，海關才會採納相關資訊。 否則貨件可能會在海關階段延誤或中斷。";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -8708,6 +8714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "付款、點選支付、woocommerce、woo、親自收款、收取款項、款項、讀卡機、信用卡讀卡機、訂購讀卡機";
+
+/* Subtitle for the privacy banner */
+"privacy_banner_subtitle" = "你的隱私權對我們而言至關重要，而且始終如此。 我們會使用、儲存及處理你的個人資料，並以各種方式最佳化我們的應用程式 (和你的體驗)。 我們必須使用某些資料來讓一切順利運作，其餘則可由你透過「設定」來自訂使用方式。";
 
 /* Label shown on the launch store task. */
 "private" = "私密";
@@ -8813,8 +8822,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "奧蘭群島";
 
+/* Title of the local notification to remind the user of expiring free trial plan. */
+"⏰ Time’s running out on your free trial!" = "⏰ 免費試用的時間快結束了！";
+
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ AI 內容產生器現已可供使用。";
+
+/* Title of the local notification to remind the user of the expired free trial plan. */
+"🌟 Keep your business going with our plan!" = "🌟 使用我們的方案維持業務運作！";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 已完成訂單";
@@ -8827,4 +8842,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 已成功退還商品款項";
+
+/* Title of the local notification about a newly created store */
+"🎉 Your store is ready!" = "🎉 你的商店已準備就緒！";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"🛍️ Your store is waiting!" = "🛍️ 你的商店蓄勢待發！";
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-16 14:54:03+0000 */
+/* Translation-Revision-Date: 2023-05-23 13:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -1158,6 +1158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "Для сканирования артикулов требуется доступ к камере. Включите разрешения для камеры в настройках устройства.";
 
+/* Message of alert that links to settings for camera access. */
+"Camera access is required for barcode scanning. Please enable camera permissions in your device settings" = "Для сканирования штрихкодов требуется доступ к камере. Включите разрешения для камеры в настройках устройства.";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "Функция захвата с камеры не должна поддерживать медиафайлы следующего типа: %@";
 
@@ -2231,6 +2234,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "Больше не показывать";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title to close the Scan to Pay screen
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2670,6 +2674,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "Ошибка получения данных пользователя.";
 
+/* Error message in the Scan to Pay screen when the code cannot be generated. */
+"Error generating QR Code. Please try again later" = "Ошибка при генерации QR-кода. Повторите попытку позже";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Ошибка поиска адреса на картах Apple";
 
@@ -2771,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Истекает %1$@";
-
-/* Action on the local notification to remind the user of a newly created store. */
-"Explore" = "Просмотр";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Узнать о том, как увеличить продажи своего магазина.";
@@ -4076,6 +4080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Максимальная сумма %1$@";
 
+/* Dismiss button title for modally presented Just in Time Messages */
+"Maybe Later" = "Возможно, позже";
+
 /* Country option for a site address. */
 "Mayotte" = "Майотта";
 
@@ -4918,9 +4925,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Отправка товара в корзину...";
 
-/* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Измените разрешения для камеры в настройках устройства.";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Зарядите терминал";
 
@@ -5310,6 +5314,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Ссылка на товар";
+
+/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
+"Product not found. Failed to create a New Order" = "Продукт не найден. Не удалось создать заказ";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Товар опубликован";
@@ -5859,6 +5866,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while saving a Variation remotely */
 "Saving your variation..." = "Сохранение варианта...";
 
+/* Title text on the Scan to Pay screen */
+"Scan QR and follow instructions" = "Сканируйте QR-код и следуйте инструкциям";
+
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Сканирование штрихкода для артикула";
 
@@ -5867,6 +5877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Scan Products */
 "Scan products" = "Сканировать товары";
+
+/* Scan to Pay method title on the select payment method screen */
+"Scan to Pay" = "Сканируйте для оплаты";
 
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Поиск устройств чтения";
@@ -6417,6 +6430,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Не удалось создать запрос в службу поддержки. Повторите попытку позже.";
 
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "Не удалось подключиться к устройству чтения. Повторите попытку.";
+
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "Не удалось создать запрос в службу поддержки. Повторите попытку позже.";
 
@@ -6555,9 +6571,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Отправить запрос в службу поддержки";
-
-/* Action on the local notification to suggest the user to subscribe to the trial plan. */
-"Subscribe" = "Подписаться";
 
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
@@ -7299,9 +7312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Заказ будет отмечен как выполненный, если вы получили (всего) не через WooCommerce";
 
-/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "Время на исходе, %1$@!";
-
 /* Country option for a site address. */
 "Timor-Leste" = "Восточный Тимор";
 
@@ -7918,8 +7928,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Обновление продуктов...";
 
-/* Action on the local notification to remind the user of the expiring free trial plan. */
-"Upgrade" = "Приобрести платную подписку";
+/* Title for the WebView when upgrading a free trial plan */
+"Upgrade Now" = "Перейти на платную подписку";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8510,6 +8520,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Для вашей учётной записи есть по крайней мере одно просроченное требование. Чтобы возобновить очные платежи, необходимо выполнить это требование.";
 
+/* Error message for a short value in Description row in Customs screen of Shipping Label flow */
+"You must provide a clear, specific description for every item." = "Вы должны дать точное и понятное описание для каждого товара.";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Добавьте пароль, чтобы защитить товар";
 
@@ -8564,9 +8577,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Через мгновение ваш телефон будет готов собирать платежи...";
 
-/* Title for the privacy banner */
-"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "Ваша конфиденциальность очень важна для нас. Мы используем, храним и обрабатываем ваши личные данные, чтобы оптимизировать наше приложение (и вашу работу). В некоторых случаях ваши данные необходимы для работы системы, а в других случаях вы можете изменить их использование в настройках.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Устройство чтения автоматически перезапустится и повторно подключится после завершения обновления";
 
@@ -8591,12 +8601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Ваш магазин работает!";
 
-/* Title of the local notification about a newly created store */
-"Your store is ready!" = "Ваш магазин готов!";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"Your store is waiting!" = "Магазин уже ждёт вас!";
-
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "При создании магазина будут учтены выбранные опции!";
 
@@ -8606,8 +8610,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Ваш запрос в службу поддержки успешно доставлен. Мы постараемся ответить вам в письме как можно быстрее.";
 
-/* Message of the free trial banner when there are no days left
-   Title of the local notification to remind the user of the expired free trial plan. */
+/* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Пробный период закончился.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8669,6 +8672,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "Отправляя товары в страны, которые следуют таможенным правилам Европейского союза (ЕС), вы теперь должны точно и понятно описать каждую позицию. Так, при отправке одежды необходимо указать её тип (например, мужские рубашки, жилет для девочки, куртка для мальчика), чтобы описание было приемлемым. В ином случае может произойти задержка или приостановка доставки на таможне.";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -8708,6 +8714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "платежи, оплата в касание, woocommerce, woo, очные платежи, получение оплаты, платежи, устройство чтения, устройство чтения карт, заказ устройства чтения карт";
+
+/* Subtitle for the privacy banner */
+"privacy_banner_subtitle" = "Ваша конфиденциальность очень важна для нас. Мы используем, храним и обрабатываем ваши личные данные, чтобы оптимизировать наше приложение (и вашу работу). В некоторых случаях ваши данные необходимы для работы системы, а в других случаях вы можете изменить их использование в настройках.";
 
 /* Label shown on the launch store task. */
 "private" = "закрытым";
@@ -8813,8 +8822,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Аландские острова";
 
+/* Title of the local notification to remind the user of expiring free trial plan. */
+"⏰ Time’s running out on your free trial!" = "⏰ Срок действия вашей бесплатной пробной версии истекает!";
+
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ Доступен генератор содержимого на основе ИИ.";
+
+/* Title of the local notification to remind the user of the expired free trial plan. */
+"🌟 Keep your business going with our plan!" = "🌟 Развивайте бизнес с нашим планом!";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Завершение заказа";
@@ -8827,4 +8842,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Средства за продукты возвращены";
+
+/* Title of the local notification about a newly created store */
+"🎉 Your store is ready!" = "🎉 Ваш магазин готов!";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"🛍️ Your store is waiting!" = "🛍️ Магазин уже ждёт вас!";
 

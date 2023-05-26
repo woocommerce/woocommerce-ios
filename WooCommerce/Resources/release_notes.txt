@@ -1,1 +1,13 @@
-You’ve asked for it, and now it’s here! You can now search for an order using a SKU when creating an order on the go. We have also made updates to the product selection so it's easier to search variations of a product. Awesome, right?
+- [Internal] Orders: Bundled products (within a product bundle) are now indented, to show their relationship to the parent bundle. [https://github.com/woocommerce/woocommerce-ios/pull/9778]
+- [Internal] Orders: Composite components (within a composite product) are now indented, to show their relationship to the parent composite product. [https://github.com/woocommerce/woocommerce-ios/pull/9780]
+- [*] Add Products: A new view is display to celebrate when the first product is created in a store. [https://github.com/woocommerce/woocommerce-ios/pull/9790]
+- [*] Product List: Added swipe-to-share gesture on product rows. [https://github.com/woocommerce/woocommerce-ios/pull/9799]
+- [*] Product form: a share action is shown in the navigation bar if the product can be shared and no more than one action is displayed, in addition to the more menu > Share. [https://github.com/woocommerce/woocommerce-ios/pull/9789]
+- [*] Payments: show badges leading to Set up Tap to Pay on iPhone for eligible stores and devices [https://github.com/woocommerce/woocommerce-ios/pull/9812]
+- [*] Orders: Fixes a bug where the Orders list would not load if an order had a non-integer gift card amount applied to the order (with the Gift Cards extension). [https://github.com/woocommerce/woocommerce-ios/pull/9795]
+
+- [*] My Store: A new button to share the current store is added on the top right of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/9796]
+- [*] Mobile Payments: The screen brightness is increased when showing the Scan to Pay view so the QR code can be scanned more easily [https://github.com/woocommerce/woocommerce-ios/pull/9807]
+- [*] Mobile Payments: The Woo logo is added to the QR code on the Scan to Pay screen [https://github.com/woocommerce/woocommerce-ios/pull/9823]
+- [*] Allow EU merchants to have better control of their privacy choices. A privacy choices banner will be shown the next time they open the app. [https://github.com/woocommerce/woocommerce-ios/pull/9825]
+ 

@@ -51,7 +51,7 @@ fi
 if [[ "$BUILDKITE_BRANCH" == "trunk" ]]; then
   annotate_test_failures "fastlane/test_output/WooCommerce.xml" --slack "jos-testing-notif"
 else
-  annotate_test_failures
+  annotate_test_failures "fastlane/test_output/WooCommerce.xml"
 fi
 
 exit $TESTS_EXIT_STATUS

@@ -83,6 +83,7 @@ struct PrivacyBanner: View {
 
             Text(Localization.toggleSubtitle)
                 .subheadlineStyle()
+                .padding(.trailing, Layout.toggleDescriptionMargin)
 
             HStack {
                 Button(Localization.goToSettings) {
@@ -133,6 +134,7 @@ private extension PrivacyBanner {
 
     enum Layout {
         static let mainVerticalSpacing = CGFloat(8)
+        static let toggleDescriptionMargin = CGFloat(40)
     }
 }
 

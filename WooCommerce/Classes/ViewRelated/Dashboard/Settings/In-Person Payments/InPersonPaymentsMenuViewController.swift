@@ -68,11 +68,11 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     ///   - viewDidLoadAction: Provided as a one-time callback on viewDidLoad, originally to handle universal link navigation correctly.
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         shouldShowBadgeOnSetUpTapToPay: Bool,
+         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          viewDidLoadAction: ((InPersonPaymentsMenuViewController) -> Void)? = nil) {
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.viewModel = InPersonPaymentsMenuViewModel(shouldShowBadgeOnSetUpTapToPay: shouldShowBadgeOnSetUpTapToPay)
+        self.viewModel = InPersonPaymentsMenuViewModel(dependencies: .init(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker))
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
         self.setUpFlowOnlyEnabledAfterOnboardingComplete = !featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2)
@@ -767,10 +767,10 @@ private extension InPersonPaymentsMenuViewController {
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
 struct InPersonPaymentsMenu: UIViewControllerRepresentable {
-    let shouldShowBadgeOnSetUpTapToPay: Bool
+    let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     func makeUIViewController(context: Context) -> some UIViewController {
-        InPersonPaymentsMenuViewController(shouldShowBadgeOnSetUpTapToPay: shouldShowBadgeOnSetUpTapToPay)
+        InPersonPaymentsMenuViewController(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

@@ -7,11 +7,14 @@ final class InPersonPaymentsMenuViewModel {
     struct Dependencies {
         let stores: StoresManager
         let analytics: Analytics
+        let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
         init(stores: StoresManager = ServiceLocator.stores,
-             analytics: Analytics = ServiceLocator.analytics) {
+             analytics: Analytics = ServiceLocator.analytics,
+             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker? = nil) {
             self.stores = stores
             self.analytics = analytics
+            self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker ?? TapToPayBadgePromotionChecker(stores: stores)
         }
     }
 
@@ -44,11 +47,10 @@ final class InPersonPaymentsMenuViewModel {
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     init(dependencies: Dependencies = Dependencies(),
-         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
-         shouldShowBadgeOnSetUpTapToPay: Bool) {
+         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
         self.dependencies = dependencies
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
-        self.shouldBadgeTapToPayOnIPhone = shouldShowBadgeOnSetUpTapToPay
+        dependencies.tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldBadgeTapToPayOnIPhone)
     }
 
     func viewDidLoad() {
@@ -100,10 +102,6 @@ final class InPersonPaymentsMenuViewModel {
                                                selector: #selector(refreshTapToPayFeedbackVisibility),
                                                name: .firstInPersonPaymentsTransactionsWereUpdated,
                                                object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(setUpTapToPayViewDidAppear),
-                                               name: .setUpTapToPayViewDidAppear,
-                                               object: nil)
     }
 
     @objc func refreshTapToPayFeedbackVisibility() {
@@ -111,10 +109,6 @@ final class InPersonPaymentsMenuViewModel {
             return
         }
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
-    }
-
-    @objc private func setUpTapToPayViewDidAppear() {
-        self.shouldBadgeTapToPayOnIPhone = false
     }
 
     func orderCardReaderPressed() {
@@ -133,9 +127,6 @@ final class InPersonPaymentsMenuViewModel {
     deinit {
         NotificationCenter.default.removeObserver(self,
                                                   name: .firstInPersonPaymentsTransactionsWereUpdated,
-                                                  object: nil)
-        NotificationCenter.default.removeObserver(self,
-                                                  name: .setUpTapToPayViewDidAppear,
                                                   object: nil)
     }
 }

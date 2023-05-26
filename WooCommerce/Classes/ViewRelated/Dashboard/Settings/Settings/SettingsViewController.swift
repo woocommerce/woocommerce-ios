@@ -115,7 +115,7 @@ private extension SettingsViewController {
         footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
-        footerView.icon.addGestureRecognizer(crashDebugMenuGestureRecognizer)
+        footerView.icon.addGestureRecognizer(hiddenSettingsGestureRecognizer)
         footerView.icon.isUserInteractionEnabled = true
 
         tableView.tableFooterView = footerContainer
@@ -470,32 +470,44 @@ private extension SettingsViewController {
 }
 
 
-// MARK: - Crash Debug Menu
+// MARK: - Hidden Settings Debug Menu
 //
 private extension SettingsViewController {
 
-    var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeCrashDebugMenu))
+    var hiddenSettingsGestureRecognizer: UITapGestureRecognizer {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeHiddenSettings))
         gestureRecognizer.numberOfTapsRequired = 4
         return gestureRecognizer
     }
 
-    @objc func didInvokeCrashDebugMenu(_ sender: UITapGestureRecognizer? = nil) {
-        let crashDebugMenu = UIAlertController(title: Localization.CrashDebugMenu.title, message: nil, preferredStyle: .actionSheet)
-        crashDebugMenu.addAction(crashDebugMenuCrashAction)
-        crashDebugMenu.addAction(crashDebugMenuCancelAction)
+    @objc func didInvokeHiddenSettings(_ sender: UITapGestureRecognizer? = nil) {
+        let hiddenSettingsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        hiddenSettingsMenu.addAction(resetPrivacyChoicesAction)
+        hiddenSettingsMenu.addAction(crashDebugMenuCrashAction)
+        hiddenSettingsMenu.addAction(crashDebugMenuCancelAction)
 
-        present(crashDebugMenu, animated: true, completion: nil)
+        if let popoverController = hiddenSettingsMenu.popoverPresentationController {
+            popoverController.sourceView = sender?.view
+            popoverController.sourceRect = sender?.view?.bounds ?? .zero
+        }
+
+        present(hiddenSettingsMenu, animated: true, completion: nil)
+    }
+
+    var resetPrivacyChoicesAction: UIAlertAction {
+        return UIAlertAction(title: Localization.HiddenSettingsMenu.resetPrivacyChoices, style: .default) { _ in
+            UserDefaults.standard[.hasSavedPrivacyBannerSettings] = false
+        }
     }
 
     var crashDebugMenuCrashAction: UIAlertAction {
-        return UIAlertAction(title: Localization.CrashDebugMenu.crashImmediately, style: .destructive) { _ in
+        return UIAlertAction(title: Localization.HiddenSettingsMenu.crashImmediately, style: .destructive) { _ in
             ServiceLocator.crashLogging.crash()
         }
     }
 
     var crashDebugMenuCancelAction: UIAlertAction {
-        return UIAlertAction(title: Localization.CrashDebugMenu.cancel, style: .cancel, handler: nil)
+        return UIAlertAction(title: Localization.HiddenSettingsMenu.cancel, style: .cancel, handler: nil)
     }
 }
 
@@ -831,10 +843,10 @@ private extension SettingsViewController {
             comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
         )
 
-        enum CrashDebugMenu {
-            static let title = NSLocalizedString(
-                "Crash Debug Menu",
-                comment: "The title for a menu that helps debug crashes in production builds"
+        enum HiddenSettingsMenu {
+            static let resetPrivacyChoices = NSLocalizedString(
+                "Reset Privacy Choice Banner State",
+                comment: "The title for a menu to reset the privacy choice banner presentation"
             )
 
             static let crashImmediately = NSLocalizedString(

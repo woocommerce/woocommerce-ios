@@ -130,8 +130,6 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     }
 
     func viewDidAppear() {
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .tapToPayHubMenuBadge, remindAfterDays: nil, onCompletion: nil)
-        stores.dispatch(action)
         NotificationCenter.default.post(name: .setUpTapToPayViewDidAppear, object: nil)
     }
 

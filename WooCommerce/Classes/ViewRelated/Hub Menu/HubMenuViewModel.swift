@@ -65,21 +65,24 @@ final class HubMenuViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
+
     init(siteID: Int64,
          navigationController: UINavigationController? = nil,
+         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.siteID = siteID
         self.navigationController = navigationController
+        self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         observeSiteForUIUpdates()
         observePlanName()
-        listenToNewFeatureBadgeReloadRequired()
-        retrieveShouldShowNewFeatureBadgeOnPaymentsValue()
+        tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
     }
 
     func viewDidAppear() {
@@ -136,36 +139,6 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         stores.dispatch(action)
-    }
-
-    private func listenToNewFeatureBadgeReloadRequired() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(setUpTapToPayViewDidAppear),
-                                               name: .setUpTapToPayViewDidAppear,
-                                               object: nil)
-
-    }
-
-    /// Retrieves whether we should show the new feature badge on the Menu button
-    ///
-    func retrieveShouldShowNewFeatureBadgeOnPaymentsValue() {
-        let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .tapToPayHubMenuBadge) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let visible):
-                self.shouldShowNewFeatureBadgeOnPayments = visible && self.featureFlagService.isFeatureFlagEnabled(.tapToPayBadge)
-            case .failure:
-                self.shouldShowNewFeatureBadgeOnPayments = false
-            }
-        }
-
-        stores.dispatch(action)
-    }
-
-    /// Updates the badge after the Set up Tap to Pay flow did appear
-    ///
-    @objc private func setUpTapToPayViewDidAppear() {
-        self.shouldShowNewFeatureBadgeOnPayments = false
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.

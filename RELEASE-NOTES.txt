@@ -11,6 +11,7 @@
 
 - [*] My Store: A new button to share the current store is added on the top right of the screen. [https://github.com/woocommerce/woocommerce-ios/pull/9796]
 - [*] Mobile Payments: The screen brightness is increased when showing the Scan to Pay view so the QR code can be scanned more easily [https://github.com/woocommerce/woocommerce-ios/pull/9807]
+- [*] Mobile Payments: The Woo logo is added to the QR code on the Scan to Pay screen [https://github.com/woocommerce/woocommerce-ios/pull/9823]
  
 13.7
 -----

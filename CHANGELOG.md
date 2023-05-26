@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.8
+Lots of updates this week! We've added a new privacy screen for merchants in the EU to better control their privacy choices. We made it easy for you to share your products and store directly from the app. We also focused on fixing a few bug and enhancements around product and order management. Keep your feedback coming!
+
 ## 13.7
 You’ve asked for it, and now it’s here! You can now search for an order using a SKU when creating an order on the go. We have also made updates to the product selection so it's easier to search variations of a product. Awesome, right?
 

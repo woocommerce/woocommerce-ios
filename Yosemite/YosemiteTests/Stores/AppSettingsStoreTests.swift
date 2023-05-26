@@ -841,7 +841,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
 extension AppSettingsStoreTests {
 
-    func test_setFeatureAnnouncementDismissed_for_campaign_when_remindAfterDays_is_nil_then_does_not_store_current_date() throws {
+    func test_setFeatureAnnouncementDismissed_for_campaign_when_remindAfterDays_is_nil_then_dismissal_is_stored_with_no_reminder_date() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
         // When
@@ -850,12 +850,13 @@ extension AppSettingsStoreTests {
 
         // Then
         let savedSettings: GeneralAppSettings? = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
-        XCTAssertNil(savedSettings)
         guard let savedSettings else {
-            return
+            return XCTFail("Expected settings to be saved, but none were found")
         }
-        let savedDate: Date? = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
-        XCTAssertNil(savedDate)
+        let dismissedDate: Date = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        XCTAssert(Calendar.current.isDateInToday(dismissedDate))
+        let remindAfterDate: Date? = savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter
+        XCTAssertNil(remindAfterDate)
     }
 
     func test_setFeatureAnnouncementDismissed_for_campaign_stores_current_date() throws {
@@ -871,7 +872,7 @@ extension AppSettingsStoreTests {
         // Then
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
 
-        let actualDismissDate = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        let actualDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
 
         XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
     }
@@ -890,7 +891,7 @@ extension AppSettingsStoreTests {
         // Then
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
 
-        let actualRemindAfter = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter)
+        let actualRemindAfter = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter)
 
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: twoWeeksTime))
     }
@@ -909,7 +910,7 @@ extension AppSettingsStoreTests {
         // Then
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
 
-        let actualRemindAfter = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter)
+        let actualRemindAfter = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter)
 
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: oneWeekTime))
     }
@@ -930,7 +931,7 @@ extension AppSettingsStoreTests {
         // Then
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
 
-        let actualDismissDate = try XCTUnwrap( savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        let actualDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
 
         XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
 

@@ -559,6 +559,7 @@ private extension MainTabBarController {
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
         HubMenuCoordinator(navigationController: hubMenuNavigationController,
+                           tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
             await withCheckedContinuation { [weak self] continuation in
                 self?.navigateTo(.hubMenu) {

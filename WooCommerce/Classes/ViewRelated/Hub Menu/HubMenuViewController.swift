@@ -5,10 +5,15 @@ import Yosemite
 /// Displays a grid view of all available menu in the "Menu" tab (eg. View Store, Reviews, Coupons, etc...)
 final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
+    private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
-    init(siteID: Int64, navigationController: UINavigationController?) {
+    init(siteID: Int64,
+         navigationController: UINavigationController?,
+         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
-                                          navigationController: navigationController)
+                                          navigationController: navigationController,
+                                          tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
+        self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
     }
@@ -31,7 +36,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
     func showPaymentsMenu(onCompletion: ((InPersonPaymentsMenuViewController) -> Void)? = nil) -> InPersonPaymentsMenuViewController {
         let inPersonPaymentsMenuViewController = InPersonPaymentsMenuViewController(
-            shouldShowBadgeOnSetUpTapToPay: viewModel.shouldShowNewFeatureBadgeOnPayments,
+            tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
             viewDidLoadAction: onCompletion)
         show(inPersonPaymentsMenuViewController, sender: self)
 

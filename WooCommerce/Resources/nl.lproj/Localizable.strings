@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-19 17:14:16+0000 */
+/* Translation-Revision-Date: 2023-05-23 15:54:26+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1158,6 +1158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "Toegang tot de camera is vereist voor SKU-scannen. Schakel cameramachtigingen in je apparaatinstellingen in.";
 
+/* Message of alert that links to settings for camera access. */
+"Camera access is required for barcode scanning. Please enable camera permissions in your device settings" = "Toegang tot de camera is vereist voor het scannen van een barcode. Schakel cameramachtigingen in bij je apparaatinstellingen";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "De camera-opname mag het volgende mediatype niet ondersteunen: %@";
 
@@ -2231,6 +2234,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "Niet opnieuw tonen";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title to close the Scan to Pay screen
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2670,6 +2674,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "Fout bij ophalen gebruikersinformatie.";
 
+/* Error message in the Scan to Pay screen when the code cannot be generated. */
+"Error generating QR Code. Please try again later" = "Fout bij het genereren van de QR-code. Probeer het later opnieuw";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Er is een fout opgetreden bij het vinden van het adres op Apple Maps";
 
@@ -2771,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Verloopt %1$@";
-
-/* Action on the local notification to remind the user of a newly created store. */
-"Explore" = "Verkennen";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Bekijk hoe je de verkoop van je winkel kunt verhogen";
@@ -4076,6 +4080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Maximaal bestelbedrag van %1$@";
 
+/* Dismiss button title for modally presented Just in Time Messages */
+"Maybe Later" = "Misschien later";
+
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
 
@@ -4918,9 +4925,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Je product wordt naar de prullenbak verplaatst ...";
 
-/* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Wijzig je toestemming voor de camera in de apparaatinstellingen.";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Laad de lezer op";
 
@@ -5310,6 +5314,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Productlink";
+
+/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
+"Product not found. Failed to create a New Order" = "Product niet gevonden. Het aanmaken van een nieuwe bestelling is mislukt";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Product gepubliceerd";
@@ -5859,6 +5866,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while saving a Variation remotely */
 "Saving your variation..." = "Je variatie opslaan…";
 
+/* Title text on the Scan to Pay screen */
+"Scan QR and follow instructions" = "Scan de QR-code en volg de instructies";
+
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Barcode scannen om SKU bij te werken";
 
@@ -5867,6 +5877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Scan Products */
 "Scan products" = "Producten scannen";
+
+/* Scan to Pay method title on the select payment method screen */
+"Scan to Pay" = "Scan om te betalen";
 
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Er wordt gescand op lezers";
@@ -6417,6 +6430,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Helaas, we kunnen ondersteuningsverzoeken nu niet aanmaken, probeer het later opnieuw.";
 
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "Sorry, we kunnen geen verbinding maken met de lezer. Probeer het nog eens.";
+
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "Helaas, we konden je ondersteuningsverzoek niet aanmaken, probeer het later opnieuw.";
 
@@ -6555,9 +6571,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Ondersteuningsverzoek indienen";
-
-/* Action on the local notification to suggest the user to subscribe to the trial plan. */
-"Subscribe" = "Abonneren";
 
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
@@ -7299,9 +7312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Hiermee voltooid u uw bestelling indien u deze van een andere partij dan WooCommerce heeft ontvangen (totaal)";
 
-/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "De tijd is bijna om, %1$@!";
-
 /* Country option for a site address. */
 "Timor-Leste" = "Oost-Timor";
 
@@ -7918,8 +7928,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Je producten bijwerken...";
 
-/* Action on the local notification to remind the user of the expiring free trial plan. */
-"Upgrade" = "Upgraden";
+/* Title for the WebView when upgrading a free trial plan */
+"Upgrade Now" = "Upgrade nu";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8510,6 +8520,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Je hebt ten minste openstaande verplichting op je account. Rond de verplichting af om fysieke betalingen te blijven ontvangen";
 
+/* Error message for a short value in Description row in Customs screen of Shipping Label flow */
+"You must provide a clear, specific description for every item." = "Je moet voor elk item een duidelijke, specifieke beschrijving aanleveren.";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Je moet een wachtwoord toevoegen om je product met een wachtwoord te beschermen";
 
@@ -8564,9 +8577,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Je telefoon is binnenkort klaar om betalingen te ontvangen...";
 
-/* Title for the privacy banner */
-"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "Wij vinden je privacy erg belangrijk en dat is altijd al zo geweest. Wij gebruiken, verwerken en slaan je persoonlijke gegevens op om onze app (en jouw ervaring) op allerlei manieren te optimaliseren. Bepaalde manieren waarop we je gegevens gebruiken zijn essentieel om alles goed te laten werken, andere manieren kan je zelf aanpassen bij instellingen.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Uw lezer start na de update automatisch opnieuw op en maakt opnieuw verbinding";
 
@@ -8591,12 +8601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Je winkel is online!";
 
-/* Title of the local notification about a newly created store */
-"Your store is ready!" = "Je winkel is klaar!";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"Your store is waiting!" = "Je winkel wacht op je!";
-
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Je winkel wordt aangemaakt op basis van de opties die jij kiest!";
 
@@ -8606,8 +8610,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Je ondersteuningsverzoek is in goede orde bij ons aangekomen. We zullen zo snel mogelijk via e-mail reageren.";
 
-/* Message of the free trial banner when there are no days left
-   Title of the local notification to remind the user of the expired free trial plan. */
+/* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Je proefversie is beëindigd.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8669,6 +8672,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "Bij het verzenden naar landen waarin douanewetgeving van de Europese Unie (EU) geldt, moet je elk artikel duidelijk beschrijven. Bijvoorbeeld, als je kleding verzendt moet je in de beschrijving duidelijk aangeven wat voor soort kleding het is (bijv. herenshirt, damesvest, kinderjas). Anders kunnen verzendingen vertraging oplopen of stil komen staan bij de douane.";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "voorbeeld.com";
@@ -8708,6 +8714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalingen, Tap to Pay, woocommerce, woo, fysieke betalingen, betaling innen, betalingen, lezer, kaartlezer, kaartlezer bestellen";
+
+/* Subtitle for the privacy banner */
+"privacy_banner_subtitle" = "Wij vinden je privacy erg belangrijk en dat is altijd al zo geweest. Wij gebruiken, verwerken en slaan je persoonlijke gegevens op om onze app (en jouw ervaring) op allerlei manieren te optimaliseren. Bepaalde manieren waarop we je gegevens gebruiken zijn essentieel om alles goed te laten werken, andere manieren kan je zelf aanpassen bij instellingen.";
 
 /* Label shown on the launch store task. */
 "private" = "privé";
@@ -8813,8 +8822,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Åland";
 
+/* Title of the local notification to remind the user of expiring free trial plan. */
+"⏰ Time’s running out on your free trial!" = "⏰ De tijd raakt op voor je gratis proefabonnement!";
+
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ AI-contentgenerator beschikbaar.";
+
+/* Title of the local notification to remind the user of the expired free trial plan. */
+"🌟 Keep your business going with our plan!" = "🌟 Houd je bedrijf draaiende met ons abonnement!";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Bestelling voltooid";
@@ -8827,4 +8842,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Producten zijn terugbetaald";
+
+/* Title of the local notification about a newly created store */
+"🎉 Your store is ready!" = "🎉 Je winkel is klaar!";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"🛍️ Your store is waiting!" = "🛍️ Je winkel wacht op je!";
 

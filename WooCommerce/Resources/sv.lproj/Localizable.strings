@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-15 14:54:23+0000 */
+/* Translation-Revision-Date: 2023-05-23 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -1158,6 +1158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "Kameraåtkomst krävs för SKU-skanning. Aktivera kamerabehörigheter i dina enhetsinställningar";
 
+/* Message of alert that links to settings for camera access. */
+"Camera access is required for barcode scanning. Please enable camera permissions in your device settings" = "Kameraåtkomst krävs för streckkodsskanning. Aktivera kamerabehörigheter i dina enhetsinställningar";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "Kamerabildtagning ska inte stödja mediatypen: %@";
 
@@ -2231,6 +2234,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "Visa inte igen";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title to close the Scan to Pay screen
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2670,6 +2674,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "Det gick inte att hämta användarinformationen.";
 
+/* Error message in the Scan to Pay screen when the code cannot be generated. */
+"Error generating QR Code. Please try again later" = "Det gick inte att generera QR-koden. Försök igen senare";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Det gick inte att hitta adressen i Apple Maps";
 
@@ -2771,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Löper ut den %1$@";
-
-/* Action on the local notification to remind the user of a newly created store. */
-"Explore" = "Utforska";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Utforska hur du kan öka din butiksförsäljning";
@@ -4076,6 +4080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Maximalt beställningsbelopp är %1$@";
 
+/* Dismiss button title for modally presented Just in Time Messages */
+"Maybe Later" = "Kanske senare";
+
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
 
@@ -4918,9 +4925,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Placerar din produkt i papperskorgen …";
 
-/* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Ändra dina kamerabehörigheter i enhetsinställningarna.";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Ladda läsare";
 
@@ -5310,6 +5314,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Produktlänk";
+
+/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
+"Product not found. Failed to create a New Order" = "Produkten hittades inte. Det gick inte att skapa en ny beställning";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Produkt publicerad";
@@ -5859,6 +5866,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while saving a Variation remotely */
 "Saving your variation..." = "Sparar din variation...";
 
+/* Title text on the Scan to Pay screen */
+"Scan QR and follow instructions" = "Skanna QR-koden och följ instruktionerna";
+
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Skanna streckkoden för att uppdatera SKU";
 
@@ -5867,6 +5877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Scan Products */
 "Scan products" = "Skanna produkter";
+
+/* Scan to Pay method title on the select payment method screen */
+"Scan to Pay" = "Skanna för att betala";
 
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Skannar efter läsare";
@@ -6417,6 +6430,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Vi kan tyvärr inte skapa supportförfrågningar för tillfället. Försök igen senare.";
 
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "Det gick inte att ansluta till läsaren. Försök igen.";
+
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "Vi kunde tyvärr inte skapa din supportförfrågan. Försök igen senare.";
 
@@ -6555,9 +6571,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Skicka supportförfrågan";
-
-/* Action on the local notification to suggest the user to subscribe to the trial plan. */
-"Subscribe" = "Prenumerera";
 
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
@@ -7299,9 +7312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Detta kommer att markera din beställning som slutförd om du har mottagit (totalbelopp) utanför WooCommerce";
 
-/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "Tiden är nästan ute, %1$@!";
-
 /* Country option for a site address. */
 "Timor-Leste" = "Timor-Leste";
 
@@ -7918,8 +7928,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Uppdaterar dina produkter …";
 
-/* Action on the local notification to remind the user of the expiring free trial plan. */
-"Upgrade" = "Uppgradera";
+/* Title for the WebView when upgrading a free trial plan */
+"Upgrade Now" = "Uppgradera nu";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8510,6 +8520,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Du har minst ett försenat krav i ditt konto. Ta hand om det för att återuppta personliga betalningar.";
 
+/* Error message for a short value in Description row in Customs screen of Shipping Label flow */
+"You must provide a clear, specific description for every item." = "Du måste ange en tydlig, specifik beskrivning för varje vara.";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Du måste lägga till ett lösenord för att göra produkten lösenordsskyddad";
 
@@ -8564,9 +8577,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Du kommer snart att kunna ta emot betalningar med din telefon ...";
 
-/* Title for the privacy banner */
-"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "Din integritet är och har alltid varit avgörande för oss. Vi använder, lagrar och behandlar dina personuppgifter för att optimera vår app (och din upplevelse) på en rad olika sätt. Vissa användningsområden för dina data är absolut nödvändiga för att få saker att fungera, andra kan du anpassa i dina inställningar.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Din läsare kommer att startas om automatiskt och sedan återansluta när uppdateringen är klar";
 
@@ -8591,12 +8601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Din butik är live.";
 
-/* Title of the local notification about a newly created store */
-"Your store is ready!" = "Din butik är redo!";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"Your store is waiting!" = "Din butik väntar!";
-
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Din butik kommer att skapas utifrån de alternativ du väljer.";
 
@@ -8606,8 +8610,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Din supportförfrågan har landat säkert i vår inkorg. Vi kommer att svara via e-post så snart vi kan.";
 
-/* Message of the free trial banner when there are no days left
-   Title of the local notification to remind the user of the expired free trial plan. */
+/* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Din provperiod har avslutats.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8669,6 +8672,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "Leverans till länder som följer EU:s tullregler kräver nu att du tydligt beskriver varje vara. Om du till exempel skickar kläder måste du ange vilken typ av kläder det är (t.ex. herrskjortor, flickvästar, pojkjackor) för att beskrivningen ska vara godtagbar. Annars kan leveranser försenas eller avbrytas i tullen.";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "exempel.com";
@@ -8708,6 +8714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalningar, tryck för att betala, woocommerce, woo, personliga betalningar, ta emot personliga betalningar, betalningar, läsare, kortläsare, beställ kortläsare";
+
+/* Subtitle for the privacy banner */
+"privacy_banner_subtitle" = "Din integritet är och har alltid varit avgörande för oss. Vi använder, lagrar och behandlar dina personuppgifter för att optimera vår app (och din upplevelse) på en rad olika sätt. Vissa användningsområden för dina data är absolut nödvändiga för att få saker att fungera, andra kan du anpassa i dina inställningar.";
 
 /* Label shown on the launch store task. */
 "private" = "privat";
@@ -8813,8 +8822,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Åland";
 
+/* Title of the local notification to remind the user of expiring free trial plan. */
+"⏰ Time’s running out on your free trial!" = "⏰ Tiden med din kostnadsfria provperiod håller på att löpa ut.";
+
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ AI-innehållsgenerator tillgänglig.";
+
+/* Title of the local notification to remind the user of the expired free trial plan. */
+"🌟 Keep your business going with our plan!" = "🌟 Håll igång ditt företag med vårt paket.";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Beställning färdigbehandlad";
@@ -8827,4 +8842,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 produkter återbetalades";
+
+/* Title of the local notification about a newly created store */
+"🎉 Your store is ready!" = "🎉 Din butik är redo!";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"🛍️ Your store is waiting!" = "🛍️ Din butik väntar!";
 

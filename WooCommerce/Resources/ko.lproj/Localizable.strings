@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-16 14:54:04+0000 */
+/* Translation-Revision-Date: 2023-05-23 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1158,6 +1158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "SKU를 스캔하려면 카메라에 접근해야 합니다. 기기 설정에서 카메라 권한을 활성화해 주세요.";
 
+/* Message of alert that links to settings for camera access. */
+"Camera access is required for barcode scanning. Please enable camera permissions in your device settings" = "바코드를 스캔하려면 카메라에 접근해야 합니다. 기기 설정에서 카메라 권한을 활성화해 주세요.";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "카메라 캡처가 지원할 수 없는 미디어 유형: %@";
 
@@ -2231,6 +2234,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "다시 보지 않음";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title to close the Scan to Pay screen
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2670,6 +2674,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "사용자 정보 가져오기 오류입니다.";
 
+/* Error message in the Scan to Pay screen when the code cannot be generated. */
+"Error generating QR Code. Please try again later" = "QR 코드 생성 오류입니다. 나중에 다시 시도하세요.";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps에서 주소를 찾는 중 오류 발생";
 
@@ -2771,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "%1$@ 만료";
-
-/* Action on the local notification to remind the user of a newly created store. */
-"Explore" = "둘러보기";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "스토어 판매를 늘리는 방법을 살펴보세요.";
@@ -4076,6 +4080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "최대 %1$@ 지출";
 
+/* Dismiss button title for modally presented Just in Time Messages */
+"Maybe Later" = "나중에";
+
 /* Country option for a site address. */
 "Mayotte" = "마요트";
 
@@ -4918,9 +4925,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "제품을 휴지통에 버리는 중";
 
-/* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "기기 설정에서 카메라 권한을 변경해 주세요.";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "리더를 충전하세요.";
 
@@ -5310,6 +5314,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "제품 링크";
+
+/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
+"Product not found. Failed to create a New Order" = "상품을 찾을 수 없습니다. 새 주문 생성 실패";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "상품 공개됨";
@@ -5859,6 +5866,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while saving a Variation remotely */
 "Saving your variation..." = "변형 저장 중...";
 
+/* Title text on the Scan to Pay screen */
+"Scan QR and follow instructions" = "QR 스캔 및 지침 따르기";
+
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "SKU를 업데이트할 바코드 스캔";
 
@@ -5867,6 +5877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Scan Products */
 "Scan products" = "제품 스캔";
+
+/* Scan to Pay method title on the select payment method screen */
+"Scan to Pay" = "Scan to Pay";
 
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "리더 스캔 중";
@@ -6417,6 +6430,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "죄송합니다. 지금은 지원 요청을 생성할 수 없습니다. 나중에 다시 시도해 주세요.";
 
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "죄송합니다. 리더에 연결할 수 없습니다. 다시 시도하세요.";
+
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "죄송합니다. 회원님의 지원 요청을 생성하지 못했습니다. 나중에 다시 시도해 주세요.";
 
@@ -6555,9 +6571,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "지원 요청 제출";
-
-/* Action on the local notification to suggest the user to subscribe to the trial plan. */
-"Subscribe" = "구독";
 
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
@@ -7299,9 +7312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "그러면 WooCommerce 외부에서 수신한 주문(전체)이 완료로 표시됩니다.";
 
-/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "%1$@ 님, 시간이 거의 다 되었습니다!";
-
 /* Country option for a site address. */
 "Timor-Leste" = "동티모르";
 
@@ -7918,8 +7928,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "상품 업데이트 중...";
 
-/* Action on the local notification to remind the user of the expiring free trial plan. */
-"Upgrade" = "업그레이드";
+/* Title for the WebView when upgrading a free trial plan */
+"Upgrade Now" = "지금 업그레이드";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8510,6 +8520,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "계정에 기한이 지난 요구 사항이 하나 이상 있습니다. 대면 결제를 다시 시작하려면 해당 요구 사항을 처리하세요.";
 
+/* Error message for a short value in Description row in Customs screen of Shipping Label flow */
+"You must provide a clear, specific description for every item." = "아이템마다 명확하고 구체적인 설명을 제공해야 합니다.";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "제품을 비밀번호로 보호하려면 비밀번호를 추가해야 합니다.";
 
@@ -8564,9 +8577,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "곧 스마트폰으로 결제받을 준비가 완료됩니다...";
 
-/* Title for the privacy banner */
-"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "회원님의 개인정보는 언제나 그렇듯이 당사에 매우 중요합니다. 회원님의 개인 데이터를 사용하고, 저장하고, 처리하여 다양한 방법으로 앱과 회원님의 환경을 최적화합니다. 일을 제대로 진행하려면 회원님의 데이터 중 일부를 반드시 사용해야 하고, 나머지는 회원님이 설정에서 사용자 정의할 수 있습니다.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "업데이트를 완료하면 리더가 자동으로 다시 시작하고 다시 연결됩니다.";
 
@@ -8591,12 +8601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "스토어가 실행되고 있습니다.";
 
-/* Title of the local notification about a newly created store */
-"Your store is ready!" = "회원님의 스토어가 준비되어 있습니다!";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"Your store is waiting!" = "회원님의 스토어가 기다리고 있습니다!";
-
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "선택하신 옵션에 따라 스토어가 생성되었습니다!";
 
@@ -8606,8 +8610,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "회원님의 지원 요청이 받은 편지함에 수신되었습니다. 최대한 빨리 이메일로 회신하겠습니다.";
 
-/* Message of the free trial banner when there are no days left
-   Title of the local notification to remind the user of the expired free trial plan. */
+/* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "평가판이 종료되었습니다.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8669,6 +8672,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "전자상거래";
 
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "EU(유럽연합) 세관 규칙을 따르는 국가로 배송 시 모든 아이템을 명확하게 설명해야 합니다. 예를 들어, 의류를 발송하는 경우 설명이 수락될 수 있으려면 의류 유형을 표시해야 합니다(예: 남성용 셔츠, 여아용 조끼, 남아용 재킷). 그렇지 않으면 배송이 세관에서 지체되거나 차단될 수 있습니다.";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -8708,6 +8714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "결제, 탭 투 페이, 우커머스, 우, 대면 결제, 대면 결제, 대면 결제 받기, 결제, 리더, 카드 리더, 주문 카드 리더";
+
+/* Subtitle for the privacy banner */
+"privacy_banner_subtitle" = "회원님의 개인정보는 언제나 그렇듯이 당사에 매우 중요합니다. 회원님의 개인 데이터를 사용하고, 저장하고, 처리하여 다양한 방법으로 앱과 회원님의 환경을 최적화합니다. 일을 제대로 진행하려면 회원님의 데이터 중 일부를 반드시 사용해야 하고, 나머지는 회원님이 설정에서 사용자 정의할 수 있습니다.";
 
 /* Label shown on the launch store task. */
 "private" = "비공개";
@@ -8813,8 +8822,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "올란드 제도";
 
+/* Title of the local notification to remind the user of expiring free trial plan. */
+"⏰ Time’s running out on your free trial!" = "⏰ 무료 평가판 기간이 끝나가고 있습니다.";
+
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ AI 콘텐츠 생성기를 사용할 수 있습니다.";
+
+/* Title of the local notification to remind the user of the expired free trial plan. */
+"🌟 Keep your business going with our plan!" = "🌟 요금제를 이용하여 비즈니스를 계속 운영하세요!";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 주문 완료됨";
@@ -8827,4 +8842,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉개 제품이 환불되었음";
+
+/* Title of the local notification about a newly created store */
+"🎉 Your store is ready!" = "🎉 회원님의 스토어가 준비되어 있습니다!";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"🛍️ Your store is waiting!" = "🛍️ 회원님의 스토어가 기다리고 있습니다!";
 

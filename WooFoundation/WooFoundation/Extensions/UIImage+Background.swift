@@ -2,23 +2,27 @@ import UIKit
 
 public extension UIImage {
     /// Adds a background color to the given UIImage, setting also whether it should be opaque or not
-    /// 
+    ///
     func withBackground(color: UIColor, opaque: Bool = true) -> UIImage {
-      UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
+        UIGraphicsBeginImageContextWithOptions(size, opaque, scale)
 
-      guard let ctx = UIGraphicsGetCurrentContext(),
-                let image = cgImage else {
-          return self
-      }
+        guard let currentContext = UIGraphicsGetCurrentContext(),
+              let image = cgImage else {
+            return self
+        }
 
-      defer { UIGraphicsEndImageContext() }
+        defer { UIGraphicsEndImageContext() }
 
-      let rect = CGRect(origin: .zero, size: size)
-      ctx.setFillColor(color.cgColor)
-      ctx.fill(rect)
-      ctx.concatenate(CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: size.height))
-      ctx.draw(image, in: rect)
+        let rect = CGRect(origin: .zero, size: size)
+        currentContext.setFillColor(color.cgColor)
+        currentContext.fill(rect)
 
-      return UIGraphicsGetImageFromCurrentImageContext() ?? self
+        // Because the coordinate system in Core Graphics is different from that of UIKit,
+        // we need to flip the context vertically, and then translate it vertically
+        currentContext.scaleBy(x: 1, y: -1)
+        currentContext.translateBy(x: 0, y: -size.height)
+        currentContext.draw(image, in: rect)
+
+        return UIGraphicsGetImageFromCurrentImageContext() ?? self
     }
 }

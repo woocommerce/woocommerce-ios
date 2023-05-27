@@ -101,14 +101,14 @@ extension PrivacyBannerPresenter {
     }
 }
 
-extension BottomSheetViewController {
-    /// Temporary hack to prevent the `PrivacyBannerViewController` to be dismissed.
-    /// This should be changed once https://github.com/wordpress-mobile/WordPressUI-iOS/pull/126 is merged.
-    ///
-    public override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        if children.first is PrivacyBannerViewController {
-            return
-        }
-        super.dismiss(animated: flag, completion: completion)
-    }
-}
+//extension BottomSheetViewController {
+//    /// Temporary hack to prevent the `PrivacyBannerViewController` to be dismissed.
+//    /// This should be changed once https://github.com/wordpress-mobile/WordPressUI-iOS/pull/126 is merged.
+//    ///
+//    public override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+//        if children.first is PrivacyBannerViewController {
+//            return
+//        }
+//        super.dismiss(animated: flag, completion: completion)
+//    }
+//}

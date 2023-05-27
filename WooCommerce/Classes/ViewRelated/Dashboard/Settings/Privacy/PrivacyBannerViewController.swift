@@ -43,6 +43,18 @@ extension PrivacyBannerViewController: DrawerPresentable {
     var expandedHeight: DrawerHeight {
         return .contentHeight(bannerIntrinsicHeight)
     }
+
+    var allowsDragToDismiss: Bool {
+        false
+    }
+
+    var allowsTapToDismiss: Bool {
+        false
+    }
+
+    var allowsUserTransition: Bool {
+        false
+    }
 }
 
 /// Banner View for the privacy settings.

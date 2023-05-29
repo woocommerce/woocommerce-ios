@@ -7,6 +7,12 @@ import WordPressUI
 ///
 final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
 
+    // These are part of the `DrawerPresentable` protocol.
+    // We define them here instead than in the existing extension that defines the protocol conformance so that we can make the stored constants.
+    // Otherwise, since extensions don't allow for stored properties, they would have had to be computed vars.
+    let allowsTapToDismiss = false
+    let allowsDragToDismiss = false
+
     /// Tracks the banner view intrinsic height.
     /// Needed to enable it's scrolling when it grows bigger than the screen.
     ///

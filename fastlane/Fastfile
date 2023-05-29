@@ -22,6 +22,7 @@ SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SIMULATOR_VERSION = '15.5' # For screenshots
+SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
   'iPhone 8 Plus',
@@ -186,7 +187,7 @@ platform :ios do
     ios_update_release_notes(new_version: new_version)
     setbranchprotection(repository: GITHUB_REPO, branch: "release/#{new_version}")
     setfrozentag(repository: GITHUB_REPO, milestone: new_version)
-    ios_check_beta_deps(podfile: 'Podfile')
+    ios_check_beta_deps(podfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile')
   end
 
   #####################################################################################
@@ -466,7 +467,7 @@ platform :ios do
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
       org_slug: 'a8c',
       project_slug: 'woocommerce-ios',
-      dsym_path: './WooCommerce.app.dSYM.zip'
+      dsym_path: File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.app.dSYM.zip')
     )
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
@@ -505,7 +506,7 @@ platform :ios do
     alpha_code_signing
 
     # Get the current build version, and update it if needed
-    version_config_path = '../config/Version.Public.xcconfig'
+    version_config_path = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xcconfig')
     versions = Xcodeproj::Config.new(File.new(version_config_path)).to_hash
     build_number = generate_installable_build_number
     UI.message("Updating build version to #{build_number}")
@@ -628,7 +629,7 @@ platform :ios do
 
     scan(
       workspace: WORKSPACE_PATH,
-      scheme: 'WooCommerceScreenshots',
+      scheme: SCREENSHOTS_SCHEME,
       build_for_testing: true,
       derived_data_path: DERIVED_DATA_DIR
     )
@@ -656,7 +657,7 @@ platform :ios do
     rebuild_screenshot_devices
 
     capture_ios_screenshots(
-      scheme: 'WooCommerceScreenshots',
+      scheme: SCREENSHOTS_SCHEME,
 
       localize_simulator: true,
       languages: languages,
@@ -671,7 +672,7 @@ platform :ios do
       output_directory: SCREENSHOTS_DIR,
 
       # Output the simulator logs for debugging
-      buildlog_path: './fastlane/logs',
+      buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       output_simulator_logs: true,
       result_bundle: true,
       namespace_log_files: true,
@@ -735,7 +736,7 @@ platform :ios do
       Snapshot::Options.available_options,
       {
         workspace: WORKSPACE_PATH,
-        scheme: 'WooCommerceScreenshots'
+        scheme: SCREENSHOTS_SCHEME
       }
     )
 

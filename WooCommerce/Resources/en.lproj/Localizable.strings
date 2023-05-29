@@ -522,9 +522,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Add product link";
 
-/* Title text of the button to add a single product via SKU scanning */
-"Add Product via SKU scanner" = "Add Product via SKU scanner";
-
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
    Navigation bar title for selecting multiple products.
@@ -1616,6 +1613,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain purchase success screen. */
 "Congratulations on your purchase" = "Congratulations on your purchase";
 
+/* Message on the celebratory screen after creating first product */
+"Congratulations! You're one step closer to getting the new store ready." = "Congratulations! You're one step closer to getting the new store ready.";
+
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Congratulations! Your reader is running the latest software";
 
@@ -1881,9 +1881,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Coupons (%1$@)";
-
-/* The title for a menu that helps debug crashes in production builds */
-"Crash Debug Menu" = "Crash Debug Menu";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Crash Immediately";
@@ -2217,6 +2214,7 @@ which should be translated separately and considered part of this sentence. */
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
+   Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -2973,6 +2971,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text field name in Edit Address Form */
 "First name" = "First name";
+
+/* Title of the celebratory screen after creating the first product */
+"First product created 🎉" = "First product created 🎉";
 
 /* Subtitle for the account creation form. */
 "First, let’s create your account." = "First, let’s create your account.";
@@ -5738,6 +5739,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Activity Log";
 
+/* The title for a menu to reset the privacy choice banner presentation */
+"Reset Privacy Choice Banner State" = "Reset Privacy Choice Banner State";
+
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
@@ -5775,7 +5779,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry action title
    Retry button on the error notice for the upgrade view
    Retry button title for the privacy screen notices
-   Retry the last action */
+   Retry the last action
+   Retry title on the notice action button */
 "Retry" = "Retry";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -6166,6 +6171,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Share Payment Link";
+
+/* Title of the action button to share the first created product */
+"Share Product" = "Share Product";
 
 /* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
 "Share Tap to Pay on iPhone Feedback" = "Share Tap to Pay on iPhone Feedback";
@@ -7332,6 +7340,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "There was an error issuing the refund";
+
+/* Notice title when there is an error saving the privacy banner choice */
+"There was an error saving your privacy choices." = "There was an error saving your privacy choices.";
 
 /* Notice displayed when searching the list of products fails */
 "There was an error searching products" = "There was an error searching products";

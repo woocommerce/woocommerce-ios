@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Commit to changed the lockfile and test https://github.com/Automattic/a8c-ci-toolkit-buildkite-plugin/pull/61
 require 'cocoapods-catalyst-support'
 
 # For security reasons, please always keep the wordpress-mobile source first and the CDN second.

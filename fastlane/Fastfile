@@ -10,7 +10,7 @@ USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
 SECRETS_DIR = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets')
 PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
-GHHELPER_REPO = 'woocommerce/woocommerce-ios'
+GITHUB_REPO = 'woocommerce/woocommerce-ios'
 
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
@@ -182,8 +182,8 @@ platform :ios do
       extracted_notes_file_path: File.join(RESOURCES_FOLDER, 'release_notes.txt')
     )
     ios_update_release_notes(new_version: new_version)
-    setbranchprotection(repository: GHHELPER_REPO, branch: "release/#{new_version}")
-    setfrozentag(repository: GHHELPER_REPO, milestone: new_version)
+    setbranchprotection(repository: GITHUB_REPO, branch: "release/#{new_version}")
+    setfrozentag(repository: GITHUB_REPO, milestone: new_version)
     ios_check_beta_deps(podfile: 'Podfile')
   end
 
@@ -341,10 +341,10 @@ platform :ios do
 
     # Wrap up
     version = ios_get_app_version
-    removebranchprotection(repository: GHHELPER_REPO, branch: "release/#{version}")
-    setfrozentag(repository: GHHELPER_REPO, milestone: version, freeze: false)
-    create_new_milestone(repository: GHHELPER_REPO, need_appstore_submission: true, milestone_duration: 7, number_of_days_from_code_freeze_to_release: 10)
-    close_milestone(repository: GHHELPER_REPO, milestone: version)
+    removebranchprotection(repository: GITHUB_REPO, branch: "release/#{version}")
+    setfrozentag(repository: GITHUB_REPO, milestone: version, freeze: false)
+    create_new_milestone(repository: GITHUB_REPO, need_appstore_submission: true, milestone_duration: 7, number_of_days_from_code_freeze_to_release: 10)
+    close_milestone(repository: GITHUB_REPO, milestone: version)
 
     # Start the build
     trigger_release_build(branch_to_build: "release/#{version}")
@@ -473,7 +473,7 @@ platform :ios do
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
       version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
-      create_release(repository: GHHELPER_REPO,
+      create_release(repository: GITHUB_REPO,
                      version: version,
                      release_notes_file_path: './WooCommerce/Resources/release_notes.txt',
                      release_assets: archive_zip_path.to_s,

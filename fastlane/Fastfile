@@ -613,54 +613,6 @@ platform :ios do
     )
   end
 
-  #####################################################################################
-  # register_new_device
-  # -----------------------------------------------------------------------------------
-  # This lane helps a developer register a new device in the App Store Portal
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane register_new_device
-  #
-  # Example:
-  # bundle exec fastlane register_new_device
-  #####################################################################################
-  desc 'Registers a Device in the developer console'
-  lane :register_new_device do |options|
-    device_name = UI.input('Device Name (leave empty if already added in portal): ') if options[:device_name].nil?
-    unless device_name.empty?
-      device_id = UI.input('Device ID: ') if options[:device_id].nil?
-      UI.message "Registering #{device_name} with ID #{device_id} and registering it with any provisioning profiles associated with these bundle identifiers:"
-      MAIN_BUNDLE_IDENTIFIERS.each do |identifier|
-        puts "\t#{identifier}"
-      end
-
-      # Register the user's device
-      register_device(
-        name: device_name,
-        udid: device_id,
-        team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-        api_key_path: ASC_KEY_PATH
-      )
-    end
-
-    # We're about to use `add_development_certificates_to_provisioning_profiles` and `add_all_devices_to_provisioning_profiles`.
-    # These actions use Developer Portal APIs that don't yet support authentication via API key (-.-').
-    # Let's preemptively ask for and set the email here to avoid being asked twice for it if not set.
-    prompt_user_for_app_store_connect_credentials
-
-    # Add all development certificates to the provisioning profiles (just in case – this is an easy step to miss)
-    add_development_certificates_to_provisioning_profiles(
-      team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      app_identifier: MAIN_BUNDLE_IDENTIFIERS
-    )
-
-    # Add all devices to the provisioning profiles
-    add_all_devices_to_provisioning_profiles(
-      team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      app_identifier: MAIN_BUNDLE_IDENTIFIERS
-    )
-  end
-
   ########################################################################
   # Screenshot Lanes
   ########################################################################
@@ -1072,31 +1024,6 @@ platform :ios do
   ensure
     file&.close
   end
-end
-
-def fastlane_directory
-  __dir__
-end
-
-def derived_data_directory
-  File.join(fastlane_directory, 'DerivedData')
-end
-
-def screenshots_directory
-  File.join(fastlane_directory, 'screenshots')
-end
-
-def screenshot_devices
-  [
-    'iPhone 11 Pro Max',
-    'iPhone 8 Plus',
-    'iPad Pro (12.9-inch) (2nd generation)',
-    'iPad Pro (12.9-inch) (3rd generation)'
-  ]
-end
-
-def simulator_version
-  '14.4'
 end
 
 ########################################################################

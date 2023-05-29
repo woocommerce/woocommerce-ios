@@ -194,7 +194,7 @@ platform :ios do
       repository: GITHUB_REPO,
       milestone: new_version
     )
-    ios_check_beta_deps(podfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile')
+    ios_check_beta_deps(podfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile'))
   end
 
   #####################################################################################

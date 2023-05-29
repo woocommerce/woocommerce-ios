@@ -19,6 +19,7 @@ RELEASE_NOTES_PATH = File.join(RESOURCES_FOLDER, 'release_notes.txt')
 FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
+FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SIMULATOR_VERSION = '15.5' # For screenshots
@@ -185,8 +186,14 @@ platform :ios do
       extracted_notes_file_path: RELEASE_NOTES_PATH)
     )
     ios_update_release_notes(new_version: new_version)
-    setbranchprotection(repository: GITHUB_REPO, branch: "release/#{new_version}")
-    setfrozentag(repository: GITHUB_REPO, milestone: new_version)
+    setbranchprotection(
+      repository: GITHUB_REPO,
+      branch: "release/#{new_version}"
+    )
+    setfrozentag(
+      repository: GITHUB_REPO,
+      milestone: new_version
+    )
     ios_check_beta_deps(podfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile')
   end
 
@@ -221,7 +228,7 @@ platform :ios do
   #
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
-    source_metadata_folder = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'appstoreres', 'metadata', 'source')
+    source_metadata_folder = File.join(FASTLANE_DIR, 'appstoreres', 'metadata', 'source')
 
     files = {
       whats_new: RELEASE_NOTES_PATH,
@@ -284,7 +291,10 @@ platform :ios do
   desc 'Creates a new hotfix branch for the given version:x.y.z. The branch will be cut from the tag x.y of the previous release'
   lane :new_hotfix_release do |options|
     prev_ver = ios_hotfix_prechecks(options)
-    ios_bump_version_hotfix(previous_version: prev_ver, version: options[:version])
+    ios_bump_version_hotfix(
+      previous_version: prev_ver,
+      version: options[:version]
+    )
   end
 
   #####################################################################################
@@ -344,10 +354,25 @@ platform :ios do
 
     # Wrap up
     version = ios_get_app_version
-    removebranchprotection(repository: GITHUB_REPO, branch: "release/#{version}")
-    setfrozentag(repository: GITHUB_REPO, milestone: version, freeze: false)
-    create_new_milestone(repository: GITHUB_REPO, need_appstore_submission: true, milestone_duration: 7, number_of_days_from_code_freeze_to_release: 10)
-    close_milestone(repository: GITHUB_REPO, milestone: version)
+    removebranchprotection(
+      repository: GITHUB_REPO,
+      branch: "release/#{version}"
+    )
+    setfrozentag(
+      repository: GITHUB_REPO,
+      milestone: version,
+      freeze: false
+    )
+    create_new_milestone(
+      repository: GITHUB_REPO,
+      need_appstore_submission: true,
+      milestone_duration: 7,
+      number_of_days_from_code_freeze_to_release: 10
+    )
+    close_milestone(
+      repository: GITHUB_REPO,
+      milestone: version
+    )
 
     # Start the build
     trigger_release_build(branch_to_build: "release/#{version}")
@@ -369,10 +394,18 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads for distribution'
   lane :build_and_upload_beta do |options|
-    ios_build_prechecks(skip_confirm: options[:skip_confirm], internal: false, external: true)
+    ios_build_prechecks(
+      skip_confirm: options[:skip_confirm],
+      internal: false,
+      external: true
+    )
     ios_build_preflight
-    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], beta_release: true,
-                         create_release: options[:create_gh_release])
+    build_and_upload_itc(
+      skip_prechecks: true,
+      skip_confirm: options[:skip_confirm],
+      beta_release: true,
+      create_release: options[:create_gh_release]
+    )
   end
 
   #####################################################################################
@@ -391,10 +424,18 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads for distribution'
   lane :build_and_upload_release do |options|
-    ios_build_prechecks(skip_confirm: options[:skip_confirm], internal: false, external: true)
+    ios_build_prechecks(
+      skip_confirm: options[:skip_confirm],
+      internal: false,
+      external: true
+    )
     ios_build_preflight
-    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], beta_release: false,
-                         create_release: options[:create_gh_release])
+    build_and_upload_itc(
+      skip_prechecks: true,
+      skip_confirm: options[:skip_confirm],
+      beta_release: false,
+      create_release: options[:create_gh_release]
+    )
   end
 
   #####################################################################################
@@ -407,7 +448,10 @@ platform :ios do
   #
   #####################################################################################
   lane :trigger_beta_build do |options|
-    trigger_buildkite_release_build(branch: options[:branch_to_build], beta: true)
+    trigger_buildkite_release_build(
+      branch: options[:branch_to_build],
+      beta: true
+    )
   end
 
   #####################################################################################
@@ -420,7 +464,10 @@ platform :ios do
   #
   #####################################################################################
   lane :trigger_release_build do |options|
-    trigger_buildkite_release_build(branch: options[:branch_to_build], beta: false)
+    trigger_buildkite_release_build(
+      branch: options[:branch_to_build],
+      beta: false
+    )
   end
 
   #####################################################################################
@@ -442,7 +489,10 @@ platform :ios do
     ensure_sentry_installed
 
     unless options[:skip_prechecks]
-      ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true)
+      ios_build_prechecks(
+        skip_confirm: options[:skip_confirm],
+        external: true
+      )
       ios_build_preflight
       xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
     end
@@ -476,11 +526,13 @@ platform :ios do
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
       version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
-      create_release(repository: GITHUB_REPO,
-                     version: version,
-                     release_notes_file_path: RELEASE_NOTES_PATH,
-                     release_assets: archive_zip_path.to_s,
-                     prerelease: options[:beta_release])
+      create_release(
+        repository: GITHUB_REPO,
+        version: version,
+        release_notes_file_path: RELEASE_NOTES_PATH,
+        release_assets: archive_zip_path.to_s,
+        prerelease: options[:beta_release]
+      )
 
       sh("rm #{archive_zip_path}")
     end
@@ -777,7 +829,7 @@ platform :ios do
 
   desc 'Downloads localized metadata for App Store Connect from GlotPress'
   lane :download_localized_metadata_from_glotpress do
-    metadata_directory = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'metadata')
+    metadata_directory = FASTLANE_METADATA_FOLDER
 
     # FIXME: We should make the `fastlane/metadata/default/release_notes.txt` path be the source of truth for the original copies in the future.
     # (will require changes in the `update_appstore_strings` lane, the Release Scenario, the MC tool to generate the announcement post…)
@@ -823,7 +875,10 @@ platform :ios do
     end
 
     # Commit
-    git_add(path: files_to_commit, shell_escape: false)
+    git_add(
+      path: files_to_commit,
+      shell_escape: false
+    )
     git_commit(
       path: files_to_commit,
       message: 'Update metadata translations',
@@ -855,11 +910,13 @@ platform :ios do
 
     metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
 
-    gp_downloadmetadata(project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-                        target_files: files,
-                        locales: metadata_locales,
-                        source_locale: 'en-US',
-                        download_path: './fastlane/metadata')
+    gp_downloadmetadata(
+      project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
+      target_files: files,
+      locales: metadata_locales,
+      source_locale: 'en-US',
+      download_path: FASTLANE_METADATA_FOLDER
+    )
 
     # Copy appstoreres (screenshot-related) txt files into `en-US`
     en_us_path = File.join(Dir.pwd, 'metadata', 'en-US')
@@ -1077,7 +1134,10 @@ lane :test_without_building do |options|
     fail_build: false
   )
 
-  trainer(path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH], fail_build: true)
+  trainer(
+    path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH],
+    fail_build: true
+  )
 end
 
 # -----------------------------------------------------------------------------------

@@ -15,9 +15,11 @@ GITHUB_REPO = 'woocommerce/woocommerce-ios'
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
 RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
+RELEASE_NOTES_PATH = File.join(RESOURCES_FOLDER, 'release_notes.txt')
 FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
+WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SIMULATOR_VERSION = '15.5' # For screenshots
 SCREENSHOT_DEVICES = [
@@ -178,8 +180,8 @@ platform :ios do
     new_version = ios_get_app_version
     extract_release_notes_for_version(
       version: new_version,
-      release_notes_file_path: 'RELEASE-NOTES.txt',
-      extracted_notes_file_path: File.join(RESOURCES_FOLDER, 'release_notes.txt')
+      release_notes_file_path: File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt'),
+      extracted_notes_file_path: RELEASE_NOTES_PATH)
     )
     ios_update_release_notes(new_version: new_version)
     setbranchprotection(repository: GITHUB_REPO, branch: "release/#{new_version}")
@@ -221,7 +223,7 @@ platform :ios do
     source_metadata_folder = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'appstoreres', 'metadata', 'source')
 
     files = {
-      whats_new: File.join(RESOURCES_FOLDER, 'release_notes.txt'),
+      whats_new: RELEASE_NOTES_PATH,
       app_store_subtitle: File.join(source_metadata_folder, 'subtitle.txt'),
       app_store_desc: File.join(source_metadata_folder, 'description.txt'),
       app_store_keywords: File.join(source_metadata_folder, 'keywords.txt'),
@@ -448,7 +450,7 @@ platform :ios do
 
     gym(
       scheme: 'WooCommerce',
-      workspace: './WooCommerce.xcworkspace',
+      workspace: WORKSPACE_PATH,
       clean: true,
       export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
@@ -475,7 +477,7 @@ platform :ios do
       version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
       create_release(repository: GITHUB_REPO,
                      version: version,
-                     release_notes_file_path: './WooCommerce/Resources/release_notes.txt',
+                     release_notes_file_path: RELEASE_NOTES_PATH,
                      release_assets: archive_zip_path.to_s,
                      prerelease: options[:beta_release])
 
@@ -513,7 +515,7 @@ platform :ios do
 
     gym(
       scheme: 'WooCommerce Alpha',
-      workspace: 'WooCommerce.xcworkspace',
+      workspace: WORKSPACE_PATH,
       export_method: 'enterprise',
       clean: true,
       output_directory: 'build',
@@ -578,7 +580,7 @@ platform :ios do
     xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     run_tests(
-      workspace: 'WooCommerce.xcworkspace',
+      workspace: WORKSPACE_PATH,
       scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
       build_for_testing: true,
@@ -625,7 +627,7 @@ platform :ios do
     xcversion
 
     scan(
-      workspace: 'WooCommerce.xcworkspace',
+      workspace: WORKSPACE_PATH,
       scheme: 'WooCommerceScreenshots',
       build_for_testing: true,
       derived_data_path: DERIVED_DATA_DIR
@@ -732,7 +734,7 @@ platform :ios do
     Snapshot.config = FastlaneCore::Configuration.create(
       Snapshot::Options.available_options,
       {
-        workspace: '../WooCommerce.xcworkspace',
+        workspace: WORKSPACE_PATH,
         scheme: 'WooCommerceScreenshots'
       }
     )
@@ -780,8 +782,7 @@ platform :ios do
     # (will require changes in the `update_appstore_strings` lane, the Release Scenario, the MC tool to generate the announcement post…)
     #
     # In the meantime, just copy the file to the right place for `deliver` to find, i.e. to the `default` pseudo-locale which is used as fallback
-    release_notes_source = File.join(RESOURCES_FOLDER, 'release_notes.txt')
-    FileUtils.cp(release_notes_source, File.join(metadata_directory, 'default', 'release_notes.txt'))
+    FileUtils.cp(RELEASE_NOTES_PATH, File.join(metadata_directory, 'default', 'release_notes.txt'))
 
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
@@ -1061,7 +1062,7 @@ lane :test_without_building do |options|
   parallel_testing_value = options[:name] == 'UITests'
 
   run_tests(
-    workspace: 'WooCommerce.xcworkspace',
+    workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
     device: options[:device],
     parallel_testing: parallel_testing_value,

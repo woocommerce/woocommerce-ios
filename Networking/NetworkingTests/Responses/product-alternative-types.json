@@ -44,9 +44,9 @@
             "sold_individually": null,
             "weight": 213,
             "dimensions": {
-                "length": "12",
-                "width": "33",
-                "height": "54"
+                "length": 12,
+                "width": 33,
+                "height": 54
             },
             "shipping_required": false,
             "shipping_taxable": false,

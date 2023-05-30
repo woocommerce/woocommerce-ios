@@ -59,6 +59,14 @@ final class DashboardViewModel {
     func reloadStoreOnboardingTasks() async {
         await storeOnboardingViewModel.reloadTasks()
     }
+    
+    func trackStatsTimezone(localTimeZone: TimeZone, siteTimezone: TimeZone) {
+        guard localTimeZone.secondsFromGMT() != siteTimezone.secondsFromGMT() else {
+            return
+        }
+        
+        //analytics.track(<#T##stat: WooAnalyticsStat##WooAnalyticsStat#>)
+    }
 
     /// Syncs store stats for dashboard UI.
     func syncStats(for siteID: Int64,

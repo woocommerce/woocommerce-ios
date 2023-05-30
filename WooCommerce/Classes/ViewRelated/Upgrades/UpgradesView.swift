@@ -73,14 +73,12 @@ struct UpgradesView: View {
 
                 ForEach(viewModel.freeTrialFeatures, id: \.title) { feature in
                     HStack {
-                        Image(uiImage: feature.icon)
-                            .foregroundColor(Color(uiColor: .accent))
-
-                        Text(feature.title)
-                            .foregroundColor(Color(.text))
-                            .calloutStyle()
+                        // Follows a similar design than StoreOnboardingTaskView:
+                        StoreOnboardingTaskView(viewModel: StoreOnboardingTaskViewModel(task: .init(isComplete: false, type: .ftiap)),
+                                                showDivider: true,
+                                                isRedacted: false,
+                                                onTap: { _ in })
                     }
-                    .listRowSeparator(.hidden)
                 }
             }
             .renderedIf(viewModel.shouldShowFreeTrialFeatures)

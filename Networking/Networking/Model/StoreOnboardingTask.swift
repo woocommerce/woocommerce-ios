@@ -24,6 +24,7 @@ public extension StoreOnboardingTask {
         case payments
         case woocommercePayments
         case unsupported(String)
+        case ftiap
 
         public init(from decoder: Decoder) throws {
             let id = try decoder.singleValueContainer().decode(String.self)
@@ -63,6 +64,8 @@ private extension StoreOnboardingTask.TaskType {
             return 4
         case .unsupported:
             return 5
+        case .ftiap:
+            return 6
         }
     }
 }

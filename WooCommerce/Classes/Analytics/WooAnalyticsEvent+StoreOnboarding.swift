@@ -59,6 +59,8 @@ private extension StoreOnboardingTask.TaskType {
             return "payments"
         case .unsupported(let task):
             return task
+        case .ftiap:
+            return "ftiap"
         }
     }
 }

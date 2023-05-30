@@ -41,6 +41,10 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             icon = .checkCircleImage
             title = ""
             subtitle = ""
+        case .ftiap:
+            icon = .moneyIcon
+            title = "FTIAP Plan feature title"
+            subtitle = "FTIAP Plan feature description"
         }
     }
 }

@@ -65,6 +65,8 @@ final class StoreOnboardingCoordinator: Coordinator {
             showPaymentsSetup()
         case .unsupported:
             assertionFailure("Unexpected onboarding task: \(task)")
+        case .ftiap:
+            assertionFailure("no op")
         }
     }
 }

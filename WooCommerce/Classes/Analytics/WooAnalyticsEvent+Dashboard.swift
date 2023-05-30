@@ -6,6 +6,8 @@ extension WooAnalyticsEvent {
         /// Common event keys.
         private enum Keys {
             static let range = "range"
+            static let localTimezone = "local_timezone"
+            static let storeTimezone = "store_timezone"
         }
 
         /// Tracked when the store stats are loaded with fresh data either via first load, event driven refresh, or manual refresh.
@@ -36,7 +38,6 @@ extension WooAnalyticsEvent {
         /// - Parameter localTimezone: The current timezone of the device running the app.
         /// - Parameter storeTimezone: The store timezone defined by the API.
         static func dashboardTimezonesDiffers(localTimezone: TimeZone, storeTimezone: TimeZone) {
-            
         }
     }
 }

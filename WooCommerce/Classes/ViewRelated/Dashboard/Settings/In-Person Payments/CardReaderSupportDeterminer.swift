@@ -1,17 +1,20 @@
 import Foundation
 import Yosemite
+import CoreLocation
 
 protocol CardReaderSupportDetermining {
     func connectedReader() async -> CardReader?
     func hasPreviousTapToPayUsage() async -> Bool
     func siteSupportsLocalMobileReader() -> Bool
     func deviceSupportsLocalMobileReader() async -> Bool
+    var locationIsAuthorized: Bool { get }
 }
 
 final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     private let stores: StoresManager
     private let configuration: CardPresentPaymentsConfiguration
     private let siteID: Int64
+    private var locationManager: CLLocationManager = CLLocationManager()
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
@@ -19,6 +22,17 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         self.siteID = siteID
         self.configuration = configuration
         self.stores = stores
+    }
+
+    var locationIsAuthorized: Bool {
+        switch locationManager.authorizationStatus {
+        case .notDetermined, .restricted, .denied:
+            return false
+        case .authorizedAlways, .authorizedWhenInUse:
+            return true
+        @unknown default:
+            return false
+        }
     }
 
     @MainActor

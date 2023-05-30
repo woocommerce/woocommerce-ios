@@ -70,7 +70,8 @@ final class TapToPayReconnectionController {
         isReconnecting = true
         let supportDeterminer = supportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID)
         Task { @MainActor in
-            guard supportDeterminer.siteSupportsLocalMobileReader(),
+            guard supportDeterminer.locationIsAuthorized,
+                  supportDeterminer.siteSupportsLocalMobileReader(),
                   await supportDeterminer.deviceSupportsLocalMobileReader(),
                   await supportDeterminer.hasPreviousTapToPayUsage(),
                   await supportDeterminer.connectedReader() == nil,

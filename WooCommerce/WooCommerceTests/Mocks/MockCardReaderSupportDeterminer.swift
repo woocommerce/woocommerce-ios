@@ -3,6 +3,12 @@ import Yosemite
 @testable import WooCommerce
 
 final class MockCardReaderSupportDeterminer: CardReaderSupportDetermining {
+
+    var shouldReturnLocationIsAuthorized = false
+    var locationIsAuthorized: Bool {
+        return shouldReturnLocationIsAuthorized
+    }
+
     var shouldReturnConnectedReader: CardReader? = nil
     func connectedReader() async -> CardReader? {
         return shouldReturnConnectedReader

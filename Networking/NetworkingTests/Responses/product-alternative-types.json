@@ -28,7 +28,11 @@
             "total_sales": 0,
             "virtual": true,
             "downloadable": false,
-            "downloads": [],
+            "downloads": [{
+                "id" : 12345,
+                "name" : "Song #1",
+                "file" : "https://example.com/woo-single-1.ogg"
+              }],
             "download_limit": -1,
             "download_expiry": -1,
             "external_url": "http://somewhere.com",

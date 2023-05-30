@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import struct Yosemite.StoreOnboardingTask
 
 /// Main view for the plan settings.
 ///

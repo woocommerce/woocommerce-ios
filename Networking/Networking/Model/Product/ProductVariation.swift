@@ -275,7 +275,12 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
         let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
         let backordered = try container.decode(Bool.self, forKey: .backordered)
-        let weight = try container.decodeIfPresent(String.self, forKey: .weight)
+
+        // Even though a plain install of WooCommerce Core provides String values,
+        // some plugins alter the field value from String to Int or Decimal.
+        let weight = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                       forKey: .weight,
+                                                       alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
         let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
         let shippingClass = try container.decodeIfPresent(String.self, forKey: .shippingClass)
         let shippingClassID = try container.decode(Int64.self, forKey: .shippingClassID)

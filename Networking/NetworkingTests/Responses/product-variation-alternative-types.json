@@ -32,7 +32,7 @@
             "backorders": "notify",
             "backorders_allowed": true,
             "backordered": false,
-            "weight": "2.5",
+            "weight": 2.5,
             "dimensions": {
                 "length": "10",
                 "width": "2.5",

@@ -345,6 +345,7 @@ private extension PrivacySettingsViewController {
         if isPrivacyChoicesEnabled {
             cell.textLabel?.applySubheadlineStyle()
             cell.textLabel?.textColor = .textSubtle
+            cell.contentView.directionalLayoutMargins = .init(top: 0, leading: 0, bottom: 0, trailing: Constants.toggleDescriptionMargin)
         }
     }
 
@@ -596,6 +597,7 @@ private struct Constants {
     static let headerTitleInsets = UIEdgeInsets(top: 16, left: 14, bottom: 32, right: 14)
     static let footerInsets = UIEdgeInsets(top: 8, left: 16, bottom: 16, right: 16)
     static let footerPadding = CGFloat(44)
+    static let toggleDescriptionMargin = CGFloat(40)
 }
 
 private struct Section {

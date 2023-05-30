@@ -167,7 +167,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canShareProduct() -> Bool {
-        formType != .add
+        storesManager.sessionManager.defaultSite?.isPublic == true && formType != .add
     }
 
     func canDeleteProduct() -> Bool {

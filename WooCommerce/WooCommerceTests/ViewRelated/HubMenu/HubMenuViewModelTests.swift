@@ -8,7 +8,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
     func test_viewDidAppear_then_posts_notification() {
         // Given
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
         expectation(forNotification: .hubMenuViewDidAppear, object: nil, handler: nil)
 
         // When
@@ -23,7 +23,9 @@ final class HubMenuViewModelTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(isInboxOn: false)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService)
 
         // Then
         XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
@@ -58,7 +60,10 @@ final class HubMenuViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
+                                         stores: stores)
         viewModel.setupMenuElements()
 
         // Then both inbox and coupons are in the menu
@@ -98,7 +103,10 @@ final class HubMenuViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
+                                         stores: stores)
         viewModel.setupMenuElements()
 
         // Then
@@ -134,7 +142,10 @@ final class HubMenuViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
+                                         stores: stores)
         viewModel.setupMenuElements()
 
         // Then neither inbox nor coupons is in the menu
@@ -161,7 +172,10 @@ final class HubMenuViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
+                                         stores: stores)
         viewModel.setupMenuElements()
 
         // Then
@@ -184,7 +198,10 @@ final class HubMenuViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
+                                         stores: stores)
         viewModel.setupMenuElements()
 
         XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
@@ -202,6 +219,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
         // Then
@@ -217,6 +235,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
         // Then
@@ -232,6 +251,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
         // Then
         XCTAssertNotNil(viewModel.storeURL)
@@ -249,6 +269,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
         // Then
         XCTAssertNotNil(viewModel.woocommerceAdminURL)
@@ -266,6 +287,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
         // Then
         XCTAssertNotNil(viewModel.woocommerceAdminURL)
@@ -283,6 +305,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
         // Then
@@ -300,6 +323,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
         // Then
@@ -317,6 +341,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
         // Then
@@ -334,6 +359,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
         // Then
@@ -351,6 +377,7 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // When
         let viewModel = HubMenuViewModel(siteID: site.siteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores)
 
         // Then
@@ -366,7 +393,10 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
+                                         stores: stores)
         viewModel.setupMenuElements()
 
         XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
@@ -383,7 +413,10 @@ final class HubMenuViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: sessionManager)
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService, stores: stores)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
+                                         stores: stores)
         viewModel.setupMenuElements()
 
         XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in

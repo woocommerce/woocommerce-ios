@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-17 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-05-24 18:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -1158,6 +1158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message of the action sheet button that links to settings for camera access */
 "Camera access is required for SKU scanning. Please enable camera permissions in your device settings" = "SKU taraması için kamera erişimi gereklidir. Lütfen cihaz ayarlarınızda kamera izinlerini etkinleştirin";
 
+/* Message of alert that links to settings for camera access. */
+"Camera access is required for barcode scanning. Please enable camera permissions in your device settings" = "Barkod taraması için kamera erişimi gereklidir. Lütfen cihaz ayarlarınızda kamera izinlerini etkinleştirin";
+
 /* Error message format when capturing a unsupported media type with device camera */
 "Camera capture should not support media type: %@" = "Kamera çekimi şu medya türünü desteklemez: %@";
 
@@ -2231,6 +2234,7 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "Tekrar gösterme";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title to close the Scan to Pay screen
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2670,6 +2674,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "Kullanıcı bilgileri alınırken hata oluştu.";
 
+/* Error message in the Scan to Pay screen when the code cannot be generated. */
+"Error generating QR Code. Please try again later" = "QR Kodu oluşturulurken hata oluştu. Lütfen daha sonra tekrar deneyin";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Haritalar'da adres bulunurken hata oluştu";
 
@@ -2771,9 +2778,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Süre sonu: %1$@";
-
-/* Action on the local notification to remind the user of a newly created store. */
-"Explore" = "Keşfet";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Mağaza satışlarınızı nasıl artırabileceğinizi keşfedin.";
@@ -4076,6 +4080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Maksimum %1$@ tutarında harcama";
 
+/* Dismiss button title for modally presented Just in Time Messages */
+"Maybe Later" = "Daha Sonra";
+
 /* Country option for a site address. */
 "Mayotte" = "Mayotte";
 
@@ -4918,9 +4925,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Ürününüz çöp kutusuna atılıyor... ";
 
-/* Message of alert that links to settings for camera access. */
-"Please change your camera permissions in device settings." = "Lütfen cihaz ayarlarından kamera izinlerinizi değiştirin.";
-
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Lütfen okuyucuyu şarj edin";
 
@@ -5310,6 +5314,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Ürün bağlantısı";
+
+/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
+"Product not found. Failed to create a New Order" = "Ürün bulunamadı. Yeni Sipariş oluşturulamadı";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Ürün yayınlandı";
@@ -5859,6 +5866,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while saving a Variation remotely */
 "Saving your variation..." = "Varyasyonunuz kaydediliyor...";
 
+/* Title text on the Scan to Pay screen */
+"Scan QR and follow instructions" = "QR taratın ve talimatları izleyin";
+
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "SKU'yu güncellemek için barkodu tarayın";
 
@@ -5867,6 +5877,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Scan Products */
 "Scan products" = "Ürünleri tara";
+
+/* Scan to Pay method title on the select payment method screen */
+"Scan to Pay" = "Ödemek İçin Tara";
 
 /* Label for a cell informing the user that reader scanning is ongoing. */
 "Scanning for readers" = "Okuyucular taranıyor";
@@ -6417,6 +6430,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Üzgünüz, şu anda destek talebi oluşturamıyoruz, lütfen daha sonra tekrar deneyin.";
 
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "Maalesef okuyucuya bağlanılamadı. Lütfen tekrar deneyin.";
+
 /* Error message when the app can't create a support request. */
 "Sorry, we could not create your support request, please try again later." = "Üzgünüz, destek talebinizi oluşturamadık, lütfen daha sonra tekrar deneyin.";
 
@@ -6555,9 +6571,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Destek Talebi Gönder";
-
-/* Action on the local notification to suggest the user to subscribe to the trial plan. */
-"Subscribe" = "Abone ol";
 
 /* Display label for simple subscription product type.
    Title for Subscription row in the product form screen.
@@ -7299,9 +7312,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Bu, WooCommerce dışından aldıysanız (toplam), siparişinizi tamamlandı olarak işaretleyecektir.";
 
-/* Title of the local notification to remind the user of expiring free trial plan.The placeholder is the name of the user. */
-"Time’s almost up, %1$@!" = "Süre dolmak üzere, %1$@!";
-
 /* Country option for a site address. */
 "Timor-Leste" = "Doğu Timor";
 
@@ -7918,8 +7928,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Ürünleriniz güncelleniyor...";
 
-/* Action on the local notification to remind the user of the expiring free trial plan. */
-"Upgrade" = "Yükselt";
+/* Title for the WebView when upgrading a free trial plan */
+"Upgrade Now" = "Hemen Yükseltin";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8510,6 +8520,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
 "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Hesabınızda en az bir vadesi geçmiş gereksinim var. Şahsen Ödemeleri kullanmaya devam etmek için lütfen bu durumu giderin";
 
+/* Error message for a short value in Description row in Customs screen of Shipping Label flow */
+"You must provide a clear, specific description for every item." = "Her öğe için net ve belirli bir açıklama sağlamanız gerekir.";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Ürününüzün parolayla korunmasını sağlamak için bir parola eklemelisiniz";
 
@@ -8564,9 +8577,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Telefonunuz ödemeleri almak için birazdan hazır olacaktır...";
 
-/* Title for the privacy banner */
-"Your privacy is critically important to us and always has been. We use, store, and process your personal data to optimize our app (and your experience) in various ways. Some uses of your data we absolutely need in order to make things work, and others you" = "Kullanıcı gizliliğiniz bizim için her zaman çok önemli olmuştur. Uygulamamızı (ve deneyiminizi) çeşitli şekillerde optimize etmek için kişisel verilerinizi kullanır, saklar ve işleriz. Verilerinizin bazı kullanım durumlarına işlerin yürümesi için kesin olarak ihtiyacımız var, diğerlerini Ayarlarınızdan özelleştirebilirsiniz.";
-
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Güncelleme tamamlandıktan sonra okuyucunuz otomatik olarak yeniden başlayacak ve yeniden bağlanacaktır";
 
@@ -8591,12 +8601,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the store onboarding launched store screen. */
 "Your store is live!" = "Mağazanız yayında!";
 
-/* Title of the local notification about a newly created store */
-"Your store is ready!" = "Mağazanız hazır!";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"Your store is waiting!" = "Mağazanız bekliyor!";
-
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Mağazanız tercih ettiğiniz seçeneklere göre oluşturulacaktır!";
 
@@ -8606,8 +8610,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Destek talebiniz güvenli bir şekilde gelen kutumuza ulaştı. Mümkün olan en kısa sürede e-posta yoluyla yanıt vereceğiz.";
 
-/* Message of the free trial banner when there are no days left
-   Title of the local notification to remind the user of the expired free trial plan. */
+/* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Deneme süreniz sona erdi.";
 
 /* Error message when WooCommerce Payments is not installed */
@@ -8669,6 +8672,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "E-ticaret";
 
+/* The EU notice banner content describing how the shipping customs shall be configured */
+"eu_shipping_instructions_info" = "Şu anda Avrupa Birliği (AB) gümrük kurallarını uygulayan ülkelere gönderim yaparken her öğeyi net bir şekilde açıklamanız gerekiyor. Örneğin, kıyafet gönderiyorsanız, açıklamanın kabul edilebilir olması için bunun ne tür bir kıyafet olduğunu (ör. erkek gömleği, kadın yeleği, erkek ceketi) belirtmeniz gerekiyor. Aksi takdirde gümrükte gönderimler gecikebilir veya kesintiye uğrayabilir.";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "örnek.com";
@@ -8708,6 +8714,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "ödemeler, tap to pay, woocommerce, woo, şahsi ödemeler, şahsen ödemeler, ödeme alma, ödemeler, okuyucu, kart okuyucu, kart okuyucu sipariş etme";
+
+/* Subtitle for the privacy banner */
+"privacy_banner_subtitle" = "Kullanıcı gizliliğiniz bizim için her zaman çok önemli olmuştur. Uygulamamızı (ve deneyiminizi) çeşitli şekillerde optimize etmek için kişisel verilerinizi kullanır, saklar ve işleriz. İşlerin sorunsuz yürümesi için verilerinizi bazı şekillerde kesinlikle kullanmamız gerekiyor. Diğer kullanımları Ayarlarınızdan özelleştirebilirsiniz.";
 
 /* Label shown on the launch store task. */
 "private" = "gizli";
@@ -8813,8 +8822,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Åland Adaları";
 
+/* Title of the local notification to remind the user of expiring free trial plan. */
+"⏰ Time’s running out on your free trial!" = "⏰ Ücretsiz deneme sürümünüz için zamanınız azalıyor!";
+
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ Yapay zeka içerik üreticisi mevcut.";
+
+/* Title of the local notification to remind the user of the expired free trial plan. */
+"🌟 Keep your business going with our plan!" = "🌟 Paketimizle işletmenizin yoluna devam etmesini sağlayın!";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Sipariş Tamamlandı";
@@ -8827,4 +8842,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Ürünlerin geri ödemesi başarıyla yapıldı";
+
+/* Title of the local notification about a newly created store */
+"🎉 Your store is ready!" = "🎉 Mağazanız hazır!";
+
+/* Title of the local notification suggesting a trial plan subscription. */
+"🛍️ Your store is waiting!" = "🛍️ Mağazanız bekliyor!";
 

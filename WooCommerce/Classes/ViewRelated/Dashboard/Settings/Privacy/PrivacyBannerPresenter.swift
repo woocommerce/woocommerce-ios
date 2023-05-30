@@ -10,8 +10,13 @@ final class PrivacyBannerPresenter {
     ///
     private let defaults: UserDefaults
 
-    init(defaults: UserDefaults = UserDefaults.standard) {
+    /// Analytics manager.
+    ///
+    private let analytics: Analytics
+
+    init(defaults: UserDefaults = UserDefaults.standard, analytics: Analytics = ServiceLocator.analytics) {
         self.defaults = defaults
+        self.analytics = analytics
     }
 
     /// Present the banner when the appropriate conditions are met.
@@ -62,7 +67,10 @@ final class PrivacyBannerPresenter {
         })
 
         let bottomSheetViewController = BottomSheetViewController(childViewController: privacyBanner)
+        bottomSheetViewController.isModalInPresentation = true
         bottomSheetViewController.show(from: viewController)
+
+        analytics.track(event: .PrivacyChoicesBanner.bannerPresented())
     }
 
     /// Presents an error notice and provide a retry action to update the analytics setting.
@@ -90,5 +98,17 @@ extension PrivacyBannerPresenter {
         static let errorTitle = NSLocalizedString("There was an error saving your privacy choices.",
                                                   comment: "Notice title when there is an error saving the privacy banner choice")
         static let retry = NSLocalizedString("Retry", comment: "Retry title on the notice action button")
+    }
+}
+
+extension BottomSheetViewController {
+    /// Temporary hack to prevent the `PrivacyBannerViewController` to be dismissed.
+    /// This should be changed once https://github.com/wordpress-mobile/WordPressUI-iOS/pull/126 is merged.
+    ///
+    public override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        if children.first is PrivacyBannerViewController {
+            return
+        }
+        super.dismiss(animated: flag, completion: completion)
     }
 }

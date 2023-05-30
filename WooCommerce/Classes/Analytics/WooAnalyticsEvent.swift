@@ -1893,6 +1893,8 @@ extension WooAnalyticsEvent {
         enum LearnMoreLinkSource {
             case paymentsMenu
             case paymentMethods
+            case tapToPaySummary
+            case manageCardReader
 
             var trackingValue: String {
                 switch self {
@@ -1900,6 +1902,10 @@ extension WooAnalyticsEvent {
                     return "payments_menu"
                 case .paymentMethods:
                     return "payment_methods"
+                case .tapToPaySummary:
+                    return "tap_to_pay_summary"
+                case .manageCardReader:
+                    return "manage_card_reader"
                 }
             }
         }
@@ -2377,6 +2383,25 @@ extension WooAnalyticsEvent {
 
         static func onEUShippingNoticeLearnMoreTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .euShippingNoticeLearnMoreTapped, properties: [:])
+        }
+    }
+}
+
+
+// MARK: - Privacy Choices Banner
+//
+extension WooAnalyticsEvent {
+    enum PrivacyChoicesBanner {
+        static func bannerPresented() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .privacyChoicesBannerPresented, properties: [:])
+        }
+
+        static func settingsButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .privacyChoicesSettingsButtonTapped, properties: [:])
+        }
+
+        static func saveButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .privacyChoicesSaveButtonTapped, properties: [:])
         }
     }
 }

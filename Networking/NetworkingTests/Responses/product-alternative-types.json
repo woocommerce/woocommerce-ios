@@ -42,7 +42,7 @@
             "backorders_allowed": false,
             "backordered": false,
             "sold_individually": null,
-            "weight": "213",
+            "weight": 213,
             "dimensions": {
                 "length": "12",
                 "width": "33",

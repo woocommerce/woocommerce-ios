@@ -118,6 +118,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertTrue(product.purchasable)
         XCTAssertEqual(product.permalink, "")
         XCTAssertEqual(product.sku, "123")
+        XCTAssertEqual(product.weight, "213")
     }
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string

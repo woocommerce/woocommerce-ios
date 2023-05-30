@@ -2,7 +2,7 @@
 
 13.9
 -----
-
+- [*] Orders: Allow alternative types for the `taxID` in `ShippingLineTax` or `sku` in `OrderItem`, as some third-party plugins alter the type in the API. This helps with the order list not loading due to order decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/9844]
 
 13.8
 -----

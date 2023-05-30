@@ -357,7 +357,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
         let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
-        let sku = try container.decodeIfPresent(String.self, forKey: .sku)
+
+        // Even though a plain install of WooCommerce Core provides String values,
+        // some plugins alter the field value from String to Int or Decimal.
+        let sku = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                    forKey: .sku,
+                                                    alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
 
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.

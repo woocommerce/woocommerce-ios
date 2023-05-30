@@ -28,6 +28,20 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
     }
 }
 
+
+struct FeatureDetailsView: View {
+
+    @Environment(\.presentationMode) var presentationMode
+
+    var forFeature: StoreOnboardingTask
+
+    var body: some View {
+        HStack {
+            Text("Description of the specific feature")
+        }
+    }
+}
+
 /// Main view for the plan settings.
 ///
 struct UpgradesView: View {
@@ -41,8 +55,17 @@ struct UpgradesView: View {
     var onReportIssueTapped: (() -> ())?
 
     var onUpgradeButtonTapped: (() -> ())?
+    /// Present details per feature
+    ///
+    var onFeatureDescriptionTapped: ((StoreOnboardingTask) -> ())?
+
+    // Present upgrades as sheet for now
     @State var presentingUpgrades = false
+    // Present details for each feature
+    @State var isFeatureDetailsPresented = false
+    //
     @Environment(\.presentationMode) var presentationMode
+
     var body: some View {
         List {
             Section(content: {
@@ -78,7 +101,16 @@ struct UpgradesView: View {
                         StoreOnboardingTaskView(viewModel: StoreOnboardingTaskViewModel(task: .init(isComplete: false, type: .ftiap)),
                                                 showDivider: true,
                                                 isRedacted: false,
-                                                onTap: { _ in })
+                                                onTap: { featureDetails in
+                            isFeatureDetailsPresented = true
+                            onFeatureDescriptionTapped?(featureDetails)
+                        })
+                        .sheet(isPresented: $isFeatureDetailsPresented, onDismiss: {
+                            // This should return to the previous view, not dismiss entirely
+                            presentationMode.wrappedValue.dismiss()
+                        }, content: {
+                            FeatureDetailsView(forFeature: .init(isComplete: false, type: .ftiap))
+                        })
                     }
                 }
             }

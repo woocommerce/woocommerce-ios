@@ -59,14 +59,6 @@ final class DashboardViewModel {
     func reloadStoreOnboardingTasks() async {
         await storeOnboardingViewModel.reloadTasks()
     }
-    
-    func trackStatsTimezone(localTimeZone: TimeZone, siteTimezone: TimeZone) {
-        guard localTimeZone.secondsFromGMT() != siteTimezone.secondsFromGMT() else {
-            return
-        }
-        
-        //analytics.track(<#T##stat: WooAnalyticsStat##WooAnalyticsStat#>)
-    }
 
     /// Syncs store stats for dashboard UI.
     func syncStats(for siteID: Int64,
@@ -186,6 +178,16 @@ final class DashboardViewModel {
         } catch {
             await syncJustInTimeMessages(for: siteID)
         }
+    }
+
+    /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
+    /// 
+    func trackStatsTimezone(localTimeZone: TimeZone, siteTimezone: TimeZone) {
+        guard localTimeZone.secondsFromGMT() != siteTimezone.secondsFromGMT() else {
+            return
+        }
+        
+        analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localTimeZone, storeTimezone: siteTimezone))
     }
 
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.

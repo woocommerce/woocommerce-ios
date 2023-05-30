@@ -39,6 +39,9 @@ struct UpgradesView: View {
     ///
     var onReportIssueTapped: (() -> ())?
 
+    var onUpgradeButtonTapped: (() -> ())?
+    @State var presentingUpgrades = false
+    @Environment(\.presentationMode) var presentationMode
     var body: some View {
         List {
             Section(content: {
@@ -49,6 +52,18 @@ struct UpgradesView: View {
                 Text(Localization.subscriptionStatus)
             }, footer: {
                 Text(viewModel.planInfo)
+            })
+            Section(content: {
+                Button(Localization.upgradeNow) {
+                    viewModel.upgradeNowTapped()
+                    onUpgradeButtonTapped?()
+                    presentingUpgrades = true
+                }
+                .sheet(isPresented: $presentingUpgrades, onDismiss: {
+                    presentationMode.wrappedValue.dismiss()
+                }, content: {
+                    InAppPurchasesDebugView()
+                })
             })
 
             VStack(alignment: .leading) {
@@ -103,6 +118,7 @@ private extension UpgradesView {
         static let experienceFeatures = NSLocalizedString("Experience more of our features and services beyond the app",
                                                     comment: "Title for the features list in the Subscriptions Screen")
         static let cancelTrial = NSLocalizedString("Cancel Free Trial", comment: "Title for the button to cancel a free trial")
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "")
         static let troubleshooting = NSLocalizedString("TROUBLESHOOTING",
                                                        comment: "Title for the section to contact support on the subscriptions view. Uppercased")
         static let report = NSLocalizedString("Report Subscription Issue", comment: "Title for the button to contact support on the Subscriptions view")

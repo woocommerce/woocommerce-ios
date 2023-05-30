@@ -33,7 +33,7 @@ final class FreeTrialBannerPresenter {
     /// String for the banner action button text
     ///
     private var bannerActionText: String {
-        return Localization.learnMore
+        return Localization.upgradeNow
     }
 
     /// - Parameters:
@@ -154,5 +154,6 @@ private extension FreeTrialBannerPresenter {
 private extension FreeTrialBannerPresenter {
     enum Localization {
         static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
+        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "")
     }
 }

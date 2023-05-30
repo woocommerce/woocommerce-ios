@@ -71,6 +71,10 @@ final class UpgradesViewModel: ObservableObject {
     func loadPlan() {
         storePlanSynchronizer.reloadPlan()
     }
+    
+    func upgradeNowTapped() {
+        print("🍉 Upgrade now tapped")
+    }
 }
 
 // MARK: Helpers

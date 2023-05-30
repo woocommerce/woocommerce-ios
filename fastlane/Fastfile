@@ -10,16 +10,20 @@ USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
 SECRETS_DIR = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets')
 PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
-GHHELPER_REPO = 'woocommerce/woocommerce-ios'
+GITHUB_REPO = 'woocommerce/woocommerce-ios'
 
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
 RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
+RELEASE_NOTES_PATH = File.join(RESOURCES_FOLDER, 'release_notes.txt')
 FASTLANE_DIR = __dir__
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
+FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
+WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
 IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
 SIMULATOR_VERSION = '15.5' # For screenshots
+SCREENSHOTS_SCHEME = 'WooCommerceScreenshots'
 SCREENSHOT_DEVICES = [
   'iPhone 11 Pro Max',
   'iPhone 8 Plus',
@@ -178,13 +182,19 @@ platform :ios do
     new_version = ios_get_app_version
     extract_release_notes_for_version(
       version: new_version,
-      release_notes_file_path: 'RELEASE-NOTES.txt',
-      extracted_notes_file_path: File.join(RESOURCES_FOLDER, 'release_notes.txt')
+      release_notes_file_path: File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt'),
+      extracted_notes_file_path: RELEASE_NOTES_PATH
     )
     ios_update_release_notes(new_version: new_version)
-    setbranchprotection(repository: GHHELPER_REPO, branch: "release/#{new_version}")
-    setfrozentag(repository: GHHELPER_REPO, milestone: new_version)
-    ios_check_beta_deps(podfile: 'Podfile')
+    setbranchprotection(
+      repository: GITHUB_REPO,
+      branch: "release/#{new_version}"
+    )
+    setfrozentag(
+      repository: GITHUB_REPO,
+      milestone: new_version
+    )
+    ios_check_beta_deps(podfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile'))
   end
 
   #####################################################################################
@@ -218,10 +228,10 @@ platform :ios do
   #
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
-    source_metadata_folder = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'appstoreres', 'metadata', 'source')
+    source_metadata_folder = File.join(FASTLANE_DIR, 'appstoreres', 'metadata', 'source')
 
     files = {
-      whats_new: File.join(RESOURCES_FOLDER, 'release_notes.txt'),
+      whats_new: RELEASE_NOTES_PATH,
       app_store_subtitle: File.join(source_metadata_folder, 'subtitle.txt'),
       app_store_desc: File.join(source_metadata_folder, 'description.txt'),
       app_store_keywords: File.join(source_metadata_folder, 'keywords.txt'),
@@ -281,7 +291,10 @@ platform :ios do
   desc 'Creates a new hotfix branch for the given version:x.y.z. The branch will be cut from the tag x.y of the previous release'
   lane :new_hotfix_release do |options|
     prev_ver = ios_hotfix_prechecks(options)
-    ios_bump_version_hotfix(previous_version: prev_ver, version: options[:version])
+    ios_bump_version_hotfix(
+      previous_version: prev_ver,
+      version: options[:version]
+    )
   end
 
   #####################################################################################
@@ -341,10 +354,25 @@ platform :ios do
 
     # Wrap up
     version = ios_get_app_version
-    removebranchprotection(repository: GHHELPER_REPO, branch: "release/#{version}")
-    setfrozentag(repository: GHHELPER_REPO, milestone: version, freeze: false)
-    create_new_milestone(repository: GHHELPER_REPO, need_appstore_submission: true, milestone_duration: 7, number_of_days_from_code_freeze_to_release: 10)
-    close_milestone(repository: GHHELPER_REPO, milestone: version)
+    removebranchprotection(
+      repository: GITHUB_REPO,
+      branch: "release/#{version}"
+    )
+    setfrozentag(
+      repository: GITHUB_REPO,
+      milestone: version,
+      freeze: false
+    )
+    create_new_milestone(
+      repository: GITHUB_REPO,
+      need_appstore_submission: true,
+      milestone_duration: 7,
+      number_of_days_from_code_freeze_to_release: 10
+    )
+    close_milestone(
+      repository: GITHUB_REPO,
+      milestone: version
+    )
 
     # Start the build
     trigger_release_build(branch_to_build: "release/#{version}")
@@ -366,10 +394,18 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads for distribution'
   lane :build_and_upload_beta do |options|
-    ios_build_prechecks(skip_confirm: options[:skip_confirm], internal: false, external: true)
+    ios_build_prechecks(
+      skip_confirm: options[:skip_confirm],
+      internal: false,
+      external: true
+    )
     ios_build_preflight
-    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], beta_release: true,
-                         create_release: options[:create_gh_release])
+    build_and_upload_itc(
+      skip_prechecks: true,
+      skip_confirm: options[:skip_confirm],
+      beta_release: true,
+      create_release: options[:create_gh_release]
+    )
   end
 
   #####################################################################################
@@ -388,10 +424,18 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads for distribution'
   lane :build_and_upload_release do |options|
-    ios_build_prechecks(skip_confirm: options[:skip_confirm], internal: false, external: true)
+    ios_build_prechecks(
+      skip_confirm: options[:skip_confirm],
+      internal: false,
+      external: true
+    )
     ios_build_preflight
-    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], beta_release: false,
-                         create_release: options[:create_gh_release])
+    build_and_upload_itc(
+      skip_prechecks: true,
+      skip_confirm: options[:skip_confirm],
+      beta_release: false,
+      create_release: options[:create_gh_release]
+    )
   end
 
   #####################################################################################
@@ -404,7 +448,10 @@ platform :ios do
   #
   #####################################################################################
   lane :trigger_beta_build do |options|
-    trigger_buildkite_release_build(branch: options[:branch_to_build], beta: true)
+    trigger_buildkite_release_build(
+      branch: options[:branch_to_build],
+      beta: true
+    )
   end
 
   #####################################################################################
@@ -417,7 +464,10 @@ platform :ios do
   #
   #####################################################################################
   lane :trigger_release_build do |options|
-    trigger_buildkite_release_build(branch: options[:branch_to_build], beta: false)
+    trigger_buildkite_release_build(
+      branch: options[:branch_to_build],
+      beta: false
+    )
   end
 
   #####################################################################################
@@ -439,16 +489,19 @@ platform :ios do
     ensure_sentry_installed
 
     unless options[:skip_prechecks]
-      ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true)
+      ios_build_prechecks(
+        skip_confirm: options[:skip_confirm],
+        external: true
+      )
       ios_build_preflight
-      xcversion() # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+      xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
     end
 
     appstore_code_signing
 
     gym(
       scheme: 'WooCommerce',
-      workspace: './WooCommerce.xcworkspace',
+      workspace: WORKSPACE_PATH,
       clean: true,
       export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
@@ -464,7 +517,7 @@ platform :ios do
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
       org_slug: 'a8c',
       project_slug: 'woocommerce-ios',
-      dsym_path: './WooCommerce.app.dSYM.zip'
+      dsym_path: File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.app.dSYM.zip')
     )
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
@@ -473,11 +526,13 @@ platform :ios do
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
       version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
-      create_release(repository: GHHELPER_REPO,
-                     version: version,
-                     release_notes_file_path: './WooCommerce/Resources/release_notes.txt',
-                     release_assets: archive_zip_path.to_s,
-                     prerelease: options[:beta_release])
+      create_release(
+        repository: GITHUB_REPO,
+        version: version,
+        release_notes_file_path: RELEASE_NOTES_PATH,
+        release_assets: archive_zip_path.to_s,
+        prerelease: options[:beta_release]
+      )
 
       sh("rm #{archive_zip_path}")
     end
@@ -498,12 +553,12 @@ platform :ios do
   desc 'Builds and uploads an installable build'
   lane :build_and_upload_installable_build do
     ensure_sentry_installed
-    xcversion() # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+    xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     alpha_code_signing
 
     # Get the current build version, and update it if needed
-    version_config_path = '../config/Version.Public.xcconfig'
+    version_config_path = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xcconfig')
     versions = Xcodeproj::Config.new(File.new(version_config_path)).to_hash
     build_number = generate_installable_build_number
     UI.message("Updating build version to #{build_number}")
@@ -513,7 +568,7 @@ platform :ios do
 
     gym(
       scheme: 'WooCommerce Alpha',
-      workspace: 'WooCommerce.xcworkspace',
+      workspace: WORKSPACE_PATH,
       export_method: 'enterprise',
       clean: true,
       output_directory: 'build',
@@ -575,10 +630,10 @@ platform :ios do
   #####################################################################################
   desc 'Build for Testing'
   lane :build_for_testing do |options|
-    xcversion() # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+    xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     run_tests(
-      workspace: 'WooCommerce.xcworkspace',
+      workspace: WORKSPACE_PATH,
       scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
       build_for_testing: true,
@@ -613,54 +668,6 @@ platform :ios do
     )
   end
 
-  #####################################################################################
-  # register_new_device
-  # -----------------------------------------------------------------------------------
-  # This lane helps a developer register a new device in the App Store Portal
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane register_new_device
-  #
-  # Example:
-  # bundle exec fastlane register_new_device
-  #####################################################################################
-  desc 'Registers a Device in the developer console'
-  lane :register_new_device do |options|
-    device_name = UI.input('Device Name (leave empty if already added in portal): ') if options[:device_name].nil?
-    unless device_name.empty?
-      device_id = UI.input('Device ID: ') if options[:device_id].nil?
-      UI.message "Registering #{device_name} with ID #{device_id} and registering it with any provisioning profiles associated with these bundle identifiers:"
-      MAIN_BUNDLE_IDENTIFIERS.each do |identifier|
-        puts "\t#{identifier}"
-      end
-
-      # Register the user's device
-      register_device(
-        name: device_name,
-        udid: device_id,
-        team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-        api_key_path: ASC_KEY_PATH
-      )
-    end
-
-    # We're about to use `add_development_certificates_to_provisioning_profiles` and `add_all_devices_to_provisioning_profiles`.
-    # These actions use Developer Portal APIs that don't yet support authentication via API key (-.-').
-    # Let's preemptively ask for and set the email here to avoid being asked twice for it if not set.
-    prompt_user_for_app_store_connect_credentials
-
-    # Add all development certificates to the provisioning profiles (just in case – this is an easy step to miss)
-    add_development_certificates_to_provisioning_profiles(
-      team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      app_identifier: MAIN_BUNDLE_IDENTIFIERS
-    )
-
-    # Add all devices to the provisioning profiles
-    add_all_devices_to_provisioning_profiles(
-      team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      app_identifier: MAIN_BUNDLE_IDENTIFIERS
-    )
-  end
-
   ########################################################################
   # Screenshot Lanes
   ########################################################################
@@ -670,11 +677,11 @@ platform :ios do
     sh('bundle exec pod install --verbose')
 
     # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion()
+    xcversion
 
     scan(
-      workspace: 'WooCommerce.xcworkspace',
-      scheme: 'WooCommerceScreenshots',
+      workspace: WORKSPACE_PATH,
+      scheme: SCREENSHOTS_SCHEME,
       build_for_testing: true,
       derived_data_path: DERIVED_DATA_DIR
     )
@@ -683,7 +690,7 @@ platform :ios do
   desc 'Take Screenshots'
   lane :take_screenshots do |options|
     # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion()
+    xcversion
 
     # By default, clear previous screenshots
     languages = IOS_LOCALES
@@ -702,7 +709,7 @@ platform :ios do
     rebuild_screenshot_devices
 
     capture_ios_screenshots(
-      scheme: 'WooCommerceScreenshots',
+      scheme: SCREENSHOTS_SCHEME,
 
       localize_simulator: true,
       languages: languages,
@@ -717,7 +724,7 @@ platform :ios do
       output_directory: SCREENSHOTS_DIR,
 
       # Output the simulator logs for debugging
-      buildlog_path: './fastlane/logs',
+      buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       output_simulator_logs: true,
       result_bundle: true,
       namespace_log_files: true,
@@ -780,8 +787,8 @@ platform :ios do
     Snapshot.config = FastlaneCore::Configuration.create(
       Snapshot::Options.available_options,
       {
-        workspace: '../WooCommerce.xcworkspace',
-        scheme: 'WooCommerceScreenshots'
+        workspace: WORKSPACE_PATH,
+        scheme: SCREENSHOTS_SCHEME
       }
     )
 
@@ -822,14 +829,13 @@ platform :ios do
 
   desc 'Downloads localized metadata for App Store Connect from GlotPress'
   lane :download_localized_metadata_from_glotpress do
-    metadata_directory = File.join(PROJECT_ROOT_FOLDER, 'fastlane', 'metadata')
+    metadata_directory = FASTLANE_METADATA_FOLDER
 
     # FIXME: We should make the `fastlane/metadata/default/release_notes.txt` path be the source of truth for the original copies in the future.
     # (will require changes in the `update_appstore_strings` lane, the Release Scenario, the MC tool to generate the announcement post…)
     #
     # In the meantime, just copy the file to the right place for `deliver` to find, i.e. to the `default` pseudo-locale which is used as fallback
-    release_notes_source = File.join(RESOURCES_FOLDER, 'release_notes.txt')
-    FileUtils.cp(release_notes_source, File.join(metadata_directory, 'default', 'release_notes.txt'))
+    FileUtils.cp(RELEASE_NOTES_PATH, File.join(metadata_directory, 'default', 'release_notes.txt'))
 
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
@@ -869,7 +875,10 @@ platform :ios do
     end
 
     # Commit
-    git_add(path: files_to_commit, shell_escape: false)
+    git_add(
+      path: files_to_commit,
+      shell_escape: false
+    )
     git_commit(
       path: files_to_commit,
       message: 'Update metadata translations',
@@ -901,11 +910,13 @@ platform :ios do
 
     metadata_locales = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
 
-    gp_downloadmetadata(project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-                        target_files: files,
-                        locales: metadata_locales,
-                        source_locale: 'en-US',
-                        download_path: './fastlane/metadata')
+    gp_downloadmetadata(
+      project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
+      target_files: files,
+      locales: metadata_locales,
+      source_locale: 'en-US',
+      download_path: FASTLANE_METADATA_FOLDER
+    )
 
     # Copy appstoreres (screenshot-related) txt files into `en-US`
     en_us_path = File.join(Dir.pwd, 'metadata', 'en-US')
@@ -1074,31 +1085,6 @@ platform :ios do
   end
 end
 
-def fastlane_directory
-  __dir__
-end
-
-def derived_data_directory
-  File.join(fastlane_directory, 'DerivedData')
-end
-
-def screenshots_directory
-  File.join(fastlane_directory, 'screenshots')
-end
-
-def screenshot_devices
-  [
-    'iPhone 11 Pro Max',
-    'iPhone 8 Plus',
-    'iPad Pro (12.9-inch) (2nd generation)',
-    'iPad Pro (12.9-inch) (3rd generation)'
-  ]
-end
-
-def simulator_version
-  '14.4'
-end
-
 ########################################################################
 # Test Lanes
 ########################################################################
@@ -1131,10 +1117,10 @@ lane :test_without_building do |options|
 
   # Only run UI tests in parallel.
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
-  parallel_testing_value = options[:name] == "UITests"
+  parallel_testing_value = options[:name] == 'UITests'
 
   run_tests(
-    workspace: 'WooCommerce.xcworkspace',
+    workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
     device: options[:device],
     parallel_testing: parallel_testing_value,
@@ -1148,7 +1134,10 @@ lane :test_without_building do |options|
     fail_build: false
   )
 
-  trainer(path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH], fail_build: true)
+  trainer(
+    path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH],
+    fail_build: true
+  )
 end
 
 # -----------------------------------------------------------------------------------

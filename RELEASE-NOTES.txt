@@ -3,6 +3,7 @@
 13.9
 -----
 - [*] Payments: Location permissions request is not shown to TTP users who grant "Allow once" permission on first foregrounding the app any more [https://github.com/woocommerce/woocommerce-ios/pull/9821]
+- [*] Products: Allow alternative types for the `sku` and `weight` in `Product`, the dimensions in `ProductDimensions`, and the `downloadID` in `ProductDownload`, as some third-party plugins alter the types in the API. This helps with the product list not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/9846]
 
 13.8
 -----

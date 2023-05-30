@@ -1,3 +1,4 @@
+import Foundation
 import enum Yosemite.StatsTimeRangeV4
 
 extension WooAnalyticsEvent {
@@ -29,6 +30,13 @@ extension WooAnalyticsEvent {
         /// - Parameter timeRange: the range of store stats (e.g. Today, This Week, This Month, This Year).
         static func dashboardTopPerformersDate(timeRange: StatsTimeRangeV4) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dashboardTopPerformersDate, properties: [Keys.range: timeRange.analyticsValue])
+        }
+        
+        /// Tracked when the dashboard is accessed with a device timezone different from the store timezone.
+        /// - Parameter localTimezone: The current timezone of the device running the app.
+        /// - Parameter storeTimezone: The store timezone defined by the API.
+        static func dashboardTimezonesDiffers(localTimezone: TimeZone, storeTimezone: TimeZone) {
+            
         }
     }
 }

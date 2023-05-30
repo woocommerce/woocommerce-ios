@@ -88,7 +88,11 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
         let price = NSDecimalNumber(decimal: decimalPrice)
 
-        let sku = try container.decodeIfPresent(String.self, forKey: .sku)
+        // Even though a plain install of WooCommerce Core provides String values,
+        // some plugins alter the field value from String to Int or Decimal.
+        let sku = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                    forKey: .sku,
+                                                    alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let subtotalTax = try container.decode(String.self, forKey: .subtotalTax)
         let taxClass = try container.decode(String.self, forKey: .taxClass)

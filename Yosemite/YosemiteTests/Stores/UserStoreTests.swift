@@ -69,4 +69,38 @@ final class UserStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    func test_get_ip_location_returns_a_success() {
+        // Given
+        let urlSuffix = "json"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "ip-location")
+        let store = UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<String, Error> = waitFor { promise in
+            let action = UserAction.fetchUserIPCountryCode() { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_get_ip_location_returns_error() {
+        // Given
+        let store = UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<String, Error> = waitFor { promise in
+            let action = UserAction.fetchUserIPCountryCode() { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }

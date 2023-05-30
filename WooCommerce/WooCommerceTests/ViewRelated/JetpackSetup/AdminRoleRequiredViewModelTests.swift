@@ -42,6 +42,8 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
             case .retrieveUser(_, let onCompletion):
                 let user = User.fake().copy(roles: [User.Role.administrator.rawValue])
                 onCompletion(.success(user))
+            default:
+                break
             }
         }
         let viewModel = AdminRoleRequiredViewModel(siteID: 123, stores: stores)
@@ -61,6 +63,8 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
             case .retrieveUser(_, let onCompletion):
                 let user = User.fake().copy(roles: [User.Role.shopManager.rawValue])
                 onCompletion(.success(user))
+            default:
+                break
             }
         }
         let viewModel = AdminRoleRequiredViewModel(siteID: 123, stores: stores)
@@ -80,6 +84,8 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
             switch action {
             case .retrieveUser(_, let onCompletion):
                 onCompletion(.failure(expectedError))
+            default:
+                break
             }
         }
         let viewModel = AdminRoleRequiredViewModel(siteID: 123, stores: stores)

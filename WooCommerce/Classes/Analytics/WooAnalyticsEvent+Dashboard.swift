@@ -37,12 +37,10 @@ extension WooAnalyticsEvent {
         /// Tracked when the dashboard is accessed with a device timezone different from the store timezone.
         /// - Parameter localTimezone: The current timezone of the device running the app.
         /// - Parameter storeTimezone: The store timezone defined by the API.
-        static func dashboardTimezonesDiffers(localTimezone: TimeZone, storeTimezone: TimeZone) -> WooAnalyticsEvent {
-            let localGMTOffset = String(localTimezone.secondsFromGMT())
-            let storeGMTOffset = String(storeTimezone.secondsFromGMT())
+        static func dashboardTimezonesDiffers(localTimezone: String, storeTimezone: String) -> WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .dashboardStoreTimezoneDifferFromDevice,
-                                     properties: [Keys.storeTimezone: storeGMTOffset,
-                                                  Keys.localTimezone: localGMTOffset])
+                                     properties: [Keys.storeTimezone: storeTimezone,
+                                                  Keys.localTimezone: localTimezone])
         }
     }
 }

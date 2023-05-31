@@ -248,6 +248,26 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual(2, properties["count"] as? Int64)
     }
 
+    func test_track_stats_timezone_correctly_configure_parameters() {
+        // Given
+        let localTimezone = TimeZone(secondsFromGMT: -3600)
+        let storeTimezone = TimeZone(secondsFromGMT: 0)
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+
+        // When
+        viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteTimezone: storeTimezone!)
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"),
+              let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
+        else {
+            return XCTFail("Expected event was not logged")
+        }
+
+        assertEqual("-1", properties["local_timezone"] as? String)
+        assertEqual("0", properties["store_timezone"] as? String)
+    }
+
     func test_when_two_messages_are_received_only_the_first_is_displayed() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "Higher priority JITM")

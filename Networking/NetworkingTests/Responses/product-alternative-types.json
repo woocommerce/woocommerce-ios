@@ -39,7 +39,7 @@
             "stock_quantity": null,
             "stock_status": "instock",
             "backorders": "no",
-            "backorders_allowed": false,
+            "backorders_allowed": "1",
             "backordered": false,
             "sold_individually": null,
             "weight": "213",

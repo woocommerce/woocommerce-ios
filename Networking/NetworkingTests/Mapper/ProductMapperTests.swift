@@ -117,6 +117,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertFalse(product.soldIndividually)
         XCTAssertTrue(product.purchasable)
         XCTAssertEqual(product.permalink, "")
+        XCTAssertEqual(product.backordersAllowed, true)
     }
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string

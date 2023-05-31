@@ -30,7 +30,7 @@
             "stock_quantity": 16,
             "stock_status": "instock",
             "backorders": "notify",
-            "backorders_allowed": true,
+            "backorders_allowed": "1",
             "backordered": false,
             "weight": "2.5",
             "dimensions": {

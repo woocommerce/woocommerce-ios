@@ -268,7 +268,13 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
         let stockStatus = ProductStockStatus(rawValue: stockStatusKey)
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
-        let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
+
+        // Even though WooCommerce Core returns Bool values,
+        // some plugins alter the field value from Bool to String.
+        let backordersAllowed = container.failsafeDecodeIfPresent(targetType: Bool.self,
+                                                                  forKey: .backordersAllowed,
+                                                                  alternativeTypes: [ .string(transform: { NSString(string: $0).boolValue })]) ?? false
+
         let backordered = try container.decode(Bool.self, forKey: .backordered)
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
         let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)

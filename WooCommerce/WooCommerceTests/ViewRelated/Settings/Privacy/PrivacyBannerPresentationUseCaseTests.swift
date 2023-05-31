@@ -59,15 +59,51 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
 
     @MainActor func test_show_banner_is_false_when_WPCOM_user_is_inside_of_EU_and_choices_have_been_saved() async throws {
         // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
         defaults[.hasSavedPrivacyBannerSettings] = true
 
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
-        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+        // When
+        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores)
+        let shouldShowBanner = await useCase.shouldShowPrivacyBanner()
+
+        // Then
+        XCTAssertFalse(shouldShowBanner)
+    }
+
+    @MainActor func test_show_banner_is_true_when_non_WPCOM_is_in_EU_and_choices_have_not_been_saved() async throws {
+        // Given
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
+        defaults[.hasSavedPrivacyBannerSettings] = false
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
             switch action {
-            case .synchronizeAccount(let onCompletion):
-                let account = Account(userID: 123, displayName: "", email: "", username: "", gravatarUrl: "", ipCountryCode: "GB")
-                onCompletion(.success(account))
+            case .fetchUserIPCountryCode(let onCompletion):
+                onCompletion(.success("GB"))
+            default:
+                break
+            }
+        }
+
+        // When
+        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores)
+        let shouldShowBanner = await useCase.shouldShowPrivacyBanner()
+
+        // Then
+        XCTAssertTrue(shouldShowBanner)
+    }
+
+    @MainActor func test_show_banner_is_false_when_non_WPCOM_is_not_in_EU_and_choices_have_not_been_saved() async throws {
+        // Given
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
+        defaults[.hasSavedPrivacyBannerSettings] = false
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
+            switch action {
+            case .fetchUserIPCountryCode(let onCompletion):
+                onCompletion(.success("PE"))
             default:
                 break
             }
@@ -87,6 +123,14 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
         defaults[.hasSavedPrivacyBannerSettings] = false
 
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
+            switch action {
+            case .fetchUserIPCountryCode(let onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                break
+            }
+        }
 
         // When
         let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores, currentLocale: .init(identifier: "en_GB"))
@@ -102,6 +146,14 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
         defaults[.hasSavedPrivacyBannerSettings] = false
 
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
+            switch action {
+            case .fetchUserIPCountryCode(let onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                break
+            }
+        }
 
         // When
         let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores, currentLocale: .init(identifier: "en_US"))

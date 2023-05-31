@@ -357,7 +357,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
         let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
-        let sku = try container.decodeIfPresent(String.self, forKey: .sku)
+
+        // Even though a plain install of WooCommerce Core provides String values,
+        // some plugins alter the field value from String to Int or Decimal.
+        let sku = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                    forKey: .sku,
+                                                    alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
 
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
@@ -370,7 +375,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                                                              alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
             ?? ""
 
-        let onSale = try container.decode(Bool.self, forKey: .onSale)
+        // Even though WooCommerce Core returns Bool values,
+        // some plugins alter the field value from Bool to String.
+        let onSale = container.failsafeDecodeIfPresent(targetType: Bool.self,
+                                                       forKey: .onSale,
+                                                       alternativeTypes: [ .string(transform: { NSString(string: $0).boolValue })]) ?? false
 
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
@@ -424,11 +433,22 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
-        let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
+
+        // Even though WooCommerce Core returns Bool values,
+        // some plugins alter the field value from Bool to String.
+        let backordersAllowed = container.failsafeDecodeIfPresent(targetType: Bool.self,
+                                                                  forKey: .backordersAllowed,
+                                                                  alternativeTypes: [ .string(transform: { NSString(string: $0).boolValue })]) ?? false
+
         let backordered = try container.decode(Bool.self, forKey: .backordered)
 
         let soldIndividually = try container.decodeIfPresent(Bool.self, forKey: .soldIndividually) ?? false
-        let weight = try container.decodeIfPresent(String.self, forKey: .weight)
+
+        // Even though a plain install of WooCommerce Core provides String values,
+        // some plugins alter the field value from String to Int or Decimal.
+        let weight = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                       forKey: .weight,
+                                                       alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
         let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
 
         let shippingRequired = try container.decode(Bool.self, forKey: .shippingRequired)

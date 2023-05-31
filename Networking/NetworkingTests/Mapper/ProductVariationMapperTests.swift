@@ -41,6 +41,7 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertTrue(productVariation.purchasable)
         XCTAssertEqual(productVariation.permalink, "")
         XCTAssertEqual(productVariation.backordersAllowed, true)
+        XCTAssertEqual(productVariation.onSale, false)
     }
 
     /// Test that the fields for variations of a subscription product are properly parsed.

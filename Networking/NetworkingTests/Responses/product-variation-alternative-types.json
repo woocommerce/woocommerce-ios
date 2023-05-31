@@ -16,7 +16,7 @@
             "date_on_sale_from_gmt": "2019-10-15T21:30:00",
             "date_on_sale_to": "2019-10-27T23:59:59",
             "date_on_sale_to_gmt": "2019-10-27T21:29:59",
-            "on_sale": false,
+            "on_sale": "0",
             "status": "publish",
             "purchasable": 1,
             "virtual": false,

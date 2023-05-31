@@ -48,6 +48,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     func test_reconnectIfNeeded_calls_searchAndConnect_if_no_reader_connected_and_site_and_device_meet_requirements() throws {
         // Given
         let supportDeterminer = MockCardReaderSupportDeterminer()
+        supportDeterminer.shouldReturnLocationIsAuthorized = true
         supportDeterminer.shouldReturnConnectedReader = nil
         supportDeterminer.shouldReturnSiteSupportsLocalMobileReader = true
         supportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true
@@ -69,6 +70,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     func test_reconnectIfNeeded_creates_a_new_connection_controller_with_expected_parameters() throws {
         // Given
         let supportDeterminer = MockCardReaderSupportDeterminer()
+        supportDeterminer.shouldReturnLocationIsAuthorized = true
         supportDeterminer.shouldReturnConnectedReader = nil
         supportDeterminer.shouldReturnSiteSupportsLocalMobileReader = true
         supportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true

@@ -116,6 +116,11 @@ extension KeyedDecodingContainer {
         return nil
     }
 
+    /// Decodes a Decimal for the specified key. Supported Encodings = [Decimal / Int / String]
+    ///
+    /// This method *does NOT throw*. We want this behavior so that if a malformed entity is received, we just skip it, rather
+    /// than breaking the entire parsing chain.
+    ///
     func failsafeDecodeIfPresent(decimalForKey key: KeyedDecodingContainer<K>.Key) -> Decimal? {
         if let decimal = failsafeDecodeIfPresent(Decimal.self, forKey: key) {
             return decimal
@@ -123,6 +128,10 @@ extension KeyedDecodingContainer {
 
         if let integerAsDecimal = failsafeDecodeIfPresent(Int.self, forKey: key) {
             return Decimal(integerLiteral: integerAsDecimal)
+        }
+
+        if let stringAsDecimal = failsafeDecodeIfPresent(String.self, forKey: key) {
+            return Decimal(string: stringAsDecimal)
         }
 
         return nil

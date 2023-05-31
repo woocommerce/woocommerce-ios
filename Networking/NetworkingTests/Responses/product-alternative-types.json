@@ -36,7 +36,7 @@
             "tax_status": "taxable",
             "tax_class": "",
             "manage_stock": "parent",
-            "stock_quantity": null,
+            "stock_quantity": "",
             "stock_status": "instock",
             "backorders": "no",
             "backorders_allowed": false,

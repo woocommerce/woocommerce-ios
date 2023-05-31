@@ -429,6 +429,15 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertNil(compositeProduct.parent)
         XCTAssertEqual(component.parent, 830)
     }
+
+    func test_that_order_alternative_types_are_properly_parsed() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderResponseWithAlternativeTypes())
+
+        // Then
+        XCTAssertEqual(order.shippingLines.first?.taxes.first?.taxID, 1)
+        XCTAssertEqual(order.items.first?.sku, "123")
+    }
 }
 
 
@@ -529,6 +538,12 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithCompositeProduct() -> Order? {
         return mapOrder(from: "order-with-composite-product")
+    }
+
+    /// Returns the Order output upon receiving `order-alternative-types`
+    ///
+    func mapLoadOrderResponseWithAlternativeTypes() -> Order? {
+        return mapOrder(from: "order-alternative-types")
     }
 
 }

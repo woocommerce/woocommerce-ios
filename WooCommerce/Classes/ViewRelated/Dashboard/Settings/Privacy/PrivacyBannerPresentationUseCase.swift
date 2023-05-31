@@ -47,25 +47,42 @@ private extension PrivacyBannerPresentationUseCase {
     /// - If the user has a WPCOM account:
     ///   - Use the ip country code.
     /// - If the user does not has a WPCOM account:
-    ///   - Use the current locale country code.
+    ///   - Use a 3rd party ip country code or current locale country code upon failure.
     ///
     func fetchUsersCountryCode() async throws -> String {
         // Use ip country code for WPCom accounts
         if !stores.isAuthenticatedWithoutWPCom {
-            return try await fetchIPCountryCode()
+            return try await fetchWPCOMIPCountryCode()
         }
 
-        // Use locale country code as a fallback
-        return fetchLocaleCountryCode()
+        // Use 3rd party ip-country code or locale as a fallback.
+        do {
+            return try await fetch3rdPartyIPCountryCode()
+        } catch {
+            return fetchLocaleCountryCode()
+        }
     }
 
     /// Fetches the ip country code using the Account API.
     ///
-    func fetchIPCountryCode() async throws -> String {
+    func fetchWPCOMIPCountryCode() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
             let action = AccountAction.synchronizeAccount { result in
                 let ipCountryCodeResult = result.map { $0.ipCountryCode }
                 continuation.resume(with: ipCountryCodeResult)
+            }
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
+        }
+    }
+
+    /// Fetches the ip country code using a 3rd party API.
+    ///
+    func fetch3rdPartyIPCountryCode() async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = UserAction.fetchUserIPCountryCode { result in
+                continuation.resume(with: result)
             }
             Task { @MainActor in
                 stores.dispatch(action)

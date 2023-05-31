@@ -44,6 +44,7 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertEqual(productVariation.weight, "2.5")
         XCTAssertEqual(productVariation.backordersAllowed, true)
         XCTAssertEqual(productVariation.onSale, false)
+        XCTAssertEqual(productVariation.stockQuantity, 16)
     }
 
     /// Test that the fields for variations of a subscription product are properly parsed.

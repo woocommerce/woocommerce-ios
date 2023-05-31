@@ -125,6 +125,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.downloads.first?.downloadID, "12345")
         XCTAssertEqual(product.backordersAllowed, true)
         XCTAssertEqual(product.onSale, false)
+        XCTAssertNil(product.stockQuantity)
     }
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string

@@ -425,7 +425,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                                                                 })
         ]) ?? false
 
-        let stockQuantity = try container.decodeIfPresent(Decimal.self, forKey: .stockQuantity)
+        // Even though WooCommerce Core returns Int or null values,
+        // some plugins alter the field value from Int to Decimal or String.
+        // We handle this as an optional Decimal value.
+        let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
+
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)

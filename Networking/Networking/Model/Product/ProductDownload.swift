@@ -23,7 +23,11 @@ public struct ProductDownload: Codable, Equatable, GeneratedFakeable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let downloadID = try container.decode(String.self, forKey: .downloadID)
+        // Even though a plain install of WooCommerce Core provides String values,
+        // some plugins alter the field value from String to Int or Decimal.
+        let downloadID = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                           forKey: .downloadID,
+                                                           alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? "0"
         let name = try container.decodeIfPresent(String.self, forKey: .name)
         let fileURL = try container.decodeIfPresent(String.self, forKey: .fileURL)
 

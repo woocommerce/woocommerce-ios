@@ -101,7 +101,8 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
             selection = selectedTabIndex
             observeSelectedTimeRangeIndex()
         }
-        dashboardViewModel.trackStatsTimezone(localTimeZone: TimeZone.current, siteTimezone: TimeZone.siteTimezone)
+
+        dashboardViewModel.trackStatsTimezone(localTimezone: TimeZone.current, siteTimezone: TimeZone.siteTimezone)
     }
 
     override func viewWillAppear(_ animated: Bool) {

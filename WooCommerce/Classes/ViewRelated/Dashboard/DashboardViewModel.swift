@@ -187,9 +187,9 @@ final class DashboardViewModel {
             return
         }
 
-        let localGMTOffset = String(localTimezone.secondsFromGMT())
-        let siteGMTOffset = String(siteTimezone.secondsFromGMT())
-        analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffset, storeTimezone: siteGMTOffset))
+        let localGMTOffsetInHours = String(localTimezone.secondsFromGMT() / 3600)
+        let siteGMTOffsetInHours = String(siteTimezone.secondsFromGMT() / 3600)
+        analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffsetInHours))
     }
 
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.

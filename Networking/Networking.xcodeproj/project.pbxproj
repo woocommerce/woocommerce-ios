@@ -641,6 +641,7 @@
 		CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */ = {isa = PBXBuildFile; fileRef = CE19CB10222486A500E8AF7A /* order-statuses.json */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
 		CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227092228DD44C00C0626C /* ProductStatus.swift */; };
+		CE2678432A26102A00FD9AEB /* order-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = CE2678422A26102A00FD9AEB /* order-alternative-types.json */; };
 		CE43066A23465F340073CBFF /* Refund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066923465F340073CBFF /* Refund.swift */; };
 		CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066B2347C5F90073CBFF /* OrderItemRefund.swift */; };
 		CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */; };
@@ -1579,6 +1580,7 @@
 		CE19CB10222486A500E8AF7A /* order-statuses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-statuses.json"; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
 		CE227092228DD44C00C0626C /* ProductStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatus.swift; sourceTree = "<group>"; };
+		CE2678422A26102A00FD9AEB /* order-alternative-types.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-alternative-types.json"; sourceTree = "<group>"; };
 		CE43066923465F340073CBFF /* Refund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refund.swift; sourceTree = "<group>"; };
 		CE43066B2347C5F90073CBFF /* OrderItemRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefund.swift; sourceTree = "<group>"; };
 		CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTaxRefund.swift; sourceTree = "<group>"; };
@@ -2541,6 +2543,7 @@
 				B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */,
 				AE2D6624272A941C004A2C3A /* null-data.json */,
 				B5C6FCD520A3768900A4F8E4 /* order.json */,
+				CE2678422A26102A00FD9AEB /* order-alternative-types.json */,
 				DEF13C5F29668C420024A02B /* order-without-data.json */,
 				034480C227A42F9100DFACD2 /* order-with-charge.json */,
 				02C254D62563999200A04423 /* order-shipping-labels.json */,
@@ -3620,6 +3623,7 @@
 				74ABA1C9213F19FE00FFAD30 /* top-performers-month.json in Resources */,
 				3158FE7026129D7500E566B9 /* wcpay-account-rejected-listed.json in Resources */,
 				743E84F622172D3E00FAC9D7 /* shipment_tracking_single.json in Resources */,
+				CE2678432A26102A00FD9AEB /* order-alternative-types.json in Resources */,
 				D865CE5B278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json in Resources */,
 				CC9A254626442CA7005DE56E /* shipping-label-eligibility-failure.json in Resources */,
 				4524CD9C242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json in Resources */,

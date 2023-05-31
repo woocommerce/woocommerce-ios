@@ -3,6 +3,7 @@
 13.9
 -----
 - [*] Payments: Location permissions request is not shown to TTP users who grant "Allow once" permission on first foregrounding the app any more [https://github.com/woocommerce/woocommerce-ios/pull/9821]
+- [*] Products: Allow alternative types for the `backordersAllowed` and `onSale` in `Product` and `ProductVariation`, as some third-party plugins alter the types in the API. This helps with the product list not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/9849]
 
 13.8
 -----

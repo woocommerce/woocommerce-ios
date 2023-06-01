@@ -43,6 +43,11 @@ extension PrivacyBannerViewController: DrawerPresentable {
     var expandedHeight: DrawerHeight {
         return .contentHeight(bannerIntrinsicHeight)
     }
+
+    // We want the user to dimiss this only by completing the flow, not by tapping, dragging, or collapsing.
+    var allowsDragToDismiss: Bool { false }
+    var allowsTapToDismiss: Bool { false }
+    var allowsUserTransition: Bool { false }
 }
 
 /// Banner View for the privacy settings.

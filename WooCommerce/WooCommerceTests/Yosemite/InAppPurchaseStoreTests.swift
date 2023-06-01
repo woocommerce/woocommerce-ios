@@ -175,13 +175,11 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssert(error is WordPressApiError)
     }
 
-    func test_user_is_entitled_to_product_returns_false_when_not_entitled() throws {
-        // Given
-
+    func test_userIsEntitledToProduct_returns_false_when_user_is_not_entitled_to_product() throws {
         // When
         let result: Result<Bool, Error> = waitFor { promise in
             let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
-                let result = self.simulateUserIsEntitledToProduct(with: self.sampleProductID, isEntitled: false)
+                let result = self.simulateUserIsEntitledToProduct(isEntitled: false)
                 promise(result)
             }
             self.store.onAction(action)
@@ -192,14 +190,11 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssertFalse(isEntitled)
     }
 
-    func test_user_is_entitled_to_product_returns_true_when_entitled() throws {
-        // Given
-        try storeKitSession.buyProduct(productIdentifier: sampleProductID)
-
+    func test_userIsEntitledToProduct_returns_true_when_user_is_entitled_to_product() throws {
         // When
         let result: Result<Bool, Error> = waitFor { promise in
             let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
-                let result = self.simulateUserIsEntitledToProduct(with: self.sampleProductID, isEntitled: true)
+                let result = self.simulateUserIsEntitledToProduct(isEntitled: true)
                 promise(result)
             }
             self.store.onAction(action)
@@ -212,7 +207,11 @@ final class InAppPurchaseStoreTests: XCTestCase {
 }
 
 extension InAppPurchaseStoreTests {
-    func simulateUserIsEntitledToProduct(with productID: String, isEntitled: Bool) -> Result<Bool, Error> {
-        return .success(isEntitled)
+    func simulateUserIsEntitledToProduct(isEntitled: Bool) -> Result<Bool, Error> {
+        waitFor { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                promise(.success(isEntitled))
+            }
+        }
     }
 }

@@ -35,8 +35,7 @@ extension SessionManager {
                                              displayName: displayName,
                                              email: "",
                                              username: credentials.username,
-                                             gravatarUrl: nil,
-                                             ipCountryCode: "US")
+                                             gravatarUrl: nil)
         }
         return manager
     }

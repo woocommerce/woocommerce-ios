@@ -27,8 +27,7 @@ extension Networking.Account {
             displayName: .fake(),
             email: .fake(),
             username: .fake(),
-            gravatarUrl: .fake(),
-            ipCountryCode: .fake()
+            gravatarUrl: .fake()
         )
     }
 }

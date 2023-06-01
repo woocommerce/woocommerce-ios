@@ -29,8 +29,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         displayName: i18n.DefaultAccount.displayName,
         email: i18n.DefaultAccount.email,
         username: i18n.DefaultAccount.username,
-        gravatarUrl: nil,
-        ipCountryCode: "USA"
+        gravatarUrl: nil
     )
 
     let defaultSite = Site(

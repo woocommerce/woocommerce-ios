@@ -16,7 +16,7 @@ final class IPLocationRemoteTests: XCTestCase {
     func test_country_code_is_correctly_parsed() {
         // Given
         let remote = IPLocationRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "json", filename: "ip-location")
+        network.simulateResponse(requestUrlSuffix: "geo", filename: "ip-location")
 
         // When
         let countryCode = waitFor { promise in

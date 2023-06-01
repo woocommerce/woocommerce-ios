@@ -1,13 +1,14 @@
 import Foundation
 
-/// Remote type to fetch the user's IP Location using a 3rd party API.
+/// Remote type to fetch the user's IP Location using the public `geo` API.
 ///
 public final class IPLocationRemote: Remote {
 
     /// Fetches the country code from the device ip.
     ///
     public func getIPCountryCode(onCompletion: @escaping (Result<String, Error>) -> Void) {
-        guard let url = URL(string: "https://ipinfo.io/json") else {
+        let path = "geo"
+        guard let url = URL(string: "\(Settings.wordpressApiBaseURL)/\(path)") else {
             return onCompletion(.failure(IPLocationError.malformedURL)) // Should not happen.
         }
 
@@ -33,7 +34,7 @@ private struct IPCountryCodeMapper: Mapper {
     ///
     struct Response: Decodable {
         enum CodingKeys: String, CodingKey {
-            case countryCode = "country"
+            case countryCode = "country_short"
         }
 
         let countryCode: String

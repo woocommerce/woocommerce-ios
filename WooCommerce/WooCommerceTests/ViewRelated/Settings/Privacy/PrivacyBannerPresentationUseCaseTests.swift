@@ -6,7 +6,7 @@ import TestKit
 
 final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
 
-    @MainActor func test_show_banner_is_true_when_WPCOM_user_is_in_EU_and_choices_havent_been_saved() async throws {
+    @MainActor func test_show_banner_is_true_when_user_is_in_EU_and_choices_havent_been_saved() async throws {
         // Given
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
         defaults[.hasSavedPrivacyBannerSettings] = false
@@ -14,11 +14,10 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
         // Iterate through all of the country codes
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
         for euCode in Country.GDPRCountryCodes {
-            stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            stores.whenReceivingAction(ofType: UserAction.self) { action in
                 switch action {
-                case .synchronizeAccount(let onCompletion):
-                    let account = Account(userID: 123, displayName: "", email: "", username: "", gravatarUrl: "", ipCountryCode: euCode)
-                    onCompletion(.success(account))
+                case .fetchUserIPCountryCode(let onCompletion):
+                    onCompletion(.success(euCode))
                 default:
                     break
                 }
@@ -33,17 +32,16 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
         }
     }
 
-    @MainActor func test_show_banner_is_false_when_WPCOM_user_is_outside_of_EU_and_choices_have_not_been_saved() async throws {
+    @MainActor func test_show_banner_is_false_when_user_is_outside_of_EU_and_choices_have_not_been_saved() async throws {
         // Given
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
         defaults[.hasSavedPrivacyBannerSettings] = false
 
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
-        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
             switch action {
-            case .synchronizeAccount(let onCompletion):
-                let account = Account(userID: 123, displayName: "", email: "", username: "", gravatarUrl: "", ipCountryCode: "US")
-                onCompletion(.success(account))
+            case .fetchUserIPCountryCode(let onCompletion):
+                onCompletion(.success("US"))
             default:
                 break
             }
@@ -57,7 +55,7 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
         XCTAssertFalse(shouldShowBanner)
     }
 
-    @MainActor func test_show_banner_is_false_when_WPCOM_user_is_inside_of_EU_and_choices_have_been_saved() async throws {
+    @MainActor func test_show_banner_is_false_when_choices_have_been_saved() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
@@ -69,117 +67,5 @@ final class PrivacyBannerPresentationUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertFalse(shouldShowBanner)
-    }
-
-    @MainActor func test_show_banner_is_true_when_non_WPCOM_is_in_EU_and_choices_have_not_been_saved() async throws {
-        // Given
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
-        defaults[.hasSavedPrivacyBannerSettings] = false
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        stores.whenReceivingAction(ofType: UserAction.self) { action in
-            switch action {
-            case .fetchUserIPCountryCode(let onCompletion):
-                onCompletion(.success("GB"))
-            default:
-                break
-            }
-        }
-
-        // When
-        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores)
-        let shouldShowBanner = await useCase.shouldShowPrivacyBanner()
-
-        // Then
-        XCTAssertTrue(shouldShowBanner)
-    }
-
-    @MainActor func test_show_banner_is_false_when_non_WPCOM_is_not_in_EU_and_choices_have_not_been_saved() async throws {
-        // Given
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
-        defaults[.hasSavedPrivacyBannerSettings] = false
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        stores.whenReceivingAction(ofType: UserAction.self) { action in
-            switch action {
-            case .fetchUserIPCountryCode(let onCompletion):
-                onCompletion(.success("PE"))
-            default:
-                break
-            }
-        }
-
-        // When
-        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores)
-        let shouldShowBanner = await useCase.shouldShowPrivacyBanner()
-
-        // Then
-        XCTAssertFalse(shouldShowBanner)
-    }
-
-    @MainActor func test_show_banner_is_true_when_non_WPCOM_user_has_EU_locale_and_choices_have_not_been_saved() async throws {
-        // Given
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
-        defaults[.hasSavedPrivacyBannerSettings] = false
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        stores.whenReceivingAction(ofType: UserAction.self) { action in
-            switch action {
-            case .fetchUserIPCountryCode(let onCompletion):
-                onCompletion(.failure(NSError(domain: "", code: 0)))
-            default:
-                break
-            }
-        }
-
-        // When
-        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores, currentLocale: .init(identifier: "en_GB"))
-        let shouldShowBanner = await useCase.shouldShowPrivacyBanner()
-
-        // Then
-        XCTAssertTrue(shouldShowBanner)
-    }
-
-    @MainActor func test_show_banner_is_false_when_non_WPCOM_user_has_none_EU_locale_and_choices_have_not_been_saved() async throws {
-        // Given
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
-        defaults[.hasSavedPrivacyBannerSettings] = false
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        stores.whenReceivingAction(ofType: UserAction.self) { action in
-            switch action {
-            case .fetchUserIPCountryCode(let onCompletion):
-                onCompletion(.failure(NSError(domain: "", code: 0)))
-            default:
-                break
-            }
-        }
-
-        // When
-        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores, currentLocale: .init(identifier: "en_US"))
-        let shouldShowBanner = await useCase.shouldShowPrivacyBanner()
-
-        // Then
-        XCTAssertFalse(shouldShowBanner)
-    }
-
-    @MainActor func test_show_banner_is_false_when_non_WPCOM_user_has_EU_locale_and_choices_have_been_saved() async throws {
-        // Given
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
-        defaults[.hasSavedPrivacyBannerSettings] = true
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-
-        // When
-        let useCase = PrivacyBannerPresentationUseCase(defaults: defaults, stores: stores, currentLocale: .init(identifier: "en_GB"))
-        let shouldShowBanner = await useCase.shouldShowPrivacyBanner()
-
-        // Then
-        XCTAssertFalse(shouldShowBanner)
-    }
-
-    override class func tearDown() {
-        super.tearDown()
-        SessionManager.removeTestingDatabase()
     }
 }

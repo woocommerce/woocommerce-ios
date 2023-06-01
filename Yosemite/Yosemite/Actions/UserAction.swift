@@ -11,7 +11,7 @@ public enum UserAction: Action {
     ///
     case retrieveUser(siteID: Int64, onCompletion: (Result<User, Error>) -> Void)
 
-    /// Fetches the user IP's country code. Uses a 3rd party API to fetch it.
+    /// Fetches the user IP's country code. Uses the WordPress public API..
     ///
     case fetchUserIPCountryCode(onCompletion: (Result<String, Error>) -> Void)
 }

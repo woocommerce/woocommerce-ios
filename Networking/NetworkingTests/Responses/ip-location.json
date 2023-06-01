@@ -1,12 +1,8 @@
 {
-    "ip": "111.111.111.111",
-    "hostname": "static-adsl190-250-18-50.internet.net.co",
-    "city": "Medellín",
-    "region": "Antioquia",
-    "country": "CO",
-    "loc": "6.23214,-75.76565",
-    "org": "AS13489 EPM Telecomunicaciones S.A. E.S.P.",
-    "postal": "050001",
-    "timezone": "America/Bogota",
-    "readme": "https://ipinfo.io/missingauth"
+    "latitude": "25.77427",
+    "longitude": "-80.1936",
+    "country_short": "CO",
+    "country_long": "United States of America",
+    "region": "Florida",
+    "city": "Miami"
 }

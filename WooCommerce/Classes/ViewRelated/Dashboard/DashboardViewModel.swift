@@ -182,14 +182,13 @@ final class DashboardViewModel {
 
     /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
     /// 
-    func trackStatsTimezone(localTimezone: TimeZone, siteTimezone: TimeZone) {
-        guard localTimezone.secondsFromGMT() != siteTimezone.secondsFromGMT() else {
+    func trackStatsTimezone(localTimezone: TimeZone, siteGMTOffset: Double) {
+        let localGMTOffsetInHours = Double(localTimezone.secondsFromGMT()) / 3600
+        guard localGMTOffsetInHours != siteGMTOffset else {
             return
         }
 
-        let localGMTOffsetInHours = Double(localTimezone.secondsFromGMT()) / 3600
-        let siteGMTOffsetInHours = Double(siteTimezone.secondsFromGMT()) / 3600
-        analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffsetInHours))
+        analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
     }
 
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.

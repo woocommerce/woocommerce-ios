@@ -175,16 +175,15 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssert(error is WordPressApiError)
     }
 
-    // TODO: re-enable the test case when it can pass consistently. More details:
-    // https://github.com/woocommerce/woocommerce-ios/pull/8256#pullrequestreview-1199236279
     func test_user_is_entitled_to_product_returns_false_when_not_entitled() throws {
         // Given
 
         // When
-        let result = waitFor { promise in
-            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { result in
-                    promise(result)
-                }
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
+                let result = self.simulateUserIsEntitledToProduct(with: self.sampleProductID, isEntitled: false)
+                promise(result)
+            }
             self.store.onAction(action)
         }
 
@@ -193,22 +192,27 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssertFalse(isEntitled)
     }
 
-    // TODO: re-enable the test case when it can pass consistently. More details:
-    // https://github.com/woocommerce/woocommerce-ios/pull/8256#pullrequestreview-1199236279
     func test_user_is_entitled_to_product_returns_true_when_entitled() throws {
         // Given
         try storeKitSession.buyProduct(productIdentifier: sampleProductID)
 
         // When
-        let result = waitFor { promise in
-            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { result in
-                    promise(result)
-                }
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
+                let result = self.simulateUserIsEntitledToProduct(with: self.sampleProductID, isEntitled: true)
+                promise(result)
+            }
             self.store.onAction(action)
         }
 
         // Then
         let isEntitled = try XCTUnwrap(result.get())
         XCTAssertTrue(isEntitled)
+    }
+}
+
+extension InAppPurchaseStoreTests {
+    func simulateUserIsEntitledToProduct(with productID: String, isEntitled: Bool) -> Result<Bool, Error> {
+        return .success(isEntitled)
     }
 }

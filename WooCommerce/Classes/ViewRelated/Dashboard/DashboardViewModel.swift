@@ -187,8 +187,8 @@ final class DashboardViewModel {
             return
         }
 
-        let localGMTOffsetInHours = String(localTimezone.secondsFromGMT() / 3600)
-        let siteGMTOffsetInHours = String(siteTimezone.secondsFromGMT() / 3600)
+        let localGMTOffsetInHours = Double(localTimezone.secondsFromGMT()) / 3600
+        let siteGMTOffsetInHours = Double(siteTimezone.secondsFromGMT()) / 3600
         analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffsetInHours))
     }
 

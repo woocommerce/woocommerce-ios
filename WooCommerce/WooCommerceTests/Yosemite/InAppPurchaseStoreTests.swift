@@ -31,6 +31,10 @@ final class InAppPurchaseStoreTests: XCTestCase {
     ///
     private let sampleOrderID: Int64 = 12345
 
+    /// IAP Transactions
+    ///
+    var transactions: [SKTestTransaction]!
+
     var store: InAppPurchaseStore!
 
 
@@ -39,11 +43,13 @@ final class InAppPurchaseStoreTests: XCTestCase {
         storageManager = MockStorageManager()
         store = InAppPurchaseStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
         storeKitSession.disableDialogs = true
+        transactions = []
     }
 
     override func tearDown() {
         storeKitSession.resetToDefaultState()
         storeKitSession.clearTransactions()
+        transactions.removeAll()
     }
 
     func test_iap_supported_in_us() throws {
@@ -175,26 +181,14 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssert(error is WordPressApiError)
     }
 
-    func test_userIsEntitledToProduct_returns_false_when_user_is_not_entitled_to_product() throws {
+    func test_userIsEntitledToProduct_returns_true_when_user_has_no_transactions_then_is_entitled_to_products() throws {
+        // Given
+        let transaction = SKTestTransaction()
+
         // When
         let result: Result<Bool, Error> = waitFor { promise in
             let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
-                let result = self.simulateUserIsEntitledToProduct(isEntitled: false)
-                promise(result)
-            }
-            self.store.onAction(action)
-        }
-
-        // Then
-        let isEntitled = try XCTUnwrap(result.get())
-        XCTAssertFalse(isEntitled)
-    }
-
-    func test_userIsEntitledToProduct_returns_true_when_user_is_entitled_to_product() throws {
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
-                let result = self.simulateUserIsEntitledToProduct(isEntitled: true)
+                let result = self.simulateUserIsEntitledToProduct(with: transaction.productIdentifier)
                 promise(result)
             }
             self.store.onAction(action)
@@ -204,14 +198,34 @@ final class InAppPurchaseStoreTests: XCTestCase {
         let isEntitled = try XCTUnwrap(result.get())
         XCTAssertTrue(isEntitled)
     }
+
+    func test_userIsEntitledToProduct_returns_false_when_user_has_existing_transactions_then_is_not_entitled_to_products() throws {
+        // Given
+        let transaction = SKTestTransaction()
+        transactions = [transaction]
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
+                let result = self.simulateUserIsEntitledToProduct(with: transaction.productIdentifier)
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        let isEntitled = try XCTUnwrap(result.get())
+        XCTAssertFalse(isEntitled)
+    }
 }
 
-extension InAppPurchaseStoreTests {
-    func simulateUserIsEntitledToProduct(isEntitled: Bool) -> Result<Bool, Error> {
-        waitFor { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                promise(.success(isEntitled))
-            }
+private extension InAppPurchaseStoreTests {
+    func simulateUserIsEntitledToProduct(with id: String, simulateError: Bool? = false) -> Result<Bool, Error> {
+        guard transactions.contains(where: { $0.productIdentifier == id }) else {
+            // User has no transactions yet, product can be purchased
+            return .success(true)
         }
+        // User has already purchased the product, cannot buy it twice
+        return .success(false)
     }
 }

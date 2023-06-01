@@ -7,8 +7,8 @@ public final class IPLocationRemote: Remote {
     /// Fetches the country code from the device ip.
     ///
     public func getIPCountryCode(onCompletion: @escaping (Result<String, Error>) -> Void) {
-        let path = "geo"
-        guard let url = URL(string: "\(Settings.wordpressApiBaseURL)/\(path)") else {
+        let path = "geo/" // Needs the trailing slash otherwise the request will fail.
+        guard let url = URL(string: Settings.wordpressApiBaseURL + path) else {
             return onCompletion(.failure(IPLocationError.malformedURL)) // Should not happen.
         }
 

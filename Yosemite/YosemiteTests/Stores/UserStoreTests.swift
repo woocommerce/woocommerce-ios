@@ -72,7 +72,7 @@ final class UserStoreTests: XCTestCase {
 
     func test_get_ip_location_returns_a_success() {
         // Given
-        let urlSuffix = "geo"
+        let urlSuffix = "geo/"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "ip-location")
         let store = UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 

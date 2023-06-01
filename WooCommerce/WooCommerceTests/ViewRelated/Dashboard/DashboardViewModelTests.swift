@@ -496,6 +496,59 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         assertEqual(expectedURL, siteURLToShare?.absoluteString)
     }
+
+    func test_different_timezones_correctly_trigger_tracks_with_parameters() {
+        // Given
+        let localTimezone = TimeZone(secondsFromGMT: -3600)
+        let siteGMTOffset = 0.0
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+
+        // When
+        viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"),
+              let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
+        else {
+            return XCTFail("Expected event was not logged")
+        }
+
+        assertEqual("-1", properties["local_timezone"] as? String)
+        assertEqual("0", properties["store_timezone"] as? String)
+    }
+
+    func test_different_decimal_timezones_correctly_trigger_tracks_with_parameters() {
+        // Given
+        let localTimezone = TimeZone(secondsFromGMT: -5400)
+        let siteGMTOffset = 2.50000
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+
+        // When
+        viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
+
+        // Then
+        guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"),
+              let properties = analyticsProvider.receivedProperties[eventIndex] as? [String: AnyHashable]
+        else {
+            return XCTFail("Expected event was not logged")
+        }
+
+        assertEqual("-1.5", properties["local_timezone"] as? String)
+        assertEqual("2.5", properties["store_timezone"] as? String)
+    }
+
+    func test_same_local_and_store_timezone_do_not_trigger_tracks() {
+        // Given
+        let localTimezone = TimeZone(secondsFromGMT: -7200)
+        let siteGMTOffset = -2.0
+        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+
+        // When
+        viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
+
+        // Then
+        XCTAssertNil(analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"))
+    }
 }
 
 private extension DashboardViewModelTests {

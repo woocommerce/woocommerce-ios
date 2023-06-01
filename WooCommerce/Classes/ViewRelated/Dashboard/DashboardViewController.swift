@@ -822,6 +822,7 @@ private extension DashboardViewController {
                 return
             }
             self.updateUI(site: site)
+            self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
                 await self?.reloadData(forced: true)
             }
@@ -869,6 +870,10 @@ private extension DashboardViewController {
     func stopObservingNavigationBarHeightForHeaderVisibility() {
         navbarObserverSubscription?.cancel()
         navbarObserverSubscription = nil
+    }
+
+    func trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: Double) {
+        viewModel.trackStatsTimezone(localTimezone: TimeZone.current, siteGMTOffset: siteGMTOffset)
     }
 }
 

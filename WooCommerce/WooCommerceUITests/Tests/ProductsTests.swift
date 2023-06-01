@@ -36,6 +36,10 @@ final class ProductsTests: XCTestCase {
         try ProductFlow.addAndVerifyNewProduct(productType: "variable")
     }
 
+    func test_add_grouped_product() throws {
+        try ProductFlow.addAndVerifyNewProduct(productType: "grouped")
+    }
+
     func test_search_product() throws {
         let products = try GetMocks.readProductsData()
 

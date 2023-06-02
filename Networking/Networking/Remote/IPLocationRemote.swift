@@ -12,7 +12,7 @@ public final class IPLocationRemote: Remote {
             return onCompletion(.failure(IPLocationError.malformedURL)) // Should not happen.
         }
 
-        let request = UnauthenticatedRequest(request: .init(url: url))
+        let request = UnauthenticatedRequest(request: .init(url: url)).asURLRequest()
         let mapper = IPCountryCodeMapper()
         enqueue(request, mapper: mapper, completion: onCompletion)
     }

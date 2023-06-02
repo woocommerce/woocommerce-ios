@@ -66,7 +66,7 @@ public final class MenuScreen: ScreenObject {
 
 //        XCTAssertEqual(expectedStoreTitle, actualStoreTitle)
 //        XCTAssertEqual(expectedStoreUrl, actualStoreUrl)
-        
+
 //        intentional fail for testing
         XCTAssertNotEqual(expectedStoreTitle, actualStoreTitle)
         XCTAssertNotEqual(expectedStoreUrl, actualStoreUrl)

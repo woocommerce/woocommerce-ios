@@ -28,10 +28,6 @@ final class PrivacyBannerPresenter {
             return
         }
 
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices) else {
-            return
-        }
-
         let useCase = PrivacyBannerPresentationUseCase(defaults: defaults)
         Task {
             if await useCase.shouldShowPrivacyBanner() {

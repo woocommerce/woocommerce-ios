@@ -196,10 +196,6 @@ public enum FeatureFlag: Int {
     ///
     case readOnlyMinMaxQuantities
 
-    /// Enables updates of the Privacy Choices project.
-    ///
-    case privacyChoices
-
     /// Local notifications for store creation
     ///
     case storeCreationNotifications

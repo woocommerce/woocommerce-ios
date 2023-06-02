@@ -42,12 +42,6 @@ class PrivacySettingsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Defines if the `privacyChoices` feature is enabled.
-    ///
-    private var isPrivacyChoicesEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.privacyChoices)
-    }
-
     // MARK: - Overridden Methods
     //
     override func viewDidLoad() {
@@ -122,29 +116,18 @@ private extension PrivacySettingsViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
 
-        if isPrivacyChoicesEnabled {
-            tableView.tableHeaderView = createTableHeaderView()
-            tableView.updateHeaderHeight()
-            tableView.sectionFooterHeight = UITableView.automaticDimension
-            tableView.estimatedSectionFooterHeight = 100
-        }
+        tableView.tableHeaderView = createTableHeaderView()
+        tableView.updateHeaderHeight()
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.estimatedSectionFooterHeight = 100
     }
 
     func configureSections() {
-        if isPrivacyChoicesEnabled {
-            return sections = [
-                Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
-                Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy, .usageTracking]),
-                Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
-            ]
-        } else {
-            return sections = [
-                Section(title: nil,
-                        footer: nil,
-                        rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
-                Section(title: nil, footer: nil, rows: [.reportCrashes, .crashInfo])
-            ]
-        }
+        sections = [
+            Section(title: Localization.tracking, footer: nil, rows: [.analytics, .analyticsInfo]),
+            Section(title: Localization.morePrivacyOptions, footer: Localization.morePrivacyOptionsFooter, rows: [.morePrivacy, .usageTracking]),
+            Section(title: Localization.reports, footer: nil, rows: [.reportCrashes, .crashInfo])
+        ]
     }
 
     func registerTableViewCells() {
@@ -165,20 +148,6 @@ private extension PrivacySettingsViewController {
             configureMorePrivacy(cell: cell)
         case let cell as HeadlineLabelTableViewCell where row == .usageTracking:
             configureUsageTracker(cell: cell)
-        case let cell as SwitchTableViewCell where row == .collectInfo:
-            configureCollectInfo(cell: cell)
-        case let cell as BasicTableViewCell where row == .shareInfo:
-            configureShareInfo(cell: cell)
-        case let cell as BasicTableViewCell where row == .shareInfoPolicy:
-            configureCookiePolicy(cell: cell)
-        case let cell as BasicTableViewCell where row == .privacyInfo:
-            configurePrivacyInfo(cell: cell)
-        case let cell as BasicTableViewCell where row == .privacyPolicy:
-            configurePrivacyPolicy(cell: cell)
-        case let cell as BasicTableViewCell where row == .thirdPartyInfo:
-            configureCookieInfo(cell: cell)
-        case let cell as BasicTableViewCell where row == .thirdPartyPolicy:
-            configureCookiePolicy(cell: cell)
         case let cell as SwitchTableViewCell where row == .reportCrashes:
             configureReportCrashes(cell: cell)
         case let cell as BasicTableViewCell where row == .crashInfo:
@@ -232,85 +201,9 @@ private extension PrivacySettingsViewController {
         cell.accessoryType = .disclosureIndicator
     }
 
-    func configureCollectInfo(cell: SwitchTableViewCell) {
-        // image
-        cell.imageView?.image = .statsImage
-        cell.imageView?.tintColor = .text
-
-        // text
-        cell.title = NSLocalizedString(
-            "Collect Information",
-            comment: "Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle."
-        )
-
-        // switch
-        cell.isOn = collectInfo
-        cell.onChange = { [weak self] newValue in
-            self?.collectInfoWasUpdated(newValue: newValue)
-        }
-    }
-
-    func configureShareInfo(cell: BasicTableViewCell) {
-        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground(modal: false)
-        cell.textLabel?.text = NSLocalizedString(
-            "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.",
-            comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting"
-        )
-        configureInfo(cell: cell)
-    }
-
-    func configureCookiePolicy(cell: BasicTableViewCell) {
-        // To align the 'Learn more' cell to the others, add an "invisible" image.
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground(modal: false)
-        cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Settings > Privacy Settings. A text link to the cookie policy.")
-        cell.textLabel?.textColor = .accent
-    }
-
-    func configurePrivacyInfo(cell: BasicTableViewCell) {
-        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground(modal: false)
-        cell.textLabel?.text = NSLocalizedString(
-            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, " +
-            "and more as detailed in our privacy policy.",
-            comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect."
-        )
-        configureInfo(cell: cell)
-    }
-
-    func configurePrivacyPolicy(cell: BasicTableViewCell) {
-        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground(modal: false)
-        cell.textLabel?.text = NSLocalizedString(
-            "Read privacy policy",
-            comment: "Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy."
-        )
-        cell.textLabel?.textColor = .accent
-    }
-
-    func configureCookieInfo(cell: BasicTableViewCell) {
-        // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground(modal: false)
-        cell.textLabel?.text = NSLocalizedString(
-            "We use other tracking tools, including some from third parties. Read about these and how to control them.",
-            comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect."
-        )
-        configureInfo(cell: cell)
-    }
-
     func configureReportCrashes(cell: SwitchTableViewCell) {
         // image
-        if isPrivacyChoicesEnabled {
-            cell.imageView?.image = nil
-        } else {
-            cell.imageView?.image = .invisibleImage
-            cell.imageView?.tintColor = .text
-        }
+        cell.imageView?.image = nil
 
         // text
         cell.title = NSLocalizedString(
@@ -326,13 +219,7 @@ private extension PrivacySettingsViewController {
     }
 
     func configureCrashInfo(cell: BasicTableViewCell) {
-        if isPrivacyChoicesEnabled {
-            cell.imageView?.image = nil
-        } else {
-            // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-            cell.imageView?.image = .invisibleImage
-            cell.imageView?.tintColor = .listForeground(modal: false)
-        }
+        cell.imageView?.image = nil
         cell.textLabel?.text = NSLocalizedString(
             "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.",
             comment: "Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does"
@@ -342,11 +229,9 @@ private extension PrivacySettingsViewController {
 
     func configureInfo(cell: BasicTableViewCell) {
         cell.textLabel?.numberOfLines = 0
-        if isPrivacyChoicesEnabled {
-            cell.textLabel?.applySubheadlineStyle()
-            cell.textLabel?.textColor = .textSubtle
-            cell.contentView.directionalLayoutMargins = .init(top: 0, leading: 0, bottom: 0, trailing: Constants.toggleDescriptionMargin)
-        }
+        cell.textLabel?.applySubheadlineStyle()
+        cell.textLabel?.textColor = .textSubtle
+        cell.contentView.directionalLayoutMargins = .init(top: 0, leading: 0, bottom: 0, trailing: Constants.toggleDescriptionMargin)
     }
 
     /// Creates the table header view.
@@ -416,18 +301,6 @@ private extension PrivacySettingsViewController {
     func reportCrashesWasUpdated(newValue: Bool) {
         // This event will only report if the user has Analytics currently on
         ServiceLocator.analytics.track(.settingsReportCrashesToggled)
-    }
-
-    /// Display Automattic's Cookie Policy web page
-    ///
-    func presentCookiePolicyWebView() {
-        WebviewHelper.launch(WooConstants.URLs.cookie.asURL(), with: self)
-    }
-
-    /// Display Automattic's Privacy Policy web page
-    ///
-    func presentPrivacyPolicyWebView() {
-        WebviewHelper.launch(WooConstants.URLs.privacy.asURL(), with: self)
     }
 
     /// Presents a URL modally.
@@ -543,15 +416,6 @@ extension PrivacySettingsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch sections[indexPath.section].rows[indexPath.row] {
-        case .shareInfoPolicy:
-            ServiceLocator.analytics.track(.settingsShareInfoLearnMoreTapped)
-            presentCookiePolicyWebView()
-        case .thirdPartyPolicy:
-            ServiceLocator.analytics.track(.settingsThirdPartyLearnMoreTapped)
-            presentCookiePolicyWebView()
-        case .privacyPolicy:
-            ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
-            presentPrivacyPolicyWebView()
         case .morePrivacy:
             presentURL(WooConstants.URLs.morePrivacyDocumentation.asURL())
         case .usageTracking:
@@ -611,13 +475,6 @@ private enum Row: CaseIterable {
     case analyticsInfo
     case morePrivacy
     case usageTracking
-    case collectInfo
-    case privacyInfo
-    case privacyPolicy
-    case shareInfo
-    case shareInfoPolicy
-    case thirdPartyInfo
-    case thirdPartyPolicy
     case reportCrashes
     case crashInfo
 
@@ -631,20 +488,6 @@ private enum Row: CaseIterable {
             return HeadlineLabelTableViewCell.self
         case .usageTracking:
             return HeadlineLabelTableViewCell.self
-        case .collectInfo:
-            return SwitchTableViewCell.self
-        case .privacyInfo:
-            return BasicTableViewCell.self
-        case .privacyPolicy:
-            return BasicTableViewCell.self
-        case .shareInfo:
-            return BasicTableViewCell.self
-        case .shareInfoPolicy:
-            return BasicTableViewCell.self
-        case .thirdPartyInfo:
-            return BasicTableViewCell.self
-        case .thirdPartyPolicy:
-            return BasicTableViewCell.self
         case .reportCrashes:
             return SwitchTableViewCell.self
         case .crashInfo:

@@ -488,17 +488,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 if let variationIDs = try? container.decode([Int64].self, forKey: .variations) {
                     return variationIDs
                 } else {
-                    // Try extracting the variation IDs from an array of variations.
-                    // We need to key the nested containers using the ProductVariation coding keys and then decode the productVariationID.
-                    // Decoding the array as [ProductVariation] would fail because decoder.userInfo does not include the productID.
-                    var variationsArray = try container.nestedUnkeyedContainer(forKey: .variations)
-                    var variationIDs = [Int64]()
-                    while !variationsArray.isAtEnd {
-                        let variationID = try variationsArray.nestedContainer(keyedBy: ProductVariation.CodingKeys.self)
-                            .decode(Int64.self, forKey: .productVariationID)
-                        variationIDs.append(variationID)
-                    }
-                    return variationIDs
+                    return try container.decode([IdentifiableObject].self, forKey: .variations).map { $0.id }
                 }
             } catch {
                 DDLogError("⛔️ Error parsing `variations` for Product ID \(productID): \(error)")

@@ -103,6 +103,7 @@ public class Remote: NSObject {
                 completion(parsed, nil)
             } catch {
                 self.handleResponseError(error: error, for: request)
+                self.handleDecodingError(error: error)
                 DDLogError("<> Mapping Error: \(error)")
                 completion(nil, error)
             }
@@ -135,6 +136,7 @@ public class Remote: NSObject {
                     completion(.success(parsed))
                 } catch {
                     self.handleResponseError(error: error, for: request)
+                    self.handleDecodingError(error: error)
                     DDLogError("<> Mapping Error: \(error)")
                     completion(.failure(error))
                 }
@@ -176,6 +178,9 @@ public class Remote: NSObject {
                 if let dotcomError = result.failure as? DotcomError {
                     self?.handleResponseError(error: dotcomError, for: request)
                 }
+                if let decodingError = result.failure as? DecodingError {
+                    self?.handleDecodingError(error: decodingError)
+                }
             })
             .eraseToAnyPublisher()
     }
@@ -213,6 +218,7 @@ public class Remote: NSObject {
                                                 completion(.success(parsed))
                                             } catch {
                                                 self.handleResponseError(error: error, for: request)
+                                                self.handleDecodingError(error: error)
                                                 DDLogError("<> Mapping Error: \(error)")
                                                 completion(.failure(error))
                                             }
@@ -241,6 +247,7 @@ public class Remote: NSObject {
                     } catch {
                         DDLogError("<> Mapping Error: \(error)")
                         self.handleResponseError(error: error, for: request)
+                        self.handleDecodingError(error: error)
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
@@ -273,6 +280,15 @@ private extension Remote {
         }
     }
 
+    /// Handles decoding errors when parsing the response data fails.
+    ///
+    func handleDecodingError(error: Error) {
+        guard let decodingError = error as? DecodingError else {
+            return
+        }
+        publishJSONParsingErrorNotification(error: decodingError)
+    }
+
 
     /// Publishes a `Jetpack Timeout` Notification.
     ///
@@ -284,6 +300,12 @@ private extension Remote {
     ///
     private func publishInvalidTokenNotification(error: DotcomError) {
         NotificationCenter.default.post(name: .RemoteDidReceiveInvalidTokenError, object: error, userInfo: nil)
+    }
+
+    /// Publishes a `JSON Parsing Error` Notification.
+    ///
+    private func publishJSONParsingErrorNotification(error: Error) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: nil)
     }
 }
 
@@ -308,4 +330,8 @@ public extension NSNotification.Name {
     /// Posted whenever a Jetpack Timeout is received.
     ///
     static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
+
+    /// Posted whenever a Mapper fails to parse the response.
+    ///
+    static let RemoteDidReceiveJSONParsingError = NSNotification.Name(rawValue: "RemoteDidReceiveJSONParsingError")
 }

@@ -458,6 +458,80 @@ final class RemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result)
     }
+
+    /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJSONParsingError` Notification whenever the mapper throws a parsing error.
+    ///
+    func test_enqueue_request_with_mapper_posts_JSONParsingError_notification_when_parsing_fails() {
+        // Given
+        let network = MockNetwork()
+        let mapper = FailingDummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil, handler: nil)
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
+    }
+
+    /// Verifies that `enqueue:mapper:` (with `Result`) posts a `RemoteDidReceiveJSONParsingError` Notification whenever the mapper throws a parsing error.
+    ///
+    func test_enqueue_request_with_result_with_mapper_posts_JSONParsingError_notification_when_parsing_fails() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = FailingDummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil, handler: nil)
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
+    }
+
+    /// Verifies that `enqueuePublisher` posts a `RemoteDidReceiveJSONParsingError` Notification whenever the mapper throws a parsing error.
+    ///
+    func test_enqueuePublisher_posts_JSONParsingError_notification_when_parsing_fails() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = FailingDummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil, handler: nil)
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
+    }
 }
 
 
@@ -472,5 +546,15 @@ private class DummyMapper: Mapper {
     func map(response: Data) throws -> Any {
         input = response
         return response
+    }
+}
+
+/// Failing Dummy Mapper: Useful only for Remote Unit Tests with parsing failure.
+///
+private class FailingDummyMapper: Mapper {
+
+    func map(response: Data) throws -> Any {
+        let decoder = JSONDecoder()
+        return try decoder.decode(String.self, from: Data())
     }
 }

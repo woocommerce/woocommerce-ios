@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-23 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-05-31 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -453,9 +453,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
    Title for the screen to add a product to an order */
 "Add Product" = "添加产品";
-
-/* Title text of the button to add a single product via SKU scanning */
-"Add Product via SKU scanner" = "通过 SKU 扫描程序添加产品";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
@@ -1585,6 +1582,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain purchase success screen. */
 "Congratulations on your purchase" = "恭喜您购买成功";
 
+/* Message on the celebratory screen after creating first product */
+"Congratulations! You're one step closer to getting the new store ready." = "恭喜！ 您离准备好新的商店又近了一步。";
+
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "恭喜！ 您的读卡器使用的是最新版本软件";
 
@@ -1847,9 +1847,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "优惠券 (%1$@)";
-
-/* The title for a menu that helps debug crashes in production builds */
-"Crash Debug Menu" = "崩溃调试菜单";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "立即崩溃";
@@ -2171,6 +2168,7 @@ which should be translated separately and considered part of this sentence. */
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
+   Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -2917,6 +2915,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text field name in Edit Address Form */
 "First name" = "名字";
+
+/* Title of the celebratory screen after creating the first product */
+"First product created 🎉" = "第一个产品已创建 🎉";
 
 /* Subtitle for the account creation form. */
 "First, let’s create your account." = "首先，我们来创建您的账户。";
@@ -5652,6 +5653,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "重置活动日志";
 
+/* The title for a menu to reset the privacy choice banner presentation */
+"Reset Privacy Choice Banner State" = "重置隐私选项横幅状态";
+
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
@@ -5689,7 +5693,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry action title
    Retry button on the error notice for the upgrade view
    Retry button title for the privacy screen notices
-   Retry the last action */
+   Retry the last action
+   Retry title on the notice action button */
 "Retry" = "重试";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -6093,6 +6098,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "分享付款链接";
+
+/* Title of the action button to share the first created product */
+"Share Product" = "共享产品";
 
 /* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
 "Share Tap to Pay on iPhone Feedback" = "分享 iPhone 上“点按付款”功能的反馈";
@@ -7191,6 +7199,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "发放退款时出现错误";
+
+/* Notice title when there is an error saving the privacy banner choice */
+"There was an error saving your privacy choices." = "保存您的隐私选项时出现错误。";
 
 /* Notice displayed when searching the list of products fails */
 "There was an error searching products" = "搜索产品时出现错误";

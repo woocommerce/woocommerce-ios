@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-23 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-05-30 18:03:10+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -453,9 +453,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
    Title for the screen to add a product to an order */
 "Add Product" = "Lägg till produkt";
-
-/* Title text of the button to add a single product via SKU scanning */
-"Add Product via SKU scanner" = "Skanner för produkt-SKU";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen.
@@ -1585,6 +1582,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain purchase success screen. */
 "Congratulations on your purchase" = "Grattis till dina köp";
 
+/* Message on the celebratory screen after creating first product */
+"Congratulations! You're one step closer to getting the new store ready." = "Grattis! Du är ett steg närmare att få den nya butiken redo.";
+
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Grattis! Din läsare har den senaste programvaran";
 
@@ -1847,9 +1847,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Rabattkoder (%1$@)";
-
-/* The title for a menu that helps debug crashes in production builds */
-"Crash Debug Menu" = "Kraschfelsökningsmeny";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Krascha omedelbart";
@@ -2171,6 +2168,7 @@ which should be translated separately and considered part of this sentence. */
    Add a note screen - button title for closing the view
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
+   Button to dismiss the first created product screen
    Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users after collecting a payment fails
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -2917,6 +2915,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text field name in Edit Address Form */
 "First name" = "Förnamn";
+
+/* Title of the celebratory screen after creating the first product */
+"First product created 🎉" = "Första produkten skapad 🎉";
 
 /* Subtitle for the account creation form. */
 "First, let’s create your account." = "Låt oss börja med att skapa ditt konto.";
@@ -5689,7 +5690,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry action title
    Retry button on the error notice for the upgrade view
    Retry button title for the privacy screen notices
-   Retry the last action */
+   Retry the last action
+   Retry title on the notice action button */
 "Retry" = "Försök igen";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -6093,6 +6095,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Dela betalningslänk";
+
+/* Title of the action button to share the first created product */
+"Share Product" = "Dela produkt";
 
 /* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
 "Share Tap to Pay on iPhone Feedback" = "Dela feedback om Tryck för att betala på iPhone";

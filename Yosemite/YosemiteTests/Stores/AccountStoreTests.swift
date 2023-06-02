@@ -878,8 +878,7 @@ private extension AccountStoreTests {
                        displayName: "Sample",
                        email: "email@email.com",
                        username: "Username!",
-                       gravatarUrl: "https://automattic.com/superawesomegravatar.png",
-                       ipCountryCode: "")
+                       gravatarUrl: "https://automattic.com/superawesomegravatar.png")
     }
 
     /// Sample Account: Mark II
@@ -889,8 +888,7 @@ private extension AccountStoreTests {
                        displayName: "Yosemite",
                        email: "yosemite@yosemite.com",
                        username: "YOLO",
-                       gravatarUrl: "https://automattic.com/yosemite.png",
-                       ipCountryCode: "")
+                       gravatarUrl: "https://automattic.com/yosemite.png")
     }
 
     func sampleAccountSettings() -> Networking.AccountSettings {

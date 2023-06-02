@@ -3,7 +3,7 @@ import protocol Alamofire.URLRequestConvertible
 
 /// Wraps up a `URLRequestConvertible` instance, and injects the `UserAgent.defaultUserAgent`.
 ///
-struct UnauthenticatedRequest: URLRequestConvertible {
+struct UnauthenticatedRequest: Request {
 
     /// Request that does not require WPCOM authentication.
     ///
@@ -18,5 +18,9 @@ struct UnauthenticatedRequest: URLRequestConvertible {
         unauthenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         return unauthenticated
+    }
+
+    func responseDataValidator() -> ResponseDataValidator {
+        PlaceholderDataValidator()
     }
 }

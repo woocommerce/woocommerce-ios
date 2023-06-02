@@ -6,9 +6,11 @@ import Storage
 //
 public final class UserStore: Store {
     private let remote: UserRemote
+    private let ipRemote: IPLocationRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = UserRemote(network: network)
+        self.ipRemote = IPLocationRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -29,6 +31,8 @@ public final class UserStore: Store {
         switch action {
         case .retrieveUser(let siteID, let onCompletion):
             retrieveUser(siteID: siteID, completionHandler: onCompletion)
+        case .fetchUserIPCountryCode(let onCompletion):
+            fetchUserIPCountryCode(onCompletion: onCompletion)
         }
     }
 }
@@ -38,5 +42,9 @@ public final class UserStore: Store {
 private extension UserStore {
     func retrieveUser(siteID: Int64, completionHandler: @escaping (Result<User, Error>) -> Void) {
         remote.loadUserInfo(for: siteID, completion: completionHandler)
+    }
+
+    func fetchUserIPCountryCode(onCompletion: @escaping (Result<String, Error>) -> Void) {
+        ipRemote.getIPCountryCode(onCompletion: onCompletion)
     }
 }

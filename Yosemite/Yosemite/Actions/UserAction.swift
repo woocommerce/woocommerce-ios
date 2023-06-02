@@ -10,4 +10,8 @@ public enum UserAction: Action {
     /// sites, it *must* be connected to dotcom via Jetpack.
     ///
     case retrieveUser(siteID: Int64, onCompletion: (Result<User, Error>) -> Void)
+
+    /// Fetches the user IP's country code. Uses the WordPress public API..
+    ///
+    case fetchUserIPCountryCode(onCompletion: (Result<String, Error>) -> Void)
 }

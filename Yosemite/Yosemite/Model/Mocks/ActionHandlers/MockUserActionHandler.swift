@@ -18,6 +18,8 @@ struct MockUserActionHandler: MockActionHandler {
                                        lastName: "",
                                        nickname: "",
                                        roles: [User.Role.administrator.rawValue])))
+        case .fetchUserIPCountryCode(let onCompletion):
+            onCompletion(.success("CO"))
         }
     }
 }

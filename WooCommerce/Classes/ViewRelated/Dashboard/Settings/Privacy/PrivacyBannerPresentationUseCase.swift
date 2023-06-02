@@ -28,11 +28,15 @@ final class PrivacyBannerPresentationUseCase {
     /// Currently it is shown if the user is in the EU zone & privacy choices have not been saved.
     ///
     func shouldShowPrivacyBanner() async -> Bool {
+        // Early exit if privacy settings have been saved to prevent unnecessary API calls.
+        guard !defaults.hasSavedPrivacyBannerSettings else {
+            return false
+        }
+
         do {
             let countryCode = try await fetchUsersCountryCode()
             let isCountryInEU = Country.GDPRCountryCodes.contains(countryCode)
-            let hasSavedPrivacySettings = defaults.hasSavedPrivacyBannerSettings
-            return isCountryInEU && !hasSavedPrivacySettings
+            return isCountryInEU
         } catch {
             DDLogInfo("⛔️ Could not determine users country code. Error: \(error)")
             return false
@@ -43,40 +47,17 @@ final class PrivacyBannerPresentationUseCase {
 // MARK: Private Helpers
 private extension PrivacyBannerPresentationUseCase {
 
-    /// Determines the user country code by the following algorithm.
-    /// - If the user has a WPCOM account:
-    ///   - Use the ip country code.
-    /// - If the user does not has a WPCOM account:
-    ///   - Use the current locale country code.
+    /// Determines the user country. Relies on the public WordPress API.
     ///
     func fetchUsersCountryCode() async throws -> String {
-        // Use ip country code for WPCom accounts
-        if !stores.isAuthenticatedWithoutWPCom {
-            return try await fetchIPCountryCode()
-        }
-
-        // Use locale country code as a fallback
-        return fetchLocaleCountryCode()
-    }
-
-    /// Fetches the ip country code using the Account API.
-    ///
-    func fetchIPCountryCode() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
-            let action = AccountAction.synchronizeAccount { result in
-                let ipCountryCodeResult = result.map { $0.ipCountryCode }
-                continuation.resume(with: ipCountryCodeResult)
+            let action = UserAction.fetchUserIPCountryCode { result in
+                continuation.resume(with: result)
             }
             Task { @MainActor in
                 stores.dispatch(action)
             }
         }
-    }
-
-    /// Fetches the country code from the current locate.
-    ///
-    func fetchLocaleCountryCode() -> String {
-        currentLocale.regionCode ?? ""
     }
 }
 

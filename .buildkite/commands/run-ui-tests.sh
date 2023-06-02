@@ -48,7 +48,7 @@ else
   echo "For more details about the failed tests, check the Buildkite annotation, the logs under the '🧪 Testing' section and the \`.xcresult\` and test reports in Buildkite artifacts."
 fi
 
-if [ "$BUILDKITE_BRANCH" = "trunk" ]; then
+if [[ $BUILDKITE_BRANCH == trunk ]] || [[ $BUILDKITE_BRANCH == release/* ]]; then
     annotate_test_failures "fastlane/test_output/WooCommerce.xml" --slack "build-and-ship"
 else
     annotate_test_failures "fastlane/test_output/WooCommerce.xml"

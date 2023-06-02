@@ -64,8 +64,12 @@ public final class MenuScreen: ScreenObject {
         let actualStoreTitle = selectedStoreTitleGetter(app).label
         let actualStoreUrl = selectedStoreUrlGetter(app).label
 
-        XCTAssertEqual(expectedStoreTitle, actualStoreTitle)
-        XCTAssertEqual(expectedStoreUrl, actualStoreUrl)
+//        XCTAssertEqual(expectedStoreTitle, actualStoreTitle)
+//        XCTAssertEqual(expectedStoreUrl, actualStoreUrl)
+        
+//        intentional fail for testing
+        XCTAssertNotEqual(expectedStoreTitle, actualStoreTitle)
+        XCTAssertNotEqual(expectedStoreUrl, actualStoreUrl)
         return self
     }
 }

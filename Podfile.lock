@@ -85,7 +85,7 @@ DEPENDENCIES:
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `trunk`)
   - WordPressShared (~> 2.1)
-  - WordPressUI (~> 1.13-beta)
+  - WordPressUI (~> 1.13)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8.1)
   - ZendeskSupportSDK (~> 6.0)
@@ -173,6 +173,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 08c354d1c2b7fcbef3508c1931f343661f463f8e
+PODFILE CHECKSUM: 5f53669f9d2f0ae214694ed798118d704a40c937
 
 COCOAPODS: 1.11.3

@@ -54,6 +54,8 @@ public final class SingleProductScreen: ScreenObject {
             XCTAssertTrue(app.staticTexts["Price"].exists)
         case "variable":
             XCTAssertTrue(app.staticTexts["Add variations"].exists)
+        case "grouped":
+            XCTAssertTrue(app.staticTexts["Grouped products"].exists)
         default:
             XCTFail("Product Type \(productType) doesn't exist!")
         }
@@ -75,6 +77,9 @@ public final class SingleProductScreen: ScreenObject {
         case "variable":
             XCTAssertTrue(app.staticTexts["Add variations"].exists)
             XCTAssertTrue(app.staticTexts["Inventory"].exists)
+        case "grouped":
+            XCTAssertTrue(app.staticTexts["Add products to the group"].exists)
+            XCTAssertFalse(app.staticTexts["Inventory"].exists)
         default:
             XCTFail("Product Type \(productType) doesn't exist!")
         }

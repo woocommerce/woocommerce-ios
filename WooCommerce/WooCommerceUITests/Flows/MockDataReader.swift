@@ -21,7 +21,8 @@ class GetMocks {
     private static let file = [
         "physical": "products_add_new_physical_2129",
         "virtual": "products_add_new_virtual_2123",
-        "variable": "products_add_new_variable_2131"
+        "variable": "products_add_new_variable_2131",
+        "grouped": "products_add_new_grouped_2130"
     ]
 
     static func getMockData(test: AnyClass, filename file: String) -> Data {

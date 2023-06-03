@@ -719,9 +719,10 @@ public enum WooAnalyticsStat: String {
     case firstCreatedProductShown = "first_created_product_shown"
     case firstCreatedProductShareTapped = "first_created_product_share_tapped"
 
-    // MARK: Jetpack Tunnel Events
+    // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"
+    case apiJSONParsingError = "api_json_parsing_error"
 
     // MARK: In-app Feedback and Survey Events
     //

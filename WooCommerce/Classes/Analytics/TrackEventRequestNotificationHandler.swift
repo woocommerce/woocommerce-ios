@@ -38,7 +38,13 @@ private extension TrackEventRequestNotificationHandler {
             self?.trackApplicationPasswordsGenerationFailed(note: note)
         }
 
-        trackingObservers = [newPasswordCreatedObserver, passwordGenerationFailedObserver]
+        let jsonParsingFailedObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveJSONParsingError,
+                                                                   object: nil,
+                                                                   queue: .main) { [weak self] note in
+            self?.trackJSONParsingFailed(note: note)
+        }
+
+        trackingObservers = [newPasswordCreatedObserver, passwordGenerationFailedObserver, jsonParsingFailedObserver]
     }
 
     /// Tracks an event when an application password is created
@@ -54,5 +60,14 @@ private extension TrackEventRequestNotificationHandler {
             return
         }
         analytics.track(event: .ApplicationPassword.applicationPasswordGenerationFailed(scenario: .regeneration, error: error))
+    }
+
+    /// Tracks an event when JSON parsing fails
+    ///
+    func trackJSONParsingFailed(note: Notification) {
+        guard let error = note.object as? DecodingError else {
+            return
+        }
+        analytics.track(event: .RemoteRequest.jsonParsingError(error))
     }
 }

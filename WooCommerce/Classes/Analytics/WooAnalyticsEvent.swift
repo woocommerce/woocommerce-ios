@@ -2405,3 +2405,13 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Remote Requests
+//
+extension WooAnalyticsEvent {
+    enum RemoteRequest {
+        static func jsonParsingError(_ error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .apiJSONParsingError, properties: [:], error: error)
+        }
+    }
+}

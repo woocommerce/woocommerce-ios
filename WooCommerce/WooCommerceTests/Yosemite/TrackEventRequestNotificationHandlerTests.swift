@@ -123,6 +123,28 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
         assertEqual("regeneration", actualProperties["scenario"] as? String)
         assertEqual("other", actualProperties["cause"] as? String)
     }
+
+    func test_json_parsing_failed_event_is_tracked_upon_decoding_error() {
+        // When
+        let error = mockDecodingError()
+        mockNotificationCenter.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: nil)
+
+        // Then
+        let expectedEvent = WooAnalyticsEvent.RemoteRequest.jsonParsingError(error)
+
+        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue }))
+    }
+}
+
+private extension TrackEventRequestNotificationHandlerTests {
+    func mockDecodingError() -> Error {
+        do {
+            _ = try JSONDecoder().decode(String.self, from: Data())
+            return MockError.mockError
+        } catch {
+            return error
+        }
+    }
 }
 
 private class MockNotificationCenter: NotificationCenter { }

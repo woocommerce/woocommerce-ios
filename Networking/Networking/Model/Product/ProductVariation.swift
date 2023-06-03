@@ -417,7 +417,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
 
 /// Defines all of the ProductVariation CodingKeys
 ///
-private extension ProductVariation {
+extension ProductVariation {
 
     enum CodingKeys: String, CodingKey {
         case productVariationID = "id"

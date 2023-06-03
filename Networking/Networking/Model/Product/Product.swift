@@ -479,14 +479,23 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
         let defaultAttributes = try container.decode([ProductDefaultAttribute].self, forKey: .defaultAttributes)
+
+        // Even though WooCommerce Core returns a list of variation IDs,
+        // some plugins alter the field value to include the entire variation response and we need to extract the IDs.
+        // If we still can't decode it, we return an empty variation list so the whole parsing doesn't fail.
         let variations: [Int64] = {
             do {
-                return try container.decode([Int64].self, forKey: .variations)
+                if let variationIDs = try? container.decode([Int64].self, forKey: .variations) {
+                    return variationIDs
+                } else {
+                    return try container.decode([IdentifiableObject].self, forKey: .variations).map { $0.id }
+                }
             } catch {
                 DDLogError("⛔️ Error parsing `variations` for Product ID \(productID): \(error)")
                 return []
             }
         }()
+
         let groupedProducts = try container.decode([Int64].self, forKey: .groupedProducts)
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)

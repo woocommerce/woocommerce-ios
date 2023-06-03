@@ -12,6 +12,7 @@
 - [*] Products: Allow alternative types for the `backordersAllowed` and `onSale` in `Product` and `ProductVariation`, as some third-party plugins alter the types in the API. This helps with the product list not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/9849]
 - [*] Products: Allow alternative types for the `sku` and `weight` in `ProductVariation`, as some third-party plugins alter the types in the API. This helps with the product variation list not loading due to product variation decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/9847]
 - [*] Products: Allow alternative types for the `sku` and `weight` in `Product`, the dimensions in `ProductDimensions`, and the `downloadID` in `ProductDownload`, as some third-party plugins alter the types in the API. This helps with the product list not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/9846]
+- [*] Products: Add support for parsing variation objects for the `variations` field in `Product`, as some third-party plugins alter the type for this field in the API. This allows the variations to be loaded for variable products if those third-party plugins are active. [https://github.com/woocommerce/woocommerce-ios/pull/9857]
 
 13.8
 -----

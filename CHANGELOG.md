@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 13.9
+No new bells and whistles, just incremental improvements to bring you a faster, more stable app. All that glitters is not gold — sometimes it's code!
+
 ## 13.8
 Lots of updates this week! We've added a new privacy screen for merchants in the EU to better control their privacy choices. We made it easy for you to share your products and store directly from the app. We also focused on fixing a few bugs and enhancements around product and order management. Keep your feedback coming!
 

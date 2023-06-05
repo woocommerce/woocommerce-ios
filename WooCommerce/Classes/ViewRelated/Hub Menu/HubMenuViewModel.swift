@@ -138,6 +138,14 @@ final class HubMenuViewModel: ObservableObject {
             }
         }
 
+        // Blaze menu.
+        // TODO: 9866 - async eligibility check
+        if featureFlagService.isFeatureFlagEnabled(.blaze), let index = generalElements.firstIndex(where: { item in
+            type(of: item).id == Payments.id
+        }) {
+            generalElements.insert(Blaze(), at: index + 1)
+        }
+
         stores.dispatch(action)
     }
 
@@ -169,6 +177,12 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         return ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
+    }
+
+    /// Navigates to show the Blaze view from the view model's navigation controller property.
+    ///
+    func showBlaze() {
+        // TODO: 9866 - show Blaze view
     }
 
     private func observeSiteForUIUpdates() {
@@ -280,6 +294,18 @@ extension HubMenuViewModel {
         }
     }
 
+    struct Blaze: HubMenuItem {
+        static var id = "blaze"
+
+        let title: String = Localization.blaze
+        let description: String = Localization.blazeDescription
+        let icon: UIImage = .blaze
+        let iconColor: UIColor = .clear
+        let accessibilityIdentifier: String = "menu-blaze"
+        let trackingOption: String = "blaze"
+        let iconBadge: HubMenuBadgeType? = nil
+    }
+
     struct WoocommerceAdmin: HubMenuItem {
         static var id = "woocommerceAdmin"
 
@@ -371,6 +397,9 @@ extension HubMenuViewModel {
         static let payments = NSLocalizedString("Payments",
                                                 comment: "Title of the hub menu payments button")
         static let paymentsDescription = NSLocalizedString("Join the mobile payments", comment: "Description of the hub menu payments button")
+        static let blaze = NSLocalizedString("Blaze",
+                                             comment: "Title of the hub menu Blaze button")
+        static let blazeDescription = NSLocalizedString("Promote products with Blaze", comment: "Description of the hub menu Blaze button")
         static let myStore = NSLocalizedString("My Store",
                                                comment: "Title of the hub menu view in case there is no title for the store")
         static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",

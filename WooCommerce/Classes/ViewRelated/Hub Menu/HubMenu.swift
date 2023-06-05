@@ -144,6 +144,8 @@ struct HubMenu: View {
             showSettings = true
         case HubMenuViewModel.Payments.id:
             showingPayments = true
+        case HubMenuViewModel.Blaze.id:
+            viewModel.showBlaze()
         case HubMenuViewModel.WoocommerceAdmin.id:
             showingWooCommerceAdmin = true
         case HubMenuViewModel.ViewStore.id:

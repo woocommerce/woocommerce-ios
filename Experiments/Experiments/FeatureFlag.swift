@@ -160,6 +160,10 @@ public enum FeatureFlag: Int {
     ///
     case freeTrial
 
+    /// Enables free trial store upgrades via In-App Purchases
+    ///
+    case freeTrialInAppPurchasesUpgradeM1
+
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin

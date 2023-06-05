@@ -984,7 +984,8 @@ extension AppSettingsStoreTests {
         let dismissedDate = Date()
         let oneMinute = Calendar.current.date(byAdding: .minute, value: 1, to: dismissedDate)
 
-        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.linkedProductsPromo: .init(dismissedDate: dismissedDate, remindAfter: oneMinute)])
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.linkedProductsPromo: .init(dismissedDate: dismissedDate,
+                                                                                                           remindAfter: oneMinute)])
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When

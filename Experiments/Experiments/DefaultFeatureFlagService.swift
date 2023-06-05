@@ -93,8 +93,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .readOnlyMinMaxQuantities:
             return true
-        case .privacyChoices:
-            return true
         case .storeCreationNotifications:
             return true
         case .euShippingNotification:

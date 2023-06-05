@@ -115,4 +115,8 @@ public enum ProductAction: Action {
     /// Generates a product description with Jetpack AI given the name, features, and language code.
     ///
     case generateProductDescription(siteID: Int64, name: String, features: String, languageCode: String, completion: (Result<String, Error>) -> Void)
+
+    /// Generates a product sharing message with Jetpack AI given the URL and language code.
+    ///
+    case generateProductSharingMessage(siteID: Int64, url: String, languageCode: String, completion: (Result<String, Error>) -> Void)
 }

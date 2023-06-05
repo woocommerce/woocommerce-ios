@@ -59,7 +59,7 @@ final class GeneralAppSettingsTests: XCTestCase {
         let readers = ["aaaaa", "bbbbbb"]
         let eligibilityInfo = EligibilityErrorInfo(name: "user", roles: ["admin"])
         let featureAnnouncementCampaignSettings = [
-            FeatureAnnouncementCampaign.upsellCardReaders:
+            FeatureAnnouncementCampaign.linkedProductsPromo:
                 FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)]
         let sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [1234, 123, 12, 1]
         let previousSettings = GeneralAppSettings(installationDate: installationDate,

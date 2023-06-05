@@ -845,7 +845,7 @@ extension AppSettingsStoreTests {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: nil, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: nil, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
@@ -853,9 +853,9 @@ extension AppSettingsStoreTests {
         guard let savedSettings else {
             return XCTFail("Expected settings to be saved, but none were found")
         }
-        let dismissedDate: Date = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        let dismissedDate: Date = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.linkedProductsPromo]?.dismissedDate)
         XCTAssert(Calendar.current.isDateInToday(dismissedDate))
-        let remindAfterDate: Date? = savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter
+        let remindAfterDate: Date? = savedSettings.featureAnnouncementCampaignSettings[.linkedProductsPromo]?.remindAfter
         XCTAssertNil(remindAfterDate)
     }
 
@@ -866,13 +866,13 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: 0, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: 0, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
 
-        let actualDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        let actualDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.linkedProductsPromo]?.dismissedDate)
 
         XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
     }
@@ -885,13 +885,13 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: remindAfterDays, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: remindAfterDays, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
 
-        let actualRemindAfter = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter)
+        let actualRemindAfter = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.linkedProductsPromo]?.remindAfter)
 
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: twoWeeksTime))
     }
@@ -904,13 +904,13 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: remindAfterDays, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: remindAfterDays, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
 
-        let actualRemindAfter = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.remindAfter)
+        let actualRemindAfter = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.linkedProductsPromo]?.remindAfter)
 
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: oneWeekTime))
     }
@@ -925,13 +925,13 @@ extension AppSettingsStoreTests {
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .upsellCardReaders, remindAfterDays: 0, onCompletion: nil)
+        let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: 0, onCompletion: nil)
         subject?.onAction(action)
 
         // Then
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
 
-        let actualDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.upsellCardReaders]?.dismissedDate)
+        let actualDismissDate = try XCTUnwrap(savedSettings.featureAnnouncementCampaignSettings[.linkedProductsPromo]?.dismissedDate)
 
         XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
 
@@ -946,7 +946,7 @@ extension AppSettingsStoreTests {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .upsellCardReaders) { result in
+            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .linkedProductsPromo) { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -962,12 +962,12 @@ extension AppSettingsStoreTests {
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
         let date = Date(timeIntervalSince1970: 100)
 
-        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.upsellCardReaders: .init(dismissedDate: date, remindAfter: nil)])
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.linkedProductsPromo: .init(dismissedDate: date, remindAfter: nil)])
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .upsellCardReaders) { result in
+            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .linkedProductsPromo) { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -984,12 +984,12 @@ extension AppSettingsStoreTests {
         let dismissedDate = Date()
         let oneMinute = Calendar.current.date(byAdding: .minute, value: 1, to: dismissedDate)
 
-        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.upsellCardReaders: .init(dismissedDate: dismissedDate, remindAfter: oneMinute)])
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.linkedProductsPromo: .init(dismissedDate: dismissedDate, remindAfter: oneMinute)])
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .upsellCardReaders) { result in
+            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .linkedProductsPromo) { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -1009,12 +1009,12 @@ extension AppSettingsStoreTests {
         let campaignSettings = FeatureAnnouncementCampaignSettings(
             dismissedDate: dismissedDate,
             remindAfter: oneMinuteAgo)
-        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.upsellCardReaders: campaignSettings])
+        let settings = createAppSettings(featureAnnouncementCampaignSettings: [.linkedProductsPromo: campaignSettings])
         try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .upsellCardReaders) { result in
+            let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .linkedProductsPromo) { result in
                 promise(result)
             }
             self.subject?.onAction(action)

@@ -181,14 +181,13 @@ final class InAppPurchaseStoreTests: XCTestCase {
         XCTAssert(error is WordPressApiError)
     }
 
-    func test_userIsEntitledToProduct_returns_true_when_user_has_no_transactions_then_is_entitled_to_products() throws {
+    func test_userIsEntitledToProduct_returns_true_when_user_has_no_transactions_then_not_entitled_to_products() throws {
         // Given
-        let transaction = SKTestTransaction()
+        store.transactionEntitlementHandler = MockWooTransaction()
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { _ in
-                let result = self.simulateUserIsEntitledToProduct(with: transaction.productIdentifier)
+            let action = InAppPurchaseAction.userIsEntitledToProduct(productID: self.sampleProductID) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -196,7 +195,7 @@ final class InAppPurchaseStoreTests: XCTestCase {
 
         // Then
         let isEntitled = try XCTUnwrap(result.get())
-        XCTAssertTrue(isEntitled)
+        XCTAssertFalse(isEntitled)
     }
 
     func test_userIsEntitledToProduct_returns_false_when_user_has_existing_transactions_then_is_not_entitled_to_products() throws {

@@ -12,6 +12,8 @@ public class InAppPurchaseStore: Store {
     private var useBackend = true
     private var pauseTransactionListener = CurrentValueSubject<Bool, Never>(false)
 
+    var transactionEntitlementHandler: TransactionFacade = WooTransaction()
+
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         remote = InAppPurchasesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -159,7 +161,7 @@ private extension InAppPurchaseStore {
     func retryWPComSyncForPurchasedProduct(with id: String) async throws {
         try await assertInAppPurchasesAreSupported()
 
-        guard let verificationResult = await Transaction.currentEntitlement(for: id) else {
+        guard let verificationResult = await transactionEntitlementHandler.currentEntitlement(for: id) else {
             // The user doesn't have a valid entitlement for this product
             throw Errors.transactionProductUnknown
         }
@@ -218,7 +220,7 @@ private extension InAppPurchaseStore {
     }
 
     func userIsEntitledToProduct(with id: String) async throws -> Bool {
-        guard let verificationResult = await Transaction.currentEntitlement(for: id) else {
+        guard let verificationResult = await transactionEntitlementHandler.currentEntitlement(for: id) else {
             // The user hasn't purchased this product.
             return false
         }
@@ -341,5 +343,21 @@ public extension InAppPurchaseStore {
         static let identifiers = [
             "debug.woocommerce.ecommerce.monthly"
         ]
+    }
+}
+
+protocol TransactionFacade {
+    func currentEntitlement(for productID: String) async -> VerificationResult<Transaction>?
+}
+
+struct WooTransaction: TransactionFacade {
+    func currentEntitlement(for productID: String) async -> VerificationResult<Transaction>? {
+        await Transaction.currentEntitlement(for: productID)
+    }
+}
+
+struct MockWooTransaction: TransactionFacade {
+    func currentEntitlement(for productID: String) async -> VerificationResult<Transaction>? {
+        return nil
     }
 }

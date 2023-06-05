@@ -6,7 +6,8 @@ group :screenshots, optional: true do
   gem 'rmagick', '~> 4.1'
 end
 
-gem 'cocoapods', '~> 1.10'
+# 1.12.x and higher, but less than 2.x, starting from 1.12.1
+gem 'cocoapods', '~> 1.12', '>= 1.12.1'
 gem 'cocoapods-catalyst-support', '~> 0.1'
 gem 'dotenv'
 gem 'fastlane', '~> 2'

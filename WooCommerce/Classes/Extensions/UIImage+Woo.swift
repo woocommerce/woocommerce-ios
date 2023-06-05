@@ -220,7 +220,7 @@ extension UIImage {
     ///
     static var commentContent: UIImage {
         let tintColor = UIColor(light: .black, dark: .white)
-        return UIImage(named: "icon-comment-content")?.withTintColor(tintColor) ?? UIImage.gridicon(.comment)
+        return UIImage(named: "icon-comment-content")?.withTintColor(tintColor) ?? .commentImage.withTintColor(tintColor)
     }
 
     /// Credit Card Icon

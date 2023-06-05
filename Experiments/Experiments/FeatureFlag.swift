@@ -211,4 +211,8 @@ public enum FeatureFlag: Int {
     /// Do not use the Google SDK when authenticating through a Google account.
     ///
     case sdkLessGoogleSignIn
+
+    /// Enables promoting a product on WPCOM and Tumblr using Blaze for eligible sites and products.
+    ///
+    case blaze
 }

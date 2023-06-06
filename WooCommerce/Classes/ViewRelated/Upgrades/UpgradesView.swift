@@ -36,11 +36,19 @@ struct UpgradesView: View {
     var body: some View {
         List {
             Section {
-                Text("Plans")
-            }
-            Section {
                 Text("Your Plan: \(subscriptionsViewModel.planName)")
                 Text("Days left in trial: \(String(subscriptionsViewModel.planDaysLeft))")
+            }
+            Section {
+                VStack {
+                    Image(uiImage: .emptyOrdersImage)
+                    Text("Essential")
+                        .font(.title)
+                    Text("Everything you need to launch an online store")
+                        .font(.body)
+                    Text("$39")
+                        .font(.title)
+                }
             }
             Section {
                 if viewModel.products.isEmpty {
@@ -52,7 +60,7 @@ struct UpgradesView: View {
                                 // TODO: Add product entitlement check
                                 Task {
                                     await viewModel.purchaseProduct(with: product.id)
-                                }                                
+                                }
                             }
                         }
                     }
@@ -62,5 +70,7 @@ struct UpgradesView: View {
         .task {
             await viewModel.loadProducts()
         }
+        .navigationBarTitle("Plans")
+        .navigationBarTitleDisplayMode(.large)
     }
 }

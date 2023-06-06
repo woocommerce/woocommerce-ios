@@ -6,17 +6,12 @@ import protocol Experiments.FeatureFlagService
 final class ShareProductCoordinator: Coordinator {
     let navigationController: UINavigationController
 
-    private let site: Site?
     private let productURL: URL
     private let productName: String
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
     private let viewControllerToPresentShareSheet: UIViewController
-    private let featureFlagService: FeatureFlagService
-
-    private var shouldEnableShareProductUsingAI: Bool {
-        site?.isWordPressComStore == true && featureFlagService.isFeatureFlagEnabled(.shareProductAI)
-    }
+    private let shareProductEligibilityChecker: ShareProductAIEligibilityChecker
 
     private init(site: Site?,
                  productURL: URL,
@@ -26,13 +21,12 @@ final class ShareProductCoordinator: Coordinator {
                  viewControllerToPresentShareSheet: UIViewController,
                  featureFlagService: FeatureFlagService,
                  navigationController: UINavigationController) {
-        self.site = site
         self.productURL = productURL
         self.productName = productName
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
         self.viewControllerToPresentShareSheet = viewControllerToPresentShareSheet
-        self.featureFlagService = featureFlagService
+        self.shareProductEligibilityChecker = ShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
         self.navigationController = navigationController
     }
 
@@ -71,7 +65,7 @@ final class ShareProductCoordinator: Coordinator {
     }
 
     func start() {
-        if shouldEnableShareProductUsingAI {
+        if shareProductEligibilityChecker.canGenerateShareProductMessageUsingAI {
             presentShareProductAIGeneration()
         } else {
             presentShareSheet()

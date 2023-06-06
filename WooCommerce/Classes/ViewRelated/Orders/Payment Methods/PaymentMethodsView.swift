@@ -22,8 +22,6 @@ struct PaymentMethodsView: View {
     ///
     @State var sharingPaymentLink = false
 
-    @State private var showingPurchaseCardReaderView = false
-
     @State private var showingScanToPayView = false
 
     private let learnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentMethods)
@@ -100,18 +98,6 @@ struct PaymentMethodsView: View {
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
 
-                    if viewModel.showUpsellCardReaderFeatureBanner {
-                        FeatureAnnouncementCardView(viewModel: viewModel.upsellCardReadersAnnouncementViewModel,
-                                                    dismiss: {
-                            viewModel.refreshUpsellCardReaderFeatureBannerVisibility()
-                        },
-                                                    callToAction: {
-                            showingPurchaseCardReaderView = true
-                        })
-                        .padding(.horizontal, insets: safeAreaInsets)
-                        .background(Color(.listForeground(modal: false)))
-                    }
-
                     NavigationLink(destination: WebView(isPresented: .constant(true), url: learnMoreViewModel.url)
                                                 .onAppear {
                                                     learnMoreViewModel.learnMoreTapped()
@@ -134,17 +120,6 @@ struct PaymentMethodsView: View {
                 ProgressView()
                     .renderedIf(viewModel.showLoadingIndicator)
             }
-        }
-        .sheet(isPresented: $showingPurchaseCardReaderView) {
-            WebViewSheet(
-                viewModel: WebViewSheetViewModel(
-                    url: viewModel.purchaseCardReaderUrl,
-                    navigationTitle: UpsellCardReadersCampaign.Localization.cardReaderWebViewTitle,
-                    authenticated: true),
-                done: {
-                    showingPurchaseCardReaderView = false
-                })
-            .navigationViewStyle(.stack)
         }
         .shareSheet(isPresented: $sharingPaymentLink) {
             // If paymentLink is available it already contains a valid URL.

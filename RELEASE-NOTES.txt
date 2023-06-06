@@ -2,6 +2,7 @@
 
 14.0
 -----
+- [*] Payments: Remove the upsell-card-readers banner from the Payment Methods Screen [https://github.com/woocommerce/woocommerce-ios/pull/9869]
 
 
 13.9

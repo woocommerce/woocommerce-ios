@@ -17,7 +17,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
         let config = FeatureAnnouncementCardViewModel.Configuration(
             source: .paymentMethods,
-            campaign: .upsellCardReaders,
+            campaign: .linkedProductsPromo,
             title: "Buy a reader",
             message: "With a card reader, you can accept card payments",
             buttonTitle: "Buy now",
@@ -46,7 +46,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
+        let expectedCampaign = FeatureAnnouncementCampaign.linkedProductsPromo
         let expectedEvent = WooAnalyticsEvent.FeatureCard.shown(source: expectedSource, campaign: expectedCampaign)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
@@ -83,7 +83,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
         // Then
         let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
+        let expectedCampaign = FeatureAnnouncementCampaign.linkedProductsPromo
         let expectedEvent = WooAnalyticsEvent.FeatureCard.ctaTapped(source: expectedSource, campaign: expectedCampaign)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue
@@ -94,7 +94,7 @@ final class FeatureAnnouncementCardViewModelTests: XCTestCase {
 
     private func assertLogsDismissedAnalyticsEvent() {
         let expectedSource = FeatureCardEvent.Source.paymentMethods
-        let expectedCampaign = FeatureAnnouncementCampaign.upsellCardReaders
+        let expectedCampaign = FeatureAnnouncementCampaign.linkedProductsPromo
         let expectedEvent = WooAnalyticsEvent.FeatureCard.dismissed(source: expectedSource, campaign: expectedCampaign, remindLater: true)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue

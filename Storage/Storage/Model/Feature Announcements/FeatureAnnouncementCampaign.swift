@@ -1,7 +1,6 @@
 import Foundation
 
 public enum FeatureAnnouncementCampaign: String, Codable, Equatable {
-    case upsellCardReaders = "upsell_card_readers"
     case linkedProductsPromo = "linked_products_promo"
     case productsOnboarding = "products_onboarding_first_product"
     case inPersonPaymentsCashOnDelivery = "ipp_not_user"

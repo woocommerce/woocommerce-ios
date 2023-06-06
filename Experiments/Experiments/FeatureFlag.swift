@@ -160,6 +160,10 @@ public enum FeatureFlag: Int {
     ///
     case freeTrial
 
+    /// Enables free trial store upgrades via In-App Purchases
+    ///
+    case freeTrialInAppPurchasesUpgradeM1
+
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin
@@ -196,10 +200,6 @@ public enum FeatureFlag: Int {
     ///
     case readOnlyMinMaxQuantities
 
-    /// Enables updates of the Privacy Choices project.
-    ///
-    case privacyChoices
-
     /// Local notifications for store creation
     ///
     case storeCreationNotifications
@@ -215,4 +215,8 @@ public enum FeatureFlag: Int {
     /// Enables promoting a product on WPCOM and Tumblr using Blaze for eligible sites and products.
     ///
     case blaze
+
+    /// Enables generating share product content using AI
+    ///
+    case shareProductAI
 }

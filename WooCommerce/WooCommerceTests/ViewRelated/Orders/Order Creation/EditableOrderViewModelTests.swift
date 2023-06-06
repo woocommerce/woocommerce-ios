@@ -1620,7 +1620,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(capturedErrors, [.nilSKU])
     }
 
-    func test_addScannedProductToOrder_when_sku_is_not_found_then_fails_to_add_product_and_returns_productNotFound_error() {
+    func test_addScannedProductToOrder_when_sku_is_not_found_then_returns_productNotFound_error_and_shows_autodismissable_notice_with_retry_action() {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
@@ -1632,6 +1632,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         })
 
         // When
+        var onRetryRequested = false
         let expectedError = waitFor { promise in
             self.viewModel.addScannedProductToOrder(barcode: "nonExistingSKU", onCompletion: { expectedError in
                 switch expectedError {
@@ -1640,11 +1641,22 @@ final class EditableOrderViewModelTests: XCTestCase {
                 default:
                     XCTFail("Expected failure, got success")
                 }
-            }, onRetryRequested: {})
+            }, onRetryRequested: {
+                onRetryRequested = true
+            })
         }
+
+        let expectedNotice = EditableOrderViewModel.NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction: {})
 
         // Then
         XCTAssertEqual(expectedError, .productNotFound)
+        XCTAssertEqual(viewModel.autodismissableNotice, expectedNotice)
+
+        viewModel.autodismissableNotice?.actionHandler?()
+
+        waitUntil {
+            onRetryRequested == true
+        }
     }
 
     func test_addScannedProductToOrder_when_existing_sku_is_found_then_retrieving_a_matching_product_returns_success() {

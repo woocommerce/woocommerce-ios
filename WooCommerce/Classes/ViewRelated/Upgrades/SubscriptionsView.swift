@@ -6,7 +6,7 @@ import SwiftUI
 final class SubscriptionsHostingController: UIHostingController<SubscriptionsView> {
 
     init(siteID: Int64) {
-        let viewModel = UpgradesViewModel()
+        let viewModel = SubscriptionsViewModel()
         super.init(rootView: .init(viewModel: viewModel))
 
         rootView.onReportIssueTapped = { [weak self] in
@@ -30,7 +30,7 @@ struct SubscriptionsView: View {
 
     /// Drives the view.
     ///
-    @StateObject var viewModel: UpgradesViewModel
+    @StateObject var viewModel: SubscriptionsViewModel
 
     /// Closure to be invoked when the "Report Issue" button is tapped.
     ///

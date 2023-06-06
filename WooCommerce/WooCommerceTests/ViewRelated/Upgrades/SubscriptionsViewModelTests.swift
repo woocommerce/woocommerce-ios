@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-final class UpgradesViewModelTests: XCTestCase {
+final class SubscriptionsViewModelTests: XCTestCase {
 
     let freeTrialID = "1052"
     let sampleSite = Site.fake().copy(siteID: 123, isWordPressComStore: true)
@@ -30,7 +30,7 @@ final class UpgradesViewModelTests: XCTestCase {
 
         // When
         let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
+        let viewModel = SubscriptionsViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
         viewModel.loadPlan()
 
         // Then
@@ -61,7 +61,7 @@ final class UpgradesViewModelTests: XCTestCase {
         }
         let synchronizer = StorePlanSynchronizer(stores: stores)
         let featureFlags = MockFeatureFlagService()
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
+        let viewModel = SubscriptionsViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
 
         // When
         viewModel.loadPlan()
@@ -94,7 +94,7 @@ final class UpgradesViewModelTests: XCTestCase {
             }
         }
         let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+        let viewModel = SubscriptionsViewModel(stores: stores, storePlanSynchronizer: synchronizer)
 
         // When
         viewModel.loadPlan()
@@ -127,7 +127,7 @@ final class UpgradesViewModelTests: XCTestCase {
             }
         }
         let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+        let viewModel = SubscriptionsViewModel(stores: stores, storePlanSynchronizer: synchronizer)
 
         // When
         viewModel.loadPlan()
@@ -151,7 +151,7 @@ final class UpgradesViewModelTests: XCTestCase {
             }
         }
         let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+        let viewModel = SubscriptionsViewModel(stores: stores, storePlanSynchronizer: synchronizer)
 
         // When
         viewModel.loadPlan()

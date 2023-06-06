@@ -868,11 +868,17 @@ private extension ProductFormViewController {
     func displayShareProduct(from sourceView: UIBarButtonItem, analyticSource: WooAnalyticsEvent.ProductForm.ShareProductSource) {
         ServiceLocator.analytics.track(event: .ProductForm.productDetailShareButtonTapped(source: analyticSource))
 
-        guard let url = URL(string: product.permalink) else {
+        guard let url = URL(string: product.permalink),
+              let navigationController = self.navigationController else {
             return
         }
 
-        SharingHelper.shareURL(url: url, title: product.name, from: sourceView, in: self)
+        let shareProductCoordinator = ShareProductCoordinator(productURL: url,
+                                                              productName: product.name,
+                                                              shareSheetAnchorItem: sourceView,
+                                                              viewControllerToPresentShareSheet: self,
+                                                              navigationController: navigationController)
+        shareProductCoordinator.start()
     }
 
     func duplicateProduct() {

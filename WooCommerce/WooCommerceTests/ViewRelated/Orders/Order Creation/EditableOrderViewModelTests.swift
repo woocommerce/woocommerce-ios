@@ -160,7 +160,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.notice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
+        XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
     }
 
     func test_view_model_fires_error_notice_when_order_sync_fails() {
@@ -186,21 +186,21 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.notice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, flow: .creation, with: synchronizer))
+        XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, flow: .creation, with: synchronizer))
     }
 
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         let error = NSError(domain: "Error", code: 0)
-        viewModel.notice = EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
+        viewModel.fixedNotice = EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
 
         // When
         let notice: Notice? = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .createOrder:
-                    promise(viewModel.notice)
+                    promise(viewModel.fixedNotice)
                 default:
                     XCTFail("Received unsupported action: \(action)")
                 }
@@ -1614,7 +1614,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             default:
                 XCTFail("Expected failure, got success")
             }
-        })
+        }, onRetryRequested: {})
 
         // Then
         XCTAssertEqual(capturedErrors, [.nilSKU])
@@ -1640,7 +1640,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 default:
                     XCTFail("Expected failure, got success")
                 }
-            })
+            }, onRetryRequested: {})
         }
 
         // Then
@@ -1668,7 +1668,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 default:
                     XCTFail("Expected success, got failure")
                 }
-            })
+            }, onRetryRequested: {})
         }
 
         // Then
@@ -1706,7 +1706,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 default:
                     XCTFail("Expected success, got failure")
                 }
-            })
+            }, onRetryRequested: {})
         }
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialProductID: initialProductID)
 

@@ -1,11 +1,24 @@
 import SwiftUI
+import struct Yosemite.Product
+
+final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {
+    init() {
+        // TODO: create view model
+        super.init(rootView: ProductSharingMessageGenerationView())
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
 
 /// View for generating product sharing message with AI.
 struct ProductSharingMessageGenerationView: View {
     @State private var content = ""
     var body: some View {
         VStack(alignment: .center, spacing: Layout.defaultSpacing) {
-    
+
             // Generated message text field
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $content)
@@ -19,16 +32,13 @@ struct ProductSharingMessageGenerationView: View {
                     )
 
                 // Loading state text
-                HStack {
-                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                    Text(Localization.generating)
-                        .foregroundColor(Color(.placeholderText))
-                        .bodyStyle()
-                }
-                .padding(insets: Layout.placeholderInsets)
-                // Allows gestures to pass through to the `TextEditor`.
-                .allowsHitTesting(false)
-                .frame(alignment: .center)
+                Text(Localization.generating)
+                    .foregroundColor(Color(.placeholderText))
+                    .bodyStyle()
+                    .padding(insets: Layout.placeholderInsets)
+                    // Allows gestures to pass through to the `TextEditor`.
+                    .allowsHitTesting(false)
+                    .frame(alignment: .center)
             }
 
             Button(Localization.shareMessage) {
@@ -42,6 +52,24 @@ struct ProductSharingMessageGenerationView: View {
             .buttonStyle(LinkButtonStyle())
         }
         .padding(insets: Layout.insets)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Sharing Product")
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(action: {
+                    // TODO
+                }, label: { Text("Dismiss") })
+                .foregroundColor(Color(.accent))
+            }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    // TODO
+                }, label: {
+                    Image(systemName: "arrow.counterclockwise")
+                })
+                .foregroundColor(Color(.accent))
+            }
+        }
     }
 }
 
@@ -56,7 +84,7 @@ private extension ProductSharingMessageGenerationView {
     }
     enum Localization {
         static let generating = NSLocalizedString(
-            "Generating share message...",
+            "🪄 Generating share message...",
             comment: "Text showing the loading state of the product sharing message generation screen"
         )
         static let shareMessage = NSLocalizedString(
@@ -67,6 +95,7 @@ private extension ProductSharingMessageGenerationView {
             "Skip to share link only",
             comment: "Action button to skip the generated message on the product sharing message generation screen"
         )
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Button to dismiss the product sharing message generation screen")
     }
 }
 

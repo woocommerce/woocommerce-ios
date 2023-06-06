@@ -140,10 +140,14 @@ final class HubMenuViewModel: ObservableObject {
 
         // Blaze menu.
         // TODO: 9866 - async eligibility check
-        if featureFlagService.isFeatureFlagEnabled(.blaze), let index = generalElements.firstIndex(where: { item in
-            type(of: item).id == Payments.id
-        }) {
-            generalElements.insert(Blaze(), at: index + 1)
+        if featureFlagService.isFeatureFlagEnabled(.blaze) {
+            if let index = generalElements.firstIndex(where: { item in
+                type(of: item).id == Payments.id
+            }) {
+                generalElements.insert(Blaze(), at: index + 1)
+            } else {
+                generalElements.append(Blaze())
+            }
         }
 
         stores.dispatch(action)

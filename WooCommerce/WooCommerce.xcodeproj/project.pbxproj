@@ -2196,6 +2196,8 @@
 		EEB4E2DC29B600B800371C3C /* CouponLineDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2DB29B600B800371C3C /* CouponLineDetails.swift */; };
 		EEB4E2DE29B61AAD00371C3C /* CouponInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2DD29B61AAD00371C3C /* CouponInputTransformer.swift */; };
 		EEBDF7DA2A2EF69B00EFEF47 /* ShareProductCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7D92A2EF69B00EFEF47 /* ShareProductCoordinator.swift */; };
+		EEBDF7DF2A2F674100EFEF47 /* ShareProductAIEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7DE2A2F674100EFEF47 /* ShareProductAIEligibilityChecker.swift */; };
+		EEBDF7E22A2F685C00EFEF47 /* ShareProductAIEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E12A2F685C00EFEF47 /* ShareProductAIEligibilityCheckerTests.swift */; };
 		EEC2D27F292CF60E0072132E /* JetpackSetupHostingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2D27E292CF60E0072132E /* JetpackSetupHostingControllerTests.swift */; };
 		EEC2D281292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC2D280292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift */; };
 		EEC5E01129A70CC300416CAC /* StoreSetupProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC5E01029A70CC300416CAC /* StoreSetupProgressView.swift */; };
@@ -4511,6 +4513,8 @@
 		EEB4E2DB29B600B800371C3C /* CouponLineDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineDetails.swift; sourceTree = "<group>"; };
 		EEB4E2DD29B61AAD00371C3C /* CouponInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponInputTransformer.swift; sourceTree = "<group>"; };
 		EEBDF7D92A2EF69B00EFEF47 /* ShareProductCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareProductCoordinator.swift; sourceTree = "<group>"; };
+		EEBDF7DE2A2F674100EFEF47 /* ShareProductAIEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareProductAIEligibilityChecker.swift; sourceTree = "<group>"; };
+		EEBDF7E12A2F685C00EFEF47 /* ShareProductAIEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareProductAIEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		EEC2D27E292CF60E0072132E /* JetpackSetupHostingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupHostingControllerTests.swift; sourceTree = "<group>"; };
 		EEC2D280292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialLoginHostingViewControllerTests.swift; sourceTree = "<group>"; };
 		EEC5E01029A70CC300416CAC /* StoreSetupProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSetupProgressView.swift; sourceTree = "<group>"; };
@@ -5246,6 +5250,7 @@
 		0269177E23260090002AFC20 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				EEBDF7E02A2F684D00EFEF47 /* ShareProduct */,
 				26F94E32267AA3DD00DB6CCF /* Addons */,
 				02077F70253816B1005A78EF /* Actions Factory */,
 				024F1450250B658F0003030A /* Add Product */,
@@ -10253,6 +10258,15 @@
 			isa = PBXGroup;
 			children = (
 				EEBDF7D92A2EF69B00EFEF47 /* ShareProductCoordinator.swift */,
+				EEBDF7DE2A2F674100EFEF47 /* ShareProductAIEligibilityChecker.swift */,
+			);
+			path = ShareProduct;
+			sourceTree = "<group>";
+		};
+		EEBDF7E02A2F684D00EFEF47 /* ShareProduct */ = {
+			isa = PBXGroup;
+			children = (
+				EEBDF7E12A2F685C00EFEF47 /* ShareProductAIEligibilityCheckerTests.swift */,
 			);
 			path = ShareProduct;
 			sourceTree = "<group>";
@@ -12226,6 +12240,7 @@
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				026D4652295D763B0037F59A /* CountryCode+FlagEmoji.swift in Sources */,
 				B9F3DAAD29BB71B100DDD545 /* CollectPaymentAppIntent.swift in Sources */,
+				EEBDF7DF2A2F674100EFEF47 /* ShareProductAIEligibilityChecker.swift in Sources */,
 				DE23CFFA27462D8F003BE54E /* JCPJetpackInstallIntroView.swift in Sources */,
 				DEC6C51E27479280006832D3 /* JetpackInstallSteps.swift in Sources */,
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
@@ -12726,6 +12741,7 @@
 				02AA586628531D0E0068B6F0 /* CloseAccountCoordinatorTests.swift in Sources */,
 				E12AF69B26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift in Sources */,
 				D802549B265531D4001B2CC1 /* CardPresentModalConnectingToReaderTests.swift in Sources */,
+				EEBDF7E22A2F685C00EFEF47 /* ShareProductAIEligibilityCheckerTests.swift in Sources */,
 				4572641B27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift in Sources */,
 				AEE1D4FF25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift in Sources */,
 				DE4D23A829B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift in Sources */,

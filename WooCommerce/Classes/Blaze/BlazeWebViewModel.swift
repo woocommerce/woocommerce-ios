@@ -2,21 +2,22 @@ import Foundation
 import WebKit
 import Yosemite
 
+/// Blaze entry points.
 enum BlazeSource {
+    /// From the Menu tab.
     case menu
+    /// From the product more menu.
     case productMoreMenu
 }
 
-final class BlazeWebViewModel: AuthenticatedWebViewModel {
+/// View model for Blaze webview.
+final class BlazeWebViewModel {
     let title = Localization.title
-
-    // MARK: Private Variables
+    let initialURL: URL?
 
     private let source: BlazeSource
     private let site: Site
     private let productID: Int64?
-
-    // MARK: Initializer
 
     init(source: BlazeSource,
          site: Site,
@@ -24,29 +25,21 @@ final class BlazeWebViewModel: AuthenticatedWebViewModel {
         self.source = source
         self.site = site
         self.productID = productID
-    }
-
-    // MARK: Computed Variables
-
-    var initialURL: URL? {
-        let siteURL = site.url.trimHTTPScheme()
-        let urlString: String = {
-            if let productID {
-                return String(format: Constants.blazePostURLFormat, siteURL, productID, source.analyticsValue)
-            } else {
-                return String(format: Constants.blazeSiteURLFormat, siteURL, source.analyticsValue)
-            }
+        self.initialURL = {
+            let siteURL = site.url.trimHTTPScheme()
+            let urlString: String = {
+                if let productID {
+                    return String(format: Constants.blazePostURLFormat, siteURL, productID, source.analyticsValue)
+                } else {
+                    return String(format: Constants.blazeSiteURLFormat, siteURL, source.analyticsValue)
+                }
+            }()
+            return URL(string: urlString)
         }()
-        return URL(string: urlString)
     }
+}
 
-    private var baseURLString: String {
-        let siteURL = site.url.trimHTTPScheme()
-        return String(format: Constants.baseURLFormat, siteURL)
-    }
-
-    // MARK: `AuthenticatedWebViewModel` conformance
-
+extension BlazeWebViewModel: AuthenticatedWebViewModel {
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         .allow
     }

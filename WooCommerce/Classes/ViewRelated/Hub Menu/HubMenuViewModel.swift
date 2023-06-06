@@ -154,7 +154,7 @@ final class HubMenuViewModel: ObservableObject {
     /// Presents the `Subscriptions` view from the view model's navigation controller property.
     ///
     func presentSubscriptions() {
-        let upgradesViewController = UpgradesHostingController(siteID: siteID)
+        let upgradesViewController = SubscriptionsHostingController(siteID: siteID)
         navigationController?.show(upgradesViewController, sender: self)
     }
 

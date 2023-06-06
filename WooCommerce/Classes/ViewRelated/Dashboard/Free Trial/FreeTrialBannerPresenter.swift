@@ -147,11 +147,11 @@ private extension FreeTrialBannerPresenter {
         self.freeTrialBanner = nil
     }
 
-    /// Shows a web view for the merchant to update their site plan.
+    /// Shows a view for the merchant to upgrade their site's plan.
     ///
     func showUpgradesView() {
         guard let viewController else { return }
-        let upgradeController = UpgradesHostingController(siteID: siteID)
+        let upgradeController = SubscriptionsHostingController(siteID: siteID)
         viewController.show(upgradeController, sender: self)
     }
 }

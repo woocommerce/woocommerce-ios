@@ -1,12 +1,9 @@
 import Foundation
 import SwiftUI
 
-/// Main view for the plan settings.
+/// Main view for the plan subscription settings.
 ///
-/// We might want to consider renaming this group of types to follow the `Subscriptions`
-/// wording since we're deactivating the `Upgrades` structure from the app.
-///
-final class UpgradesHostingController: UIHostingController<UpgradesView> {
+final class SubscriptionsHostingController: UIHostingController<SubscriptionsView> {
 
     init(siteID: Int64) {
         let viewModel = UpgradesViewModel()
@@ -29,7 +26,7 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 
 /// Main view for the plan settings.
 ///
-struct UpgradesView: View {
+struct SubscriptionsView: View {
 
     /// Drives the view.
     ///
@@ -96,7 +93,7 @@ struct UpgradesView: View {
 }
 
 // Definitions
-private extension UpgradesView {
+private extension SubscriptionsView {
     enum Localization {
         static let title = NSLocalizedString("Subscriptions", comment: "Title for the Subscriptions / Upgrades view")
         static let subscriptionStatus = NSLocalizedString("SUBSCRIPTION STATUS", comment: "Title for the plan section on the subscriptions view. Uppercased")
@@ -118,7 +115,7 @@ private extension UpgradesView {
 struct UpgradesPreviews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            UpgradesView(viewModel: .init())
+            SubscriptionsView(viewModel: .init())
         }
     }
 }

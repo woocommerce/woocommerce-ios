@@ -151,8 +151,10 @@ private extension FreeTrialBannerPresenter {
     ///
     func showUpgradesView() {
         guard let viewController else { return }
-        let upgradeController = SubscriptionsHostingController(siteID: siteID)
-        viewController.show(upgradeController, sender: self)
+        Task { @MainActor in
+            let upgradesController = UpgradesHostingController(siteID: siteID)
+            viewController.show(upgradesController, sender: self)
+        }
     }
 }
 

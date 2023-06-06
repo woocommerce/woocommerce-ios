@@ -43,6 +43,11 @@ final class UpgradesViewModel: ObservableObject {
     ///
     func loadProducts() async {
         do {
+            guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
+                DDLogError("IAP not supported")
+                return
+            }
+
             self.products = try await inAppPurchasesPlanManager.fetchProducts()
             await loadUserEntitlements()
         } catch {

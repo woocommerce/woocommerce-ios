@@ -209,6 +209,39 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
+    func test_generalElements_does_not_include_blaze_when_feature_flag_is_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBlazeEnabled: false)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService)
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Blaze.id
+        }))
+    }
+
+    func test_generalElements_includes_blaze_after_payments_when_feature_flag_is_enabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isBlazeEnabled: true)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService)
+        viewModel.setupMenuElements()
+
+        // Then
+        let blazeIndex = try XCTUnwrap(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Blaze.id
+        }))
+        XCTAssertEqual(viewModel.generalElements[blazeIndex - 1].id, HubMenuViewModel.Payments.id)
+    }
+
     func test_storeURL_when_site_has_storeURL_then_returns_storeURL() {
         // Given
         let sampleStoreURL = "https://testshop.com/"

@@ -43,6 +43,12 @@ extension UIImage {
         return UIImage(named: "AppIcon60x60")!
     }
 
+    /// Blaze icon
+    ///
+    static var blaze: UIImage {
+        UIImage(named: "blaze")!
+    }
+
     /// Currency Image
     ///
     static var currencyImage: UIImage {

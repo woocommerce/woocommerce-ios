@@ -289,6 +289,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blaze) {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { _ in
+                // TODO: 9866 - show Blaze view
+            }
+        }
+
         if viewModel.canEditProductSettings() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
@@ -1729,6 +1735,7 @@ private enum ActionSheetStrings {
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+    static let promoteWithBlaze = NSLocalizedString("Promote with Blaze", comment: "Button title Promote with Blaze in Edit Product More Options Action Sheet")
     static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")

@@ -64,7 +64,6 @@ private extension BlazeSource {
 
 private extension BlazeWebViewModel {
     enum Constants {
-        static let baseURLFormat = "https://wordpress.com/advertising/%@"
         static let blazeSiteURLFormat = "https://wordpress.com/advertising/%@?source=%@"
         static let blazePostURLFormat = "https://wordpress.com/advertising/%@?blazepress-widget=post-%d&source=%@"
     }

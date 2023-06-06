@@ -330,8 +330,7 @@ extension OrderListViewController {
         }
     }
 
-    func showErrorNotice(with message: String, in viewController: UIViewController) {
-        let notice = Notice(title: message, feedbackType: .error)
+    func showErrorNotice(_ notice: Notice, in viewController: UIViewController) {
         noticePresenter.presentingViewController = viewController
         noticePresenter.enqueue(notice: notice)
     }

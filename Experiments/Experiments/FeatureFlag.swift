@@ -211,4 +211,8 @@ public enum FeatureFlag: Int {
     /// Do not use the Google SDK when authenticating through a Google account.
     ///
     case sdkLessGoogleSignIn
+
+    /// Enables generating share product content using AI
+    ///
+    case shareProductAI
 }

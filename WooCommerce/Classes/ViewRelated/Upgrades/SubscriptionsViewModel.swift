@@ -3,7 +3,8 @@ import Yosemite
 import Combine
 import protocol Experiments.FeatureFlagService
 
-/// ViewModel for the Upgrades View
+/// ViewModel for the Subscriptions View
+/// Drives the site's plan subscription
 ///
 final class SubscriptionsViewModel: ObservableObject {
 

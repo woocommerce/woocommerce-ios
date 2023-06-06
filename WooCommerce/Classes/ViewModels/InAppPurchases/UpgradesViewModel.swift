@@ -1,13 +1,13 @@
 import Foundation
 import SwiftUI
 
-///
-///
+/// ViewModel for the Upgrades View
+/// Drives the site's available In-App Purchases plan upgrades
 ///
 @MainActor
 final class UpgradesViewModel: ObservableObject {
 
-    private let inAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansManager
+    private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansManager
     var siteID: Int64 {
         ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
     }
@@ -17,7 +17,7 @@ final class UpgradesViewModel: ObservableObject {
 
     init() {
         // TODO: Inject dependencies
-        inAppPurchasesForWPComPlansManager = InAppPurchasesForWPComPlansManager()
+        inAppPurchasesPlanManager = InAppPurchasesForWPComPlansManager()
         products = []
         entitledProductIDs = []
     }
@@ -27,7 +27,7 @@ final class UpgradesViewModel: ObservableObject {
     func loadUserEntitlements() async {
         do {
             for product in self.products {
-                if try await inAppPurchasesForWPComPlansManager.userIsEntitledToProduct(with: product.id) {
+                if try await inAppPurchasesPlanManager.userIsEntitledToProduct(with: product.id) {
                     self.entitledProductIDs.insert(product.id)
                 } else {
                     self.entitledProductIDs.remove(product.id)
@@ -43,7 +43,7 @@ final class UpgradesViewModel: ObservableObject {
     ///
     func loadProducts() async {
         do {
-            self.products = try await inAppPurchasesForWPComPlansManager.fetchProducts()
+            self.products = try await inAppPurchasesPlanManager.fetchProducts()
             await loadUserEntitlements()
         } catch {
             // TODO: Handle errors
@@ -57,7 +57,7 @@ final class UpgradesViewModel: ObservableObject {
     func purchaseProduct(with productID: String) async {
         do {
             // TODO: Deal with purchase result
-            let _ = try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: productID, for: siteID)
+            let _ = try await inAppPurchasesPlanManager.purchaseProduct(with: productID, for: siteID)
         } catch {
             // TODO: Handle errors
             DDLogError("purchaseProduct \(error)")

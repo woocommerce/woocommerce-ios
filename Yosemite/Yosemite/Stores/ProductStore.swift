@@ -546,7 +546,8 @@ private extension ProductStore {
             "Some requirements for the message are:",
             "- In language \(languageCode)",
             "- The length should be up to 3 sentences",
-            "- Try to make shorter sentences, using less difficult words to improve readability"
+            "- Try to make shorter sentences, using less difficult words to improve readability",
+            "- Add related hashtags at the end of the message."
         ].joined(separator: "\n")
         Task {
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }

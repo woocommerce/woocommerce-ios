@@ -7,7 +7,8 @@ import SwiftUI
 @MainActor
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
     init(siteID: Int64) {
-        super.init(rootView: UpgradesView())
+        let upgradesViewModel = UpgradesViewModel()
+        super.init(rootView: UpgradesView(viewModel: upgradesViewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -16,9 +17,39 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 }
 
 struct UpgradesView: View {
+
+    @ObservedObject var viewModel: UpgradesViewModel
+
+    @State var isLoading = false
+    @State var isPurchasing = false
+
+    init(viewModel: UpgradesViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
-        VStack {
-            Text("Upgrades view")
+        List {
+            Section {
+                Text("Upgrades view")
+            }
+            Section {
+                Text("Plan details")
+            }
+            Section {
+                ForEach(viewModel.products, id: \.id) { product in
+                    Button("\(product.displayName)") {
+                        // ...
+                    }
+                }
+            }
+            Section {
+                Button("Purchase") {
+                    // ...
+                }
+            }
+        }
+        .task {
+            await viewModel.loadProducts()
         }
     }
 }

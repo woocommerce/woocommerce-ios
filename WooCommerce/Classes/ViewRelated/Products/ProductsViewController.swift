@@ -946,8 +946,16 @@ extension ProductsViewController: UITableViewDelegate {
             return nil
         }
         let shareAction = UIContextualAction(style: .normal, title: nil, handler: { [weak self] _, _, completionHandler in
-            guard let self else { return }
-            SharingHelper.shareURL(url: url, from: cell, in: self)
+            guard let self,
+                  let navigationController = self.navigationController else {
+                return
+            }
+            let shareProductCoordinator = ShareProductCoordinator(productURL: url,
+                                                                  productName: product.name,
+                                                                  shareSheetAnchorView: cell,
+                                                                  viewControllerToPresentShareSheet: self,
+                                                                  navigationController: navigationController)
+            shareProductCoordinator.start()
             ServiceLocator.analytics.track(.productListShareButtonTapped)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })

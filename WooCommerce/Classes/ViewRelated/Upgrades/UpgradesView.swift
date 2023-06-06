@@ -36,15 +36,19 @@ struct UpgradesView: View {
                 Text("Plan details")
             }
             Section {
-                ForEach(viewModel.products, id: \.id) { product in
-                    Button("\(product.displayName)") {
-                        // ...
+                if viewModel.products.isEmpty {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                } else {
+                    ForEach(viewModel.products, id: \.id) { product in
+                        if product.id == "debug.woocommerce.ecommerce.monthly" {
+                            Button("Purchase \(product.displayName)") {
+                                // TODO: Add product entitlement check
+                                Task {
+                                    await viewModel.purchaseProduct(with: product.id)
+                                }                                
+                            }
+                        }
                     }
-                }
-            }
-            Section {
-                Button("Purchase") {
-                    // ...
                 }
             }
         }

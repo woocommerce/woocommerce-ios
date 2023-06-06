@@ -514,7 +514,7 @@ private extension OrdersRootViewController {
                                                           comment: "Error message on the Order list view when the scanner cannot find a matching product " +
                                                           "and create a new order")
         static let scannedProductErrorNoticeRetryActionTitle = NSLocalizedString("Retry",
-                                                          comment: "Retry button title on the Order list view when the scanner cannot find a matching product " +
-                                                          "and create a new order")
+                                                          comment: "Retry button title on the Order list view when the scanner cannot find" +
+                                                          "a matching product and create a new order")
     }
 }

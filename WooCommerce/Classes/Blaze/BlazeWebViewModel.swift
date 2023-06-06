@@ -1,6 +1,6 @@
 import Foundation
 import WebKit
-import Yosemite
+import struct Yosemite.Site
 
 /// Blaze entry points.
 enum BlazeSource {
@@ -45,11 +45,9 @@ extension BlazeWebViewModel: AuthenticatedWebViewModel {
     }
 
     func handleDismissal() {
-
     }
 
     func handleRedirect(for url: URL?) {
-
     }
 }
 

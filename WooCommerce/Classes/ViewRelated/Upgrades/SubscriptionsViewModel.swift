@@ -20,6 +20,10 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private(set) var planInfo = ""
 
+    /// Current store plan details information.
+    ///
+    private(set) var planDaysLeft = ""
+
     /// Defines if the view should show the Full Plan features..
     ///
     private(set) var shouldShowFreeTrialFeatures = false
@@ -97,6 +101,7 @@ private extension SubscriptionsViewModel {
     func updateViewProperties(from plan: WPComSitePlan) {
         planName = Self.getPlanName(from: plan)
         planInfo = Self.getPlanInfo(from: plan)
+        planDaysLeft = Self.daysLeft(for: plan).formatted()
         errorNotice = nil
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial

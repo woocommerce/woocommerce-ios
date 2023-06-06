@@ -2,13 +2,17 @@ import Foundation
 import SwiftUI
 
 /// Hosting controller for `UpgradesView`
-/// To be used to display available plan Upgrades and the CTA to upgrade them
+/// To be used to display available current plan Subscriptions, available plan Upgrades,
+/// and the CTA to upgrade
 ///
 @MainActor
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
     init(siteID: Int64) {
         let upgradesViewModel = UpgradesViewModel()
-        super.init(rootView: UpgradesView(viewModel: upgradesViewModel))
+        let subscriptionsViewModel = SubscriptionsViewModel()
+
+        super.init(rootView: UpgradesView(viewModel: upgradesViewModel,
+                                          subscriptionsViewModel: subscriptionsViewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -19,21 +23,24 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 struct UpgradesView: View {
 
     @ObservedObject var viewModel: UpgradesViewModel
+    @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
     @State var isLoading = false
     @State var isPurchasing = false
 
-    init(viewModel: UpgradesViewModel) {
+    init(viewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
         self.viewModel = viewModel
+        self.subscriptionsViewModel = subscriptionsViewModel
     }
 
     var body: some View {
         List {
             Section {
-                Text("Upgrades view")
+                Text("Plans")
             }
             Section {
-                Text("Plan details")
+                Text("Your Plan: \(subscriptionsViewModel.planName)")
+                Text("Days left in trial: \(String(subscriptionsViewModel.planDaysLeft))")
             }
             Section {
                 if viewModel.products.isEmpty {

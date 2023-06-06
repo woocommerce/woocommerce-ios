@@ -8,11 +8,17 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
         super.init(rootView: FirstProductCreatedView(showShareProductButton: showShareProductButton))
         rootView.onSharingProduct = { [weak self] in
             guard let self,
+                  let navigationController = self.navigationController,
                   let productURL = URL(string: product.permalink) else {
                 return
             }
 
-            SharingHelper.shareURL(url: productURL, from: self.view, in: self)
+            let shareProductCoordinator = ShareProductCoordinator(productURL: productURL,
+                                                                  productName: product.name,
+                                                                  shareSheetAnchorView: self.view,
+                                                                  viewControllerToPresentShareSheet: self,
+                                                                  navigationController: navigationController)
+            shareProductCoordinator.start()
             ServiceLocator.analytics.track(.firstCreatedProductShareTapped)
         }
     }

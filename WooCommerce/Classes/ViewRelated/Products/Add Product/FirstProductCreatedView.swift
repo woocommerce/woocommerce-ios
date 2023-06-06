@@ -1,12 +1,17 @@
 import ConfettiSwiftUI
 import SwiftUI
+import struct Yosemite.Product
 
 final class FirstProductCreatedHostingController: UIHostingController<FirstProductCreatedView> {
-    init(productURL: URL,
+    init(product: Product,
          showShareProductButton: Bool) {
         super.init(rootView: FirstProductCreatedView(showShareProductButton: showShareProductButton))
         rootView.onSharingProduct = { [weak self] in
-            guard let self else { return }
+            guard let self,
+                  let productURL = URL(string: product.permalink) else {
+                return
+            }
+
             SharingHelper.shareURL(url: productURL, from: self.view, in: self)
             ServiceLocator.analytics.track(.firstCreatedProductShareTapped)
         }

@@ -281,7 +281,7 @@ final class SiteStoreTests: XCTestCase {
         remote.whenLoadingBlazeStatus(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
 
         // When
-        let result = waitFor { promise inx
+        let result = waitFor { promise in
             self.store.onAction(SiteAction.loadBlazeStatus(siteID: 134) { result in
                 promise(result)
             })

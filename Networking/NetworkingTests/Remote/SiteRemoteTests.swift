@@ -224,7 +224,7 @@ final class SiteRemoteTests: XCTestCase {
 
         await assertThrowsError({
             // When
-            let isApproved = try await remote.loadBlazeStatus(siteID: 134)
+            _ = try await remote.loadBlazeStatus(siteID: 134)
         }, errorAssert: { error in
             // Unexpected response format.
             error is DecodingError

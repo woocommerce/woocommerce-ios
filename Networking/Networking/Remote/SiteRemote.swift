@@ -235,7 +235,7 @@ public struct SiteProfilerData {
 
 /// Site Blaze status response.
 private struct BlazeStatusResponse: Decodable {
-    public let isApproved: Bool
+    let isApproved: Bool
 
     private enum CodingKeys: String, CodingKey {
         case isApproved = "approved"

@@ -17,6 +17,7 @@ final class UpgradesViewModel: ObservableObject {
 
     init() {
         // TODO: Inject dependencies
+        // https://github.com/woocommerce/woocommerce-ios/issues/9884
         inAppPurchasesPlanManager = InAppPurchasesForWPComPlansManager()
         products = []
         entitledProductIDs = []

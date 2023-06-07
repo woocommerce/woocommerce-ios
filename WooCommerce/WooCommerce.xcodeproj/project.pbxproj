@@ -1201,6 +1201,7 @@
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
 		6832C7CC26DA5FDF00BA4088 /* LabeledTextViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */; };
+		683AA9D62A303CB70099F7BA /* UpgradesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */; };
 		684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */; };
 		684AB83C2873DF04003DFDD1 /* CardReaderManualsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */; };
 		6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */; };
@@ -3480,6 +3481,7 @@
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
 		6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LabeledTextViewTableViewCell.xib; sourceTree = "<group>"; };
+		683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModelTests.swift; sourceTree = "<group>"; };
 		684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsView.swift; sourceTree = "<group>"; };
 		684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsViewModel.swift; sourceTree = "<group>"; };
 		6856D02484A69911F2B91714 /* KeyboardStateProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardStateProvider.swift; sourceTree = "<group>"; };
@@ -6083,6 +6085,7 @@
 			children = (
 				261E91A229C9882600A5C118 /* SubscriptionsViewModelTests.swift */,
 				267C01D029E9B18E00FCC97B /* StorePlanSynchronizerTests.swift */,
+				683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */,
 			);
 			path = Upgrades;
 			sourceTree = "<group>";
@@ -12537,6 +12540,7 @@
 				B555531321B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift in Sources */,
 				682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */,
 				4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */,
+				683AA9D62A303CB70099F7BA /* UpgradesViewModelTests.swift in Sources */,
 				DE4D23B029B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift in Sources */,
 				03B9E52F2A150EED005C77F5 /* MockCardReaderSupportDeterminer.swift in Sources */,
 				D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */,

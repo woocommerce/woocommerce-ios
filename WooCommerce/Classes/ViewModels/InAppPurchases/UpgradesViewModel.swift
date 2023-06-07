@@ -65,7 +65,7 @@ final class UpgradesViewModel: ObservableObject {
         do {
             // TODO: Deal with purchase result
             // https://github.com/woocommerce/woocommerce-ios/issues/9886
-            let _ = try await inAppPurchasesPlanManager.purchaseProduct(with: productID, for: siteID)
+            let _ = try await inAppPurchasesPlanManager.purchaseProduct(with: productID, for: self.siteID)
         } catch {
             // TODO: Handle errors
             DDLogError("purchaseProduct \(error)")

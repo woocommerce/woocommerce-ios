@@ -15,7 +15,7 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
                                           subscriptionsViewModel: subscriptionsViewModel))
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("Not implemented")
     }
 }

@@ -274,7 +274,7 @@ private extension StoreCreationCoordinator {
             .removeDuplicates()
             // There are usually three URLs in the webview that return a site URL - two with `*.wordpress.com` and the other the final URL.
             .debounce(for: .seconds(5), scheduler: DispatchQueue.main)
-            .asyncMap { [weak self] possibleSiteURLs -> Site? in
+            .tryAsyncMap { [weak self] possibleSiteURLs -> Site? in
                 // Waits for 5 seconds before syncing sites every time.
                 try await Task.sleep(nanoseconds: 5_000_000_000)
                 return try await self?.syncSites(forSiteThatMatchesPossibleURLs: possibleSiteURLs)

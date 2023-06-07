@@ -73,6 +73,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .freeTrial:
             return true
+        case .freeTrialInAppPurchasesUpgradeM1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
@@ -91,13 +93,15 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .readOnlyMinMaxQuantities:
             return true
-        case .privacyChoices:
-            return true
         case .storeCreationNotifications:
             return true
         case .euShippingNotification:
             return true
         case .sdkLessGoogleSignIn:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .blaze:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shareProductAI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

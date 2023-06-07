@@ -51,16 +51,6 @@ final class PaymentMethodsViewModel: ObservableObject {
         paymentLink != nil
     }
 
-    /// Defines if the Card Reader upsell banner should be shown based on country eligibility and dismissal/reminder preferences
-    ///
-    @Published var showUpsellCardReaderFeatureBanner: Bool
-
-    /// Returns the URL where the merchant can purchase a card reader based on store country code
-    ///
-    var purchaseCardReaderUrl: URL {
-        cardPresentPaymentsConfiguration.purchaseCardReaderUrl(utmProvider: upsellCardReadersCampaign.utmProvider)
-    }
-
     /// Store's ID.
     ///
     private let siteID: Int64
@@ -116,13 +106,6 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
-    private let upsellCardReadersCampaign = UpsellCardReadersCampaign(source: .paymentMethods)
-
-    var upsellCardReadersAnnouncementViewModel: FeatureAnnouncementCardViewModel {
-        .init(analytics: analytics,
-              configuration: upsellCardReadersCampaign.configuration)
-    }
-
     private let isTapToPayOnIPhoneEnabled: Bool
 
     struct Dependencies {
@@ -177,16 +160,9 @@ final class PaymentMethodsViewModel: ObservableObject {
         cardPresentPaymentsConfiguration = dependencies.cardPresentPaymentsConfiguration
         featureFlagService = dependencies.featureFlagService
         title = String(format: Localization.title, formattedTotal)
-        showUpsellCardReaderFeatureBanner = cardPresentPaymentsConfiguration.isSupportedCountry
-
-        refreshUpsellCardReaderFeatureBannerVisibility()
 
         bindStoreCPPState()
         updateCardPaymentVisibility()
-    }
-
-    func refreshUpsellCardReaderFeatureBannerVisibility() {
-        showUpsellCardReaderFeatureBanner = cardPresentPaymentsConfiguration.isSupportedCountry && upsellCardReadersAnnouncementViewModel.shouldBeVisible
     }
 
     /// Creates the info text when the merchant selects the cash payment method.

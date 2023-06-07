@@ -289,6 +289,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blaze) {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
+                self?.displayBlaze()
+            }
+        }
+
         if viewModel.canEditProductSettings() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
@@ -957,6 +963,15 @@ private extension ProductFormViewController {
             self?.viewModel.resetPassword(originalPassword)
         })
         navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func displayBlaze() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: product.productID)
+        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        navigationController?.show(webViewController, sender: self)
     }
 
     func trackVariationRemoveButtonTapped() {
@@ -1729,6 +1744,7 @@ private enum ActionSheetStrings {
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+    static let promoteWithBlaze = NSLocalizedString("Promote with Blaze", comment: "Button title Promote with Blaze in Edit Product More Options Action Sheet")
     static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")

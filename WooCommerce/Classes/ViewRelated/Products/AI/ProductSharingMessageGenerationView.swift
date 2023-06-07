@@ -44,7 +44,7 @@ struct ProductSharingMessageGenerationView: View {
                 TextEditor(text: $viewModel.messageContent)
                     .bodyStyle()
                     .foregroundColor(.secondary)
-                    .background(.clear)
+                    .background(viewModel.generationInProgress ? Color(uiColor: .buttonDisabledBackground) : .clear)
                     .disabled(viewModel.generationInProgress)
                     .padding(insets: Layout.messageContentInsets)
                     .overlay(
@@ -65,8 +65,7 @@ struct ProductSharingMessageGenerationView: View {
 
             // Error message
             viewModel.errorMessage.map { message in
-                Text(message)
-                    .footnoteStyle(isError: true)
+                Text(message).errorStyle()
             }
 
             Spacer()

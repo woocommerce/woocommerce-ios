@@ -26,6 +26,13 @@ struct UpgradesView: View {
 
     @State var isPurchasing = false
 
+    private var planText: String {
+        String.localizedStringWithFormat(Constants.planName, subscriptionsViewModel.planName)
+    }
+    private var daysLeftText: String {
+        String.localizedStringWithFormat(Constants.daysLeftInTrial, subscriptionsViewModel.planDaysLeft)
+    }
+
     init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
         self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
@@ -34,8 +41,8 @@ struct UpgradesView: View {
     var body: some View {
         List {
             Section {
-                Text("\(Constants.planName)\(subscriptionsViewModel.planName)")
-                Text("\(Constants.daysLeftInTrial)\(String(subscriptionsViewModel.planDaysLeft))")
+                Text(planText)
+                Text(daysLeftText)
             }
             Section {
                 VStack {
@@ -55,7 +62,8 @@ struct UpgradesView: View {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
                     ForEach(upgradesViewModel.products, id: \.id) { product in
-                        Button("Purchase \(product.displayName)") {
+                        let buttonText = String.localizedStringWithFormat(Constants.purchaseCTAButtonText, product.displayName)
+                        Button(buttonText) {
                             // TODO: Add product entitlement check
                             Task {
                                 isPurchasing = true
@@ -70,16 +78,21 @@ struct UpgradesView: View {
         .task {
             await upgradesViewModel.loadProducts()
         }
-        .navigationBarTitle("Plans")
+        .navigationBarTitle(Constants.navigationTitle)
         .navigationBarTitleDisplayMode(.large)
     }
 }
 
 private extension UpgradesView {
     struct Constants {
-        static let planName = NSLocalizedString("Your Plan: ", comment: "")
-        static let daysLeftInTrial = NSLocalizedString("Days left in trial: ", comment: "")
+        static let navigationTitle = NSLocalizedString("Plans", comment: "Navigation title for the Upgrades screen")
+        static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
+                                                             "Reads as 'Purchase Essential Monthly'")
+        static let planName = NSLocalizedString("Your Plan: %1$@", comment: "Message describing which Plan the merchant is currently subscribed to." +
+                                                "Reads as 'Your Plan: Free Trial'")
+        static let daysLeftInTrial = NSLocalizedString("Days left in trial: %1$@", comment: "Message describing days left on a Plan to expire." +
+                                                       "Reads as 'Days left in trial: 15'")
         static let upgradeSubtitle = NSLocalizedString("Everything you need to launch an online store",
-                                                       comment: "")
+                                                       comment: "Subtitle that can be read under the Plan upgrade name")
     }
 }

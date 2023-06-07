@@ -33,6 +33,8 @@
 		023930632918FF5400B2632F /* DomainRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023930622918FF5400B2632F /* DomainRemote.swift */; };
 		0239306B291A96F800B2632F /* DomainRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0239306A291A96F800B2632F /* DomainRemoteTests.swift */; };
 		0239306D291A973F00B2632F /* domain-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 0239306C291A973F00B2632F /* domain-suggestions.json */; };
+		0259B0822A304E8D0050D7D7 /* blaze-status-failure.json in Resources */ = {isa = PBXBuildFile; fileRef = 0259B0802A304E8D0050D7D7 /* blaze-status-failure.json */; };
+		0259B0832A304E8D0050D7D7 /* blaze-status-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 0259B0812A304E8D0050D7D7 /* blaze-status-success.json */; };
 		025CA2C0238EB8CB00B05C81 /* ProductShippingClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2BF238EB8CB00B05C81 /* ProductShippingClass.swift */; };
 		025CA2C2238EBBAA00B05C81 /* ProductShippingClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2C1238EBBAA00B05C81 /* ProductShippingClassListMapper.swift */; };
 		025CA2C4238EBC4300B05C81 /* ProductShippingClassRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2C3238EBC4300B05C81 /* ProductShippingClassRemote.swift */; };
@@ -972,6 +974,8 @@
 		023930622918FF5400B2632F /* DomainRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRemote.swift; sourceTree = "<group>"; };
 		0239306A291A96F800B2632F /* DomainRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRemoteTests.swift; sourceTree = "<group>"; };
 		0239306C291A973F00B2632F /* domain-suggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "domain-suggestions.json"; sourceTree = "<group>"; };
+		0259B0802A304E8D0050D7D7 /* blaze-status-failure.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-status-failure.json"; sourceTree = "<group>"; };
+		0259B0812A304E8D0050D7D7 /* blaze-status-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-status-success.json"; sourceTree = "<group>"; };
 		025CA2BF238EB8CB00B05C81 /* ProductShippingClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClass.swift; sourceTree = "<group>"; };
 		025CA2C1238EBBAA00B05C81 /* ProductShippingClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassListMapper.swift; sourceTree = "<group>"; };
 		025CA2C3238EBC4300B05C81 /* ProductShippingClassRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassRemote.swift; sourceTree = "<group>"; };
@@ -2412,6 +2416,8 @@
 			isa = PBXGroup;
 			children = (
 				DE4D23BD29B6E10F003A4B5D /* announcements.json */,
+				0259B0802A304E8D0050D7D7 /* blaze-status-failure.json */,
+				0259B0812A304E8D0050D7D7 /* blaze-status-success.json */,
 				021D741B2987B1550035687E /* checkout-doman-cart-with-domain-credit-success.json */,
 				DEC2B092297AA60D003923FB /* category-without-data.json */,
 				DEC2B090297AA5A6003923FB /* categories-all-without-data.json */,
@@ -3506,6 +3512,7 @@
 				DEF13C5E296686AB0024A02B /* orders-load-all-without-data.json in Resources */,
 				4515282B257A8C010076B03C /* product-attribute-delete.json in Resources */,
 				020C907B24C6E108001E2BEB /* product-variation-update.json in Resources */,
+				0259B0822A304E8D0050D7D7 /* blaze-status-failure.json in Resources */,
 				D8FBFF1822D4DDB9006E3336 /* order-stats-v4-hour.json in Resources */,
 				CCA1D6082943804C00B40560 /* site-summary-stats.json in Resources */,
 				B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */,
@@ -3531,6 +3538,7 @@
 				93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */,
 				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,
 				DEC51AED2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json in Resources */,
+				0259B0832A304E8D0050D7D7 /* blaze-status-success.json in Resources */,
 				0286A1B62A0CBAC50099EF94 /* feature-flags-load-all-with-missing-values.json in Resources */,
 				DE66C5552976662700DAA978 /* just-in-time-message-list-without-data.json in Resources */,
 				D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */,

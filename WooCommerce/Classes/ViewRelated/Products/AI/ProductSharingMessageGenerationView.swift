@@ -130,7 +130,7 @@ private extension ProductSharingMessageGenerationView {
             comment: "Action button to share the generated message on the product sharing message generation screen"
         )
         static let skip = NSLocalizedString(
-            "Skip to share link only",
+            "Share product without a message",
             comment: "Action button to skip the generated message on the product sharing message generation screen"
         )
         static let dismiss = NSLocalizedString("Dismiss", comment: "Button to dismiss the product sharing message generation screen")

@@ -290,8 +290,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blaze) {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { _ in
-                // TODO: 9866 - show Blaze view
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
+                self?.displayBlaze()
             }
         }
 
@@ -963,6 +963,15 @@ private extension ProductFormViewController {
             self?.viewModel.resetPassword(originalPassword)
         })
         navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func displayBlaze() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: product.productID)
+        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        navigationController?.show(webViewController, sender: self)
     }
 
     func trackVariationRemoveButtonTapped() {

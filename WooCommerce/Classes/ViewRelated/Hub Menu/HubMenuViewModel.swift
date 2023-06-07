@@ -186,7 +186,12 @@ final class HubMenuViewModel: ObservableObject {
     /// Navigates to show the Blaze view from the view model's navigation controller property.
     ///
     func showBlaze() {
-        // TODO: 9866 - show Blaze view
+        guard let site = stores.sessionManager.defaultSite else {
+            return
+        }
+        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil)
+        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        navigationController?.show(webViewController, sender: self)
     }
 
     private func observeSiteForUIUpdates() {

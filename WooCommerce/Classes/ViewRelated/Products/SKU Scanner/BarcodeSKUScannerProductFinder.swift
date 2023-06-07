@@ -2,6 +2,8 @@ import Foundation
 import Yosemite
 import Vision
 
+/// Given a scanned barcode searches for the matching product, refining the barcode if necessary to handle the format exceptions
+///
 struct BarcodeSKUScannerProductFinder {
     private let stores: StoresManager
 
@@ -10,17 +12,19 @@ struct BarcodeSKUScannerProductFinder {
     }
 
     func findProduct(from barcode: ScannedBarcode, siteID: Int64) async throws -> Product {
-        var retryWasTriggered = false
-
         do {
             return try await retrieveProduct(from: barcode.payloadStringValue, siteID: siteID)
         } catch {
-            if !retryWasTriggered,
-               (error as? ProductLoadError) == .notFound,
-               barcode.shouldRetryWithoutTheLastDigitWhenSearchingBySKU {
-                retryWasTriggered = true
+            guard (error as? ProductLoadError) == .notFound else {
+                throw error
+            }
 
-                return try await retrieveProduct(from: String(barcode.payloadStringValue.dropLast()), siteID: siteID)
+            if let refinedBarcode = barcode.convertToUPCAFormatIfPossible() {
+                // Re-start the search in case we can convert the barcode to UPC-A (Apple doesn't provide this format)
+                return try await findProduct(from: refinedBarcode, siteID: siteID)
+            } else if let refinedBarcode = barcode.removeCheckDigitIfPossible() {
+                // Try one more time if we can remove the barcode check digit, as some merchants might have added the SKU without it
+                return try await retrieveProduct(from: refinedBarcode.payloadStringValue, siteID: siteID)
             } else {
                 throw error
             }
@@ -45,9 +49,23 @@ struct BarcodeSKUScannerProductFinder {
     }
 }
 
-extension ScannedBarcode {
-    var shouldRetryWithoutTheLastDigitWhenSearchingBySKU: Bool {
-        symbology == VNBarcodeSymbology.upce ||
-        symbology == VNBarcodeSymbology.ean13
+private extension ScannedBarcode {
+    func removeCheckDigitIfPossible() -> ScannedBarcode? {
+        guard symbology == VNBarcodeSymbology.upce ||
+              symbology == VNBarcodeSymbology.ean13 else {
+            return nil
+        }
+
+        return ScannedBarcode(payloadStringValue: String(payloadStringValue.dropLast()), symbology: symbology)
+    }
+
+    func convertToUPCAFormatIfPossible() -> ScannedBarcode? {
+        // When we have an UPC-A format barcode Apple adds a zero at the beginning and returns an EAN-13 format
+        guard symbology == VNBarcodeSymbology.ean13,
+              payloadStringValue.hasPrefix("0") else {
+            return nil
+        }
+
+        return ScannedBarcode(payloadStringValue: String(payloadStringValue.dropFirst()), symbology: symbology)
     }
 }

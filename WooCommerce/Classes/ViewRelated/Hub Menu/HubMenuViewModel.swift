@@ -235,6 +235,7 @@ final class HubMenuViewModel: ObservableObject {
         // Blaze menu.
         stores.site
             .compactMap { $0 }
+            .removeDuplicates()
             .asyncMap { [weak self] site -> Bool in
                 guard let self else {
                     return false

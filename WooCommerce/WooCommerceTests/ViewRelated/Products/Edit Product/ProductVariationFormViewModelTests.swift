@@ -125,6 +125,36 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(canShareProduct)
     }
+
+    func test_edit_product_variation_form_with_invalid_permalink_cannot_share_product() {
+        // Given
+        let product = ProductVariation.fake().copy(permalink: "", status: ProductStatus.published)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertFalse(canShareProduct)
+    }
+
+    func test_edit_product_variation_form_with_valid_permalink_cannot_share_product() {
+        // Given
+        let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertTrue(canShareProduct)
+    }
 }
 
 private extension ProductVariationFormViewModelTests {

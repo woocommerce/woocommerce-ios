@@ -148,6 +148,36 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    func test_edit_product_form_with_invalid_permalink_cannot_share_product() {
+        // Given
+        let product = Product.fake().copy(name: "Test", permalink: "", statusKey: ProductStatus.published.rawValue)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertFalse(canShareProduct)
+    }
+
+    func test_edit_product_form_with_valid_permalink_can_share_product() {
+        // Given
+        let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertTrue(canShareProduct)
+    }
+
     // MARK: `canDeleteProduct`
 
     func test_edit_product_form_with_published_status_can_delete_product() {

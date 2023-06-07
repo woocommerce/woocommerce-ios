@@ -51,17 +51,19 @@ struct ProductSharingMessageGenerationView: View {
                         RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                     )
 
-                // Loading state text
-                Text(Localization.generating)
-                    .foregroundColor(Color(.placeholderText))
-                    .bodyStyle()
-                    .padding(insets: Layout.placeholderInsets)
-                    // Allows gestures to pass through to the `TextEditor`.
-                    .allowsHitTesting(false)
-                    .frame(alignment: .center)
-                    .renderedIf(viewModel.generationInProgress)
+                // Empty & loading state
+                HStack {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    Text(Localization.generating)
+                        .foregroundColor(Color(.placeholderText))
+                        .bodyStyle()
+                }
+                .padding(insets: Layout.placeholderInsets)
+                .frame(alignment: .center)
+                .renderedIf(viewModel.messageContent.isEmpty && viewModel.generationInProgress)
             }
 
+            // Error message
             viewModel.errorMessage.map { message in
                 Text(message)
                     .footnoteStyle(isError: true)
@@ -69,11 +71,15 @@ struct ProductSharingMessageGenerationView: View {
 
             Spacer()
 
-            Button(Localization.shareMessage) {
-                onShareMessage(viewModel.messageContent)
+            Button(Localization.regenerate) {
+                Task { @MainActor in
+                    isRegeneratingMessage = true
+                    await viewModel.generateShareMessage()
+                    isRegeneratingMessage = false
+                }
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .disabled(viewModel.messageContent.isEmpty)
+            .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isRegeneratingMessage))
+            .renderedIf(viewModel.messageContent.isNotEmpty)
 
             Button(Localization.skip) {
                 onSkip()
@@ -89,20 +95,11 @@ struct ProductSharingMessageGenerationView: View {
                     .foregroundColor(Color(.accent))
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    Task { @MainActor in
-                        isRegeneratingMessage = true
-                        await viewModel.generateShareMessage()
-                        isRegeneratingMessage = false
-                    }
-                }, label: {
-                    if isRegeneratingMessage {
-                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                    } else {
-                        Image(systemName: "arrow.counterclockwise")
-                    }
-                })
-                .foregroundColor(Color(.accent))
+                Button(Localization.shareMessage) {
+                    onShareMessage(viewModel.messageContent)
+                }
+                .foregroundColor(viewModel.messageContent.isEmpty ? Color.secondary : Color.accentColor)
+                .disabled(viewModel.messageContent.isEmpty)
             }
         }
         .task {
@@ -121,11 +118,15 @@ private extension ProductSharingMessageGenerationView {
     }
     enum Localization {
         static let generating = NSLocalizedString(
-            "🪄 Generating share message...",
+            "Generating share message...",
             comment: "Text showing the loading state of the product sharing message generation screen"
         )
+        static let regenerate = NSLocalizedString(
+            "Regenerate Message",
+            comment: "Action button to regenerate message on the product sharing message generation screen"
+        )
         static let shareMessage = NSLocalizedString(
-            "Share message",
+            "Share",
             comment: "Action button to share the generated message on the product sharing message generation screen"
         )
         static let skip = NSLocalizedString(

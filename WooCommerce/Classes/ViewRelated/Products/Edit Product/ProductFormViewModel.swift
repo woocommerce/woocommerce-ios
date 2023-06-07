@@ -261,7 +261,9 @@ extension ProductFormViewModel {
     }
 
     func canShareProduct() -> Bool {
-        stores.sessionManager.defaultSite?.isPublic == true && formType != .add
+        let isSitePublic = stores.sessionManager.defaultSite?.isPublic == true
+        let productHasLinkToShare = URL(string: product.permalink) != nil
+        return isSitePublic && formType != .add && productHasLinkToShare
     }
 
     func canDeleteProduct() -> Bool {

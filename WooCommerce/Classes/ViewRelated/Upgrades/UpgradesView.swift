@@ -55,15 +55,12 @@ struct UpgradesView: View {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
                     ForEach(upgradesViewModel.products, id: \.id) { product in
-                        // TODO: Move logic to viewmodel
-                        if product.id == "debug.woocommerce.express.essential.monthly" {
-                            Button("Purchase \(product.displayName)") {
-                                // TODO: Add product entitlement check
-                                Task {
-                                    isPurchasing = true
-                                    await upgradesViewModel.purchaseProduct(with: product.id)
-                                    isPurchasing = false
-                                }
+                        Button("Purchase \(product.displayName)") {
+                            // TODO: Add product entitlement check
+                            Task {
+                                isPurchasing = true
+                                await upgradesViewModel.purchaseProduct(with: product.id)
+                                isPurchasing = false
                             }
                         }
                     }

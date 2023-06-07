@@ -151,7 +151,7 @@ private extension StoreOnboardingCoordinator {
     /// Navigates the user to the plan subscription details view.
     ///
     func showPlanView() {
-        let upgradeController = SubscriptionsHostingController(siteID: site.siteID)
-        navigationController.show(upgradeController, sender: self)
+        let subscriptionController = SubscriptionsHostingController(siteID: site.siteID)
+        navigationController.show(subscriptionController, sender: self)
     }
 }

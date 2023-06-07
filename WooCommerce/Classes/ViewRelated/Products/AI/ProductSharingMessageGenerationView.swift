@@ -1,6 +1,7 @@
 import SwiftUI
 import struct Yosemite.Product
 
+/// Hosting controller for `ProductSharingMessageGenerationView`.
 final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {
     init(viewModel: ProductSharingMessageGenerationViewModel,
          onShareMessage: @escaping (String) -> Void,
@@ -78,7 +79,7 @@ struct ProductSharingMessageGenerationView: View {
                 }
             }
             .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isRegeneratingMessage))
-            .renderedIf(viewModel.messageContent.isNotEmpty)
+            .renderedIf(viewModel.messageContent.isNotEmpty || viewModel.errorMessage != nil)
 
             Button(Localization.skip) {
                 onSkip()

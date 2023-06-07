@@ -11,15 +11,15 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
 
     private let siteID: Int64
     private let url: String
-    private let store: StoresManager
+    private let stores: StoresManager
 
     init(siteID: Int64,
          productName: String,
          url: String,
-         store: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.url = url
-        self.store = store
+        self.stores = stores
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
     }
 
@@ -29,10 +29,10 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         generationInProgress = true
         do {
             self.messageContent = try await withCheckedThrowingContinuation { continuation in
-                store.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,
-                                                                           url: url,
-                                                                           languageCode: Locale.current.identifier,
-                                                                           completion: { result in
+                stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,
+                                                                            url: url,
+                                                                            languageCode: Locale.current.identifier,
+                                                                            completion: { result in
                     continuation.resume(with: result)
                 }))
             }
@@ -44,7 +44,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     }
 }
 
-private extension ProductSharingMessageGenerationViewModel {
+extension ProductSharingMessageGenerationViewModel {
     enum Localization {
         static let title = NSLocalizedString(
             "Share %1$@",

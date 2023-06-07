@@ -15,12 +15,13 @@ struct BarcodeSKUScannerProductFinder {
         do {
             return try await retrieveProduct(from: barcode.payloadStringValue, siteID: siteID)
         } catch {
+            // If we couldn't find the product, let's do tries by refining the SKU search
             guard (error as? ProductLoadError) == .notFound else {
                 throw error
             }
 
-            if let refinedBarcode = barcode.convertToUPCAFormatIfPossible() {
-                // Re-start the search in case we can convert the barcode to UPC-A (Apple doesn't provide this format)
+            // Re-start the search in case we can remove the country code (Apple adds it by default, but merchants might not have it)
+            if let refinedBarcode = barcode.removeCountryCodeIfPossible() {
                 return try await findProduct(from: refinedBarcode, siteID: siteID)
             } else if let refinedBarcode = barcode.removeCheckDigitIfPossible() {
                 // Try one more time if we can remove the barcode check digit, as some merchants might have added the SKU without it
@@ -59,8 +60,9 @@ private extension ScannedBarcode {
         return ScannedBarcode(payloadStringValue: String(payloadStringValue.dropLast()), symbology: symbology)
     }
 
-    func convertToUPCAFormatIfPossible() -> ScannedBarcode? {
-        // When we have an UPC-A format barcode Apple adds a zero at the beginning and returns an EAN-13 format
+    func removeCountryCodeIfPossible() -> ScannedBarcode? {
+        // When we have an 12 digit UPC-A format barcode Apple adds a zero at the beginning and returns an EAN-13 format
+        // See https://nationwidebarcode.com/are-upc-a-and-ean-13-the-same/
         guard symbology == VNBarcodeSymbology.ean13,
               payloadStringValue.hasPrefix("0") else {
             return nil

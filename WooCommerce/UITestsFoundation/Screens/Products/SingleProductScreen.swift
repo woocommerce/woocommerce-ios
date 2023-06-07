@@ -64,11 +64,12 @@ public final class SingleProductScreen: ScreenObject {
     }
 
     public func verifyProductTypeScreenLoaded(productType: String) throws -> Self {
-        let productTypeLabel = NSPredicate(format: "label ==[c] '\(productType)\(productType == "external" ? "/Affiliate" : "")'")
+        let productTypeLabel = productType + (productType == "external" ? "/Affiliate" : "")
+        let productTypeLabelPredicate = NSPredicate(format: "label ==[c] '\(productTypeLabel)'")
 
         // the common fields on add product screen
         XCTAssertTrue(app.cells["product-review-cell"].exists)
-        XCTAssertTrue(app.staticTexts.containing(productTypeLabel).firstMatch.exists)
+        XCTAssertTrue(app.staticTexts.containing(productTypeLabelPredicate).firstMatch.exists)
 
         // different product types display different fields on add product screen
         // this is to validate that the correct screens are displayed

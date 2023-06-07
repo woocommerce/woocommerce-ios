@@ -953,7 +953,6 @@ extension ProductsViewController: UITableViewDelegate {
             let shareProductCoordinator = ShareProductCoordinator(productURL: url,
                                                                   productName: product.name,
                                                                   shareSheetAnchorView: cell,
-                                                                  viewControllerToPresentShareSheet: self,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
             ServiceLocator.analytics.track(.productListShareButtonTapped)

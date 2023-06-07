@@ -59,7 +59,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_edit_product_variation_form_with_published_status_can_share_product() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.published)
+        let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.defaultSite = Site.fake().copy(isPublic: true)
         let stores = MockStoresManager(sessionManager: sessionManager)
@@ -74,7 +74,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_add_product_variation_form_with_published_status_cannot_share_product() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.published)
+        let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // When
@@ -86,7 +86,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_edit_product_variation_form_with_non_published_status_can_share_product() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.pending)
+        let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.pending)
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.defaultSite = Site.fake().copy(isPublic: true)
         let stores = MockStoresManager(sessionManager: sessionManager)
@@ -101,7 +101,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_non_published_status_cannot_share_product() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.pending)
+        let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.pending)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // When
@@ -113,7 +113,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_non_public_site_cannot_share_product() {
         // Given
-        let product = ProductVariation.fake().copy(status: ProductStatus.published)
+        let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.defaultSite = Site.fake().copy(isPublic: false)
         let stores = MockStoresManager(sessionManager: sessionManager)
@@ -124,6 +124,36 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(canShareProduct)
+    }
+
+    func test_edit_product_variation_form_with_invalid_permalink_cannot_share_product() {
+        // Given
+        let product = ProductVariation.fake().copy(permalink: "", status: ProductStatus.published)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertFalse(canShareProduct)
+    }
+
+    func test_edit_product_variation_form_with_valid_permalink_can_share_product() {
+        // Given
+        let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertTrue(canShareProduct)
     }
 }
 

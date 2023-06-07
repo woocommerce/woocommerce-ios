@@ -81,7 +81,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_published_status_can_share_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
+        let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.defaultSite = Site.fake().copy(isPublic: true)
         let stores = MockStoresManager(sessionManager: sessionManager)
@@ -96,7 +96,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_published_status_cannot_share_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
+        let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -108,7 +108,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_non_published_status_can_share_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
+        let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.pending.rawValue)
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.defaultSite = Site.fake().copy(isPublic: true)
         let stores = MockStoresManager(sessionManager: sessionManager)
@@ -123,7 +123,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_non_published_status_cannot_share_product() {
         // Arrange
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
+        let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -135,7 +135,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_non_public_site_cannot_share_product() {
         // Given
-        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue)
+        let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.defaultSite = Site.fake().copy(isPublic: false)
         let stores = MockStoresManager(sessionManager: sessionManager)
@@ -146,6 +146,36 @@ final class ProductFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(canShareProduct)
+    }
+
+    func test_edit_product_form_with_invalid_permalink_cannot_share_product() {
+        // Given
+        let product = Product.fake().copy(name: "Test", permalink: "", statusKey: ProductStatus.published.rawValue)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertFalse(canShareProduct)
+    }
+
+    func test_edit_product_form_with_valid_permalink_can_share_product() {
+        // Given
+        let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
+        let sessionManager = SessionManager.makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+
+        // When
+        let canShareProduct = viewModel.canShareProduct()
+
+        // Then
+        XCTAssertTrue(canShareProduct)
     }
 
     // MARK: `canDeleteProduct`
@@ -371,7 +401,9 @@ final class ProductFormViewModelTests: XCTestCase {
     func test_action_buttons_for_existing_published_product_and_no_pending_changes() {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123", isPublic: true)
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
+        let product = Product.fake().copy(productID: 123,
+                                          permalink: "https://example.com/product",
+                                          statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
         // When
@@ -438,7 +470,9 @@ final class ProductFormViewModelTests: XCTestCase {
     func test_action_buttons_for_any_product_in_read_only_mode() {
         // Given
         sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123", isPublic: true)
-        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.published.rawValue)
+        let product = Product.fake().copy(productID: 123,
+                                          permalink: "https://example.com/product",
+                                          statusKey: ProductStatus.published.rawValue)
         let viewModel = createViewModel(product: product, formType: .readonly, stores: stores)
         viewModel.updateName("new name")
 

@@ -16,7 +16,6 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
             let shareProductCoordinator = ShareProductCoordinator(productURL: productURL,
                                                                   productName: product.name,
                                                                   shareSheetAnchorView: self.view,
-                                                                  viewControllerToPresentShareSheet: self,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
             ServiceLocator.analytics.track(.firstCreatedProductShareTapped)

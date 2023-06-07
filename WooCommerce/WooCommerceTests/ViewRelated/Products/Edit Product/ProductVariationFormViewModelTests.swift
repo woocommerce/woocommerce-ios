@@ -141,7 +141,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
-    func test_edit_product_variation_form_with_valid_permalink_cannot_share_product() {
+    func test_edit_product_variation_form_with_valid_permalink_can_share_product() {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
         let sessionManager = SessionManager.makeForTesting()

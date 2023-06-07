@@ -2,9 +2,9 @@ import SwiftUI
 import struct Yosemite.Product
 
 final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {
-    init() {
-        // TODO: create view model
-        super.init(rootView: ProductSharingMessageGenerationView())
+    init(productName: String, url: String) {
+        let viewModel = ProductSharingMessageGenerationViewModel(productName: productName, url: url)
+        super.init(rootView: ProductSharingMessageGenerationView(viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -15,16 +15,22 @@ final class ProductSharingMessageGenerationHostingController: UIHostingControlle
 
 /// View for generating product sharing message with AI.
 struct ProductSharingMessageGenerationView: View {
-    @State private var content = ""
+    @ObservedObject private var viewModel: ProductSharingMessageGenerationViewModel
+
+    init(viewModel: ProductSharingMessageGenerationViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         VStack(alignment: .center, spacing: Layout.defaultSpacing) {
 
             // Generated message text field
             ZStack(alignment: .topLeading) {
-                TextEditor(text: $content)
+                TextEditor(text: $viewModel.messageContent)
                     .bodyStyle()
                     .foregroundColor(.secondary)
                     .background(.clear)
+                    .disabled(viewModel.generationInProgress)
                     .padding(insets: Layout.messageContentInsets)
                     .frame(minHeight: Layout.minimumEditorSize)
                     .overlay(
@@ -39,6 +45,7 @@ struct ProductSharingMessageGenerationView: View {
                     // Allows gestures to pass through to the `TextEditor`.
                     .allowsHitTesting(false)
                     .frame(alignment: .center)
+                    .renderedIf(viewModel.generationInProgress)
             }
 
             Button(Localization.shareMessage) {

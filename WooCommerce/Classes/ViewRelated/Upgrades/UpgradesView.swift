@@ -40,13 +40,12 @@ struct UpgradesView: View {
             Section {
                 VStack {
                     Image(uiImage: .emptyOrdersImage)
-                    // TODO: Move logic to viewmodel
-                    if let availableProduct = upgradesViewModel.products.first(where: { $0.id == "debug.woocommerce.express.essential.monthly"}) {
-                        Text("\(availableProduct.displayName)")
+                    if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
+                        Text(availableProduct.displayName)
                             .font(.title)
-                        Text("Everything you need to launch an online store")
+                        Text(Constants.upgradeSubtitle)
                             .font(.body)
-                        Text("\(availableProduct.displayPrice)")
+                        Text(availableProduct.displayPrice)
                             .font(.title)
                     }
                 }
@@ -83,5 +82,7 @@ private extension UpgradesView {
     struct Constants {
         static let planName = NSLocalizedString("Your Plan: ", comment: "")
         static let daysLeftInTrial = NSLocalizedString("Days left in trial: ", comment: "")
+        static let upgradeSubtitle = NSLocalizedString("Everything you need to launch an online store",
+                                                       comment: "")
     }
 }

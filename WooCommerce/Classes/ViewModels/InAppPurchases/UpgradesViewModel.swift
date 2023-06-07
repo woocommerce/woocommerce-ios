@@ -71,4 +71,20 @@ final class UpgradesViewModel: ObservableObject {
             DDLogError("purchaseProduct \(error)")
         }
     }
+
+    /// Retrieves a specific In-App Purchase WPCOM plan from the available products
+    ///
+    func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans ) -> WPComPlanProduct? {
+        let match = type.rawValue
+        guard let wpcomPlanProduct = products.first(where: { $0.id == match }) else {
+            return nil
+        }
+        return wpcomPlanProduct
+    }
+}
+
+extension UpgradesViewModel {
+    enum AvailableInAppPurchasesWPComPlans: String {
+        case essentialMonthly = "debug.woocommerce.express.essential.monthly"
+    }
 }

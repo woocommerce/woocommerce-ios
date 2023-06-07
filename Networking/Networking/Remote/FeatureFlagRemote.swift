@@ -31,6 +31,7 @@ public enum RemoteFeatureFlag: Decodable {
     case oneDayAfterStoreCreationNameWithoutFreeTrial
     case oneDayBeforeFreeTrialExpiresNotification
     case oneDayAfterFreeTrialExpiresNotification
+    case blaze
 
     init?(rawValue: String) {
         switch rawValue {
@@ -42,6 +43,8 @@ public enum RemoteFeatureFlag: Decodable {
             self = .oneDayBeforeFreeTrialExpiresNotification
         case "woo_notification_1d_after_free_trial_expires":
             self = .oneDayAfterFreeTrialExpiresNotification
+        case "woo_blaze":
+            self = .blaze
         default:
             return nil
         }

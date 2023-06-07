@@ -53,6 +53,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
+    @MainActor
+    private var isEligibleForBlaze: Bool = false
+
     /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
     /// Assigning this value will recreate the `actionsFactory` property.
     ///
@@ -215,6 +218,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         queryAddOnsFeatureState()
         updateVariationsPriceState()
+        updateBlazeEligibility()
     }
 
     deinit {
@@ -264,6 +268,11 @@ extension ProductFormViewModel {
         let isSitePublic = stores.sessionManager.defaultSite?.isPublic == true
         let productHasLinkToShare = URL(string: product.permalink) != nil
         return isSitePublic && formType != .add && productHasLinkToShare
+    }
+
+    @MainActor
+    func canPromoteWithBlaze() -> Bool {
+        isEligibleForBlaze
     }
 
     func canDeleteProduct() -> Bool {
@@ -565,6 +574,7 @@ private extension ProductFormViewModel {
 extension ProductFormViewModel {
     private func resetProduct(_ product: EditableProductModel) {
         originalProduct = product
+        updateBlazeEligibility()
     }
 
     func resetPassword(_ password: String?) {
@@ -675,5 +685,18 @@ private extension ProductFormViewModel {
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
                                                    isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
+    }
+}
+
+private extension ProductFormViewModel {
+    func updateBlazeEligibility() {
+        guard let site = stores.sessionManager.defaultSite else {
+            return
+        }
+        let eligibilityChecker = BlazeEligibilityChecker(site: site, stores: stores)
+        Task { @MainActor in
+            let isEligible = await eligibilityChecker.isEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
+            isEligibleForBlaze = isEligible
+        }
     }
 }

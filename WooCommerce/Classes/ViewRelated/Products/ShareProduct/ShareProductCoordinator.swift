@@ -65,7 +65,6 @@ final class ShareProductCoordinator: Coordinator {
                   productName: productName,
                   shareSheetAnchorView: nil,
                   shareSheetAnchorItem: shareSheetAnchorItem,
-                  viewControllerToPresentShareSheet: viewControllerToPresentShareSheet,
                   featureFlagService: featureFlagService,
                   navigationController: navigationController)
     }
@@ -86,12 +85,12 @@ private extension ShareProductCoordinator {
             SharingHelper.shareURL(url: productURL,
                                    title: productName,
                                    from: shareSheetAnchorView,
-                                   in: viewControllerToPresentShareSheet)
+                                   in: navigationController.topmostPresentedViewController)
         } else if let shareSheetAnchorItem {
             SharingHelper.shareURL(url: productURL,
                                    title: productName,
                                    from: shareSheetAnchorItem,
-                                   in: viewControllerToPresentShareSheet)
+                                   in: navigationController.topmostPresentedViewController)
         }
     }
 

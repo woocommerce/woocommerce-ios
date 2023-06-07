@@ -2,9 +2,16 @@ import SwiftUI
 import struct Yosemite.Product
 
 final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {
-    init(productName: String, url: String) {
+    init(productName: String,
+         url: String,
+         onShareMessage: @escaping (String) -> Void,
+         onDismiss: @escaping () -> Void,
+         onSkip: @escaping () -> Void) {
         let viewModel = ProductSharingMessageGenerationViewModel(productName: productName, url: url)
-        super.init(rootView: ProductSharingMessageGenerationView(viewModel: viewModel))
+        super.init(rootView: ProductSharingMessageGenerationView(viewModel: viewModel,
+                                                                 onShareMessage: onShareMessage,
+                                                                 onDismiss: onDismiss,
+                                                                 onSkip: onSkip))
     }
 
     @available(*, unavailable)
@@ -16,9 +23,18 @@ final class ProductSharingMessageGenerationHostingController: UIHostingControlle
 /// View for generating product sharing message with AI.
 struct ProductSharingMessageGenerationView: View {
     @ObservedObject private var viewModel: ProductSharingMessageGenerationViewModel
+    private let onShareMessage: (String) -> Void
+    private let onDismiss: () -> Void
+    private let onSkip: () -> Void
 
-    init(viewModel: ProductSharingMessageGenerationViewModel) {
+    init(viewModel: ProductSharingMessageGenerationViewModel,
+         onShareMessage: @escaping (String) -> Void,
+         onDismiss: @escaping () -> Void,
+         onSkip: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onShareMessage = onShareMessage
+        self.onDismiss = onDismiss
+        self.onSkip = onSkip
     }
 
     var body: some View {
@@ -49,24 +65,22 @@ struct ProductSharingMessageGenerationView: View {
             }
 
             Button(Localization.shareMessage) {
-                // TODO
+                onShareMessage(viewModel.messageContent)
             }
             .buttonStyle(PrimaryButtonStyle())
 
             Button(Localization.skip) {
-                // TODO
+                onSkip()
             }
             .buttonStyle(LinkButtonStyle())
         }
         .padding(insets: Layout.insets)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Sharing Product")
+        .navigationTitle(viewModel.viewTitle)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button(action: {
-                    // TODO
-                }, label: { Text("Dismiss") })
-                .foregroundColor(Color(.accent))
+                Button(Localization.dismiss, action: onDismiss)
+                    .foregroundColor(Color(.accent))
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
@@ -108,6 +122,10 @@ private extension ProductSharingMessageGenerationView {
 
 struct ProductSharingMessageGenerationView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductSharingMessageGenerationView()
+        ProductSharingMessageGenerationView(viewModel: .init(productName: "Test",
+                                                             url: "https://example.com"),
+                                            onShareMessage: { _ in },
+                                            onDismiss: {},
+                                            onSkip: {})
     }
 }

@@ -1,124 +1,98 @@
 import Foundation
 import SwiftUI
 
-/// Main view for the plan settings.
+/// Hosting controller for `UpgradesView`
+/// To be used to display available current plan Subscriptions, available plan Upgrades,
+/// and the CTA to upgrade
 ///
-/// We might want to consider renaming this group of types to follow the `Subscriptions`
-/// wording since we're deactivating the `Upgrades` structure from the app.
-///
+@MainActor
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
-
     init(siteID: Int64) {
-        let viewModel = UpgradesViewModel()
-        super.init(rootView: .init(viewModel: viewModel))
+        let upgradesViewModel = UpgradesViewModel(siteID: siteID)
+        let subscriptionsViewModel = SubscriptionsViewModel()
 
-        rootView.onReportIssueTapped = { [weak self] in
-            self?.showContactSupportForm()
-        }
+        super.init(rootView: UpgradesView(upgradesViewModel: upgradesViewModel,
+                                          subscriptionsViewModel: subscriptionsViewModel))
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func showContactSupportForm() {
-        let supportController = SupportFormHostingController(viewModel: .init())
-        supportController.show(from: self)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("Not implemented")
     }
 }
 
-/// Main view for the plan settings.
-///
 struct UpgradesView: View {
+    @ObservedObject var upgradesViewModel: UpgradesViewModel
+    @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
-    /// Drives the view.
-    ///
-    @StateObject var viewModel: UpgradesViewModel
+    @State var isPurchasing = false
 
-    /// Closure to be invoked when the "Report Issue" button is tapped.
-    ///
-    var onReportIssueTapped: (() -> ())?
+    private var planText: String {
+        String.localizedStringWithFormat(Constants.planName, subscriptionsViewModel.planName)
+    }
+    private var daysLeftText: String {
+        String.localizedStringWithFormat(Constants.daysLeftInTrial, subscriptionsViewModel.planDaysLeft)
+    }
+
+    init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
+        self.upgradesViewModel = upgradesViewModel
+        self.subscriptionsViewModel = subscriptionsViewModel
+    }
 
     var body: some View {
         List {
-            Section(content: {
-                Text(Localization.currentPlan(viewModel.planName))
-                    .bodyStyle()
-
-            }, header: {
-                Text(Localization.subscriptionStatus)
-            }, footer: {
-                Text(viewModel.planInfo)
-            })
-
-            VStack(alignment: .leading) {
-                Text(Localization.experienceFeatures)
-                    .bold()
-                    .headlineStyle()
-
-                ForEach(viewModel.freeTrialFeatures, id: \.title) { feature in
-                    HStack {
-                        Image(uiImage: feature.icon)
-                            .foregroundColor(Color(uiColor: .accent))
-
-                        Text(feature.title)
-                            .foregroundColor(Color(.text))
-                            .calloutStyle()
+            Section {
+                Text(planText)
+                Text(daysLeftText)
+            }
+            Section {
+                VStack {
+                    Image(uiImage: .emptyOrdersImage)
+                    if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
+                        Text(availableProduct.displayName)
+                            .font(.title)
+                        Text(Constants.upgradeSubtitle)
+                            .font(.body)
+                        Text(availableProduct.displayPrice)
+                            .font(.title)
                     }
-                    .listRowSeparator(.hidden)
                 }
             }
-            .renderedIf(viewModel.shouldShowFreeTrialFeatures)
-
-            Button(Localization.cancelTrial) {
-                print("Cancel Free Trial tapped")
-            }
-            .foregroundColor(Color(.systemRed))
-            .renderedIf(viewModel.shouldShowCancelTrialButton)
-
-            Section(Localization.troubleshooting) {
-                Button(Localization.report) {
-                    onReportIssueTapped?()
+            Section {
+                if upgradesViewModel.products.isEmpty || isPurchasing {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                } else {
+                    ForEach(upgradesViewModel.products, id: \.id) { product in
+                        let buttonText = String.localizedStringWithFormat(Constants.purchaseCTAButtonText, product.displayName)
+                        Button(buttonText) {
+                            // TODO: Add product entitlement check
+                            Task {
+                                isPurchasing = true
+                                await upgradesViewModel.purchaseProduct(with: product.id)
+                                isPurchasing = false
+                            }
+                        }
+                    }
                 }
-                .linkStyle()
             }
         }
-        .notice($viewModel.errorNotice, autoDismiss: false)
-        .redacted(reason: viewModel.showLoadingIndicator ? .placeholder : [])
-        .shimmering(active: viewModel.showLoadingIndicator)
-        .background(Color(.listBackground))
-        .navigationTitle(Localization.title)
-        .navigationBarTitleDisplayMode(.inline)
         .task {
-            viewModel.loadPlan()
+            await upgradesViewModel.loadProducts()
         }
+        .navigationBarTitle(Constants.navigationTitle)
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
-// Definitions
 private extension UpgradesView {
-    enum Localization {
-        static let title = NSLocalizedString("Subscriptions", comment: "Title for the Subscriptions / Upgrades view")
-        static let subscriptionStatus = NSLocalizedString("SUBSCRIPTION STATUS", comment: "Title for the plan section on the subscriptions view. Uppercased")
-        static let experienceFeatures = NSLocalizedString("Experience more of our features and services beyond the app",
-                                                    comment: "Title for the features list in the Subscriptions Screen")
-        static let cancelTrial = NSLocalizedString("Cancel Free Trial", comment: "Title for the button to cancel a free trial")
-        static let troubleshooting = NSLocalizedString("TROUBLESHOOTING",
-                                                       comment: "Title for the section to contact support on the subscriptions view. Uppercased")
-        static let report = NSLocalizedString("Report Subscription Issue", comment: "Title for the button to contact support on the Subscriptions view")
-
-        static func currentPlan(_ plan: String) -> String {
-            let format = NSLocalizedString("Current: %@", comment: "Reads like: Current: Free Trial")
-            return .localizedStringWithFormat(format, plan)
-        }
-    }
-}
-
-// MARK: Previews
-struct UpgradesPreviews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            UpgradesView(viewModel: .init())
-        }
+    struct Constants {
+        static let navigationTitle = NSLocalizedString("Plans", comment: "Navigation title for the Upgrades screen")
+        static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
+                                                             "Reads as 'Purchase Essential Monthly'")
+        static let planName = NSLocalizedString("Your Plan: %1$@", comment: "Message describing which Plan the merchant is currently subscribed to." +
+                                                "Reads as 'Your Plan: Free Trial'")
+        static let daysLeftInTrial = NSLocalizedString("Days left in trial: %1$@", comment: "Message describing days left on a Plan to expire." +
+                                                       "Reads as 'Days left in trial: 15'")
+        static let upgradeSubtitle = NSLocalizedString("Everything you need to launch an online store",
+                                                       comment: "Subtitle that can be read under the Plan upgrade name")
     }
 }

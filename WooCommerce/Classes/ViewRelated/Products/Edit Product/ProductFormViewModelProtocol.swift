@@ -80,6 +80,8 @@ protocol ProductFormViewModelProtocol {
 
     func canShareProduct() -> Bool
 
+    func canPromoteWithBlaze() -> Bool
+
     func canDeleteProduct() -> Bool
 
     func canDuplicateProduct() -> Bool

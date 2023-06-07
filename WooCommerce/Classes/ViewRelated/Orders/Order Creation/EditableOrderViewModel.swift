@@ -329,6 +329,8 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
+    private let barcodeSKUScannerProductFinder: BarcodeSKUScannerProductFinder
+
     init(siteID: Int64,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
@@ -338,7 +340,8 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         initialProductID: Int64? = nil) {
+         initialProductID: Int64? = nil,
+         barcodeSKUScannerProductFinder: BarcodeSKUScannerProductFinder = BarcodeSKUScannerProductFinder()) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -350,6 +353,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
         self.initialProductID = initialProductID
+        self.barcodeSKUScannerProductFinder = barcodeSKUScannerProductFinder
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -1296,12 +1300,8 @@ extension EditableOrderViewModel {
 
     /// Attempts to add a Product to the current Order by SKU search
     ///
-    func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
-        guard let sku = sku else {
-            return onCompletion(.failure(ScannerError.nilSKU))
-        }
-
-        mapFromSKUtoProduct(sku: sku) { [weak self] result in
+    func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
+        mapFromScannedBarcodetoProduct(barcode: barcode) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case let .success(product):
@@ -1321,16 +1321,15 @@ extension EditableOrderViewModel {
 
     /// Attempts to map SKU to Product
     ///
-    private func mapFromSKUtoProduct(sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
-        let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: { result in
-            switch result {
-            case let .success(product):
-                onCompletion(.success(product))
-            case let .failure(error):
+    private func mapFromScannedBarcodetoProduct(barcode: ScannedBarcode, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+        Task {
+            do {
+                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: barcode, siteID: siteID)
+                onCompletion(.success(matchedProduct))
+            } catch {
                 onCompletion(.failure(error))
             }
-        })
-        stores.dispatch(action)
+        }
     }
 
     /// Updates the Order with the given product

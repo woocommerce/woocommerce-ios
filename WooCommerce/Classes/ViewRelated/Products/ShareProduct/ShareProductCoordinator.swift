@@ -11,7 +11,6 @@ final class ShareProductCoordinator: Coordinator {
     private let productName: String
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
-    private let viewControllerToPresentShareSheet: UIViewController
     private let featureFlagService: FeatureFlagService
 
     private var shouldEnableShareProductUsingAI: Bool {
@@ -23,7 +22,6 @@ final class ShareProductCoordinator: Coordinator {
                  productName: String,
                  shareSheetAnchorView: UIView?,
                  shareSheetAnchorItem: UIBarButtonItem?,
-                 viewControllerToPresentShareSheet: UIViewController,
                  featureFlagService: FeatureFlagService,
                  navigationController: UINavigationController) {
         self.site = site
@@ -31,7 +29,6 @@ final class ShareProductCoordinator: Coordinator {
         self.productName = productName
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
-        self.viewControllerToPresentShareSheet = viewControllerToPresentShareSheet
         self.featureFlagService = featureFlagService
         self.navigationController = navigationController
     }
@@ -40,7 +37,6 @@ final class ShareProductCoordinator: Coordinator {
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorView: UIView,
-                     viewControllerToPresentShareSheet: UIViewController,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      navigationController: UINavigationController) {
         self.init(site: site,
@@ -48,7 +44,6 @@ final class ShareProductCoordinator: Coordinator {
                   productName: productName,
                   shareSheetAnchorView: shareSheetAnchorView,
                   shareSheetAnchorItem: nil,
-                  viewControllerToPresentShareSheet: viewControllerToPresentShareSheet,
                   featureFlagService: featureFlagService,
                   navigationController: navigationController)
     }
@@ -57,7 +52,6 @@ final class ShareProductCoordinator: Coordinator {
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorItem: UIBarButtonItem,
-                     viewControllerToPresentShareSheet: UIViewController,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      navigationController: UINavigationController) {
         self.init(site: site,

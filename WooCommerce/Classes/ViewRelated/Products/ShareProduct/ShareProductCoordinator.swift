@@ -17,6 +17,8 @@ final class ShareProductCoordinator: Coordinator {
         site?.isWordPressComStore == true && featureFlagService.isFeatureFlagEnabled(.shareProductAI)
     }
 
+    private var bottomSheetPresenter: BottomSheetPresenter?
+
     private init(site: Site?,
                  productURL: URL,
                  productName: String,
@@ -88,8 +90,38 @@ private extension ShareProductCoordinator {
         }
     }
 
-    // TODO: 9867 UI to show product sharing message AI generation for eligible sites
     func presentShareProductAIGeneration() {
+        guard let siteID = site?.siteID else {
+            DDLogWarn("⚠️ No site found for generating product sharing message!")
+            return
+        }
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID, productName: productName, url: productURL.absoluteString)
+        let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel) { [weak self] message in
+            self?.navigationController.topmostPresentedViewController.dismiss(animated: true)
+            // TODO: update SharingHelper to accept only message
+            // TODO: Analytics
+        } onDismiss: { [weak self] in
+            // TODO: Analytics
+            self?.navigationController.topmostPresentedViewController.dismiss(animated: true)
+        } onSkip: { [weak self] in
+            self?.navigationController.topmostPresentedViewController.dismiss(animated: true, completion: {
+                // TODO: Analytics
+                self?.presentShareSheet()
+            })
+        }
 
+        let presenter = BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
+        bottomSheetPresenter = presenter
+        presenter.present(UINavigationController(rootViewController: controller),
+                          from: navigationController.topmostPresentedViewController,
+                          onDismiss: {
+            // TODO: Analytics
+        })
     }
 }

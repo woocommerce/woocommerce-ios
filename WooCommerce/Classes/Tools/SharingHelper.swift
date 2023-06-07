@@ -13,6 +13,46 @@ class SharingHelper {
     ///
     private init() { }
 
+    /// Share a message using the iOS share sheet
+    ///
+    /// - Parameters:
+    ///   - message: Optional descriptive title for the url
+    ///   - anchorView: View that the share popover should be displayed from (needed for iPad support)
+    ///   - viewController: VC presenting the share VC (UIActivityViewController)
+    ///   - onCompletion: The completion handler to execute after the activity view controller is dismissed.
+    ///
+    static func shareMessage(_ message: String,
+                             from anchorView: UIView,
+                             in viewController: UIViewController,
+                             onCompletion: Completion? = nil) {
+        guard let avc = createActivityVC(title: message, url: nil, onCompletion: onCompletion) else {
+            return
+        }
+
+        avc.setupPopoverForIPadsIfNecessary(with: anchorView)
+        viewController.present(avc, animated: true)
+    }
+
+    /// Share a URL using the iOS share sheet.
+    ///
+    /// - Parameters:
+    ///   - url: URL you want to share.
+    ///   - title: Optional descriptive title for the url.
+    ///   - item: Item that the share action sheet should be displayed from.
+    ///   - viewController: VC presenting the share VC (UIActivityViewController).
+    ///
+    static func shareMessage(_ message: String,
+                             from item: UIBarButtonItem,
+                             in viewController: UIViewController,
+                             onCompletion: Completion? = nil) {
+        guard let avc = createActivityVC(title: message, url: nil, onCompletion: onCompletion) else {
+            return
+        }
+
+        let popoverController = avc.popoverPresentationController
+        popoverController?.barButtonItem = item
+        viewController.present(avc, animated: true)
+    }
 
     /// Share a URL using the iOS share sheet
     ///
@@ -31,19 +71,7 @@ class SharingHelper {
             return
         }
 
-        if UIDevice.isPad() {
-            // Use a popover for iPads
-            avc.modalPresentationStyle = .popover
-            viewController.present(avc, animated: true)
-
-            if let presentationController = avc.popoverPresentationController {
-                presentationController.permittedArrowDirections = .any
-                presentationController.sourceView = anchorView
-                presentationController.sourceRect = anchorView.bounds
-            }
-            return
-        }
-
+        avc.setupPopoverForIPadsIfNecessary(with: anchorView)
         viewController.present(avc, animated: true)
     }
 
@@ -115,5 +143,23 @@ private extension SharingHelper {
         let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
         activityController.completionWithItemsHandler = onCompletion
         return activityController
+    }
+}
+
+extension UIActivityViewController {
+    /// Update the controller with the provided source view.
+    ///
+    func setupPopoverForIPadsIfNecessary(with anchorView: UIView) {
+        guard UIDevice.isPad() else {
+            return
+        }
+        // Use a popover for iPads
+        modalPresentationStyle = .popover
+
+        if let presentationController = popoverPresentationController {
+            presentationController.permittedArrowDirections = .any
+            presentationController.sourceView = anchorView
+            presentationController.sourceRect = anchorView.bounds
+        }
     }
 }

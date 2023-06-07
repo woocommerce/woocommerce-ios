@@ -25,6 +25,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
 
     @MainActor
     func generateShareMessage() async {
+        // TODO: Analytics
         errorMessage = nil
         generationInProgress = true
         do {
@@ -36,7 +37,9 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
                     continuation.resume(with: result)
                 }))
             }
+            // TODO: Analytics
         } catch {
+            // TODO: Analytics
             DDLogError("⛔️ Error generating product sharing message: \(error)")
             errorMessage = Localization.errorMessage
         }

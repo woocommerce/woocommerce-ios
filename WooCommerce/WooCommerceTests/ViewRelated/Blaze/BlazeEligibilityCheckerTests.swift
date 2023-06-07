@@ -1,0 +1,195 @@
+import XCTest
+import Yosemite
+@testable import WooCommerce
+
+@MainActor
+final class BlazeEligibilityCheckerTests: XCTestCase {
+    private var stores: MockStoresManager!
+
+    override func setUp() {
+        super.setUp()
+        stores = MockStoresManager(sessionManager: .makeForTesting())
+        ServiceLocator.setStores(stores)
+    }
+
+    override func tearDown() {
+        stores = nil
+        super.tearDown()
+    }
+
+    // MARK: - `isEligible` for site
+
+    func test_isEligible_is_true_when_authenticated_with_wpcom_and_feature_flag_enabled_and_blaze_approved() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockRemoteFeatureFlag(isEnabled: true)
+        mockBlazeStatus(result: .success(true))
+        let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+
+        // When
+        let isEligible = await checker.isEligible()
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_isEligible_is_false_when_authenticated_without_wpcom() async {
+        // Given
+        let nonWPCOMCredentialsValues: [Credentials] = [
+            .applicationPassword(username: "", password: "", siteAddress: ""),
+            .wporg(username: "", password: "", siteAddress: "")
+        ]
+
+        for nonWPCOMCredentials in nonWPCOMCredentialsValues {
+            stores.authenticate(credentials: nonWPCOMCredentials)
+            let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+
+            // When
+            let isEligible = await checker.isEligible()
+
+            // Then
+            XCTAssertFalse(isEligible)
+        }
+    }
+
+    func test_isEligible_is_false_when_remote_feature_is_disabled() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockRemoteFeatureFlag(isEnabled: false)
+        let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+
+        // When
+        let isEligible = await checker.isEligible()
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isEligible_is_false_when_blaze_is_not_approved() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockRemoteFeatureFlag(isEnabled: true)
+        mockBlazeStatus(result: .success(false))
+        let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+
+        // When
+        let isEligible = await checker.isEligible()
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    // MARK: - `isEligible` for product
+
+    func test_isProductEligible_is_true_when_wpcom_auth_and_feature_flag_enabled_and_blaze_approved_and_product_public_without_password() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockRemoteFeatureFlag(isEnabled: true)
+        mockBlazeStatus(result: .success(true))
+        let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+
+        // When
+        let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_isProductEligible_is_false_when_product_is_not_public() async {
+        // Given
+        let nonPublicStatuses: [ProductStatus] = [.draft, .pending, .privateStatus, .autoDraft, .custom("status")]
+        let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+
+        for nonPublicStatus in nonPublicStatuses {
+            let product = Product.fake().copy(statusKey: nonPublicStatus.rawValue)
+
+            // When
+            let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+
+            // Then
+            XCTAssertFalse(isEligible)
+        }
+    }
+
+    func test_isProductEligible_is_false_when_product_is_password_protected() async {
+        // Given
+        let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+
+        // When
+        let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: true)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isProductEligible_is_false_when_authenticated_without_wpcom() async {
+        // Given
+        let nonWPCOMCredentialsValues: [Credentials] = [
+            .applicationPassword(username: "", password: "", siteAddress: ""),
+            .wporg(username: "", password: "", siteAddress: "")
+        ]
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+
+        for nonWPCOMCredentials in nonWPCOMCredentialsValues {
+            stores.authenticate(credentials: nonWPCOMCredentials)
+            let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+
+            // When
+            let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+
+            // Then
+            XCTAssertFalse(isEligible)
+        }
+    }
+
+    func test_isProductEligible_is_false_when_remote_feature_is_disabled() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockRemoteFeatureFlag(isEnabled: false)
+        let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+
+        // When
+        let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isProductEligible_is_false_when_blaze_is_not_approved() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockRemoteFeatureFlag(isEnabled: true)
+        mockBlazeStatus(result: .success(false))
+        let checker = BlazeEligibilityChecker(site: Site.fake(), stores: stores)
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+
+        // When
+        let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+}
+
+private extension BlazeEligibilityCheckerTests {
+    func mockBlazeStatus(result: Result<Bool, Error>) {
+        stores.whenReceivingAction(ofType: SiteAction.self) { action in
+            guard case let .loadBlazeStatus(_, completion) = action else {
+                return XCTFail()
+            }
+            completion(result)
+        }
+    }
+
+    func mockRemoteFeatureFlag(isEnabled: Bool) {
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            guard case let .isRemoteFeatureFlagEnabled(_, _, completion) = action else {
+                return  XCTFail()
+            }
+            completion(isEnabled)
+        }
+    }
+}

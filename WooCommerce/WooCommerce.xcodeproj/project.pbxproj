@@ -114,6 +114,8 @@
 		021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift */; };
 		021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1D23AA24C600B1DE07 /* StringInputFormatter.swift */; };
 		021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */; };
+		021EBB362A3054BE003634CA /* BlazeEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021EBB352A3054BE003634CA /* BlazeEligibilityChecker.swift */; };
+		021EBB382A3076F4003634CA /* BlazeEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */; };
 		021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */; };
 		0221121E288973C20028F0AF /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0221121D288973C20028F0AF /* LocalNotification.swift */; };
 		0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */; };
@@ -2416,6 +2418,8 @@
 		021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorCommand.swift; sourceTree = "<group>"; };
 		021E2A1D23AA24C600B1DE07 /* StringInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringInputFormatter.swift; sourceTree = "<group>"; };
 		021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		021EBB352A3054BE003634CA /* BlazeEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEligibilityChecker.swift; sourceTree = "<group>"; };
+		021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorSearchUICommand.swift; sourceTree = "<group>"; };
 		0221121D288973C20028F0AF /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelTests.swift; sourceTree = "<group>"; };
@@ -5114,6 +5118,7 @@
 			isa = PBXGroup;
 			children = (
 				024D4E932A2E1E240090E0E6 /* BlazeWebViewModel.swift */,
+				021EBB352A3054BE003634CA /* BlazeEligibilityChecker.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -5122,6 +5127,7 @@
 			isa = PBXGroup;
 			children = (
 				024D4E962A2EC68B0090E0E6 /* BlazeWebViewModelTests.swift */,
+				021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -11854,6 +11860,7 @@
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
 				DE2FE58A2925EAAE0018040A /* LoginJetpackSetupCoordinator.swift in Sources */,
+				021EBB362A3054BE003634CA /* BlazeEligibilityChecker.swift in Sources */,
 				02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */,
 				03E471C0293A158D001A58AD /* CardReaderConnectionAlertsProviding.swift in Sources */,
 				D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */,
@@ -12932,6 +12939,7 @@
 				022C658C2863BBAC00EC35A9 /* ProductFormViewController+ProductImageUploaderTests.swift in Sources */,
 				093B265927DF15100026F92D /* BulkUpdatePriceViewControllerTests.swift in Sources */,
 				2614EB1C24EB611200968D4B /* TopBannerViewTests.swift in Sources */,
+				021EBB382A3076F4003634CA /* BlazeEligibilityCheckerTests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 				DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */,
 				02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */,

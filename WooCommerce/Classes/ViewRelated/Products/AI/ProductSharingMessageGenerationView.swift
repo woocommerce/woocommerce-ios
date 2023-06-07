@@ -2,12 +2,10 @@ import SwiftUI
 import struct Yosemite.Product
 
 final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {
-    init(productName: String,
-         url: String,
+    init(viewModel: ProductSharingMessageGenerationViewModel,
          onShareMessage: @escaping (String) -> Void,
          onDismiss: @escaping () -> Void,
          onSkip: @escaping () -> Void) {
-        let viewModel = ProductSharingMessageGenerationViewModel(productName: productName, url: url)
         super.init(rootView: ProductSharingMessageGenerationView(viewModel: viewModel,
                                                                  onShareMessage: onShareMessage,
                                                                  onDismiss: onDismiss,
@@ -23,6 +21,7 @@ final class ProductSharingMessageGenerationHostingController: UIHostingControlle
 /// View for generating product sharing message with AI.
 struct ProductSharingMessageGenerationView: View {
     @ObservedObject private var viewModel: ProductSharingMessageGenerationViewModel
+    @State private var isRegeneratingMessage: Bool = false
     private let onShareMessage: (String) -> Void
     private let onDismiss: () -> Void
     private let onSkip: () -> Void
@@ -68,6 +67,7 @@ struct ProductSharingMessageGenerationView: View {
                 onShareMessage(viewModel.messageContent)
             }
             .buttonStyle(PrimaryButtonStyle())
+            .disabled(viewModel.messageContent.isEmpty)
 
             Button(Localization.skip) {
                 onSkip()
@@ -84,12 +84,23 @@ struct ProductSharingMessageGenerationView: View {
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
-                    // TODO
+                    Task { @MainActor in
+                        isRegeneratingMessage = true
+                        await viewModel.generateShareMessage()
+                        isRegeneratingMessage = false
+                    }
                 }, label: {
-                    Image(systemName: "arrow.counterclockwise")
+                    if isRegeneratingMessage {
+                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    } else {
+                        Image(systemName: "arrow.counterclockwise")
+                    }
                 })
                 .foregroundColor(Color(.accent))
             }
+        }
+        .task {
+            await viewModel.generateShareMessage()
         }
     }
 }
@@ -122,7 +133,8 @@ private extension ProductSharingMessageGenerationView {
 
 struct ProductSharingMessageGenerationView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductSharingMessageGenerationView(viewModel: .init(productName: "Test",
+        ProductSharingMessageGenerationView(viewModel: .init(siteID: 123,
+                                                             productName: "Test",
                                                              url: "https://example.com"),
                                             onShareMessage: { _ in },
                                             onDismiss: {},

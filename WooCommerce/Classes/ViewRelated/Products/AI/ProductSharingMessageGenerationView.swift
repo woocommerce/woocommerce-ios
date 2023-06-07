@@ -37,7 +37,7 @@ struct ProductSharingMessageGenerationView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: Layout.defaultSpacing) {
+        VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
 
             // Generated message text field
             ZStack(alignment: .topLeading) {
@@ -47,7 +47,6 @@ struct ProductSharingMessageGenerationView: View {
                     .background(.clear)
                     .disabled(viewModel.generationInProgress)
                     .padding(insets: Layout.messageContentInsets)
-                    .frame(minHeight: Layout.minimumEditorSize)
                     .overlay(
                         RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                     )
@@ -62,6 +61,13 @@ struct ProductSharingMessageGenerationView: View {
                     .frame(alignment: .center)
                     .renderedIf(viewModel.generationInProgress)
             }
+
+            viewModel.errorMessage.map { message in
+                Text(message)
+                    .footnoteStyle(isError: true)
+            }
+
+            Spacer()
 
             Button(Localization.shareMessage) {
                 onShareMessage(viewModel.messageContent)
@@ -110,7 +116,6 @@ private extension ProductSharingMessageGenerationView {
         static let defaultSpacing: CGFloat = 16
         static let cornerRadius: CGFloat = 8
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
-        static let minimumEditorSize: CGFloat = 76
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let placeholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
     }

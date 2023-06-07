@@ -340,8 +340,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         initialProductID: Int64? = nil,
-         barcodeSKUScannerProductFinder: BarcodeSKUScannerProductFinder = BarcodeSKUScannerProductFinder()) {
+         initialProductID: Int64? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -353,7 +352,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
         self.initialProductID = initialProductID
-        self.barcodeSKUScannerProductFinder = barcodeSKUScannerProductFinder
+        self.barcodeSKUScannerProductFinder = BarcodeSKUScannerProductFinder(stores: stores)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.

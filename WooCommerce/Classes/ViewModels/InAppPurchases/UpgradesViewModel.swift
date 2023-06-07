@@ -8,14 +8,13 @@ import SwiftUI
 final class UpgradesViewModel: ObservableObject {
 
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansManager
-    var siteID: Int64 {
-        ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
-    }
+    private let siteID: Int64
 
     @Published var products: [WPComPlanProduct]
     @Published var entitledProductIDs: Set<String>
 
-    init() {
+    init(siteID: Int64) {
+        self.siteID = siteID
         // TODO: Inject dependencies
         // https://github.com/woocommerce/woocommerce-ios/issues/9884
         inAppPurchasesPlanManager = InAppPurchasesForWPComPlansManager()
@@ -36,6 +35,7 @@ final class UpgradesViewModel: ObservableObject {
             }
         } catch {
             // TODO: Handle errors
+            // https://github.com/woocommerce/woocommerce-ios/issues/9886
             DDLogError("loadEntitlements \(error)")
         }
     }
@@ -53,6 +53,7 @@ final class UpgradesViewModel: ObservableObject {
             await loadUserEntitlements()
         } catch {
             // TODO: Handle errors
+            // https://github.com/woocommerce/woocommerce-ios/issues/9886
             DDLogError("loadProducts \(error)")
         }
     }
@@ -63,6 +64,7 @@ final class UpgradesViewModel: ObservableObject {
     func purchaseProduct(with productID: String) async {
         do {
             // TODO: Deal with purchase result
+            // https://github.com/woocommerce/woocommerce-ios/issues/9886
             let _ = try await inAppPurchasesPlanManager.purchaseProduct(with: productID, for: siteID)
         } catch {
             // TODO: Handle errors

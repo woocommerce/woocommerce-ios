@@ -3,13 +3,15 @@ import XCTest
 
 final class UpgradesViewModelTests: XCTestCase {
 
+    private let sampleSiteID: Int64 = 12345
+
     func test_initial_UpgradesViewModel_initializes_with_correct_empty_values() {
 
         let expectation = XCTestExpectation(description: "Waiting for main queue")
 
         Task {
             // Given
-            let sut = await UpgradesViewModel()
+            let sut = await UpgradesViewModel(siteID: sampleSiteID)
 
             let initialProducts = await sut.products
             let initialEntitledProducts = await sut.entitledProductIDs

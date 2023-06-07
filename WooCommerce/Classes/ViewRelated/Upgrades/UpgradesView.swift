@@ -8,10 +8,10 @@ import SwiftUI
 @MainActor
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
     init(siteID: Int64) {
-        let upgradesViewModel = UpgradesViewModel()
+        let upgradesViewModel = UpgradesViewModel(siteID: siteID)
         let subscriptionsViewModel = SubscriptionsViewModel()
 
-        super.init(rootView: UpgradesView(viewModel: upgradesViewModel,
+        super.init(rootView: UpgradesView(upgradesViewModel: upgradesViewModel,
                                           subscriptionsViewModel: subscriptionsViewModel))
     }
 
@@ -21,14 +21,13 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 }
 
 struct UpgradesView: View {
-
-    @ObservedObject var viewModel: UpgradesViewModel
+    @ObservedObject var upgradesViewModel: UpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
     @State var isPurchasing = false
 
-    init(viewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
-        self.viewModel = viewModel
+    init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
+        self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
     }
 
@@ -42,7 +41,7 @@ struct UpgradesView: View {
                 VStack {
                     Image(uiImage: .emptyOrdersImage)
                     // TODO: Move logic to viewmodel
-                    if let availableProduct = viewModel.products.first(where: { $0.id == "debug.woocommerce.express.essential.monthly" }) {
+                    if let availableProduct = upgradesViewModel.products.first(where: { $0.id == "debug.woocommerce.express.essential.monthly"}) {
                         Text("\(availableProduct.displayName)")
                             .font(.title)
                         Text("Everything you need to launch an online store")
@@ -53,17 +52,17 @@ struct UpgradesView: View {
                 }
             }
             Section {
-                if viewModel.products.isEmpty || isPurchasing {
+                if upgradesViewModel.products.isEmpty || isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
-                    ForEach(viewModel.products, id: \.id) { product in
+                    ForEach(upgradesViewModel.products, id: \.id) { product in
                         // TODO: Move logic to viewmodel
                         if product.id == "debug.woocommerce.express.essential.monthly" {
                             Button("Purchase \(product.displayName)") {
                                 // TODO: Add product entitlement check
                                 Task {
                                     isPurchasing = true
-                                    await viewModel.purchaseProduct(with: product.id)
+                                    await upgradesViewModel.purchaseProduct(with: product.id)
                                     isPurchasing = false
                                 }
                             }
@@ -73,7 +72,7 @@ struct UpgradesView: View {
             }
         }
         .task {
-            await viewModel.loadProducts()
+            await upgradesViewModel.loadProducts()
         }
         .navigationBarTitle("Plans")
         .navigationBarTitleDisplayMode(.large)

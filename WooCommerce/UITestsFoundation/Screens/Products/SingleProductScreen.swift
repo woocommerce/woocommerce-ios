@@ -56,17 +56,20 @@ public final class SingleProductScreen: ScreenObject {
             XCTAssertTrue(app.staticTexts["Add variations"].exists)
         case "grouped":
             XCTAssertTrue(app.staticTexts["Grouped products"].exists)
+        case "external":
+            XCTAssertTrue(app.staticTexts["Add product link"].exists)
         default:
             XCTFail("Product Type \(productType) doesn't exist!")
         }
     }
 
     public func verifyProductTypeScreenLoaded(productType: String) throws -> Self {
-        let productTypeLabel = NSPredicate(format: "label ==[c] '\(productType)'")
+        let productTypeLabel = productType + (productType == "external" ? "/Affiliate" : "")
+        let productTypeLabelPredicate = NSPredicate(format: "label ==[c] '\(productTypeLabel)'")
 
         // the common fields on add product screen
         XCTAssertTrue(app.cells["product-review-cell"].exists)
-        XCTAssertTrue(app.staticTexts.containing(productTypeLabel).firstMatch.exists)
+        XCTAssertTrue(app.staticTexts.containing(productTypeLabelPredicate).firstMatch.exists)
 
         // different product types display different fields on add product screen
         // this is to validate that the correct screens are displayed
@@ -79,6 +82,10 @@ public final class SingleProductScreen: ScreenObject {
             XCTAssertTrue(app.staticTexts["Inventory"].exists)
         case "grouped":
             XCTAssertTrue(app.staticTexts["Add products to the group"].exists)
+            XCTAssertFalse(app.staticTexts["Inventory"].exists)
+        case "external":
+            XCTAssertTrue(app.staticTexts["Add product link"].exists)
+            XCTAssertTrue(app.staticTexts["Add Price"].exists)
             XCTAssertFalse(app.staticTexts["Inventory"].exists)
         default:
             XCTFail("Product Type \(productType) doesn't exist!")

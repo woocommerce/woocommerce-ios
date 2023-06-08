@@ -693,7 +693,7 @@ private extension ProductFormViewModel {
 private extension ProductFormViewModel {
     func updateBlazeEligibility() {
         Task { @MainActor in
-            let isEligible = await blazeEligibilityChecker.isEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
+            let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
             isEligibleForBlaze = isEligible
         }
     }

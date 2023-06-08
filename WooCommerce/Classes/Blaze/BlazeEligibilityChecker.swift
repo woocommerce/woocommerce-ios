@@ -3,8 +3,8 @@ import Yosemite
 
 /// Protocol for checking Blaze eligibility for easier unit testing.
 protocol BlazeEligibilityCheckerProtocol {
-    func isEligible() async -> Bool
-    func isEligible(product: ProductFormDataModel, isPasswordProtected: Bool) async -> Bool
+    func isSiteEligible() async -> Bool
+    func isProductEligible(product: ProductFormDataModel, isPasswordProtected: Bool) async -> Bool
 }
 
 /// Checks for Blaze eligibility for a site and its products.
@@ -17,25 +17,25 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
 
     /// Checks if the site is eligible for Blaze.
     /// - Returns: Whether the site is eligible for Blaze.
-    func isEligible() async -> Bool {
-        await isSiteEligible()
+    func isSiteEligible() async -> Bool {
+        await checkSiteEligibility()
     }
 
     /// Checks if the product is eligible for Blaze.
     /// - Parameter product: The product to check for Blaze eligibility.
     /// - Parameter isPasswordProtected: Whether the product is password protected.
     /// - Returns: Whether the product is eligible for Blaze.
-    func isEligible(product: ProductFormDataModel, isPasswordProtected: Bool) async -> Bool {
+    func isProductEligible(product: ProductFormDataModel, isPasswordProtected: Bool) async -> Bool {
         guard product.status == .published && isPasswordProtected == false else {
             return false
         }
-        return await isSiteEligible()
+        return await checkSiteEligibility()
     }
 }
 
 private extension BlazeEligibilityChecker {
     @MainActor
-    func isSiteEligible() async -> Bool {
+    func checkSiteEligibility() async -> Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false
         }

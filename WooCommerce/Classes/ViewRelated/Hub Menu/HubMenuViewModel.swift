@@ -244,7 +244,7 @@ final class HubMenuViewModel: ObservableObject {
                 guard let self else {
                     return false
                 }
-                return await self.blazeEligibilityChecker.isEligible()
+                return await self.blazeEligibilityChecker.isSiteEligible()
             }
             .assign(to: &$isSiteEligibleForBlaze)
     }

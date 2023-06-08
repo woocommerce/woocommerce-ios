@@ -17,7 +17,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - `isEligible` for site
+    // MARK: - `isSiteEligible` for site
 
     func test_isEligible_is_true_when_authenticated_with_wpcom_and_feature_flag_enabled_and_blaze_approved() async {
         // Given
@@ -28,7 +28,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
-        let isEligible = await checker.isEligible()
+        let isEligible = await checker.isSiteEligible()
 
         // Then
         XCTAssertTrue(isEligible)
@@ -47,7 +47,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
             let checker = BlazeEligibilityChecker(stores: stores)
 
             // When
-            let isEligible = await checker.isEligible()
+            let isEligible = await checker.isSiteEligible()
 
             // Then
             XCTAssertFalse(isEligible)
@@ -62,7 +62,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
-        let isEligible = await checker.isEligible()
+        let isEligible = await checker.isSiteEligible()
 
         // Then
         XCTAssertFalse(isEligible)
@@ -77,13 +77,13 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
-        let isEligible = await checker.isEligible()
+        let isEligible = await checker.isSiteEligible()
 
         // Then
         XCTAssertFalse(isEligible)
     }
 
-    // MARK: - `isEligible` for product
+    // MARK: - `isProductEligible`
 
     func test_isProductEligible_is_true_when_wpcom_auth_and_feature_flag_enabled_and_blaze_approved_and_product_public_without_password() async {
         // Given
@@ -95,7 +95,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
 
         // When
-        let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+        let isEligible = await checker.isProductEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
 
         // Then
         XCTAssertTrue(isEligible)
@@ -110,7 +110,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
             let product = Product.fake().copy(statusKey: nonPublicStatus.rawValue)
 
             // When
-            let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+            let isEligible = await checker.isProductEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
 
             // Then
             XCTAssertFalse(isEligible)
@@ -123,7 +123,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
 
         // When
-        let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: true)
+        let isEligible = await checker.isProductEligible(product: EditableProductModel(product: product), isPasswordProtected: true)
 
         // Then
         XCTAssertFalse(isEligible)
@@ -142,7 +142,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
             let checker = BlazeEligibilityChecker(stores: stores)
 
             // When
-            let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+            let isEligible = await checker.isProductEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
 
             // Then
             XCTAssertFalse(isEligible)
@@ -157,7 +157,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
 
         // When
-        let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+        let isEligible = await checker.isProductEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
 
         // Then
         XCTAssertFalse(isEligible)
@@ -172,7 +172,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
 
         // When
-        let isEligible = await checker.isEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
+        let isEligible = await checker.isProductEligible(product: EditableProductModel(product: product), isPasswordProtected: false)
 
         // Then
         XCTAssertFalse(isEligible)

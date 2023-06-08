@@ -77,7 +77,10 @@ struct FirstProductCreatedView: View {
                 })
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal)
-                .renderedIf(showShareProductButton)
+                .renderedIf(viewModel.showShareProductButton)
+                .sharePopover(isPresented: $viewModel.isSharePopoverPresented) {
+                    viewModel.shareSheet
+                }
 
                 Spacer()
             }

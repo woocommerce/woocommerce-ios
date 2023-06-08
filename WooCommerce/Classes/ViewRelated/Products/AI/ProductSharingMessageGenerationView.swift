@@ -60,9 +60,10 @@ struct ProductSharingMessageGenerationView: View {
             // Skeleton view for loading state
             Text(Constants.dummyText)
                 .secondaryBodyStyle()
+                .redacted(reason: .placeholder)
+                .shimmering()
                 .padding(Constants.placeholderInsets)
                 .background(RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(uiColor: .secondarySystemFill)))
-                .redacted(reason: .placeholder)
                 .renderedIf(viewModel.generationInProgress)
 
             // Error message

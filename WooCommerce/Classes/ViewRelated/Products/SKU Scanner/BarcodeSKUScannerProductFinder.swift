@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import Vision
 
 /// Given a scanned barcode this struct searches for the matching product, refining the barcode if necessary to handle the format exceptions
 ///
@@ -52,8 +51,8 @@ struct BarcodeSKUScannerProductFinder {
 
 private extension ScannedBarcode {
     func removeCheckDigitIfPossible() -> ScannedBarcode? {
-        guard symbology == VNBarcodeSymbology.upce ||
-              symbology == VNBarcodeSymbology.ean13 else {
+        guard symbology == BarcodeSymbology.upce ||
+              symbology == BarcodeSymbology.ean13 else {
             return nil
         }
 
@@ -63,7 +62,7 @@ private extension ScannedBarcode {
     func removeCountryCodeIfPossible() -> ScannedBarcode? {
         // When we have an 12 digit UPC-A format barcode Apple adds a zero at the beginning as the country code and returns an EAN-13 format
         // See https://nationwidebarcode.com/are-upc-a-and-ean-13-the-same/
-        guard symbology == VNBarcodeSymbology.ean13,
+        guard symbology == BarcodeSymbology.ean13,
               payloadStringValue.characterCount == 13,
               payloadStringValue.hasPrefix("0") else {
             return nil

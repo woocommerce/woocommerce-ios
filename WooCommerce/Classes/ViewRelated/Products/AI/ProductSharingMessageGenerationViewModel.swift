@@ -37,14 +37,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         errorMessage = nil
         generationInProgress = true
         do {
-            self.messageContent = try await withCheckedThrowingContinuation { continuation in
-                stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,
-                                                                            url: url,
-                                                                            languageCode: Locale.current.identifier,
-                                                                            completion: { result in
-                    continuation.resume(with: result)
-                }))
-            }
+            messageContent = try await requestMessageFromAI()
             // TODO: Analytics
         } catch {
             // TODO: Analytics
@@ -52,6 +45,19 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
             errorMessage = Localization.errorMessage
         }
         generationInProgress = false
+    }
+}
+
+private extension ProductSharingMessageGenerationViewModel {
+    func requestMessageFromAI() async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,
+                                                                        url: url,
+                                                                        languageCode: Locale.current.identifier,
+                                                                        completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
     }
 }
 

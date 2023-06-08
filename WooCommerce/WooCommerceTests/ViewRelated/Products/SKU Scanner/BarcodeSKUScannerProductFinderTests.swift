@@ -79,7 +79,9 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
     func test_findProduct_when_barcode_is_ean13_and_has_country_code_retries_without_it_and_without_check_digit_and_returns_product() async {
         let returningProduct = Product.fake()
         let productSKU = "72527273070"
-        let scannedBarcode = ScannedBarcode(payloadStringValue: "0" + productSKU + "6", symbology: .ean13)
+        let countryCode = "0"
+        let checkDigit = "6"
+        let scannedBarcode = ScannedBarcode(payloadStringValue: countryCode + productSKU + checkDigit, symbology: .ean13)
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
@@ -104,7 +106,8 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
     func assertTriesWithoutCheckDigit(for symbology: BarcodeSymbology) async {
         let returningProduct = Product.fake()
         let productSKU = "97802013796"
-        let scannedBarcode = ScannedBarcode(payloadStringValue: productSKU + "3", symbology: symbology)
+        let checkDigit = "3"
+        let scannedBarcode = ScannedBarcode(payloadStringValue: productSKU + checkDigit, symbology: symbology)
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {

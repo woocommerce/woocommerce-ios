@@ -12,6 +12,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     let viewModel: ProductListViewModel
 
+    /// The coordinator for sharing products
+    ///
+    private var shareProductCoordinator: ShareProductCoordinator?
+
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
@@ -955,6 +959,7 @@ extension ProductsViewController: UITableViewDelegate {
                                                                   shareSheetAnchorView: cell,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
+            self.shareProductCoordinator = shareProductCoordinator
             ServiceLocator.analytics.track(.productListShareButtonTapped)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })

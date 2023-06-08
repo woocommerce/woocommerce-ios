@@ -11,11 +11,9 @@ final class ShareProductCoordinator: Coordinator {
     private let productName: String
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
-    private let featureFlagService: FeatureFlagService
+    private let shareProductEligibilityChecker: ShareProductAIEligibilityChecker
 
-    private var shouldEnableShareProductUsingAI: Bool {
-        site?.isWordPressComStore == true && featureFlagService.isFeatureFlagEnabled(.shareProductAI)
-    }
+    private var bottomSheetPresenter: BottomSheetPresenter?
 
     private init(site: Site?,
                  productURL: URL,
@@ -29,7 +27,7 @@ final class ShareProductCoordinator: Coordinator {
         self.productName = productName
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
-        self.featureFlagService = featureFlagService
+        self.shareProductEligibilityChecker = ShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
         self.navigationController = navigationController
     }
 
@@ -64,7 +62,7 @@ final class ShareProductCoordinator: Coordinator {
     }
 
     func start() {
-        if shouldEnableShareProductUsingAI {
+        if shareProductEligibilityChecker.canGenerateShareProductMessageUsingAI {
             presentShareProductAIGeneration()
         } else {
             presentShareSheet()
@@ -74,22 +72,43 @@ final class ShareProductCoordinator: Coordinator {
 
 // MARK: Navigation
 private extension ShareProductCoordinator {
-    func presentShareSheet() {
+    func presentShareSheet(with message: String = "") {
         if let shareSheetAnchorView {
             SharingHelper.shareURL(url: productURL,
-                                   title: productName,
+                                   title: message.isEmpty ? productName : message,
                                    from: shareSheetAnchorView,
                                    in: navigationController.topmostPresentedViewController)
         } else if let shareSheetAnchorItem {
             SharingHelper.shareURL(url: productURL,
-                                   title: productName,
+                                   title: message.isEmpty ? productName : message,
                                    from: shareSheetAnchorItem,
                                    in: navigationController.topmostPresentedViewController)
         }
     }
 
-    // TODO: 9867 UI to show product sharing message AI generation for eligible sites
     func presentShareProductAIGeneration() {
+        guard let siteID = site?.siteID else {
+            DDLogWarn("⚠️ No site found for generating product sharing message!")
+            return
+        }
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID, productName: productName, url: productURL.absoluteString)
+        let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel) { [weak self] message in
+            self?.navigationController.topmostPresentedViewController.dismiss(animated: true) {
+                self?.presentShareSheet(with: message)
+            }
+            // TODO: Analytics
+        }
 
+        let presenter = BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
+        bottomSheetPresenter = presenter
+        presenter.present(controller, from: navigationController.topmostPresentedViewController, onDismiss: {
+            // TODO: Analytics
+        })
     }
 }

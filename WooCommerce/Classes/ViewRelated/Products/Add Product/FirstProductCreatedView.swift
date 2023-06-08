@@ -3,6 +3,10 @@ import SwiftUI
 import struct Yosemite.Product
 
 final class FirstProductCreatedHostingController: UIHostingController<FirstProductCreatedView> {
+    /// The coordinator for sharing products
+    ///
+    private var shareProductCoordinator: ShareProductCoordinator?
+
     init(product: Product,
          showShareProductButton: Bool) {
         super.init(rootView: FirstProductCreatedView(showShareProductButton: showShareProductButton))
@@ -18,6 +22,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
                                                                   shareSheetAnchorView: self.view,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
+            self.shareProductCoordinator = shareProductCoordinator
             ServiceLocator.analytics.track(.firstCreatedProductShareTapped)
         }
     }

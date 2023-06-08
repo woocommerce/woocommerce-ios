@@ -87,10 +87,15 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var performingNetworkRequest = false
 
-    /// Defines the current notice that should be shown.
+    /// Defines the current notice that should be shown. It doesn't dismiss automatically
     /// Defaults to `nil`.
     ///
-    @Published var notice: Notice?
+    @Published var fixedNotice: Notice?
+
+    /// Defines the current notice that should be shown. Autodismissable
+    /// Defaults to `nil`.
+    ///
+    @Published var autodismissableNotice: Notice?
 
     // MARK: Status properties
 
@@ -509,7 +514,7 @@ final class EditableOrderViewModel: ObservableObject {
                 self.onFinished(newOrder)
                 self.trackCreateOrderSuccess()
             case .failure(let error):
-                self.notice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
+                self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
                 self.trackCreateOrderFailure(error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
@@ -789,7 +794,7 @@ private extension EditableOrderViewModel {
                     return nil
                 }
             }
-            .assign(to: &$notice)
+            .assign(to: &$fixedNotice)
     }
 
     /// Updates status badge viewmodel based on status order property.
@@ -1291,7 +1296,7 @@ extension EditableOrderViewModel {
 
     /// Attempts to add a Product to the current Order by SKU search
     ///
-    func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func addScannedProductToOrder(barcode sku: String?, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
         guard let sku = sku else {
             return onCompletion(.failure(ScannerError.nilSKU))
         }
@@ -1304,6 +1309,12 @@ extension EditableOrderViewModel {
                 onCompletion(.success(()))
             case .failure:
                 onCompletion(.failure(ScannerError.productNotFound))
+                self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction: { [weak self] in
+                    self?.autodismissableNotice = nil
+                    Task { @MainActor in
+                        onRetryRequested()
+                    }
+                })
             }
         }
     }
@@ -1354,6 +1365,13 @@ extension EditableOrderViewModel {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
             return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
+        }
+
+        static func createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction action: @escaping () -> Void) -> Notice {
+            Notice(title: Localization.scannedProductErrorNoticeMessage,
+                   feedbackType: .error,
+                   actionTitle: Localization.scannedProductErrorNoticeRetryActionTitle,
+                   actionHandler: action)
         }
 
         /// Returns an order sync error notice.
@@ -1441,6 +1459,11 @@ private extension EditableOrderViewModel {
         static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
                                                                     "To edit all the details, view the order in your WooCommerce store admin.",
                                                                     comment: "Info message shown when the order contains multiple fees and shipping lines")
+        static let scannedProductErrorNoticeMessage = NSLocalizedString("Product not found. Failed to add product to order.",
+                                                          comment: "Error message on the Order details view when the scanner cannot find a matching product")
+        static let scannedProductErrorNoticeRetryActionTitle = NSLocalizedString("Retry",
+                                                          comment: "Retry button title on the Order details view when" +
+                                                                                 "the scanner cannot find a matching product")
 
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",

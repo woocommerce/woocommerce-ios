@@ -160,7 +160,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.createOrder()
 
         // Then
-        XCTAssertEqual(viewModel.notice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
+        XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
     }
 
     func test_view_model_fires_error_notice_when_order_sync_fails() {
@@ -186,21 +186,21 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.notice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, flow: .creation, with: synchronizer))
+        XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, flow: .creation, with: synchronizer))
     }
 
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         let error = NSError(domain: "Error", code: 0)
-        viewModel.notice = EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
+        viewModel.fixedNotice = EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
 
         // When
         let notice: Notice? = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
                 case .createOrder:
-                    promise(viewModel.notice)
+                    promise(viewModel.fixedNotice)
                 default:
                     XCTFail("Received unsupported action: \(action)")
                 }
@@ -1614,13 +1614,13 @@ final class EditableOrderViewModelTests: XCTestCase {
             default:
                 XCTFail("Expected failure, got success")
             }
-        })
+        }, onRetryRequested: {})
 
         // Then
         XCTAssertEqual(capturedErrors, [.nilSKU])
     }
 
-    func test_addScannedProductToOrder_when_sku_is_not_found_then_fails_to_add_product_and_returns_productNotFound_error() {
+    func test_addScannedProductToOrder_when_sku_is_not_found_then_returns_productNotFound_error_and_shows_autodismissable_notice_with_retry_action() {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
@@ -1632,6 +1632,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         })
 
         // When
+        var onRetryRequested = false
         let expectedError = waitFor { promise in
             self.viewModel.addScannedProductToOrder(barcode: "nonExistingSKU", onCompletion: { expectedError in
                 switch expectedError {
@@ -1640,11 +1641,22 @@ final class EditableOrderViewModelTests: XCTestCase {
                 default:
                     XCTFail("Expected failure, got success")
                 }
+            }, onRetryRequested: {
+                onRetryRequested = true
             })
         }
 
+        let expectedNotice = EditableOrderViewModel.NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction: {})
+
         // Then
         XCTAssertEqual(expectedError, .productNotFound)
+        XCTAssertEqual(viewModel.autodismissableNotice, expectedNotice)
+
+        viewModel.autodismissableNotice?.actionHandler?()
+
+        waitUntil {
+            onRetryRequested == true
+        }
     }
 
     func test_addScannedProductToOrder_when_existing_sku_is_found_then_retrieving_a_matching_product_returns_success() {
@@ -1668,7 +1680,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 default:
                     XCTFail("Expected success, got failure")
                 }
-            })
+            }, onRetryRequested: {})
         }
 
         // Then
@@ -1706,7 +1718,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 default:
                     XCTFail("Expected success, got failure")
                 }
-            })
+            }, onRetryRequested: {})
         }
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialProductID: initialProductID)
 

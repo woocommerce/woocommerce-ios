@@ -3,9 +3,10 @@ import Yosemite
 import Combine
 import protocol Experiments.FeatureFlagService
 
-/// ViewModel for the Upgrades View
+/// ViewModel for the Subscriptions View
+/// Drives the site's plan subscription
 ///
-final class UpgradesViewModel: ObservableObject {
+final class SubscriptionsViewModel: ObservableObject {
 
     /// Indicates if the view should show an error notice.
     ///
@@ -18,6 +19,10 @@ final class UpgradesViewModel: ObservableObject {
     /// Current store plan details information.
     ///
     private(set) var planInfo = ""
+
+    /// Current store plan details information.
+    ///
+    private(set) var planDaysLeft = ""
 
     /// Defines if the view should show the Full Plan features..
     ///
@@ -74,7 +79,7 @@ final class UpgradesViewModel: ObservableObject {
 }
 
 // MARK: Helpers
-private extension UpgradesViewModel {
+private extension SubscriptionsViewModel {
     /// Observes and reacts to plan changes
     ///
     func observePlan() {
@@ -96,6 +101,7 @@ private extension UpgradesViewModel {
     func updateViewProperties(from plan: WPComSitePlan) {
         planName = Self.getPlanName(from: plan)
         planInfo = Self.getPlanInfo(from: plan)
+        planDaysLeft = Self.daysLeft(for: plan).formatted()
         errorNotice = nil
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
@@ -197,7 +203,7 @@ private extension UpgradesViewModel {
 }
 
 // MARK: Definitions
-private extension UpgradesViewModel {
+private extension SubscriptionsViewModel {
     enum Localization {
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
         static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. " +

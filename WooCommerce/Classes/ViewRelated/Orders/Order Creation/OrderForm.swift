@@ -178,7 +178,8 @@ struct OrderForm: View {
             }
         }
         .wooNavigationBarStyle()
-        .notice($viewModel.notice, autoDismiss: false)
+        .notice($viewModel.autodismissableNotice)
+        .notice($viewModel.fixedNotice, autoDismiss: false)
     }
 }
 
@@ -330,6 +331,8 @@ private struct ProductsSection: View {
                         ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
                             viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
                                 showAddProductViaSKUScanner.toggle()
+                            }, onRetryRequested: {
+                                showAddProductViaSKUScanner = true
                             })
                         })
                     })

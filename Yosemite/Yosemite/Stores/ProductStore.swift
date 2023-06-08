@@ -544,7 +544,6 @@ private extension ProductStore {
         let prompt = [
             "Your task is to help a merchant create a message to share with their customers a product in the provided URL: \(url)",
             "Some requirements for the message are:",
-            "- Include the URL in the message",
             "- In language \(languageCode)",
             "- The length should be up to 3 sentences",
             "- Try to make shorter sentences, using less difficult words to improve readability",

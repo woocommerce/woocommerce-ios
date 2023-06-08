@@ -152,6 +152,7 @@ final class HubMenuViewModel: ObservableObject {
             } else {
                 generalElements.append(Blaze())
             }
+            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .menu))
         } else {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
@@ -196,6 +197,7 @@ final class HubMenuViewModel: ObservableObject {
         let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil)
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         navigationController?.show(webViewController, sender: self)
+        ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .menu))
     }
 
     private func observeSiteForUIUpdates() {

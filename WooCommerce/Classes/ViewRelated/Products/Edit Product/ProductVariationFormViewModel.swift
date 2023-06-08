@@ -172,6 +172,11 @@ extension ProductVariationFormViewModel {
         return isSitePublic && formType != .add && productHasLinkToShare
     }
 
+    func canPromoteWithBlaze() -> Bool {
+        // Product variations are not supported in Blaze.
+        false
+    }
+
     func canDeleteProduct() -> Bool {
         formType == .edit
     }

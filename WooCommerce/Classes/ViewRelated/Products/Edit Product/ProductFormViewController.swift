@@ -293,7 +293,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blaze) {
+        if viewModel.canPromoteWithBlaze() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
                 self?.displayBlaze()
             }

@@ -1,24 +1,27 @@
 import ConfettiSwiftUI
 import SwiftUI
 import struct Yosemite.Product
+import Fakes
 
 final class FirstProductCreatedHostingController: UIHostingController<FirstProductCreatedView> {
-    init(product: Product,
+    init(productURL: URL,
+         productName: String,
          showShareProductButton: Bool) {
-        super.init(rootView: FirstProductCreatedView(showShareProductButton: showShareProductButton))
-        rootView.onSharingProduct = { [weak self] in
+        let viewModel = FirstProductCreatedViewModel(productURL: productURL,
+                                                     productName: productName,
+                                                     showShareProductButton: showShareProductButton)
+        super.init(rootView: FirstProductCreatedView(viewModel: viewModel))
+        viewModel.launchAISharingFlow = { [weak self] in
             guard let self,
-                  let navigationController = self.navigationController,
-                  let productURL = URL(string: product.permalink) else {
+                  let navigationController = self.navigationController else {
                 return
             }
 
-            let shareProductCoordinator = ShareProductCoordinator(productURL: productURL,
-                                                                  productName: product.name,
+            let shareProductCoordinator = ShareProductCoordinator(productURL: viewModel.productURL,
+                                                                  productName: viewModel.productName,
                                                                   shareSheetAnchorView: self.view,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
-            ServiceLocator.analytics.track(.firstCreatedProductShareTapped)
         }
     }
 
@@ -49,8 +52,12 @@ private extension FirstProductCreatedHostingController {
 /// Celebratory screen after creating the first product 🎉
 ///
 struct FirstProductCreatedView: View {
-    let showShareProductButton: Bool
-    var onSharingProduct: () -> Void = {}
+    @ObservedObject private var viewModel: FirstProductCreatedViewModel
+
+    init(viewModel: FirstProductCreatedViewModel) {
+        self.viewModel = viewModel
+    }
+
     @State private var confettiCounter: Int = 0
 
     var body: some View {
@@ -65,7 +72,9 @@ struct FirstProductCreatedView: View {
                     .multilineTextAlignment(.center)
 
                 Button(Localization.shareAction,
-                       action: onSharingProduct)
+                       action: {
+                    viewModel.didTapShareProduct()
+                })
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal)
                 .renderedIf(showShareProductButton)
@@ -108,14 +117,20 @@ private extension FirstProductCreatedView {
 
 struct FirstProductCreatedView_Previews: PreviewProvider {
     static var previews: some View {
-        FirstProductCreatedView(showShareProductButton: true)
-            .environment(\.colorScheme, .light)
+        FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
+                                                 productName: "Sample product",
+                                                 showShareProductButton: true))
+        .environment(\.colorScheme, .light)
 
-        FirstProductCreatedView(showShareProductButton: false)
-            .environment(\.colorScheme, .light)
+        FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
+                                                 productName: "Sample product",
+                                                 showShareProductButton: false))
+        .environment(\.colorScheme, .light)
 
-        FirstProductCreatedView(showShareProductButton: false)
-            .environment(\.colorScheme, .dark)
-            .previewInterfaceOrientation(.landscapeLeft)
+        FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
+                                                 productName: "Sample product",
+                                                 showShareProductButton: false))
+        .environment(\.colorScheme, .dark)
+        .previewInterfaceOrientation(.landscapeLeft)
     }
 }

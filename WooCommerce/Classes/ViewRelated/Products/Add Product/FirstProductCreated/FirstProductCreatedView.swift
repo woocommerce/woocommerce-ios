@@ -4,6 +4,10 @@ import struct Yosemite.Product
 import Fakes
 
 final class FirstProductCreatedHostingController: UIHostingController<FirstProductCreatedView> {
+    /// The coordinator for sharing products
+    ///
+    private var shareProductCoordinator: ShareProductCoordinator?
+
     init(productURL: URL,
          productName: String,
          showShareProductButton: Bool) {
@@ -22,6 +26,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
                                                                   shareSheetAnchorView: self.view,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
+            self.shareProductCoordinator = shareProductCoordinator
         }
     }
 

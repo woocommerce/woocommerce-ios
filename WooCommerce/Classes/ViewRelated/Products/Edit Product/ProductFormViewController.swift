@@ -70,6 +70,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
 
+    /// The coordinator for sharing products
+    ///
+    private var shareProductCoordinator: ShareProductCoordinator?
+
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
@@ -884,6 +888,7 @@ private extension ProductFormViewController {
                                                               shareSheetAnchorItem: sourceView,
                                                               navigationController: navigationController)
         shareProductCoordinator.start()
+        self.shareProductCoordinator = shareProductCoordinator
     }
 
     func duplicateProduct() {

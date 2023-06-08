@@ -387,7 +387,7 @@ private extension DefaultStoresManager {
 
         /// skips synchronizing site plan if logged in with WPOrg credentials
         /// because this requires a WPCom endpoint.
-        if isAuthenticatedWithoutWPCom {
+        if isAuthenticatedWithoutWPCom == false {
             group.enter()
             let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
                 if case let .failure(error) = result {

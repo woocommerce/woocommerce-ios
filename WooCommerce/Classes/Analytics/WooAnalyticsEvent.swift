@@ -503,6 +503,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
+        static func orderAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductBarcodeScanningTapped, properties: [:])
+        }
+
         static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
                 Keys.hasMultipleShippingLines: hasMultipleShippingLines,

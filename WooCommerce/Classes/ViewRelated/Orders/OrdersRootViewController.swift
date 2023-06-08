@@ -203,6 +203,8 @@ final class OrdersRootViewController: UIViewController {
     /// Presents the Order Creation flow when a product is scanned
     ///
     @objc func presentOrderCreationFlowByProductScanning() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNewFromBarcodeScanningTapped())
+
         guard let navigationController = navigationController else {
             return
         }

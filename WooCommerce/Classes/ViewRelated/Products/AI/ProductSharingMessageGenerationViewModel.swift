@@ -5,6 +5,14 @@ import Yosemite
 final class ProductSharingMessageGenerationViewModel: ObservableObject {
     let viewTitle: String
 
+    var generateButtonTitle: String {
+        messageContent.isEmpty ? Localization.generate : Localization.regenerate
+    }
+
+    var generateButtonImageName: String {
+        messageContent.isEmpty ? "sparkles" : "arrow.counterclockwise"
+    }
+
     @Published var messageContent: String = ""
     @Published private(set) var generationInProgress: Bool = false
     @Published private(set) var errorMessage: String?
@@ -57,6 +65,14 @@ extension ProductSharingMessageGenerationViewModel {
         static let errorMessage = NSLocalizedString(
             "Error generating message. Please try again.",
             comment: "Error message on the product sharing message generation screen when generation fails."
+        )
+        static let generate = NSLocalizedString(
+            "Write it for me",
+            comment: "Action button to generate message on the product sharing message generation screen"
+        )
+        static let regenerate = NSLocalizedString(
+            "Regenerate",
+            comment: "Action button to regenerate message on the product sharing message generation screen"
         )
     }
 }

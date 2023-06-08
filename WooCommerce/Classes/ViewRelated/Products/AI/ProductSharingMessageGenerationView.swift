@@ -29,6 +29,7 @@ struct ProductSharingMessageGenerationView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Constants.defaultSpacing) {
 
+            // View title
             Text(viewModel.viewTitle)
                 .headlineStyle()
 
@@ -69,27 +70,37 @@ struct ProductSharingMessageGenerationView: View {
                 Text(message).errorStyle()
             }
 
+            // Action button to generate message
+            Button(action: {
+                Task { @MainActor in
+                    await viewModel.generateShareMessage()
+                }
+            }, label: {
+                Label {
+                    Text(viewModel.generateButtonTitle)
+                } icon: {
+                    Image(systemName: viewModel.generateButtonImageName)
+                }
+            })
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
+            .fixedSize()
+            .renderedIf(viewModel.generationInProgress == false)
+
+            // Generating text
+            HStack {
+                ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                Text(Localization.generateInProgress)
+                    .secondaryBodyStyle()
+            }
+            .renderedIf(viewModel.generationInProgress)
+
             Spacer()
 
-            AdaptiveStack {
-                Button(action: {
-                    Task { @MainActor in
-                        await viewModel.generateShareMessage()
-                    }
-                }, label: {
-                    Label {
-                        Text(viewModel.messageContent.isEmpty ? Localization.generate : Localization.regenerate)
-                    } icon: {
-                        Image(systemName: viewModel.messageContent.isEmpty ? "sparkles" : "arrow.counterclockwise")
-                    }
-                })
-                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress))
-
-                Button(Localization.shareMessage) {
-                    onShareMessage(viewModel.messageContent)
-                }
-                .buttonStyle(PrimaryButtonStyle())
+            Button(Localization.shareMessage) {
+                onShareMessage(viewModel.messageContent)
             }
+            .buttonStyle(PrimaryButtonStyle())
         }
         .padding(insets: Constants.insets)
     }
@@ -102,19 +113,14 @@ private extension ProductSharingMessageGenerationView {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let placeholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
-        static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
-        "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, " +
-        "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " +
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+        static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
+        "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam," +
+        "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     }
     enum Localization {
-        static let generate = NSLocalizedString(
-            "Write it for me",
-            comment: "Action button to generate message on the product sharing message generation screen"
-        )
-        static let regenerate = NSLocalizedString(
-            "Regenerate",
-            comment: "Action button to regenerate message on the product sharing message generation screen"
+        static let generateInProgress = NSLocalizedString(
+            "Generating...",
+            comment: "Text to show the loading state on the product sharing message generation screen"
         )
         static let shareMessage = NSLocalizedString(
             "Share",

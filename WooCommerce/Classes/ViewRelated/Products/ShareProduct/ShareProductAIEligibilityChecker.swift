@@ -1,7 +1,11 @@
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.Site
 
-struct ShareProductAIEligibilityChecker {
+protocol ShareProductAIEligibilityChecker {
+    var canGenerateShareProductMessageUsingAI: Bool { get }
+}
+
+struct DefaultShareProductAIEligibilityChecker: ShareProductAIEligibilityChecker {
     private let site: Site?
     private let featureFlagService: FeatureFlagService
 

@@ -25,6 +25,7 @@ public enum WooAnalyticsStat: String {
     case applicationUpgraded = "application_upgraded"
     case applicationOpened = "application_opened"
     case applicationClosed = "application_closed"
+    case applicationOpenedWaitingTimeLoaded = "application_opened_waiting_time_loaded"
 
     // MARK: Authentication Events
     //

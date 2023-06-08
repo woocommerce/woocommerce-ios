@@ -72,7 +72,7 @@ struct ProductSharingMessageGenerationView: View {
 
             // Action button to generate message
             Button(action: {
-                Task { @MainActor in
+                Task {
                     await viewModel.generateShareMessage()
                 }
             }, label: {

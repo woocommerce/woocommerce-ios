@@ -466,6 +466,11 @@ extension WooAnalyticsEvent {
             case variation
         }
 
+        enum BarcodeScanningSource: String {
+            case orderCreation = "order_creation"
+            case orderList = "order_list"
+        }
+
         enum GlobalKeys {
             static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
         }
@@ -509,6 +514,10 @@ extension WooAnalyticsEvent {
 
         static func productAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationProductBarcodeScanningTapped, properties: [:])
+        }
+
+        static func barcodeScanningSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
         }
 
         static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {

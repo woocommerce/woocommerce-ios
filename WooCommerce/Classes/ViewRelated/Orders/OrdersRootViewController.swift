@@ -211,6 +211,8 @@ final class OrdersRootViewController: UIViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
+
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
                 switch result {

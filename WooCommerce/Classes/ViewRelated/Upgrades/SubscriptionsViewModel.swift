@@ -60,6 +60,10 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private let featureFlagService: FeatureFlagService
 
+    /// Closure to be invoked when the Cancel button is tapped
+    ///
+    var onCancelPlanButtonTapped: (() -> ())?
+
     init(stores: StoresManager = ServiceLocator.stores,
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
          analytics: Analytics = ServiceLocator.analytics,

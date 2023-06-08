@@ -67,10 +67,11 @@ struct SubscriptionsView: View {
             }
             .renderedIf(viewModel.shouldShowFreeTrialFeatures)
 
-            Button(Localization.cancelTrial) {
-                print("Cancel Free Trial tapped")
-            }
-            .foregroundColor(Color(.systemRed))
+            Button(role: .destructive, action: {
+                viewModel.onCancelPlanButtonTapped?()
+            }, label: {
+                Text(Localization.cancelTrial)
+            })
             .renderedIf(viewModel.shouldShowCancelTrialButton)
 
             Section(Localization.troubleshooting) {

@@ -137,9 +137,6 @@ private extension ShareProductCoordinator {
                 self?.presentShareSheet(with: message)
             }
             // TODO: Analytics
-        } onDismiss: { [weak self] in
-            // TODO: Analytics
-            self?.navigationController.topmostPresentedViewController.dismiss(animated: true)
         }
 
         let presenter = BottomSheetPresenter(configure: { bottomSheet in
@@ -150,9 +147,7 @@ private extension ShareProductCoordinator {
             sheet.detents = [.medium(), .large()]
         })
         bottomSheetPresenter = presenter
-        presenter.present(UINavigationController(rootViewController: controller),
-                          from: navigationController.topmostPresentedViewController,
-                          onDismiss: {
+        presenter.present(controller, from: navigationController.topmostPresentedViewController, onDismiss: {
             // TODO: Analytics
         })
     }

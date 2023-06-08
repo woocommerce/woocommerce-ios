@@ -4,11 +4,9 @@ import struct Yosemite.Product
 /// Hosting controller for `ProductSharingMessageGenerationView`.
 final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {
     init(viewModel: ProductSharingMessageGenerationViewModel,
-         onShareMessage: @escaping (String) -> Void,
-         onDismiss: @escaping () -> Void) {
+         onShareMessage: @escaping (String) -> Void) {
         super.init(rootView: ProductSharingMessageGenerationView(viewModel: viewModel,
-                                                                 onShareMessage: onShareMessage,
-                                                                 onDismiss: onDismiss))
+                                                                 onShareMessage: onShareMessage))
     }
 
     @available(*, unavailable)
@@ -20,20 +18,21 @@ final class ProductSharingMessageGenerationHostingController: UIHostingControlle
 /// View for generating product sharing message with AI.
 struct ProductSharingMessageGenerationView: View {
     @ObservedObject private var viewModel: ProductSharingMessageGenerationViewModel
-    @State private var isRegeneratingMessage: Bool = false
     private let onShareMessage: (String) -> Void
-    private let onDismiss: () -> Void
 
     init(viewModel: ProductSharingMessageGenerationViewModel,
-         onShareMessage: @escaping (String) -> Void,
-         onDismiss: @escaping () -> Void) {
+         onShareMessage: @escaping (String) -> Void) {
         self.viewModel = viewModel
         self.onShareMessage = onShareMessage
-        self.onDismiss = onDismiss
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
+        VStack(alignment: .leading, spacing: Constants.defaultSpacing) {
+
+            Text(viewModel.viewTitle)
+                .headlineStyle()
+
+            Divider()
 
             // Generated message text field
             ZStack(alignment: .topLeading) {
@@ -41,23 +40,29 @@ struct ProductSharingMessageGenerationView: View {
                     .bodyStyle()
                     .foregroundColor(.secondary)
                     .background(viewModel.generationInProgress ? Color(uiColor: .buttonDisabledBackground) : .clear)
-                    .disabled(viewModel.generationInProgress)
-                    .padding(insets: Layout.messageContentInsets)
+                    .padding(insets: Constants.messageContentInsets)
                     .overlay(
-                        RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                        RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
                     )
 
-                // Empty & loading state
-                HStack {
-                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                    Text(Localization.generating)
-                        .foregroundColor(Color(.placeholderText))
-                        .bodyStyle()
-                }
-                .padding(insets: Layout.placeholderInsets)
-                .frame(alignment: .center)
-                .renderedIf(viewModel.messageContent.isEmpty && viewModel.generationInProgress)
+                // Placeholder text
+                Text(Localization.placeholder)
+                    .foregroundColor(Color(.placeholderText))
+                    .bodyStyle()
+                    .padding(insets: Constants.placeholderInsets)
+                    // Allows gestures to pass through to the `TextEditor`.
+                    .allowsHitTesting(false)
+                    .renderedIf(viewModel.messageContent.isEmpty)
             }
+            .renderedIf(viewModel.generationInProgress == false)
+
+            // Skeleton view for loading state
+            Text(Constants.dummyText)
+                .secondaryBodyStyle()
+                .padding(Constants.placeholderInsets)
+                .background(RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(uiColor: .secondarySystemFill)))
+                .redacted(reason: .placeholder)
+                .renderedIf(viewModel.generationInProgress)
 
             // Error message
             viewModel.errorMessage.map { message in
@@ -66,59 +71,59 @@ struct ProductSharingMessageGenerationView: View {
 
             Spacer()
 
-            Button(Localization.regenerate) {
-                Task { @MainActor in
-                    isRegeneratingMessage = true
-                    await viewModel.generateShareMessage()
-                    isRegeneratingMessage = false
-                }
-            }
-            .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isRegeneratingMessage))
-            .renderedIf(viewModel.messageContent.isNotEmpty || viewModel.errorMessage != nil)
-        }
-        .padding(insets: Layout.insets)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(viewModel.viewTitle)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(Localization.dismiss, action: onDismiss)
-                    .foregroundColor(Color(.accent))
-            }
-            ToolbarItem(placement: .confirmationAction) {
+            AdaptiveStack {
+                Button(action: {
+                    Task { @MainActor in
+                        await viewModel.generateShareMessage()
+                    }
+                }, label: {
+                    Label {
+                        Text(viewModel.messageContent.isEmpty ? Localization.generate : Localization.regenerate)
+                    } icon: {
+                        Image(systemName: viewModel.messageContent.isEmpty ? "sparkles" : "arrow.counterclockwise")
+                    }
+                })
+                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress))
+
                 Button(Localization.shareMessage) {
                     onShareMessage(viewModel.messageContent)
                 }
-                .foregroundColor(Color.accentColor)
+                .buttonStyle(PrimaryButtonStyle())
             }
         }
-        .task {
-            await viewModel.generateShareMessage()
-        }
+        .padding(insets: Constants.insets)
     }
 }
 
 private extension ProductSharingMessageGenerationView {
-    enum Layout {
+    enum Constants {
         static let defaultSpacing: CGFloat = 16
         static let cornerRadius: CGFloat = 8
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let placeholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
+        static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+        "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, " +
+        "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " +
+        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
     }
     enum Localization {
-        static let generating = NSLocalizedString(
-            "🪄 Generating share message...",
-            comment: "Text showing the loading state of the product sharing message generation screen"
+        static let generate = NSLocalizedString(
+            "Write it for me",
+            comment: "Action button to generate message on the product sharing message generation screen"
         )
         static let regenerate = NSLocalizedString(
-            "Regenerate Message 🪄",
+            "Regenerate",
             comment: "Action button to regenerate message on the product sharing message generation screen"
         )
         static let shareMessage = NSLocalizedString(
             "Share",
             comment: "Action button to share the generated message on the product sharing message generation screen"
         )
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Button to dismiss the product sharing message generation screen")
+        static let placeholder = NSLocalizedString(
+            "Add an optional message",
+            comment: "Placeholder text on the product sharing message generation screen"
+        )
     }
 }
 
@@ -127,7 +132,6 @@ struct ProductSharingMessageGenerationView_Previews: PreviewProvider {
         ProductSharingMessageGenerationView(viewModel: .init(siteID: 123,
                                                              productName: "Test",
                                                              url: "https://example.com"),
-                                            onShareMessage: { _ in },
-                                            onDismiss: {})
+                                            onShareMessage: { _ in })
     }
 }

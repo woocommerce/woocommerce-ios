@@ -69,60 +69,24 @@ final class ShareProductCoordinator: Coordinator {
         if shouldEnableShareProductUsingAI {
             presentShareProductAIGeneration()
         } else {
-            presentShareSheetWithURLOnly()
+            presentShareSheet()
         }
     }
 }
 
 // MARK: Navigation
 private extension ShareProductCoordinator {
-    func presentShareSheetWithURLOnly() {
+    func presentShareSheet(with message: String = "") {
         if let shareSheetAnchorView {
             SharingHelper.shareURL(url: productURL,
-                                   title: productName,
+                                   title: message.isEmpty ? productName : message,
                                    from: shareSheetAnchorView,
-                                   in: navigationController.topmostPresentedViewController) { activityType, completed, _, _ in
-                if completed, let activityType {
-                    DDLogInfo("✅ Sharing completed with \(activityType)")
-                    // TODO: Analytics
-                }
-            }
+                                   in: navigationController.topmostPresentedViewController)
         } else if let shareSheetAnchorItem {
             SharingHelper.shareURL(url: productURL,
-                                   title: productName,
+                                   title: message.isEmpty ? productName : message,
                                    from: shareSheetAnchorItem,
-                                   in: navigationController.topmostPresentedViewController) { activityType, completed, _, _ in
-                if completed, let activityType {
-                    DDLogInfo("✅ Sharing completed with \(activityType)")
-                    // TODO: Analytics
-                }
-            }
-        }
-    }
-
-    func presentShareSheet(with message: String) {
-        guard message.isNotEmpty else {
-            return presentShareSheetWithURLOnly()
-        }
-
-        if let shareSheetAnchorView {
-            SharingHelper.shareMessage(message,
-                                       from: shareSheetAnchorView,
-                                       in: navigationController.topmostPresentedViewController) { activityType, completed, _, _ in
-                if completed, let activityType {
-                    DDLogInfo("✅ Sharing completed with \(activityType)")
-                    // TODO: Analytics
-                }
-            }
-        } else if let shareSheetAnchorItem {
-            SharingHelper.shareMessage(message,
-                                       from: shareSheetAnchorItem,
-                                       in: navigationController.topmostPresentedViewController) { activityType, completed, _, _ in
-                if completed, let activityType {
-                    DDLogInfo("✅ Sharing completed with \(activityType)")
-                    // TODO: Analytics
-                }
-            }
+                                   in: navigationController.topmostPresentedViewController)
         }
     }
 

@@ -118,11 +118,11 @@ private extension ProductSharingMessageGenerationView {
     }
     enum Localization {
         static let generating = NSLocalizedString(
-            "Generating share message...",
+            "🪄 Generating share message...",
             comment: "Text showing the loading state of the product sharing message generation screen"
         )
         static let regenerate = NSLocalizedString(
-            "Regenerate Message",
+            "Regenerate Message 🪄",
             comment: "Action button to regenerate message on the product sharing message generation screen"
         )
         static let shareMessage = NSLocalizedString(

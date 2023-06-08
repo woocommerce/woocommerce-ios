@@ -263,7 +263,7 @@ final class HubMenuViewModelTests: XCTestCase {
         menuViewModel.setupMenuElements()
 
         // Then
-        let blazeIndex = try XCTUnwrap(menuViewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Blaze.id })
+        let blazeIndex = try XCTUnwrap(menuViewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Blaze.id }))
         XCTAssertEqual(menuViewModel.generalElements[blazeIndex - 1].id, HubMenuViewModel.Payments.id)
     }
 

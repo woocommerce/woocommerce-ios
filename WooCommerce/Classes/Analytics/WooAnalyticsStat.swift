@@ -167,6 +167,15 @@ public enum WooAnalyticsStat: String {
     case analyticsHubDateRangeOptionSelected = "analytics_hub_date_range_option_selected"
     case analyticsHubDateRangeSelectionFailed = "analytics_hub_date_range_selection_failed"
 
+    // MARK: Blaze Events
+    //
+    case blazeEntryPointDisplayed = "blaze_entry_point_displayed"
+    case blazeEntryPointTapped = "blaze_entry_point_tapped"
+    case blazeFlowStarted = "blaze_flow_started"
+    case blazeFlowCanceled = "blaze_flow_canceled"
+    case blazeFlowCompleted = "blaze_flow_completed"
+    case blazeFlowError = "blaze_flow_error"
+
     // MARK: Products Onboarding Events
     //
     case productsOnboardingEligible = "products_onboarding_store_is_eligible"

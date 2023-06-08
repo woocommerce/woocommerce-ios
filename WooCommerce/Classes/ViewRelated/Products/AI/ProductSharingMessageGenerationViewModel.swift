@@ -49,6 +49,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
 }
 
 private extension ProductSharingMessageGenerationViewModel {
+    @MainActor
     func requestMessageFromAI() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,

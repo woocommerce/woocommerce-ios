@@ -5,12 +5,10 @@ import struct Yosemite.Product
 final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {
     init(viewModel: ProductSharingMessageGenerationViewModel,
          onShareMessage: @escaping (String) -> Void,
-         onDismiss: @escaping () -> Void,
-         onSkip: @escaping () -> Void) {
+         onDismiss: @escaping () -> Void) {
         super.init(rootView: ProductSharingMessageGenerationView(viewModel: viewModel,
                                                                  onShareMessage: onShareMessage,
-                                                                 onDismiss: onDismiss,
-                                                                 onSkip: onSkip))
+                                                                 onDismiss: onDismiss))
     }
 
     @available(*, unavailable)
@@ -25,16 +23,13 @@ struct ProductSharingMessageGenerationView: View {
     @State private var isRegeneratingMessage: Bool = false
     private let onShareMessage: (String) -> Void
     private let onDismiss: () -> Void
-    private let onSkip: () -> Void
 
     init(viewModel: ProductSharingMessageGenerationViewModel,
          onShareMessage: @escaping (String) -> Void,
-         onDismiss: @escaping () -> Void,
-         onSkip: @escaping () -> Void) {
+         onDismiss: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onShareMessage = onShareMessage
         self.onDismiss = onDismiss
-        self.onSkip = onSkip
     }
 
     var body: some View {
@@ -80,11 +75,6 @@ struct ProductSharingMessageGenerationView: View {
             }
             .buttonStyle(SecondaryLoadingButtonStyle(isLoading: isRegeneratingMessage))
             .renderedIf(viewModel.messageContent.isNotEmpty || viewModel.errorMessage != nil)
-
-            Button(Localization.skip) {
-                onSkip()
-            }
-            .buttonStyle(LinkButtonStyle())
         }
         .padding(insets: Layout.insets)
         .navigationBarTitleDisplayMode(.inline)
@@ -98,8 +88,7 @@ struct ProductSharingMessageGenerationView: View {
                 Button(Localization.shareMessage) {
                     onShareMessage(viewModel.messageContent)
                 }
-                .foregroundColor(viewModel.messageContent.isEmpty ? Color.secondary : Color.accentColor)
-                .disabled(viewModel.messageContent.isEmpty)
+                .foregroundColor(Color.accentColor)
             }
         }
         .task {
@@ -129,10 +118,6 @@ private extension ProductSharingMessageGenerationView {
             "Share",
             comment: "Action button to share the generated message on the product sharing message generation screen"
         )
-        static let skip = NSLocalizedString(
-            "Share product without a message",
-            comment: "Action button to skip the generated message on the product sharing message generation screen"
-        )
         static let dismiss = NSLocalizedString("Dismiss", comment: "Button to dismiss the product sharing message generation screen")
     }
 }
@@ -143,7 +128,6 @@ struct ProductSharingMessageGenerationView_Previews: PreviewProvider {
                                                              productName: "Test",
                                                              url: "https://example.com"),
                                             onShareMessage: { _ in },
-                                            onDismiss: {},
-                                            onSkip: {})
+                                            onDismiss: {})
     }
 }

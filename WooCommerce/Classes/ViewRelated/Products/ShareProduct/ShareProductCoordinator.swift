@@ -101,6 +101,10 @@ private extension ShareProductCoordinator {
     }
 
     func presentShareSheet(with message: String) {
+        guard message.isNotEmpty else {
+            return presentShareSheetWithURLOnly()
+        }
+
         if let shareSheetAnchorView {
             SharingHelper.shareMessage(message,
                                        from: shareSheetAnchorView,
@@ -136,11 +140,6 @@ private extension ShareProductCoordinator {
         } onDismiss: { [weak self] in
             // TODO: Analytics
             self?.navigationController.topmostPresentedViewController.dismiss(animated: true)
-        } onSkip: { [weak self] in
-            self?.navigationController.topmostPresentedViewController.dismiss(animated: true, completion: {
-                // TODO: Analytics
-                self?.presentShareSheetWithURLOnly()
-            })
         }
 
         let presenter = BottomSheetPresenter(configure: { bottomSheet in

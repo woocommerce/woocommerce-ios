@@ -304,6 +304,7 @@ private struct ProductsSection: View {
                     })
 
                     Button(action: {
+                        viewModel.trackBarcodeScanningButtonTapped()
                         let capturePermissionStatus = viewModel.capturePermissionStatus
                         switch capturePermissionStatus {
                         case .notPermitted:

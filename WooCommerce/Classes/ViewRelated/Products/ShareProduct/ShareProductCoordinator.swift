@@ -6,6 +6,7 @@ import protocol Experiments.FeatureFlagService
 final class ShareProductCoordinator: Coordinator {
     let navigationController: UINavigationController
 
+    private let site: Site?
     private let productURL: URL
     private let productName: String
     private let shareSheetAnchorView: UIView?
@@ -21,6 +22,7 @@ final class ShareProductCoordinator: Coordinator {
                  shareSheetAnchorItem: UIBarButtonItem?,
                  featureFlagService: FeatureFlagService,
                  navigationController: UINavigationController) {
+        self.site = site
         self.productURL = productURL
         self.productName = productName
         self.shareSheetAnchorView = shareSheetAnchorView

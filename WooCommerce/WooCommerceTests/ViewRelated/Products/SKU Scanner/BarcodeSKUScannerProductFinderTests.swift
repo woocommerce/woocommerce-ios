@@ -103,7 +103,7 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
         XCTAssertEqual(retrievedProduct, returningProduct)
     }
 
-    func assertTriesWithoutCheckDigit(for symbology: BarcodeSymbology) async {
+    private func assertTriesWithoutCheckDigit(for symbology: BarcodeSymbology) async {
         let returningProduct = Product.fake()
         let productSKU = "97802013796"
         let checkDigit = "3"

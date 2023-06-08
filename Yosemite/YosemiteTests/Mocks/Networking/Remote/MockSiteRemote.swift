@@ -16,6 +16,9 @@ final class MockSiteRemote {
     /// The results to return in `loadSite`.
     private var loadSiteResult: Result<Site, Error>?
 
+    /// The results to return in `loadBlazeStatus`.
+    private var loadBlazeStatusResult: Result<Bool, Error>?
+
     /// Returns the value when `createSite` is called.
     func whenCreatingSite(thenReturn result: Result<SiteCreationResponse, Error>) {
         createSiteResult = result
@@ -34,6 +37,11 @@ final class MockSiteRemote {
     /// Returns the value when `loadSite` is called.
     func whenLoadingSite(thenReturn result: Result<Site, Error>) {
         loadSiteResult = result
+    }
+
+    /// Returns the value when `loadBlazeStatus` is called.
+    func whenLoadingBlazeStatus(thenReturn result: Result<Bool, Error>) {
+        loadBlazeStatusResult = result
     }
 }
 
@@ -71,6 +79,14 @@ extension MockSiteRemote: SiteRemoteProtocol {
             throw NetworkError.notFound
         }
 
+        return try result.get()
+    }
+
+    func loadBlazeStatus(siteID: Int64) async throws -> Bool {
+        guard let result = loadBlazeStatusResult else {
+            XCTFail("Could not find result for loading a site's Blaze status.")
+            throw NetworkError.notFound
+        }
         return try result.get()
     }
 }

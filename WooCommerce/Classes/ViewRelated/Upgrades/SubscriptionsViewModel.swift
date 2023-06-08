@@ -24,7 +24,7 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private(set) var planDaysLeft = ""
 
-    /// Defines if the view should show the Full Plan features..
+    /// Defines if the view should show the Full Plan features.
     ///
     private(set) var shouldShowFreeTrialFeatures = false
 

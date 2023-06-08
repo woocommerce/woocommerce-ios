@@ -189,6 +189,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let analytics: Analytics
 
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+
     /// Assign this closure to be notified when a new product is saved remotely
     ///
     var onProductCreated: (Product) -> Void = { _ in }
@@ -199,7 +201,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -209,6 +212,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
+        self.blazeEligibilityChecker = blazeEligibilityChecker
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -688,12 +692,8 @@ private extension ProductFormViewModel {
 
 private extension ProductFormViewModel {
     func updateBlazeEligibility() {
-        guard let site = stores.sessionManager.defaultSite else {
-            return
-        }
-        let eligibilityChecker = BlazeEligibilityChecker(site: site, stores: stores)
         Task { @MainActor in
-            let isEligible = await eligibilityChecker.isEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
+            let isEligible = await blazeEligibilityChecker.isEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
             isEligibleForBlaze = isEligible
         }
     }

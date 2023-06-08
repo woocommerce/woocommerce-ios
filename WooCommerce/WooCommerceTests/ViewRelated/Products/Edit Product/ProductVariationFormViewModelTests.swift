@@ -155,6 +155,17 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(canShareProduct)
     }
+
+    // MARK: - `canPromoteWithBlaze`
+
+    func test_canPromoteWithBlaze_is_false_when_variation_is_public() {
+        // Given
+        let product = ProductVariation.fake().copy(status: .published)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        XCTAssertFalse(viewModel.canPromoteWithBlaze())
+    }
 }
 
 private extension ProductVariationFormViewModelTests {

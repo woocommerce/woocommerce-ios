@@ -1,13 +1,17 @@
 import Foundation
 import Yosemite
 
+/// Protocol for checking Blaze eligibility for easier unit testing.
+protocol BlazeEligibilityCheckerProtocol {
+    func isEligible() async -> Bool
+    func isEligible(product: ProductFormDataModel, isPasswordProtected: Bool) async -> Bool
+}
+
 /// Checks for Blaze eligibility for a site and its products.
-final class BlazeEligibilityChecker {
-    private let site: Site
+final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     private let stores: StoresManager
 
-    init(site: Site, stores: StoresManager = ServiceLocator.stores) {
-        self.site = site
+    init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
     }
 
@@ -32,6 +36,9 @@ final class BlazeEligibilityChecker {
 private extension BlazeEligibilityChecker {
     @MainActor
     func isSiteEligible() async -> Bool {
+        guard let site = stores.sessionManager.defaultSite else {
+            return false
+        }
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return false
         }

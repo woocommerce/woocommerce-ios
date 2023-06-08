@@ -65,6 +65,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private var isSiteEligibleForBlaze: Bool = false
 
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+
     private var cancellables: Set<AnyCancellable> = []
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
@@ -74,7 +76,8 @@ final class HubMenuViewModel: ObservableObject {
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
-         generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
+         generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.navigationController = navigationController
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -82,6 +85,7 @@ final class HubMenuViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
+        self.blazeEligibilityChecker = blazeEligibilityChecker
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
@@ -240,8 +244,7 @@ final class HubMenuViewModel: ObservableObject {
                 guard let self else {
                     return false
                 }
-                let blazeEligibilityChecker = BlazeEligibilityChecker(site: site, stores: self.stores)
-                return await blazeEligibilityChecker.isEligible()
+                return await self.blazeEligibilityChecker.isEligible()
             }
             .assign(to: &$isSiteEligibleForBlaze)
     }

@@ -178,6 +178,32 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertTrue(canShareProduct)
     }
 
+    // MARK: - `canPromoteWithBlaze`
+
+    func test_canPromoteWithBlaze_is_true_when_product_is_eligible_for_blaze() {
+        // Given
+        let product = Product.fake()
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: true)
+        let viewModel = createViewModel(product: product, formType: .edit, blazeEligibilityChecker: blazeEligibilityChecker)
+
+        // When
+        waitUntil {
+            viewModel.canPromoteWithBlaze()
+        }
+    }
+
+    func test_canPromoteWithBlaze_is_false_when_product_is_not_eligible_for_blaze() {
+        // Given
+        let product = Product.fake()
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: false)
+        let viewModel = createViewModel(product: product, formType: .edit, blazeEligibilityChecker: blazeEligibilityChecker)
+
+        // When
+        waitUntil {
+            viewModel.canPromoteWithBlaze() == false
+        }
+    }
+
     // MARK: `canDeleteProduct`
 
     func test_edit_product_form_with_published_status_can_delete_product() {
@@ -675,13 +701,15 @@ private extension ProductFormViewModelTests {
     func createViewModel(product: Product,
                          formType: ProductFormType,
                          stores: StoresManager = ServiceLocator.stores,
-                         analytics: Analytics = ServiceLocator.analytics) -> ProductFormViewModel {
+                         analytics: Analytics = ServiceLocator.analytics,
+                         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
-                                    analytics: analytics)
+                                    analytics: analytics,
+                                    blazeEligibilityChecker: blazeEligibilityChecker)
     }
 }

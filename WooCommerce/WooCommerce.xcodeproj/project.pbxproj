@@ -272,6 +272,7 @@
 		02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */; };
 		0269A5E72913FD22003B20EB /* StoreCreationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269A5E62913FD22003B20EB /* StoreCreationCoordinatorTests.swift */; };
 		0269A63C2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269A63B2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift */; };
+		026A23FF2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */; };
 		026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */; };
 		026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */; };
 		026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */; };
@@ -2576,6 +2577,7 @@
 		0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecTextViewAttachmentHandler.swift; sourceTree = "<group>"; };
 		0269A5E62913FD22003B20EB /* StoreCreationCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCoordinatorTests.swift; sourceTree = "<group>"; };
 		0269A63B2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingStepListView.swift; sourceTree = "<group>"; };
+		026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBlazeEligibilityChecker.swift; sourceTree = "<group>"; };
 		026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTextAlignment.swift; sourceTree = "<group>"; };
 		026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewController.swift; sourceTree = "<group>"; };
 		026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVariationsViewController.xib; sourceTree = "<group>"; };
@@ -7473,6 +7475,7 @@
 				DE4D23B329B58C5A003A4B5D /* MockWordPressComAccountService.swift */,
 				0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */,
 				B9DC770629F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift */,
+				026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -12893,6 +12896,7 @@
 				02A275BE23FE57DC005C560F /* ProductUIImageLoaderTests.swift in Sources */,
 				0271139A24DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift in Sources */,
 				57A5D8DF253500F300AA54D6 /* RefundConfirmationViewModelTests.swift in Sources */,
+				026A23FF2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift in Sources */,
 				023078FE25872CCF008EADEE /* PrintShippingLabelViewModelTests.swift in Sources */,
 				027B8BBF23FE0F850040944E /* MockMediaStoresManager.swift in Sources */,
 				025A1246247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift in Sources */,

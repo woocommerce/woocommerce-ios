@@ -128,8 +128,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isHideStoreOnboardingTaskListFeatureEnabled
         case .addProductToOrderViaSKUScanner:
             return isAddProductToOrderViaSKUScannerEnabled
-        case .blaze:
-            return isBlazeEnabled
         case .shareProductAI:
             return isShareProductAIEnabled
         default:

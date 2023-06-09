@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// Tracks the waiting time for app startup, allowing to evaluate as analytics
 /// how much time in seconds it took between the init and the final `end` function call
@@ -35,10 +36,16 @@ final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     ///
     private let notificationCenter: NotificationCenter
 
+    /// Stores Manager
+    ///
+    private let stores: StoresManager
+
     init(notificationCenter: NotificationCenter = .default,
+         stores: StoresManager = ServiceLocator.stores,
          analyticsService: Analytics = ServiceLocator.analytics,
          currentTimeInMillis: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
         self.notificationCenter = notificationCenter
+        self.stores = stores
 
         super.init(trackScenario: .appStartup, analyticsService: analyticsService, currentTimeInMillis: currentTimeInMillis)
 
@@ -84,6 +91,9 @@ final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
         // End the waiting time tracker when no more actions are pending
         if startupActionsPending.isEmpty {
             notificationCenter.removeObserver(self) // Stop listening to any notifications
+            guard stores.isAuthenticated else {
+                return // Don't track the waiting time if the user is logged out
+            }
             // TODO: Call super.end() to fire the analytics event
         }
     }

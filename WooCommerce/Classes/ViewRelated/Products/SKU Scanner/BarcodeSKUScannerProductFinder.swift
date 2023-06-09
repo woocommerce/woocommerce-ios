@@ -5,21 +5,24 @@ import Yosemite
 ///
 struct BarcodeSKUScannerProductFinder {
     private let stores: StoresManager
+    private let analytics: Analytics
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
+        self.analytics = analytics
     }
 
     func findProduct(from barcode: ScannedBarcode, siteID: Int64, source: WooAnalyticsEvent.Orders.BarcodeScanningSource) async throws -> Product {
         do {
             let product = try await retrieveProduct(from: barcode.payloadStringValue, siteID: siteID)
-            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUSuccess(from: source))
+            analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUSuccess(from: source))
 
             return product
         } catch {
-            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUFailure(from: source,
-                                                                                                              symbology: barcode.symbology,
-                                                                                                              reason: error.localizedDescription))
+            analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUFailure(from: source,
+                                                                                               symbology: barcode.symbology,
+                                                                                               reason: error.localizedDescription))
 
             // If we couldn't find the product, let's keep trying by refining the SKU search
             guard (error as? ProductLoadError) == .notFound else {

@@ -1300,7 +1300,7 @@ extension EditableOrderViewModel {
     /// Attempts to add a Product to the current Order by SKU search
     ///
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderCreation))
+        analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderCreation))
         mapFromScannedBarcodetoProduct(barcode: barcode) { [weak self] result in
             guard let self = self else { return }
             switch result {

@@ -52,7 +52,7 @@ public extension ABTest {
         let experiments = ABTest.genuineCases.filter { $0.context == context }
 
         await withCheckedContinuation { continuation in
-            guard !experiments.isEmpty else {
+            guard !experiments.isEmpty, ExPlat.shared != nil else {
                 return continuation.resume(returning: ())
             }
 

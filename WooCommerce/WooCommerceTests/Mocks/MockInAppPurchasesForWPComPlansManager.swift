@@ -1,5 +1,6 @@
 import Foundation
 import StoreKit
+@testable import WooCommerce
 
 /// Only used during store creation development before IAP server side is ready.
 struct MockInAppPurchasesForWPComPlansManager {

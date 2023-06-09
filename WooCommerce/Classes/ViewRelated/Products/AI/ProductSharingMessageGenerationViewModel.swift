@@ -50,6 +50,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
     }
 
+    @MainActor
     func generateShareMessage() async {
         // TODO: Analytics
         errorMessage = nil

@@ -3,7 +3,6 @@
 14.0
 -----
 - [*] Payments: Remove the upsell-card-readers banner from the Payment Methods Screen [https://github.com/woocommerce/woocommerce-ios/pull/9869]
-- [*] Promote products with Blaze: now merchants can promote a product on WordPress.com and Tumblr using Blaze from two entry points - the Menu tab under Payments, and product more menu. Site and product eligibility: pe5sF9-1yI-p2#eligibility-ref [https://github.com/woocommerce/woocommerce-ios/pull/9899]
 
 
 13.9

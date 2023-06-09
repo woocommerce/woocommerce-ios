@@ -21,6 +21,10 @@ extension NSNotification.Name {
     /// Posted whenever the app is about to terminate.
     ///
     public static let applicationTerminating = Foundation.Notification.Name(rawValue: "ApplicationTerminating")
+
+    /// Posted when the default site is being loaded in the session.
+    ///
+    public static let restoreSessionSite = NSNotification.Name(rawValue: "RestoreSessionSite")
 }
 
 private extension UserDefaults {

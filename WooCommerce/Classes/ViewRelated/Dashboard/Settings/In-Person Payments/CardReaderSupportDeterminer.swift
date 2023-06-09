@@ -66,12 +66,20 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     @MainActor
     func deviceSupportsLocalMobileReader() async -> Bool {
         await withCheckedContinuation { continuation in
+            NotificationCenter.default.post(name: .syncPaymentConnectionTokens, object: AppStartupWaitingTimeTracker.ActionStatus.started)
             let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
                                                                      cardReaderType: .appleBuiltIn,
                                                                      discoveryMethod: .localMobile) { result in
+                NotificationCenter.default.post(name: .syncPaymentConnectionTokens, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
                 continuation.resume(returning: result)
             }
             stores.dispatch(action)
         }
     }
+}
+
+// MARK: Card Reader Support Notifications
+//
+extension NSNotification.Name {
+    static let syncPaymentConnectionTokens = NSNotification.Name(rawValue: "SyncPaymentConnectionTokens")
 }

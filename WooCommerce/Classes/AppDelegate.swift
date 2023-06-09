@@ -483,8 +483,9 @@ extension AppDelegate {
             return
         }
 
+        NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.started)
         ServiceLocator.stores.synchronizeEntities {
-            NotificationCenter.default.post(name: .EntitiesSynchronized, object: nil)
+            NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
         }
     }
 
@@ -528,4 +529,10 @@ private extension AppDelegate {
 
         universalLinkRouter?.handle(url: linkURL)
     }
+}
+
+// MARK: - AppDelegate Notifications
+
+extension NSNotification.Name {
+    static let synchronizeEntities = NSNotification.Name(rawValue: "SynchronizeEntities")
 }

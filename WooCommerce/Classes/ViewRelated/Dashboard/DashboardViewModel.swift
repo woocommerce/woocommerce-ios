@@ -68,6 +68,7 @@ final class DashboardViewModel {
                    forceRefresh: Bool,
                    onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
+        NotificationCenter.default.post(name: .syncDashboardStats, object: AppStartupWaitingTimeTracker.ActionStatus.started)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveStats(siteID: siteID,
                                                  timeRange: timeRange,
@@ -89,7 +90,7 @@ final class DashboardViewModel {
                     self.statsVersion = .v4
                 }
             }
-            NotificationCenter.default.post(name: .DashboardStatsSynced, object: nil)
+            NotificationCenter.default.post(name: .syncDashboardStats, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
             onCompletion?(result)
         })
         stores.dispatch(action)
@@ -144,6 +145,7 @@ final class DashboardViewModel {
                              forceRefresh: Bool,
                              onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
+        NotificationCenter.default.post(name: .syncTopPerformers, object: AppStartupWaitingTimeTracker.ActionStatus.started)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                           timeRange: timeRange,
@@ -163,7 +165,7 @@ final class DashboardViewModel {
             }
 
             let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-            NotificationCenter.default.post(name: .TopPerformersSynced, object: nil)
+            NotificationCenter.default.post(name: .syncTopPerformers, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
             onCompletion?(voidResult)
         })
         stores.dispatch(action)
@@ -246,6 +248,7 @@ final class DashboardViewModel {
             return
         }
 
+        NotificationCenter.default.post(name: .syncJITMs, object: AppStartupWaitingTimeTracker.ActionStatus.started)
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
         switch viewModel?.template {
@@ -257,7 +260,7 @@ final class DashboardViewModel {
             announcementViewModel = nil
             modalJustInTimeMessageViewModel = nil
         }
-
+        NotificationCenter.default.post(name: .syncJITMs, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
     }
 
     /// Sets up observer to decide store onboarding task lists visibility
@@ -279,4 +282,12 @@ private extension DashboardViewModel {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
     }
+}
+
+// MARK: Dashboard Notifications
+//
+extension Notification.Name {
+    static let syncDashboardStats = NSNotification.Name(rawValue: "SyncDashboardStats")
+    static let syncTopPerformers = NSNotification.Name(rawValue: "SyncTopPerformers")
+    static let syncJITMs = NSNotification.Name(rawValue: "SyncJITMs")
 }

@@ -103,9 +103,9 @@ private extension AppCoordinator {
     /// Synchronize announcements and present What's New Screen if needed
     ///
     func synchronizeAndShowWhatsNew() {
+        NotificationCenter.default.post(name: .checkFeatureAnnouncements, object: AppStartupWaitingTimeTracker.ActionStatus.started)
         stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
             guard let self = self else { return }
-            NotificationCenter.default.post(name: .FeatureAnnouncementsChecked, object: nil)
             switch result {
             case .success(let announcement):
                 DDLogInfo("📣 Announcements Synced! AppVersion: \(announcement.appVersionName) | AnnouncementVersion: \(announcement.announcementVersion)")
@@ -117,6 +117,7 @@ private extension AppCoordinator {
                 }
             }
             self.showWhatsNewIfNeeded()
+            NotificationCenter.default.post(name: .checkFeatureAnnouncements, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
         }))
     }
 
@@ -300,10 +301,9 @@ private extension AppCoordinator {
             return
         }
 
+        NotificationCenter.default.post(name: .validateRoleEligibility, object: AppStartupWaitingTimeTracker.ActionStatus.started)
         let action = AppSettingsAction.loadEligibilityErrorInfo { [weak self] result in
             guard let self = self else { return }
-
-            NotificationCenter.default.post(name: .RoleEligibilityValidated, object: nil)
 
             // if the previous role check indicates that the user is ineligible, let's show the error message.
             if let errorInfo = try? result.get() {
@@ -321,6 +321,7 @@ private extension AppCoordinator {
                 }
             }
 
+            NotificationCenter.default.post(name: .validateRoleEligibility, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
             onSuccess()
         }
         stores.dispatch(action)
@@ -442,4 +443,10 @@ private extension AppCoordinator {
     enum Constants {
         static let animationDuration = TimeInterval(0.3)
     }
+}
+
+// MARK: App Coordinator Notifications
+extension NSNotification.Name {
+    static let validateRoleEligibility = NSNotification.Name(rawValue: "ValidateRoleEligibility")
+    static let checkFeatureAnnouncements = NSNotification.Name(rawValue: "CheckFeatureAnnouncements")
 }

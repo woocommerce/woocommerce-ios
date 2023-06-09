@@ -59,8 +59,9 @@ public extension ABTest {
             let experimentNames = experiments.map { $0.rawValue }
             ExPlat.shared?.register(experiments: experimentNames)
 
+            NotificationCenter.default.post(name: .fetchExperimentAssignments, object: "started")
             ExPlat.shared?.refresh {
-                NotificationCenter.default.post(name: .init(rawValue: "ExperimentAssignmentsFetched"), object: nil)
+                NotificationCenter.default.post(name: .fetchExperimentAssignments, object: "completed")
                 continuation.resume(returning: ())
             }
         } as Void
@@ -87,4 +88,10 @@ public enum ExperimentContext: Equatable {
     case loggedOut
     case loggedIn
     case none // For the `null` experiment case
+}
+
+// MARK: ABTest Notifications
+//
+extension NSNotification.Name {
+    public static let fetchExperimentAssignments = NSNotification.Name(rawValue: "FetchExperimentAssignments")
 }

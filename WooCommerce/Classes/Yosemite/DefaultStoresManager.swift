@@ -410,18 +410,19 @@ private extension DefaultStoresManager {
 
     /// Synchronizes all payment gateways.
     ///
-    func synchronizePaymentGateways(siteID: Int64) {
+    func synchronizePaymentGateways(siteID: Int64, onCompletion: @escaping () -> Void) {
         let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID) { result in
             if let error = result.failure {
                 DDLogError("⛔️ Failed to sync payment gateways for siteID: \(siteID). Error: \(error)")
             }
+            onCompletion()
         }
         dispatch(action)
     }
 
     /// Synchronizes the order statuses, if possible.
     ///
-    func retrieveOrderStatus(with siteID: Int64) {
+    func retrieveOrderStatus(with siteID: Int64, onCompletion: @escaping () -> Void) {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
             return
@@ -431,6 +432,7 @@ private extension DefaultStoresManager {
             if case let .failure(error) = result {
                 DDLogError("⛔️ Could not successfully fetch order statuses for siteID \(siteID): \(error)")
             }
+            onCompletion()
         }
 
         dispatch(action)
@@ -438,7 +440,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes all add-ons groups(global add-ons).
     ///
-    func synchronizeAddOnsGroups(siteID: Int64) {
+    func synchronizeAddOnsGroups(siteID: Int64, onCompletion: @escaping () -> Void) {
         let action = AddOnGroupAction.synchronizeAddOnGroups(siteID: siteID) { result in
             if let error = result.failure {
                 if error as? DotcomError == .noRestRoute {
@@ -447,24 +449,26 @@ private extension DefaultStoresManager {
                     DDLogError("⛔️ Failed to sync add-on groups for siteID: \(siteID). Error: \(error)")
                 }
             }
+            onCompletion()
         }
         dispatch(action)
     }
 
     /// Synchronizes all system plugins for the store with specified ID
     ///
-    func synchronizeSystemPlugins(siteID: Int64) {
+    func synchronizeSystemPlugins(siteID: Int64, onCompletion: @escaping () -> Void) {
         let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if let error = result.failure {
                 DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
             }
+            onCompletion()
         }
         dispatch(action)
     }
 
     /// Synchronizes all site plugins for the store with specified ID
     ///
-    func synchronizeSitePlugins(siteID: Int64) {
+    func synchronizeSitePlugins(siteID: Int64, onCompletion: @escaping () -> Void) {
         // Check if the user is an admin, otherwise they can't fetch plugins.
         guard sessionManager.defaultRoles.contains(.administrator) == true else {
             DDLogError("⛔️ Failed to sync site plugins for siteID: \(siteID). The user is not an admin.")
@@ -474,6 +478,7 @@ private extension DefaultStoresManager {
             if let error = result.failure {
                 DDLogError("⛔️ Failed to sync site plugins for siteID: \(siteID). Error: \(error)")
             }
+            onCompletion()
         }
         dispatch(action)
     }
@@ -520,33 +525,63 @@ private extension DefaultStoresManager {
             return
         }
 
+        let group = DispatchGroup()
+        notificationCenter.post(name: .restoreSessionSite, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+
+        group.enter()
         if siteID == WooConstants.placeholderStoreID,
            let url = sessionManager.defaultStoreURL {
-            restoreSessionSite(with: url)
+            restoreSessionSite(with: url) {
+                group.leave()
+            }
         } else {
-            restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
+            restoreSessionSiteAndSynchronizeIfNeeded(with: siteID) {
+                group.leave()
+            }
         }
 
+        group.enter()
         synchronizeSettings(with: siteID) {
             ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
+            group.leave()
         }
-        retrieveOrderStatus(with: siteID)
-        synchronizePaymentGateways(siteID: siteID)
-        synchronizeAddOnsGroups(siteID: siteID)
-        synchronizeSystemPlugins(siteID: siteID)
-        synchronizeSitePlugins(siteID: siteID)
+
+        group.enter()
+        retrieveOrderStatus(with: siteID) {
+            group.leave()
+        }
+
+        group.enter()
+        synchronizePaymentGateways(siteID: siteID) {
+            group.leave()
+        }
+
+        group.enter()
+        synchronizeAddOnsGroups(siteID: siteID) {
+            group.leave()
+        }
+
+        group.enter()
+        synchronizeSystemPlugins(siteID: siteID) {
+            group.leave()
+        }
+
+        group.enter()
+        synchronizeSitePlugins(siteID: siteID) {
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.notificationCenter.post(name: .restoreSessionSite, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+        }
 
         sendTelemetryIfNeeded(siteID: siteID)
-
-        // TODO: Trigger notification when requests are completed
-        // Just for testing:
-        notificationCenter.post(name: .SessionSiteRestored, object: nil)
     }
 
     /// Load the site with the specified URL into the session if possible.
     ///
-    func restoreSessionSite(with url: String) {
+    func restoreSessionSite(with url: String, onCompletion: @escaping () -> Void) {
         let action = WordPressSiteAction.fetchSiteInfo(siteURL: url) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -571,6 +606,7 @@ private extension DefaultStoresManager {
             case .failure(let error):
                 DDLogError("⛔️ Cannot fetch WordPress site info: \(error)")
             }
+            onCompletion()
         }
         dispatch(action)
     }
@@ -578,7 +614,7 @@ private extension DefaultStoresManager {
     /// Loads the specified siteID into the Session, if possible.
     /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
-    func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
+    func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64, onCompletion: @escaping () -> Void) {
         let action = AccountAction
             .loadAndSynchronizeSite(siteID: siteID,
                                     forcedUpdate: false) { [weak self] result in
@@ -588,6 +624,7 @@ private extension DefaultStoresManager {
             }
             self.sessionManager.defaultSite = site
             self.updateAndReloadWidgetInformation(with: siteID)
+            onCompletion()
         }
         dispatch(action)
     }

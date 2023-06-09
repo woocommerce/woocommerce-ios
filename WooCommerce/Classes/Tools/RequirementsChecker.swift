@@ -42,11 +42,12 @@ class RequirementsChecker {
             return
         }
 
+        NotificationCenter.default.post(name: .checkMinimumWooVersion, object: AppStartupWaitingTimeTracker.ActionStatus.started)
         checkMinimumWooVersion(for: siteID) { result in
-            NotificationCenter.default.post(name: .MinimumWooVersionChecked, object: nil)
             if case .success(.invalidWCVersion) = result {
                 displayWCVersionAlert()
             }
+            NotificationCenter.default.post(name: .checkMinimumWooVersion, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
         }
     }
 
@@ -96,4 +97,10 @@ private extension RequirementsChecker {
             }
         }
     }
+}
+
+// MARK: - RequirementsChecker Notifications
+
+extension NSNotification.Name {
+    static let checkMinimumWooVersion = NSNotification.Name(rawValue: "CheckMinimumWooVersion")
 }

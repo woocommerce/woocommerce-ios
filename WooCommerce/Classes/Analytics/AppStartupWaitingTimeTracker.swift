@@ -4,106 +4,87 @@ import Foundation
 /// how much time in seconds it took between the init and the final `end` function call
 ///
 final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
+
+    /// The status of an app startup action
+    ///
+    public enum ActionStatus: String {
+        case started
+        case completed
+    }
+
     /// Represents all of the app startup actions that are waiting to be completed.
     ///
-    /// This begins with all app startup actions, with each action removed as it ends.
-    ///
-    private var appStartupWaitingActions = AppStartupAction.allCases
+    private var startupActionsPending = [Notification.Name]()
 
-    /// NotificationCenter Tokens
+    /// Represents all of the app startup actions to observe notifications for.
     ///
-    private var trackingObservers: [NSObjectProtocol]?
+    private let startupActionsToObserve: [NSNotification.Name] = [
+        .validateRoleEligibility,
+        .checkFeatureAnnouncements,
+        .restoreSessionSite,
+        .synchronizeEntities,
+        .checkMinimumWooVersion,
+        .syncDashboardStats,
+        .syncTopPerformers,
+        .fetchExperimentAssignments,
+        .syncJITMs,
+        .syncPaymentConnectionTokens
+    ]
 
     /// NotificationCenter
     ///
     private let notificationCenter: NotificationCenter
 
-    /// All actions that must be waited for on app startup.
-    ///
-    enum AppStartupAction: CaseIterable {
-        case validateRoleEligibility
-        case checkFeatureAnnouncements
-        case restoreSessionSite
-        case syncEntities
-        case checkMinimumWooVersion
-        case syncDashboardStats
-        case syncTopPerformers
-        case fetchExperimentAssignments
-        case syncJITMs
-        case syncPaymentConnectionTokens
-
-        var notificationName: NSNotification.Name {
-            switch self {
-            case .validateRoleEligibility:
-                return .RoleEligibilityValidated
-            case .checkFeatureAnnouncements:
-                return .FeatureAnnouncementsChecked
-            case .restoreSessionSite:
-                return .SessionSiteRestored
-            case .syncEntities:
-                return .EntitiesSynchronized
-            case .checkMinimumWooVersion:
-                return .MinimumWooVersionChecked
-            case .syncDashboardStats:
-                return .DashboardStatsSynced
-            case .syncTopPerformers:
-                return .TopPerformersSynced
-            case .fetchExperimentAssignments:
-                return .ExperimentAssignmentsFetched
-            case .syncJITMs:
-                return .JITMsSynced
-            case .syncPaymentConnectionTokens:
-                return .PaymentConnectionTokensSynced
-            }
-        }
-    }
-
-    init(notificationCenter: NotificationCenter = .default) {
+    init(notificationCenter: NotificationCenter = .default,
+         analyticsService: Analytics = ServiceLocator.analytics,
+         currentTimeInMillis: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
         self.notificationCenter = notificationCenter
 
-        super.init(trackScenario: .appStartup)
+        super.init(trackScenario: .appStartup, analyticsService: analyticsService, currentTimeInMillis: currentTimeInMillis)
 
         startListeningToNotifications()
     }
 
-    /// Starts listening for Notifications
+    /// Start listening to notifications that may occur on app startup.
     ///
-    func startListeningToNotifications() {
-        for startupAction in AppStartupAction.allCases {
-            let observer = notificationCenter.addObserver(forName: startupAction.notificationName, object: nil, queue: .main) { [weak self] _ in
-                self?.end(startupAction)
-            }
-            trackingObservers?.append(observer)
+    private func startListeningToNotifications() {
+        for startupAction in startupActionsToObserve {
+            notificationCenter.addObserver(self, selector: #selector(observeNotification), name: startupAction, object: nil)
         }
+    }
+
+    /// Handle the notifications as they are observed.
+    ///
+    @objc private func observeNotification(for notification: Notification) {
+        guard let status = (notification.object as? ActionStatus) ?? (notification.object as? String).flatMap(ActionStatus.init(rawValue:)) else {
+            return
+        }
+
+        switch status {
+        case .started:
+            start(notification.name)
+        case .completed:
+            end(notification.name)
+        }
+    }
+
+    /// Start tracking the provided startup action.
+    ///
+    private func start(_ startupAction: Notification.Name) {
+        startupActionsPending.append(startupAction)
     }
 
     /// End the waiting time for the provided startup action.
     /// If all startup actions are completed, evaluate the elapsed time from the init,
     /// and send it as an analytics event.
     ///
-    func end(_ appStartupAction: AppStartupAction) {
-        guard appStartupWaitingActions.isNotEmpty else {
-            return
-        }
-        appStartupWaitingActions.removeAll { $0 == appStartupAction }
-        if appStartupWaitingActions.isEmpty {
-            print("*** App startup complete. ***")
+    private func end(_ startupAction: Notification.Name) {
+        startupActionsPending.removeAll { $0 == startupAction }
+
+        // End the waiting time tracker when no more actions are pending
+        if startupActionsPending.isEmpty {
+            notificationCenter.removeObserver(self) // Stop listening to any notifications
             // TODO: Call super.end() to fire the analytics event
         }
     }
-}
-
-// MARK: App Startup Notifications
-//
-extension NSNotification.Name {
-    static let RoleEligibilityValidated = NSNotification.Name(rawValue: "RoleEligibilityValidated")
-    static let FeatureAnnouncementsChecked = NSNotification.Name(rawValue: "FeatureAnnouncementsChecked")
-    static let SessionSiteRestored = NSNotification.Name(rawValue: "SessionSiteRestored")
-    static let EntitiesSynchronized = NSNotification.Name(rawValue: "EntitiesSynchronized")
-    static let MinimumWooVersionChecked = NSNotification.Name(rawValue: "MinimumWooVersionChecked")
-    static let DashboardStatsSynced = NSNotification.Name(rawValue: "DashboardStatsSynced")
-    static let TopPerformersSynced = NSNotification.Name(rawValue: "TopPerformersSynced")
-    static let ExperimentAssignmentsFetched = NSNotification.Name(rawValue: "ExperimentAssignmentsFetched")
-    static let JITMsSynced = NSNotification.Name(rawValue: "JITMsSynced")
-    static let PaymentConnectionTokensSynced = NSNotification.Name(rawValue: "PaymentConnectionTokensSynced")
 }

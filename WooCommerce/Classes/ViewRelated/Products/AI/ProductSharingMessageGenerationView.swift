@@ -97,6 +97,12 @@ struct ProductSharingMessageGenerationView: View {
                 viewModel.didTapShare()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .sharePopover(isPresented: $viewModel.isSharePopoverPresented) {
+                viewModel.shareSheet
+            }
+            .shareSheet(isPresented: $viewModel.isShareSheetPresented) {
+                viewModel.shareSheet
+            }
         }
         .padding(insets: Constants.insets)
     }

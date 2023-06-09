@@ -94,7 +94,7 @@ struct ProductSharingMessageGenerationView: View {
             Spacer()
 
             Button(Localization.shareMessage) {
-                onShareMessage(viewModel.messageContent)
+                viewModel.didTapShare()
             }
             .buttonStyle(PrimaryButtonStyle())
         }

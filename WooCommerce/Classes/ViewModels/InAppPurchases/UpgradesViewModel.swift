@@ -10,16 +10,16 @@ final class UpgradesViewModel: ObservableObject {
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansManager
     private let siteID: Int64
 
-    @Published var wpcomPlanProducts: [WPComPlanProduct]
-    @Published var entitledWpcomPlanProductIDs: Set<String>
+    @Published var wpcomPlans: [WPComPlanProduct]
+    @Published var entitledWpcomPlanIDs: Set<String>
 
     init(siteID: Int64) {
         self.siteID = siteID
         // TODO: Inject dependencies
         // https://github.com/woocommerce/woocommerce-ios/issues/9884
         inAppPurchasesPlanManager = InAppPurchasesForWPComPlansManager()
-        wpcomPlanProducts = []
-        entitledWpcomPlanProductIDs = []
+        wpcomPlans = []
+        entitledWpcomPlanIDs = []
     }
 
     /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
@@ -27,11 +27,11 @@ final class UpgradesViewModel: ObservableObject {
     ///
     func loadUserEntitlements() async {
         do {
-            for wpcomPlan in self.wpcomPlanProducts {
+            for wpcomPlan in self.wpcomPlans {
                 if try await inAppPurchasesPlanManager.userIsEntitledToProduct(with: wpcomPlan.id) {
-                    self.entitledWpcomPlanProductIDs.insert(wpcomPlan.id)
+                    self.entitledWpcomPlanIDs.insert(wpcomPlan.id)
                 } else {
-                    self.entitledWpcomPlanProductIDs.remove(wpcomPlan.id)
+                    self.entitledWpcomPlanIDs.remove(wpcomPlan.id)
                 }
             }
         } catch {
@@ -50,7 +50,7 @@ final class UpgradesViewModel: ObservableObject {
                 return
             }
 
-            self.wpcomPlanProducts = try await inAppPurchasesPlanManager.fetchProducts()
+            self.wpcomPlans = try await inAppPurchasesPlanManager.fetchProducts()
             await loadUserEntitlements()
         } catch {
             // TODO: Handle errors
@@ -77,7 +77,7 @@ final class UpgradesViewModel: ObservableObject {
     ///
     func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans ) -> WPComPlanProduct? {
         let match = type.rawValue
-        guard let wpcomPlanProduct = wpcomPlanProducts.first(where: { $0.id == match }) else {
+        guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == match }) else {
             return nil
         }
         return wpcomPlanProduct

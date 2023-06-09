@@ -58,10 +58,10 @@ struct UpgradesView: View {
                 }
             }
             Section {
-                if upgradesViewModel.wpcomPlanProducts.isEmpty || isPurchasing {
+                if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
-                    ForEach(upgradesViewModel.wpcomPlanProducts, id: \.id) { wpcomPlan in
+                    ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
                         let buttonText = String.localizedStringWithFormat(Constants.purchaseCTAButtonText, wpcomPlan.displayName)
                         Button(buttonText) {
                             // TODO: Add product entitlement check

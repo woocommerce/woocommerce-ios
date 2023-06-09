@@ -1305,16 +1305,18 @@ extension EditableOrderViewModel {
             guard let self = self else { return }
             switch result {
             case let .success(product):
-                self.updateOrderWithProductID(product.productID)
-                onCompletion(.success(()))
+                Task { @MainActor in
+                    self.updateOrderWithProductID(product.productID)
+                    onCompletion(.success(()))
+                }
             case .failure:
-                onCompletion(.failure(ScannerError.productNotFound))
-                self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction: { [weak self] in
-                    self?.autodismissableNotice = nil
-                    Task { @MainActor in
+                Task { @MainActor in
+                    onCompletion(.failure(ScannerError.productNotFound))
+                    self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction: { [weak self] in
+                        self?.autodismissableNotice = nil
                         onRetryRequested()
-                    }
-                })
+                    })
+                }
             }
         }
     }

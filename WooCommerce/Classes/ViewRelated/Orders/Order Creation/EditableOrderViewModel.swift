@@ -1330,7 +1330,7 @@ extension EditableOrderViewModel {
     private func mapFromScannedBarcodetoProduct(barcode: ScannedBarcode, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         Task {
             do {
-                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: barcode, siteID: siteID)
+                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: barcode, siteID: siteID, source: .orderCreation)
                 onCompletion(.success(matchedProduct))
             } catch {
                 onCompletion(.failure(error))

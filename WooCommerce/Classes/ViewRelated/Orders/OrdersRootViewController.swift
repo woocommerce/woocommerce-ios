@@ -235,7 +235,7 @@ final class OrdersRootViewController: UIViewController {
     private func handleScannedBarcode(_ scannedBarcode: ScannedBarcode, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
         Task {
             do {
-                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: scannedBarcode, siteID: siteID)
+                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: scannedBarcode, siteID: siteID, source: .orderList)
                 onCompletion(.success(matchedProduct))
             } catch {
                 onCompletion(.failure(error))

@@ -494,6 +494,8 @@ extension WooAnalyticsEvent {
             static let source = "source"
             static let isFilterActive = "is_filter_active"
             static let searchFilter = "search_filter"
+            static let barcodeFormat = "barcode_format"
+            static let reason = "reason"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -518,6 +520,16 @@ extension WooAnalyticsEvent {
 
         static func barcodeScanningSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func barcodeScanningSearchViaSKUSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func barcodeScanningSearchViaSKUFailure(from source: BarcodeScanningSource, symbology: BarcodeSymbology, reason: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: [Keys.source: source.rawValue,
+                                                                                       Keys.barcodeFormat: symbology.rawValue,
+                                                                                       Keys.reason: reason])
         }
 
         static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {

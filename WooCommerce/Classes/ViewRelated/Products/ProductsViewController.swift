@@ -954,9 +954,12 @@ extension ProductsViewController: UITableViewDelegate {
                   let navigationController = self.navigationController else {
                 return
             }
-            let shareProductCoordinator = ShareProductCoordinator(productURL: url,
+            let checker = DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
+            let shareProductCoordinator = ShareProductCoordinator(siteID: siteID,
+                                                                  productURL: url,
                                                                   productName: product.name,
                                                                   shareSheetAnchorView: cell,
+                                                                  shareProductEligibilityChecker: checker,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
             self.shareProductCoordinator = shareProductCoordinator

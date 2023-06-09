@@ -7,7 +7,8 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
     ///
     private var shareProductCoordinator: ShareProductCoordinator?
 
-    init(productURL: URL,
+    init(siteID: Int64,
+         productURL: URL,
          productName: String,
          showShareProductButton: Bool) {
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
@@ -20,9 +21,12 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
                 return
             }
 
-            let shareProductCoordinator = ShareProductCoordinator(productURL: productURL,
+            let checker = DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
+            let shareProductCoordinator = ShareProductCoordinator(siteID: siteID,
+                                                                  productURL: productURL,
                                                                   productName: productName,
                                                                   shareSheetAnchorView: self.view,
+                                                                  shareProductEligibilityChecker: checker,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
             self.shareProductCoordinator = shareProductCoordinator

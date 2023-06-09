@@ -883,9 +883,12 @@ private extension ProductFormViewController {
             return
         }
 
-        let shareProductCoordinator = ShareProductCoordinator(productURL: url,
+        let checker = DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
+        let shareProductCoordinator = ShareProductCoordinator(siteID: product.siteID,
+                                                              productURL: url,
                                                               productName: product.name,
                                                               shareSheetAnchorItem: sourceView,
+                                                              shareProductEligibilityChecker: checker,
                                                               navigationController: navigationController)
         shareProductCoordinator.start()
         self.shareProductCoordinator = shareProductCoordinator

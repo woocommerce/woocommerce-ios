@@ -6,7 +6,7 @@ import protocol Experiments.FeatureFlagService
 final class ShareProductCoordinator: Coordinator {
     let navigationController: UINavigationController
 
-    private let site: Site?
+    private let siteID: Int64
     private let productURL: URL
     private let productName: String
     private let shareSheetAnchorView: UIView?
@@ -16,54 +16,54 @@ final class ShareProductCoordinator: Coordinator {
 
     private var bottomSheetPresenter: BottomSheetPresenter?
 
-    private init(site: Site?,
+    private init(siteID: Int64,
                  productURL: URL,
                  productName: String,
                  shareSheetAnchorView: UIView?,
                  shareSheetAnchorItem: UIBarButtonItem?,
-                 featureFlagService: FeatureFlagService,
+                 shareProductEligibilityChecker: ShareProductAIEligibilityChecker,
                  navigationController: UINavigationController,
                  analytics: Analytics) {
-        self.site = site
+        self.siteID = siteID
         self.productURL = productURL
         self.productName = productName
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
-        self.shareProductEligibilityChecker = DefaultShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
+        self.shareProductEligibilityChecker = shareProductEligibilityChecker
         self.navigationController = navigationController
         self.analytics = analytics
     }
 
-    convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
+    convenience init(siteID: Int64,
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorView: UIView,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                     shareProductEligibilityChecker: ShareProductAIEligibilityChecker,
                      navigationController: UINavigationController,
                      analytics: Analytics = ServiceLocator.analytics) {
-        self.init(site: site,
+        self.init(siteID: siteID,
                   productURL: productURL,
                   productName: productName,
                   shareSheetAnchorView: shareSheetAnchorView,
                   shareSheetAnchorItem: nil,
-                  featureFlagService: featureFlagService,
+                  shareProductEligibilityChecker: shareProductEligibilityChecker,
                   navigationController: navigationController,
                   analytics: analytics)
     }
 
-    convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
+    convenience init(siteID: Int64,
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorItem: UIBarButtonItem,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                     shareProductEligibilityChecker: ShareProductAIEligibilityChecker,
                      navigationController: UINavigationController,
                      analytics: Analytics = ServiceLocator.analytics) {
-        self.init(site: site,
+        self.init(siteID: siteID,
                   productURL: productURL,
                   productName: productName,
                   shareSheetAnchorView: nil,
                   shareSheetAnchorItem: shareSheetAnchorItem,
-                  featureFlagService: featureFlagService,
+                  shareProductEligibilityChecker: shareProductEligibilityChecker,
                   navigationController: navigationController,
                   analytics: analytics)
     }
@@ -94,10 +94,6 @@ private extension ShareProductCoordinator {
     }
 
     func presentShareProductAIGeneration() {
-        guard let siteID = site?.siteID else {
-            DDLogWarn("⚠️ No site found for generating product sharing message!")
-            return
-        }
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID,
                                                                  productName: productName,
                                                                  url: productURL.absoluteString)

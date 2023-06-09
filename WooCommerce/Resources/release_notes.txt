@@ -1,1 +1,3 @@
-No new bells and whistles, just incremental improvements to bring you a faster, more stable app. All that glitters is not gold — sometimes it's code!
+- [*] Payments: Remove the upsell-card-readers banner from the Payment Methods Screen [https://github.com/woocommerce/woocommerce-ios/pull/9869]
+
+

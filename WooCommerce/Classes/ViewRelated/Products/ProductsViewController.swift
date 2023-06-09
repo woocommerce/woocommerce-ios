@@ -954,7 +954,7 @@ extension ProductsViewController: UITableViewDelegate {
                   let navigationController = self.navigationController else {
                 return
             }
-            let shareProductCoordinator = ShareProductCoordinator(siteID: siteID,
+            let shareProductCoordinator = ShareProductCoordinator(siteID: self.siteID,
                                                                   productURL: url,
                                                                   productName: product.name,
                                                                   shareSheetAnchorView: cell,

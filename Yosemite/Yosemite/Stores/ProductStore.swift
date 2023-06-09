@@ -120,8 +120,8 @@ public class ProductStore: Store {
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
         case let .generateProductDescription(siteID, name, features, languageCode, completion):
             generateProductDescription(siteID: siteID, name: name, features: features, languageCode: languageCode, completion: completion)
-        case let .generateProductSharingMessage(siteID, url, languageCode, completion):
-            generateProductSharingMessage(siteID: siteID, url: url, languageCode: languageCode, completion: completion)
+        case let .generateProductSharingMessage(siteID, url, name, description, languageCode, completion):
+            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, languageCode: languageCode, completion: completion)
         }
     }
 }
@@ -539,15 +539,22 @@ private extension ProductStore {
 
     func generateProductSharingMessage(siteID: Int64,
                                        url: String,
+                                       name: String,
+                                       description: String,
                                        languageCode: String,
                                        completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
-            "Your task is to help a merchant create a message to share with their customers a product in the provided URL: \(url)",
-            "Some requirements for the message are:",
+            "Your task is to help a merchant create a message to share with their customers the below product.",
+            "Product name: \(name)",
+            "Product description: \(description)",
+            "Product URL: \(url)",
+            "Some requirements for the message are: ",
             "- In language \(languageCode)",
             "- The length should be up to 3 sentences",
             "- Try to make shorter sentences, using less difficult words to improve readability",
-            "- Add related hashtags at the end of the message."
+            "- Add related hashtags at the end of the message.",
+            "- Do not include the URL in the message.",
+            "- Do not quote the message and give me the raw string."
         ].joined(separator: "\n")
         Task {
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }

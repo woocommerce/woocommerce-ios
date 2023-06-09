@@ -212,10 +212,6 @@ public enum FeatureFlag: Int {
     ///
     case sdkLessGoogleSignIn
 
-    /// Enables promoting a product on WPCOM and Tumblr using Blaze for eligible sites and products.
-    ///
-    case blaze
-
     /// Enables generating share product content using AI
     ///
     case shareProductAI

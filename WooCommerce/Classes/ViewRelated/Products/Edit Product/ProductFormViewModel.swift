@@ -53,6 +53,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
+    private var isEligibleForBlaze: Bool = false
+
     /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
     /// Assigning this value will recreate the `actionsFactory` property.
     ///
@@ -187,6 +189,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let analytics: Analytics
 
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+
     /// Assign this closure to be notified when a new product is saved remotely
     ///
     var onProductCreated: (Product) -> Void = { _ in }
@@ -197,7 +201,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -207,6 +212,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.storageManager = storageManager
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
+        self.blazeEligibilityChecker = blazeEligibilityChecker
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -215,6 +221,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         queryAddOnsFeatureState()
         updateVariationsPriceState()
+        updateBlazeEligibility()
     }
 
     deinit {
@@ -264,6 +271,10 @@ extension ProductFormViewModel {
         let isSitePublic = stores.sessionManager.defaultSite?.isPublic == true
         let productHasLinkToShare = URL(string: product.permalink) != nil
         return isSitePublic && formType != .add && productHasLinkToShare
+    }
+
+    func canPromoteWithBlaze() -> Bool {
+        isEligibleForBlaze
     }
 
     func canDeleteProduct() -> Bool {
@@ -565,6 +576,7 @@ private extension ProductFormViewModel {
 extension ProductFormViewModel {
     private func resetProduct(_ product: EditableProductModel) {
         originalProduct = product
+        updateBlazeEligibility()
     }
 
     func resetPassword(_ password: String?) {
@@ -675,5 +687,14 @@ private extension ProductFormViewModel {
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
                                                    isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
+    }
+}
+
+private extension ProductFormViewModel {
+    func updateBlazeEligibility() {
+        Task { @MainActor in
+            let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
+            isEligibleForBlaze = isEligible
+        }
     }
 }

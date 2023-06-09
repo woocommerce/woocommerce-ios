@@ -23,7 +23,7 @@ final class StoreCreationStatusChecker {
     @MainActor
     func waitForSiteToBeReady(siteID: Int64) -> AnyPublisher<Site, Error> {
         Just(siteID)
-            .asyncMap { [weak self] siteID -> Site? in
+            .tryAsyncMap { [weak self] siteID -> Site? in
                 guard let self else {
                     return nil
                 }

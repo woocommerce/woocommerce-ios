@@ -24,7 +24,7 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private(set) var planDaysLeft = ""
 
-    /// Defines if the view should show the Full Plan features..
+    /// Defines if the view should show the Full Plan features.
     ///
     private(set) var shouldShowFreeTrialFeatures = false
 
@@ -59,6 +59,10 @@ final class SubscriptionsViewModel: ObservableObject {
     /// Feature flag service.
     ///
     private let featureFlagService: FeatureFlagService
+
+    /// Closure to be invoked when the Cancel button is tapped
+    ///
+    var onCancelPlanButtonTapped: (() -> ())?
 
     init(stores: StoresManager = ServiceLocator.stores,
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
@@ -99,9 +103,9 @@ private extension SubscriptionsViewModel {
     }
 
     func updateViewProperties(from plan: WPComSitePlan) {
-        planName = Self.getPlanName(from: plan)
-        planInfo = Self.getPlanInfo(from: plan)
-        planDaysLeft = Self.daysLeft(for: plan).formatted()
+        planName = getPlanName(from: plan)
+        planInfo = getPlanInfo(from: plan)
+        planDaysLeft = daysLeft(for: plan).formatted()
         errorNotice = nil
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
@@ -126,7 +130,7 @@ private extension SubscriptionsViewModel {
     /// Removes any occurrences of `WordPress.com` from the site's name.
     /// Free Trial's have an special handling!
     ///
-    static func getPlanName(from plan: WPComSitePlan) -> String {
+    func getPlanName(from plan: WPComSitePlan) -> String {
         let daysLeft = daysLeft(for: plan)
         if plan.isFreeTrial, daysLeft <= 0 {
             return Localization.trialEnded
@@ -142,7 +146,7 @@ private extension SubscriptionsViewModel {
 
     /// Returns a plan specific details information.
     ///
-    static func getPlanInfo(from plan: WPComSitePlan) -> String {
+    func getPlanInfo(from plan: WPComSitePlan) -> String {
         let daysLeft = daysLeft(for: plan)
         let planDuration = planDurationInDays(for: plan)
 
@@ -169,7 +173,7 @@ private extension SubscriptionsViewModel {
 
     /// Returns a site plan duration in days.
     ///
-    static func planDurationInDays(for plan: WPComSitePlan) -> Int {
+    func planDurationInDays(for plan: WPComSitePlan) -> Int {
         // Normalize dates in the same timezone.
         guard let subscribedDate = plan.subscribedDate?.startOfDay(timezone: .current),
               let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
@@ -182,7 +186,7 @@ private extension SubscriptionsViewModel {
 
     /// Returns how many days site  plan has left.
     ///
-    static func daysLeft(for plan: WPComSitePlan) -> Int {
+    func daysLeft(for plan: WPComSitePlan) -> Int {
         // Normalize dates in the same timezone.
         let today = Date().startOfDay(timezone: .current)
         guard let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {

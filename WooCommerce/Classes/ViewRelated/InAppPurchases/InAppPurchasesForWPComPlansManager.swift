@@ -51,7 +51,6 @@ protocol InAppPurchasesForWPComPlansProtocol {
     func inAppPurchasesAreSupported() async -> Bool
 }
 
-@MainActor
 final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProtocol {
     private let stores: StoresManager
 
@@ -59,6 +58,7 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
         self.stores = stores
     }
 
+    @MainActor
     func fetchPlans() async throws -> [WPComPlanProduct] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.loadProducts(completion: { result in
@@ -67,6 +67,7 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
         }
     }
 
+    @MainActor
     func userIsEntitledToPlan(with id: String) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.userIsEntitledToProduct(productID: id, completion: { result in
@@ -75,6 +76,7 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
         }
     }
 
+    @MainActor
     func purchasePlan(with id: String, for remoteSiteId: Int64) async throws -> InAppPurchaseResult {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.purchaseProduct(siteID: remoteSiteId, productID: id, completion: { result in
@@ -83,6 +85,7 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
         }
     }
 
+    @MainActor
     func retryWPComSyncForPurchasedPlan(with id: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.retryWPComSyncForPurchasedProduct(productID: id, completion: { result in
@@ -91,6 +94,7 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
         }
     }
 
+    @MainActor
     func inAppPurchasesAreSupported() async -> Bool {
         await withCheckedContinuation { continuation in
             stores.dispatch(InAppPurchaseAction.inAppPurchasesAreSupported(completion: { result in

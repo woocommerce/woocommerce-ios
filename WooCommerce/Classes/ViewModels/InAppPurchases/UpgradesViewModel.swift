@@ -7,17 +7,15 @@ import SwiftUI
 @MainActor
 final class UpgradesViewModel: ObservableObject {
 
-    private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansManager
+    private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
 
     @Published var wpcomPlans: [WPComPlanProduct]
     @Published var entitledWpcomPlanIDs: Set<String>
 
-    init(siteID: Int64) {
+    init(siteID: Int64, inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.siteID = siteID
-        // TODO: Inject dependencies
-        // https://github.com/woocommerce/woocommerce-ios/issues/9884
-        inAppPurchasesPlanManager = InAppPurchasesForWPComPlansManager()
+        self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
         wpcomPlans = []
         entitledWpcomPlanIDs = []
     }

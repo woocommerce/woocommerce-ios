@@ -219,6 +219,6 @@ private extension FirstProductCreatedViewModelTests {
     }
 }
 
-private struct MockShareProductAIEligibilityChecker: ShareProductAIEligibilityChecker {
+struct MockShareProductAIEligibilityChecker: ShareProductAIEligibilityChecker {
     var canGenerateShareProductMessageUsingAI: Bool
 }

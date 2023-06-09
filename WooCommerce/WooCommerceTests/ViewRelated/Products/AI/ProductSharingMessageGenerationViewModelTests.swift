@@ -60,7 +60,6 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
 
     func test_generateShareMessage_updates_errorMessage_on_failure() async {
         // Given
-        let expectedString = "Check out this product!"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123, productName: "Test", url: "https://example.com", stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in

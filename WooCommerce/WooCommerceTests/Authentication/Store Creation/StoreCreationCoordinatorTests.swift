@@ -79,7 +79,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
                                                    featureFlagService: featureFlagService,
-                                                   purchasesManager: MockInAppPurchases(fetchPlansDelayInNanoseconds: 0))
+                                                   purchasesManager: MockInAppPurchasesForWPComPlansManager(fetchPlansDelayInNanoseconds: 0))
         waitFor { promise in
             self.navigationController.present(.init(), animated: false) {
                 promise(())
@@ -104,7 +104,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         let coordinator = StoreCreationCoordinator(source: .loggedOut(source: .loginEmailError),
                                                    navigationController: navigationController,
                                                    featureFlagService: featureFlagService,
-                                                   purchasesManager: MockInAppPurchases(fetchPlansDelayInNanoseconds: 0))
+                                                   purchasesManager: MockInAppPurchasesForWPComPlansManager(fetchPlansDelayInNanoseconds: 0))
         XCTAssertNotNil(navigationController.topViewController)
         XCTAssertNil(navigationController.presentedViewController)
 
@@ -124,7 +124,8 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
                                                    featureFlagService: featureFlagService,
-                                                   purchasesManager: MockInAppPurchases(fetchPlansDelayInNanoseconds: 0, isIAPSupported: false))
+                                                   purchasesManager: MockInAppPurchasesForWPComPlansManager(fetchPlansDelayInNanoseconds: 0,
+                                                                                                            isIAPSupported: false))
         waitFor { promise in
             self.navigationController.present(.init(), animated: false) {
                 promise(())
@@ -175,7 +176,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         // 6 seconds = 6_000_000_000 nanoseconds.
-        let purchasesManager = MockInAppPurchases(fetchPlansDelayInNanoseconds: 6_000_000_000)
+        let purchasesManager = MockInAppPurchasesForWPComPlansManager(fetchPlansDelayInNanoseconds: 6_000_000_000)
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
                                                    featureFlagService: featureFlagService,
@@ -193,9 +194,9 @@ final class StoreCreationCoordinatorTests: XCTestCase {
     func test_AuthenticatedWebViewController_is_presented_when_no_matching_iap_product() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
-        let purchasesManager = MockInAppPurchases(fetchPlansDelayInNanoseconds: 0,
+        let purchasesManager = MockInAppPurchasesForWPComPlansManager(fetchPlansDelayInNanoseconds: 0,
                                             plans: [
-                                                MockInAppPurchases.Plan(displayName: "",
+                                                MockInAppPurchasesForWPComPlansManager.Plan(displayName: "",
                                                                         description: "",
                                                                         id: "random.id",
                                                                         displayPrice: "$25")
@@ -217,7 +218,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
     func test_AuthenticatedWebViewController_is_presented_when_user_is_already_entitled_to_iap_product() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
-        let purchasesManager = MockInAppPurchases(fetchPlansDelayInNanoseconds: 0, userIsEntitledToPlan: true)
+        let purchasesManager = MockInAppPurchasesForWPComPlansManager(fetchPlansDelayInNanoseconds: 0, userIsEntitledToPlan: true)
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
                                                    featureFlagService: featureFlagService,

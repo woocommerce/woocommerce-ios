@@ -32,16 +32,21 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
 
     private let siteID: Int64
     private let url: String
+    private let productName: String
+    private let productDescription: String
     private let stores: StoresManager
     private let isPad: Bool
 
     init(siteID: Int64,
-         productName: String,
          url: String,
+         productName: String,
+         productDescription: String,
          isPad: Bool = UIDevice.isPad(),
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.url = url
+        self.productName = productName
+        self.productDescription = productDescription
         self.isPad = isPad
         self.stores = stores
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
@@ -78,6 +83,8 @@ private extension ProductSharingMessageGenerationViewModel {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,
                                                                         url: url,
+                                                                        name: productName,
+                                                                        description: productDescription,
                                                                         languageCode: Locale.current.identifier,
                                                                         completion: { result in
                 continuation.resume(with: result)

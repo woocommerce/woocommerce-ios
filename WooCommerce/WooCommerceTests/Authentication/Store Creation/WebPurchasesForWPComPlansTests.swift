@@ -20,9 +20,9 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - `fetchProducts`
+    // MARK: - `fetchPlans`
 
-    func test_fetchProducts_returns_plan_from_PaymentAction_loadPlan() async throws {
+    func test_fetchPlans_returns_plan_from_PaymentAction_loadPlan() async throws {
         // Given
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             if case let .loadPlan(_, completion) = action {
@@ -31,14 +31,14 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
         }
 
         // When
-        let products = try await webPurchases.fetchPlans()
+        let plans = try await webPurchases.fetchPlans()
 
         // Then
-        XCTAssertEqual(products as? [WebPurchasesForWPComPlans.Plan],
+        XCTAssertEqual(plans as? [WebPurchasesForWPComPlans.Plan],
                        [.init(displayName: "woo plan", description: "", id: "645", displayPrice: "$ 32.8")])
     }
 
-    func test_fetchProducts_returns_error_from_PaymentAction_loadPlan() async throws {
+    func test_fetchPlans_returns_error_from_PaymentAction_loadPlan() async throws {
         // Given
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             if case let .loadPlan(_, completion) = action {
@@ -57,7 +57,7 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
 
     // MARK: - `purchaseProduct`
 
-    func test_purchaseProduct_returns_pending_result_from_PaymentAction_createCart_success() async throws {
+    func test_purchasePlan_returns_pending_result_from_PaymentAction_createCart_success() async throws {
         // Given
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             if case let .createCart(_, _, completion) = action {
@@ -66,13 +66,13 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
         }
 
         // When
-        let purchaseResult = try await webPurchases.purchasePlan(with: "productID", for: 134)
+        let purchaseResult = try await webPurchases.purchasePlan(with: "planID", for: 134)
 
         // Then
         XCTAssertEqual(purchaseResult, .pending)
     }
 
-    func test_purchaseProduct_returns_error_from_PaymentAction_createCart_failure() async throws {
+    func test_purchasePlan_returns_error_from_PaymentAction_createCart_failure() async throws {
         // Given
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             if case let .createCart(_, _, completion) = action {
@@ -82,16 +82,16 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
 
         await assertThrowsError({
             // When
-            _ = try await webPurchases.purchasePlan(with: "productID", for: 134)
+            _ = try await webPurchases.purchasePlan(with: "planID", for: 134)
         }) { error in
             // Then
             (error as? SampleError) == .first
         }
     }
 
-    // MARK: - `userIsEntitledToProduct`
+    // MARK: - `userIsEntitledToPlan`
 
-    func test_userIsEntitledToProduct_returns_false() async throws {
+    func test_userIsEntitledToPlan_returns_false() async throws {
         // When
         let userIsEntitledToProduct = try await webPurchases.userIsEntitledToPlan(with: "1021")
 

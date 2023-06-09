@@ -89,4 +89,35 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Then
         assertEqual(ProductSharingMessageGenerationViewModel.Localization.errorMessage, viewModel.errorMessage)
     }
+
+    // MARK: `shareSheet`
+    func test_shareSheet_has_expected_activityItems() async throws {
+        // Given
+        let expectedString = "Check out this product!"
+        let expectedURLString = "https://example.com"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: expectedURLString,
+                                                                 stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, completion):
+                completion(.success(expectedString))
+            default:
+                return
+            }
+        }
+
+        // When
+        await viewModel.generateShareMessage()
+
+        // Then
+        let message = try XCTUnwrap(viewModel.shareSheet.activityItems[0] as? String)
+        assertEqual(expectedString, message)
+
+        let url = try XCTUnwrap(viewModel.shareSheet.activityItems[1] as? URL)
+        let expectedURL = try XCTUnwrap(URL(string: expectedURLString))
+        assertEqual(expectedURL, url)
+    }
 }

@@ -217,7 +217,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
     func test_AuthenticatedWebViewController_is_presented_when_user_is_already_entitled_to_iap_product() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
-        let purchasesManager = MockInAppPurchases(fetchProductsDuration: 0, userIsEntitledToProduct: true)
+        let purchasesManager = MockInAppPurchases(fetchProductsDuration: 0, userIsEntitledToPlan: true)
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
                                                    featureFlagService: featureFlagService,

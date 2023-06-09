@@ -82,7 +82,7 @@ struct InAppPurchasesDebugView: View {
                             Task {
                                 isPurchasing = true
                                 do {
-                                    let result = try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                    let result = try await inAppPurchasesForWPComPlansManager.purchasePlan(with: product.id, for: siteID)
                                     print("[IAP Debug] Purchase result: \(result)")
                                 } catch {
                                     purchaseError = PurchaseError(error: error)
@@ -139,7 +139,7 @@ struct InAppPurchasesDebugView: View {
                 return
             }
 
-            self.products = try await inAppPurchasesForWPComPlansManager.fetchProducts()
+            self.products = try await inAppPurchasesForWPComPlansManager.fetchPlans()
             await loadUserEntitlements()
         } catch {
             print("Error loading products: \(error)")
@@ -149,7 +149,7 @@ struct InAppPurchasesDebugView: View {
     private func loadUserEntitlements() async {
         do {
             for product in self.products {
-                if try await inAppPurchasesForWPComPlansManager.userIsEntitledToProduct(with: product.id) {
+                if try await inAppPurchasesForWPComPlansManager.userIsEntitledToPlan(with: product.id) {
                     self.entitledProductIDs.insert(product.id)
                 } else {
                     self.entitledProductIDs.remove(product.id)
@@ -164,7 +164,7 @@ struct InAppPurchasesDebugView: View {
     private func retryWPComSynchronizationForPurchasedProducts() {
         Task {
             for id in entitledProductIDs {
-                try await inAppPurchasesForWPComPlansManager.retryWPComSyncForPurchasedProduct(with: id)
+                try await inAppPurchasesForWPComPlansManager.retryWPComSyncForPurchasedPlan(with: id)
             }
         }
     }

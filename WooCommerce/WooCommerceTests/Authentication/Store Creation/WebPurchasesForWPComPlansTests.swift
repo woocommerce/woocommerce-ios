@@ -31,7 +31,7 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
         }
 
         // When
-        let products = try await webPurchases.fetchProducts()
+        let products = try await webPurchases.fetchPlans()
 
         // Then
         XCTAssertEqual(products as? [WebPurchasesForWPComPlans.Plan],
@@ -48,7 +48,7 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
 
         await assertThrowsError({
             // When
-            _ = try await webPurchases.fetchProducts()
+            _ = try await webPurchases.fetchPlans()
         }) { error in
             // Then
             (error as? SampleError) == .first
@@ -66,7 +66,7 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
         }
 
         // When
-        let purchaseResult = try await webPurchases.purchaseProduct(with: "productID", for: 134)
+        let purchaseResult = try await webPurchases.purchasePlan(with: "productID", for: 134)
 
         // Then
         XCTAssertEqual(purchaseResult, .pending)
@@ -82,7 +82,7 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
 
         await assertThrowsError({
             // When
-            _ = try await webPurchases.purchaseProduct(with: "productID", for: 134)
+            _ = try await webPurchases.purchasePlan(with: "productID", for: 134)
         }) { error in
             // Then
             (error as? SampleError) == .first
@@ -93,7 +93,7 @@ final class WebPurchasesForWPComPlansTests: XCTestCase {
 
     func test_userIsEntitledToProduct_returns_false() async throws {
         // When
-        let userIsEntitledToProduct = try await webPurchases.userIsEntitledToProduct(with: "1021")
+        let userIsEntitledToProduct = try await webPurchases.userIsEntitledToPlan(with: "1021")
 
         // Then
         XCTAssertFalse(userIsEntitledToProduct)

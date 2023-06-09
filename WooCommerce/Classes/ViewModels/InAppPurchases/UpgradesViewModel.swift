@@ -28,7 +28,7 @@ final class UpgradesViewModel: ObservableObject {
     func loadUserEntitlements() async {
         do {
             for wpcomPlan in self.wpcomPlans {
-                if try await inAppPurchasesPlanManager.userIsEntitledToProduct(with: wpcomPlan.id) {
+                if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: wpcomPlan.id) {
                     self.entitledWpcomPlanIDs.insert(wpcomPlan.id)
                 } else {
                     self.entitledWpcomPlanIDs.remove(wpcomPlan.id)
@@ -50,7 +50,7 @@ final class UpgradesViewModel: ObservableObject {
                 return
             }
 
-            self.wpcomPlans = try await inAppPurchasesPlanManager.fetchProducts()
+            self.wpcomPlans = try await inAppPurchasesPlanManager.fetchPlans()
             await loadUserEntitlements()
         } catch {
             // TODO: Handle errors
@@ -66,7 +66,7 @@ final class UpgradesViewModel: ObservableObject {
         do {
             // TODO: Deal with purchase result
             // https://github.com/woocommerce/woocommerce-ios/issues/9886
-            let _ = try await inAppPurchasesPlanManager.purchaseProduct(with: planID, for: self.siteID)
+            let _ = try await inAppPurchasesPlanManager.purchasePlan(with: planID, for: self.siteID)
         } catch {
             // TODO: Handle errors
             DDLogError("purchasePlan \(error)")

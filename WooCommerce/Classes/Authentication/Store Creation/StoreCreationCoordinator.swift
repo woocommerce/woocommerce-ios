@@ -98,14 +98,14 @@ final class StoreCreationCoordinator: Coordinator {
                 guard await purchasesManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
                 }
-                let products = try await purchasesManager.fetchProducts()
+                let products = try await purchasesManager.fetchPlans()
                 let expectedPlanIdentifier = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
                 Constants.iapPlanIdentifier: Constants.webPlanIdentifier
                 guard let product = products.first,
                       product.id == expectedPlanIdentifier else {
                     throw PlanPurchaseError.noMatchingProduct
                 }
-                guard try await purchasesManager.userIsEntitledToProduct(with: product.id) == false else {
+                guard try await purchasesManager.userIsEntitledToPlan(with: product.id) == false else {
                     throw PlanPurchaseError.productNotEligible
                 }
 
@@ -658,7 +658,7 @@ private extension StoreCreationCoordinator {
                       siteName: String,
                       planToPurchase: WPComPlanProduct) async {
         do {
-            let result = try await purchasesManager.purchaseProduct(with: planToPurchase.id, for: siteID)
+            let result = try await purchasesManager.purchasePlan(with: planToPurchase.id, for: siteID)
 
             if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
                 switch result {

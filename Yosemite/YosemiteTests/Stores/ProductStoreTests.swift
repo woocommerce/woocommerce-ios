@@ -1833,6 +1833,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductSharingMessage(
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description",
                 languageCode: "en-US"
             ) { result in
                 promise(result)
@@ -1860,6 +1862,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductSharingMessage(
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description",
                 languageCode: "en-US"
             ) { result in
                 promise(result)
@@ -1874,6 +1878,8 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductSharingMessage_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let expectedURL = "https://example.com"
+        let expectedName = "Sample product"
+        let expectedDescription = "Sample description"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
@@ -1887,6 +1893,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductSharingMessage(
                 siteID: self.sampleSiteID,
                 url: expectedURL,
+                name: expectedName,
+                description: expectedDescription,
                 languageCode: "en-US"
             ) { result in
                 promise(())
@@ -1896,6 +1904,8 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         XCTAssertTrue(base.contains(expectedURL))
+        XCTAssertTrue(base.contains(expectedName))
+        XCTAssertTrue(base.contains(expectedDescription))
         XCTAssertTrue(base.contains("In language en-US"))
     }
 

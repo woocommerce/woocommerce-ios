@@ -981,7 +981,7 @@ private extension ProductFormViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: product.productID)
+        let viewModel = BlazeWebViewModel(source: .productMoreMenu, site: site, productID: product.productID)
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         navigationController?.show(webViewController, sender: self)
     }

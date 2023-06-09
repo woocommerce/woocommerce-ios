@@ -85,6 +85,9 @@ struct FirstProductCreatedView: View {
                 .sharePopover(isPresented: $viewModel.isSharePopoverPresented) {
                     viewModel.shareSheet
                 }
+                .shareSheet(isPresented: $viewModel.isShareSheetPresented) {
+                    viewModel.shareSheet
+                }
 
                 Spacer()
             }

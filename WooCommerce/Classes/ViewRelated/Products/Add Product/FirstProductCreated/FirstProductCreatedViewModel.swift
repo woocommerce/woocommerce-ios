@@ -2,6 +2,7 @@ import Yosemite
 
 final class FirstProductCreatedViewModel: ObservableObject {
     @Published var isSharePopoverPresented = false
+    @Published var isShareSheetPresented = false
 
     let productURL: URL
     let productName: String
@@ -35,10 +36,15 @@ final class FirstProductCreatedViewModel: ObservableObject {
     func didTapShareProduct() {
         analytics.track(.firstCreatedProductShareTapped)
 
-        if !canGenerateShareProductMessageUsingAI && isPad {
+        guard !canGenerateShareProductMessageUsingAI else {
+            launchAISharingFlow?()
+            return
+        }
+
+        if isPad {
             isSharePopoverPresented = true
         } else {
-            launchAISharingFlow?()
+            isShareSheetPresented = true
         }
     }
 }

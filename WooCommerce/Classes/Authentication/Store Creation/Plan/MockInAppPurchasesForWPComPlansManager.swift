@@ -19,7 +19,7 @@ struct MockInAppPurchasesForWPComPlansManager {
     /// - Parameter plans: WPCom plans to return for purchase.
     /// - Parameter userIsEntitledToProduct: Whether the user is entitled to the matched IAP product.
     init(fetchPlansDelayInNanoseconds: UInt64 = 1_000_000_000,
-         plans: [WPComPlanProduct] = Defaults.plans,
+         plans: [WPComPlanProduct] = Defaults.debugEcommercePlans,
          userIsEntitledToPlan: Bool = false,
          isIAPSupported: Bool = true) {
         self.fetchPlansDelayInNanoseconds = fetchPlansDelayInNanoseconds
@@ -53,13 +53,19 @@ extension MockInAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansPro
     }
 }
 
-private extension MockInAppPurchasesForWPComPlansManager {
+extension MockInAppPurchasesForWPComPlansManager {
     enum Defaults {
-        static let plans: [WPComPlanProduct] = [
+        static let debugEcommercePlans: [WPComPlanProduct] = [
             Plan(displayName: "Debug Monthly",
                  description: "1 Month of Debug Woo",
                  id: "debug.woocommerce.ecommerce.monthly",
                  displayPrice: "$69.99")
+        ]
+        static let debugInAppPurchasesPlans: [WPComPlanProduct] = [
+            Plan(displayName: "Debug Essential Monthly",
+                 description: "1 Month of Debug Essential",
+                 id: "debug.woocommerce.express.essential.monthly",
+                 displayPrice: "$99.99")
         ]
     }
 }

@@ -91,11 +91,10 @@ private extension ShareProductCoordinator {
             DDLogWarn("⚠️ No site found for generating product sharing message!")
             return
         }
-        let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID, productName: productName, url: productURL.absoluteString)
-        let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel) { [weak self] message in
-            self?.navigationController.topmostPresentedViewController.dismiss(animated: true) {
-                self?.presentShareSheet(with: message)
-            }
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID,
+                                                                 productName: productName,
+                                                                 url: productURL.absoluteString,
+                                                                 onShare: {
             // TODO: Analytics
         }
 

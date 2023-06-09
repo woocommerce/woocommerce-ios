@@ -64,6 +64,15 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         }
         generationInProgress = false
     }
+
+    func didTapShare() {
+        if isPad {
+            isSharePopoverPresented = true
+        } else {
+            isShareSheetPresented = true
+        }
+        onShare()
+    }
 }
 
 private extension ProductSharingMessageGenerationViewModel {

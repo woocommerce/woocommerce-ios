@@ -76,7 +76,7 @@ struct UpgradesView: View {
             }
         }
         .task {
-            await upgradesViewModel.loadPlans()
+            await upgradesViewModel.fetchPlans()
         }
         .navigationBarTitle(Constants.navigationTitle)
         .navigationBarTitleDisplayMode(.large)

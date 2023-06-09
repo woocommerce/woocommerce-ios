@@ -11,11 +11,9 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
          productURL: URL,
          productName: String,
          showShareProductButton: Bool) {
-        let checker = DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
-                                                     showShareProductButton: showShareProductButton,
-                                                     eligibilityChecker: checker)
+                                                     showShareProductButton: showShareProductButton)
         super.init(rootView: FirstProductCreatedView(viewModel: viewModel))
         viewModel.launchAISharingFlow = { [weak self] in
             guard let self,
@@ -27,7 +25,6 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
                                                                   productURL: productURL,
                                                                   productName: productName,
                                                                   shareSheetAnchorView: self.view,
-                                                                  shareProductEligibilityChecker: checker,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()
             self.shareProductCoordinator = shareProductCoordinator

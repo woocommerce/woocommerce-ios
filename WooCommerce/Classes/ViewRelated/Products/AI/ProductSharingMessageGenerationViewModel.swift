@@ -62,11 +62,11 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         do {
             messageContent = try await requestMessageFromAI()
             hasGeneratedMessage = true
-            // TODO: Analytics
+            analytics.track(event: .ProductSharingAI.messageGenerated())
         } catch {
-            // TODO: Analytics
             DDLogError("⛔️ Error generating product sharing message: \(error)")
             errorMessage = Localization.errorMessage
+            analytics.track(event: .ProductSharingAI.messageGenerationFailed(error: error))
         }
         generationInProgress = false
     }
@@ -77,6 +77,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         } else {
             isShareSheetPresented = true
         }
+        analytics.track(event: .ProductSharingAI.shareButtonTapped(withMessage: messageContent.isNotEmpty))
     }
 }
 

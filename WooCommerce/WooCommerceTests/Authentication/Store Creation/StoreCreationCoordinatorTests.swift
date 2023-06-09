@@ -124,7 +124,8 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController,
                                                    featureFlagService: featureFlagService,
-                                                   purchasesManager: MockInAppPurchasesForWPComPlansManager(fetchPlansDelayInNanoseconds: 0, isIAPSupported: false))
+                                                   purchasesManager: MockInAppPurchasesForWPComPlansManager(fetchPlansDelayInNanoseconds: 0,
+                                                                                                            isIAPSupported: false))
         waitFor { promise in
             self.navigationController.present(.init(), animated: false) {
                 promise(())

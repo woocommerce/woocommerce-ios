@@ -10,27 +10,28 @@ final class UpgradesViewModel: ObservableObject {
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansManager
     private let siteID: Int64
 
-    @Published var products: [WPComPlanProduct]
-    @Published var entitledProductIDs: Set<String>
+    @Published var wpcomPlans: [WPComPlanProduct]
+    @Published var entitledWpcomPlanIDs: Set<String>
 
     init(siteID: Int64) {
         self.siteID = siteID
         // TODO: Inject dependencies
         // https://github.com/woocommerce/woocommerce-ios/issues/9884
         inAppPurchasesPlanManager = InAppPurchasesForWPComPlansManager()
-        products = []
-        entitledProductIDs = []
+        wpcomPlans = []
+        entitledWpcomPlanIDs = []
     }
 
-    /// Iterates through all available products (In-App Purchases WPCom plans) and checks whether the merchant is entitled
+    /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
+    /// via In-App Purchases
     ///
     func loadUserEntitlements() async {
         do {
-            for product in self.products {
-                if try await inAppPurchasesPlanManager.userIsEntitledToProduct(with: product.id) {
-                    self.entitledProductIDs.insert(product.id)
+            for wpcomPlan in self.wpcomPlans {
+                if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: wpcomPlan.id) {
+                    self.entitledWpcomPlanIDs.insert(wpcomPlan.id)
                 } else {
-                    self.entitledProductIDs.remove(product.id)
+                    self.entitledWpcomPlanIDs.remove(wpcomPlan.id)
                 }
             }
         } catch {
@@ -40,16 +41,16 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
-    /// Retrieves all products (In-App Purchases WPCom plans)
+    /// Retrieves all In-App Purchases WPCom plans
     ///
-    func loadProducts() async {
+    func loadPlans() async {
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 DDLogError("IAP not supported")
                 return
             }
 
-            self.products = try await inAppPurchasesPlanManager.fetchProducts()
+            self.wpcomPlans = try await inAppPurchasesPlanManager.fetchPlans()
             await loadUserEntitlements()
         } catch {
             // TODO: Handle errors
@@ -58,25 +59,25 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
-    /// Triggers the purchase of the specified In-App Purchases WPCom plans by the passed product ID
+    /// Triggers the purchase of the specified In-App Purchases WPCom plans by the passed plan ID
     /// linked to the current site ID
     ///
-    func purchaseProduct(with productID: String) async {
+    func purchasePlan(with planID: String) async {
         do {
             // TODO: Deal with purchase result
             // https://github.com/woocommerce/woocommerce-ios/issues/9886
-            let _ = try await inAppPurchasesPlanManager.purchaseProduct(with: productID, for: self.siteID)
+            let _ = try await inAppPurchasesPlanManager.purchasePlan(with: planID, for: self.siteID)
         } catch {
             // TODO: Handle errors
-            DDLogError("purchaseProduct \(error)")
+            DDLogError("purchasePlan \(error)")
         }
     }
 
-    /// Retrieves a specific In-App Purchase WPCOM plan from the available products
+    /// Retrieves a specific In-App Purchase WPCom plan from the available products
     ///
     func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans ) -> WPComPlanProduct? {
         let match = type.rawValue
-        guard let wpcomPlanProduct = products.first(where: { $0.id == match }) else {
+        guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == match }) else {
             return nil
         }
         return wpcomPlanProduct

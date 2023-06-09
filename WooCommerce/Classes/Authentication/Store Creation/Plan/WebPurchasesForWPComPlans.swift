@@ -20,7 +20,7 @@ struct WebPurchasesForWPComPlans {
 }
 
 extension WebPurchasesForWPComPlans: InAppPurchasesForWPComPlansProtocol {
-    func fetchProducts() async throws -> [WPComPlanProduct] {
+    func fetchPlans() async throws -> [WPComPlanProduct] {
         let result = await loadPlan(thatMatchesID: Constants.eCommerceMonthlyPlanProductID)
         switch result {
         case .success(let plan):
@@ -30,12 +30,12 @@ extension WebPurchasesForWPComPlans: InAppPurchasesForWPComPlansProtocol {
         }
     }
 
-    func userIsEntitledToProduct(with id: String) async throws -> Bool {
+    func userIsEntitledToPlan(with id: String) async throws -> Bool {
         // A newly created site does not have any WPCOM plans. In web, the user can purchase a WPCOM plan for every site.
         false
     }
 
-    func purchaseProduct(with id: String, for remoteSiteId: Int64) async throws -> InAppPurchaseResult {
+    func purchasePlan(with id: String, for remoteSiteId: Int64) async throws -> InAppPurchaseResult {
         let createCartResult = await createCart(productID: id, for: remoteSiteId)
         switch createCartResult {
         case .success:
@@ -46,7 +46,7 @@ extension WebPurchasesForWPComPlans: InAppPurchasesForWPComPlansProtocol {
         }
     }
 
-    func retryWPComSyncForPurchasedProduct(with id: String) async throws {
+    func retryWPComSyncForPurchasedPlan(with id: String) async throws {
         // no-op
     }
 

@@ -13,13 +13,13 @@ final class UpgradesViewModelTests: XCTestCase {
             // Given
             let sut = await UpgradesViewModel(siteID: sampleSiteID)
 
-            let initialProducts = await sut.products
-            let initialEntitledProducts = await sut.entitledProductIDs
+            let initialWpcomPlans = await sut.wpcomPlans
+            let initialEntitledWpcomPlanIDs = await sut.entitledWpcomPlanIDs
 
             // When/Then
             DispatchQueue.main.async {
-                XCTAssertTrue(initialProducts.isEmpty)
-                XCTAssertTrue(initialEntitledProducts.isEmpty)
+                XCTAssertTrue(initialWpcomPlans.isEmpty)
+                XCTAssertTrue(initialEntitledWpcomPlanIDs.isEmpty)
                 expectation.fulfill()
             }
         }

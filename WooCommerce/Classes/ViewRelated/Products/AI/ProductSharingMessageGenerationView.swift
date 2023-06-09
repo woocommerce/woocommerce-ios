@@ -3,10 +3,8 @@ import struct Yosemite.Product
 
 /// Hosting controller for `ProductSharingMessageGenerationView`.
 final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {
-    init(viewModel: ProductSharingMessageGenerationViewModel,
-         onShareMessage: @escaping (String) -> Void) {
-        super.init(rootView: ProductSharingMessageGenerationView(viewModel: viewModel,
-                                                                 onShareMessage: onShareMessage))
+    init(viewModel: ProductSharingMessageGenerationViewModel) {
+        super.init(rootView: ProductSharingMessageGenerationView(viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -18,12 +16,9 @@ final class ProductSharingMessageGenerationHostingController: UIHostingControlle
 /// View for generating product sharing message with AI.
 struct ProductSharingMessageGenerationView: View {
     @ObservedObject private var viewModel: ProductSharingMessageGenerationViewModel
-    private let onShareMessage: (String) -> Void
 
-    init(viewModel: ProductSharingMessageGenerationViewModel,
-         onShareMessage: @escaping (String) -> Void) {
+    init(viewModel: ProductSharingMessageGenerationViewModel) {
         self.viewModel = viewModel
-        self.onShareMessage = onShareMessage
     }
 
     var body: some View {
@@ -138,7 +133,7 @@ struct ProductSharingMessageGenerationView_Previews: PreviewProvider {
     static var previews: some View {
         ProductSharingMessageGenerationView(viewModel: .init(siteID: 123,
                                                              productName: "Test",
-                                                             url: "https://example.com"),
-                                            onShareMessage: { _ in })
+                                                             url: "https://example.com",
+                                                             onShare: { }))
     }
 }

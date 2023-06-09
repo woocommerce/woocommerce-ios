@@ -12,6 +12,7 @@ final class ShareProductCoordinator: Coordinator {
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
     private let shareProductEligibilityChecker: ShareProductAIEligibilityChecker
+    private let analytics: Analytics
 
     private var bottomSheetPresenter: BottomSheetPresenter?
 
@@ -21,7 +22,8 @@ final class ShareProductCoordinator: Coordinator {
                  shareSheetAnchorView: UIView?,
                  shareSheetAnchorItem: UIBarButtonItem?,
                  featureFlagService: FeatureFlagService,
-                 navigationController: UINavigationController) {
+                 navigationController: UINavigationController,
+                 analytics: Analytics) {
         self.site = site
         self.productURL = productURL
         self.productName = productName
@@ -29,6 +31,7 @@ final class ShareProductCoordinator: Coordinator {
         self.shareSheetAnchorItem = shareSheetAnchorItem
         self.shareProductEligibilityChecker = DefaultShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
         self.navigationController = navigationController
+        self.analytics = analytics
     }
 
     convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
@@ -36,14 +39,16 @@ final class ShareProductCoordinator: Coordinator {
                      productName: String,
                      shareSheetAnchorView: UIView,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-                     navigationController: UINavigationController) {
+                     navigationController: UINavigationController,
+                     analytics: Analytics = ServiceLocator.analytics) {
         self.init(site: site,
                   productURL: productURL,
                   productName: productName,
                   shareSheetAnchorView: shareSheetAnchorView,
                   shareSheetAnchorItem: nil,
                   featureFlagService: featureFlagService,
-                  navigationController: navigationController)
+                  navigationController: navigationController,
+                  analytics: analytics)
     }
 
     convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
@@ -51,14 +56,16 @@ final class ShareProductCoordinator: Coordinator {
                      productName: String,
                      shareSheetAnchorItem: UIBarButtonItem,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-                     navigationController: UINavigationController) {
+                     navigationController: UINavigationController,
+                     analytics: Analytics = ServiceLocator.analytics) {
         self.init(site: site,
                   productURL: productURL,
                   productName: productName,
                   shareSheetAnchorView: nil,
                   shareSheetAnchorItem: shareSheetAnchorItem,
                   featureFlagService: featureFlagService,
-                  navigationController: navigationController)
+                  navigationController: navigationController,
+                  analytics: analytics)
     }
 
     func start() {
@@ -104,8 +111,9 @@ private extension ShareProductCoordinator {
             sheet.detents = [.medium(), .large()]
         })
         bottomSheetPresenter = presenter
-        presenter.present(controller, from: navigationController.topmostPresentedViewController, onDismiss: {
-            // TODO: Analytics
+        presenter.present(controller, from: navigationController.topmostPresentedViewController, onDismiss: { [weak self] in
+            self?.analytics.track(event: .ProductSharingAI.sheetDismissed())
         })
+        analytics.track(event: .ProductSharingAI.sheetDisplayed())
     }
 }

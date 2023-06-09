@@ -20,6 +20,7 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
 
     func test_it_provides_expected_productURL() throws {
         // Given
+        let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false)
         let productURL = try XCTUnwrap(Expectations.productURL)
         let productName = Expectations.productName
         let showShareProductButton = Expectations.showShareProductButton
@@ -27,13 +28,15 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
         // When
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
-                                                     showShareProductButton: showShareProductButton)
+                                                     showShareProductButton: showShareProductButton,
+                                                     eligibilityChecker: checker)
         // Then
         XCTAssertEqual(viewModel.productURL, productURL)
     }
 
     func test_it_provides_expected_productName() throws {
         // Given
+        let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false)
         let productURL = try XCTUnwrap(Expectations.productURL)
         let productName = Expectations.productName
         let showShareProductButton = Expectations.showShareProductButton
@@ -41,13 +44,15 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
         // When
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
-                                                     showShareProductButton: showShareProductButton)
+                                                     showShareProductButton: showShareProductButton,
+                                                     eligibilityChecker: checker)
         // Then
         XCTAssertEqual(viewModel.productName, productName)
     }
 
     func test_it_provides_expected_showShareProductButton() throws {
         // Given
+        let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false)
         let productURL = try XCTUnwrap(Expectations.productURL)
         let productName = Expectations.productName
         let showShareProductButton = Expectations.showShareProductButton
@@ -55,7 +60,8 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
         // When
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
-                                                     showShareProductButton: showShareProductButton)
+                                                     showShareProductButton: showShareProductButton,
+                                                     eligibilityChecker: checker)
         // Then
         XCTAssertEqual(viewModel.showShareProductButton, showShareProductButton)
     }
@@ -64,12 +70,14 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
 
     func test_it_logs_an_event_when_share_product_button_is_tapped() throws {
         // Given
+        let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false)
         let productURL = try XCTUnwrap(Expectations.productURL)
         let productName = Expectations.productName
         let showShareProductButton = Expectations.showShareProductButton
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
                                                      showShareProductButton: showShareProductButton,
+                                                     eligibilityChecker: checker,
                                                      analytics: analytics)
         assertEmpty(analyticsProvider.receivedEvents)
 

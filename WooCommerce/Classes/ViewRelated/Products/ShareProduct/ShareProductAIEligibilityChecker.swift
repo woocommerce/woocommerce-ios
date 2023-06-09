@@ -9,7 +9,8 @@ struct DefaultShareProductAIEligibilityChecker: ShareProductAIEligibilityChecker
     private let site: Site?
     private let featureFlagService: FeatureFlagService
 
-    init(site: Site?, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.site = site
         self.featureFlagService = featureFlagService
     }

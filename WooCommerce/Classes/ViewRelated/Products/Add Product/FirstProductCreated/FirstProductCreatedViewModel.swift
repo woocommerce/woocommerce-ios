@@ -19,7 +19,7 @@ final class FirstProductCreatedViewModel: ObservableObject {
          productName: String,
          showShareProductButton: Bool,
          isPad: Bool = UIDevice.isPad(),
-         eligibilityChecker: ShareProductAIEligibilityChecker,
+         eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.productURL = productURL
         self.productName = productName

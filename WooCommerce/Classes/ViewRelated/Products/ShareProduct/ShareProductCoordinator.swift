@@ -38,7 +38,7 @@ final class ShareProductCoordinator: Coordinator {
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorView: UIView,
-                     shareProductEligibilityChecker: ShareProductAIEligibilityChecker,
+                     shareProductEligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
                      navigationController: UINavigationController,
                      analytics: Analytics = ServiceLocator.analytics) {
         self.init(siteID: siteID,
@@ -55,7 +55,7 @@ final class ShareProductCoordinator: Coordinator {
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorItem: UIBarButtonItem,
-                     shareProductEligibilityChecker: ShareProductAIEligibilityChecker,
+                     shareProductEligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
                      navigationController: UINavigationController,
                      analytics: Analytics = ServiceLocator.analytics) {
         self.init(siteID: siteID,

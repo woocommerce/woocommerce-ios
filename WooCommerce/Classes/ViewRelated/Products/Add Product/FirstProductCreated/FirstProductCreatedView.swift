@@ -132,23 +132,19 @@ private extension FirstProductCreatedView {
 
 struct FirstProductCreatedView_Previews: PreviewProvider {
     static var previews: some View {
-        let checker = DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
         FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
                                                  productName: "Sample product",
-                                                 showShareProductButton: true,
-                                                 eligibilityChecker: checker))
+                                                 showShareProductButton: true))
         .environment(\.colorScheme, .light)
 
         FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
                                                  productName: "Sample product",
-                                                 showShareProductButton: false,
-                                                 eligibilityChecker: checker))
+                                                 showShareProductButton: false))
         .environment(\.colorScheme, .light)
 
         FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
                                                  productName: "Sample product",
-                                                 showShareProductButton: false,
-                                                 eligibilityChecker: checker))
+                                                 showShareProductButton: false))
         .environment(\.colorScheme, .dark)
         .previewInterfaceOrientation(.landscapeLeft)
     }

@@ -8,8 +8,9 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_viewTitle_is_correct() {
         // Given
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
                                                                  productName: "Test",
-                                                                 url: "https://example.com")
+                                                                 productDescription: "Test description")
         let expectedTitle = String.localizedStringWithFormat(ProductSharingMessageGenerationViewModel.Localization.title, "Test")
 
         // Then
@@ -20,13 +21,13 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
-                                                                 stores: stores)
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description")
         XCTAssertFalse(viewModel.generationInProgress)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 XCTAssertTrue(viewModel.generationInProgress)
                 completion(.success("Check this out!"))
             default:
@@ -46,12 +47,13 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         let expectedString = "Check out this product!"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success(expectedString))
             default:
                 return
@@ -70,12 +72,13 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             default:
                 return

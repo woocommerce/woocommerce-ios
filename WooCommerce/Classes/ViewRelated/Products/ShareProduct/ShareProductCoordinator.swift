@@ -96,7 +96,8 @@ private extension ShareProductCoordinator {
                                                                  url: productURL.absoluteString,
                                                                  onShare: {
             // TODO: Analytics
-        }
+        })
+        let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel)
 
         let presenter = BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet

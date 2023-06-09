@@ -55,7 +55,7 @@ final class UpgradesViewModel: ObservableObject {
 
     /// Retrieves a specific In-App Purchase WPCom plan from the available products
     ///
-    func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans ) -> WPComPlanProduct? {
+    func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans) -> WPComPlanProduct? {
         let match = type.rawValue
         guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == match }) else {
             return nil

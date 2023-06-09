@@ -51,10 +51,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var universalLinkRouter: UniversalLinkRouter?
 
+    private var waitingTimeTracker: AppStartupWaitingTimeTracker?
+
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
+        setupStartupWaitingTimeTracker()
         setupAnalytics()
         setupCocoaLumberjack()
         setupLibraryLogger()
@@ -388,6 +391,12 @@ private extension AppDelegate {
         _ = ServiceLocator.keyboardStateProvider
     }
 
+    /// Set up the app startup waiting time tracker
+    ///
+    func setupStartupWaitingTimeTracker() {
+        waitingTimeTracker = AppStartupWaitingTimeTracker()
+    }
+
     func handleLaunchArguments() {
         if ProcessConfiguration.shouldLogoutAtLaunch {
             ServiceLocator.stores.deauthenticate()
@@ -474,7 +483,9 @@ extension AppDelegate {
             return
         }
 
-        ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
+        ServiceLocator.stores.synchronizeEntities {
+            NotificationCenter.default.post(name: .EntitiesSynchronized, object: nil)
+        }
     }
 
     /// Deauthenticates the user upon application password generation failure.

@@ -89,6 +89,7 @@ final class DashboardViewModel {
                     self.statsVersion = .v4
                 }
             }
+            NotificationCenter.default.post(name: .DashboardStatsSynced, object: nil)
             onCompletion?(result)
         })
         stores.dispatch(action)
@@ -162,6 +163,7 @@ final class DashboardViewModel {
             }
 
             let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+            NotificationCenter.default.post(name: .TopPerformersSynced, object: nil)
             onCompletion?(voidResult)
         })
         stores.dispatch(action)

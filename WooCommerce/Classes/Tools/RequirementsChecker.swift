@@ -43,6 +43,7 @@ class RequirementsChecker {
         }
 
         checkMinimumWooVersion(for: siteID) { result in
+            NotificationCenter.default.post(name: .MinimumWooVersionChecked, object: nil)
             if case .success(.invalidWCVersion) = result {
                 displayWCVersionAlert()
             }

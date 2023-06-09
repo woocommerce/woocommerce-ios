@@ -105,6 +105,7 @@ private extension AppCoordinator {
     func synchronizeAndShowWhatsNew() {
         stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
             guard let self = self else { return }
+            NotificationCenter.default.post(name: .FeatureAnnouncementsChecked, object: nil)
             switch result {
             case .success(let announcement):
                 DDLogInfo("📣 Announcements Synced! AppVersion: \(announcement.appVersionName) | AnnouncementVersion: \(announcement.announcementVersion)")
@@ -301,6 +302,8 @@ private extension AppCoordinator {
 
         let action = AppSettingsAction.loadEligibilityErrorInfo { [weak self] result in
             guard let self = self else { return }
+
+            NotificationCenter.default.post(name: .RoleEligibilityValidated, object: nil)
 
             // if the previous role check indicates that the user is ineligible, let's show the error message.
             if let errorInfo = try? result.get() {

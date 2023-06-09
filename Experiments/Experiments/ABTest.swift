@@ -60,6 +60,7 @@ public extension ABTest {
             ExPlat.shared?.register(experiments: experimentNames)
 
             ExPlat.shared?.refresh {
+                NotificationCenter.default.post(name: .init(rawValue: "ExperimentAssignmentsFetched"), object: nil)
                 continuation.resume(returning: ())
             }
         } as Void

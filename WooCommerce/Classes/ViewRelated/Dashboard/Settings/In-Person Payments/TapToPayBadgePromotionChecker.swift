@@ -19,6 +19,7 @@ final class TapToPayBadgePromotionChecker {
         listenToTapToPayBadgeReloadRequired()
         Task {
             await checkTapToPayBadgeVisibility()
+            NotificationCenter.default.post(name: .PaymentConnectionTokensSynced, object: nil)
         }
     }
 

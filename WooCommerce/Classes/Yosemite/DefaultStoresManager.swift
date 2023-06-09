@@ -538,6 +538,10 @@ private extension DefaultStoresManager {
         synchronizeSitePlugins(siteID: siteID)
 
         sendTelemetryIfNeeded(siteID: siteID)
+
+        // TODO: Trigger notification when requests are completed
+        // Just for testing:
+        notificationCenter.post(name: .SessionSiteRestored, object: nil)
     }
 
     /// Load the site with the specified URL into the session if possible.

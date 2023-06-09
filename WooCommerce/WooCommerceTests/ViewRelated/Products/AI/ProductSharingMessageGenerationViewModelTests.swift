@@ -7,7 +7,10 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
 
     func test_viewTitle_is_correct() {
         // Given
-        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123, productName: "Test", url: "https://example.com")
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: "https://example.com",
+                                                                 onShare: {})
         let expectedTitle = String.localizedStringWithFormat(ProductSharingMessageGenerationViewModel.Localization.title, "Test")
 
         // Then
@@ -17,7 +20,11 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_generateShareMessage_updates_generationInProgress_correctly() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123, productName: "Test", url: "https://example.com", stores: stores)
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: "https://example.com",
+                                                                 onShare: {},
+                                                                 stores: stores)
         XCTAssertFalse(viewModel.generationInProgress)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -40,7 +47,11 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Given
         let expectedString = "Check out this product!"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123, productName: "Test", url: "https://example.com", stores: stores)
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: "https://example.com",
+                                                                 onShare: {},
+                                                                 stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateProductSharingMessage(_, _, _, completion):
@@ -62,7 +73,11 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Given
         let expectedString = "Check out this product!"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123, productName: "Test", url: "https://example.com", stores: stores)
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: "https://example.com",
+                                                                 onShare: {},
+                                                                 stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateProductSharingMessage(_, _, _, completion):

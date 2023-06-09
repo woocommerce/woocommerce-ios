@@ -1,10 +1,8 @@
 import Foundation
 import StoreKit
 
-#if DEBUG
-
 /// Only used during store creation development before IAP server side is ready.
-struct MockInAppPurchases {
+struct MockInAppPurchasesForWPComPlansManager {
     struct Plan: WPComPlanProduct {
         let displayName: String
         let description: String
@@ -31,7 +29,7 @@ struct MockInAppPurchases {
     }
 }
 
-extension MockInAppPurchases: InAppPurchasesForWPComPlansProtocol {
+extension MockInAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProtocol {
     func fetchPlans() async throws -> [WPComPlanProduct] {
         try await Task.sleep(nanoseconds: fetchPlansDelayInNanoseconds)
         return plans
@@ -55,7 +53,7 @@ extension MockInAppPurchases: InAppPurchasesForWPComPlansProtocol {
     }
 }
 
-private extension MockInAppPurchases {
+private extension MockInAppPurchasesForWPComPlansManager {
     enum Defaults {
         static let plans: [WPComPlanProduct] = [
             Plan(displayName: "Debug Monthly",
@@ -65,5 +63,3 @@ private extension MockInAppPurchases {
         ]
     }
 }
-
-#endif

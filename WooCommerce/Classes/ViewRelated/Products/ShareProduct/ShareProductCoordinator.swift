@@ -9,6 +9,7 @@ final class ShareProductCoordinator: Coordinator {
     private let site: Site?
     private let productURL: URL
     private let productName: String
+    private let productDescription: String
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
     private let shareProductEligibilityChecker: ShareProductAIEligibilityChecker
@@ -18,6 +19,7 @@ final class ShareProductCoordinator: Coordinator {
     private init(site: Site?,
                  productURL: URL,
                  productName: String,
+                 productDescription: String,
                  shareSheetAnchorView: UIView?,
                  shareSheetAnchorItem: UIBarButtonItem?,
                  featureFlagService: FeatureFlagService,
@@ -25,6 +27,7 @@ final class ShareProductCoordinator: Coordinator {
         self.site = site
         self.productURL = productURL
         self.productName = productName
+        self.productDescription = productDescription
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
         self.shareProductEligibilityChecker = DefaultShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
@@ -34,12 +37,14 @@ final class ShareProductCoordinator: Coordinator {
     convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
                      productURL: URL,
                      productName: String,
+                     productDescription: String,
                      shareSheetAnchorView: UIView,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      navigationController: UINavigationController) {
         self.init(site: site,
                   productURL: productURL,
                   productName: productName,
+                  productDescription: productDescription,
                   shareSheetAnchorView: shareSheetAnchorView,
                   shareSheetAnchorItem: nil,
                   featureFlagService: featureFlagService,
@@ -49,12 +54,14 @@ final class ShareProductCoordinator: Coordinator {
     convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
                      productURL: URL,
                      productName: String,
+                     productDescription: String,
                      shareSheetAnchorItem: UIBarButtonItem,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      navigationController: UINavigationController) {
         self.init(site: site,
                   productURL: productURL,
                   productName: productName,
+                  productDescription: productDescription,
                   shareSheetAnchorView: nil,
                   shareSheetAnchorItem: shareSheetAnchorItem,
                   featureFlagService: featureFlagService,
@@ -92,8 +99,9 @@ private extension ShareProductCoordinator {
             return
         }
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID,
+                                                                 url: productURL.absoluteString,
                                                                  productName: productName,
-                                                                 url: productURL.absoluteString)
+                                                                 productDescription: productDescription)
         let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel)
 
         let presenter = BottomSheetPresenter(configure: { bottomSheet in

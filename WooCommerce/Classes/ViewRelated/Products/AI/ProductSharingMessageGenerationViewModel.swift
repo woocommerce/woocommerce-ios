@@ -3,6 +3,9 @@ import Yosemite
 
 /// View model for `ProductSharingMessageGenerationView`
 final class ProductSharingMessageGenerationViewModel: ObservableObject {
+    @Published var isSharePopoverPresented = false
+    @Published var isShareSheetPresented = false
+
     let viewTitle: String
 
     var generateButtonTitle: String {

@@ -487,6 +487,19 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Add Products to Order via SKU Scanner Tests
 
+    func test_trackBarcodeScanningButtonTapped_tracks_right_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackBarcodeScanningButtonTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderCreationProductBarcodeScanningTapped.rawValue)
+    }
+
     func test_add_product_to_order_via_sku_scanner_when_feature_flag_is_enabled_then_feature_support_returns_true() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))

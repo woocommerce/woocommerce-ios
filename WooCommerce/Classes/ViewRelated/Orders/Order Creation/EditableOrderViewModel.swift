@@ -1322,7 +1322,7 @@ extension EditableOrderViewModel {
     }
 
     func trackBarcodeScanningButtonTapped() {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.productAddNewFromBarcodeScanningTapped())
+        analytics.track(event: WooAnalyticsEvent.Orders.productAddNewFromBarcodeScanningTapped())
     }
 
     /// Attempts to map SKU to Product

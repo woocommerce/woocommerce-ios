@@ -170,6 +170,7 @@ class DefaultStoresManager: StoresManager {
     @discardableResult
     func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
         let group = DispatchGroup()
+        NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.started)
 
         group.enter()
         synchronizeAccount { [weak self] _ in
@@ -186,6 +187,7 @@ class DefaultStoresManager: StoresManager {
         }
 
         group.notify(queue: .main) {
+            NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
             onCompletion?()
         }
 

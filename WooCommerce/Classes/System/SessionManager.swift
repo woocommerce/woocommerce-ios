@@ -25,6 +25,10 @@ extension NSNotification.Name {
     /// Posted when the default site is being loaded in the session.
     ///
     public static let restoreSessionSite = NSNotification.Name(rawValue: "RestoreSessionSite")
+
+    /// Posted when all the session entities are being synchronized.
+    ///
+    public static let synchronizeEntities = NSNotification.Name(rawValue: "SynchronizeEntities")
 }
 
 private extension UserDefaults {

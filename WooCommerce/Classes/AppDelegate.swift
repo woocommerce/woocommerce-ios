@@ -483,10 +483,7 @@ extension AppDelegate {
             return
         }
 
-        NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.started)
-        ServiceLocator.stores.synchronizeEntities {
-            NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
-        }
+        ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
     }
 
     /// Deauthenticates the user upon application password generation failure.
@@ -529,10 +526,4 @@ private extension AppDelegate {
 
         universalLinkRouter?.handle(url: linkURL)
     }
-}
-
-// MARK: - AppDelegate Notifications
-
-extension NSNotification.Name {
-    static let synchronizeEntities = NSNotification.Name(rawValue: "SynchronizeEntities")
 }

@@ -11,9 +11,11 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
          productURL: URL,
          productName: String,
          showShareProductButton: Bool) {
+        let checker = DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
-                                                     showShareProductButton: showShareProductButton)
+                                                     showShareProductButton: showShareProductButton,
+                                                     eligibilityChecker: checker)
         super.init(rootView: FirstProductCreatedView(viewModel: viewModel))
         viewModel.launchAISharingFlow = { [weak self] in
             guard let self,
@@ -21,7 +23,6 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
                 return
             }
 
-            let checker = DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
             let shareProductCoordinator = ShareProductCoordinator(siteID: siteID,
                                                                   productURL: productURL,
                                                                   productName: productName,
@@ -131,19 +132,23 @@ private extension FirstProductCreatedView {
 
 struct FirstProductCreatedView_Previews: PreviewProvider {
     static var previews: some View {
+        let checker = DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
         FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
                                                  productName: "Sample product",
-                                                 showShareProductButton: true))
+                                                 showShareProductButton: true,
+                                                 eligibilityChecker: checker))
         .environment(\.colorScheme, .light)
 
         FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
                                                  productName: "Sample product",
-                                                 showShareProductButton: false))
+                                                 showShareProductButton: false,
+                                                 eligibilityChecker: checker))
         .environment(\.colorScheme, .light)
 
         FirstProductCreatedView(viewModel: .init(productURL: URL(string: "https://example.com/sampleproduct")!,
                                                  productName: "Sample product",
-                                                 showShareProductButton: false))
+                                                 showShareProductButton: false,
+                                                 eligibilityChecker: checker))
         .environment(\.colorScheme, .dark)
         .previewInterfaceOrientation(.landscapeLeft)
     }

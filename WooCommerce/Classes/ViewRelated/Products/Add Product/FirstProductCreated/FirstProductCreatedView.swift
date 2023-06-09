@@ -20,8 +20,8 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
                 return
             }
 
-            let shareProductCoordinator = ShareProductCoordinator(productURL: viewModel.productURL,
-                                                                  productName: viewModel.productName,
+            let shareProductCoordinator = ShareProductCoordinator(productURL: productURL,
+                                                                  productName: productName,
                                                                   shareSheetAnchorView: self.view,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()

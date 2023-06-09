@@ -27,7 +27,7 @@ final class ShareProductCoordinator: Coordinator {
         self.productName = productName
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
-        self.shareProductEligibilityChecker = ShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
+        self.shareProductEligibilityChecker = DefaultShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
         self.navigationController = navigationController
     }
 
@@ -72,15 +72,15 @@ final class ShareProductCoordinator: Coordinator {
 
 // MARK: Navigation
 private extension ShareProductCoordinator {
-    func presentShareSheet(with message: String = "") {
+    func presentShareSheet() {
         if let shareSheetAnchorView {
             SharingHelper.shareURL(url: productURL,
-                                   title: message.isEmpty ? productName : message,
+                                   title: productName,
                                    from: shareSheetAnchorView,
                                    in: navigationController.topmostPresentedViewController)
         } else if let shareSheetAnchorItem {
             SharingHelper.shareURL(url: productURL,
-                                   title: message.isEmpty ? productName : message,
+                                   title: productName,
                                    from: shareSheetAnchorItem,
                                    in: navigationController.topmostPresentedViewController)
         }
@@ -91,13 +91,10 @@ private extension ShareProductCoordinator {
             DDLogWarn("⚠️ No site found for generating product sharing message!")
             return
         }
-        let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID, productName: productName, url: productURL.absoluteString)
-        let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel) { [weak self] message in
-            self?.navigationController.topmostPresentedViewController.dismiss(animated: true) {
-                self?.presentShareSheet(with: message)
-            }
-            // TODO: Analytics
-        }
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID,
+                                                                 productName: productName,
+                                                                 url: productURL.absoluteString)
+        let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel)
 
         let presenter = BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet

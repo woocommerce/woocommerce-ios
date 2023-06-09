@@ -3,6 +3,9 @@ import Yosemite
 
 /// View model for `ProductSharingMessageGenerationView`
 final class ProductSharingMessageGenerationViewModel: ObservableObject {
+    @Published var isSharePopoverPresented = false
+    @Published var isShareSheetPresented = false
+
     let viewTitle: String
 
     var generateButtonTitle: String {
@@ -13,6 +16,16 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         messageContent.isEmpty ? "sparkles" : "arrow.counterclockwise"
     }
 
+    var shareSheet: ShareSheet {
+        let activityItems: [Any]
+        if let url = URL(string: url) {
+            activityItems = [messageContent, url]
+        } else {
+            activityItems = [messageContent]
+        }
+        return ShareSheet(activityItems: activityItems)
+    }
+
     @Published var messageContent: String = ""
     @Published private(set) var generationInProgress: Bool = false
     @Published private(set) var errorMessage: String?
@@ -20,13 +33,16 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private let siteID: Int64
     private let url: String
     private let stores: StoresManager
+    private let isPad: Bool
 
     init(siteID: Int64,
          productName: String,
          url: String,
+         isPad: Bool = UIDevice.isPad(),
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.url = url
+        self.isPad = isPad
         self.stores = stores
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
     }
@@ -45,6 +61,14 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
             errorMessage = Localization.errorMessage
         }
         generationInProgress = false
+    }
+
+    func didTapShare() {
+        if isPad {
+            isSharePopoverPresented = true
+        } else {
+            isShareSheetPresented = true
+        }
     }
 }
 

@@ -9,8 +9,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Given
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
                                                                  productName: "Test",
-                                                                 url: "https://example.com",
-                                                                 onShare: {})
+                                                                 url: "https://example.com")
         let expectedTitle = String.localizedStringWithFormat(ProductSharingMessageGenerationViewModel.Localization.title, "Test")
 
         // Then
@@ -23,7 +22,6 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
                                                                  productName: "Test",
                                                                  url: "https://example.com",
-                                                                 onShare: {},
                                                                  stores: stores)
         XCTAssertFalse(viewModel.generationInProgress)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -50,7 +48,6 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
                                                                  productName: "Test",
                                                                  url: "https://example.com",
-                                                                 onShare: {},
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -75,7 +72,6 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
                                                                  productName: "Test",
                                                                  url: "https://example.com",
-                                                                 onShare: {},
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {

@@ -139,7 +139,6 @@ struct ProductSharingMessageGenerationView_Previews: PreviewProvider {
     static var previews: some View {
         ProductSharingMessageGenerationView(viewModel: .init(siteID: 123,
                                                              productName: "Test",
-                                                             url: "https://example.com",
-                                                             onShare: { }))
+                                                             url: "https://example.com"))
     }
 }

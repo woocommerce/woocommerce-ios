@@ -34,17 +34,14 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private let url: String
     private let stores: StoresManager
     private let isPad: Bool
-    private let onShare: () -> Void
 
     init(siteID: Int64,
          productName: String,
          url: String,
-         onShare: @escaping () -> Void,
          isPad: Bool = UIDevice.isPad(),
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.url = url
-        self.onShare = onShare
         self.isPad = isPad
         self.stores = stores
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
@@ -72,7 +69,6 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         } else {
             isShareSheetPresented = true
         }
-        onShare()
     }
 }
 

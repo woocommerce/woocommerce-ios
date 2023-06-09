@@ -93,10 +93,7 @@ private extension ShareProductCoordinator {
         }
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID,
                                                                  productName: productName,
-                                                                 url: productURL.absoluteString,
-                                                                 onShare: {
-            // TODO: Analytics
-        })
+                                                                 url: productURL.absoluteString)
         let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel)
 
         let presenter = BottomSheetPresenter(configure: { bottomSheet in

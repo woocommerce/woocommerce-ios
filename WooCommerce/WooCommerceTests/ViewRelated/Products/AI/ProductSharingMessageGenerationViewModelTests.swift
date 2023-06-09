@@ -5,6 +5,22 @@ import XCTest
 @MainActor
 final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
+
     func test_viewTitle_is_correct() {
         // Given
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
@@ -88,5 +104,79 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
 
         // Then
         assertEqual(ProductSharingMessageGenerationViewModel.Localization.errorMessage, viewModel.errorMessage)
+    }
+
+    // MARK: - Analytics
+    func test_generate_button_tapped_is_tracked_correctly() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(
+            siteID: 123,
+            productName: "Test",
+            url: "https://example.com",
+            stores: stores,
+            analytics: analytics
+        )
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, completion):
+                completion(.success("Test"))
+            default:
+                return
+            }
+        }
+
+        // When
+        await viewModel.generateShareMessage()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_sharing_ai_generate_tapped", "product_sharing_ai_message_generated"])
+        let firstEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_sharing_ai_generate_tapped"}))
+        let firstEventProperties = analyticsProvider.receivedProperties[firstEventIndex]
+        XCTAssertEqual(firstEventProperties["is_retry"] as? Bool, false)
+
+        // When
+        await viewModel.generateShareMessage() // retry
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [
+            "product_sharing_ai_generate_tapped",
+            "product_sharing_ai_message_generated",
+            "product_sharing_ai_generate_tapped",
+            "product_sharing_ai_message_generated"
+        ])
+        let retryEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "product_sharing_ai_generate_tapped"}))
+        let retryEventProperties = analyticsProvider.receivedProperties[retryEventIndex]
+        XCTAssertEqual(retryEventProperties["is_retry"] as? Bool, true)
+    }
+
+    func test_generation_failure_event_is_tracked() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(
+            siteID: 123,
+            productName: "Test",
+            url: "https://example.com",
+            stores: stores,
+            analytics: analytics
+        )
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 500)))
+            default:
+                return
+            }
+        }
+
+        // When
+        await viewModel.generateShareMessage()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_sharing_ai_generate_tapped", "product_sharing_ai_message_generation_failed"])
+        let failureEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "product_sharing_ai_message_generation_failed"}))
+        let failureEventProperties = analyticsProvider.receivedProperties[failureEventIndex]
+        XCTAssertEqual(failureEventProperties["error_code"] as? String, "500")
+        XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")
     }
 }

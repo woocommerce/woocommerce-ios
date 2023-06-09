@@ -16,12 +16,12 @@ final class ProductSKUInputScannerViewController: UIViewController {
         }
     }()
 
-    private let onBarcodeScanned: (String) -> Void
+    private let onBarcodeScanned: (ScannedBarcode) -> Void
 
     /// Tracks whether a barcode has been detected because the barcode detection callback is only handled once.
     private var hasDetectedBarcode: Bool = false
 
-    init(onBarcodeScanned: @escaping (String) -> Void) {
+    init(onBarcodeScanned: @escaping (ScannedBarcode) -> Void) {
         self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
     }

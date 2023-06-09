@@ -2,6 +2,13 @@ import AVFoundation
 import UIKit
 import Vision
 
+typealias BarcodeSymbology = VNBarcodeSymbology
+
+struct ScannedBarcode: Equatable, Hashable {
+    let payloadStringValue: String
+    let symbology: BarcodeSymbology
+}
+
 /// Starts live stream video for scanning barcodes.
 /// This view controller is meant to be embedded as a child view controller for navigation customization.
 final class BarcodeScannerViewController: UIViewController {
@@ -25,9 +32,9 @@ final class BarcodeScannerViewController: UIViewController {
     private lazy var throttler: Throttler = Throttler(seconds: 0.1)
 
     private let instructionText: String
-    private let onBarcodeScanned: (Result<[String], Error>) -> Void
+    private let onBarcodeScanned: (Result<[ScannedBarcode], Error>) -> Void
 
-    init(instructionText: String, onBarcodeScanned: @escaping (Result<[String], Error>) -> Void) {
+    init(instructionText: String, onBarcodeScanned: @escaping (Result<[ScannedBarcode], Error>) -> Void) {
         self.instructionText = instructionText
         self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
@@ -168,7 +175,14 @@ private extension BarcodeScannerViewController {
             return
         }
 
-        let barcodes = barcodeObservations.compactMap { $0.payloadStringValue }.uniqued()
+        let barcodes: [ScannedBarcode] = barcodeObservations.compactMap {
+            guard let payloadStringValue = $0.payloadStringValue else {
+                return nil
+            }
+
+            return ScannedBarcode(payloadStringValue: payloadStringValue, symbology: $0.symbology)
+        }.uniqued()
+
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             guard self.session.isRunning, barcodes.isNotEmpty else {

@@ -15,6 +15,7 @@ final class StorePlanSynchronizer: ObservableObject {
         case loaded(WPComSitePlan)
         case failed
         case unavailable
+        case expired
     }
 
     /// Current synced plan.
@@ -82,6 +83,11 @@ final class StorePlanSynchronizer: ObservableObject {
             case .success(let plan):
                 self.planState = .loaded(plan)
                 self.scheduleOrCancelNotificationsIfNeeded(for: plan)
+            case .failure(LoadSiteCurrentPlanError.noCurrentPlan):
+                // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
+                // Generally, expiry is `.success(plan)` with a plan expiry date in the past, but in some cases, we just
+                // don't get any plans marked as `current` in the plans response.
+                self.planState = .expired
             case .failure(let error):
                 self.planState = .failed
                 DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")

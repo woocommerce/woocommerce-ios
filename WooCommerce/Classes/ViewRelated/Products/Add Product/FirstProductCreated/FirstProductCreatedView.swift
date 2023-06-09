@@ -9,6 +9,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
 
     init(productURL: URL,
          productName: String,
+         productDescription: String,
          showShareProductButton: Bool) {
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
@@ -22,6 +23,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
 
             let shareProductCoordinator = ShareProductCoordinator(productURL: productURL,
                                                                   productName: productName,
+                                                                  productDescription: productDescription,
                                                                   shareSheetAnchorView: self.view,
                                                                   navigationController: navigationController)
             shareProductCoordinator.start()

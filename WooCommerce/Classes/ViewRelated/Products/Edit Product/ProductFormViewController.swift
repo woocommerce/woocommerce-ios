@@ -885,6 +885,7 @@ private extension ProductFormViewController {
 
         let shareProductCoordinator = ShareProductCoordinator(productURL: url,
                                                               productName: product.name,
+                                                              productDescription: product.description ?? product.shortDescription ?? "",
                                                               shareSheetAnchorItem: sourceView,
                                                               navigationController: navigationController)
         shareProductCoordinator.start()

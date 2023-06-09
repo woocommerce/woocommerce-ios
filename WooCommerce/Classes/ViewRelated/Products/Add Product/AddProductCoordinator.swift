@@ -246,6 +246,7 @@ private extension AddProductCoordinator {
             if self.isFirstProduct, let url = URL(string: product.permalink) {
                 self.showFirstProductCreatedView(productURL: url,
                                                  productName: product.name,
+                                                 productDescription: product.fullDescription ?? product.shortDescription ?? "",
                                                  showShareProductButton: viewModel.canShareProduct())
             }
         }
@@ -307,9 +308,11 @@ private extension AddProductCoordinator {
     ///
     func showFirstProductCreatedView(productURL: URL,
                                      productName: String,
+                                     productDescription: String,
                                      showShareProductButton: Bool) {
         let viewController = FirstProductCreatedHostingController(productURL: productURL,
                                                                   productName: productName,
+                                                                  productDescription: productDescription,
                                                                   showShareProductButton: showShareProductButton)
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }

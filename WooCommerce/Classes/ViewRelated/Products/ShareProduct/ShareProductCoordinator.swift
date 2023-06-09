@@ -72,15 +72,15 @@ final class ShareProductCoordinator: Coordinator {
 
 // MARK: Navigation
 private extension ShareProductCoordinator {
-    func presentShareSheet(with message: String = "") {
+    func presentShareSheet() {
         if let shareSheetAnchorView {
             SharingHelper.shareURL(url: productURL,
-                                   title: message.isEmpty ? productName : message,
+                                   title: productName,
                                    from: shareSheetAnchorView,
                                    in: navigationController.topmostPresentedViewController)
         } else if let shareSheetAnchorItem {
             SharingHelper.shareURL(url: productURL,
-                                   title: message.isEmpty ? productName : message,
+                                   title: productName,
                                    from: shareSheetAnchorItem,
                                    in: navigationController.topmostPresentedViewController)
         }

@@ -13,6 +13,16 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         messageContent.isEmpty ? "sparkles" : "arrow.counterclockwise"
     }
 
+    var shareSheet: ShareSheet {
+        let activityItems: [Any]
+        if let url = URL(string: url) {
+            activityItems = [messageContent, url]
+        } else {
+            activityItems = [messageContent]
+        }
+        return ShareSheet(activityItems: activityItems)
+    }
+
     @Published var messageContent: String = ""
     @Published private(set) var generationInProgress: Bool = false
     @Published private(set) var errorMessage: String?

@@ -22,7 +22,8 @@ final class UpgradesViewModel: ObservableObject {
         entitledWpcomPlanProductIDs = []
     }
 
-    /// Iterates through all available products (In-App Purchases WPCom plans) and checks whether the merchant is entitled
+    /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
+    /// via In-App Purchases
     ///
     func loadUserEntitlements() async {
         do {
@@ -40,9 +41,9 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
-    /// Retrieves all products (In-App Purchases WPCom plans)
+    /// Retrieves all In-App Purchases WPCom plans
     ///
-    func loadProducts() async {
+    func loadPlans() async {
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 DDLogError("IAP not supported")
@@ -58,21 +59,21 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
-    /// Triggers the purchase of the specified In-App Purchases WPCom plans by the passed product ID
+    /// Triggers the purchase of the specified In-App Purchases WPCom plans by the passed plan ID
     /// linked to the current site ID
     ///
-    func purchaseProduct(with productID: String) async {
+    func purchasePlan(with planID: String) async {
         do {
             // TODO: Deal with purchase result
             // https://github.com/woocommerce/woocommerce-ios/issues/9886
-            let _ = try await inAppPurchasesPlanManager.purchaseProduct(with: productID, for: self.siteID)
+            let _ = try await inAppPurchasesPlanManager.purchaseProduct(with: planID, for: self.siteID)
         } catch {
             // TODO: Handle errors
-            DDLogError("purchaseProduct \(error)")
+            DDLogError("purchasePlan \(error)")
         }
     }
 
-    /// Retrieves a specific In-App Purchase WPCOM plan from the available products
+    /// Retrieves a specific In-App Purchase WPCom plan from the available products
     ///
     func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans ) -> WPComPlanProduct? {
         let match = type.rawValue

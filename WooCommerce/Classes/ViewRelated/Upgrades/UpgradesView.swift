@@ -67,7 +67,7 @@ struct UpgradesView: View {
                             // TODO: Add product entitlement check
                             Task {
                                 isPurchasing = true
-                                await upgradesViewModel.purchaseProduct(with: wpcomPlan.id)
+                                await upgradesViewModel.purchasePlan(with: wpcomPlan.id)
                                 isPurchasing = false
                             }
                         }
@@ -76,7 +76,7 @@ struct UpgradesView: View {
             }
         }
         .task {
-            await upgradesViewModel.loadProducts()
+            await upgradesViewModel.loadPlans()
         }
         .navigationBarTitle(Constants.navigationTitle)
         .navigationBarTitleDisplayMode(.large)

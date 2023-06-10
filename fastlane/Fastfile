@@ -186,6 +186,16 @@ platform :ios do
       extracted_notes_file_path: RELEASE_NOTES_PATH
     )
     ios_update_release_notes(new_version: new_version)
+
+    if prompt_for_confirmation(
+      message: 'Ready to push changes to remote and let the automation configure the release on GitHub?',
+      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
+    )
+      push_to_git_remote(tags: false)
+    else
+      UI.message('Aborting code completion. See you later 👋')
+    end
+
     setbranchprotection(
       repository: GITHUB_REPO,
       branch: "release/#{new_version}"
@@ -214,11 +224,14 @@ platform :ios do
     ios_completecodefreeze_prechecks(options)
     generate_strings_file_for_glotpress
 
-    if ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', false) || UI.confirm('Push changes to the remote and trigger the beta build?')
+    if prompt_for_confirmation(
+      message: 'Ready to push changes to remote and trigger the beta build?',
+      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
+    )
       push_to_git_remote(tags: false)
       trigger_beta_build(branch_to_build: "release/#{ios_get_app_version}")
     else
-      UI.message('Aborting code freeze completion as requested.')
+      UI.message('Aborting code freeze completion. See you later 👋')
     end
   end
 
@@ -273,7 +286,16 @@ platform :ios do
     lint_localizations
     ios_bump_version_beta
     version = ios_get_app_version
-    trigger_beta_build(branch_to_build: "release/#{version}")
+
+    if prompt_for_confirmation(
+      message: 'Ready to push changes to remote and trigger the beta build?',
+      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
+    )
+      push_to_git_remote(tags: false)
+      trigger_beta_build(branch_to_build: "release/#{version}")
+    else
+      UI.message('Aborting beta deployment. See you later 👋')
+    end
   end
 
   #####################################################################################
@@ -312,7 +334,16 @@ platform :ios do
   lane :finalize_hotfix_release do |options|
     ios_finalize_prechecks(options)
     version = ios_get_app_version
-    trigger_release_build(branch_to_build: "release/#{version}")
+
+    if prompt_for_confirmation(
+      message: 'Ready to push changes to remote and trigger the release build?',
+      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
+    )
+      push_to_git_remote(tags: false)
+      trigger_release_build(branch_to_build: "release/#{version}")
+    else
+      UI.message('Aborting hotfix finalization. See you later 👋')
+    end
   end
 
   #####################################################################################
@@ -375,7 +406,15 @@ platform :ios do
     )
 
     # Start the build
-    trigger_release_build(branch_to_build: "release/#{version}")
+    if prompt_for_confirmation(
+      message: 'Ready to push changes to remote and trigger the release build?',
+      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
+    )
+      push_to_git_remote(tags: false)
+      trigger_release_build(branch_to_build: "release/#{version}")
+    else
+      UI.message('Aborting release finalization. See you later 👋')
+    end
   end
 
   #####################################################################################
@@ -1211,6 +1250,17 @@ def prompt_user_for_app_store_connect_credentials
   # Once we have it, we can set it as `FASTLANE_USER` in the environment (which has lifecycle limited to this call) so that the next commands will already have access to it.
   # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way to check it so we have to do it anyway.
   ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
+end
+
+# Wrapper around Fastlane `UI.confirm` that adds the option to bypass the
+# prompt if a given flag is true
+#
+# @param [String] message The text to pass to `UI.confirm` to show the user
+# @param [Boolean] bypass A flag that allows bypassing the `UI.confirm` prompt, i.e. acting as if the prompt returned `true`
+def prompt_for_confirmation(message:, bypass:)
+  return true if bypass
+
+  UI.confirm(message)
 end
 
 # https://buildkite.com/docs/test-analytics/ci-environments

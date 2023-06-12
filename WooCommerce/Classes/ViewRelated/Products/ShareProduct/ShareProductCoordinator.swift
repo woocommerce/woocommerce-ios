@@ -6,70 +6,70 @@ import protocol Experiments.FeatureFlagService
 final class ShareProductCoordinator: Coordinator {
     let navigationController: UINavigationController
 
-    private let site: Site?
+    private let siteID: Int64
     private let productURL: URL
     private let productName: String
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
-    private let shareProductEligibilityChecker: ShareProductAIEligibilityChecker
+    private let eligibilityChecker: ShareProductAIEligibilityChecker
     private let analytics: Analytics
 
     private var bottomSheetPresenter: BottomSheetPresenter?
 
-    private init(site: Site?,
+    private init(siteID: Int64,
                  productURL: URL,
                  productName: String,
                  shareSheetAnchorView: UIView?,
                  shareSheetAnchorItem: UIBarButtonItem?,
-                 featureFlagService: FeatureFlagService,
+                 eligibilityChecker: ShareProductAIEligibilityChecker,
                  navigationController: UINavigationController,
                  analytics: Analytics) {
-        self.site = site
+        self.siteID = siteID
         self.productURL = productURL
         self.productName = productName
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
-        self.shareProductEligibilityChecker = DefaultShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
+        self.eligibilityChecker = eligibilityChecker
         self.navigationController = navigationController
         self.analytics = analytics
     }
 
-    convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
+    convenience init(siteID: Int64,
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorView: UIView,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                     eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
                      navigationController: UINavigationController,
                      analytics: Analytics = ServiceLocator.analytics) {
-        self.init(site: site,
+        self.init(siteID: siteID,
                   productURL: productURL,
                   productName: productName,
                   shareSheetAnchorView: shareSheetAnchorView,
                   shareSheetAnchorItem: nil,
-                  featureFlagService: featureFlagService,
+                  eligibilityChecker: eligibilityChecker,
                   navigationController: navigationController,
                   analytics: analytics)
     }
 
-    convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
+    convenience init(siteID: Int64,
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorItem: UIBarButtonItem,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                     eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
                      navigationController: UINavigationController,
                      analytics: Analytics = ServiceLocator.analytics) {
-        self.init(site: site,
+        self.init(siteID: siteID,
                   productURL: productURL,
                   productName: productName,
                   shareSheetAnchorView: nil,
                   shareSheetAnchorItem: shareSheetAnchorItem,
-                  featureFlagService: featureFlagService,
+                  eligibilityChecker: eligibilityChecker,
                   navigationController: navigationController,
                   analytics: analytics)
     }
 
     func start() {
-        if shareProductEligibilityChecker.canGenerateShareProductMessageUsingAI {
+        if eligibilityChecker.canGenerateShareProductMessageUsingAI {
             presentShareProductAIGeneration()
         } else {
             presentShareSheet()
@@ -94,10 +94,6 @@ private extension ShareProductCoordinator {
     }
 
     func presentShareProductAIGeneration() {
-        guard let siteID = site?.siteID else {
-            DDLogWarn("⚠️ No site found for generating product sharing message!")
-            return
-        }
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID,
                                                                  productName: productName,
                                                                  url: productURL.absoluteString)

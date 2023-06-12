@@ -98,18 +98,18 @@ final class StoreCreationCoordinator: Coordinator {
                 guard await purchasesManager.inAppPurchasesAreSupported() else {
                     throw PlanPurchaseError.iapNotSupported
                 }
-                let products = try await purchasesManager.fetchProducts()
+                let plans = try await purchasesManager.fetchPlans()
                 let expectedPlanIdentifier = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
                 Constants.iapPlanIdentifier: Constants.webPlanIdentifier
-                guard let product = products.first,
-                      product.id == expectedPlanIdentifier else {
+                guard let plan = plans.first,
+                      plan.id == expectedPlanIdentifier else {
                     throw PlanPurchaseError.noMatchingProduct
                 }
-                guard try await purchasesManager.userIsEntitledToProduct(with: product.id) == false else {
+                guard try await purchasesManager.userIsEntitledToPlan(with: plan.id) == false else {
                     throw PlanPurchaseError.productNotEligible
                 }
 
-                startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: product)
+                startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: plan)
             } catch let error as PlanPurchaseError {
                 let isWebviewFallbackAllowed = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) == false
                 navigationController.dismiss(animated: true) { [weak self] in
@@ -658,7 +658,7 @@ private extension StoreCreationCoordinator {
                       siteName: String,
                       planToPurchase: WPComPlanProduct) async {
         do {
-            let result = try await purchasesManager.purchaseProduct(with: planToPurchase.id, for: siteID)
+            let result = try await purchasesManager.purchasePlan(with: planToPurchase.id, for: siteID)
 
             if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
                 switch result {

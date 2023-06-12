@@ -3,14 +3,27 @@ import Yosemite
 
 /// View model for `ProductSharingMessageGenerationView`
 final class ProductSharingMessageGenerationViewModel: ObservableObject {
+    @Published var isSharePopoverPresented = false
+    @Published var isShareSheetPresented = false
+
     let viewTitle: String
 
     var generateButtonTitle: String {
-        messageContent.isEmpty ? Localization.generate : Localization.regenerate
+        hasGeneratedMessage ? Localization.regenerate : Localization.generate
     }
 
     var generateButtonImageName: String {
-        messageContent.isEmpty ? "sparkles" : "arrow.counterclockwise"
+        hasGeneratedMessage ? "arrow.counterclockwise" : "sparkles"
+    }
+
+    var shareSheet: ShareSheet {
+        let activityItems: [Any]
+        if let url = URL(string: url) {
+            activityItems = [messageContent, url]
+        } else {
+            activityItems = [messageContent]
+        }
+        return ShareSheet(activityItems: activityItems)
     }
 
     @Published var messageContent: String = ""
@@ -20,35 +33,56 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private let siteID: Int64
     private let url: String
     private let stores: StoresManager
+    private let isPad: Bool
+    private let analytics: Analytics
+
+    /// Whether a message has been successfully generated.
+    /// This is needed to identify whether the next request is a retry.
+    private var hasGeneratedMessage = false
 
     init(siteID: Int64,
          productName: String,
          url: String,
-         stores: StoresManager = ServiceLocator.stores) {
+         isPad: Bool = UIDevice.isPad(),
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.url = url
+        self.isPad = isPad
         self.stores = stores
+        self.analytics = analytics
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
     }
 
     @MainActor
     func generateShareMessage() async {
-        // TODO: Analytics
+        analytics.track(event: .ProductSharingAI.generateButtonTapped(isRetry: hasGeneratedMessage))
         errorMessage = nil
         generationInProgress = true
         do {
             messageContent = try await requestMessageFromAI()
-            // TODO: Analytics
+            hasGeneratedMessage = true
+            analytics.track(event: .ProductSharingAI.messageGenerated())
         } catch {
-            // TODO: Analytics
             DDLogError("⛔️ Error generating product sharing message: \(error)")
             errorMessage = Localization.errorMessage
+            analytics.track(event: .ProductSharingAI.messageGenerationFailed(error: error))
         }
         generationInProgress = false
+    }
+
+    func didTapShare() {
+        if isPad {
+            isSharePopoverPresented = true
+        } else {
+            isShareSheetPresented = true
+        }
+        analytics.track(event: .ProductSharingAI.shareButtonTapped(withMessage: messageContent.isNotEmpty))
     }
 }
 
 private extension ProductSharingMessageGenerationViewModel {
+    @MainActor
     func requestMessageFromAI() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,

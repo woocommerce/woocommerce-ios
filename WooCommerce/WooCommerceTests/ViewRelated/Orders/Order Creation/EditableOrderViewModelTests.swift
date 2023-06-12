@@ -1602,24 +1602,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
     }
 
-    func test_addScannedProductToOrder_when_sku_is_nil_then_fails_to_add_product_and_returns_nilSKU_error() {
-        // Given
-        var capturedErrors: [EditableOrderViewModel.ScannerError] = []
-
-        // When
-        viewModel.addScannedProductToOrder(barcode: nil, onCompletion: { expectedError in
-            switch expectedError {
-            case let .failure(error as EditableOrderViewModel.ScannerError):
-                capturedErrors.append(error)
-            default:
-                XCTFail("Expected failure, got success")
-            }
-        }, onRetryRequested: {})
-
-        // Then
-        XCTAssertEqual(capturedErrors, [.nilSKU])
-    }
-
     func test_addScannedProductToOrder_when_sku_is_not_found_then_returns_productNotFound_error_and_shows_autodismissable_notice_with_retry_action() {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
@@ -1634,7 +1616,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         var onRetryRequested = false
         let expectedError = waitFor { promise in
-            self.viewModel.addScannedProductToOrder(barcode: "nonExistingSKU", onCompletion: { expectedError in
+            self.viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "nonExistingSKU",
+                                                                            symbology: BarcodeSymbology.ean8), onCompletion: { expectedError in
                 switch expectedError {
                 case let .failure(error as EditableOrderViewModel.ScannerError):
                     promise(error)
@@ -1673,7 +1656,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let successWasReceived: Bool = waitFor { promise in
-            self.viewModel.addScannedProductToOrder(barcode: "existingSKU", onCompletion: { result in
+            self.viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "existingSKU",
+                                                                            symbology: BarcodeSymbology.ean8), onCompletion: { result in
                 switch result {
                 case .success(()):
                     promise(true)
@@ -1711,7 +1695,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let initialProductID: Int64? = waitFor { promise in
-            self.viewModel.addScannedProductToOrder(barcode: "existingSKU", onCompletion: { result in
+            self.viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "existingSKU",
+                                                                            symbology: BarcodeSymbology.ean8), onCompletion: { result in
                 switch result {
                 case .success(()):
                     promise(self.sampleProductID)

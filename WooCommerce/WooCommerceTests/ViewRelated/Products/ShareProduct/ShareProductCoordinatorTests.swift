@@ -35,7 +35,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
-                                                  shareProductEligibilityChecker: checker,
+                                                  eligibilityChecker: checker,
                                                   navigationController: navigationController)
 
         // When
@@ -54,7 +54,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
-                                                  shareProductEligibilityChecker: checker,
+                                                  eligibilityChecker: checker,
                                                   navigationController: navigationController)
 
         // When
@@ -73,7 +73,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
-                                                  shareProductEligibilityChecker: checker,
+                                                  eligibilityChecker: checker,
                                                   navigationController: navigationController,
                                                   analytics: analytics)
 

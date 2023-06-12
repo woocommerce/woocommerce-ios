@@ -11,7 +11,7 @@ final class ShareProductCoordinator: Coordinator {
     private let productName: String
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
-    private let shareProductEligibilityChecker: ShareProductAIEligibilityChecker
+    private let eligibilityChecker: ShareProductAIEligibilityChecker
     private let analytics: Analytics
 
     private var bottomSheetPresenter: BottomSheetPresenter?
@@ -21,7 +21,7 @@ final class ShareProductCoordinator: Coordinator {
                  productName: String,
                  shareSheetAnchorView: UIView?,
                  shareSheetAnchorItem: UIBarButtonItem?,
-                 shareProductEligibilityChecker: ShareProductAIEligibilityChecker,
+                 eligibilityChecker: ShareProductAIEligibilityChecker,
                  navigationController: UINavigationController,
                  analytics: Analytics) {
         self.siteID = siteID
@@ -29,7 +29,7 @@ final class ShareProductCoordinator: Coordinator {
         self.productName = productName
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
-        self.shareProductEligibilityChecker = shareProductEligibilityChecker
+        self.eligibilityChecker = eligibilityChecker
         self.navigationController = navigationController
         self.analytics = analytics
     }
@@ -38,7 +38,7 @@ final class ShareProductCoordinator: Coordinator {
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorView: UIView,
-                     shareProductEligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
+                     eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
                      navigationController: UINavigationController,
                      analytics: Analytics = ServiceLocator.analytics) {
         self.init(siteID: siteID,
@@ -46,7 +46,7 @@ final class ShareProductCoordinator: Coordinator {
                   productName: productName,
                   shareSheetAnchorView: shareSheetAnchorView,
                   shareSheetAnchorItem: nil,
-                  shareProductEligibilityChecker: shareProductEligibilityChecker,
+                  eligibilityChecker: eligibilityChecker,
                   navigationController: navigationController,
                   analytics: analytics)
     }
@@ -55,7 +55,7 @@ final class ShareProductCoordinator: Coordinator {
                      productURL: URL,
                      productName: String,
                      shareSheetAnchorItem: UIBarButtonItem,
-                     shareProductEligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
+                     eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
                      navigationController: UINavigationController,
                      analytics: Analytics = ServiceLocator.analytics) {
         self.init(siteID: siteID,
@@ -63,13 +63,13 @@ final class ShareProductCoordinator: Coordinator {
                   productName: productName,
                   shareSheetAnchorView: nil,
                   shareSheetAnchorItem: shareSheetAnchorItem,
-                  shareProductEligibilityChecker: shareProductEligibilityChecker,
+                  eligibilityChecker: eligibilityChecker,
                   navigationController: navigationController,
                   analytics: analytics)
     }
 
     func start() {
-        if shareProductEligibilityChecker.canGenerateShareProductMessageUsingAI {
+        if eligibilityChecker.canGenerateShareProductMessageUsingAI {
             presentShareProductAIGeneration()
         } else {
             presentShareSheet()

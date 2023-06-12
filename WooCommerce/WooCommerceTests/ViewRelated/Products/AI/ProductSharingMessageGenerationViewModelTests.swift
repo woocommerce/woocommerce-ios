@@ -39,7 +39,8 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
                                                                  url: "https://example.com",
                                                                  productName: "Test",
-                                                                 productDescription: "Test description")
+                                                                 productDescription: "Test description",
+                                                                 stores: stores)
         XCTAssertFalse(viewModel.generationInProgress)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {

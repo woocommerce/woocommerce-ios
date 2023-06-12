@@ -40,8 +40,8 @@ private enum SiteIDSourceType: String, Equatable, CaseIterable {
 @MainActor
 struct InAppPurchasesDebugView: View {
     private let inAppPurchasesForWPComPlansManager = InAppPurchasesForWPComPlansManager()
-    @State var products: [WPComPlanProduct] = []
-    @State var entitledProductIDs: Set<String> = []
+    @State var wpcomPlans: [WPComPlanProduct] = []
+    @State var entitledWpcomPlanIDs: Set<String> = []
     @State var inAppPurchasesAreSupported = true
     @State var isPurchasing = false
     @State private var selectedSiteIDSourceType: SiteIDSourceType = .appUser
@@ -65,24 +65,24 @@ struct InAppPurchasesDebugView: View {
                 .pickerStyle(.segmented)
             }
             Section {
-                Button("Reload products") {
+                Button("Reload plans") {
                     Task {
-                        await loadProducts()
+                        await loadPlans()
                     }
                 }
             }
-            Section("Products") {
-                if products.isEmpty {
-                    Text("No products")
+            Section("Plans") {
+                if wpcomPlans.isEmpty {
+                    Text("No plans")
                 } else if isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else if let siteID = selectedSiteIDSourceType.retrieveUpgradingSiteID() {
-                    ForEach(products, id: \.id) { product in
-                        Button(entitledProductIDs.contains(product.id) ? "Entitled: \(product.description)" : product.description) {
+                    ForEach(wpcomPlans, id: \.id) { plan in
+                        Button(entitledWpcomPlanIDs.contains(plan.id) ? "Entitled: \(plan.description)" : plan.description) {
                             Task {
                                 isPurchasing = true
                                 do {
-                                    let result = try await inAppPurchasesForWPComPlansManager.purchaseProduct(with: product.id, for: siteID)
+                                    let result = try await inAppPurchasesForWPComPlansManager.purchasePlan(with: plan.id, for: siteID)
                                     print("[IAP Debug] Purchase result: \(result)")
                                 } catch {
                                     purchaseError = PurchaseError(error: error)
@@ -94,15 +94,15 @@ struct InAppPurchasesDebugView: View {
                         .alert(isPresented: $presentAlert, error: purchaseError, actions: {})
                     }
                 } else {
-                    Text("No valid site id could be retrieved to purchase product. " + selectedSiteIDSourceType.noSourceIDFoundHint)
+                    Text("No valid site id could be retrieved to purchase WPCom plan. " + selectedSiteIDSourceType.noSourceIDFoundHint)
                     .foregroundColor(.red)
                 }
             }
 
             Section {
-                Button("Retry WPCom Synchronization for entitled products") {
+                Button("Retry WPCom Synchronization for entitled plans") {
                     retryWPComSynchronizationForPurchasedProducts()
-                }.disabled(!inAppPurchasesAreSupported || entitledProductIDs.isEmpty)
+                }.disabled(!inAppPurchasesAreSupported || entitledWpcomPlanIDs.isEmpty)
             }
 
             Section {
@@ -122,7 +122,7 @@ struct InAppPurchasesDebugView: View {
         }
         .navigationTitle("IAP Debug")
         .task {
-            await loadProducts()
+            await loadPlans()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             Task {
@@ -131,7 +131,7 @@ struct InAppPurchasesDebugView: View {
         }
     }
 
-    private func loadProducts() async {
+    private func loadPlans() async {
         do {
             inAppPurchasesAreSupported = await inAppPurchasesForWPComPlansManager.inAppPurchasesAreSupported()
 
@@ -139,7 +139,7 @@ struct InAppPurchasesDebugView: View {
                 return
             }
 
-            self.products = try await inAppPurchasesForWPComPlansManager.fetchProducts()
+            self.wpcomPlans = try await inAppPurchasesForWPComPlansManager.fetchPlans()
             await loadUserEntitlements()
         } catch {
             print("Error loading products: \(error)")
@@ -148,11 +148,11 @@ struct InAppPurchasesDebugView: View {
 
     private func loadUserEntitlements() async {
         do {
-            for product in self.products {
-                if try await inAppPurchasesForWPComPlansManager.userIsEntitledToProduct(with: product.id) {
-                    self.entitledProductIDs.insert(product.id)
+            for plan in self.wpcomPlans {
+                if try await inAppPurchasesForWPComPlansManager.userIsEntitledToPlan(with: plan.id) {
+                    self.entitledWpcomPlanIDs.insert(plan.id)
                 } else {
-                    self.entitledProductIDs.remove(product.id)
+                    self.entitledWpcomPlanIDs.remove(plan.id)
                 }
             }
         }
@@ -163,8 +163,8 @@ struct InAppPurchasesDebugView: View {
 
     private func retryWPComSynchronizationForPurchasedProducts() {
         Task {
-            for id in entitledProductIDs {
-                try await inAppPurchasesForWPComPlansManager.retryWPComSyncForPurchasedProduct(with: id)
+            for id in entitledWpcomPlanIDs {
+                try await inAppPurchasesForWPComPlansManager.retryWPComSyncForPurchasedPlan(with: id)
             }
         }
     }

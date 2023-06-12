@@ -5,11 +5,11 @@ import UIKit
 final class ProductSKUBarcodeScannerCoordinator: Coordinator {
     let navigationController: UINavigationController
     private let permissionChecker: CaptureDevicePermissionChecker
-    private let onSKUBarcodeScanned: (_ barcode: String) -> Void
+    private let onSKUBarcodeScanned: (_ barcode: ScannedBarcode) -> Void
 
     init(sourceNavigationController: UINavigationController,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         onSKUBarcodeScanned: @escaping (_ barcode: String) -> Void) {
+         onSKUBarcodeScanned: @escaping (_ barcode: ScannedBarcode) -> Void) {
         self.navigationController = sourceNavigationController
         self.permissionChecker = permissionChecker
         self.onSKUBarcodeScanned = onSKUBarcodeScanned

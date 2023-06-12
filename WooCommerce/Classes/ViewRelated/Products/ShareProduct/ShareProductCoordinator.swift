@@ -9,6 +9,7 @@ final class ShareProductCoordinator: Coordinator {
     private let siteID: Int64
     private let productURL: URL
     private let productName: String
+    private let productDescription: String
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
     private let eligibilityChecker: ShareProductAIEligibilityChecker
@@ -19,6 +20,7 @@ final class ShareProductCoordinator: Coordinator {
     private init(siteID: Int64,
                  productURL: URL,
                  productName: String,
+                 productDescription: String,
                  shareSheetAnchorView: UIView?,
                  shareSheetAnchorItem: UIBarButtonItem?,
                  eligibilityChecker: ShareProductAIEligibilityChecker,
@@ -27,6 +29,7 @@ final class ShareProductCoordinator: Coordinator {
         self.siteID = siteID
         self.productURL = productURL
         self.productName = productName
+        self.productDescription = productDescription
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
         self.eligibilityChecker = eligibilityChecker
@@ -37,6 +40,7 @@ final class ShareProductCoordinator: Coordinator {
     convenience init(siteID: Int64,
                      productURL: URL,
                      productName: String,
+                     productDescription: String,
                      shareSheetAnchorView: UIView,
                      eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
                      navigationController: UINavigationController,
@@ -44,6 +48,7 @@ final class ShareProductCoordinator: Coordinator {
         self.init(siteID: siteID,
                   productURL: productURL,
                   productName: productName,
+                  productDescription: productDescription,
                   shareSheetAnchorView: shareSheetAnchorView,
                   shareSheetAnchorItem: nil,
                   eligibilityChecker: eligibilityChecker,
@@ -54,6 +59,7 @@ final class ShareProductCoordinator: Coordinator {
     convenience init(siteID: Int64,
                      productURL: URL,
                      productName: String,
+                     productDescription: String,
                      shareSheetAnchorItem: UIBarButtonItem,
                      eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
                      navigationController: UINavigationController,
@@ -61,6 +67,7 @@ final class ShareProductCoordinator: Coordinator {
         self.init(siteID: siteID,
                   productURL: productURL,
                   productName: productName,
+                  productDescription: productDescription,
                   shareSheetAnchorView: nil,
                   shareSheetAnchorItem: shareSheetAnchorItem,
                   eligibilityChecker: eligibilityChecker,
@@ -95,8 +102,9 @@ private extension ShareProductCoordinator {
 
     func presentShareProductAIGeneration() {
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID,
+                                                                 url: productURL.absoluteString,
                                                                  productName: productName,
-                                                                 url: productURL.absoluteString)
+                                                                 productDescription: productDescription)
         let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel)
 
         let presenter = BottomSheetPresenter(configure: { bottomSheet in

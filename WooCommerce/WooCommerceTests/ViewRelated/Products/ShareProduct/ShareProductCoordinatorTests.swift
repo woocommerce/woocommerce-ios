@@ -34,6 +34,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
         let coordinator = ShareProductCoordinator(siteID: 123,
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
+                                                  productDescription: "Test description",
                                                   shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController)
@@ -53,6 +54,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
         let coordinator = ShareProductCoordinator(siteID: 123,
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
+                                                  productDescription: "Test description",
                                                   shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController)
@@ -72,6 +74,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
         let coordinator = ShareProductCoordinator(siteID: 123,
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
+                                                  productDescription: "Test description",
                                                   shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController,

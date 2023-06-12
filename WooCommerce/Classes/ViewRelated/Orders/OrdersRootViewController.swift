@@ -209,8 +209,10 @@ final class OrdersRootViewController: UIViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            self?.configureLeftButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
+                self.configureLeftButtonItemAsProductScanningButton()
                 switch result {
                 case let .success(product):
                     self.presentOrderCreationFlowWithScannedProduct(with: product.productID)
@@ -327,13 +329,24 @@ private extension OrdersRootViewController {
     ///
     func configureNavigationButtons() {
         if featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner) {
-            navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+            configureLeftButtonItemAsProductScanningButton()
         }
 
         navigationItem.rightBarButtonItems = [
             createAddOrderItem(),
             createSearchBarButtonItem()
         ]
+    }
+
+    func configureLeftButtonItemAsProductScanningButton() {
+        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+    }
+
+    func configureLeftButtonItemAsLoader() {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .navigationBarLoadingIndicator
+        indicator.startAnimating()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: indicator)
     }
 
     func configureFiltersBar() {

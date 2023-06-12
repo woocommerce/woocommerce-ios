@@ -63,6 +63,10 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
+    @Published private var isSiteEligibleForBlaze: Bool = false
+
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+
     private var cancellables: Set<AnyCancellable> = []
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
@@ -72,7 +76,8 @@ final class HubMenuViewModel: ObservableObject {
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
-         generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
+         generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.navigationController = navigationController
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -80,6 +85,7 @@ final class HubMenuViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
+        self.blazeEligibilityChecker = blazeEligibilityChecker
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
@@ -137,20 +143,19 @@ final class HubMenuViewModel: ObservableObject {
                 self.generalElements.append(Coupons())
             }
         }
+        stores.dispatch(action)
 
         // Blaze menu.
-        // TODO: 9866 - async eligibility check
-        if featureFlagService.isFeatureFlagEnabled(.blaze) {
-            if let index = generalElements.firstIndex(where: { item in
-                type(of: item).id == Payments.id
-            }) {
+        if isSiteEligibleForBlaze {
+            if let index = generalElements.firstIndex(where: { $0.id == Payments.id }) {
                 generalElements.insert(Blaze(), at: index + 1)
             } else {
                 generalElements.append(Blaze())
             }
+            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .menu))
+        } else {
+            generalElements.removeAll(where: { $0.id == Blaze.id })
         }
-
-        stores.dispatch(action)
     }
 
     /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
@@ -166,8 +171,8 @@ final class HubMenuViewModel: ObservableObject {
     /// Presents the `Subscriptions` view from the view model's navigation controller property.
     ///
     func presentSubscriptions() {
-        let upgradesViewController = UpgradesHostingController(siteID: siteID)
-        navigationController?.show(upgradesViewController, sender: self)
+        let subscriptionController = SubscriptionsHostingController(siteID: siteID)
+        navigationController?.show(subscriptionController, sender: self)
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
@@ -192,6 +197,7 @@ final class HubMenuViewModel: ObservableObject {
         let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil)
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         navigationController?.show(webViewController, sender: self)
+        ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .menu))
     }
 
     private func observeSiteForUIUpdates() {
@@ -231,6 +237,19 @@ final class HubMenuViewModel: ObservableObject {
                 return true
             }
             .assign(to: &$shouldAuthenticateAdminPage)
+
+        // Blaze menu.
+        stores.site
+            .compactMap { $0 }
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .asyncMap { [weak self] site -> Bool in
+                guard let self else {
+                    return false
+                }
+                return await self.blazeEligibilityChecker.isSiteEligible()
+            }
+            .assign(to: &$isSiteEligibleForBlaze)
     }
 
     /// Observe the current site's plan name and assign it to the `planName` published property.

@@ -1,167 +1,78 @@
 import XCTest
 @testable import WooCommerce
-@testable import Yosemite
 
 final class UpgradesViewModelTests: XCTestCase {
 
-    let freeTrialID = "1052"
-    let sampleSite = Site.fake().copy(siteID: 123, isWordPressComStore: true)
+    private let sampleSiteID: Int64 = 12345
+    private var mockInAppPurchasesManager: MockInAppPurchasesForWPComPlansManager!
 
-    func test_active_free_trial_plan_has_correct_view_model_values() {
-        // Given
-        let expireDate = Date().addingDays(14)
-        let plan = WPComSitePlan(id: freeTrialID,
-                                 hasDomainCredit: false,
-                                 expiryDate: expireDate)
+    private var sut: UpgradesViewModel!
 
-        let session = SessionManager.testingInstance
-        let stores = MockStoresManager(sessionManager: session)
-        let featureFlags = MockFeatureFlagService()
-        session.defaultSite = sampleSite
-
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                completion(.success(plan))
-            default:
-                break
-            }
-        }
-
-        // When
-        let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
-        viewModel.loadPlan()
-
-        // Then
-        XCTAssertEqual(viewModel.planName, NSLocalizedString("Free Trial", comment: ""))
-        XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
-        XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
-        XCTAssertNil(viewModel.errorNotice)
+    override func setUp() {
+        let plans = MockInAppPurchasesForWPComPlansManager.Defaults.debugInAppPurchasesPlans
+        mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: plans)
+        sut = UpgradesViewModel(siteID: sampleSiteID, inAppPurchasesPlanManager: mockInAppPurchasesManager)
     }
 
-    func test_expired_free_trial_plan_has_correct_view_model_values() {
-        // Given
-        let expireDate = Date().addingDays(-3)
-        let plan = WPComSitePlan(id: freeTrialID,
-                                 hasDomainCredit: false,
-                                 expiryDate: expireDate)
-
-        let session = SessionManager.testingInstance
-        let stores = MockStoresManager(sessionManager: session)
-        session.defaultSite = sampleSite
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                completion(.success(plan))
-            default:
-                break
-            }
-        }
-        let synchronizer = StorePlanSynchronizer(stores: stores)
-        let featureFlags = MockFeatureFlagService()
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
-
-        // When
-        viewModel.loadPlan()
+    func test_upgrades_are_initialized_with_empty_values() async {
+        // Given, When
+        let sut = UpgradesViewModel(siteID: sampleSiteID,
+                                    inAppPurchasesPlanManager: MockInAppPurchasesForWPComPlansManager(plans: []))
 
         // Then
-        XCTAssertEqual(viewModel.planName, NSLocalizedString("Trial ended", comment: ""))
-        XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
-        XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
-        XCTAssertNil(viewModel.errorNotice)
+        XCTAssert(sut.wpcomPlans.isEmpty)
+        XCTAssert(sut.entitledWpcomPlanIDs.isEmpty)
     }
 
-    func test_active_regular_plan_has_correct_view_model_values() {
+    func test_upgrades_when_fetchPlans_is_invoked_then_fetch_mocked_wpcom_plan() async {
         // Given
-        let expireDate = Date().addingDays(300)
-        let plan = WPComSitePlan(id: "another-id",
-                                 hasDomainCredit: false,
-                                 expiryDate: expireDate,
-                                 name: "WordPress.com eCommerce")
-
-        let session = SessionManager.testingInstance
-        let stores = MockStoresManager(sessionManager: session)
-        session.defaultSite = sampleSite
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                completion(.success(plan))
-            default:
-                break
-            }
-        }
-        let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+        // see `setUp`
 
         // When
-        viewModel.loadPlan()
+        await sut.fetchPlans()
 
         // Then
-        XCTAssertEqual(viewModel.planName, NSLocalizedString("eCommerce", comment: ""))
-        XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
-        XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
-        XCTAssertNil(viewModel.errorNotice)
+        assertEqual("Debug Essential Monthly", sut.wpcomPlans.first?.displayName)
+        assertEqual("1 Month of Debug Essential", sut.wpcomPlans.first?.description)
+        assertEqual("debug.woocommerce.express.essential.monthly", sut.wpcomPlans.first?.id)
+        assertEqual("$99.99", sut.wpcomPlans.first?.displayPrice)
     }
 
-    func test_WooExpress_is_removed_from_plan_name() {
-        // Given
-        let expireDate = Date().addingDays(300)
-        let plan = WPComSitePlan(id: "another-id",
-                                 hasDomainCredit: false,
-                                 expiryDate: expireDate,
-                                 name: "Woo Express: Essential")
-
-        let session = SessionManager.testingInstance
-        let stores = MockStoresManager(sessionManager: session)
-        session.defaultSite = sampleSite
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                completion(.success(plan))
-            default:
-                break
-            }
-        }
-        let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+    func test_upgrades_when_retrievePlanDetailsIfAvailable_retrieves_debug_wpcom_plan() async {
+        // Given (no injected plans)
+        let fakeInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager()
+        let sut = UpgradesViewModel(siteID: sampleSiteID,
+                                    inAppPurchasesPlanManager: fakeInAppPurchasesManager)
 
         // When
-        viewModel.loadPlan()
+        await sut.fetchPlans()
+        XCTAssertEqual(sut.wpcomPlans.first?.displayName, "Debug Monthly", "Precondition")
+
+        let wpcomPlan = sut.retrievePlanDetailsIfAvailable(.essentialMonthly)
 
         // Then
-        XCTAssertEqual(viewModel.planName, NSLocalizedString("Essential", comment: ""))
+        XCTAssertNil(wpcomPlan)
     }
 
-    func test_error_fetching_plan_has_correct_view_model_values() {
+    func test_upgrades_when_retrievePlanDetailsIfAvailable_retrieves_injected_wpcom_plan() async {
         // Given
-        let session = SessionManager.testingInstance
-        let stores = MockStoresManager(sessionManager: session)
-        session.defaultSite = sampleSite
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                let error = NSError(domain: "", code: 0)
-                completion(.failure(error))
-            default:
-                break
-            }
-        }
-        let synchronizer = StorePlanSynchronizer(stores: stores)
-        let viewModel = UpgradesViewModel(stores: stores, storePlanSynchronizer: synchronizer)
+        let expectedPlan: WPComPlanProduct = MockInAppPurchasesForWPComPlansManager.Plan(
+                displayName: "Test awesome plan",
+                description: "All the Woo, all the time",
+                id: "debug.woocommerce.express.essential.monthly",
+                displayPrice: "$1.50")
+        let inAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: [expectedPlan])
+        let sut = UpgradesViewModel(siteID: sampleSiteID,
+                                    inAppPurchasesPlanManager: inAppPurchasesManager)
 
         // When
-        viewModel.loadPlan()
+        await sut.fetchPlans()
+        let wpcomPlan = sut.retrievePlanDetailsIfAvailable(.essentialMonthly)
 
         // Then
-        XCTAssertTrue(viewModel.planName.isEmpty)
-        XCTAssertTrue(viewModel.planInfo.isEmpty)
-        XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
-        XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
-        XCTAssertNotNil(viewModel.errorNotice)
+        assertEqual("Test awesome plan", wpcomPlan?.displayName)
+        assertEqual("All the Woo, all the time", wpcomPlan?.description)
+        assertEqual("debug.woocommerce.express.essential.monthly", wpcomPlan?.id)
+        assertEqual("$1.50", wpcomPlan?.displayPrice)
     }
-
 }

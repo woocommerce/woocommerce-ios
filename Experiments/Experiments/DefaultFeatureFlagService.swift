@@ -99,8 +99,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .sdkLessGoogleSignIn:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .blaze:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shareProductAI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

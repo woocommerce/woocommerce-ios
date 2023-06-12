@@ -40,6 +40,10 @@ final class ProductsTests: XCTestCase {
         try ProductFlow.addAndVerifyNewProduct(productType: "grouped")
     }
 
+    func test_add_external_product() throws {
+        try ProductFlow.addAndVerifyNewProduct(productType: "external")
+    }
+
     func test_search_product() throws {
         let products = try GetMocks.readProductsData()
 

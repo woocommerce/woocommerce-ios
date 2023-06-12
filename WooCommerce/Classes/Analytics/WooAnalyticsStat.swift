@@ -167,6 +167,15 @@ public enum WooAnalyticsStat: String {
     case analyticsHubDateRangeOptionSelected = "analytics_hub_date_range_option_selected"
     case analyticsHubDateRangeSelectionFailed = "analytics_hub_date_range_selection_failed"
 
+    // MARK: Blaze Events
+    //
+    case blazeEntryPointDisplayed = "blaze_entry_point_displayed"
+    case blazeEntryPointTapped = "blaze_entry_point_tapped"
+    case blazeFlowStarted = "blaze_flow_started"
+    case blazeFlowCanceled = "blaze_flow_canceled"
+    case blazeFlowCompleted = "blaze_flow_completed"
+    case blazeFlowError = "blaze_flow_error"
+
     // MARK: Products Onboarding Events
     //
     case productsOnboardingEligible = "products_onboarding_store_is_eligible"
@@ -726,6 +735,15 @@ public enum WooAnalyticsStat: String {
     // MARK: First created product events
     case firstCreatedProductShown = "first_created_product_shown"
     case firstCreatedProductShareTapped = "first_created_product_share_tapped"
+
+    // MARK: Product sharing AI
+    //
+    case productSharingAIDisplayed = "product_sharing_ai_displayed"
+    case productSharingAIGenerateTapped = "product_sharing_ai_generate_tapped"
+    case productSharingAIShareTapped = "product_sharing_ai_share_tapped"
+    case productSharingAIDismissed = "product_sharing_ai_dismissed"
+    case productSharingAIMessageGenerated = "product_sharing_ai_message_generated"
+    case productSharingAIMessageGenerationFailed = "product_sharing_ai_message_generation_failed"
 
     // MARK: Remote Request Events
     //

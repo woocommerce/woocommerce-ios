@@ -193,4 +193,41 @@ final class SiteRemoteTests: XCTestCase {
                                                 message: "You cannot add WordPress.com eCommerce Trial when you already have paid upgrades")
         })
     }
+
+    // MARK: - `loadBlazeStatus`
+
+    func test_loadBlazeStatus_returns_true_on_success() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "blaze/status", filename: "blaze-status-success")
+
+        // When
+        let isApproved = try await remote.loadBlazeStatus(siteID: 134)
+
+        // Then
+        XCTAssertTrue(isApproved)
+    }
+
+    func test_loadBlazeStatus_returns_false_on_failure() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "blaze/status", filename: "blaze-status-failure")
+
+        // When
+        let isApproved = try await remote.loadBlazeStatus(siteID: 134)
+
+        // Then
+        XCTAssertFalse(isApproved)
+    }
+
+    func test_loadBlazeStatus_throws_decoding_error_on_generic_error() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "blaze/status", filename: "generic_error")
+
+        await assertThrowsError({
+            // When
+            _ = try await remote.loadBlazeStatus(siteID: 134)
+        }, errorAssert: { error in
+            // Unexpected response format.
+            error is DecodingError
+        })
+    }
 }

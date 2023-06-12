@@ -21,6 +21,11 @@ public protocol SiteRemoteProtocol {
     /// - Parameter siteID: Remote ID of the site to load.
     /// - Returns: The site that matches the site ID.
     func loadSite(siteID: Int64) async throws -> Site
+
+    /// Loads the Blaze status of a site.
+    /// - Parameter siteID: Remote ID of the site to load the Blaze status.
+    /// - Returns: A boolean that indicates whether Blaze is approved for the site.
+    func loadBlazeStatus(siteID: Int64) async throws -> Bool
 }
 
 /// Site: Remote Endpoints
@@ -109,6 +114,13 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         return try await enqueue(request)
+    }
+
+    public func loadBlazeStatus(siteID: Int64) async throws -> Bool {
+        let path = Path.loadBlazeStatus(siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
+        let response: BlazeStatusResponse = try await enqueue(request)
+        return response.isApproved
     }
 }
 
@@ -221,6 +233,15 @@ public struct SiteProfilerData {
     }
 }
 
+/// Site Blaze status response.
+private struct BlazeStatusResponse: Decodable {
+    let isApproved: Bool
+
+    private enum CodingKeys: String, CodingKey {
+        case isApproved = "approved"
+    }
+}
+
 extension SiteRemote {
     enum SiteParameter {
         enum Fields {
@@ -252,6 +273,10 @@ private extension SiteRemote {
 
         static func loadSite(siteID: Int64) -> String {
             "sites/\(siteID)"
+        }
+
+        static func loadBlazeStatus(siteID: Int64) -> String {
+            "sites/\(siteID)/blaze/status"
         }
     }
 }

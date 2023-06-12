@@ -240,6 +240,10 @@ private struct ProductsSection: View {
     ///
     @State private var showPermissionsSheet: Bool = false
 
+    /// Defines whether we should show a progress view instead of the barcode scanner button.
+    /// 
+    @State private var showAddProductViaSKUScannerLoading: Bool = false
+
     /// ID for Add Product button
     ///
     @Namespace var addProductButton
@@ -323,15 +327,21 @@ private struct ProductsSection: View {
                             logPermissionStatus(status: .permitted)
                         }
                     }, label: {
-                        Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                        if showAddProductViaSKUScannerLoading {
+                            ProgressView()
+                        } else {
+                            Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
                             .foregroundColor(Color(.brand))
+                        }
                     })
                     .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
                         scroll.scrollTo(addProductViaSKUScannerButton)
                     }, content: {
                         ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                            showAddProductViaSKUScanner = false
+                            showAddProductViaSKUScannerLoading = true
                             viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                                showAddProductViaSKUScanner.toggle()
+                                showAddProductViaSKUScannerLoading = false
                             }, onRetryRequested: {
                                 showAddProductViaSKUScanner = true
                             })

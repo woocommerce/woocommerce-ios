@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+14.1
+-----
+- [*] Plans: Expired or cancelled plans are now shown more reliably [https://github.com/woocommerce/woocommerce-ios/pull/9924]
+
 14.0
 -----
 - [*] Payments: Remove the upsell-card-readers banner from the Payment Methods Screen [https://github.com/woocommerce/woocommerce-ios/pull/9869]

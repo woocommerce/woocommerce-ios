@@ -6,59 +6,77 @@ import protocol Experiments.FeatureFlagService
 final class ShareProductCoordinator: Coordinator {
     let navigationController: UINavigationController
 
+    private let siteID: Int64
     private let productURL: URL
     private let productName: String
+    private let productDescription: String
     private let shareSheetAnchorView: UIView?
     private let shareSheetAnchorItem: UIBarButtonItem?
-    private let shareProductEligibilityChecker: ShareProductAIEligibilityChecker
+    private let eligibilityChecker: ShareProductAIEligibilityChecker
+    private let analytics: Analytics
 
-    private init(site: Site?,
+    private var bottomSheetPresenter: BottomSheetPresenter?
+
+    private init(siteID: Int64,
                  productURL: URL,
                  productName: String,
+                 productDescription: String,
                  shareSheetAnchorView: UIView?,
                  shareSheetAnchorItem: UIBarButtonItem?,
-                 featureFlagService: FeatureFlagService,
-                 navigationController: UINavigationController) {
+                 eligibilityChecker: ShareProductAIEligibilityChecker,
+                 navigationController: UINavigationController,
+                 analytics: Analytics) {
+        self.siteID = siteID
         self.productURL = productURL
         self.productName = productName
+        self.productDescription = productDescription
         self.shareSheetAnchorView = shareSheetAnchorView
         self.shareSheetAnchorItem = shareSheetAnchorItem
-        self.shareProductEligibilityChecker = ShareProductAIEligibilityChecker(site: site, featureFlagService: featureFlagService)
+        self.eligibilityChecker = eligibilityChecker
         self.navigationController = navigationController
+        self.analytics = analytics
     }
 
-    convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
+    convenience init(siteID: Int64,
                      productURL: URL,
                      productName: String,
+                     productDescription: String,
                      shareSheetAnchorView: UIView,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-                     navigationController: UINavigationController) {
-        self.init(site: site,
+                     eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
+                     navigationController: UINavigationController,
+                     analytics: Analytics = ServiceLocator.analytics) {
+        self.init(siteID: siteID,
                   productURL: productURL,
                   productName: productName,
+                  productDescription: productDescription,
                   shareSheetAnchorView: shareSheetAnchorView,
                   shareSheetAnchorItem: nil,
-                  featureFlagService: featureFlagService,
-                  navigationController: navigationController)
+                  eligibilityChecker: eligibilityChecker,
+                  navigationController: navigationController,
+                  analytics: analytics)
     }
 
-    convenience init(site: Site? = ServiceLocator.stores.sessionManager.defaultSite,
+    convenience init(siteID: Int64,
                      productURL: URL,
                      productName: String,
+                     productDescription: String,
                      shareSheetAnchorItem: UIBarButtonItem,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-                     navigationController: UINavigationController) {
-        self.init(site: site,
+                     eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
+                     navigationController: UINavigationController,
+                     analytics: Analytics = ServiceLocator.analytics) {
+        self.init(siteID: siteID,
                   productURL: productURL,
                   productName: productName,
+                  productDescription: productDescription,
                   shareSheetAnchorView: nil,
                   shareSheetAnchorItem: shareSheetAnchorItem,
-                  featureFlagService: featureFlagService,
-                  navigationController: navigationController)
+                  eligibilityChecker: eligibilityChecker,
+                  navigationController: navigationController,
+                  analytics: analytics)
     }
 
     func start() {
-        if shareProductEligibilityChecker.canGenerateShareProductMessageUsingAI {
+        if eligibilityChecker.canGenerateShareProductMessageUsingAI {
             presentShareProductAIGeneration()
         } else {
             presentShareSheet()
@@ -82,8 +100,24 @@ private extension ShareProductCoordinator {
         }
     }
 
-    // TODO: 9867 UI to show product sharing message AI generation for eligible sites
     func presentShareProductAIGeneration() {
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: siteID,
+                                                                 url: productURL.absoluteString,
+                                                                 productName: productName,
+                                                                 productDescription: productDescription)
+        let controller = ProductSharingMessageGenerationHostingController(viewModel: viewModel)
 
+        let presenter = BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
+        bottomSheetPresenter = presenter
+        presenter.present(controller, from: navigationController.topmostPresentedViewController, onDismiss: { [weak self] in
+            self?.analytics.track(event: .ProductSharingAI.sheetDismissed())
+        })
+        analytics.track(event: .ProductSharingAI.sheetDisplayed())
     }
 }

@@ -243,8 +243,10 @@ private extension AddProductCoordinator {
         viewModel.onProductCreated = { [weak self] product in
             guard let self else { return }
             self.onProductCreated(product)
-            if self.isFirstProduct {
-                self.showFirstProductCreatedView(product: product,
+            if self.isFirstProduct, let url = URL(string: product.permalink) {
+                self.showFirstProductCreatedView(productURL: url,
+                                                 productName: product.name,
+                                                 productDescription: product.fullDescription ?? product.shortDescription ?? "",
                                                  showShareProductButton: viewModel.canShareProduct())
             }
         }
@@ -304,8 +306,14 @@ private extension AddProductCoordinator {
 
     /// Presents the celebratory view for the first created product.
     ///
-    func showFirstProductCreatedView(product: Product, showShareProductButton: Bool) {
-        let viewController = FirstProductCreatedHostingController(product: product,
+    func showFirstProductCreatedView(productURL: URL,
+                                     productName: String,
+                                     productDescription: String,
+                                     showShareProductButton: Bool) {
+        let viewController = FirstProductCreatedHostingController(siteID: siteID,
+                                                                  productURL: productURL,
+                                                                  productName: productName,
+                                                                  productDescription: productDescription,
                                                                   showShareProductButton: showShareProductButton)
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }

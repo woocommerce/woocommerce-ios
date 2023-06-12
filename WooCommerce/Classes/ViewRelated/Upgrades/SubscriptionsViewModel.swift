@@ -3,9 +3,10 @@ import Yosemite
 import Combine
 import protocol Experiments.FeatureFlagService
 
-/// ViewModel for the Upgrades View
+/// ViewModel for the Subscriptions View
+/// Drives the site's plan subscription
 ///
-final class UpgradesViewModel: ObservableObject {
+final class SubscriptionsViewModel: ObservableObject {
 
     /// Indicates if the view should show an error notice.
     ///
@@ -19,7 +20,11 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private(set) var planInfo = ""
 
-    /// Defines if the view should show the Full Plan features..
+    /// Current store plan details information.
+    ///
+    private(set) var planDaysLeft = ""
+
+    /// Defines if the view should show the Full Plan features.
     ///
     private(set) var shouldShowFreeTrialFeatures = false
 
@@ -55,6 +60,10 @@ final class UpgradesViewModel: ObservableObject {
     ///
     private let featureFlagService: FeatureFlagService
 
+    /// Closure to be invoked when the Cancel button is tapped
+    ///
+    var onCancelPlanButtonTapped: (() -> ())?
+
     init(stores: StoresManager = ServiceLocator.stores,
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
          analytics: Analytics = ServiceLocator.analytics,
@@ -74,7 +83,7 @@ final class UpgradesViewModel: ObservableObject {
 }
 
 // MARK: Helpers
-private extension UpgradesViewModel {
+private extension SubscriptionsViewModel {
     /// Observes and reacts to plan changes
     ///
     func observePlan() {
@@ -85,6 +94,8 @@ private extension UpgradesViewModel {
                 self.updateLoadingViewProperties()
             case .loaded(let plan):
                 self.updateViewProperties(from: plan)
+            case .expired:
+                self.updateExpiredViewProperties()
             case .failed, .unavailable:
                 self.updateFailedViewProperties()
             }
@@ -94,8 +105,9 @@ private extension UpgradesViewModel {
     }
 
     func updateViewProperties(from plan: WPComSitePlan) {
-        planName = Self.getPlanName(from: plan)
-        planInfo = Self.getPlanInfo(from: plan)
+        planName = getPlanName(from: plan)
+        planInfo = getPlanInfo(from: plan)
+        planDaysLeft = daysLeft(for: plan).formatted()
         errorNotice = nil
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
@@ -106,6 +118,14 @@ private extension UpgradesViewModel {
         planInfo = ""
         errorNotice = nil
         showLoadingIndicator = true
+        shouldShowFreeTrialFeatures = false
+    }
+
+    func updateExpiredViewProperties() {
+        planName = Localization.genericPlanEndedName
+        planInfo = Localization.planEndedInfo
+        errorNotice = nil
+        showLoadingIndicator = false
         shouldShowFreeTrialFeatures = false
     }
 
@@ -120,7 +140,7 @@ private extension UpgradesViewModel {
     /// Removes any occurrences of `WordPress.com` from the site's name.
     /// Free Trial's have an special handling!
     ///
-    static func getPlanName(from plan: WPComSitePlan) -> String {
+    func getPlanName(from plan: WPComSitePlan) -> String {
         let daysLeft = daysLeft(for: plan)
         if plan.isFreeTrial, daysLeft <= 0 {
             return Localization.trialEnded
@@ -136,7 +156,7 @@ private extension UpgradesViewModel {
 
     /// Returns a plan specific details information.
     ///
-    static func getPlanInfo(from plan: WPComSitePlan) -> String {
+    func getPlanInfo(from plan: WPComSitePlan) -> String {
         let daysLeft = daysLeft(for: plan)
         let planDuration = planDurationInDays(for: plan)
 
@@ -163,7 +183,7 @@ private extension UpgradesViewModel {
 
     /// Returns a site plan duration in days.
     ///
-    static func planDurationInDays(for plan: WPComSitePlan) -> Int {
+    func planDurationInDays(for plan: WPComSitePlan) -> Int {
         // Normalize dates in the same timezone.
         guard let subscribedDate = plan.subscribedDate?.startOfDay(timezone: .current),
               let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
@@ -176,7 +196,7 @@ private extension UpgradesViewModel {
 
     /// Returns how many days site  plan has left.
     ///
-    static func daysLeft(for plan: WPComSitePlan) -> Int {
+    func daysLeft(for plan: WPComSitePlan) -> Int {
         // Normalize dates in the same timezone.
         let today = Date().startOfDay(timezone: .current)
         guard let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
@@ -197,17 +217,21 @@ private extension UpgradesViewModel {
 }
 
 // MARK: Definitions
-private extension UpgradesViewModel {
+private extension SubscriptionsViewModel {
     enum Localization {
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
         static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. " +
-                                                      "Subscribe to Woo Express Performance Plan now.",
+                                                      "Subscribe to a Woo Express Plan now.",
                                                       comment: "Info details for an expired free trial")
         static let planEndedInfo = NSLocalizedString("Your subscription has ended and you have limited access to all the features.",
-                                                     comment: "Info details for an expired free trial")
+                                                     comment: "Info details for an expired plan")
         static let fetchErrorNotice = NSLocalizedString("There was an error fetching your plan details, please try again later.",
                                                         comment: "Error shown when failing to fetch the plan details in the upgrades view.")
         static let retry = NSLocalizedString("Retry", comment: "Retry button on the error notice for the upgrade view")
+
+        static let genericPlanEndedName = NSLocalizedString(
+            "plan ended",
+            comment: "Shown with a 'Current:' label, but when we don't know what the plan that ended was")
 
         static func planEndedName(name: String) -> String {
             let format = NSLocalizedString("%@ ended", comment: "Reads like: eCommerce ended")

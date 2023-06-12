@@ -70,6 +70,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
 
+    /// The coordinator for sharing products
+    ///
+    private var shareProductCoordinator: ShareProductCoordinator?
+
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
@@ -289,10 +293,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blaze) {
+        if viewModel.canPromoteWithBlaze() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
                 self?.displayBlaze()
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productMoreMenu))
             }
+            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productMoreMenu))
         }
 
         if viewModel.canEditProductSettings() {
@@ -879,11 +885,14 @@ private extension ProductFormViewController {
             return
         }
 
-        let shareProductCoordinator = ShareProductCoordinator(productURL: url,
+        let shareProductCoordinator = ShareProductCoordinator(siteID: product.siteID,
+                                                              productURL: url,
                                                               productName: product.name,
+                                                              productDescription: product.description ?? product.shortDescription ?? "",
                                                               shareSheetAnchorItem: sourceView,
                                                               navigationController: navigationController)
         shareProductCoordinator.start()
+        self.shareProductCoordinator = shareProductCoordinator
     }
 
     func duplicateProduct() {
@@ -974,7 +983,7 @@ private extension ProductFormViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: product.productID)
+        let viewModel = BlazeWebViewModel(source: .productMoreMenu, site: site, productID: product.productID)
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         navigationController?.show(webViewController, sender: self)
     }

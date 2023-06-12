@@ -113,16 +113,15 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_generate_button_tapped_is_tracked_correctly() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ProductSharingMessageGenerationViewModel(
-            siteID: 123,
-            productName: "Test",
-            url: "https://example.com",
-            stores: stores,
-            analytics: analytics
-        )
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores,
+                                                                 analytics: analytics)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success("Test"))
             default:
                 return
@@ -156,16 +155,15 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_generation_failure_event_is_tracked() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ProductSharingMessageGenerationViewModel(
-            siteID: 123,
-            productName: "Test",
-            url: "https://example.com",
-            stores: stores,
-            analytics: analytics
-        )
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores,
+                                                                 analytics: analytics)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             default:
                 return

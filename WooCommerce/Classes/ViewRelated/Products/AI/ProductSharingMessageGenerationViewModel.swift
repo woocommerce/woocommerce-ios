@@ -9,11 +9,11 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     let viewTitle: String
 
     var generateButtonTitle: String {
-        messageContent.isEmpty ? Localization.generate : Localization.regenerate
+        hasGeneratedMessage ? Localization.regenerate : Localization.generate
     }
 
     var generateButtonImageName: String {
-        messageContent.isEmpty ? "sparkles" : "arrow.counterclockwise"
+        hasGeneratedMessage ? "arrow.counterclockwise" : "sparkles"
     }
 
     var shareSheet: ShareSheet {
@@ -36,34 +36,42 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private let productDescription: String
     private let stores: StoresManager
     private let isPad: Bool
+    private let analytics: Analytics
+
+    /// Whether a message has been successfully generated.
+    /// This is needed to identify whether the next request is a retry.
+    private var hasGeneratedMessage = false
 
     init(siteID: Int64,
          url: String,
          productName: String,
          productDescription: String,
          isPad: Bool = UIDevice.isPad(),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.url = url
         self.productName = productName
         self.productDescription = productDescription
         self.isPad = isPad
         self.stores = stores
+        self.analytics = analytics
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
     }
 
     @MainActor
     func generateShareMessage() async {
-        // TODO: Analytics
+        analytics.track(event: .ProductSharingAI.generateButtonTapped(isRetry: hasGeneratedMessage))
         errorMessage = nil
         generationInProgress = true
         do {
             messageContent = try await requestMessageFromAI()
-            // TODO: Analytics
+            hasGeneratedMessage = true
+            analytics.track(event: .ProductSharingAI.messageGenerated())
         } catch {
-            // TODO: Analytics
             DDLogError("⛔️ Error generating product sharing message: \(error)")
             errorMessage = Localization.errorMessage
+            analytics.track(event: .ProductSharingAI.messageGenerationFailed(error: error))
         }
         generationInProgress = false
     }
@@ -74,6 +82,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         } else {
             isShareSheetPresented = true
         }
+        analytics.track(event: .ProductSharingAI.shareButtonTapped(withMessage: messageContent.isNotEmpty))
     }
 }
 

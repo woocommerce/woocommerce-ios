@@ -719,6 +719,15 @@ public enum WooAnalyticsStat: String {
     case firstCreatedProductShown = "first_created_product_shown"
     case firstCreatedProductShareTapped = "first_created_product_share_tapped"
 
+    // MARK: Product sharing AI
+    //
+    case productSharingAIDisplayed = "product_sharing_ai_displayed"
+    case productSharingAIGenerateTapped = "product_sharing_ai_generate_tapped"
+    case productSharingAIShareTapped = "product_sharing_ai_share_tapped"
+    case productSharingAIDismissed = "product_sharing_ai_dismissed"
+    case productSharingAIMessageGenerated = "product_sharing_ai_message_generated"
+    case productSharingAIMessageGenerationFailed = "product_sharing_ai_message_generation_failed"
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"

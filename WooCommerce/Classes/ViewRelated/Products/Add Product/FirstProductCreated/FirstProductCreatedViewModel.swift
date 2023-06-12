@@ -19,13 +19,13 @@ final class FirstProductCreatedViewModel: ObservableObject {
          productName: String,
          showShareProductButton: Bool,
          isPad: Bool = UIDevice.isPad(),
-         eligibilityChecker: ShareProductAIEligibilityChecker? = nil,
+         eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.productURL = productURL
         self.productName = productName
         self.showShareProductButton = showShareProductButton
 
-        let eligibilityChecker = eligibilityChecker ?? DefaultShareProductAIEligibilityChecker(site: ServiceLocator.stores.sessionManager.defaultSite)
+        let eligibilityChecker = eligibilityChecker
         self.canGenerateShareProductMessageUsingAI = eligibilityChecker.canGenerateShareProductMessageUsingAI
 
         self.analytics = analytics

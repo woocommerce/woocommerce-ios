@@ -310,7 +310,8 @@ private extension AddProductCoordinator {
                                      productName: String,
                                      productDescription: String,
                                      showShareProductButton: Bool) {
-        let viewController = FirstProductCreatedHostingController(productURL: productURL,
+        let viewController = FirstProductCreatedHostingController(siteID: siteID,
+                                                                  productURL: productURL,
                                                                   productName: productName,
                                                                   productDescription: productDescription,
                                                                   showShareProductButton: showShareProductButton)

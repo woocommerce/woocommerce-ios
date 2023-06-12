@@ -80,6 +80,32 @@ extension UIButton {
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
+    /// Applies the subtle button style with lighter colors.
+    ///
+    func applySubtleButtonStyle() {
+        let configuration: UIButton.Configuration = {
+            var configuration = UIButton.Configuration.filled()
+            configuration.contentInsets = .init(
+                top: Style.verticalInset,
+                leading: Style.horizontalInset,
+                bottom: Style.verticalInset,
+                trailing: Style.horizontalInset
+            )
+            configuration.baseForegroundColor = .accent
+            configuration.baseBackgroundColor = .init(light: .systemGray6, dark: .tertiarySystemBackground)
+            configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+                var outgoing = incoming
+                outgoing.font = StyleManager.subheadlineSemiBoldFont
+                outgoing.foregroundColor = .accent
+                return outgoing
+            }
+            return configuration
+        }()
+        self.configuration = configuration
+
+        titleLabel?.adjustsFontForContentSizeCategory = true
+    }
+
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
     func applyLinkButtonStyle(enableMultipleLines: Bool = false) {

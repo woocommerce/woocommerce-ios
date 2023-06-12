@@ -1847,6 +1847,35 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(generatedText, expectedText)
     }
 
+    func test_generateProductSharingMessage_returns_text_after_trimming_quotation_marks() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success("\"This is \"AI\" generated message.\""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductSharingMessage(
+                siteID: self.sampleSiteID,
+                url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description",
+                languageCode: "en-US"
+            ) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let generatedText = try XCTUnwrap(result.get())
+        XCTAssertEqual(generatedText, "This is \"AI\" generated message.")
+    }
+
     func test_generateProductSharingMessage_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()

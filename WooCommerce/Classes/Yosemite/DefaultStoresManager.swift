@@ -175,7 +175,7 @@ class DefaultStoresManager: StoresManager {
             return self
         }
 
-        NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        AppStartupWaitingTimeTracker.notify(action: .synchronizeEntities, withStatus: .started)
         let group = DispatchGroup()
 
         group.enter()
@@ -193,7 +193,7 @@ class DefaultStoresManager: StoresManager {
         }
 
         group.notify(queue: .main) {
-            NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+            AppStartupWaitingTimeTracker.notify(action: .synchronizeEntities, withStatus: .completed)
             onCompletion?()
         }
 
@@ -533,8 +533,8 @@ private extension DefaultStoresManager {
             return
         }
 
+        AppStartupWaitingTimeTracker.notify(action: .restoreSessionSite, withStatus: .started)
         let group = DispatchGroup()
-        notificationCenter.post(name: .restoreSessionSite, object: AppStartupWaitingTimeTracker.ActionStatus.started)
 
         group.enter()
         if siteID == WooConstants.placeholderStoreID,
@@ -580,8 +580,8 @@ private extension DefaultStoresManager {
             group.leave()
         }
 
-        group.notify(queue: .main) { [weak self] in
-            self?.notificationCenter.post(name: .restoreSessionSite, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+        group.notify(queue: .main) {
+            AppStartupWaitingTimeTracker.notify(action: .restoreSessionSite, withStatus: .completed)
         }
 
         sendTelemetryIfNeeded(siteID: siteID)

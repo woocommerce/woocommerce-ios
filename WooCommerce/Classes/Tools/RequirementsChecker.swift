@@ -42,12 +42,12 @@ class RequirementsChecker {
             return
         }
 
-        NotificationCenter.default.post(name: .checkMinimumWooVersion, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        AppStartupWaitingTimeTracker.notify(action: .checkMinimumWooVersion, withStatus: .started)
         checkMinimumWooVersion(for: siteID) { result in
             if case .success(.invalidWCVersion) = result {
                 displayWCVersionAlert()
             }
-            NotificationCenter.default.post(name: .checkMinimumWooVersion, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+            AppStartupWaitingTimeTracker.notify(action: .checkMinimumWooVersion, withStatus: .completed)
         }
     }
 

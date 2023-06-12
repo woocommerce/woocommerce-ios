@@ -53,6 +53,12 @@ final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
         startListeningToNotifications()
     }
 
+    /// Triggers a notification for the start or end of the provided startup action.
+    ///
+    static func notify(action: NSNotification.Name, withStatus status: ActionStatus, notificationCenter: NotificationCenter = .default) {
+        notificationCenter.post(name: action, object: status)
+    }
+
     /// Start listening to notifications that may occur on app startup.
     ///
     private func startListeningToNotifications() {

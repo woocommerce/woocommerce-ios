@@ -68,7 +68,7 @@ final class DashboardViewModel {
                    forceRefresh: Bool,
                    onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
-        NotificationCenter.default.post(name: .syncDashboardStats, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        AppStartupWaitingTimeTracker.notify(action: .syncDashboardStats, withStatus: .started)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveStats(siteID: siteID,
                                                  timeRange: timeRange,
@@ -90,7 +90,7 @@ final class DashboardViewModel {
                     self.statsVersion = .v4
                 }
             }
-            NotificationCenter.default.post(name: .syncDashboardStats, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+            AppStartupWaitingTimeTracker.notify(action: .syncDashboardStats, withStatus: .completed)
             onCompletion?(result)
         })
         stores.dispatch(action)
@@ -145,7 +145,7 @@ final class DashboardViewModel {
                              forceRefresh: Bool,
                              onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
-        NotificationCenter.default.post(name: .syncTopPerformers, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        AppStartupWaitingTimeTracker.notify(action: .syncTopPerformers, withStatus: .started)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                           timeRange: timeRange,
@@ -165,7 +165,7 @@ final class DashboardViewModel {
             }
 
             let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-            NotificationCenter.default.post(name: .syncTopPerformers, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+            AppStartupWaitingTimeTracker.notify(action: .syncTopPerformers, withStatus: .completed)
             onCompletion?(voidResult)
         })
         stores.dispatch(action)
@@ -248,7 +248,7 @@ final class DashboardViewModel {
             return
         }
 
-        NotificationCenter.default.post(name: .syncJITMs, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        AppStartupWaitingTimeTracker.notify(action: .syncJITMs, withStatus: .started)
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
         switch viewModel?.template {
@@ -260,7 +260,7 @@ final class DashboardViewModel {
             announcementViewModel = nil
             modalJustInTimeMessageViewModel = nil
         }
-        NotificationCenter.default.post(name: .syncJITMs, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+        AppStartupWaitingTimeTracker.notify(action: .syncJITMs, withStatus: .completed)
     }
 
     /// Sets up observer to decide store onboarding task lists visibility

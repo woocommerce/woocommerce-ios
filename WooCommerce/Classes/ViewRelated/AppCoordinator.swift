@@ -103,7 +103,7 @@ private extension AppCoordinator {
     /// Synchronize announcements and present What's New Screen if needed
     ///
     func synchronizeAndShowWhatsNew() {
-        NotificationCenter.default.post(name: .checkFeatureAnnouncements, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        AppStartupWaitingTimeTracker.notify(action: .checkFeatureAnnouncements, withStatus: .started)
         stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -117,7 +117,7 @@ private extension AppCoordinator {
                 }
             }
             self.showWhatsNewIfNeeded()
-            NotificationCenter.default.post(name: .checkFeatureAnnouncements, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+            AppStartupWaitingTimeTracker.notify(action: .checkFeatureAnnouncements, withStatus: .completed)
         }))
     }
 
@@ -301,7 +301,7 @@ private extension AppCoordinator {
             return
         }
 
-        NotificationCenter.default.post(name: .validateRoleEligibility, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        AppStartupWaitingTimeTracker.notify(action: .validateRoleEligibility, withStatus: .started)
         let action = AppSettingsAction.loadEligibilityErrorInfo { [weak self] result in
             guard let self = self else { return }
 
@@ -321,7 +321,7 @@ private extension AppCoordinator {
                 }
             }
 
-            NotificationCenter.default.post(name: .validateRoleEligibility, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+            AppStartupWaitingTimeTracker.notify(action: .validateRoleEligibility, withStatus: .completed)
             onSuccess()
         }
         stores.dispatch(action)

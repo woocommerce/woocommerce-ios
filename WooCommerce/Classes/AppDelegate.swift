@@ -108,8 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Start app navigation.
         appCoordinator?.start()
 
-        // Track that app did finish launching
-        NotificationCenter.default.post(name: .launchApp, object: AppStartupWaitingTimeTracker.ActionStatus.completed)
+        AppStartupWaitingTimeTracker.notify(action: .launchApp, withStatus: .completed)
 
         return true
     }
@@ -398,7 +397,7 @@ private extension AppDelegate {
     ///
     func setupStartupWaitingTimeTracker() {
         waitingTimeTracker = AppStartupWaitingTimeTracker()
-        NotificationCenter.default.post(name: .launchApp, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        AppStartupWaitingTimeTracker.notify(action: .launchApp, withStatus: .started)
     }
 
     func handleLaunchArguments() {

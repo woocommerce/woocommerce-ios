@@ -17,6 +17,9 @@ final class ProductSharingMessageGenerationHostingController: UIHostingControlle
 struct ProductSharingMessageGenerationView: View {
     @ObservedObject private var viewModel: ProductSharingMessageGenerationViewModel
 
+    @State private var isShowingLegalPage = false
+    private let legalURL = URL(string: "https://automattic.com/ai-guidelines/")
+
     init(viewModel: ProductSharingMessageGenerationViewModel) {
         self.viewModel = viewModel
     }
@@ -66,30 +69,27 @@ struct ProductSharingMessageGenerationView: View {
                 Text(message).errorStyle()
             }
 
-            // Action button to generate message
-            Button(action: {
-                Task {
-                    await viewModel.generateShareMessage()
-                }
-            }, label: {
-                Label {
-                    Text(viewModel.generateButtonTitle)
-                } icon: {
-                    Image(systemName: viewModel.generateButtonImageName)
-                }
-            })
-            .buttonStyle(.plain)
-            .foregroundColor(.accentColor)
-            .fixedSize()
-            .renderedIf(viewModel.generationInProgress == false)
+            AdaptiveStack {
+                // Action button to generate message
+                Button(action: {
+                    Task {
+                        await viewModel.generateShareMessage()
+                    }
+                }, label: {
+                    Label {
+                        Text(viewModel.generateButtonTitle)
+                    } icon: {
+                        Image(systemName: viewModel.generateButtonImageName)
+                    }
+                })
+                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress))
 
-            // Generating text
-            HStack {
-                ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                Text(Localization.generateInProgress)
-                    .secondaryBodyStyle()
+                Button(Localization.learnMore) {
+                    isShowingLegalPage = true
+                }
+                .buttonStyle(.plain)
+                .foregroundColor(.accentColor)
             }
-            .renderedIf(viewModel.generationInProgress)
 
             Spacer()
 
@@ -103,6 +103,7 @@ struct ProductSharingMessageGenerationView: View {
             .shareSheet(isPresented: $viewModel.isShareSheetPresented) {
                 viewModel.shareSheet
             }
+            .safariSheet(isPresented: $isShowingLegalPage, url: legalURL)
         }
         .padding(insets: Constants.insets)
     }
@@ -131,6 +132,10 @@ private extension ProductSharingMessageGenerationView {
         static let placeholder = NSLocalizedString(
             "Add an optional message",
             comment: "Placeholder text on the product sharing message generation screen"
+        )
+        static let learnMore = NSLocalizedString(
+            "Learn more",
+            comment: "Button to show more information about AI integration on the product sharing message generation screen"
         )
     }
 }

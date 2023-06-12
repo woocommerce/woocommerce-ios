@@ -554,7 +554,6 @@ private extension ProductStore {
             "- Try to make shorter sentences, using less difficult words to improve readability",
             "- Add related hashtags at the end of the message.",
             "- Do not include the URL in the message.",
-            "- Do not quote the message and give me the raw string."
         ].joined(separator: "\n")
         Task {
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt)

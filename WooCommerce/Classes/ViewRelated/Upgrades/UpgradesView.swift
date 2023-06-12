@@ -37,6 +37,7 @@ struct UpgradesView: View {
     init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
         self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
+        self.showingUpgradesNotAllowedSheetView = false
     }
 
     var body: some View {
@@ -92,8 +93,49 @@ struct UpgradesView: View {
 }
 
 struct UpgradesNotAllowedSheetView: View {
+    @Environment(\.dismiss) var dismiss
+
     var body: some View {
-        Text("Not the owner!")
+        VStack(alignment: .center, spacing: Layout.contentSpacing) {
+            Image(uiImage: .noStoreImage)
+            Text(Localization.title)
+                .secondaryTitleStyle()
+                .multilineTextAlignment(.center)
+            Text(Localization.siteName)
+                .frame(maxWidth: .infinity)
+                .headlineStyle()
+                .background(Color(.systemGray6))
+            Text(Localization.instructions)
+                .subheadlineStyle()
+                .multilineTextAlignment(.center)
+        }
+        .padding(Layout.contentSpacing)
+        .safeAreaInset(edge: .bottom) {
+            VStack {
+                Divider()
+                    .dividerStyle()
+                Button(Localization.goBackButtonTitle) {
+                    dismiss()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(Layout.contentSpacing)
+            }
+            .background(Color(.systemBackground))
+        }
+        .navigationBarBackButtonHidden()
+    }
+}
+
+private extension UpgradesNotAllowedSheetView {
+    enum Localization {
+        static let title = NSLocalizedString("Unable to upgrade", comment: "")
+        static let siteName = NSLocalizedString("mysiteaddress.com", comment: "")
+        static let instructions = NSLocalizedString("Only the site owner can manage upgrades. " +
+                                                    "Please contact the site owner.", comment: "")
+        static let goBackButtonTitle = NSLocalizedString("Go back", comment: "")
+    }
+    enum Layout {
+        static let contentSpacing: CGFloat = 24
     }
 }
 

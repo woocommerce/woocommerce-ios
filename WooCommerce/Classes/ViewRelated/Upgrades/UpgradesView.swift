@@ -24,20 +24,23 @@ struct UpgradesView: View {
     @ObservedObject var upgradesViewModel: UpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
-    @State private var showingUpgradesNotAllowedSheetView = false
     @State var isPurchasing = false
 
     private var planText: String {
-        String.localizedStringWithFormat(Constants.planName, subscriptionsViewModel.planName)
+        String.localizedStringWithFormat(Localization.planName, subscriptionsViewModel.planName)
     }
+
     private var daysLeftText: String {
-        String.localizedStringWithFormat(Constants.daysLeftInTrial, subscriptionsViewModel.planDaysLeft)
+        String.localizedStringWithFormat(Localization.daysLeftInTrial, subscriptionsViewModel.planDaysLeft)
+    }
+
+    private var siteName: String? {
+        ServiceLocator.stores.sessionManager.defaultSite?.name
     }
 
     init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
         self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
-        self.showingUpgradesNotAllowedSheetView = false
     }
 
     var body: some View {
@@ -47,24 +50,37 @@ struct UpgradesView: View {
                 Text(daysLeftText)
             }
             Section {
+                Image(uiImage: upgradesViewModel.userIsAdministrator ? .emptyOrdersImage : .noStoreImage)
+            }
+            Section {
+                VStack(alignment: .center, spacing: Layout.contentSpacing) {
+                    Text(Localization.unableToUpgradeText)
+                    if let siteName = siteName {
+                        Text(siteName)
+                    }
+                    Text(Localization.unableToUpgradeInstructions)
+                }
+            }
+            .renderedIf(!upgradesViewModel.userIsAdministrator)
+            Section {
                 VStack {
-                    Image(uiImage: .emptyOrdersImage)
                     if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
                         Text(availableProduct.displayName)
                             .font(.title)
-                        Text(Constants.upgradeSubtitle)
+                        Text(Localization.upgradeSubtitle)
                             .font(.body)
                         Text(availableProduct.displayPrice)
                             .font(.title)
                     }
                 }
             }
+            .renderedIf(upgradesViewModel.userIsAdministrator)
             Section {
                 if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
                     ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
-                        let buttonText = String.localizedStringWithFormat(Constants.purchaseCTAButtonText, wpcomPlan.displayName)
+                        let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
                         Button(buttonText) {
                             // TODO: Add product entitlement check
                             Task {
@@ -76,71 +92,20 @@ struct UpgradesView: View {
                     }
                 }
             }
+            .renderedIf(upgradesViewModel.userIsAdministrator)
         }
         .task {
             if upgradesViewModel.userIsAdministrator {
                 await upgradesViewModel.fetchPlans()
-            } else {
-                showingUpgradesNotAllowedSheetView = true
             }
         }
-        .navigationBarTitle(Constants.navigationTitle)
-        .navigationBarTitleDisplayMode(.large)
-        .fullScreenCover(isPresented: $showingUpgradesNotAllowedSheetView) {
-            UpgradesNotAllowedSheetView()
-        }
-    }
-}
-
-struct UpgradesNotAllowedSheetView: View {
-    @Environment(\.dismiss) var dismiss
-
-    var body: some View {
-        VStack(alignment: .center, spacing: Layout.contentSpacing) {
-            Image(uiImage: .noStoreImage)
-            Text(Localization.title)
-                .secondaryTitleStyle()
-                .multilineTextAlignment(.center)
-            Text(Localization.siteName)
-                .frame(maxWidth: .infinity)
-                .headlineStyle()
-                .background(Color(.systemGray6))
-            Text(Localization.instructions)
-                .subheadlineStyle()
-                .multilineTextAlignment(.center)
-        }
-        .padding(Layout.contentSpacing)
-        .safeAreaInset(edge: .bottom) {
-            VStack {
-                Divider()
-                    .dividerStyle()
-                Button(Localization.goBackButtonTitle) {
-                    dismiss()
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(Layout.contentSpacing)
-            }
-            .background(Color(.systemBackground))
-        }
-        .navigationBarBackButtonHidden()
-    }
-}
-
-private extension UpgradesNotAllowedSheetView {
-    enum Localization {
-        static let title = NSLocalizedString("Unable to upgrade", comment: "")
-        static let siteName = NSLocalizedString("mysiteaddress.com", comment: "")
-        static let instructions = NSLocalizedString("Only the site owner can manage upgrades. " +
-                                                    "Please contact the site owner.", comment: "")
-        static let goBackButtonTitle = NSLocalizedString("Go back", comment: "")
-    }
-    enum Layout {
-        static let contentSpacing: CGFloat = 24
+        .navigationBarTitle(Localization.navigationTitle)
+        .padding(.top)
     }
 }
 
 private extension UpgradesView {
-    struct Constants {
+    struct Localization {
         static let navigationTitle = NSLocalizedString("Plans", comment: "Navigation title for the Upgrades screen")
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")
@@ -150,5 +115,12 @@ private extension UpgradesView {
                                                        "Reads as 'Days left in trial: 15'")
         static let upgradeSubtitle = NSLocalizedString("Everything you need to launch an online store",
                                                        comment: "Subtitle that can be read under the Plan upgrade name")
+        static let unableToUpgradeText = NSLocalizedString("Unable to upgrade", comment: "")
+        static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades. " +
+                                                    "Please contact the site owner.", comment: "")
+        static let goBackButtonTitle = NSLocalizedString("Go back", comment: "")
+    }
+    enum Layout {
+        static let contentSpacing: CGFloat = 8
     }
 }

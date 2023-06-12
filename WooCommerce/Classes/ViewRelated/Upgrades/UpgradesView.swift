@@ -55,10 +55,14 @@ struct UpgradesView: View {
             Section {
                 VStack(alignment: .center, spacing: Layout.contentSpacing) {
                     Text(Localization.unableToUpgradeText)
+                        .bold()
+                        .headlineStyle()
                     if let siteName = siteName {
                         Text(siteName)
                     }
                     Text(Localization.unableToUpgradeInstructions)
+                        .font(.body)
+                        .foregroundColor(.secondary)
                 }
             }
             .renderedIf(!upgradesViewModel.userIsAdministrator)
@@ -115,10 +119,10 @@ private extension UpgradesView {
                                                        "Reads as 'Days left in trial: 15'")
         static let upgradeSubtitle = NSLocalizedString("Everything you need to launch an online store",
                                                        comment: "Subtitle that can be read under the Plan upgrade name")
-        static let unableToUpgradeText = NSLocalizedString("Unable to upgrade", comment: "")
-        static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades. " +
-                                                    "Please contact the site owner.", comment: "")
-        static let goBackButtonTitle = NSLocalizedString("Go back", comment: "")
+        static let unableToUpgradeText = NSLocalizedString("Unable to upgrade",
+                                                           comment: "Text describing that is not possible to upgrade the site's plan.")
+        static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades.",
+                                                                   comment: "Text describing that only the site owner can upgrade the site's plan.")
     }
     enum Layout {
         static let contentSpacing: CGFloat = 8

@@ -92,4 +92,97 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Then
         assertEqual(ProductSharingMessageGenerationViewModel.Localization.errorMessage, viewModel.errorMessage)
     }
+
+    // MARK: `shareSheet`
+    func test_shareSheet_has_expected_activityItems() async throws {
+        // Given
+        let expectedString = "Check out this product!"
+        let expectedURLString = "https://example.com"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: expectedURLString,
+                                                                 stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, completion):
+                completion(.success(expectedString))
+            default:
+                return
+            }
+        }
+
+        // When
+        await viewModel.generateShareMessage()
+
+        // Then
+        let message = try XCTUnwrap(viewModel.shareSheet.activityItems[0] as? String)
+        assertEqual(expectedString, message)
+
+        let url = try XCTUnwrap(viewModel.shareSheet.activityItems[1] as? URL)
+        let expectedURL = try XCTUnwrap(URL(string: expectedURLString))
+        assertEqual(expectedURL, url)
+    }
+
+    // MARK: `isSharePopoverPresented`
+    func test_didTapShare_presents_popover_when_on_ipad() throws {
+        // Given
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: "https://example.com",
+                                                                 isPad: true)
+        XCTAssertFalse(viewModel.isSharePopoverPresented)
+
+        // When
+        viewModel.didTapShare()
+
+        // Then
+        XCTAssertTrue(viewModel.isSharePopoverPresented)
+    }
+
+    func test_didTapShare_does_not_present_popover_when_not_on_ipad() throws {
+        // Given
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: "https://example.com",
+                                                                 isPad: false)
+        XCTAssertFalse(viewModel.isSharePopoverPresented)
+
+        // When
+        viewModel.didTapShare()
+
+        // Then
+        XCTAssertFalse(viewModel.isSharePopoverPresented)
+    }
+
+    // MARK: `isShareSheetPresented`
+    func test_didTapShare_presents_sheet_when_not_on_ipad() throws {
+        // Given
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: "https://example.com",
+                                                                 isPad: false)
+        XCTAssertFalse(viewModel.isShareSheetPresented)
+
+        // When
+        viewModel.didTapShare()
+
+        // Then
+        XCTAssertTrue(viewModel.isShareSheetPresented)
+    }
+
+    func test_didTapShare_does_not_present_sheet_when_on_ipad() throws {
+        // Given
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 productName: "Test",
+                                                                 url: "https://example.com",
+                                                                 isPad: true)
+        XCTAssertFalse(viewModel.isShareSheetPresented)
+
+        // When
+        viewModel.didTapShare()
+
+        // Then
+        XCTAssertFalse(viewModel.isShareSheetPresented)
+    }
 }

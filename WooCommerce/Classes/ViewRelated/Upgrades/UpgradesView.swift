@@ -58,16 +58,16 @@ struct UpgradesView: View {
                 }
             }
             Section {
-                if upgradesViewModel.products.isEmpty || isPurchasing {
+                if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
-                    ForEach(upgradesViewModel.products, id: \.id) { product in
-                        let buttonText = String.localizedStringWithFormat(Constants.purchaseCTAButtonText, product.displayName)
+                    ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
+                        let buttonText = String.localizedStringWithFormat(Constants.purchaseCTAButtonText, wpcomPlan.displayName)
                         Button(buttonText) {
                             // TODO: Add product entitlement check
                             Task {
                                 isPurchasing = true
-                                await upgradesViewModel.purchaseProduct(with: product.id)
+                                await upgradesViewModel.purchasePlan(with: wpcomPlan.id)
                                 isPurchasing = false
                             }
                         }
@@ -76,7 +76,7 @@ struct UpgradesView: View {
             }
         }
         .task {
-            await upgradesViewModel.loadProducts()
+            await upgradesViewModel.fetchPlans()
         }
         .navigationBarTitle(Constants.navigationTitle)
         .navigationBarTitleDisplayMode(.large)

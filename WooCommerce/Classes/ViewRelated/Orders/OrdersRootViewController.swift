@@ -32,6 +32,8 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
+    private let barcodeSKUScannerProductFinder: BarcodeSKUScannerProductFinder
+
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
@@ -73,11 +75,13 @@ final class OrdersRootViewController: UIViewController {
 
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared) {
+         orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
+         barcodeSKUScannerProductFinder: BarcodeSKUScannerProductFinder = BarcodeSKUScannerProductFinder()) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
+        self.barcodeSKUScannerProductFinder = barcodeSKUScannerProductFinder
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
@@ -224,16 +228,15 @@ final class OrdersRootViewController: UIViewController {
     /// - Parameters:
     ///   - scannedBarcode: The scanned barcode
     ///   - onCompletion: The closure to be trigged when the scanning completes. Succeeds with a Product, or fails with an Error.
-    private func handleScannedBarcode(_ scannedBarcode: String, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
-        let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID, sku: scannedBarcode) { result in
-            switch result {
-            case let .success(matchedProduct):
+    private func handleScannedBarcode(_ scannedBarcode: ScannedBarcode, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
+        Task {
+            do {
+                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: scannedBarcode, siteID: siteID)
                 onCompletion(.success(matchedProduct))
-            case let .failure(error):
+            } catch {
                 onCompletion(.failure(error))
             }
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     /// Presents an Error notice

@@ -13,6 +13,8 @@ final class ButtonTableViewCell: UITableViewCell {
         case primary
         /// Uses the secondary button style.
         case secondary
+        /// Uses the subtle style with lighter background color.
+        case subtle
 
         fileprivate static let `default` = Self.primary
     }
@@ -78,6 +80,8 @@ private extension ButtonTableViewCell {
             button.applyPrimaryButtonStyle()
         case .secondary:
             button.applySecondaryButtonStyle()
+        case .subtle:
+            button.applySubtleButtonStyle()
         }
     }
 }
@@ -87,3 +91,57 @@ extension ButtonTableViewCell {
         static let defaultSpacing = CGFloat(20)
     }
 }
+
+// MARK: - Previews
+
+#if canImport(SwiftUI) && DEBUG
+
+import SwiftUI
+
+private struct ButtonTableViewCellRepresentable: UIViewRepresentable {
+    typealias Style = ButtonTableViewCell.Style
+    private let style: Style
+    private let title: String
+
+    init(style: Style, title: String) {
+        self.style = style
+        self.title = title
+    }
+
+    func makeUIView(context: Context) -> UIView {
+        let cell: ButtonTableViewCell = .instantiateFromNib()
+        cell.configure(style: style, title: title)
+        return cell
+    }
+
+    func updateUIView(_ view: UIView, context: Context) {
+        // noop
+    }
+}
+
+struct ButtonTableViewCell_Previews: PreviewProvider {
+    private static func makeStack() -> some View {
+        VStack {
+            ButtonTableViewCellRepresentable(style: .primary, title: "Primary button")
+            ButtonTableViewCellRepresentable(style: .secondary, title: "Secondary button")
+            ButtonTableViewCellRepresentable(style: .subtle, title: "Subtle button")
+        }
+    }
+
+    static var previews: some View {
+        Group {
+            makeStack()
+                .previewDisplayName("Light")
+
+            makeStack()
+                .environment(\.colorScheme, .dark)
+                .previewDisplayName("Dark")
+
+            makeStack()
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .previewDisplayName("Large Font")
+        }
+    }
+}
+
+#endif

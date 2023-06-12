@@ -557,7 +557,9 @@ private extension ProductStore {
             "- Do not quote the message and give me the raw string."
         ].joined(separator: "\n")
         Task {
-            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }
+            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt)
+                    .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
+            }
             await MainActor.run {
                 completion(result)
             }

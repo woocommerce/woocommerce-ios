@@ -164,4 +164,31 @@ final class SubscriptionsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.errorNotice)
     }
 
+    func test_expired_unknown_plan_has_correct_view_model_values() {
+        // Given
+        let session = SessionManager.testingInstance
+        let stores = MockStoresManager(sessionManager: session)
+        session.defaultSite = sampleSite
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.failure(LoadSiteCurrentPlanError.noCurrentPlan))
+            default:
+                break
+            }
+        }
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+        let featureFlags = MockFeatureFlagService()
+        let viewModel = SubscriptionsViewModel(stores: stores, storePlanSynchronizer: synchronizer, featureFlagService: featureFlags)
+
+        // When
+        viewModel.loadPlan()
+
+        // Then
+        assertEqual("plan ended", viewModel.planName)
+        assertEqual("Your subscription has ended and you have limited access to all the features.", viewModel.planInfo)
+        XCTAssertFalse(viewModel.shouldShowCancelTrialButton)
+        XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
+        XCTAssertNil(viewModel.errorNotice)
+    }
 }

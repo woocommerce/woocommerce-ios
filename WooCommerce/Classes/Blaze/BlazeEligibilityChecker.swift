@@ -17,6 +17,7 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
 
     /// Checks if the site is eligible for Blaze.
     /// - Returns: Whether the site is eligible for Blaze.
+    @MainActor
     func isSiteEligible() async -> Bool {
         await checkSiteEligibility()
     }
@@ -25,6 +26,7 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     /// - Parameter product: The product to check for Blaze eligibility.
     /// - Parameter isPasswordProtected: Whether the product is password protected.
     /// - Returns: Whether the product is eligible for Blaze.
+    @MainActor
     func isProductEligible(product: ProductFormDataModel, isPasswordProtected: Bool) async -> Bool {
         guard product.status == .published && isPasswordProtected == false else {
             return false

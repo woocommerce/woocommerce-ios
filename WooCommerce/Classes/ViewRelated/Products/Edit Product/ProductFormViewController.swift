@@ -296,7 +296,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         if viewModel.canPromoteWithBlaze() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
                 self?.displayBlaze()
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productMoreMenu))
             }
+            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productMoreMenu))
         }
 
         if viewModel.canEditProductSettings() {
@@ -980,7 +982,7 @@ private extension ProductFormViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: product.productID)
+        let viewModel = BlazeWebViewModel(source: .productMoreMenu, site: site, productID: product.productID)
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         navigationController?.show(webViewController, sender: self)
     }

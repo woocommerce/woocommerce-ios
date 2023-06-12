@@ -92,10 +92,10 @@ final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
         // End the waiting time tracker when no more actions are pending
         if startupActionsPending.isEmpty {
             notificationCenter.removeObserver(self) // Stop listening to any notifications
-            guard stores.isAuthenticated else {
-                return // Don't track the waiting time if the user is logged out
+            guard stores.isAuthenticated else { // Don't track the waiting time if the user is logged out
+                return
             }
-            // TODO: Call super.end() to fire the analytics event
+            super.end() // Calculate the elapsed time and trigger analytics event
         }
     }
 }

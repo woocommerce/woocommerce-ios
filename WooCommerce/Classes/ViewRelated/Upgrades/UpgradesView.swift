@@ -44,44 +44,42 @@ struct UpgradesView: View {
     }
 
     var body: some View {
-        List {
-            Section {
+        VStack(alignment: .center, spacing: Layout.contentSpacing) {
+            VStack {
                 Text(planText)
                 Text(daysLeftText)
-            }
-            Section {
                 Image(uiImage: upgradesViewModel.userIsAdministrator ? .emptyOrdersImage : .noStoreImage)
             }
-            Section {
-                VStack(alignment: .center, spacing: Layout.contentSpacing) {
-                    Text(Localization.unableToUpgradeText)
-                        .bold()
-                        .headlineStyle()
-                    if let siteName = siteName {
-                        Text(siteName)
-                    }
-                    Text(Localization.unableToUpgradeInstructions)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+            Spacer()
+            VStack {
+                Text(Localization.unableToUpgradeText)
+                    .bold()
+                    .headlineStyle()
+                if let siteName = siteName {
+                    Text(siteName)
                 }
+                Text(Localization.unableToUpgradeInstructions)
+                    .font(.body)
+                    .foregroundColor(.secondary)
             }
             .renderedIf(!upgradesViewModel.userIsAdministrator)
-            Section {
-                VStack {
-                    if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
-                        Text(availableProduct.displayName)
-                            .font(.title)
-                        Text(Localization.upgradeSubtitle)
-                            .font(.body)
-                        Text(availableProduct.displayPrice)
-                            .font(.title)
-                    }
+            Spacer()
+            VStack {
+                if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
+                    Text(availableProduct.displayName)
+                        .font(.title)
+                    Text(Localization.upgradeSubtitle)
+                        .font(.body)
+                    Text(availableProduct.displayPrice)
+                        .font(.title)
                 }
             }
             .renderedIf(upgradesViewModel.userIsAdministrator)
-            Section {
+            Spacer()
+            VStack {
                 if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    Spacer()
                 } else {
                     ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
                         let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
@@ -97,6 +95,7 @@ struct UpgradesView: View {
                 }
             }
             .renderedIf(upgradesViewModel.userIsAdministrator)
+            Spacer()
         }
         .task {
             if upgradesViewModel.userIsAdministrator {
@@ -105,6 +104,13 @@ struct UpgradesView: View {
         }
         .navigationBarTitle(Localization.navigationTitle)
         .padding(.top)
+    }
+}
+
+struct UpgradesView_Preview: PreviewProvider {
+    static var previews: some View {
+        UpgradesView(upgradesViewModel: UpgradesViewModel(siteID: 0),
+                     subscriptionsViewModel: SubscriptionsViewModel())
     }
 }
 
@@ -124,6 +130,7 @@ private extension UpgradesView {
         static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades.",
                                                                    comment: "Text describing that only the site owner can upgrade the site's plan.")
     }
+
     enum Layout {
         static let contentSpacing: CGFloat = 8
     }

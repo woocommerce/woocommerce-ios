@@ -20,6 +20,7 @@ final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     /// Represents all of the app startup actions to observe notifications for.
     ///
     private let startupActionsToObserve: [NSNotification.Name] = [
+        .launchApp,
         .validateRoleEligibility,
         .checkFeatureAnnouncements,
         .restoreSessionSite,

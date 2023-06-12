@@ -109,7 +109,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     @MainActor
     func updateData() async {
         do {
-            let tracker = WaitingTimeTracker(trackScenario: .analyticsHub)
+            let tracker = WaitingTimeTracker(trackScenario: .analyticsHub, analyticsService: analytics)
             try await retrieveData()
             tracker.end()
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {

@@ -185,4 +185,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let optionSelectedEventProperty = try XCTUnwrap(analyticsProvider.receivedProperties.last?["option"] as? String)
         assertEqual("Week to Date", optionSelectedEventProperty)
     }
+
+    func test_retrieving_stats_tracks_expected_waiting_time_event() async {
+        // Given
+        let vm = AnalyticsHubViewModel(siteID: 123, statsTimeRange: .today, usageTracksEventEmitter: eventEmitter, analytics: analytics)
+
+        // When
+        await vm.updateData()
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubWaitingTimeLoaded.rawValue))
+    }
 }

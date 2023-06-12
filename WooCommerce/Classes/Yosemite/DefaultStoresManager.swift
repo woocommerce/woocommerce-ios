@@ -169,8 +169,14 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
-        let group = DispatchGroup()
+        // Syncing these entities requires AccountStore, which is not registered when authenticated without WPCom
+        guard !isAuthenticatedWithoutWPCom else {
+            onCompletion?()
+            return self
+        }
+
         NotificationCenter.default.post(name: .synchronizeEntities, object: AppStartupWaitingTimeTracker.ActionStatus.started)
+        let group = DispatchGroup()
 
         group.enter()
         synchronizeAccount { [weak self] _ in

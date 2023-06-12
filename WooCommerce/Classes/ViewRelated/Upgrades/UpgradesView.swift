@@ -24,6 +24,7 @@ struct UpgradesView: View {
     @ObservedObject var upgradesViewModel: UpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
+    @State private var showingUpgradesNotAllowedSheetView = false
     @State var isPurchasing = false
 
     private var planText: String {
@@ -76,10 +77,23 @@ struct UpgradesView: View {
             }
         }
         .task {
-            await upgradesViewModel.fetchPlans()
+            if upgradesViewModel.userIsAdministrator {
+                await upgradesViewModel.fetchPlans()
+            } else {
+                showingUpgradesNotAllowedSheetView = true
+            }
         }
         .navigationBarTitle(Constants.navigationTitle)
         .navigationBarTitleDisplayMode(.large)
+        .fullScreenCover(isPresented: $showingUpgradesNotAllowedSheetView) {
+            UpgradesNotAllowedSheetView()
+        }
+    }
+}
+
+struct UpgradesNotAllowedSheetView: View {
+    var body: some View {
+        Text("Not the owner!")
     }
 }
 

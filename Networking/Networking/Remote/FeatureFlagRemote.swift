@@ -32,6 +32,7 @@ public enum RemoteFeatureFlag: Decodable {
     case oneDayBeforeFreeTrialExpiresNotification
     case oneDayAfterFreeTrialExpiresNotification
     case blaze
+    case hardcodedPlanUpgradeDetailsMilestone1AreAccurate
 
     init?(rawValue: String) {
         switch rawValue {
@@ -45,6 +46,8 @@ public enum RemoteFeatureFlag: Decodable {
             self = .oneDayAfterFreeTrialExpiresNotification
         case "woo_blaze":
             self = .blaze
+        case "woo_hardcoded_plan_upgrade_details_milestone_1_are_accurate":
+            self = .hardcodedPlanUpgradeDetailsMilestone1AreAccurate
         default:
             return nil
         }

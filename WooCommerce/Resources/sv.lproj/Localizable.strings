@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-30 18:03:10+0000 */
+/* Translation-Revision-Date: 2023-06-05 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -5653,6 +5653,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Återställ aktivitetslogg";
 
+/* The title for a menu to reset the privacy choice banner presentation */
+"Reset Privacy Choice Banner State" = "Återställ integritetsval för bannertillstånd";
+
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
@@ -7196,6 +7199,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Det gick inte att utfärda återbetalningen";
+
+/* Notice title when there is an error saving the privacy banner choice */
+"There was an error saving your privacy choices." = "Det uppstod ett fel när dina integritetsval skulle sparas.";
 
 /* Notice displayed when searching the list of products fails */
 "There was an error searching products" = "Det uppstod ett fel vid sökning av produkter";

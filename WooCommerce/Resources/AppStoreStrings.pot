@@ -57,9 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v13.9-whats-new"
+msgctxt "v14.0-whats-new"
 msgid ""
-"In this update, we've made several improvements to enhance compatibility with third-party plugins, ensuring a smoother experience when loading order lists, product lists, and product variations. All that glitters is not gold — sometimes it's code!\n"
+"This release includes several bug fixes and improvements to help you get your business started and ensure a smooth experience. Stay tuned for more enhancements in the future.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

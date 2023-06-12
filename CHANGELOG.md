@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 14.0
+This release includes several bug fixes and improvements to help you get your business started and ensure a smooth experience. Stay tuned for more enhancements in the future. 
+
 ## 13.9
 In this update, we've made several improvements to enhance compatibility with third-party plugins, ensuring a smoother experience when loading order lists, product lists, and product variations. All that glitters is not gold — sometimes it's code!
 

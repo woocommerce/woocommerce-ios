@@ -3,6 +3,8 @@ import Foundation
 
 /// Mock version of `BlazeEligibilityChecker` for easier unit testing.
 final class MockBlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
+    private(set) var isSiteEligibleInvoked: Bool = false
+
     private let isSiteEligible: Bool
     private let isProductEligible: Bool
 
@@ -12,7 +14,8 @@ final class MockBlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     }
 
     func isSiteEligible() async -> Bool {
-        isSiteEligible
+        isSiteEligibleInvoked = true
+        return isSiteEligible
     }
 
     func isProductEligible(product: WooCommerce.ProductFormDataModel, isPasswordProtected: Bool) async -> Bool {

@@ -890,7 +890,10 @@ private extension EditableOrderViewModel {
         let productCount = addedItemsToSync.count - removedItemsToSync.count
 
         if addedItemsToSync.isNotEmpty {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: productCount))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow,
+                                                                            source: .orderCreation,
+                                                                            addedVia: .manually,
+                                                                            productCount: productCount))
         }
 
         if removedItemsToSync.isNotEmpty {
@@ -958,6 +961,7 @@ private extension EditableOrderViewModel {
         guard let productID = self.initialProductID else {
             return
         }
+
         updateOrderWithProductID(productID)
     }
 
@@ -1306,6 +1310,9 @@ extension EditableOrderViewModel {
             switch result {
             case let .success(product):
                 Task { @MainActor in
+                    self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: self.flow.analyticsFlow,
+                                                                                    source: .orderCreation,
+                                                                                    addedVia: .scanning))
                     self.updateOrderWithProductID(product.productID)
                     onCompletion(.success(()))
                 }

@@ -952,11 +952,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         let eventProperties = analytics.receivedProperties[eventIndex]
-        guard let event = eventProperties.first(where: { $0.key as? String == "flow"}) else {
-            return XCTFail("No property received")
-        }
 
-        XCTAssertEqual(event.value as? String, "creation")
+        XCTAssertEqual(eventProperties["flow"] as? String, "creation")
+        XCTAssertEqual(eventProperties["source"] as? String, "order_creation")
+        XCTAssertEqual(eventProperties["added_via"] as? String, "manually")
     }
 
     func test_product_is_tracked_when_quantity_changes() throws {
@@ -1698,6 +1697,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(successWasReceived)
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningSuccess.rawValue)
         XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
+        XCTAssertEqual(analytics.receivedEvents.last, WooAnalyticsStat.orderProductAdd.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.last?["source"] as? String, "order_creation")
+        XCTAssertEqual(analytics.receivedProperties.last?["flow"] as? String, "creation")
+        XCTAssertEqual(analytics.receivedProperties.last?["added_via"] as? String, "scanning")
     }
 
     func test_order_creation_when_withInitialProduct_is_nil_then_currentOrderItems_are_zero() {

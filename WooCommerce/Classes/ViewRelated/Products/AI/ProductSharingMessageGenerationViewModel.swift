@@ -107,7 +107,7 @@ extension ProductSharingMessageGenerationViewModel {
             comment: "Error message on the product sharing message generation screen when generation fails."
         )
         static let generate = NSLocalizedString(
-            "Write it for me",
+            "Write with AI",
             comment: "Action button to generate message on the product sharing message generation screen"
         )
         static let regenerate = NSLocalizedString(

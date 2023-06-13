@@ -219,7 +219,7 @@ private extension ProductFormTableViewDataSource {
         cell.configure(style: .subtle,
                        title: title,
                        accessibilityIdentifier: "product-description-ai",
-                       topSpacing: 0,
+                       topSpacing: 6,
                        bottomSpacing: 0) { [weak self] in
             self?.descriptionAIAction?()
         }

@@ -118,10 +118,10 @@ public class ProductStore: Store {
             checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion)
         case let .createTemplateProduct(siteID, template, onCompletion):
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
-        case let .generateProductDescription(siteID, name, features, languageCode, completion):
-            generateProductDescription(siteID: siteID, name: name, features: features, languageCode: languageCode, completion: completion)
-        case let .generateProductSharingMessage(siteID, url, name, description, languageCode, completion):
-            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, languageCode: languageCode, completion: completion)
+        case let .generateProductDescription(siteID, name, features, completion):
+            generateProductDescription(siteID: siteID, name: name, features: features, completion: completion)
+        case let .generateProductSharingMessage(siteID, url, name, description, completion):
+            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, completion: completion)
         }
     }
 }
@@ -516,18 +516,15 @@ private extension ProductStore {
     func generateProductDescription(siteID: Int64,
                                     name: String,
                                     features: String,
-                                    languageCode: String,
                                     completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
-            "Your task is to help a marketing team create a description for a retail website of a product based on the " +
-            "properties delimited by triple backticks at the end.",
+            "Write a product description for a product with title: \(name).",
             "Some requirements for the description are:",
+            "- Identify the language used in the product title, and use the same language in your response.",
+            "- The length should be up to 50-60 words in English, or equivalent length in other languages.",
+            "- Use a 9th grade reading level.",
             "- Perform in-depth keyword research for the product, and include as many keywords in the description as possible. " +
-            "Do not output the list of keywords",
-            "- In language \(languageCode)",
-            "- The length should be up to 50-60 words in English, or equivalent length in other languages",
-            "- Try to make shorter sentences, using less difficult words to improve readability\n",
-            "```Product name: \(name)\nProduct features: \(features)```"
+            "Do not output the list of keywords."
         ].joined(separator: "\n")
         Task {
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }
@@ -541,7 +538,6 @@ private extension ProductStore {
                                        url: String,
                                        name: String,
                                        description: String,
-                                       languageCode: String,
                                        completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
             "Your task is to help a merchant create a message to share with their customers the below product.",
@@ -549,9 +545,9 @@ private extension ProductStore {
             "Product description: \(description)",
             "Product URL: \(url)",
             "Some requirements for the message are: ",
-            "- In language \(languageCode)",
-            "- The length should be up to 3 sentences",
-            "- Try to make shorter sentences, using less difficult words to improve readability",
+            "- Identify the language used in the product title and description, and use the same language in your response.",
+            "- The length should be up to 3 sentences.",
+            "- Use a 9th grade reading level.",
             "- Add related hashtags at the end of the message.",
             "- Do not include the URL in the message.",
         ].joined(separator: "\n")

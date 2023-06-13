@@ -94,7 +94,6 @@ private extension ProductSharingMessageGenerationViewModel {
                                                                         url: url,
                                                                         name: productName,
                                                                         description: productDescription,
-                                                                        languageCode: Locale.current.identifier,
                                                                         completion: { result in
                 continuation.resume(with: result)
             }))

@@ -1751,8 +1751,7 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product",
-                                                                           features: "Trendy",
-                                                                           languageCode: "en-US") { result in
+                                                                           features: "Trendy") { result in
                 promise(result)
             })
         }
@@ -1777,8 +1776,7 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product",
-                                                                           features: "Trendy",
-                                                                           languageCode: "en-US") { result in
+                                                                           features: "Trendy") { result in
                 promise(result)
             })
         }
@@ -1802,8 +1800,7 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product name",
-                                                                           features: "Trendy, cool, fun",
-                                                                           languageCode: "en-US") { _ in
+                                                                           features: "Trendy, cool, fun") { _ in
                 promise(())
             })
         }
@@ -1812,7 +1809,6 @@ final class ProductStoreTests: XCTestCase {
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         XCTAssertTrue(base.contains("Product name: A product name"))
         XCTAssertTrue(base.contains("Product features: Trendy, cool, fun"))
-        XCTAssertTrue(base.contains("In language en-US"))
     }
 
     // MARK: - ProductAction.generateProductSharingMessage
@@ -1834,8 +1830,7 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
                 name: "Sample product",
-                description: "Sample description",
-                languageCode: "en-US"
+                description: "Sample description"
             ) { result in
                 promise(result)
             })
@@ -1863,8 +1858,7 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
                 name: "Sample product",
-                description: "Sample description",
-                languageCode: "en-US"
+                description: "Sample description"
             ) { result in
                 promise(result)
             })
@@ -1892,8 +1886,7 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
                 name: "Sample product",
-                description: "Sample description",
-                languageCode: "en-US"
+                description: "Sample description"
             ) { result in
                 promise(result)
             })
@@ -1923,8 +1916,7 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: expectedURL,
                 name: expectedName,
-                description: expectedDescription,
-                languageCode: "en-US"
+                description: expectedDescription
             ) { result in
                 promise(())
             })

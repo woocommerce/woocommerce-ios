@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AdaptiveStack<Content: View>: View {
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     let horizontalAlignment: HorizontalAlignment
@@ -21,7 +21,7 @@ struct AdaptiveStack<Content: View>: View {
 
     var body: some View {
         Group {
-            if sizeCategory.isAccessibilityCategory, horizontalSizeClass == .compact {
+            if dynamicTypeSize.isAccessibilitySize, horizontalSizeClass == .compact {
                 VStack(alignment: horizontalAlignment, spacing: spacing, content: content)
             } else {
                 HStack(alignment: verticalAlignment, spacing: spacing, content: content)

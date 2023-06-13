@@ -24,7 +24,7 @@ struct ProductSharingMessageGenerationView: View {
     private let legalURL = URL(string: "https://automattic.com/ai-guidelines/")
 
     private var shouldKeepGenerateButtonAtFixedSize: Bool {
-        dynamicTypeSize.isAccessibilitySize && horizontalSizeClass == .compact
+        !dynamicTypeSize.isAccessibilitySize || horizontalSizeClass != .compact
     }
 
     init(viewModel: ProductSharingMessageGenerationViewModel) {

@@ -38,6 +38,10 @@ struct UpgradesView: View {
         ServiceLocator.stores.sessionManager.defaultSite?.name
     }
 
+    private var showingInAppPurchasesDebug: Bool {
+        ServiceLocator.generalAppSettings.betaFeatureEnabled(.inAppPurchases)
+    }
+
     init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
         self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
@@ -92,18 +96,10 @@ struct UpgradesView: View {
                 if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     Spacer()
+                } else if showingInAppPurchasesDebug {
+                    renderAllUpgrades()
                 } else {
-                    ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
-                        let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
-                        Button(buttonText) {
-                            // TODO: Add product entitlement check
-                            Task {
-                                isPurchasing = true
-                                await upgradesViewModel.purchasePlan(with: wpcomPlan.id)
-                                isPurchasing = false
-                            }
-                        }
-                    }
+                    renderSingleUpgrade()
                 }
             }
             .renderedIf(upgradesViewModel.userIsAdministrator)
@@ -124,6 +120,38 @@ struct UpgradesView_Preview: PreviewProvider {
     static var previews: some View {
         UpgradesView(upgradesViewModel: UpgradesViewModel(siteID: 0),
                      subscriptionsViewModel: SubscriptionsViewModel())
+    }
+}
+
+private extension UpgradesView {
+    @ViewBuilder
+    func renderAllUpgrades() -> some View {
+        VStack {
+            ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
+                let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
+                Button(buttonText) {
+                    Task {
+                        isPurchasing = true
+                        await upgradesViewModel.purchasePlan(with: wpcomPlan.id)
+                        isPurchasing = false
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    func renderSingleUpgrade() -> some View {
+        if let wpcomPlan = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
+            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
+            Button(buttonText) {
+                Task {
+                    isPurchasing = true
+                    await upgradesViewModel.purchasePlan(with: wpcomPlan.id)
+                    isPurchasing = false
+                }
+            }
+        }
     }
 }
 

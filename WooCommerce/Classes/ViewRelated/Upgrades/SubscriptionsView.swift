@@ -32,6 +32,10 @@ struct SubscriptionsView: View {
     ///
     @StateObject var viewModel: SubscriptionsViewModel
 
+    /// Manages the visibility for Apple's In-App Purchases "Manage subscriptions" modal sheet
+    /// The sheet displays the customer’s currently active subscription, and the options to view, upgrade, downgrade, or cancel their subscription.
+    @State var presentingManageSubscriptions: Bool = false
+
     /// Closure to be invoked when the "Report Issue" button is tapped.
     ///
     var onReportIssueTapped: (() -> ())?
@@ -74,6 +78,11 @@ struct SubscriptionsView: View {
             })
             .renderedIf(viewModel.shouldShowCancelTrialButton)
 
+            // TODO: Handle button visibility for IAP vs other subs
+            Button(Localization.manageSubscriptionsButton) {
+                presentingManageSubscriptions.toggle()
+            }.manageSubscriptionsSheet(isPresented: $presentingManageSubscriptions)
+
             Section(Localization.troubleshooting) {
                 Button(Localization.report) {
                     onReportIssueTapped?()
@@ -97,6 +106,7 @@ struct SubscriptionsView: View {
 private extension SubscriptionsView {
     enum Localization {
         static let title = NSLocalizedString("Subscriptions", comment: "Title for the Subscriptions / Upgrades view")
+        static let manageSubscriptionsButton = NSLocalizedString("Manage Subscriptions", comment: "Title for the button to manage Subscriptions/Upgrades")
         static let subscriptionStatus = NSLocalizedString("Subscription Status", comment: "Title for the plan section on the subscriptions view. Uppercased")
         static let experienceFeatures = NSLocalizedString("Experience more of our features and services beyond the app",
                                                     comment: "Title for the features list in the Subscriptions Screen")

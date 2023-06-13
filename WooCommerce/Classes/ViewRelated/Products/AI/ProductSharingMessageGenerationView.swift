@@ -89,7 +89,7 @@ struct ProductSharingMessageGenerationView: View {
                         Image(systemName: viewModel.generateButtonImageName)
                     }
                 })
-                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress))
+                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress, loadingText: Localization.generateInProgress))
                 .fixedSize(horizontal: shouldKeepGenerateButtonAtFixedSize,
                            vertical: shouldKeepGenerateButtonAtFixedSize)
 

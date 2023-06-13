@@ -69,6 +69,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var productImageStatusesSubscription: AnyCancellable?
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
+    private var bottomSheetPresenter: BottomSheetPresenter?
 
     /// The coordinator for sharing products
     ///
@@ -748,6 +749,9 @@ private extension ProductFormViewController {
             guard let self = self else { return }
             self.reloadLinkedPromoCellAnimated()
         }
+        tableViewDataSource.descriptionAIAction = { [weak self] in
+            self?.showProductDescriptionAI()
+        }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
@@ -1196,6 +1200,40 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateDescription(newDescription)
+    }
+}
+
+// MARK: Action - Product Description AI
+//
+private extension ProductFormViewController {
+    func showProductDescriptionAI() {
+        let presenter = BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
+        bottomSheetPresenter = presenter
+
+        let controller = ProductDescriptionGenerationHostingController(viewModel:
+                .init(siteID: product.siteID,
+                      name: product.name,
+                      description: product.description ?? "",
+                      onApply: { [weak self] output in
+            guard let self else { return }
+            self.onEditProductNameCompletion(newName: output.name)
+            self.onEditProductDescriptionCompletion(newDescription: output.description)
+            self.dismissDescriptionGenerationBottomSheetIfNeeded()
+        }))
+
+        view.endEditing(true)
+        presenter.present(controller, from: self)
+        ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAIButtonTapped(source: .productForm))
+    }
+
+    func dismissDescriptionGenerationBottomSheetIfNeeded() {
+        bottomSheetPresenter?.dismiss(onDismiss: {})
     }
 }
 

@@ -196,14 +196,14 @@ final class OrdersRootViewController: UIViewController {
             navigationController.pushViewController(viewController, animated: true)
         }
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
         orderDurationRecorder.startRecording()
     }
 
     /// Presents the Order Creation flow when a product is scanned
     ///
     @objc func presentOrderCreationFlowByProductScanning() {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNewFromBarcodeScanningTapped())
+        analytics.track(event: WooAnalyticsEvent.Orders.orderAddNewFromBarcodeScanningTapped())
 
         guard let navigationController = navigationController else {
             return
@@ -211,7 +211,7 @@ final class OrdersRootViewController: UIViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
-            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
+            self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
 
             self?.configureLeftButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
@@ -263,7 +263,7 @@ final class OrdersRootViewController: UIViewController {
     /// Present `FilterListViewController`
     ///
     private func filterButtonTapped() {
-        ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
+        analytics.track(.orderListViewFilterOptionsTapped)
 
         // Fetch stored statuses
         do {
@@ -279,7 +279,7 @@ final class OrdersRootViewController: UIViewController {
             self?.filters = filters
             let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")
             let dateRange = filters.dateRange?.analyticsDescription ?? ""
-            ServiceLocator.analytics.track(.ordersListFilter,
+            self?.analytics.track(.ordersListFilter,
                                            withProperties: ["status": statuses,
                                                             "date_range": dateRange])
         }, onClearAction: {
@@ -518,7 +518,7 @@ private extension OrdersRootViewController {
             show(orderViewController, sender: self)
         }
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
     }
 }
 

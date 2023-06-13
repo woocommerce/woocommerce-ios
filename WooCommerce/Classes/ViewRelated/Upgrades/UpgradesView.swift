@@ -44,14 +44,22 @@ struct UpgradesView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: Layout.contentSpacing) {
-            VStack {
+        VStack {
+            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
                 Text(planText)
                 Text(daysLeftText)
-                Image(uiImage: upgradesViewModel.userIsAdministrator ? .emptyOrdersImage : .noStoreImage)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading)
+
             Spacer()
-            VStack {
+
+            Image(uiImage: upgradesViewModel.userIsAdministrator ? .emptyOrdersImage : .noStoreImage)
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            Spacer()
+
+            VStack(alignment: .center, spacing: Layout.contentSpacing) {
                 Text(Localization.unableToUpgradeText)
                     .bold()
                     .headlineStyle()
@@ -63,7 +71,9 @@ struct UpgradesView: View {
                     .foregroundColor(.secondary)
             }
             .renderedIf(!upgradesViewModel.userIsAdministrator)
+
             Spacer()
+
             VStack {
                 if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
                     Text(availableProduct.displayName)
@@ -75,7 +85,9 @@ struct UpgradesView: View {
                 }
             }
             .renderedIf(upgradesViewModel.userIsAdministrator)
+
             Spacer()
+
             VStack {
                 if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
@@ -95,6 +107,7 @@ struct UpgradesView: View {
                 }
             }
             .renderedIf(upgradesViewModel.userIsAdministrator)
+
             Spacer()
         }
         .task {
@@ -127,11 +140,11 @@ private extension UpgradesView {
                                                        comment: "Subtitle that can be read under the Plan upgrade name")
         static let unableToUpgradeText = NSLocalizedString("Unable to upgrade",
                                                            comment: "Text describing that is not possible to upgrade the site's plan.")
-        static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades.",
+        static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades",
                                                                    comment: "Text describing that only the site owner can upgrade the site's plan.")
     }
 
-    enum Layout {
+    struct Layout {
         static let contentSpacing: CGFloat = 8
     }
 }

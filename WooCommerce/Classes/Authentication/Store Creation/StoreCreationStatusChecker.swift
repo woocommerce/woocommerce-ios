@@ -11,7 +11,7 @@ final class StoreCreationStatusChecker {
     convenience init(isFreeTrialCreation: Bool,
                      storeName: String,
                      stores: StoresManager = ServiceLocator.stores) {
-        self.init(jetpackCheckRetryInterval: isFreeTrialCreation ? 10 : 5, storeName: storeName, stores: stores)
+        self.init(jetpackCheckRetryInterval: isFreeTrialCreation ? 15 : 5, storeName: storeName, stores: stores)
     }
 
     init(jetpackCheckRetryInterval: TimeInterval, storeName: String, stores: StoresManager) {

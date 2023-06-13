@@ -17,8 +17,15 @@ final class ProductSharingMessageGenerationHostingController: UIHostingControlle
 struct ProductSharingMessageGenerationView: View {
     @ObservedObject private var viewModel: ProductSharingMessageGenerationViewModel
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     @State private var isShowingLegalPage = false
     private let legalURL = URL(string: "https://automattic.com/ai-guidelines/")
+
+    private var shouldKeepGenerateButtonAtFixedSize: Bool {
+        dynamicTypeSize.isAccessibilitySize && horizontalSizeClass == .compact
+    }
 
     init(viewModel: ProductSharingMessageGenerationViewModel) {
         self.viewModel = viewModel
@@ -83,9 +90,14 @@ struct ProductSharingMessageGenerationView: View {
                     }
                 })
                 .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress))
+                .fixedSize(horizontal: shouldKeepGenerateButtonAtFixedSize,
+                           vertical: shouldKeepGenerateButtonAtFixedSize)
 
-                Button(Localization.learnMore) {
+                Button {
                     isShowingLegalPage = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.headline)
                 }
                 .buttonStyle(.plain)
                 .foregroundColor(.accentColor)
@@ -132,10 +144,6 @@ private extension ProductSharingMessageGenerationView {
         static let placeholder = NSLocalizedString(
             "Add an optional message",
             comment: "Placeholder text on the product sharing message generation screen"
-        )
-        static let learnMore = NSLocalizedString(
-            "Learn more",
-            comment: "Button to show more information about AI integration on the product sharing message generation screen"
         )
     }
 }

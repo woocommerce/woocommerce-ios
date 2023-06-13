@@ -27,10 +27,15 @@ struct UpgradesView: View {
     @State var isPurchasing = false
 
     private var planText: String {
-        String.localizedStringWithFormat(Constants.planName, subscriptionsViewModel.planName)
+        String.localizedStringWithFormat(Localization.planName, subscriptionsViewModel.planName)
     }
+
     private var daysLeftText: String {
-        String.localizedStringWithFormat(Constants.daysLeftInTrial, subscriptionsViewModel.planDaysLeft)
+        String.localizedStringWithFormat(Localization.daysLeftInTrial, subscriptionsViewModel.planDaysLeft)
+    }
+
+    private var siteName: String? {
+        ServiceLocator.stores.sessionManager.defaultSite?.name
     }
 
     init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
@@ -39,30 +44,57 @@ struct UpgradesView: View {
     }
 
     var body: some View {
-        List {
-            Section {
+        VStack {
+            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
                 Text(planText)
                 Text(daysLeftText)
             }
-            Section {
-                VStack {
-                    Image(uiImage: .emptyOrdersImage)
-                    if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
-                        Text(availableProduct.displayName)
-                            .font(.title)
-                        Text(Constants.upgradeSubtitle)
-                            .font(.body)
-                        Text(availableProduct.displayPrice)
-                            .font(.title)
-                    }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading)
+
+            Spacer()
+
+            Image(uiImage: upgradesViewModel.userIsAdministrator ? .emptyOrdersImage : .noStoreImage)
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            Spacer()
+
+            VStack(alignment: .center, spacing: Layout.contentSpacing) {
+                Text(Localization.unableToUpgradeText)
+                    .bold()
+                    .headlineStyle()
+                if let siteName = siteName {
+                    Text(siteName)
+                }
+                Text(Localization.unableToUpgradeInstructions)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            }
+            .renderedIf(!upgradesViewModel.userIsAdministrator)
+
+            Spacer()
+
+            VStack {
+                if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
+                    Text(availableProduct.displayName)
+                        .font(.title)
+                    Text(Localization.upgradeSubtitle)
+                        .font(.body)
+                    Text(availableProduct.displayPrice)
+                        .font(.title)
                 }
             }
-            Section {
+            .renderedIf(upgradesViewModel.userIsAdministrator)
+
+            Spacer()
+
+            VStack {
                 if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    Spacer()
                 } else {
                     ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
-                        let buttonText = String.localizedStringWithFormat(Constants.purchaseCTAButtonText, wpcomPlan.displayName)
+                        let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
                         Button(buttonText) {
                             // TODO: Add product entitlement check
                             Task {
@@ -74,17 +106,29 @@ struct UpgradesView: View {
                     }
                 }
             }
+            .renderedIf(upgradesViewModel.userIsAdministrator)
+
+            Spacer()
         }
         .task {
-            await upgradesViewModel.fetchPlans()
+            if upgradesViewModel.userIsAdministrator {
+                await upgradesViewModel.fetchPlans()
+            }
         }
-        .navigationBarTitle(Constants.navigationTitle)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitle(Localization.navigationTitle)
+        .padding(.top)
+    }
+}
+
+struct UpgradesView_Preview: PreviewProvider {
+    static var previews: some View {
+        UpgradesView(upgradesViewModel: UpgradesViewModel(siteID: 0),
+                     subscriptionsViewModel: SubscriptionsViewModel())
     }
 }
 
 private extension UpgradesView {
-    struct Constants {
+    struct Localization {
         static let navigationTitle = NSLocalizedString("Plans", comment: "Navigation title for the Upgrades screen")
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")
@@ -94,5 +138,13 @@ private extension UpgradesView {
                                                        "Reads as 'Days left in trial: 15'")
         static let upgradeSubtitle = NSLocalizedString("Everything you need to launch an online store",
                                                        comment: "Subtitle that can be read under the Plan upgrade name")
+        static let unableToUpgradeText = NSLocalizedString("Unable to upgrade",
+                                                           comment: "Text describing that is not possible to upgrade the site's plan.")
+        static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades",
+                                                                   comment: "Text describing that only the site owner can upgrade the site's plan.")
+    }
+
+    struct Layout {
+        static let contentSpacing: CGFloat = 8
     }
 }

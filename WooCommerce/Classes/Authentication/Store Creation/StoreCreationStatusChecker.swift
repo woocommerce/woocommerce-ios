@@ -48,9 +48,12 @@ private extension StoreCreationStatusChecker {
             DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet for siteID \(siteID)...")
             throw StoreCreationError.newSiteIsNotJetpackSite
         }
-        guard site.isWordPressComStore && site.isWooCommerceActive && site.name == storeName else {
+        guard site.isWordPressComStore && site.isWooCommerceActive else {
             DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
             throw StoreCreationError.newSiteIsNotFullySynced
+        }
+        if site.name != storeName {
+            DDLogInfo("🔵 Retrying: Store name is not yet in sync...")
         }
         return site
     }

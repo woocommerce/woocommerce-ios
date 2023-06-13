@@ -1181,6 +1181,9 @@ private extension ProductFormViewController {
         let editorViewController = EditorFactory().productDescriptionEditor(product: product,
                                                                             isAIGenerationEnabled: isAIGenerationEnabled) { [weak self] content, productName in
             guard let self else { return }
+            defer {
+                self.navigationController?.popViewController(animated: true)
+            }
             if let productName {
                 self.onEditProductNameCompletion(newName: productName)
             }
@@ -1190,9 +1193,6 @@ private extension ProductFormViewController {
     }
 
     func onEditProductDescriptionCompletion(newDescription: String) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
         let hasChangedData = newDescription != product.description
         ServiceLocator.analytics.track(.productDescriptionDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 

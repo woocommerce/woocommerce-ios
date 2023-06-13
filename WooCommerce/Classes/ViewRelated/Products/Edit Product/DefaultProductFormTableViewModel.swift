@@ -21,18 +21,22 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     //
     private let siteTimezone: TimeZone = TimeZone.siteTimezone
 
+    private let isDescriptionAIEnabled: Bool
+
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
-         dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit) {
+         dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
+         isDescriptionAIEnabled: Bool) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
         self.shippingValueLocalizer = shippingValueLocalizer
         self.weightUnit = weightUnit
         self.dimensionUnit = dimensionUnit
+        self.isDescriptionAIEnabled = isDescriptionAIEnabled
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
@@ -45,22 +49,29 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func primaryFieldRows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
-        return actions.map { action in
+        actions.map { action -> [ProductFormSection.PrimaryFieldRow] in
             switch action {
             case .images(let editable):
-                return .images(isEditable: editable, allowsMultiple: product.allowsMultipleImages(), isVariation: product is EditableProductVariationModel)
+                return [.images(isEditable: editable, allowsMultiple: product.allowsMultipleImages(), isVariation: product is EditableProductVariationModel)]
             case .linkedProductsPromo(let viewModel):
-                return .linkedProductsPromo(viewModel: viewModel)
+                return [.linkedProductsPromo(viewModel: viewModel)]
             case .name(let editable):
-                return .name(name: product.name, isEditable: editable, productStatus: product.status)
+                return [.name(name: product.name, isEditable: editable, productStatus: product.status)]
             case .variationName:
-                return .variationName(name: product.name)
+                return [.variationName(name: product.name)]
             case .description(let editable):
-                return .description(description: product.trimmedFullDescription, isEditable: editable)
+                let isDescriptionAIEnabled = editable && isDescriptionAIEnabled
+                let descriptionRow: ProductFormSection.PrimaryFieldRow = .description(description: product.trimmedFullDescription,
+                                                                                      isEditable: editable,
+                                                                                      isDescriptionAIEnabled: isDescriptionAIEnabled)
+                guard isDescriptionAIEnabled else {
+                    return [descriptionRow]
+                }
+                return [descriptionRow, .descriptionAI]
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
             }
-        }
+        }.reduce([], +)
     }
 
     func settingsRows(productModel product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {

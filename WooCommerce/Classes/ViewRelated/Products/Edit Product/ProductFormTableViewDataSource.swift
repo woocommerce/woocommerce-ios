@@ -28,6 +28,7 @@ final class ProductFormTableViewDataSource: NSObject {
 
     var openLinkedProductsAction: (() -> Void)?
     var reloadLinkedPromoAction: (() -> Void)?
+    var descriptionAIAction: (() -> Void)?
 
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
@@ -93,8 +94,10 @@ private extension ProductFormTableViewDataSource {
             configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
             configureReadonlyName(cell: cell, name: name)
-        case .description(let description, let editable):
-            configureDescription(cell: cell, description: description, isEditable: editable)
+        case .description(let description, let editable, let isAIEnabled):
+            configureDescription(cell: cell, description: description, isEditable: editable, isAIEnabled: isAIEnabled)
+        case .descriptionAI:
+            configureDescriptionAI(cell: cell)
         }
     }
     func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
@@ -178,7 +181,7 @@ private extension ProductFormTableViewDataSource {
         cell.textLabel?.numberOfLines = 0
     }
 
-    func configureDescription(cell: UITableViewCell, description: String?, isEditable: Bool) {
+    func configureDescription(cell: UITableViewCell, description: String?, isEditable: Bool, isAIEnabled: Bool) {
         if let description = description, description.isEmpty == false {
             guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
                 fatalError()
@@ -200,6 +203,28 @@ private extension ProductFormTableViewDataSource {
         if isEditable {
             cell.accessoryType = .disclosureIndicator
         }
+        if isAIEnabled {
+            cell.hideSeparator()
+        }
+    }
+
+    func configureDescriptionAI(cell: UITableViewCell) {
+        guard let cell = cell as? ButtonTableViewCell else {
+            fatalError()
+        }
+        let title = NSLocalizedString(
+            "✨ Write it for me",
+            comment: "Product description AI row on Product form screen when the feature is available."
+        )
+        cell.configure(style: .subtle,
+                       title: title,
+                       accessibilityIdentifier: "product-description-ai",
+                       topSpacing: 0,
+                       bottomSpacing: 0) { [weak self] in
+            self?.descriptionAIAction?()
+        }
+        cell.accessoryType = .none
+        cell.hideSeparator()
     }
 
     func configureLinkedProductsPromo(cell: UITableViewCell, viewModel: FeatureAnnouncementCardViewModel) {

@@ -15,7 +15,10 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Action
-        let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
 
         // Assert
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -42,7 +45,10 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Action
-        let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
 
         // Assert
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -66,7 +72,10 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let actionsFactory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
 
         // Action
-        let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
 
         // Assert
         guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
@@ -98,7 +107,10 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 
 
         // Action
-        let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
 
         // Assert
         guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
@@ -139,7 +151,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                               currency: "",
                                                               shippingValueLocalizer: shippingValueLocalizer,
                                                               weightUnit: weightUnit,
-                                                              dimensionUnit: dimensionUnit)
+                                                              dimensionUnit: dimensionUnit,
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -168,7 +181,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
-                                                              currency: "", currencyFormatter: currencyFormatter)
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -198,7 +213,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
-                                                              currency: "", currencyFormatter: currencyFormatter)
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -228,7 +245,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
-                                                              currency: "", currencyFormatter: currencyFormatter)
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -256,7 +275,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
-                                                              currency: "", currencyFormatter: currencyFormatter)
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -285,7 +306,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
-                                                              currency: "", currencyFormatter: currencyFormatter)
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -314,7 +337,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
-                                                              currency: "", currencyFormatter: currencyFormatter)
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -343,7 +368,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
-                                                              currency: "", currencyFormatter: currencyFormatter)
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -359,6 +386,113 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
         let expectedDetails = String.localizedStringWithFormat(Localization.groupOfFormat, "2")
         XCTAssertEqual(quantityRulesViewModel?.details, expectedDetails)
+    }
+
+    // MARK: - `descriptionAI`
+
+    func test_descriptionAI_row_is_shown_when_editable_and_descriptionAIEnabled() {
+        // Given
+        let product = Product.fake().copy()
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
+            XCTFail("Unexpected section at index 0: \(tableViewModel.sections)")
+            return
+        }
+        var containsDescriptionRow = false
+        var containsDescriptionAIRow = false
+        for row in rows {
+            switch row {
+            case let .description(_, isEditable, isDescriptionAIEnabled):
+                containsDescriptionRow = true
+                XCTAssertTrue(isEditable)
+                XCTAssertTrue(isDescriptionAIEnabled)
+            case .descriptionAI:
+                containsDescriptionAIRow = true
+            default:
+                continue
+            }
+        }
+        XCTAssertTrue(containsDescriptionRow)
+        XCTAssertTrue(containsDescriptionAIRow)
+    }
+
+    func test_descriptionAI_row_is_not_shown_when_form_is_readonly_with_nonempty_description() {
+        // Given
+        let product = Product.fake().copy(fullDescription: "desc")
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .readonly)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
+            XCTFail("Unexpected section at index 0: \(tableViewModel.sections)")
+            return
+        }
+        var containsDescriptionRow = false
+        var containsDescriptionAIRow = false
+        for row in rows {
+            switch row {
+            case let .description(_, isEditable, isDescriptionAIEnabled):
+                containsDescriptionRow = true
+                XCTAssertFalse(isEditable)
+                XCTAssertFalse(isDescriptionAIEnabled)
+            case .descriptionAI:
+                containsDescriptionAIRow = true
+            default:
+                continue
+            }
+        }
+        XCTAssertTrue(containsDescriptionRow)
+        XCTAssertFalse(containsDescriptionAIRow)
+    }
+
+    func test_descriptionAI_row_is_not_shown_when_descriptionAIEnabled_is_false() {
+        // Given
+        let product = Product.fake().copy(fullDescription: "desc")
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: false)
+
+        // Then
+        guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
+            XCTFail("Unexpected section at index 0: \(tableViewModel.sections)")
+            return
+        }
+        var containsDescriptionRow = false
+        var containsDescriptionAIRow = false
+        for row in rows {
+            switch row {
+            case let .description(_, isEditable, isDescriptionAIEnabled):
+                containsDescriptionRow = true
+                XCTAssertTrue(isEditable)
+                XCTAssertFalse(isDescriptionAIEnabled)
+            case .descriptionAI:
+                containsDescriptionAIRow = true
+            default:
+                continue
+            }
+        }
+        XCTAssertTrue(containsDescriptionRow)
+        XCTAssertFalse(containsDescriptionAIRow)
     }
 }
 

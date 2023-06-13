@@ -88,13 +88,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.productImageUploader = productImageUploader
+        self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
-                                                               currency: currency)
+                                                               currency: currency,
+                                                               isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
-        self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -341,7 +342,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
-            case .description(_, let isEditable):
+            case .description(_, let isEditable, _):
                 guard isEditable else {
                     return
                 }
@@ -642,7 +643,8 @@ private extension ProductFormViewController {
         let indexPathBeforeReload = findLinkedPromoCellIndexPath()
         tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                           actionsFactory: viewModel.actionsFactory,
-                                                          currency: currency)
+                                                          currency: currency,
+                                                          isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         let indexPathAfterReload = findLinkedPromoCellIndexPath()
 
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses) { [weak self] in
@@ -676,7 +678,8 @@ private extension ProductFormViewController {
         updateMoreDetailsButtonVisibility()
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
-                                                          currency: currency)
+                                                          currency: currency,
+                                                          isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
@@ -704,7 +707,8 @@ private extension ProductFormViewController {
         ///
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
-                                                          currency: currency)
+                                                          currency: currency,
+                                                          isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
     }
 
@@ -713,7 +717,8 @@ private extension ProductFormViewController {
     func onVariationsPriceChanged() {
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
-                                                          currency: currency)
+                                                          currency: currency,
+                                                          isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 

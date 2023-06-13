@@ -30,7 +30,8 @@ public final class OrderStatsRemoteV4: Remote {
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKeys.quantity: String(quantity),
-            ParameterKeys.forceRefresh: forceRefresh
+            ParameterKeys.forceRefresh: forceRefresh,
+            ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
@@ -58,5 +59,10 @@ private extension OrderStatsRemoteV4 {
         static let before = "before"
         static let quantity = "per_page"
         static let forceRefresh = "force_cache_refresh"
+        static let fields = "fields"
+    }
+
+    enum ParameterValues {
+        static let fieldValues = ["orders_count", "num_items_sold", "total_sales", "net_revenue", "avg_order_value"]
     }
 }

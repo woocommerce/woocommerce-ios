@@ -734,7 +734,7 @@ private extension StoreCreationCoordinator {
         ///
         let waitingTimeStart = Date()
 
-        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: isFreeTrialCreation, stores: stores)
+        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: isFreeTrialCreation, storeName: expectedStoreName, stores: stores)
         self.statusChecker = statusChecker
         jetpackSiteSubscription = statusChecker.waitForSiteToBeReady(siteID: siteID)
             .handleEvents(receiveCompletion: { [weak self] completion in

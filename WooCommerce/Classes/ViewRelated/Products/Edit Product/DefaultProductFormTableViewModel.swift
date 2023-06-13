@@ -64,7 +64,9 @@ private extension DefaultProductFormTableViewModel {
             case .variationName:
                 return [.variationName(name: product.name)]
             case .description(let editable):
-                let isDescriptionAIEnabled = editable && isDescriptionAIEnabled && featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding)
+                let isDescriptionAIEnabled = editable
+                && isDescriptionAIEnabled
+                && featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding)
                 let descriptionRow: ProductFormSection.PrimaryFieldRow = .description(description: product.trimmedFullDescription,
                                                                                       isEditable: editable,
                                                                                       isDescriptionAIEnabled: isDescriptionAIEnabled)

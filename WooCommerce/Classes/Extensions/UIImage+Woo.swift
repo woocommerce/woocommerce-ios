@@ -470,6 +470,12 @@ extension UIImage {
         UIImage(named: "icon-add-product")!
     }
 
+    /// AI product description celebration image
+    ///
+    static var aiDescriptionCelebrationImage: UIImage {
+        return UIImage(named: "ai-description-celebration")!
+    }
+
     /// Launch store Image
     ///
     static var launchStoreImage: UIImage {

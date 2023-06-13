@@ -30,13 +30,7 @@ extension Storage.OrderStatsV4Interval: ReadOnlyConvertible {
         return OrderStatsV4Totals(totalOrders: 0,
                                   totalItemsSold: 0,
                                   grossRevenue: 0,
-                                  couponDiscount: 0,
-                                  totalCoupons: 0,
-                                  refunds: 0,
-                                  taxes: 0,
-                                  shipping: 0,
                                   netRevenue: 0,
-                                  totalProducts: 0,
                                   averageOrderValue: 0)
     }
 }

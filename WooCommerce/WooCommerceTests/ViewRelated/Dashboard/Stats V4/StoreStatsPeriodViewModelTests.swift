@@ -308,7 +308,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
                                       totals: .fake().copy(totalOrders: 3, grossRevenue: 62.7),
                                       intervals: [.fake().copy(dateStart: "2022-01-03 01:00:00",
                                                                dateEnd: "2022-01-03 01:59:59",
-                                                               subtotals: .fake().copy(totalProducts: 1))])
+                                                               subtotals: .fake())])
         insertOrderStats(orderStats, timeRange: timeRange)
 
         // `orderStatsIntervals` is emitted after order stats are updated.

@@ -693,13 +693,7 @@ extension Networking.OrderStatsV4Totals {
             totalOrders: .fake(),
             totalItemsSold: .fake(),
             grossRevenue: .fake(),
-            couponDiscount: .fake(),
-            totalCoupons: .fake(),
-            refunds: .fake(),
-            taxes: .fake(),
-            shipping: .fake(),
             netRevenue: .fake(),
-            totalProducts: .fake(),
             averageOrderValue: .fake()
         )
     }

@@ -6,6 +6,7 @@ final class ButtonTableViewCell: UITableViewCell {
     @IBOutlet private var button: ButtonActivityIndicator!
     @IBOutlet private weak var topConstraint: NSLayoutConstraint!
     @IBOutlet private weak var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var trailingConstraint: NSLayoutConstraint!
 
     /// The style of this view, particularly the button.
     enum Style {
@@ -75,14 +76,19 @@ private extension ButtonTableViewCell {
     }
 
     func apply(style: Style) {
+        let pinsButtonToTrailingEdge: Bool
         switch style {
         case .primary:
             button.applyPrimaryButtonStyle()
+            pinsButtonToTrailingEdge = true
         case .secondary:
             button.applySecondaryButtonStyle()
+            pinsButtonToTrailingEdge = true
         case .subtle:
             button.applySubtleButtonStyle()
+            pinsButtonToTrailingEdge = false
         }
+        trailingConstraint?.isActive = pinsButtonToTrailingEdge
     }
 }
 

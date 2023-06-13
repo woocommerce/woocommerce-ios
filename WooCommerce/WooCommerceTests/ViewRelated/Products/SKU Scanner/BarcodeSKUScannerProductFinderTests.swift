@@ -7,13 +7,17 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
     private var sut: BarcodeSKUScannerProductFinder!
     var stores: MockStoresManager!
     var storageManager: MockStorageManager!
+    var analyticsProvider: MockAnalyticsProvider!
+    var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
-        sut = BarcodeSKUScannerProductFinder(stores: stores)
+        sut = BarcodeSKUScannerProductFinder(stores: stores, analytics: analytics)
 
     }
 
@@ -23,11 +27,15 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
         sut = nil
         stores = nil
         storageManager = nil
+        analyticsProvider = nil
+        analytics = nil
     }
 
     func test_findProduct_when_there_is_an_error_then_passes_it() async {
         // Given
+        let source = WooAnalyticsEvent.Orders.BarcodeScanningSource.orderCreation
         let testError = TestError.anError
+        let symbology = BarcodeSymbology.aztec
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
@@ -37,20 +45,24 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
             }
         })
 
-        let scannedBarcode = ScannedBarcode(payloadStringValue: "123456", symbology: .aztec)
+        let scannedBarcode = ScannedBarcode(payloadStringValue: "123456", symbology: symbology)
         var retrievedError: Error?
 
         do {
-            _ = try await sut.findProduct(from: scannedBarcode, siteID: 1)
+            _ = try await sut.findProduct(from: scannedBarcode, siteID: 1, source: source)
         } catch {
             retrievedError = error
         }
 
         XCTAssertEqual(retrievedError as? TestError, testError)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.orderProductSearchViaSKUFailure.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["source"] as? String, source.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["barcode_format"] as? String, symbology.rawValue)
     }
 
     func test_findProduct_when_sku_matches_barcode_then_returns_product() async {
         // Given
+        let source = WooAnalyticsEvent.Orders.BarcodeScanningSource.orderList
         let returningProduct = Product.fake()
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
@@ -63,10 +75,12 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
 
         // When
         let scannedBarcode = ScannedBarcode(payloadStringValue: "123456", symbology: .aztec)
-        let retrievedProduct = try? await sut.findProduct(from: scannedBarcode, siteID: 1)
+        let retrievedProduct = try? await sut.findProduct(from: scannedBarcode, siteID: 1, source: source)
 
         // Then
         XCTAssertEqual(retrievedProduct, returningProduct)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.orderProductSearchViaSKUSuccess.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["source"] as? String, source.rawValue)
     }
 
     func test_findProduct_when_barcode_has_check_digit_and_right_symbology_then_it_tries_without_it_and_returns_product() async {
@@ -97,7 +111,7 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
         })
 
         // When
-        let retrievedProduct = try? await sut.findProduct(from: scannedBarcode, siteID: 1)
+        let retrievedProduct = try? await sut.findProduct(from: scannedBarcode, siteID: 1, source: .orderCreation)
 
         // Then
         XCTAssertEqual(retrievedProduct, returningProduct)
@@ -123,7 +137,7 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
         })
 
         // When
-        let retrievedProduct = try? await sut.findProduct(from: scannedBarcode, siteID: 1)
+        let retrievedProduct = try? await sut.findProduct(from: scannedBarcode, siteID: 1, source: .orderCreation)
 
         // Then
         XCTAssertEqual(retrievedProduct, returningProduct)

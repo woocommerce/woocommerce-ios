@@ -466,6 +466,16 @@ extension WooAnalyticsEvent {
             case variation
         }
 
+        enum BarcodeScanningSource: String {
+            case orderCreation = "order_creation"
+            case orderList = "order_list"
+        }
+
+        enum OrderProductAdditionVia: String {
+            case scanning
+            case manually
+        }
+
         enum GlobalKeys {
             static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
         }
@@ -487,8 +497,11 @@ extension WooAnalyticsEvent {
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
             static let source = "source"
+            static let addedVia = "added_via"
             static let isFilterActive = "is_filter_active"
             static let searchFilter = "search_filter"
+            static let barcodeFormat = "barcode_format"
+            static let reason = "reason"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -503,6 +516,28 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
+        static func orderAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderListProductBarcodeScanningTapped, properties: [:])
+        }
+
+        static func productAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderCreationProductBarcodeScanningTapped, properties: [:])
+        }
+
+        static func barcodeScanningSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func barcodeScanningSearchViaSKUSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func barcodeScanningSearchViaSKUFailure(from source: BarcodeScanningSource, symbology: BarcodeSymbology, reason: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: [Keys.source: source.rawValue,
+                                                                                       Keys.barcodeFormat: symbology.rawValue,
+                                                                                       Keys.reason: reason])
+        }
+
         static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
                 Keys.hasMultipleShippingLines: hasMultipleShippingLines,
@@ -510,10 +545,12 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderProductAdd(flow: Flow, productCount: Int) -> WooAnalyticsEvent {
+        static func orderProductAdd(flow: Flow, source: BarcodeScanningSource, addedVia: OrderProductAdditionVia, productCount: Int = 1) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [
                 Keys.flow: flow.rawValue,
-                Keys.productCount: Int64(productCount)
+                Keys.productCount: Int64(productCount),
+                Keys.source: source.rawValue,
+                Keys.addedVia: addedVia.rawValue
             ])
         }
 

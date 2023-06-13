@@ -176,4 +176,40 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(subscriptionsCount, 1)
     }
+
+    func test_syncRefunds_dispatches_retrieveRefund_action_when_order_has_refunds() throws {
+        // Given
+        let order = Order.fake().copy(refunds: [.fake()])
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        viewModel.syncRefunds()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+
+        let action = try XCTUnwrap(storesManager.receivedActions.first as? RefundAction)
+        guard case let .retrieveRefunds(siteID, orderID, refundIDs, deleteStaleRefunds, _) = action else {
+            XCTFail("Unexpected action: \(action)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+        XCTAssertEqual(refundIDs, [OrderRefundCondensed.fake().refundID])
+        XCTAssert(deleteStaleRefunds)
+    }
+
+    func test_syncRefunds_does_not_dispatch_retrieveRefund_action_when_order_has_no_refunds() throws {
+        // Given
+        XCTAssert(order.refunds.isEmpty)
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        viewModel.syncRefunds()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+    }
 }

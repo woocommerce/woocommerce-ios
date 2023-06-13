@@ -103,7 +103,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         await viewModel.generateShareMessage()
 
         // Then
-        assertEqual(ProductSharingMessageGenerationViewModel.Localization.errorMessage, viewModel.errorMessage)
+        XCTAssertNotNil(viewModel.errorMessage)
     }
 
     // MARK: - Analytics

@@ -65,7 +65,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
             analytics.track(event: .ProductSharingAI.messageGenerated())
         } catch {
             DDLogError("⛔️ Error generating product sharing message: \(error)")
-            errorMessage = Localization.errorMessage
+            errorMessage = error.localizedDescription
             analytics.track(event: .ProductSharingAI.messageGenerationFailed(error: error))
         }
         generationInProgress = false
@@ -101,10 +101,6 @@ extension ProductSharingMessageGenerationViewModel {
             "Share %1$@",
             comment: "Title of the product sharing message generation screen. " +
             "The placeholder is the name of the product"
-        )
-        static let errorMessage = NSLocalizedString(
-            "Error generating message. Please try again.",
-            comment: "Error message on the product sharing message generation screen when generation fails."
         )
         static let generate = NSLocalizedString(
             "Write with AI",

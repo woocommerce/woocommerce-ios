@@ -11,13 +11,7 @@ extension OrderStatsV4Totals {
     @NSManaged public var totalOrders: Int64
     @NSManaged public var totalItemsSold: Int64
     @NSManaged public var grossRevenue: NSDecimalNumber
-    @NSManaged public var couponDiscount: NSDecimalNumber
-    @NSManaged public var totalCoupons: Int64
-    @NSManaged public var refunds: NSDecimalNumber
-    @NSManaged public var taxes: NSDecimalNumber
-    @NSManaged public var shipping: NSDecimalNumber
     @NSManaged public var netRevenue: NSDecimalNumber
-    @NSManaged public var totalProducts: Int64
     @NSManaged public var averageOrderValue: NSDecimalNumber
     @NSManaged public var interval: OrderStatsV4Interval?
     @NSManaged public var stats: OrderStatsV4?

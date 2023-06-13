@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22F66" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -319,16 +319,10 @@
     </entity>
     <entity name="OrderStatsV4Totals" representedClassName="OrderStatsV4Totals" syncable="YES">
         <attribute name="averageOrderValue" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
-        <attribute name="couponDiscount" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="grossRevenue" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="netRevenue" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
-        <attribute name="refunds" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
-        <attribute name="shipping" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
-        <attribute name="taxes" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
-        <attribute name="totalCoupons" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalItemsSold" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalOrders" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="totalProducts" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="interval" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderStatsV4Interval" inverseName="subtotals" inverseEntity="OrderStatsV4Interval"/>
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderStatsV4" inverseName="totals" inverseEntity="OrderStatsV4"/>
     </entity>

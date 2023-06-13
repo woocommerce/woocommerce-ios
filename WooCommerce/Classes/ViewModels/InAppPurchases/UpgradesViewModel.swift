@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Yosemite
 
 /// ViewModel for the Upgrades View
 /// Drives the site's available In-App Purchases plan upgrades
@@ -13,6 +14,8 @@ final class UpgradesViewModel: ObservableObject {
     @Published var wpcomPlans: [WPComPlanProduct]
     @Published var entitledWpcomPlanIDs: Set<String>
 
+    let plan: WooPlan? = WooPlan()
+
     init(siteID: Int64, inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
@@ -25,6 +28,9 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func fetchPlans() async {
+        if let plan {
+            DDLogInfo("Default plan details loaded: \(plan.planName)")
+        }
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 DDLogError("IAP not supported")

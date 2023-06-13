@@ -1899,7 +1899,7 @@ final class MigrationTests: XCTestCase {
 
         // Then
         let targetContext = targetContainer.viewContext
-        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        _ = try XCTUnwrap(targetContext.first(entityName: "Order"))
         let migratedOrderItem = try XCTUnwrap(targetContext.first(entityName: "OrderItem"))
 
         // Migrated order item has expected default nil parent attribute.
@@ -1936,6 +1936,42 @@ final class MigrationTests: XCTestCase {
 
         // Migrated value for gift card amount is Double.
         XCTAssertEqual(try XCTUnwrap(migratedOrderGiftCard.value(forKey: "amount") as? Double), 1.0)
+    }
+
+    func test_migrating_from_88_to_89_removes_unused_OrderStatsV4Totals_attributes() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 88")
+        let sourceContext = sourceContainer.viewContext
+
+        _ = insertOrderStatsTotals(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderStatsV4Totals"), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 89")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrderStatsV4Totals = try XCTUnwrap(targetContext.first(entityName: "OrderStatsV4Totals"))
+
+        // Check OrderStatsV4Totals entity still exists.
+        XCTAssertEqual(try targetContext.count(entityName: "OrderStatsV4Totals"), 1)
+
+        // Check expected attributes still exist.
+        XCTAssertNotNil(migratedOrderStatsV4Totals.entity.attributesByName["averageOrderValue"])
+        XCTAssertNotNil(migratedOrderStatsV4Totals.entity.attributesByName["grossRevenue"])
+        XCTAssertNotNil(migratedOrderStatsV4Totals.entity.attributesByName["netRevenue"])
+        XCTAssertNotNil(migratedOrderStatsV4Totals.entity.attributesByName["totalItemsSold"])
+        XCTAssertNotNil(migratedOrderStatsV4Totals.entity.attributesByName["totalOrders"])
+
+        // Check removed attributes do not exist.
+        XCTAssertNil(migratedOrderStatsV4Totals.entity.attributesByName["couponDiscount"])
+        XCTAssertNil(migratedOrderStatsV4Totals.entity.attributesByName["refunds"])
+        XCTAssertNil(migratedOrderStatsV4Totals.entity.attributesByName["shipping"])
+        XCTAssertNil(migratedOrderStatsV4Totals.entity.attributesByName["taxes"])
+        XCTAssertNil(migratedOrderStatsV4Totals.entity.attributesByName["totalCoupons"])
+        XCTAssertNil(migratedOrderStatsV4Totals.entity.attributesByName["totalProducts"])
     }
 }
 

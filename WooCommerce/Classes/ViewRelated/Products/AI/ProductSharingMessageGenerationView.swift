@@ -45,7 +45,6 @@ struct ProductSharingMessageGenerationView: View {
                 TextEditor(text: $viewModel.messageContent)
                     .bodyStyle()
                     .foregroundColor(.secondary)
-                    .background(viewModel.generationInProgress ? Color(uiColor: .buttonDisabledBackground) : .clear)
                     .padding(insets: Constants.messageContentInsets)
                     .overlay(
                         RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
@@ -93,6 +92,7 @@ struct ProductSharingMessageGenerationView: View {
                 .fixedSize(horizontal: shouldKeepGenerateButtonAtFixedSize,
                            vertical: shouldKeepGenerateButtonAtFixedSize)
 
+                // Button for more information about legal
                 Button {
                     isShowingLegalPage = true
                 } label: {

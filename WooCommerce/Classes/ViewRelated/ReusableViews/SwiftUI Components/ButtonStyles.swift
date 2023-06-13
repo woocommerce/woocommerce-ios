@@ -34,12 +34,12 @@ struct SecondaryLoadingButtonStyle: PrimitiveButtonStyle {
     /// Optional text when the button is in loading state
     var loadingText: String?
 
-    /// Returns a `ProgressView` if the view is loading. Return nil otherwise
+    /// Returns a `ProgressView` if the view is loading.
     ///
     @ViewBuilder
     private var progressViewOverlay: some View {
         if isLoading {
-            HStack(spacing: 3) {
+            HStack(spacing: 8) {
                 ProgressView()
                 loadingText.map(Text.init)
                     .secondaryBodyStyle()

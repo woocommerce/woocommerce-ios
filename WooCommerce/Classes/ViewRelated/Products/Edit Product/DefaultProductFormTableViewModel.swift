@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import WooFoundation
+import protocol Experiments.FeatureFlagService
 
 /// The Product form contains 2 sections: primary fields, and details.
 struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
@@ -22,6 +23,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let siteTimezone: TimeZone = TimeZone.siteTimezone
 
     private let isDescriptionAIEnabled: Bool
+    private let featureFlagService: FeatureFlagService
 
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
@@ -30,13 +32,15 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
-         isDescriptionAIEnabled: Bool) {
+         isDescriptionAIEnabled: Bool,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
         self.shippingValueLocalizer = shippingValueLocalizer
         self.weightUnit = weightUnit
         self.dimensionUnit = dimensionUnit
         self.isDescriptionAIEnabled = isDescriptionAIEnabled
+        self.featureFlagService = featureFlagService
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
@@ -60,7 +64,7 @@ private extension DefaultProductFormTableViewModel {
             case .variationName:
                 return [.variationName(name: product.name)]
             case .description(let editable):
-                let isDescriptionAIEnabled = editable && isDescriptionAIEnabled
+                let isDescriptionAIEnabled = editable && isDescriptionAIEnabled && featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding)
                 let descriptionRow: ProductFormSection.PrimaryFieldRow = .description(description: product.trimmedFullDescription,
                                                                                       isEditable: editable,
                                                                                       isDescriptionAIEnabled: isDescriptionAIEnabled)

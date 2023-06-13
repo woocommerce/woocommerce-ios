@@ -395,12 +395,14 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let product = Product.fake().copy()
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
-                                                              isDescriptionAIEnabled: true)
+                                                              isDescriptionAIEnabled: true,
+                                                              featureFlagService: featureFlagService)
 
         // Then
         guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
@@ -430,12 +432,14 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let product = Product.fake().copy(fullDescription: "desc")
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .readonly)
+        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
-                                                              isDescriptionAIEnabled: true)
+                                                              isDescriptionAIEnabled: true,
+                                                              featureFlagService: featureFlagService)
 
         // Then
         guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
@@ -462,15 +466,54 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 
     func test_descriptionAI_row_is_not_shown_when_descriptionAIEnabled_is_false() {
         // Given
-        let product = Product.fake().copy(fullDescription: "desc")
+        let product = Product.fake().copy()
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
         // When
         let tableViewModel = DefaultProductFormTableViewModel(product: model,
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
-                                                              isDescriptionAIEnabled: false)
+                                                              isDescriptionAIEnabled: false,
+                                                              featureFlagService: featureFlagService)
+
+        // Then
+        guard case let .primaryFields(rows) = tableViewModel.sections[0] else {
+            XCTFail("Unexpected section at index 0: \(tableViewModel.sections)")
+            return
+        }
+        var containsDescriptionRow = false
+        var containsDescriptionAIRow = false
+        for row in rows {
+            switch row {
+            case let .description(_, isEditable, isDescriptionAIEnabled):
+                containsDescriptionRow = true
+                XCTAssertTrue(isEditable)
+                XCTAssertFalse(isDescriptionAIEnabled)
+            case .descriptionAI:
+                containsDescriptionAIRow = true
+            default:
+                continue
+            }
+        }
+        XCTAssertTrue(containsDescriptionRow)
+        XCTAssertFalse(containsDescriptionAIRow)
+    }
+
+    func test_descriptionAI_row_is_not_shown_when_productDescriptionAIFromStoreOnboarding_feature_is_disabled() {
+        // Given
+        let product = Product.fake().copy()
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: false)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              isDescriptionAIEnabled: false,
+                                                              featureFlagService: featureFlagService)
 
         // Then
         guard case let .primaryFields(rows) = tableViewModel.sections[0] else {

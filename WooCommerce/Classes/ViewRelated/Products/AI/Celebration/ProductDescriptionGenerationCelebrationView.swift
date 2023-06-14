@@ -15,7 +15,7 @@ final class ProductDescriptionGenerationCelebrationHostingController: UIHostingC
 
 /// Celebration view presented when AI generation is used for the first time
 struct ProductDescriptionGenerationCelebrationView: View {
-    private var viewModel: ProductDescriptionGenerationCelebrationViewModel
+    private let viewModel: ProductDescriptionGenerationCelebrationViewModel
 
     init(viewModel: ProductDescriptionGenerationCelebrationViewModel) {
         self.viewModel = viewModel

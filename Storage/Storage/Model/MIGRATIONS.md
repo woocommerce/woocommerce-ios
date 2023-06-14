@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 90 (Release 14.1.0.0)
+- @iamgabrielma 2023-06-14
+    - Added `isSiteOwner` attribute to `Site` entity.
+
 ## Model 89 (Release 14.1.0.0)
 - @rachelmcr 2023-06-13
     - Removed `couponDiscount` attribute from `OrderStatsV4Totals` entity.

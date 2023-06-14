@@ -519,10 +519,11 @@ private extension ProductStore {
                                     completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
             "Write a description for a product with title \(name) and features: \(features).",
-            "Some requirements for the description are:",
-            "- Identify the language used in the product title and features and use the same language in your response.",
-            "- Make the description 50-60 words or less.",
-            "- Use a 9th grade reading level."
+            "Identify the language used in the product title and features and use the same language in your response.",
+            "Make the description 50-60 words or less.",
+            "Use a 9th grade reading level.",
+            "Perform in-depth keyword research relating to the product in the same language of the product title, " +
+            "and use them in your sentences without listing them out."
         ].joined(separator: "\n")
         Task {
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }
@@ -539,14 +540,13 @@ private extension ProductStore {
                                        completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
             "Your task is to help a merchant create a message to share with their customers a product named \(name). More information about the product:",
-            "Product description: \"\(description)\"",
+            "Product description: \(description)",
             "Product URL: \(url)",
-            "Some requirements for the message are: ",
-            "- Identify the language used in the product name and use the same language in your response.",
-            "- The length should be up to 3 sentences.",
-            "- Use a 9th grade reading level.",
-            "- Add related hashtags at the end of the message.",
-            "- Do not include the URL in the message.",
+            "Identify the language used in the product name and use the same language in your response.",
+            "The length should be up to 3 sentences.",
+            "Use a 9th grade reading level.",
+            "Add related hashtags at the end of the message.",
+            "Do not include the URL in the message.",
         ].joined(separator: "\n")
         Task {
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt)

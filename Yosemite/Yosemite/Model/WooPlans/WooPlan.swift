@@ -9,9 +9,15 @@ public struct WooPlan: Decodable {
     public let headerImageFileName: String
     public let planFeatureGroups: [WooPlanFeatureGroup]
 
-    init(name: String, id: String, shortName: String, planFrequency: PlanFrequency, planDescription: String, headerImageFileName: String, planFeatureGroups: [WooPlanFeatureGroup]) {
-        self.name = name
+    init(id: String,
+         name: String,
+         shortName: String,
+         planFrequency: PlanFrequency,
+         planDescription: String,
+         headerImageFileName: String,
+         planFeatureGroups: [WooPlanFeatureGroup]) {
         self.id = id
+        self.name = name
         self.shortName = shortName
         self.planFrequency = planFrequency
         self.planDescription = planDescription
@@ -41,9 +47,9 @@ public struct WooPlan: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
+        id = try container.decode(String.self, forKey: .planId)
         name = try container.decode(String.self, forKey: .planName)
         shortName = try container.decode(String.self, forKey: .planShortName)
-        id = try container.decode(String.self, forKey: .planId)
         planFrequency = try container.decode(PlanFrequency.self, forKey: .planFrequency)
         planDescription = try container.decode(String.self, forKey: .planDescription)
         headerImageFileName = try container.decode(String.self, forKey: .headerImageFileName)
@@ -51,9 +57,9 @@ public struct WooPlan: Decodable {
     }
 
     private enum CodingKeys: String, CodingKey {
+        case planId = "plan_id"
         case planName = "plan_name"
         case planShortName = "plan_short_name"
-        case planId = "plan_id"
         case planFrequency = "plan_frequency"
         case planDescription = "plan_description"
         case headerImageFileName = "header_image_filename"

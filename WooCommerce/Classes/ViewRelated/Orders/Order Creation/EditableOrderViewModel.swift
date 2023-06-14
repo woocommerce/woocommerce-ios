@@ -190,11 +190,11 @@ final class EditableOrderViewModel: ObservableObject {
             topProductsProvider: TopProductsFromCachedOrdersProvider(),
             onProductSelectionStateChanged: { [weak self] product in
                 guard let self = self else { return }
-                self.addOrRemoveProductToOrder(product)
+                self.changeSelectionStateForProduct(product)
             },
             onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
-                self.addOrRemoveProductVariationToOrder(variation, parent: parentProduct)
+                self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
@@ -903,7 +903,7 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product (from the product list) to the order.
     ///
-    func addOrRemoveProductToOrder(_ product: Product) {
+    func changeSelectionStateForProduct(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         allProducts.insert(product)
 
@@ -918,7 +918,7 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
-    func addOrRemoveProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
+    func changeSelectionStateForProductVariation(_ variation: ProductVariation, parent product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         allProducts.insert(product)
         allProductVariations.insert(variation)
@@ -955,6 +955,31 @@ private extension EditableOrderViewModel {
         }
 
         updateOrderWithProduct(product)
+    }
+
+    /// Updates the Order with the given product
+    ///
+    func updateOrderWithProduct(_ product: Product) {
+        guard currentOrderItems.contains(where: { $0.productOrVariationID == product.productID }) else {
+            // If it's not part of the current order, send the correct productType to the synchronizer
+            productSelectorViewModel.toggleSelection(id: product.productID)
+
+            if let productVariation = product.toProductVariation() {
+                allProductVariations.insert(productVariation)
+
+                selectedProductVariations.append(productVariation)
+                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
+            } else {
+                allProducts.insert(product)
+
+                selectedProducts.append(product)
+                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+            }
+            return
+        }
+        // Increase quantity if exists
+        let match = productRows.first(where: { $0.productOrVariationID == product.productID })
+        match?.incrementQuantity()
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1340,31 +1365,6 @@ extension EditableOrderViewModel {
                 onCompletion(.failure(error))
             }
         }
-    }
-
-    /// Updates the Order with the given product
-    ///
-    func updateOrderWithProduct(_ product: Product) {
-        guard currentOrderItems.contains(where: { $0.productOrVariationID == product.productID }) else {
-            // If it's not part of the current order, send the correct productType to the synchronizer
-            productSelectorViewModel.toggleSelection(id: product.productID)
-
-            if let productVariation = product.toProductVariation() {
-                allProductVariations.insert(productVariation)
-
-                selectedProductVariations.append(productVariation)
-                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
-            } else {
-                allProducts.insert(product)
-
-                selectedProducts.append(product)
-                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
-            }
-            return
-        }
-        // Increase quantity if exists
-        let match = productRows.first(where: { $0.productOrVariationID == product.productID })
-        match?.incrementQuantity()
     }
 }
 

@@ -151,7 +151,8 @@ private extension ProductSharingMessageGenerationView {
 struct ProductSharingMessageGenerationView_Previews: PreviewProvider {
     static var previews: some View {
         ProductSharingMessageGenerationView(viewModel: .init(siteID: 123,
+                                                             url: "https://example.com",
                                                              productName: "Test",
-                                                             url: "https://example.com"))
+                                                             productDescription: "Test product description"))
     }
 }

@@ -109,7 +109,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     @MainActor
     func updateData() async {
         do {
+            let tracker = WaitingTimeTracker(trackScenario: .analyticsHub, analyticsService: analytics)
             try await retrieveData()
+            tracker.end()
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
             dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
             ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeSelectionFailed(for: timeRangeSelectionType))

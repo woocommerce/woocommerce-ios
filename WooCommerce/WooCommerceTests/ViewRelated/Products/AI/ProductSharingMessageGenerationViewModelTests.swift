@@ -24,8 +24,9 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_viewTitle_is_correct() {
         // Given
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
                                                                  productName: "Test",
-                                                                 url: "https://example.com")
+                                                                 productDescription: "Test description")
         let expectedTitle = String.localizedStringWithFormat(ProductSharingMessageGenerationViewModel.Localization.title, "Test")
 
         // Then
@@ -36,13 +37,14 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  stores: stores)
         XCTAssertFalse(viewModel.generationInProgress)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 XCTAssertTrue(viewModel.generationInProgress)
                 completion(.success("Check this out!"))
             default:
@@ -62,12 +64,13 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         let expectedString = "Check out this product!"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success(expectedString))
             default:
                 return
@@ -86,12 +89,13 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             default:
                 return
@@ -110,16 +114,15 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_generate_button_tapped_is_tracked_correctly() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ProductSharingMessageGenerationViewModel(
-            siteID: 123,
-            productName: "Test",
-            url: "https://example.com",
-            stores: stores,
-            analytics: analytics
-        )
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores,
+                                                                 analytics: analytics)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success("Test"))
             default:
                 return
@@ -153,16 +156,15 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_generation_failure_event_is_tracked() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ProductSharingMessageGenerationViewModel(
-            siteID: 123,
-            productName: "Test",
-            url: "https://example.com",
-            stores: stores,
-            analytics: analytics
-        )
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores,
+                                                                 analytics: analytics)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             default:
                 return
@@ -187,12 +189,13 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         let expectedURLString = "https://example.com"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: expectedURLString,
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success(expectedString))
             default:
                 return
@@ -215,8 +218,9 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_didTapShare_presents_popover_when_on_ipad() throws {
         // Given
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  isPad: true)
         XCTAssertFalse(viewModel.isSharePopoverPresented)
 
@@ -230,8 +234,9 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_didTapShare_does_not_present_popover_when_not_on_ipad() throws {
         // Given
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  isPad: false)
         XCTAssertFalse(viewModel.isSharePopoverPresented)
 
@@ -246,8 +251,9 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_didTapShare_presents_sheet_when_not_on_ipad() throws {
         // Given
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  isPad: false)
         XCTAssertFalse(viewModel.isShareSheetPresented)
 
@@ -261,8 +267,9 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     func test_didTapShare_does_not_present_sheet_when_on_ipad() throws {
         // Given
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
-                                                                 productName: "Test",
                                                                  url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
                                                                  isPad: true)
         XCTAssertFalse(viewModel.isShareSheetPresented)
 

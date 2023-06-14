@@ -1833,6 +1833,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductSharingMessage(
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description",
                 languageCode: "en-US"
             ) { result in
                 promise(result)
@@ -1843,6 +1845,35 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let generatedText = try XCTUnwrap(result.get())
         XCTAssertEqual(generatedText, expectedText)
+    }
+
+    func test_generateProductSharingMessage_returns_text_after_trimming_quotation_marks() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success("\"This is \"AI\" generated message.\""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductSharingMessage(
+                siteID: self.sampleSiteID,
+                url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description",
+                languageCode: "en-US"
+            ) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let generatedText = try XCTUnwrap(result.get())
+        XCTAssertEqual(generatedText, "This is \"AI\" generated message.")
     }
 
     func test_generateProductSharingMessage_returns_error_on_failure() throws {
@@ -1860,6 +1891,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductSharingMessage(
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description",
                 languageCode: "en-US"
             ) { result in
                 promise(result)
@@ -1874,6 +1907,8 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductSharingMessage_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let expectedURL = "https://example.com"
+        let expectedName = "Sample product"
+        let expectedDescription = "Sample description"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
@@ -1887,6 +1922,8 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductSharingMessage(
                 siteID: self.sampleSiteID,
                 url: expectedURL,
+                name: expectedName,
+                description: expectedDescription,
                 languageCode: "en-US"
             ) { result in
                 promise(())
@@ -1896,6 +1933,8 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         XCTAssertTrue(base.contains(expectedURL))
+        XCTAssertTrue(base.contains(expectedName))
+        XCTAssertTrue(base.contains(expectedDescription))
         XCTAssertTrue(base.contains("In language en-US"))
     }
 

@@ -32,6 +32,8 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
 
     private let siteID: Int64
     private let url: String
+    private let productName: String
+    private let productDescription: String
     private let stores: StoresManager
     private let isPad: Bool
     private let analytics: Analytics
@@ -41,13 +43,16 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private var hasGeneratedMessage = false
 
     init(siteID: Int64,
-         productName: String,
          url: String,
+         productName: String,
+         productDescription: String,
          isPad: Bool = UIDevice.isPad(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.url = url
+        self.productName = productName
+        self.productDescription = productDescription
         self.isPad = isPad
         self.stores = stores
         self.analytics = analytics
@@ -87,6 +92,8 @@ private extension ProductSharingMessageGenerationViewModel {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,
                                                                         url: url,
+                                                                        name: productName,
+                                                                        description: productDescription,
                                                                         languageCode: Locale.current.identifier,
                                                                         completion: { result in
                 continuation.resume(with: result)

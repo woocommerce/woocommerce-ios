@@ -890,7 +890,10 @@ private extension EditableOrderViewModel {
         let productCount = addedItemsToSync.count - removedItemsToSync.count
 
         if addedItemsToSync.isNotEmpty {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow, productCount: productCount))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow,
+                                                                            source: .orderCreation,
+                                                                            addedVia: .manually,
+                                                                            productCount: productCount))
         }
 
         if removedItemsToSync.isNotEmpty {
@@ -958,6 +961,7 @@ private extension EditableOrderViewModel {
         guard let productID = self.initialProductID else {
             return
         }
+
         updateOrderWithProductID(productID)
     }
 
@@ -1300,11 +1304,15 @@ extension EditableOrderViewModel {
     /// Attempts to add a Product to the current Order by SKU search
     ///
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
+        analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderCreation))
         mapFromScannedBarcodetoProduct(barcode: barcode) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case let .success(product):
                 Task { @MainActor in
+                    self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: self.flow.analyticsFlow,
+                                                                                    source: .orderCreation,
+                                                                                    addedVia: .scanning))
                     self.updateOrderWithProductID(product.productID)
                     onCompletion(.success(()))
                 }
@@ -1320,12 +1328,16 @@ extension EditableOrderViewModel {
         }
     }
 
+    func trackBarcodeScanningButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.Orders.productAddNewFromBarcodeScanningTapped())
+    }
+
     /// Attempts to map SKU to Product
     ///
     private func mapFromScannedBarcodetoProduct(barcode: ScannedBarcode, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         Task {
             do {
-                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: barcode, siteID: siteID)
+                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: barcode, siteID: siteID, source: .orderCreation)
                 onCompletion(.success(matchedProduct))
             } catch {
                 onCompletion(.failure(error))

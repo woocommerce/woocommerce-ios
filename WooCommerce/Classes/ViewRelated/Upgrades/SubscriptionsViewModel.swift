@@ -94,6 +94,8 @@ private extension SubscriptionsViewModel {
                 self.updateLoadingViewProperties()
             case .loaded(let plan):
                 self.updateViewProperties(from: plan)
+            case .expired:
+                self.updateExpiredViewProperties()
             case .failed, .unavailable:
                 self.updateFailedViewProperties()
             }
@@ -116,6 +118,14 @@ private extension SubscriptionsViewModel {
         planInfo = ""
         errorNotice = nil
         showLoadingIndicator = true
+        shouldShowFreeTrialFeatures = false
+    }
+
+    func updateExpiredViewProperties() {
+        planName = Localization.genericPlanEndedName
+        planInfo = Localization.planEndedInfo
+        errorNotice = nil
+        showLoadingIndicator = false
         shouldShowFreeTrialFeatures = false
     }
 
@@ -211,13 +221,17 @@ private extension SubscriptionsViewModel {
     enum Localization {
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
         static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. " +
-                                                      "Subscribe to Woo Express Performance Plan now.",
+                                                      "Subscribe to a Woo Express Plan now.",
                                                       comment: "Info details for an expired free trial")
         static let planEndedInfo = NSLocalizedString("Your subscription has ended and you have limited access to all the features.",
-                                                     comment: "Info details for an expired free trial")
+                                                     comment: "Info details for an expired plan")
         static let fetchErrorNotice = NSLocalizedString("There was an error fetching your plan details, please try again later.",
                                                         comment: "Error shown when failing to fetch the plan details in the upgrades view.")
         static let retry = NSLocalizedString("Retry", comment: "Retry button on the error notice for the upgrade view")
+
+        static let genericPlanEndedName = NSLocalizedString(
+            "plan ended",
+            comment: "Shown with a 'Current:' label, but when we don't know what the plan that ended was")
 
         static func planEndedName(name: String) -> String {
             let format = NSLocalizedString("%@ ended", comment: "Reads like: eCommerce ended")

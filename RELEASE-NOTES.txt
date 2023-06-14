@@ -2,7 +2,7 @@
 
 14.1
 -----
-
+- [*] Plans: Expired or cancelled plans are now shown more reliably [https://github.com/woocommerce/woocommerce-ios/pull/9924]
 
 14.0
 -----

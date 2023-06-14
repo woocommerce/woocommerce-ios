@@ -46,20 +46,20 @@ extension Color {
 
     @available(iOS 16.0, *)
     private static func colorComponents(from rgbString: String) throws -> RGBComponents {
-        let componentMatcher: Regex<(Substring, Double, Double, Double, Double)> = Regex {
+        let componentMatcher: Regex<(Substring, Int, Int, Int, Double)> = Regex {
             "rgba("
             Capture {
-                One(.localizedDouble(locale: .init(identifier: "en-us")))
+                One(.localizedInteger(locale: .init(identifier: "en-us")))
             }
             ","
             ZeroOrMore(.whitespace)
             Capture {
-                One(.localizedDouble(locale: .init(identifier: "en-us")))
+                One(.localizedInteger(locale: .init(identifier: "en-us")))
             }
             ","
             ZeroOrMore(.whitespace)
             Capture {
-                One(.localizedDouble(locale: .init(identifier: "en-us")))
+                One(.localizedInteger(locale: .init(identifier: "en-us")))
             }
             ","
             ZeroOrMore(.whitespace)
@@ -73,7 +73,7 @@ extension Color {
             throw ColorDecodingError.invalidRGBStringProvided
         }
         let (_, red, green, blue, alpha) = match.output
-        return (red/255, green/255, blue/255, alpha)
+        return (Double(red)/255, Double(green)/255, Double(blue)/255, alpha)
     }
 
     public enum ColorDecodingError: Error {

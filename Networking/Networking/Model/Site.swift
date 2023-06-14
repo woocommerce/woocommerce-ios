@@ -85,7 +85,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let isSiteOwner = try capabilitiesContainer.decode(Bool.self, forKey: .isSiteOwner)
         let isJetpackThePluginInstalled = try siteContainer.decode(Bool.self, forKey: .isJetpackThePluginInstalled)
         let isJetpackConnected = try siteContainer.decode(Bool.self, forKey: .isJetpackConnected)
-        let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .capabilities)
+        let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         let isWordPressComStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressComStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
         let jetpackConnectionActivePlugins = try optionsContainer.decodeIfPresent([String].self, forKey: .jetpackConnectionActivePlugins) ?? []

@@ -38,13 +38,12 @@ struct SecondaryLoadingButtonStyle: PrimitiveButtonStyle {
     ///
     @ViewBuilder
     private var progressViewOverlay: some View {
-        if isLoading {
-            HStack(spacing: 8) {
-                ProgressView()
-                loadingText.map(Text.init)
-                    .secondaryBodyStyle()
-            }
+        HStack(spacing: 8) {
+            ProgressView()
+            loadingText.map(Text.init)
+                .secondaryBodyStyle()
         }
+        .renderedIf(isLoading)
     }
 
     func makeBody(configuration: Configuration) -> some View {

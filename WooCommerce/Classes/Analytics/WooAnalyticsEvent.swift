@@ -2071,6 +2071,7 @@ extension WooAnalyticsEvent {
             case orderDetails
             case dashboardTopPerformers
             case dashboardMainStats
+            case analyticsHub
         }
 
         private enum Keys {
@@ -2085,6 +2086,8 @@ extension WooAnalyticsEvent {
                 return WooAnalyticsEvent(statName: .dashboardTopPerformersWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
             case .dashboardMainStats:
                 return WooAnalyticsEvent(statName: .dashboardMainStatsWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
+            case .analyticsHub:
+                return WooAnalyticsEvent(statName: .analyticsHubWaitingTimeLoaded, properties: [Keys.waitingTime: elapsedTime])
             }
         }
     }

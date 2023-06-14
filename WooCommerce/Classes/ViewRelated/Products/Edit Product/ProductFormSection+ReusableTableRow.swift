@@ -34,6 +34,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return [cellType]
         case .description:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
+        case .descriptionAI:
+            return [ButtonTableViewCell.self]
         }
     }
 
@@ -51,8 +53,10 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return editable ? LabeledTextViewTableViewCell.self: BasicTableViewCell.self
         case .variationName:
             return BasicTableViewCell.self
-        case .description(let description, _):
+        case .description(let description, _, _):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
+        case .descriptionAI:
+            return ButtonTableViewCell.self
         }
     }
 }

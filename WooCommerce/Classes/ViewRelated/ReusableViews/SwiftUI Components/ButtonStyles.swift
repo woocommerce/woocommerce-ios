@@ -31,10 +31,19 @@ struct SecondaryLoadingButtonStyle: PrimitiveButtonStyle {
     ///
     let isLoading: Bool
 
-    /// Returns a `ProgressView` if the view is loading. Return nil otherwise
+    /// Optional text when the button is in loading state
+    var loadingText: String?
+
+    /// Returns a `ProgressView` if the view is loading.
     ///
-    private var progressViewOverlay: ProgressView<EmptyView, EmptyView>? {
-        isLoading ? ProgressView() : nil
+    @ViewBuilder
+    private var progressViewOverlay: some View {
+        HStack(spacing: 8) {
+            ProgressView()
+            loadingText.map(Text.init)
+                .secondaryBodyStyle()
+        }
+        .renderedIf(isLoading)
     }
 
     func makeBody(configuration: Configuration) -> some View {

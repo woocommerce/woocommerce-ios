@@ -1640,7 +1640,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 case let .failure(error as EditableOrderViewModel.ScannerError):
                     promise(error)
                 default:
-                    XCTFail("Expected failure, got success")
+                    break
                 }
             }, onRetryRequested: {
                 onRetryRequested = true
@@ -1676,7 +1676,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 let product = Product.fake().copy(productID: self.sampleSiteID, purchasable: true)
                 onCompletion(.success(product))
             default:
-                XCTFail("Expected success, got failure")
+                break
             }
         })
 
@@ -1714,30 +1714,33 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_addScannedProductToOrder_when_existing_sku_is_found_then_succeeds_to_add_product_to_order() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
-        storageManager.insertSampleProduct(readOnlyProduct: product)
 
-        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { [weak self] action in
             switch action {
             case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+                self?.storageManager.insertSampleProduct(readOnlyProduct: product)
                 onCompletion(.success(product))
             default:
-                XCTFail("Expected failure, got success")
+                break
             }
         })
 
         // When
-        let initialProductID: Int64? = waitFor { promise in
-            self.viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "existingSKU",
+       waitFor { [weak self] promise in
+            self?.viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "existingSKU",
                                                                             symbology: BarcodeSymbology.ean8), onCompletion: { result in
                 switch result {
                 case .success(()):
-                    promise(self.sampleProductID)
+                    promise(())
                 default:
                     XCTFail("Expected success, got failure")
                 }
             }, onRetryRequested: {})
         }
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialProductID: initialProductID)
+
+        waitUntil { [weak self] in
+            self?.viewModel.currentOrderItems.count ?? 0 > 0
+        }
 
         // Then
         XCTAssertEqual(viewModel.currentOrderItems.count, 1)

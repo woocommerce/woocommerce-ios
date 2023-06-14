@@ -942,8 +942,7 @@ private extension EditableOrderViewModel {
     /// Configures product row view models for each item in `orderDetails`.
     ///
     func configureProductRowViewModels() {
-        updateProductsResultsController()
-        updateProductVariationsResultsController()
+        updateLocalItemsReferences()
         orderSynchronizer.orderPublisher
             .map { $0.items }
             .removeDuplicates()
@@ -1231,6 +1230,11 @@ private extension EditableOrderViewModel {
         }
     }
 
+    func updateLocalItemsReferences() {
+        updateProductsResultsController()
+        updateProductVariationsResultsController()
+    }
+
     /// Syncs initial selected state for all items in the Order
     ///
     func syncInitialSelectedState() {
@@ -1313,6 +1317,9 @@ extension EditableOrderViewModel {
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: self.flow.analyticsFlow,
                                                                                     source: .orderCreation,
                                                                                     addedVia: .scanning))
+                    // The scanned product or variation was added locally when it was found
+                    // Let's refresh our references so we can retrieve it
+                    self.updateLocalItemsReferences()
                     self.updateOrderWithProductID(product.productID)
                     onCompletion(.success(()))
                 }
@@ -1350,9 +1357,12 @@ extension EditableOrderViewModel {
     func updateOrderWithProductID(_ productID: Int64) {
         guard currentOrderItems.contains(where: { $0.productOrVariationID == productID }) else {
             // If it's not part of the current order, send the correct productType to the synchronizer
+            productSelectorViewModel.toggleSelection(id: productID)
             if let productVariation = retrieveVariation(for: productID) {
+                selectedProductVariations.append(productVariation)
                 orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
             } else if let product = allProducts.first(where: { $0.productID == productID }) {
+                selectedProducts.append(product)
                 orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
             } else {
                 DDLogError("⛔️ID \(productID) not found")

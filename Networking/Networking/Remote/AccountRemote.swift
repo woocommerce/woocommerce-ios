@@ -87,8 +87,7 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
         let path = "me/sites"
         let parameters = [
             SiteRemote.SiteParameter.Fields.key: SiteRemote.SiteParameter.Fields.value,
-            SiteRemote.SiteParameter.Options.key: SiteRemote.SiteParameter.Options.value,
-            SiteRemote.SiteParameter.Capabilities.key: SiteRemote.SiteParameter.Capabilities.value
+            SiteRemote.SiteParameter.Options.key: SiteRemote.SiteParameter.Options.value
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)

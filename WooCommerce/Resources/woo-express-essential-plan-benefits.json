@@ -1,7 +1,10 @@
 {
     "plan_name": "Woo Express Essential Monthly",
+    "plan_short_name": "Essential",
+    "plan_frequency": "month",
     "plan_id": "debug.woocommerce.express.essential.monthly",
     "plan_description": "Everything you need to launch an online store.",
+    "header_image_filename": "express-essential-header",
     "feature_categories": [
         {
             "title": "General features",

@@ -24,14 +24,6 @@ struct UpgradesView: View {
     @ObservedObject var upgradesViewModel: UpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
-    private var planText: String {
-        String.localizedStringWithFormat(Localization.planName, subscriptionsViewModel.planName)
-    }
-
-    private var daysLeftText: String {
-        String.localizedStringWithFormat(Localization.daysLeftInTrial, subscriptionsViewModel.planDaysLeft)
-    }
-
     init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
         self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
@@ -39,7 +31,7 @@ struct UpgradesView: View {
 
     var body: some View {
         VStack {
-            CurrentPlanDetailsView(planText: planText, daysLeftText: daysLeftText)
+            CurrentPlanDetailsView(planName: subscriptionsViewModel.planName, daysLeft: subscriptionsViewModel.planDaysLeft)
 
             Spacer()
 
@@ -64,20 +56,36 @@ struct OwnerUpgradesView: View {
     }
 
     var body: some View {
-        VStack {
-            Spacer()
+        List {
+            if let availableProduct = upgradesViewModel.upgradePlan {
+                Section {
+                    Image(availableProduct.wooPlan?.headerImageFileName ?? "")
+                        .frame(maxWidth: .infinity, alignment: .center)
 
-            Image(uiImage: .emptyOrdersImage)
-                .frame(maxWidth: .infinity, alignment: .center)
+                    VStack(alignment: .leading) {
+                        Text(availableProduct.wooPlan?.shortName ?? availableProduct.wpComPlan.displayName)
+                            .font(.largeTitle)
+                        Text(availableProduct.wooPlan?.planDescription ?? "")
+                            .font(.subheadline)
+                    }
 
-            VStack {
-                if let availableProduct = upgradesViewModel.upgradePlan {
-                    Text(availableProduct.wpComPlan.displayName)
-                        .font(.title)
-                    Text(availableProduct.wooPlan?.planDescription ?? "")
-                        .font(.body)
-                    Text(availableProduct.wpComPlan.displayPrice)
-                        .font(.title)
+                    VStack(alignment: .leading) {
+                        Text(availableProduct.wpComPlan.displayPrice)
+                            .font(.largeTitle)
+                        Text(availableProduct.wooPlan?.planFrequency.localizedString ?? "")
+                            .font(.footnote)
+                    }
+                }
+                .listRowSeparator(.hidden)
+
+                if let wooPlan = availableProduct.wooPlan {
+                    Text("Get the most out of \(wooPlan.shortName)")
+                        .font(.title3.weight(.semibold))
+                    Section {
+                        ForEach(wooPlan.planFeatureGroups, id: \.title) { featureGroup in
+                            WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                        }
+                    }
                 }
             }
 
@@ -136,16 +144,45 @@ struct NonOwnerUpgradesView: View {
 }
 
 private struct CurrentPlanDetailsView: View {
-    @State var planText: String
-    @State var daysLeftText: String
+    @State var planName: String
+    @State var daysLeft: String
+
+    private var daysLeftText: String {
+        String.localizedStringWithFormat(Localization.daysLeftValue, daysLeft)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: UpgradesView.Layout.contentSpacing) {
-            Text(planText)
-            Text(daysLeftText)
+            HStack {
+                Text(Localization.yourPlanLabel)
+                    .font(.footnote)
+                Spacer()
+                Text(planName)
+                    .font(.footnote.bold())
+            }
+            HStack {
+                Text(Localization.daysLeftLabel)
+                    .font(.footnote)
+                Spacer()
+                Text(daysLeftText)
+                    .font(.footnote.bold())
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.leading)
+        .padding([.leading, .trailing])
+    }
+
+    private enum Localization {
+        static let yourPlanLabel = NSLocalizedString(
+            "Your plan", comment: "Label for the text describing which Plan the merchant is currently subscribed to." +
+            "Reads as 'Your Plan: Free Trial'")
+
+        static let daysLeftLabel = NSLocalizedString(
+            "Days left in plan", comment: "Label for the text describing days left on a Plan to expire." +
+            "Reads as 'Days left in plan: 15 days left'")
+
+        static let daysLeftValue = NSLocalizedString(
+            "%1$@ days left", comment: "Value describing the days left on a plan before expiry. Reads as '15 days left'")
     }
 }
 
@@ -175,12 +212,12 @@ private extension OwnerUpgradesView {
 
     @ViewBuilder
     func renderSingleUpgrade() -> some View {
-        if let wpcomPlan = upgradesViewModel.upgradePlan?.wpComPlan {
-            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
+        if let upgradePlan = upgradesViewModel.upgradePlan {
+            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
             Button(buttonText) {
                 Task {
                     isPurchasing = true
-                    await upgradesViewModel.purchasePlan(with: wpcomPlan.id)
+                    await upgradesViewModel.purchasePlan(with: upgradePlan.wpComPlan.id)
                     isPurchasing = false
                 }
             }
@@ -207,11 +244,6 @@ private extension NonOwnerUpgradesView {
 private extension UpgradesView {
     struct Localization {
         static let navigationTitle = NSLocalizedString("Plans", comment: "Navigation title for the Upgrades screen")
-
-        static let planName = NSLocalizedString("Your Plan: %1$@", comment: "Message describing which Plan the merchant is currently subscribed to." +
-                                                "Reads as 'Your Plan: Free Trial'")
-        static let daysLeftInTrial = NSLocalizedString("Days left in trial: %1$@", comment: "Message describing days left on a Plan to expire." +
-                                                       "Reads as 'Days left in trial: 15'")
     }
 
     struct Layout {

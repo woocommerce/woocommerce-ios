@@ -1,15 +1,21 @@
 import Foundation
 
 public struct WooPlan: Decodable {
-    public let name: String
     public let id: String
+    public let name: String
+    public let shortName: String
+    public let planFrequency: PlanFrequency
     public let planDescription: String
+    public let headerImageFileName: String
     public let planFeatureGroups: [WooPlanFeatureGroup]
 
-    init(name: String, id: String, planDescription: String, planFeatureGroups: [WooPlanFeatureGroup]) {
+    init(name: String, id: String, shortName: String, planFrequency: PlanFrequency, planDescription: String, headerImageFileName: String, planFeatureGroups: [WooPlanFeatureGroup]) {
         self.name = name
         self.id = id
+        self.shortName = shortName
+        self.planFrequency = planFrequency
         self.planDescription = planDescription
+        self.headerImageFileName = headerImageFileName
         self.planFeatureGroups = planFeatureGroups
     }
 
@@ -36,15 +42,40 @@ public struct WooPlan: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         name = try container.decode(String.self, forKey: .planName)
+        shortName = try container.decode(String.self, forKey: .planShortName)
         id = try container.decode(String.self, forKey: .planId)
+        planFrequency = try container.decode(PlanFrequency.self, forKey: .planFrequency)
         planDescription = try container.decode(String.self, forKey: .planDescription)
+        headerImageFileName = try container.decode(String.self, forKey: .headerImageFileName)
         planFeatureGroups = try container.decode([WooPlanFeatureGroup].self, forKey: .planFeatureGroups)
     }
 
     private enum CodingKeys: String, CodingKey {
         case planName = "plan_name"
+        case planShortName = "plan_short_name"
         case planId = "plan_id"
+        case planFrequency = "plan_frequency"
         case planDescription = "plan_description"
+        case headerImageFileName = "header_image_filename"
         case planFeatureGroups = "feature_categories"
+    }
+
+    public enum PlanFrequency: String, Decodable {
+        case month
+        case year
+
+        public var localizedString: String {
+            switch self {
+            case .month:
+                return Localization.month
+            case .year:
+                return Localization.year
+            }
+        }
+
+        private enum Localization {
+            static let month = NSLocalizedString("per month", comment: "Description of the frequency of a monthly Woo plan")
+            static let year = NSLocalizedString("per year", comment: "Description of the frequency of a yearly Woo plan")
+        }
     }
 }

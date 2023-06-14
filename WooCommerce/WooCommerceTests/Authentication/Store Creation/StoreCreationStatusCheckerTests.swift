@@ -12,7 +12,7 @@ final class StoreCreationStatusCheckerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
-        sut = StoreCreationStatusChecker(jetpackCheckRetryInterval: 0, stores: stores)
+        sut = StoreCreationStatusChecker(jetpackCheckRetryInterval: 0, storeName: "Wind", stores: stores)
     }
 
     override func tearDown() {
@@ -22,10 +22,13 @@ final class StoreCreationStatusCheckerTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_waitForSiteToBeReady_returns_site_when_plugins_are_active() throws {
+    func test_waitForSiteToBeReady_returns_site_when_site_has_all_necessary_properties() throws {
         // Given
-        let site = Site.fake().copy(name: "testing")
-        mockPluginsActive(result: .success(true))
+        let site = Site.fake().copy(name: "testing",
+                                    isJetpackThePluginInstalled: true,
+                                    isJetpackConnected: true,
+                                    isWooCommerceActive: true,
+                                    isWordPressComStore: true)
         mockSyncSite(result: .success(site))
 
         // When
@@ -46,34 +49,83 @@ final class StoreCreationStatusCheckerTests: XCTestCase {
         }
     }
 
-    func test_waitForSiteToBeReady_returns_error_when_failing_to_check_plugins() throws {
+    func test_waitForSiteToBeReady_returns_newSiteIsNotJetpackSite_error_when_site_is_missing_jetpack_properties() throws {
         // Given
-        let pluginsError = NSError(domain: "plugins inactive", code: 0)
-        mockPluginsActive(result: .failure(pluginsError))
-        mockSyncSite(result: .success(.fake()))
+        let sitesMissingANecessaryProperty = [
+            Site.fake().copy(name: "testing",
+                             isJetpackThePluginInstalled: false,
+                             isJetpackConnected: true,
+                             isWooCommerceActive: true,
+                             isWordPressComStore: true),
+            Site.fake().copy(name: "testing",
+                             isJetpackThePluginInstalled: true,
+                             isJetpackConnected: false,
+                             isWooCommerceActive: true,
+                             isWordPressComStore: true)
+            ]
 
-        // When
-        waitFor { promise in
-            self.siteReadySubscription = self.sut.waitForSiteToBeReady(siteID: 122)
-                .sink { completion in
-                    switch completion {
-                    case .finished:
+        for site in sitesMissingANecessaryProperty {
+            mockSyncSite(result: .success(site))
+
+            // When
+            waitFor { promise in
+                self.siteReadySubscription = self.sut.waitForSiteToBeReady(siteID: 122)
+                    .sink { completion in
+                        switch completion {
+                        case .finished:
+                            XCTFail()
+                        case .failure(let error):
+                            // Then
+                            XCTAssertEqual(error as? StoreCreationError, .newSiteIsNotJetpackSite)
+                            promise(())
+                        }
+                    } receiveValue: { site in
                         XCTFail()
-                    case .failure(let error):
-                        // Then
-                        XCTAssertEqual(error as NSError, pluginsError)
-                        promise(())
                     }
-                } receiveValue: { site in
-                    XCTFail()
-                }
+            }
+        }
+    }
+
+    func test_waitForSiteToBeReady_returns_newSiteIsNotFullySynced_error_when_site_is_missing_other_necessary_properties() throws {
+        // Given
+        let sitesMissingANecessaryProperty = [
+            Site.fake().copy(name: "testing",
+                             isJetpackThePluginInstalled: true,
+                             isJetpackConnected: true,
+                             isWooCommerceActive: false,
+                             isWordPressComStore: true),
+            Site.fake().copy(name: "testing",
+                             isJetpackThePluginInstalled: true,
+                             isJetpackConnected: true,
+                             isWooCommerceActive: true,
+                             isWordPressComStore: false)
+        ]
+
+        for site in sitesMissingANecessaryProperty {
+            mockSyncSite(result: .success(site))
+
+            // When
+            waitFor { promise in
+                self.siteReadySubscription = self.sut.waitForSiteToBeReady(siteID: 122)
+                    .sink { completion in
+                        switch completion {
+                        case .finished:
+                            XCTFail()
+                        case .failure(let error):
+                            // Then
+                            XCTAssertEqual(error as? StoreCreationError, .newSiteIsNotFullySynced)
+                            promise(())
+                        }
+                    } receiveValue: { site in
+                        XCTFail()
+                    }
+            }
         }
     }
 
     func test_waitForSiteToBeReady_returns_error_when_failing_to_sync_site() throws {
         // Given
         let syncSiteError = NSError(domain: "sync site", code: 0)
-        mockPluginsActive(result: .success(true))
         mockSyncSite(result: .failure(syncSiteError))
 
         // When
@@ -93,44 +145,12 @@ final class StoreCreationStatusCheckerTests: XCTestCase {
                 }
         }
     }
-
-    func test_waitForSiteToBeReady_returns_error_when_plugins_are_not_active() throws {
-        // Given
-        mockPluginsActive(result: .success(false))
-        mockSyncSite(result: .success(.fake()))
-
-        // When
-        waitFor { promise in
-            self.siteReadySubscription = self.sut.waitForSiteToBeReady(siteID: 122)
-                .sink { completion in
-                    switch completion {
-                    case .finished:
-                        XCTFail()
-                    case .failure(let error):
-                        // Then
-                        XCTAssertEqual(error as? StoreCreationError, .newSiteIsNotJetpackSite)
-                        promise(())
-                    }
-                } receiveValue: { site in
-                    XCTFail()
-                }
-        }
-    }
 }
 
 private extension StoreCreationStatusCheckerTests {
     func mockSyncSite(result: Result<Site, Error>) {
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
             guard case let .syncSite(_, completion) = action else {
-                return
-            }
-            completion(result)
-        }
-    }
-
-    func mockPluginsActive(result: Result<Bool, Error>) {
-        stores.whenReceivingAction(ofType: SitePluginAction.self) { action in
-            guard case let .arePluginsActive(_, _, completion) = action else {
                 return
             }
             completion(result)

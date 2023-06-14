@@ -196,25 +196,32 @@ final class OrdersRootViewController: UIViewController {
             navigationController.pushViewController(viewController, animated: true)
         }
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
         orderDurationRecorder.startRecording()
     }
 
     /// Presents the Order Creation flow when a product is scanned
     ///
     @objc func presentOrderCreationFlowByProductScanning() {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderAddNewFromBarcodeScanningTapped())
+
         guard let navigationController = navigationController else {
             return
         }
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
+
             self?.configureLeftButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
                 self.configureLeftButtonItemAsProductScanningButton()
                 switch result {
                 case let .success(product):
+                    self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation,
+                                                                                    source: .orderList,
+                                                                                    addedVia: .scanning))
                     self.presentOrderCreationFlowWithScannedProduct(with: product.productID)
                 case .failure:
                     self.displayScannedProductErrorNotice()
@@ -233,7 +240,7 @@ final class OrdersRootViewController: UIViewController {
     private func handleScannedBarcode(_ scannedBarcode: ScannedBarcode, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
         Task {
             do {
-                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: scannedBarcode, siteID: siteID)
+                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: scannedBarcode, siteID: siteID, source: .orderList)
                 onCompletion(.success(matchedProduct))
             } catch {
                 onCompletion(.failure(error))
@@ -256,7 +263,7 @@ final class OrdersRootViewController: UIViewController {
     /// Present `FilterListViewController`
     ///
     private func filterButtonTapped() {
-        ServiceLocator.analytics.track(.orderListViewFilterOptionsTapped)
+        analytics.track(.orderListViewFilterOptionsTapped)
 
         // Fetch stored statuses
         do {
@@ -272,7 +279,7 @@ final class OrdersRootViewController: UIViewController {
             self?.filters = filters
             let statuses = (filters.orderStatus ?? []).map { $0.rawValue }.joined(separator: ",")
             let dateRange = filters.dateRange?.analyticsDescription ?? ""
-            ServiceLocator.analytics.track(.ordersListFilter,
+            self?.analytics.track(.ordersListFilter,
                                            withProperties: ["status": statuses,
                                                             "date_range": dateRange])
         }, onClearAction: {
@@ -511,7 +518,7 @@ private extension OrdersRootViewController {
             show(orderViewController, sender: self)
         }
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
     }
 }
 

@@ -166,6 +166,7 @@ public enum WooAnalyticsStat: String {
     case analyticsHubDateRangeButtonTapped = "analytics_hub_date_range_button_tapped"
     case analyticsHubDateRangeOptionSelected = "analytics_hub_date_range_option_selected"
     case analyticsHubDateRangeSelectionFailed = "analytics_hub_date_range_selection_failed"
+    case analyticsHubWaitingTimeLoaded = "analytics_hub_waiting_time_loaded"
 
     // MARK: Blaze Events
     //
@@ -414,6 +415,14 @@ public enum WooAnalyticsStat: String {
     // MARK: Order List Sorting/Filtering
     //
     case orderListViewFilterOptionsTapped = "order_list_view_filter_options_tapped"
+
+    // MARK: Barcode Scanning events
+        //
+        case orderCreationProductBarcodeScanningTapped = "order_creation_product_barcode_scanning_tapped"
+        case orderListProductBarcodeScanningTapped = "order_list_product_barcode_scanning_tapped"
+        case barcodeScanningSuccess = "barcode_scanning_success"
+        case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
+        case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
     // MARK: Shipping Labels Events
     //

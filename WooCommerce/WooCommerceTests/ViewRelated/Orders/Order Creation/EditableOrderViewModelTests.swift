@@ -487,6 +487,19 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Add Products to Order via SKU Scanner Tests
 
+    func test_trackBarcodeScanningButtonTapped_tracks_right_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackBarcodeScanningButtonTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderCreationProductBarcodeScanningTapped.rawValue)
+    }
+
     func test_add_product_to_order_via_sku_scanner_when_feature_flag_is_enabled_then_feature_support_returns_true() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
@@ -939,11 +952,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         let eventProperties = analytics.receivedProperties[eventIndex]
-        guard let event = eventProperties.first(where: { $0.key as? String == "flow"}) else {
-            return XCTFail("No property received")
-        }
 
-        XCTAssertEqual(event.value as? String, "creation")
+        XCTAssertEqual(eventProperties["flow"] as? String, "creation")
+        XCTAssertEqual(eventProperties["source"] as? String, "order_creation")
+        XCTAssertEqual(eventProperties["added_via"] as? String, "manually")
     }
 
     func test_product_is_tracked_when_quantity_changes() throws {
@@ -1607,16 +1619,22 @@ final class EditableOrderViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
-                onCompletion(.failure(NSError()))
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Expected failure, got success")
             }
         })
 
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
         // When
         var onRetryRequested = false
         let expectedError = waitFor { promise in
-            self.viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "nonExistingSKU",
+            viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "nonExistingSKU",
                                                                             symbology: BarcodeSymbology.ean8), onCompletion: { expectedError in
                 switch expectedError {
                 case let .failure(error as EditableOrderViewModel.ScannerError):
@@ -1634,6 +1652,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(expectedError, .productNotFound)
         XCTAssertEqual(viewModel.autodismissableNotice, expectedNotice)
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningSuccess.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
 
         viewModel.autodismissableNotice?.actionHandler?()
 
@@ -1644,6 +1664,12 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_addScannedProductToOrder_when_existing_sku_is_found_then_retrieving_a_matching_product_returns_success() {
         // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
@@ -1656,7 +1682,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let successWasReceived: Bool = waitFor { promise in
-            self.viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "existingSKU",
+            viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "existingSKU",
                                                                             symbology: BarcodeSymbology.ean8), onCompletion: { result in
                 switch result {
                 case .success(()):
@@ -1669,6 +1695,12 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(successWasReceived)
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningSuccess.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
+        XCTAssertEqual(analytics.receivedEvents.last, WooAnalyticsStat.orderProductAdd.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.last?["source"] as? String, "order_creation")
+        XCTAssertEqual(analytics.receivedProperties.last?["flow"] as? String, "creation")
+        XCTAssertEqual(analytics.receivedProperties.last?["added_via"] as? String, "scanning")
     }
 
     func test_order_creation_when_withInitialProduct_is_nil_then_currentOrderItems_are_zero() {

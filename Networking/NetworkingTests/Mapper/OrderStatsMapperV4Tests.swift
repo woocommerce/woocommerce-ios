@@ -23,13 +23,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(hourlyStats.totals.totalOrders, 3)
         XCTAssertEqual(hourlyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(hourlyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(hourlyStats.totals.totalCoupons, 0)
-        XCTAssertEqual(hourlyStats.totals.couponDiscount, 0)
-        XCTAssertEqual(hourlyStats.totals.refunds, 0)
-        XCTAssertEqual(hourlyStats.totals.taxes, 0)
-        XCTAssertEqual(hourlyStats.totals.shipping, 0)
         XCTAssertEqual(hourlyStats.totals.netRevenue, 800)
-        XCTAssertEqual(hourlyStats.totals.totalProducts, 2)
         XCTAssertEqual(hourlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(hourlyStats.intervals.count, 24)
@@ -41,13 +35,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroHourTotals.totalOrders, 2)
         XCTAssertEqual(nonZeroHourTotals.grossRevenue, 350)
-        XCTAssertEqual(nonZeroHourTotals.totalCoupons, 0)
-        XCTAssertEqual(nonZeroHourTotals.couponDiscount, 0)
-        XCTAssertEqual(nonZeroHourTotals.refunds, 0)
-        XCTAssertEqual(nonZeroHourTotals.taxes, 0)
-        XCTAssertEqual(nonZeroHourTotals.shipping, 0)
         XCTAssertEqual(nonZeroHourTotals.netRevenue, 350)
-        XCTAssertNil(nonZeroHourTotals.totalProducts)
         XCTAssertEqual(nonZeroHourTotals.averageOrderValue, 175)
     }
 
@@ -65,13 +53,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(dailyStats.totals.totalOrders, 3)
         XCTAssertEqual(dailyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(dailyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(dailyStats.totals.totalCoupons, 0)
-        XCTAssertEqual(dailyStats.totals.couponDiscount, 0)
-        XCTAssertEqual(dailyStats.totals.refunds, 0)
-        XCTAssertEqual(dailyStats.totals.taxes, 0)
-        XCTAssertEqual(dailyStats.totals.shipping, 0)
         XCTAssertEqual(dailyStats.totals.netRevenue, 800)
-        XCTAssertEqual(dailyStats.totals.totalProducts, 2)
         XCTAssertEqual(dailyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(dailyStats.intervals.count, 1)
@@ -83,13 +65,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroDayTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroDayTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroDayTotals.totalCoupons, 0)
-        XCTAssertEqual(nonZeroDayTotals.couponDiscount, 0)
-        XCTAssertEqual(nonZeroDayTotals.refunds, 0)
-        XCTAssertEqual(nonZeroDayTotals.taxes, 0)
-        XCTAssertEqual(nonZeroDayTotals.shipping, 0)
         XCTAssertEqual(nonZeroDayTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroDayTotals.totalProducts)
         XCTAssertEqual(nonZeroDayTotals.averageOrderValue, 266)
     }
 
@@ -107,13 +83,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(weeklyStats.totals.totalOrders, 3)
         XCTAssertEqual(weeklyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(weeklyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(weeklyStats.totals.totalCoupons, 0)
-        XCTAssertEqual(weeklyStats.totals.couponDiscount, 0)
-        XCTAssertEqual(weeklyStats.totals.refunds, 0)
-        XCTAssertEqual(weeklyStats.totals.taxes, 0)
-        XCTAssertEqual(weeklyStats.totals.shipping, 0)
         XCTAssertEqual(weeklyStats.totals.netRevenue, 800)
-        XCTAssertEqual(weeklyStats.totals.totalProducts, 2)
         XCTAssertEqual(weeklyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(weeklyStats.intervals.count, 2)
@@ -125,13 +95,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroWeekTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroWeekTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroWeekTotals.totalCoupons, 0)
-        XCTAssertEqual(nonZeroWeekTotals.couponDiscount, 0)
-        XCTAssertEqual(nonZeroWeekTotals.refunds, 0)
-        XCTAssertEqual(nonZeroWeekTotals.taxes, 0)
-        XCTAssertEqual(nonZeroWeekTotals.shipping, 0)
         XCTAssertEqual(nonZeroWeekTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroWeekTotals.totalProducts)
         XCTAssertEqual(nonZeroWeekTotals.averageOrderValue, 266)
     }
 
@@ -149,13 +113,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(monthlyStats.totals.totalOrders, 3)
         XCTAssertEqual(monthlyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(monthlyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(monthlyStats.totals.totalCoupons, 0)
-        XCTAssertEqual(monthlyStats.totals.couponDiscount, 0)
-        XCTAssertEqual(monthlyStats.totals.refunds, 0)
-        XCTAssertEqual(monthlyStats.totals.taxes, 0)
-        XCTAssertEqual(monthlyStats.totals.shipping, 0)
         XCTAssertEqual(monthlyStats.totals.netRevenue, 800)
-        XCTAssertEqual(monthlyStats.totals.totalProducts, 2)
         XCTAssertEqual(monthlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(monthlyStats.intervals.count, 1)
@@ -167,13 +125,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroMonthTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroMonthTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroMonthTotals.totalCoupons, 0)
-        XCTAssertEqual(nonZeroMonthTotals.couponDiscount, 0)
-        XCTAssertEqual(nonZeroMonthTotals.refunds, 0)
-        XCTAssertEqual(nonZeroMonthTotals.taxes, 0)
-        XCTAssertEqual(nonZeroMonthTotals.shipping, 0)
         XCTAssertEqual(nonZeroMonthTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroMonthTotals.totalProducts)
         XCTAssertEqual(nonZeroMonthTotals.averageOrderValue, 266)
     }
 
@@ -191,13 +143,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(yearlyStats.totals.totalOrders, 3)
         XCTAssertEqual(yearlyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(yearlyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(yearlyStats.totals.totalCoupons, 0)
-        XCTAssertEqual(yearlyStats.totals.couponDiscount, 0)
-        XCTAssertEqual(yearlyStats.totals.refunds, 0)
-        XCTAssertEqual(yearlyStats.totals.taxes, 0)
-        XCTAssertEqual(yearlyStats.totals.shipping, 0)
         XCTAssertEqual(yearlyStats.totals.netRevenue, 800)
-        XCTAssertEqual(yearlyStats.totals.totalProducts, 2)
         XCTAssertEqual(yearlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(yearlyStats.intervals.count, 1)
@@ -209,13 +155,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroYearTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroYearTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroYearTotals.totalCoupons, 0)
-        XCTAssertEqual(nonZeroYearTotals.couponDiscount, 0)
-        XCTAssertEqual(nonZeroYearTotals.refunds, 0)
-        XCTAssertEqual(nonZeroYearTotals.taxes, 0)
-        XCTAssertEqual(nonZeroYearTotals.shipping, 0)
         XCTAssertEqual(nonZeroYearTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroYearTotals.totalProducts)
         XCTAssertEqual(nonZeroYearTotals.averageOrderValue, 266)
     }
 
@@ -234,13 +174,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(yearlyStats.totals.totalOrders, 3)
         XCTAssertEqual(yearlyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(yearlyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(yearlyStats.totals.totalCoupons, 0)
-        XCTAssertEqual(yearlyStats.totals.couponDiscount, 0)
-        XCTAssertEqual(yearlyStats.totals.refunds, 0)
-        XCTAssertEqual(yearlyStats.totals.taxes, 0)
-        XCTAssertEqual(yearlyStats.totals.shipping, 0)
         XCTAssertEqual(yearlyStats.totals.netRevenue, 800)
-        XCTAssertEqual(yearlyStats.totals.totalProducts, 2)
         XCTAssertEqual(yearlyStats.totals.averageOrderValue, 266)
 
         XCTAssertEqual(yearlyStats.intervals.count, 1)
@@ -252,13 +186,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroYearTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroYearTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroYearTotals.totalCoupons, 0)
-        XCTAssertEqual(nonZeroYearTotals.couponDiscount, 0)
-        XCTAssertEqual(nonZeroYearTotals.refunds, 0)
-        XCTAssertEqual(nonZeroYearTotals.taxes, 0)
-        XCTAssertEqual(nonZeroYearTotals.shipping, 0)
         XCTAssertEqual(nonZeroYearTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroYearTotals.totalProducts)
         XCTAssertEqual(nonZeroYearTotals.averageOrderValue, 266)
     }
 }

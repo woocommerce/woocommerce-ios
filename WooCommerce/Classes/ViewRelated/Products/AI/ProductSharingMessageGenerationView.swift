@@ -17,6 +17,16 @@ final class ProductSharingMessageGenerationHostingController: UIHostingControlle
 struct ProductSharingMessageGenerationView: View {
     @ObservedObject private var viewModel: ProductSharingMessageGenerationViewModel
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    @State private var isShowingLegalPage = false
+    private let legalURL = URL(string: "https://automattic.com/ai-guidelines/")
+
+    private var shouldKeepGenerateButtonAtFixedSize: Bool {
+        !dynamicTypeSize.isAccessibilitySize || horizontalSizeClass != .compact
+    }
+
     init(viewModel: ProductSharingMessageGenerationViewModel) {
         self.viewModel = viewModel
     }
@@ -35,7 +45,6 @@ struct ProductSharingMessageGenerationView: View {
                 TextEditor(text: $viewModel.messageContent)
                     .bodyStyle()
                     .foregroundColor(.secondary)
-                    .background(viewModel.generationInProgress ? Color(uiColor: .buttonDisabledBackground) : .clear)
                     .padding(insets: Constants.messageContentInsets)
                     .overlay(
                         RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
@@ -66,30 +75,33 @@ struct ProductSharingMessageGenerationView: View {
                 Text(message).errorStyle()
             }
 
-            // Action button to generate message
-            Button(action: {
-                Task {
-                    await viewModel.generateShareMessage()
-                }
-            }, label: {
-                Label {
-                    Text(viewModel.generateButtonTitle)
-                } icon: {
-                    Image(systemName: viewModel.generateButtonImageName)
-                }
-            })
-            .buttonStyle(.plain)
-            .foregroundColor(.accentColor)
-            .fixedSize()
-            .renderedIf(viewModel.generationInProgress == false)
+            AdaptiveStack {
+                // Action button to generate message
+                Button(action: {
+                    Task {
+                        await viewModel.generateShareMessage()
+                    }
+                }, label: {
+                    Label {
+                        Text(viewModel.generateButtonTitle)
+                    } icon: {
+                        Image(systemName: viewModel.generateButtonImageName)
+                    }
+                })
+                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress, loadingText: Localization.generateInProgress))
+                .fixedSize(horizontal: shouldKeepGenerateButtonAtFixedSize,
+                           vertical: shouldKeepGenerateButtonAtFixedSize)
 
-            // Generating text
-            HStack {
-                ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                Text(Localization.generateInProgress)
-                    .secondaryBodyStyle()
+                // Button for more information about legal
+                Button {
+                    isShowingLegalPage = true
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.headline)
+                }
+                .buttonStyle(.plain)
+                .foregroundColor(.accentColor)
             }
-            .renderedIf(viewModel.generationInProgress)
 
             Spacer()
 
@@ -103,6 +115,7 @@ struct ProductSharingMessageGenerationView: View {
             .shareSheet(isPresented: $viewModel.isShareSheetPresented) {
                 viewModel.shareSheet
             }
+            .safariSheet(isPresented: $isShowingLegalPage, url: legalURL)
         }
         .padding(insets: Constants.insets)
     }

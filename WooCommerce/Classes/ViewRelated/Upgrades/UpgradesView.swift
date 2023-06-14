@@ -71,12 +71,12 @@ struct OwnerUpgradesView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
 
             VStack {
-                if let availableProduct = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
-                    Text(availableProduct.displayName)
+                if let availableProduct = upgradesViewModel.upgradePlan {
+                    Text(availableProduct.wpComPlan.displayName)
                         .font(.title)
-                    Text(Localization.upgradeSubtitle)
+                    Text(availableProduct.wooPlan?.planDescription ?? "")
                         .font(.body)
-                    Text(availableProduct.displayPrice)
+                    Text(availableProduct.wpComPlan.displayPrice)
                         .font(.title)
                 }
             }
@@ -175,7 +175,7 @@ private extension OwnerUpgradesView {
 
     @ViewBuilder
     func renderSingleUpgrade() -> some View {
-        if let wpcomPlan = upgradesViewModel.retrievePlanDetailsIfAvailable(.essentialMonthly) {
+        if let wpcomPlan = upgradesViewModel.upgradePlan?.wpComPlan {
             let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
             Button(buttonText) {
                 Task {
@@ -192,8 +192,6 @@ private extension OwnerUpgradesView {
     struct Localization {
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")
-        static let upgradeSubtitle = NSLocalizedString("Everything you need to launch an online store",
-                                                       comment: "Subtitle that can be read under the Plan upgrade name")
     }
 }
 

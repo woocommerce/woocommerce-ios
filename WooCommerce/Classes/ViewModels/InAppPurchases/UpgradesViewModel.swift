@@ -13,8 +13,9 @@ final class UpgradesViewModel: ObservableObject {
 
     @Published var wpcomPlans: [WPComPlanProduct]
     @Published var entitledWpcomPlanIDs: Set<String>
+    @Published var upgradePlan: WooWPComPlan? = nil
 
-    let plan: WooPlan? = WooPlan()
+    private let localPlans: [WooPlan]
 
     init(siteID: Int64, inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.siteID = siteID
@@ -22,15 +23,17 @@ final class UpgradesViewModel: ObservableObject {
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
         wpcomPlans = []
         entitledWpcomPlanIDs = []
+        if let essentialPlan = WooPlan() {
+            self.localPlans = [essentialPlan]
+        } else {
+            self.localPlans = []
+        }
     }
 
     /// Retrieves all In-App Purchases WPCom plans
     ///
     @MainActor
     func fetchPlans() async {
-        if let plan {
-            DDLogInfo("Default plan details loaded: \(plan.name)")
-        }
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 DDLogError("IAP not supported")
@@ -38,7 +41,11 @@ final class UpgradesViewModel: ObservableObject {
             }
 
             self.wpcomPlans = try await inAppPurchasesPlanManager.fetchPlans()
+
             await loadUserEntitlements()
+            if entitledWpcomPlanIDs.isEmpty {
+                self.upgradePlan = retrievePlanDetailsIfAvailable(.essentialMonthly)
+            }
         } catch {
             // TODO: Handle errors
             // https://github.com/woocommerce/woocommerce-ios/issues/9886
@@ -63,12 +70,13 @@ final class UpgradesViewModel: ObservableObject {
 
     /// Retrieves a specific In-App Purchase WPCom plan from the available products
     ///
-    func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans) -> WPComPlanProduct? {
+    private func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans) -> WooWPComPlan? {
         let match = type.rawValue
         guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == match }) else {
             return nil
         }
-        return wpcomPlanProduct
+        let wooPlan = localPlans.first { $0.id == wpcomPlanProduct.id }
+        return WooWPComPlan(wpComPlan: wpcomPlanProduct, wooPlan: wooPlan)
     }
 }
 
@@ -98,4 +106,9 @@ extension UpgradesViewModel {
     enum AvailableInAppPurchasesWPComPlans: String {
         case essentialMonthly = "debug.woocommerce.express.essential.monthly"
     }
+}
+
+struct WooWPComPlan {
+    let wpComPlan: WPComPlanProduct
+    let wooPlan: WooPlan?
 }

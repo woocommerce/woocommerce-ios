@@ -86,11 +86,12 @@ extension UIButton {
         let configuration: UIButton.Configuration = {
             var configuration = UIButton.Configuration.filled()
             configuration.contentInsets = .init(
-                top: Style.verticalInset,
-                leading: Style.horizontalInset,
-                bottom: Style.verticalInset,
-                trailing: Style.horizontalInset
+                top: Style.Subtle.verticalInset,
+                leading: Style.Subtle.horizontalInset,
+                bottom: Style.Subtle.verticalInset,
+                trailing: Style.Subtle.horizontalInset
             )
+            configuration.imagePadding = Style.Subtle.spacingBetweenImageAndTitle
             configuration.baseForegroundColor = .accent
             configuration.baseBackgroundColor = .init(light: .systemGray6, dark: .tertiarySystemBackground)
             configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -221,5 +222,11 @@ private extension UIButton {
         static let defaultBorderWidth = CGFloat(1.0)
         static let verticalInset = CGFloat(12)
         static let horizontalInset = CGFloat(22)
+
+        enum Subtle {
+            static let horizontalInset = CGFloat(8)
+            static let verticalInset = CGFloat(8)
+            static let spacingBetweenImageAndTitle = CGFloat(4)
+        }
     }
 }

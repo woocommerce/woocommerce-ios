@@ -38,12 +38,14 @@ final class ButtonTableViewCell: UITableViewCell {
     ///   - onButtonTouchUp: Called when the button is tapped.
     func configure(style: Style = .default,
                    title: String?,
+                   image: UIImage? = nil,
                    accessibilityIdentifier: String? = nil,
                    topSpacing: CGFloat = Constants.defaultSpacing,
                    bottomSpacing: CGFloat = Constants.defaultSpacing,
                    onButtonTouchUp: (() -> Void)? = nil) {
         apply(style: style)
         button.setTitle(title, for: .normal)
+        button.setImage(image, for: .normal)
         button.accessibilityIdentifier = accessibilityIdentifier
         self.onButtonTouchUp = onButtonTouchUp
 

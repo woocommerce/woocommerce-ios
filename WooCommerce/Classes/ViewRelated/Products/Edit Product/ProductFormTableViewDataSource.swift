@@ -213,11 +213,12 @@ private extension ProductFormTableViewDataSource {
             fatalError()
         }
         let title = NSLocalizedString(
-            "✨ Write it for me",
+            "Write it for me",
             comment: "Product description AI row on Product form screen when the feature is available."
         )
         cell.configure(style: .subtle,
                        title: title,
+                       image: .sparklesImage,
                        accessibilityIdentifier: "product-description-ai",
                        topSpacing: 6,
                        bottomSpacing: 0) { [weak self] in

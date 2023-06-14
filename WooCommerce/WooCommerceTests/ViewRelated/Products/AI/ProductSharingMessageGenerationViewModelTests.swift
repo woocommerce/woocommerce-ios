@@ -44,7 +44,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.generationInProgress)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, completion):
                 XCTAssertTrue(viewModel.generationInProgress)
                 completion(.success("Check this out!"))
             default:
@@ -70,7 +70,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, completion):
                 completion(.success(expectedString))
             default:
                 return
@@ -95,7 +95,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             default:
                 return
@@ -122,7 +122,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
                                                                  analytics: analytics)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, completion):
                 completion(.success("Test"))
             default:
                 return
@@ -164,7 +164,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
                                                                  analytics: analytics)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             default:
                 return
@@ -195,7 +195,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
                                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+            case let .generateProductSharingMessage(_, _, _, _, completion):
                 completion(.success(expectedString))
             default:
                 return

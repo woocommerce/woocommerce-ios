@@ -39,7 +39,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         url: i18n.DefaultSite.url,
         adminURL: i18n.DefaultSite.adminURL,
         loginURL: i18n.DefaultSite.loginURL,
-        isSiteOwner: true,
+        isSiteOwner: false,
         frameNonce: "",
         plan: "",
         isJetpackThePluginInstalled: true,

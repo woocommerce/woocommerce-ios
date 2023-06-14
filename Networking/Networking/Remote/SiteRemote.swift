@@ -110,8 +110,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         let path = Path.loadSite(siteID: siteID)
         let parameters = [
             SiteParameter.Fields.key: SiteParameter.Fields.value,
-            SiteParameter.Options.key: SiteParameter.Options.value,
-            SiteParameter.Capabilities.key: SiteParameter.Capabilities.value
+            SiteParameter.Options.key: SiteParameter.Options.value
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         return try await enqueue(request)
@@ -253,10 +252,6 @@ extension SiteRemote {
             static let key = "options"
             static let value =
             "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
-        }
-        enum Capabilities {
-            static let key = "capabilities"
-            static let value = "own_site"
         }
     }
 }

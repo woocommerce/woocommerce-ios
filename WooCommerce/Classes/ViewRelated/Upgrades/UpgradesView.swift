@@ -62,7 +62,7 @@ struct OwnerUpgradesView: View {
                     Image(availableProduct.wooPlan?.headerImageFileName ?? "")
                         .frame(maxWidth: .infinity, alignment: .center)
                         .listRowInsets(.zero)
-                        //TODO: move the background color to woo-express-essential-plan-benefits.json
+                    //TODO: move the background color to woo-express-essential-plan-benefits.json
                         .listRowBackground(Color(red: 238/255, green: 226/255, blue: 211/255))
 
                     VStack(alignment: .leading) {
@@ -86,7 +86,9 @@ struct OwnerUpgradesView: View {
                         .font(.title3.weight(.semibold))
                     Section {
                         ForEach(wooPlan.planFeatureGroups, id: \.title) { featureGroup in
-                            WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                            NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
+                                WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                            }
                         }
                     }
                 }

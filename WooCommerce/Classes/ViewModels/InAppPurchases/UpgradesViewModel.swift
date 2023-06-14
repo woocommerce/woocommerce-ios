@@ -29,7 +29,7 @@ final class UpgradesViewModel: ObservableObject {
     @MainActor
     func fetchPlans() async {
         if let plan {
-            DDLogInfo("Default plan details loaded: \(plan.planName)")
+            DDLogInfo("Default plan details loaded: \(plan.name)")
         }
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {

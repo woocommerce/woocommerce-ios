@@ -1,19 +1,19 @@
 import Foundation
 
-public struct WooPlan {
-    public let planName: String
+public struct WooPlan: Decodable {
+    public let name: String
     public let id: String
-    public let planDetails: [WooPlanFeatureGroup]
+    public let planDescription: String
+    public let planFeatureGroups: [WooPlanFeatureGroup]
 
-    init(planName: String, id: String, planDetails: [WooPlanFeatureGroup]) {
-        self.planName = planName
+    init(name: String, id: String, planDescription: String, planFeatureGroups: [WooPlanFeatureGroup]) {
+        self.name = name
         self.id = id
-        self.planDetails = planDetails
+        self.planDescription = planDescription
+        self.planFeatureGroups = planFeatureGroups
     }
 
     public init?() {
-        self.planName = "Woo Essentials Monthly"
-        self.id = "debug.woocommerce.express.essential.monthly"
         guard let url = Bundle.main.url(forResource: "woo-express-essential-plan-benefits", withExtension: "json"),
               let jsonData = try? Data(contentsOf: url) else {
             fatalError("Failed to load JSON data from file.")
@@ -21,14 +21,26 @@ public struct WooPlan {
 
         do {
             let decoder = JSONDecoder()
-
-            guard let featureCategories = try decoder.decode([String: [WooPlanFeatureGroup]].self, from: jsonData)["feature_categories"] else {
-                return nil
-            }
-            self.planDetails = featureCategories
+            self = try decoder.decode(WooPlan.self, from: jsonData)
         } catch {
             print("Error decoding JSON: \(error)")
             return nil
         }
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        name = try container.decode(String.self, forKey: .planName)
+        id = try container.decode(String.self, forKey: .planId)
+        planDescription = try container.decode(String.self, forKey: .planDescription)
+        planFeatureGroups = try container.decode([WooPlanFeatureGroup].self, forKey: .planFeatureGroups)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case planName = "plan_name"
+        case planId = "plan_id"
+        case planDescription = "plan_description"
+        case planFeatureGroups = "feature_categories"
     }
 }

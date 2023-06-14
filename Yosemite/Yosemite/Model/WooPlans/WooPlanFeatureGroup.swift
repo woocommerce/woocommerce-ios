@@ -1,10 +1,11 @@
 import Foundation
+import SwiftUI
 
-public struct WooPlanFeatureGroup: Codable {
+public struct WooPlanFeatureGroup: Decodable {
     public let title: String
     public let description: String
     public let imageFilename: String
-    public let imageCardColor: UIColor
+    public let imageCardColor: Color
     public let features: [WooPlanFeature]
 
     private enum CodingKeys: String, CodingKey {
@@ -15,6 +16,18 @@ public struct WooPlanFeatureGroup: Codable {
         case features
     }
 
+    public init(title: String,
+                description: String,
+                imageFilename: String,
+                imageCardColor: Color,
+                features: [WooPlanFeature]) {
+        self.title = title
+        self.description = description
+        self.imageFilename = imageFilename
+        self.imageCardColor = imageCardColor
+        self.features = features
+    }
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -23,22 +36,9 @@ public struct WooPlanFeatureGroup: Codable {
         imageFilename = try container.decode(String.self, forKey: .imageFilename)
 
         let colorString = try container.decode(String.self, forKey: .imageCardColor)
-        imageCardColor = try UIColor(rgbString: colorString)
+        imageCardColor = try Color(rgbString: colorString)
 
         features = try container.decode([WooPlanFeature].self, forKey: .features)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(title, forKey: .title)
-        try container.encode(description, forKey: .description)
-        try container.encode(imageFilename, forKey: .imageFilename)
-
-        let colorString = imageCardColor.rgbStringRepresentation
-        try container.encode(colorString, forKey: .imageCardColor)
-
-        try container.encode(features, forKey: .features)
     }
 }
 
@@ -47,13 +47,13 @@ public struct WooPlanFeature: Codable {
     public let description: String
 }
 
-extension UIColor {
-    convenience init(rgbString: String) throws {
+extension Color {
+    init(rgbString: String) throws {
         let pattern = #"rgba\((\d+),\s*(\d+),\s*(\d+),\s*(\d+(\.\d+)?)\)"#
         let regex = try NSRegularExpression(pattern: pattern, options: [])
 
         guard let match = regex.firstMatch(in: rgbString, options: [], range: NSRange(location: 0, length: rgbString.count)) else {
-            throw UIColorDecodingError.invalidRGBStringProvided
+            throw ColorDecodingError.invalidRGBStringProvided
         }
 
         let redRange = match.range(at: 1)
@@ -66,30 +66,20 @@ extension UIColor {
         let blueString = (rgbString as NSString).substring(with: blueRange)
         let alphaString = (rgbString as NSString).substring(with: alphaRange)
 
-        guard let red = Float(redString),
-              let green = Float(greenString),
-              let blue = Float(blueString),
-              let alpha = Float(alphaString) else {
-            throw UIColorDecodingError.invalidRGBStringProvided
+        guard let red = Double(redString),
+              let green = Double(greenString),
+              let blue = Double(blueString),
+              let alpha = Double(alphaString) else {
+            throw ColorDecodingError.invalidRGBStringProvided
         }
 
-        self.init(red: CGFloat(red / 255.0),
-                  green: CGFloat(green / 255.0),
-                  blue: CGFloat(blue / 255.0),
-                  alpha: CGFloat(alpha))
+        self.init(red: red / 255.0,
+                  green: green / 255.0,
+                  blue: blue / 255.0,
+                  opacity: alpha)
     }
 
-    var rgbStringRepresentation: String {
-        let components = self.cgColor.components
-        let red = Float(components?[0] ?? 0.0) * 255.0
-        let green = Float(components?[1] ?? 0.0) * 255.0
-        let blue = Float(components?[2] ?? 0.0) * 255.0
-        let alpha = Float(components?[3] ?? 0.0)
-
-        return String(format: "rgba(%.0f, %.0f, %.0f, %.1f)", red, green, blue, alpha)
-    }
-
-    enum UIColorDecodingError: Error {
+    enum ColorDecodingError: Error {
         case invalidRGBStringProvided
     }
 }

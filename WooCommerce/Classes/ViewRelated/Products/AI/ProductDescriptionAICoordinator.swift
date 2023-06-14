@@ -14,6 +14,7 @@ final class ProductDescriptionAICoordinator: Coordinator {
     private let onApply: (ProductDescriptionGenerationOutput) -> Void
 
     private var productDescriptionGenerationBottomSheetPresenter: BottomSheetPresenter?
+    private var celebrationViewBottomSheetPresenter: BottomSheetPresenter?
 
     init(product: ProductFormDataModel,
          navigationController: UINavigationController,
@@ -47,6 +48,10 @@ private extension ProductDescriptionAICoordinator {
             guard let self else { return }
             self.onApply(output)
             self.dismissDescriptionGenerationBottomSheetIfNeeded()
+            if !self.userDefaults.usedProductDescriptionAI {
+                self.userDefaults[.usedProductDescriptionAI] = true
+                self.showProductDescriptionAICelebrationView()
+            }
         }))
 
         navigationController.view.endEditing(true)
@@ -56,6 +61,15 @@ private extension ProductDescriptionAICoordinator {
 
     func dismissDescriptionGenerationBottomSheetIfNeeded() {
         productDescriptionGenerationBottomSheetPresenter?.dismiss(onDismiss: {})
+    }
+
+    func showProductDescriptionAICelebrationView() {
+        celebrationViewBottomSheetPresenter = buildBottomSheetPresenter()
+        let controller = ProductDescriptionGenerationCelebrationHostingController(viewModel: .init(onTappingGotIt: { [weak self] in
+            self?.celebrationViewBottomSheetPresenter?.dismiss()
+            self?.celebrationViewBottomSheetPresenter = nil
+        }))
+        celebrationViewBottomSheetPresenter?.present(controller, from: navigationController)
     }
 }
 

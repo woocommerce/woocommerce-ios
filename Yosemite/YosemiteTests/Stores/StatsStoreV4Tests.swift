@@ -697,13 +697,7 @@ private extension StatsStoreV4Tests {
         return OrderStatsV4Totals(totalOrders: 3,
                                   totalItemsSold: 5,
                                   grossRevenue: 800,
-                                  couponDiscount: 0,
-                                  totalCoupons: 0,
-                                  refunds: 0,
-                                  taxes: 0,
-                                  shipping: 0,
                                   netRevenue: 800,
-                                  totalProducts: 2,
                                   averageOrderValue: 266)
     }
 
@@ -712,13 +706,7 @@ private extension StatsStoreV4Tests {
         return OrderStatsV4Totals(totalOrders: 3,
                                   totalItemsSold: 5,
                                   grossRevenue: 800,
-                                  couponDiscount: 0,
-                                  totalCoupons: 0,
-                                  refunds: 0,
-                                  taxes: 0,
-                                  shipping: 0,
                                   netRevenue: 800,
-                                  totalProducts: 0,
                                   averageOrderValue: 266)
     }
 
@@ -755,13 +743,7 @@ private extension StatsStoreV4Tests {
         return OrderStatsV4Totals(totalOrders: 10,
                                   totalItemsSold: 0,
                                   grossRevenue: 0,
-                                  couponDiscount: 0,
-                                  totalCoupons: 0,
-                                  refunds: 0,
-                                  taxes: 0,
-                                  shipping: 0,
                                   netRevenue: 0,
-                                  totalProducts: 0,
                                   averageOrderValue: 0)
     }
 

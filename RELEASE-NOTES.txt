@@ -3,6 +3,7 @@
 14.1
 -----
 - [*] Plans: Expired or cancelled plans are now shown more reliably [https://github.com/woocommerce/woocommerce-ios/pull/9924]
+- [Internal] Store creation: a workaround was previously implemented that can result in an inaccurate app experience like when the free trial banner is not shown immediately after store creation due to out-of-sync site properties. Now that the API issue is fixed, the app now waits for the site for a bit longer but ensures all necessary properties are synced. [https://github.com/woocommerce/woocommerce-ios/pull/9957]
 
 14.0
 -----

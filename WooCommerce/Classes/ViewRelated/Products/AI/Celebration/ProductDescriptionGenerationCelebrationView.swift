@@ -15,38 +15,44 @@ final class ProductDescriptionGenerationCelebrationHostingController: UIHostingC
 
 /// Celebration view presented when AI generation is used for the first time
 struct ProductDescriptionGenerationCelebrationView: View {
-    private var viewModel: ProductDescriptionGenerationCelebrationViewModel
+    private let viewModel: ProductDescriptionGenerationCelebrationViewModel
 
     init(viewModel: ProductDescriptionGenerationCelebrationViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        VStack(spacing: Constants.verticalSpacing) {
+        VStack(spacing: Layout.verticalSpacing) {
             Image(uiImage: viewModel.celebrationImage)
 
-            Text(viewModel.greatStartLabel)
-                .headlineStyle()
-                .multilineTextAlignment(.center)
+            Group {
+                Text(viewModel.greatStartLabel)
+                    .headlineStyle()
+                    .multilineTextAlignment(.center)
 
-            Text(viewModel.instructionsLabel)
-                .foregroundColor(Color(.text))
-                .subheadlineStyle()
-                .multilineTextAlignment(.center)
+                Text(viewModel.instructionsLabel)
+                    .foregroundColor(Color(.text))
+                    .subheadlineStyle()
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.horizontal, Layout.textHorizontalPadding)
 
             Button(viewModel.gotItButtonTitle) {
                 viewModel.didTapGotIt()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Layout.buttonHorizontalPadding)
         }
-        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(insets: Layout.insets)
     }
 }
 
 private extension ProductDescriptionGenerationCelebrationView {
-    enum Constants {
+    enum Layout {
         static let verticalSpacing: CGFloat = 16
-        static let horizontalPadding: CGFloat = 16
+        static let textHorizontalPadding: CGFloat = 24
+        static let buttonHorizontalPadding: CGFloat = 16
+        static let insets: EdgeInsets = .init(top: 40, leading: 0, bottom: 16, trailing: 0)
     }
 }
 

@@ -47,6 +47,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.shortDescriptionImage)
     }
 
+    func test_sparkles_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.sparklesImage)
+    }
+
     func testCameraIconIsNotNil() {
         XCTAssertNotNil(UIImage.cameraImage)
     }

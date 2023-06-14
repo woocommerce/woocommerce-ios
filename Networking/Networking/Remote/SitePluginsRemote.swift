@@ -2,12 +2,6 @@ import Foundation
 
 /// Protocol for `SitePluginsRemote` mainly used for mocking.
 public protocol SitePluginsRemoteProtocol {
-    /// Retrieves all of the plugins for a given site ID from WPCOM.
-    ///
-    /// - Parameter siteID: Site for which we'll fetch the plugins.
-    /// - Returns: An array of site plugins.
-    func loadPluginsFromWPCOM(siteID: Int64) async throws -> [DotcomSitePlugin]
-
     func loadPlugins(for siteID: Int64,
                      completion: @escaping (Result<[SitePlugin], Error>) -> Void)
 
@@ -27,13 +21,6 @@ public protocol SitePluginsRemoteProtocol {
 /// SitePlugins: Remote Endpoints
 ///
 public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol {
-    public func loadPluginsFromWPCOM(siteID: Int64) async throws -> [DotcomSitePlugin] {
-        let path = Path.wpcomPlugins(siteID: siteID)
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
-        let response: DotcomSitePluginsResponse = try await enqueue(request)
-        return response.plugins
-    }
-
     /// Retrieves all of the `SitePlugin`s for a given site from the site directly.
     ///
     /// - Parameters:

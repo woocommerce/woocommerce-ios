@@ -80,6 +80,12 @@ extension UIImage {
         return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24)).imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Sparkles Icon
+    ///
+    static var sparklesImage: UIImage {
+        .init(named: "sparkles")!
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {
@@ -241,6 +247,32 @@ extension UIImage {
 
     static var scanToPayIcon: UIImage {
         UIImage(systemName: "qrcode.viewfinder")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
+    }
+
+    /// Woo Express Upgrade Plan images
+    ///
+    static var expressPlansHomepage: UIImage {
+        return UIImage(named: "express-plans-homepage")!
+    }
+
+    static var expressPlansCardPaymentWebpage: UIImage {
+        return UIImage(named: "express-plans-card-payment-webpage")!
+    }
+
+    static var expressPlansTwoProductWebpages: UIImage {
+        return UIImage(named: "express-plans-two-product-webpages")!
+    }
+
+    static var expressPlansDesignColorsTypography: UIImage {
+        return UIImage(named: "express-plans-design-colors-typography")!
+    }
+
+    static var expressPlansWebpageInEnvelope: UIImage {
+        return UIImage(named: "express-plans-webpage-in-envelope")!
+    }
+
+    static var expressPlansShippingManifest: UIImage {
+        return UIImage(named: "express-plans-shipping-manifest")!
     }
 
     /// Customize Icon

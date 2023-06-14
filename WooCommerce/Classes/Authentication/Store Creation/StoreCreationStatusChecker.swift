@@ -6,14 +6,17 @@ import Yosemite
 final class StoreCreationStatusChecker {
     private let stores: StoresManager
     private let jetpackCheckRetryInterval: TimeInterval
+    private let storeName: String
 
     convenience init(isFreeTrialCreation: Bool,
-         stores: StoresManager = ServiceLocator.stores) {
-        self.init(jetpackCheckRetryInterval: isFreeTrialCreation ? 10 : 5, stores: stores)
+                     storeName: String,
+                     stores: StoresManager = ServiceLocator.stores) {
+        self.init(jetpackCheckRetryInterval: isFreeTrialCreation ? 15 : 5, storeName: storeName, stores: stores)
     }
 
-    init(jetpackCheckRetryInterval: TimeInterval, stores: StoresManager) {
+    init(jetpackCheckRetryInterval: TimeInterval, storeName: String, stores: StoresManager) {
         self.jetpackCheckRetryInterval = jetpackCheckRetryInterval
+        self.storeName = storeName
         self.stores = stores
     }
 
@@ -40,14 +43,18 @@ final class StoreCreationStatusChecker {
 private extension StoreCreationStatusChecker {
     @MainActor
     func syncSite(siteID: Int64) async throws -> Site {
-        let arePluginsActive = try await areJetpackAndWooPluginsActive(siteID: siteID)
-
-        guard arePluginsActive else {
+        let site = try await loadSite(siteID: siteID)
+        guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
             DDLogInfo("🔵 Retrying: Site available but is not a jetpack site yet for siteID \(siteID)...")
             throw StoreCreationError.newSiteIsNotJetpackSite
         }
-
-        let site = try await loadSite(siteID: siteID)
+        guard site.isWordPressComStore && site.isWooCommerceActive else {
+            DDLogInfo("🔵 Retrying: Site available but properties are not yet in sync...")
+            throw StoreCreationError.newSiteIsNotFullySynced
+        }
+        if site.name != storeName {
+            DDLogInfo("🔵 Retrying: Store name is not yet in sync...")
+        }
         return site
     }
 }
@@ -57,15 +64,6 @@ private extension StoreCreationStatusChecker {
     func loadSite(siteID: Int64) async throws -> Site {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(SiteAction.syncSite(siteID: siteID) { result in
-                continuation.resume(with: result)
-            })
-        }
-    }
-
-    @MainActor
-    func areJetpackAndWooPluginsActive(siteID: Int64) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(SitePluginAction.arePluginsActive(siteID: siteID, plugins: [.jetpack, .woo]) { result in
                 continuation.resume(with: result)
             })
         }

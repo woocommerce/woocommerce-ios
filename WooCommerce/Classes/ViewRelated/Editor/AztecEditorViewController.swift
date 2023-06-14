@@ -105,7 +105,7 @@ final class AztecEditorViewController: UIViewController, Editor {
     private let textViewAttachmentDelegate: TextViewAttachmentDelegate
 
     private let isAIGenerationEnabled: Bool
-    private var bottomSheetPresenter: BottomSheetPresenter?
+    private var descriptionAICoordinator: ProductDescriptionAICoordinator?
 
     required init(content: String?,
                   product: ProductFormDataModel,
@@ -152,11 +152,6 @@ final class AztecEditorViewController: UIViewController, Editor {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         richTextView.becomeFirstResponder()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        dismissDescriptionGenerationBottomSheetIfNeeded()
     }
 }
 
@@ -306,7 +301,6 @@ extension AztecEditorViewController: UITextViewDelegate {
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        dismissDescriptionGenerationBottomSheetIfNeeded()
         textView.inputAccessoryView = createInputAccessoryView()
         return true
     }
@@ -314,36 +308,21 @@ extension AztecEditorViewController: UITextViewDelegate {
 
 private extension AztecEditorViewController {
     func showDescriptionGenerationBottomSheet() {
-        let presenter = BottomSheetPresenter(configure: { bottomSheet in
-            var sheet = bottomSheet
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .none
-            sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium(), .large()]
-        })
-        bottomSheetPresenter = presenter
-
-        let controller = ProductDescriptionGenerationHostingController(viewModel:
-                .init(siteID: product.siteID,
-                      name: product.name,
-                      description: product.description ?? "",
-                      onApply: { [weak self] output in
+        guard let navigationController else {
+            return
+        }
+        let coordinator = ProductDescriptionAICoordinator(product: product,
+                                                          navigationController: navigationController,
+                                                          source: .aztecEditor,
+                                                          analytics: ServiceLocator.analytics,
+                                                          onApply: { [weak self] output in
             guard let self else { return }
             self.content = output.description
             self.productName = output.name
             self.updateContent()
-            self.dismissDescriptionGenerationBottomSheetIfNeeded()
-        }))
-
-        view.endEditing(true)
-        presenter.present(controller, from: self, onDismiss: { [weak self] in
-            self?.richTextView.becomeFirstResponder()
         })
-        ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAIButtonTapped(source: .aztecEditor))
-    }
-
-    func dismissDescriptionGenerationBottomSheetIfNeeded() {
-        bottomSheetPresenter?.dismiss(onDismiss: {})
+        descriptionAICoordinator = coordinator
+        coordinator.start()
     }
 
     func updateContent() {

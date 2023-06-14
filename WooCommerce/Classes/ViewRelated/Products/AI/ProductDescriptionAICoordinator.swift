@@ -10,6 +10,7 @@ final class ProductDescriptionAICoordinator: Coordinator {
     private let product: ProductFormDataModel
     private let source: Source
     private let analytics: Analytics
+    private let userDefaults: UserDefaults
     private let onApply: (ProductDescriptionGenerationOutput) -> Void
 
     private var productDescriptionGenerationBottomSheetPresenter: BottomSheetPresenter?
@@ -18,11 +19,13 @@ final class ProductDescriptionAICoordinator: Coordinator {
          navigationController: UINavigationController,
          source: Source,
          analytics: Analytics,
+         userDefaults: UserDefaults = .standard,
          onApply: @escaping (ProductDescriptionGenerationOutput) -> Void) {
         self.product = product
         self.navigationController = navigationController
         self.source = source
         self.analytics = analytics
+        self.userDefaults = userDefaults
         self.onApply = onApply
     }
 
@@ -67,5 +70,13 @@ private extension ProductDescriptionAICoordinator {
             sheet.prefersGrabberVisible = true
             sheet.detents = [.medium(), .large()]
         })
+    }
+}
+
+// MARK: UserDefaults helpers
+//
+private extension UserDefaults {
+    @objc dynamic var usedProductDescriptionAI: Bool {
+        bool(forKey: Key.usedProductDescriptionAI.rawValue)
     }
 }

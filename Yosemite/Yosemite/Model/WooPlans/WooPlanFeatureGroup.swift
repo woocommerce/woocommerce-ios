@@ -36,7 +36,12 @@ public struct WooPlanFeatureGroup: Decodable {
         imageFilename = try container.decode(String.self, forKey: .imageFilename)
 
         let colorString = try container.decode(String.self, forKey: .imageCardColor)
-        imageCardColor = try Color(rgbString: colorString)
+        do {
+            imageCardColor = try Color(rgbString: colorString)
+        } catch is Color.ColorDecodingError {
+            throw DecodingError.dataCorrupted(.init(codingPath: [CodingKeys.imageCardColor],
+                                                    debugDescription: "Could not decode RGB color from found rgbString '\(colorString)'"))
+        }
 
         features = try container.decode([WooPlanFeature].self, forKey: .features)
     }

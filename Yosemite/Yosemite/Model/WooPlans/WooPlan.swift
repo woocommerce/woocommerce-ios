@@ -14,16 +14,20 @@ public struct WooPlan: Decodable {
     }
 
     public init?() {
-        guard let url = Bundle.main.url(forResource: "woo-express-essential-plan-benefits", withExtension: "json"),
-              let jsonData = try? Data(contentsOf: url) else {
-            fatalError("Failed to load JSON data from file.")
+        guard let url = Bundle.main.url(forResource: "woo-express-essential-plan-benefits", withExtension: "json") else {
+            DDLogError("Error loading Woo Express Plans data from file: could not find file in bundle")
+            return nil
         }
 
         do {
+            let jsonData = try Data(contentsOf: url)
             let decoder = JSONDecoder()
             self = try decoder.decode(WooPlan.self, from: jsonData)
+        } catch let error where error is DecodingError {
+            DDLogError("Error decoding Woo Express Plans JSON: \(error)")
+            return nil
         } catch {
-            print("Error decoding JSON: \(error)")
+            DDLogError("Error loading Woo Express Plans data from file: \(error)")
             return nil
         }
     }

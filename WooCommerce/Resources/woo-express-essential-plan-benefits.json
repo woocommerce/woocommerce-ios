@@ -107,7 +107,7 @@
             "title": "Themes and customization",
             "description": "Simplify the way you manage, sell and promote your products.",
             "image_filename": "express-plans-design-colors-typography",
-            "image_card_color": "rgba(233, 239, 245, 1);",
+            "image_card_color": "rgba(233, 239, 245, 1)",
             "features": [
                 {
                     "title": "Premium themes",

@@ -48,8 +48,6 @@ public final class SitePluginStore: Store {
             activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
         case .getPluginDetails(let siteID, let pluginName, let onCompletion):
             getPluginDetails(siteID: siteID, pluginName: pluginName, onCompletion: onCompletion)
-        case .arePluginsActive(let siteID, let plugins, let completion):
-            arePluginsActive(siteID: siteID, plugins: plugins, completion: completion)
         }
     }
 }
@@ -112,20 +110,6 @@ private extension SitePluginStore {
                 }
             case .failure(let error):
                 onCompletion(.failure(error))
-            }
-        }
-    }
-
-    func arePluginsActive(siteID: Int64, plugins: [SitePluginAction.Plugin], completion: @escaping (Result<Bool, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let sitePlugins = try await remote.loadPluginsFromWPCOM(siteID: siteID)
-                let arePluginsActive = plugins.allSatisfy { plugin in
-                    sitePlugins.contains(where: { $0.id == plugin.id && $0.isActive })
-                }
-                completion(.success(arePluginsActive))
-            } catch {
-                completion(.failure(error))
             }
         }
     }

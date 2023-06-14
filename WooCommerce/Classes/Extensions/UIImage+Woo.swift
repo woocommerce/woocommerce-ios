@@ -80,6 +80,12 @@ extension UIImage {
         return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24)).imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Sparkles Icon
+    ///
+    static var sparklesImage: UIImage {
+        .init(named: "sparkles")!
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {

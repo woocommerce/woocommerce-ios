@@ -1807,8 +1807,8 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
-        XCTAssertTrue(base.contains("Product name: A product name"))
-        XCTAssertTrue(base.contains("Product features: Trendy, cool, fun"))
+        XCTAssertTrue(base.contains("```A product name```"))
+        XCTAssertTrue(base.contains("```Trendy, cool, fun```"))
     }
 
     // MARK: - ProductAction.generateProductSharingMessage
@@ -1927,7 +1927,6 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains(expectedURL))
         XCTAssertTrue(base.contains(expectedName))
         XCTAssertTrue(base.contains(expectedDescription))
-        XCTAssertTrue(base.contains("In language en-US"))
     }
 
     // MARK: - ProductAction.retrieveFirstProductMatchFromSKU

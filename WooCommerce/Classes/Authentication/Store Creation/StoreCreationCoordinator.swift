@@ -734,7 +734,7 @@ private extension StoreCreationCoordinator {
         ///
         let waitingTimeStart = Date()
 
-        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: isFreeTrialCreation, stores: stores)
+        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: isFreeTrialCreation, storeName: expectedStoreName, stores: stores)
         self.statusChecker = statusChecker
         jetpackSiteSubscription = statusChecker.waitForSiteToBeReady(siteID: siteID)
             .handleEvents(receiveCompletion: { [weak self] completion in
@@ -743,8 +743,8 @@ private extension StoreCreationCoordinator {
                 }
                 self.storeCreationProgressViewModel?.incrementProgress()
             })
-            // Retries 10 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack/Woo site.
-            .retry(10)
+            // Retries 15 times with some seconds pause in between to wait for the newly created site to be available as a Jetpack/Woo site.
+            .retry(15)
             .sink (receiveCompletion: { [weak self] completion in
                 guard let self, case .failure = completion else {
                     return

@@ -29,6 +29,10 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let loginURL: String
 
+    /// Whether the site's user is the site's owner
+    ///
+    public let isSiteOwner: Bool
+
     public let frameNonce: String
 
     /// Short name for site's plan.
@@ -77,10 +81,11 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let name = try siteContainer.decode(String.self, forKey: .name)
         let description = try siteContainer.decode(String.self, forKey: .description)
         let url = try siteContainer.decode(String.self, forKey: .url)
+        let capabilitiesContainer = try siteContainer.nestedContainer(keyedBy: CapabilitiesKeys.self, forKey: .capabilities)
+        let isSiteOwner = try capabilitiesContainer.decode(Bool.self, forKey: .isSiteOwner)
         let isJetpackThePluginInstalled = try siteContainer.decode(Bool.self, forKey: .isJetpackThePluginInstalled)
         let isJetpackConnected = try siteContainer.decode(Bool.self, forKey: .isJetpackConnected)
-
-        let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
+        let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .capabilities)
         let isWordPressComStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressComStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
         let jetpackConnectionActivePlugins = try optionsContainer.decodeIfPresent([String].self, forKey: .jetpackConnectionActivePlugins) ?? []
@@ -97,6 +102,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   url: url,
                   adminURL: adminURL,
                   loginURL: loginURL,
+                  isSiteOwner: isSiteOwner,
                   frameNonce: frameNonce,
                   plan: String(), // Not created on init. Added in supplementary API request.
                   isJetpackThePluginInstalled: isJetpackThePluginInstalled,
@@ -117,6 +123,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 url: String,
                 adminURL: String,
                 loginURL: String,
+                isSiteOwner: Bool,
                 frameNonce: String,
                 plan: String,
                 isJetpackThePluginInstalled: Bool,
@@ -133,6 +140,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.url = url
         self.adminURL = adminURL
         self.loginURL = loginURL
+        self.isSiteOwner = isSiteOwner
         self.frameNonce = frameNonce
         self.plan = plan
         self.isJetpackThePluginInstalled = isJetpackThePluginInstalled
@@ -171,10 +179,15 @@ private extension Site {
         case name           = "name"
         case description    = "description"
         case url            = "URL"
+        case capabilities   = "capabilities"
         case options        = "options"
         case plan           = "plan"
         case isJetpackThePluginInstalled = "jetpack"
         case isJetpackConnected          = "jetpack_connection"
+    }
+
+    enum CapabilitiesKeys: String, CodingKey {
+        case isSiteOwner   = "own_site"
     }
 
     enum OptionKeys: String, CodingKey {

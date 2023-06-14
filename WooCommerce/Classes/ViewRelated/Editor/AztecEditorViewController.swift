@@ -153,10 +153,6 @@ final class AztecEditorViewController: UIViewController, Editor {
         super.viewDidAppear(animated)
         richTextView.becomeFirstResponder()
     }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
 }
 
 private extension AztecEditorViewController {

@@ -179,6 +179,7 @@ private extension StoreStatsAndTopPerformersViewController {
                     onCompletion?(.failure(error))
                 } else {
                     self?.updateSiteVisitors(mode: .default)
+                    self?.trackDashboardStatsSyncComplete()
                     onCompletion?(.success(()))
                 }
             }
@@ -419,6 +420,7 @@ private extension StoreStatsAndTopPerformersViewController {
         switch error {
         case .noPermission:
             updateSiteVisitors(mode: .hidden)
+            trackDashboardStatsSyncComplete()
         case .statsModuleDisabled:
             let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
             if defaultSite?.isJetpackCPConnected == true {
@@ -426,8 +428,10 @@ private extension StoreStatsAndTopPerformersViewController {
             } else {
                 updateSiteVisitors(mode: .hidden)
             }
+            trackDashboardStatsSyncComplete()
         default:
             displaySyncingError()
+            trackDashboardStatsSyncComplete(withError: error)
         }
     }
 
@@ -437,6 +441,7 @@ private extension StoreStatsAndTopPerformersViewController {
             handleSiteStatsStoreError(error: siteStatsStoreError)
         default:
             displaySyncingError()
+            trackDashboardStatsSyncComplete(withError: error)
         }
     }
 }
@@ -450,6 +455,12 @@ private extension StoreStatsAndTopPerformersViewController {
         }
 
         ServiceLocator.analytics.track(event: .Dashboard.dashboardMainStatsLoaded(timeRange: timeRange))
+    }
+
+    /// Notifies `AppStartupWaitingTimeTracker` when dashboard sync is complete.
+    ///
+    func trackDashboardStatsSyncComplete(withError error: Error? = nil) {
+        AppDelegate.shared.startupWaitingTimeTracker?.end(action: .syncDashboardStats, withError: error)
     }
 }
 

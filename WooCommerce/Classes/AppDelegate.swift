@@ -51,10 +51,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var universalLinkRouter: UniversalLinkRouter?
 
+    /// Tracks the app startup waiting time.
+    ///
+    var startupWaitingTimeTracker: AppStartupWaitingTimeTracker?
+
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
+        setupStartupWaitingTimeTracker()
         setupAnalytics()
         setupCocoaLumberjack()
         setupLibraryLogger()
@@ -101,6 +106,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNoticePresenter()
         setupUniversalLinkRouter()
         disableAnimationsIfNeeded()
+
+        // Don't track startup waiting time if user starts logged out
+        if !ServiceLocator.stores.isAuthenticated {
+            cancelStartupWaitingTimeTracker()
+        }
 
         // Start app navigation.
         appCoordinator?.start()
@@ -172,6 +182,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers,
         // and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+
+        // Don't track startup waiting time if app is backgrounded before everything is loaded
+        cancelStartupWaitingTimeTracker()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -386,6 +399,18 @@ private extension AppDelegate {
         // Simply _accessing_ it is enough. We only want the object to be initialized right away
         // so it can start observing keyboard changes.
         _ = ServiceLocator.keyboardStateProvider
+    }
+
+    /// Set up the app startup waiting time tracker
+    ///
+    func setupStartupWaitingTimeTracker() {
+        startupWaitingTimeTracker = AppStartupWaitingTimeTracker()
+    }
+
+    /// Cancel the app startup waiting time tracker
+    ///
+    func cancelStartupWaitingTimeTracker() {
+        startupWaitingTimeTracker = nil
     }
 
     func handleLaunchArguments() {

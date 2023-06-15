@@ -176,6 +176,7 @@ private struct CurrentPlanDetailsView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding([.leading, .trailing])
+        .padding(.vertical, UpgradesView.Layout.smallPadding)
     }
 
     private enum Localization {
@@ -259,5 +260,6 @@ private extension UpgradesView {
 
     struct Layout {
         static let contentSpacing: CGFloat = 8
+        static let smallPadding: CGFloat = 8
     }
 }

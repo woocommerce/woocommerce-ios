@@ -85,7 +85,7 @@ struct ProductSharingMessageGenerationView: View {
                     Label {
                         Text(viewModel.generateButtonTitle)
                     } icon: {
-                        Image(systemName: viewModel.generateButtonImageName)
+                        Image(uiImage: viewModel.generateButtonImage)
                     }
                 })
                 .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress, loadingText: Localization.generateInProgress))

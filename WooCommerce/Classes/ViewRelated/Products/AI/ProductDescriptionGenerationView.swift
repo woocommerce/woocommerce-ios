@@ -114,8 +114,14 @@ struct ProductDescriptionGenerationView: View {
                         .fixedSize(horizontal: true, vertical: false)
                     } else {
                         // CTA to generate text for the first pass.
-                        Button(Localization.generateText) {
+                        Button {
                             viewModel.generateDescription()
+                        } label: {
+                            Label {
+                                Text(Localization.generateText)
+                            } icon: {
+                                Image(uiImage: .sparklesImage)
+                            }
                         }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGenerationInProgress))
                         .disabled(viewModel.isGenerationEnabled == false)
@@ -172,7 +178,7 @@ private extension ProductDescriptionGenerationView {
         )
         static let insertGeneratedText = NSLocalizedString("Apply",
                                                            comment: "Button title to insert AI-generated product description.")
-        static let generateText = NSLocalizedString("Generate",
+        static let generateText = NSLocalizedString("Write it for me",
                                                     comment: "Button title to generate product description with Jetpack AI.")
     }
 }

@@ -79,18 +79,13 @@ struct ProductDescriptionGenerationView: View {
                     .footnoteStyle()
 
                 if let suggestedText = viewModel.suggestedText {
-                    Text(suggestedText)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .textSelection(.enabled)
-                        .padding(Layout.suggestedTextInsets)
-                        .background(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                                .foregroundColor(.init(uiColor: .secondarySystemBackground))
-                        )
-                }
+                    VStack {
+                        Text(suggestedText)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .textSelection(.enabled)
+                            .redacted(reason: viewModel.isGenerationInProgress ? .placeholder : [])
+                            .shimmering(active: viewModel.isGenerationInProgress)
 
-                HStack(alignment: .center, spacing: Layout.defaultSpacing) {
-                    if let suggestedText = viewModel.suggestedText {
                         // CTA to copy the generated text.
                         Button {
                             UIPasteboard.general.string = suggestedText
@@ -98,16 +93,30 @@ struct ProductDescriptionGenerationView: View {
                             ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
                         } label: {
                             Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
-                        }.buttonStyle(PlainButtonStyle())
+                                .secondaryBodyStyle()
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    .padding(Layout.suggestedTextInsets)
+                    .background(
+                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                            .foregroundColor(.init(uiColor: .secondarySystemBackground))
+                    )
+                }
 
-                        Spacer()
-
+                HStack(alignment: .center, spacing: Layout.defaultSpacing) {
+                    if let suggestedText = viewModel.suggestedText {
                         // CTA to start or stop text generation based on the current state.
                         Button {
-                            viewModel.toggleDescriptionGeneration()
+                            viewModel.generateDescription()
                         } label: {
-                            Image(systemName: viewModel.isGenerationInProgress ? "pause.circle": "arrow.counterclockwise")
-                        }.buttonStyle(PlainButtonStyle())
+                            Label(Localization.regenerateText, systemImage: "arrow.counterclockwise")
+                                .bodyStyle()
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .disabled(viewModel.isGenerationInProgress || viewModel.isGenerationEnabled == false)
+
+                        Spacer()
 
                         // CTA to apply the generated text.
                         Button(Localization.insertGeneratedText) {
@@ -183,6 +192,8 @@ private extension ProductDescriptionGenerationView {
                                                            comment: "Button title to insert AI-generated product description.")
         static let generateText = NSLocalizedString("Write it with AI",
                                                     comment: "Button title to generate product description with Jetpack AI.")
+        static let regenerateText = NSLocalizedString("Regenerate",
+                                                      comment: "Button title to regenerate product description with Jetpack AI.")
         static let sampleFeatures = NSLocalizedString(
             "Example: Potted, Cactus, Plant, Decorative, Easy-care",
             comment: "Label for sample product features to enter in the product description AI generator view."

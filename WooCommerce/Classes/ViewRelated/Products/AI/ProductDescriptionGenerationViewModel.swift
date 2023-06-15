@@ -59,17 +59,6 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         }
     }
 
-    /// Stops or starts product description generation, depending on whether it is in progress.
-    func toggleDescriptionGeneration() {
-        if isGenerationInProgress {
-            analytics.track(event: .ProductFormAI.productDescriptionAIPauseButtonTapped())
-            task?.cancel()
-            isGenerationInProgress = false
-        } else {
-            generateDescription()
-        }
-    }
-
     /// Applies the generated product description and product name to the product.
     func applyToProduct() {
         analytics.track(event: .ProductFormAI.productDescriptionAIApplyButtonTapped())

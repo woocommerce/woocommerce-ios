@@ -5,32 +5,41 @@ struct WooPlanFeatureBenefitsView: View {
     let wooPlanFeatureGroup: WooPlanFeatureGroup
 
     var body: some View {
-        VStack(spacing: 16) {
-            RoundedRectangle(cornerRadius: 16)
-                .frame(height: 164)
-                .foregroundColor(wooPlanFeatureGroup.imageCardColor)
-                .overlay(
-                    Image(wooPlanFeatureGroup.imageFilename)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 120)
-                )
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack {
+                RoundedRectangle(cornerRadius: Layout.imageCardCornerRadius)
+                    .frame(height: Layout.imageCardHeight)
+                    .foregroundColor(wooPlanFeatureGroup.imageCardColor)
+                    .overlay(
+                        Image(wooPlanFeatureGroup.imageFilename)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding(.vertical, Layout.imageCardImageVerticalPadding)
+                    )
 
-            Text(wooPlanFeatureGroup.title)
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                Text(wooPlanFeatureGroup.title)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-            ForEach(wooPlanFeatureGroup.features, id: \.title) { feature in
-                WooPlanFeatureBenefitRow(feature: feature)
+                ForEach(wooPlanFeatureGroup.features, id: \.title) { feature in
+                    WooPlanFeatureBenefitRow(feature: feature)
+                }
+
+                Spacer()
             }
-
-            Spacer()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.clear)
+            .padding()
         }
-        .scrollVerticallyIfNeeded()
-        .padding()
         .navigationTitle(wooPlanFeatureGroup.title)
+    }
+
+    private enum Layout {
+        static let imageCardCornerRadius: CGFloat = 16
+        static let imageCardHeight: CGFloat = 164
+        static let imageCardImageVerticalPadding: CGFloat = 22
     }
 }
 

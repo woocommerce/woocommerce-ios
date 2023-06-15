@@ -26,6 +26,7 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
     @State private var copyTextNotice: Notice?
+    @FocusState private var isFeaturesFieldInFocus: Bool
 
     init(viewModel: ProductDescriptionGenerationViewModel) {
         self.viewModel = viewModel
@@ -41,9 +42,11 @@ struct ProductDescriptionGenerationView: View {
                     if #available(iOS 16.0, *) {
                         TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
                             .subheadlineStyle()
+                            .disabled(viewModel.isProductNameEditable == false)
                     } else {
                         TextField(Localization.productNamePlaceholder, text: $viewModel.name)
                             .subheadlineStyle()
+                            .disabled(viewModel.isProductNameEditable == false)
                     }
                 }
 
@@ -57,8 +60,10 @@ struct ProductDescriptionGenerationView: View {
                         .padding(insets: Layout.productFeaturesInsets)
                         .frame(minHeight: Layout.minimuEditorSize, maxHeight: .infinity)
                         .overlay(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                                .stroke(Color(isFeaturesFieldInFocus ? .accent : .separator))
                         )
+                        .focused($isFeaturesFieldInFocus)
 
                     if viewModel.features.isEmpty {
                         Text(Localization.productDescriptionPlaceholder)

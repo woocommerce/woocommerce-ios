@@ -230,7 +230,6 @@ final class OrdersRootViewController: UIViewController {
         }, onPermissionsDenied: { [weak self] in
             self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
         })
-    
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
     }

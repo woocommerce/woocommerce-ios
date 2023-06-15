@@ -22,6 +22,7 @@ final class UpgradesViewModelTests: XCTestCase {
         // Then
         XCTAssert(sut.wpcomPlans.isEmpty)
         XCTAssert(sut.entitledWpcomPlanIDs.isEmpty)
+        XCTAssertNil(sut.upgradePlan)
     }
 
     func test_upgrades_when_fetchPlans_is_invoked_then_fetch_mocked_wpcom_plan() async {
@@ -70,9 +71,9 @@ final class UpgradesViewModelTests: XCTestCase {
         let wpcomPlan = sut.retrievePlanDetailsIfAvailable(.essentialMonthly)
 
         // Then
-        assertEqual("Test awesome plan", wpcomPlan?.displayName)
-        assertEqual("All the Woo, all the time", wpcomPlan?.description)
-        assertEqual("debug.woocommerce.express.essential.monthly", wpcomPlan?.id)
-        assertEqual("$1.50", wpcomPlan?.displayPrice)
+        assertEqual("Test awesome plan", wpcomPlan?.wpComPlan.displayName)
+        assertEqual("All the Woo, all the time", wpcomPlan?.wpComPlan.description)
+        assertEqual("debug.woocommerce.express.essential.monthly", wpcomPlan?.wpComPlan.id)
+        assertEqual("$1.50", wpcomPlan?.wpComPlan.displayPrice)
     }
 }

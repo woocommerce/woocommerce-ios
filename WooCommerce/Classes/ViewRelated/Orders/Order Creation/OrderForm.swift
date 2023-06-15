@@ -300,9 +300,8 @@ private struct ProductsSection: View {
                         ProductSelectorNavigationView(
                             configuration: ProductSelectorView.Configuration.addProductToOrder(),
                             isPresented: $showAddProduct,
-                            viewModel: viewModel.productSelectorViewModel)
+                            viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
                         .onDisappear {
-                            viewModel.productSelectorViewModel.clearSearchAndFilters()
                             navigationButtonID = UUID()
                         }
                     })

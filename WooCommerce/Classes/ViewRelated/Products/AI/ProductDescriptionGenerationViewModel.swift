@@ -23,6 +23,8 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         name.isNotEmpty && features.isNotEmpty
     }
 
+    let isProductNameEditable: Bool
+
     private let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
@@ -42,6 +44,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.onApply = onApply
+        self.isProductNameEditable = name.isEmpty
     }
 
     /// Generates product description async.

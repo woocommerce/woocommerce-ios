@@ -1,4 +1,10 @@
 {
+    "plan_name": "Woo Express Essential Monthly",
+    "plan_short_name": "Essential",
+    "plan_frequency": "month",
+    "plan_id": "debug.woocommerce.express.essential.monthly",
+    "plan_description": "Everything you need to launch an online store.",
+    "header_image_filename": "express-essential-header",
     "feature_categories": [
         {
             "title": "General features",
@@ -104,7 +110,7 @@
             "title": "Themes and customization",
             "description": "Simplify the way you manage, sell and promote your products.",
             "image_filename": "express-plans-design-colors-typography",
-            "image_card_color": "rgba(233, 239, 245, 1);",
+            "image_card_color": "rgba(233, 239, 245, 1)",
             "features": [
                 {
                     "title": "Premium themes",

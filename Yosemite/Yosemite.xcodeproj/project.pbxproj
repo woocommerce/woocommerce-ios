@@ -121,6 +121,8 @@
 		031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */; };
 		031C1EB027B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */; };
 		031FD8A026FC970400B315C7 /* RosettaTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */; };
+		0331A7072A38BA0F001D2C2C /* WooPlanFeatureGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7062A38BA0F001D2C2C /* WooPlanFeatureGroup.swift */; };
+		0331A7092A38CF08001D2C2C /* WooPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7082A38CF08001D2C2C /* WooPlan.swift */; };
 		0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */; };
 		0391C13D29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */; };
 		03EB998C2906F1D300F06A39 /* JustInTimeMessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */; };
@@ -574,6 +576,8 @@
 		031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RosettaTestingHelper.swift; sourceTree = "<group>"; };
+		0331A7062A38BA0F001D2C2C /* WooPlanFeatureGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanFeatureGroup.swift; sourceTree = "<group>"; };
+		0331A7082A38CF08001D2C2C /* WooPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlan.swift; sourceTree = "<group>"; };
 		0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageStore.swift; sourceTree = "<group>"; };
 		0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStoreTests.swift; sourceTree = "<group>"; };
 		03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAction.swift; sourceTree = "<group>"; };
@@ -1083,6 +1087,15 @@
 			path = Media;
 			sourceTree = "<group>";
 		};
+		0331A7032A38B9D7001D2C2C /* WooPlans */ = {
+			isa = PBXGroup;
+			children = (
+				0331A7062A38BA0F001D2C2C /* WooPlanFeatureGroup.swift */,
+				0331A7082A38CF08001D2C2C /* WooPlan.swift */,
+			);
+			path = WooPlans;
+			sourceTree = "<group>";
+		};
 		247CE7AF2582DBD000F9D9D1 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1401,6 +1414,7 @@
 		B53D89E720E6C7DC00F90866 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				0331A7032A38B9D7001D2C2C /* WooPlans */,
 				02F6AAA827055655002425D0 /* Copiable */,
 				247CE7AF2582DBD000F9D9D1 /* Mocks */,
 				D8652E1A26303D0600350F37 /* Payments */,
@@ -2109,6 +2123,7 @@
 				DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */,
 				0271E1662509CF0100633F7A /* AnyError.swift in Sources */,
 				45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */,
+				0331A7092A38CF08001D2C2C /* WooPlan.swift in Sources */,
 				077F39E026A5A6F500ABEADC /* SystemStatusStore.swift in Sources */,
 				DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */,
 				02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */,
@@ -2169,6 +2184,7 @@
 				247CE8342582F20100F9D9D1 /* MockAppSettingsActionHandler.swift in Sources */,
 				025CA2CA238F515600B05C81 /* ProductShippingClassStore.swift in Sources */,
 				0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */,
+				0331A7072A38BA0F001D2C2C /* WooPlanFeatureGroup.swift in Sources */,
 				74937508224985BB007D85D1 /* ProductDimensions+ReadOnlyConvertible.swift in Sources */,
 				CC2C036C262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift in Sources */,
 				45010693239A6C9F00E24722 /* TaxClassStore.swift in Sources */,

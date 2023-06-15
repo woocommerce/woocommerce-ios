@@ -79,23 +79,27 @@ struct ProductDescriptionGenerationView: View {
                     .footnoteStyle()
 
                 if let suggestedText = viewModel.suggestedText {
-                    VStack {
+                    VStack(spacing: Layout.defaultSpacing) {
                         Text(suggestedText)
                             .fixedSize(horizontal: false, vertical: true)
                             .textSelection(.enabled)
                             .redacted(reason: viewModel.isGenerationInProgress ? .placeholder : [])
                             .shimmering(active: viewModel.isGenerationInProgress)
 
-                        // CTA to copy the generated text.
-                        Button {
-                            UIPasteboard.general.string = suggestedText
-                            copyTextNotice = .init(title: Localization.textCopiedNotice)
-                            ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
-                        } label: {
-                            Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
-                                .secondaryBodyStyle()
+                        HStack {
+                            Spacer()
+                            // CTA to copy the generated text.
+                            Button {
+                                UIPasteboard.general.string = suggestedText
+                                copyTextNotice = .init(title: Localization.textCopiedNotice)
+                                ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
+                            } label: {
+                                Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
+                                    .secondaryBodyStyle()
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .fixedSize(horizontal: true, vertical: false)
                         }
-                        .buttonStyle(PlainButtonStyle())
                     }
                     .padding(Layout.suggestedTextInsets)
                     .background(
@@ -106,7 +110,7 @@ struct ProductDescriptionGenerationView: View {
 
                 HStack(alignment: .center, spacing: Layout.defaultSpacing) {
                     if let suggestedText = viewModel.suggestedText {
-                        // CTA to start or stop text generation based on the current state.
+                        // CTA to regenerate description.
                         Button {
                             viewModel.generateDescription()
                         } label: {

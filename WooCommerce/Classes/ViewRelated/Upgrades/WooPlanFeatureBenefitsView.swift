@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import WooFoundation
 
 struct WooPlanFeatureBenefitsView: View {
     let wooPlanFeatureGroup: WooPlanFeatureGroup
@@ -47,15 +48,15 @@ struct WooPlanFeatureBenefitRow: View {
     let feature: WooPlanFeature
 
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
+        HStack(alignment: .top) {
             Image(uiImage: .checkmarkImage)
                 .renderingMode(.template)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 24)
-                .foregroundColor(.init(red: 0, green: 163/255, blue: 42/255))
+                .frame(width: Layout.checkmarkWidth)
+                .foregroundColor(.withColorStudio(name: .green, shade: .shade40))
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Layout.titleDescriptionVerticalSpacing) {
                 Text(feature.title)
                     .font(.body)
 
@@ -65,7 +66,14 @@ struct WooPlanFeatureBenefitRow: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 4)
+        .padding(.vertical, Layout.verticalPadding)
+    }
+
+    private enum Layout {
+        static let verticalPadding: CGFloat = 4
+        static let checkmarkWidth: CGFloat = 24
+        static let titleDescriptionVerticalSpacing: CGFloat = 2
+        static let checkmarkToTextHorizontalSpacing: CGFloat = 8
     }
 }
 

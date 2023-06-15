@@ -69,6 +69,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var productImageStatusesSubscription: AnyCancellable?
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
+    private var descriptionAICoordinator: ProductDescriptionAICoordinator?
 
     /// The coordinator for sharing products
     ///
@@ -88,13 +89,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.productImageUploader = productImageUploader
+        self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
-                                                               currency: currency)
+                                                               currency: currency,
+                                                               isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
-        self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -341,7 +343,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
-            case .description(_, let isEditable):
+            case .description(_, let isEditable, _):
                 guard isEditable else {
                     return
                 }
@@ -642,7 +644,8 @@ private extension ProductFormViewController {
         let indexPathBeforeReload = findLinkedPromoCellIndexPath()
         tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                           actionsFactory: viewModel.actionsFactory,
-                                                          currency: currency)
+                                                          currency: currency,
+                                                          isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         let indexPathAfterReload = findLinkedPromoCellIndexPath()
 
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses) { [weak self] in
@@ -676,7 +679,8 @@ private extension ProductFormViewController {
         updateMoreDetailsButtonVisibility()
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
-                                                          currency: currency)
+                                                          currency: currency,
+                                                          isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
@@ -704,7 +708,8 @@ private extension ProductFormViewController {
         ///
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
-                                                          currency: currency)
+                                                          currency: currency,
+                                                          isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
     }
 
@@ -713,7 +718,8 @@ private extension ProductFormViewController {
     func onVariationsPriceChanged() {
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
-                                                          currency: currency)
+                                                          currency: currency,
+                                                          isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
@@ -742,6 +748,9 @@ private extension ProductFormViewController {
         tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
             guard let self = self else { return }
             self.reloadLinkedPromoCellAnimated()
+        }
+        tableViewDataSource.descriptionAIAction = { [weak self] in
+            self?.showProductDescriptionAI()
         }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
@@ -1172,6 +1181,9 @@ private extension ProductFormViewController {
         let editorViewController = EditorFactory().productDescriptionEditor(product: product,
                                                                             isAIGenerationEnabled: isAIGenerationEnabled) { [weak self] content, productName in
             guard let self else { return }
+            defer {
+                self.navigationController?.popViewController(animated: true)
+            }
             if let productName {
                 self.onEditProductNameCompletion(newName: productName)
             }
@@ -1181,9 +1193,6 @@ private extension ProductFormViewController {
     }
 
     func onEditProductDescriptionCompletion(newDescription: String) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
         let hasChangedData = newDescription != product.description
         ServiceLocator.analytics.track(.productDescriptionDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
@@ -1191,6 +1200,27 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateDescription(newDescription)
+    }
+}
+
+// MARK: Action - Product Description AI
+//
+private extension ProductFormViewController {
+    func showProductDescriptionAI() {
+        guard let navigationController else {
+            return
+        }
+        let coordinator = ProductDescriptionAICoordinator(product: product,
+                                                          navigationController: navigationController,
+                                                          source: .productForm,
+                                                          analytics: ServiceLocator.analytics,
+                                                          onApply: { [weak self] output in
+            guard let self else { return }
+            self.onEditProductNameCompletion(newName: output.name)
+            self.onEditProductDescriptionCompletion(newDescription: output.description)
+        })
+        descriptionAICoordinator = coordinator
+        coordinator.start()
     }
 }
 

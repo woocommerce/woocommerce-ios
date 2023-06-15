@@ -242,13 +242,13 @@ final class HubMenuViewModel: ObservableObject {
         stores.site
             .compactMap { $0 }
             .removeDuplicates()
-            .receive(on: DispatchQueue.main)
             .asyncMap { [weak self] site -> Bool in
                 guard let self else {
                     return false
                 }
                 return await self.blazeEligibilityChecker.isSiteEligible()
             }
+            .receive(on: DispatchQueue.main)
             .assign(to: &$isSiteEligibleForBlaze)
     }
 

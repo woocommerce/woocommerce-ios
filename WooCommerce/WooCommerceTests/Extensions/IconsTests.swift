@@ -47,6 +47,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.shortDescriptionImage)
     }
 
+    func test_sparkles_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.sparklesImage)
+    }
+
     func testCameraIconIsNotNil() {
         XCTAssertNotNil(UIImage.cameraImage)
     }
@@ -265,6 +269,10 @@ final class IconsTests: XCTestCase {
 
     func test_addProductImage_is_not_nil() {
         XCTAssertNotNil(UIImage.addProductImage)
+    }
+
+    func test_aiDescriptionCelebrationImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.aiDescriptionCelebrationImage)
     }
 
     func test_launchStoreImage_is_not_nil() {

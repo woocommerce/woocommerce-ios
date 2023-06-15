@@ -94,6 +94,7 @@ public extension WordPressSite {
               url: url,
               adminURL: url + Constants.adminPath, // this would not work for sites with custom URLs
               loginURL: url + Constants.loginPath, // this would not work for sites with custom URLs
+              isSiteOwner: false,
               frameNonce: "",
               plan: "",
               isJetpackThePluginInstalled: false,

@@ -19,7 +19,8 @@ enum ProductFormSection: Equatable {
         case linkedProductsPromo(viewModel: FeatureAnnouncementCardViewModel)
         case name(name: String?, isEditable: Bool, productStatus: ProductStatus)
         case variationName(name: String)
-        case description(description: String?, isEditable: Bool)
+        case description(description: String?, isEditable: Bool, isDescriptionAIEnabled: Bool)
+        case descriptionAI
     }
 
     enum SettingsRow: Equatable {

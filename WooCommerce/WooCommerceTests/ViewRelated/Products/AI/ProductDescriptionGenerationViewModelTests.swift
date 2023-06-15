@@ -164,7 +164,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
 private extension ProductDescriptionGenerationViewModelTests {
     func mockGeneratedDescription(result: Result<String, Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            guard case let .generateProductDescription(_, _, _, _, completion) = action else {
+            guard case let .generateProductDescription(_, _, _, completion) = action else {
                 return XCTFail("Unexpected action: \(action)")
             }
             completion(result)

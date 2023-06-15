@@ -112,16 +112,15 @@ public enum ProductAction: Action {
     ///
     case createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: (Result<Product, Error>) -> Void)
 
-    /// Generates a product description with Jetpack AI given the name, features, and language code.
+    /// Generates a product description with Jetpack AI given the name and features.
     ///
-    case generateProductDescription(siteID: Int64, name: String, features: String, languageCode: String, completion: (Result<String, Error>) -> Void)
+    case generateProductDescription(siteID: Int64, name: String, features: String, completion: (Result<String, Error>) -> Void)
 
-    /// Generates a product sharing message with Jetpack AI given the URL, name, description and language code.
+    /// Generates a product sharing message with Jetpack AI given the URL, name, and description
     ///
     case generateProductSharingMessage(siteID: Int64,
                                        url: String,
                                        name: String,
                                        description: String,
-                                       languageCode: String,
                                        completion: (Result<String, Error>) -> Void)
 }

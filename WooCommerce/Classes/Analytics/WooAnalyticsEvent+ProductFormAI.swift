@@ -51,5 +51,7 @@ extension WooAnalyticsEvent.ProductFormAI {
     enum ProductDescriptionAISource: String {
         /// From product description Aztec editor.
         case aztecEditor = "aztec_editor"
+        /// From the product form below the description row.
+        case productForm = "product_form"
     }
 }

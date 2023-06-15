@@ -535,6 +535,13 @@ extension OrderDetailsViewModel {
 
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
         let refundIDs = order.refunds.map { $0.refundID }
+
+        // If the order has no refunds, there is no need to sync them.
+        guard refundIDs.isNotEmpty else {
+            onCompletion?(nil)
+            return
+        }
+
         let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing detailed Refunds: \(error)")

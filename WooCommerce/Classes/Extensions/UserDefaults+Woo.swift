@@ -29,6 +29,7 @@ extension UserDefaults {
         case shouldHideStoreOnboardingTaskList
         case storePhoneNumber
         case hasSavedPrivacyBannerSettings
+        case usedProductDescriptionAI
     }
 }
 

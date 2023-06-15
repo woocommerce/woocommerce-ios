@@ -166,8 +166,8 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow with a scanned Product
     ///
-    private func presentOrderCreationFlowWithScannedProduct(with productID: Int64) {
-        let viewModel = EditableOrderViewModel(siteID: siteID, initialProductID: productID)
+    private func presentOrderCreationFlowWithScannedProduct(_ product: Product) {
+        let viewModel = EditableOrderViewModel(siteID: siteID, initialProduct: product)
         setupNavigation(viewModel: viewModel)
     }
 
@@ -222,7 +222,7 @@ final class OrdersRootViewController: UIViewController {
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation,
                                                                                     source: .orderList,
                                                                                     addedVia: .scanning))
-                    self.presentOrderCreationFlowWithScannedProduct(with: product.productID)
+                    self.presentOrderCreationFlowWithScannedProduct(product)
                 case .failure:
                     self.displayScannedProductErrorNotice()
                 }

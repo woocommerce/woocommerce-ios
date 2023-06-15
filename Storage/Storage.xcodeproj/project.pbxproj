@@ -358,6 +358,7 @@
 		57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettings.swift; sourceTree = "<group>"; };
 		57CEB1A12525349B00D8544F /* ProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationTests.swift; sourceTree = "<group>"; };
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
+		686C01A32A39BC8600BBCF2F /* Model 90.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 90.xcdatamodel"; sourceTree = "<group>"; };
 		6889088D28F668330081A07E /* Model 74.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 74.xcdatamodel"; sourceTree = "<group>"; };
 		6889089628F66DED0081A07E /* CustomerSearchResult+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CustomerSearchResult+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		6889089728F66DED0081A07E /* Customer+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Customer+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -468,6 +469,7 @@
 		CE3B7AD12225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatus+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE43A8FB229F498D00A4FF29 /* ProductDownload+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownload+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE43A8FC229F498D00A4FF29 /* ProductDownload+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownload+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CE4562682A38AEA70088202E /* Model 89.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 89.xcdatamodel"; sourceTree = "<group>"; };
 		CE4FD43F2350EB7600A16B31 /* OrderItemRefund+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemRefund+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE4FD4402350EB7600A16B31 /* OrderItemRefund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemRefund+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE4FD4412350EB7600A16B31 /* OrderItemTax+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemTax+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -1870,6 +1872,8 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				686C01A32A39BC8600BBCF2F /* Model 90.xcdatamodel */,
+				CE4562682A38AEA70088202E /* Model 89.xcdatamodel */,
 				CE1999302A1C22B20093F863 /* Model 88.xcdatamodel */,
 				CE831FE12A14F6C800E8BEFB /* Model 87.xcdatamodel */,
 				CE13681229FA8E6500EBF43C /* Model 86.xcdatamodel */,
@@ -1959,7 +1963,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = CE1999302A1C22B20093F863 /* Model 88.xcdatamodel */;
+			currentVersion = 686C01A32A39BC8600BBCF2F /* Model 90.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -80,6 +80,12 @@ extension UIImage {
         return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24)).imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Sparkles Icon
+    ///
+    static var sparklesImage: UIImage {
+        .init(named: "sparkles")!
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {
@@ -494,6 +500,12 @@ extension UIImage {
     ///
     static var addProductImage: UIImage {
         UIImage(named: "icon-add-product")!
+    }
+
+    /// AI product description celebration image
+    ///
+    static var aiDescriptionCelebrationImage: UIImage {
+        return UIImage(named: "ai-description-celebration")!
     }
 
     /// Launch store Image

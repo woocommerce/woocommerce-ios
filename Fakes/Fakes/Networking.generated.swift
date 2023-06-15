@@ -1664,6 +1664,7 @@ extension Networking.Site {
             url: .fake(),
             adminURL: .fake(),
             loginURL: .fake(),
+            isSiteOwner: .fake(),
             frameNonce: .fake(),
             plan: .fake(),
             isJetpackThePluginInstalled: .fake(),

@@ -494,3 +494,13 @@ enum ProductVariationDecodingError: Error {
     case missingSiteID
     case missingProductID
 }
+
+// MARK: - Hashable Conformance
+//
+extension ProductVariation: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(siteID)
+        hasher.combine(productID)
+        hasher.combine(productVariationID)
+    }
+}

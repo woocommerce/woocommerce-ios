@@ -75,6 +75,9 @@ struct ProductDescriptionGenerationView: View {
                     }
                 }
 
+                Text(Localization.sampleFeatures)
+                    .footnoteStyle()
+
                 if let suggestedText = viewModel.suggestedText {
                     Text(suggestedText)
                         .fixedSize(horizontal: false, vertical: true)
@@ -157,15 +160,15 @@ private extension ProductDescriptionGenerationView {
 private extension ProductDescriptionGenerationView {
     enum Localization {
         static let title = NSLocalizedString(
-            "Write product description",
+            "Write a description",
             comment: "Title in the product description AI generator view."
         )
         static let productNamePlaceholder = NSLocalizedString(
-            "Enter product name",
+            "Enter your product name",
             comment: "Product name placeholder in the product description AI generator view."
         )
         static let productDescriptionPlaceholder = NSLocalizedString(
-            "Describe your product features",
+            "Highlight your product's unique features and audience with keywords for a tailored description.",
             comment: "Product features placeholder in the product description AI generator view."
         )
         static let copyGeneratedText = NSLocalizedString(
@@ -178,8 +181,12 @@ private extension ProductDescriptionGenerationView {
         )
         static let insertGeneratedText = NSLocalizedString("Apply",
                                                            comment: "Button title to insert AI-generated product description.")
-        static let generateText = NSLocalizedString("Write it for me",
+        static let generateText = NSLocalizedString("Write it with AI",
                                                     comment: "Button title to generate product description with Jetpack AI.")
+        static let sampleFeatures = NSLocalizedString(
+            "Example: Potted, Cactus, Plant, Decorative, Easy-care",
+            comment: "Label for sample product features to enter in the product description AI generator view."
+        )
     }
 }
 

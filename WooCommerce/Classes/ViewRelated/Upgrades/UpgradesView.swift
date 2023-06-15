@@ -82,15 +82,16 @@ struct OwnerUpgradesView: View {
                 .listRowSeparator(.hidden)
 
                 if let wooPlan = availableProduct.wooPlan {
-                    Text("Get the most out of \(wooPlan.shortName)")
-                        .font(.title3.weight(.semibold))
                     Section {
                         ForEach(wooPlan.planFeatureGroups, id: \.title) { featureGroup in
                             NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
                                 WooPlanFeatureGroupRow(featureGroup: featureGroup)
                             }
                         }
+                    } header: {
+                        Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, wooPlan.shortName))
                     }
+                    .headerProminence(.increased)
                 }
             }
 
@@ -234,6 +235,11 @@ private extension OwnerUpgradesView {
     struct Localization {
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")
+        static let featuresHeaderTextFormat = NSLocalizedString(
+            "Get the most out of %1$@",
+            comment: "Title for the section header for the list of feature categories on the Upgrade plan screen. " +
+            "Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with " +
+            "the plan name.")
     }
 }
 

@@ -248,7 +248,7 @@ private extension SubscriptionsViewModel {
     enum AvailableInAppPurchasesWPComPlans: String {
         case essentialMonthly = "debug.woocommerce.express.essential.monthly"
     }
-    
+
     enum Localization {
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
         static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. " +

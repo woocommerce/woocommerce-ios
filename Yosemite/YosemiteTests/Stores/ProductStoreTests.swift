@@ -1963,7 +1963,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(productMatch.sku, expectedProductSKU)
     }
 
-    func ttest_retrieveFirstItemMatchFromSKU_when_successful_exact_SKU_match_product_variation_then_returns_matched_product_variation() throws {
+    func test_retrieveFirstItemMatchFromSKU_when_successful_exact_SKU_match_product_variation_then_returns_matched_product_variation() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search-variation")

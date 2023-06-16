@@ -5,6 +5,8 @@ import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
+/// Encapsulates the item type an order can have, products or variations
+///
 typealias OrderBaseItem = SKUSearchResult
 
 /// View model used in Order Creation and Editing flows.
@@ -178,7 +180,6 @@ final class EditableOrderViewModel: ObservableObject {
     /// Product Variations list
     ///
     private var allProductVariations: Set<ProductVariation> = []
-
 
     /// View models for each product row in the order.
     ///

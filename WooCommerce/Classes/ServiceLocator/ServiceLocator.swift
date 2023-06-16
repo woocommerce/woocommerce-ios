@@ -102,6 +102,10 @@ final class ServiceLocator {
 
     private static var _tapToPayReconnectionController: TapToPayReconnectionController = TapToPayReconnectionController()
 
+    /// Tracker for app startup waiting time
+    ///
+    private static var _startupWaitingTimeTracker: AppStartupWaitingTimeTracker = AppStartupWaitingTimeTracker()
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -252,6 +256,12 @@ final class ServiceLocator {
 
     static var tapToPayReconnectionController: TapToPayReconnectionController {
         _tapToPayReconnectionController
+    }
+
+    /// Provides access point to the `AppStartupWaitingTimeTracker`.
+    ///
+    static var startupWaitingTimeTracker: AppStartupWaitingTimeTracker {
+        _startupWaitingTimeTracker
     }
 }
 

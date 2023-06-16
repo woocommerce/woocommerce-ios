@@ -66,6 +66,8 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let analytics: Analytics
 
+    private let waitingTimeTracker: AppStartupWaitingTimeTracker
+
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
     ///
@@ -81,7 +83,8 @@ class StoreOnboardingViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         waitingTimeTracker: AppStartupWaitingTimeTracker = ServiceLocator.startupWaitingTimeTracker) {
         self.siteID = siteID
         self.isExpanded = isExpanded
         self.stores = stores
@@ -90,6 +93,7 @@ class StoreOnboardingViewModel: ObservableObject {
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
+        self.waitingTimeTracker = waitingTimeTracker
 
         Publishers.CombineLatest3($noTasksAvailableForDisplay,
                                   defaults.publisher(for: \.completedAllStoreOnboardingTasks),
@@ -100,6 +104,7 @@ class StoreOnboardingViewModel: ObservableObject {
 
     func reloadTasks() async {
         guard !defaults.completedAllStoreOnboardingTasks else {
+            waitingTimeTracker.end(action: .loadOnboardingTasks)
             return
         }
 
@@ -201,9 +206,10 @@ private extension StoreOnboardingViewModel {
     @MainActor
     func fetchTasks() async throws -> [StoreOnboardingTask] {
         try await withCheckedThrowingContinuation({ continuation in
-            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
+            stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { [weak self] result in
                 switch result {
                 case .success(let tasks):
+                    self?.waitingTimeTracker.end(action: .loadOnboardingTasks)
                     return continuation.resume(returning: tasks.filter({ task in
                         if case .unsupported = task.type {
                             return false
@@ -228,6 +234,7 @@ private extension StoreOnboardingViewModel {
                         return StoreOnboardingTask(isComplete: true, type: .launchStore)
                     }))
                 case .failure(let error):
+                    self?.waitingTimeTracker.end() // Stop the tracker if there is an error.
                     return continuation.resume(throwing: error)
                 }
             })

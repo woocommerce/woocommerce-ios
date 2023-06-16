@@ -51,10 +51,6 @@ struct OwnerUpgradesView: View {
 
     @State var isPurchasing = false
 
-    private var showingInAppPurchasesDebug: Bool {
-        ServiceLocator.generalAppSettings.betaFeatureEnabled(.inAppPurchases)
-    }
-
     var body: some View {
         List {
             if let availableProduct = upgradesViewModel.upgradePlan {
@@ -95,20 +91,12 @@ struct OwnerUpgradesView: View {
                 }
             }
 
-            Spacer()
-
-            VStack {
-                if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
-                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                    Spacer()
-                } else if showingInAppPurchasesDebug {
-                    renderAllUpgrades()
-                } else {
-                    renderSingleUpgrade()
-                }
+            if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
+                ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                Spacer()
+            } else {
+                renderSingleUpgrade()
             }
-
-            Spacer()
         }
         .task {
             await upgradesViewModel.fetchPlans()
@@ -201,22 +189,6 @@ struct UpgradesView_Preview: PreviewProvider {
 }
 
 private extension OwnerUpgradesView {
-    @ViewBuilder
-    func renderAllUpgrades() -> some View {
-        VStack {
-            ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
-                let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
-                Button(buttonText) {
-                    Task {
-                        isPurchasing = true
-                        await upgradesViewModel.purchasePlan(with: wpcomPlan.id)
-                        isPurchasing = false
-                    }
-                }
-            }
-        }
-    }
-
     @ViewBuilder
     func renderSingleUpgrade() -> some View {
         if let upgradePlan = upgradesViewModel.upgradePlan {

@@ -49,7 +49,7 @@ final class UpgradesViewModel: ObservableObject {
     /// Retrieves all In-App Purchases WPCom plans
     ///
     @MainActor
-    private func fetchPlans() async {
+    func fetchPlans() async {
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 DDLogError("IAP not supported")

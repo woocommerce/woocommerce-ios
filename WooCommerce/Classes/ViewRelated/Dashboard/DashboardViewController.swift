@@ -635,7 +635,7 @@ private extension DashboardViewController {
                 self.showOnboardingCard(site: site)
             } else {
                 self.removeOnboardingCard()
-                AppDelegate.shared.startupWaitingTimeTracker?.end(action: .loadOnboardingTasks)
+                ServiceLocator.startupWaitingTimeTracker.end(action: .loadOnboardingTasks)
             }
         }.store(in: &subscriptions)
     }

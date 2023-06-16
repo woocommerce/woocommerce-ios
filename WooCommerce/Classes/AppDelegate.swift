@@ -51,10 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var universalLinkRouter: UniversalLinkRouter?
 
-    /// Tracks the app startup waiting time.
-    ///
-    var startupWaitingTimeTracker: AppStartupWaitingTimeTracker?
-
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -404,13 +400,15 @@ private extension AppDelegate {
     /// Set up the app startup waiting time tracker
     ///
     func setupStartupWaitingTimeTracker() {
-        startupWaitingTimeTracker = AppStartupWaitingTimeTracker()
+        // Simply _accessing_ it is enough. We only want the object to be initialized right away
+        // so it can start tracking the waiting time.
+        _ = ServiceLocator.startupWaitingTimeTracker
     }
 
     /// Cancel the app startup waiting time tracker
     ///
     func cancelStartupWaitingTimeTracker() {
-        startupWaitingTimeTracker = nil
+        ServiceLocator.startupWaitingTimeTracker.end()
     }
 
     func handleLaunchArguments() {

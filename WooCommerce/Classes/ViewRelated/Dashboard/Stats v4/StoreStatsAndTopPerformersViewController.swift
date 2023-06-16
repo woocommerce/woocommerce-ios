@@ -460,7 +460,7 @@ private extension StoreStatsAndTopPerformersViewController {
     /// Notifies `AppStartupWaitingTimeTracker` when dashboard sync is complete.
     ///
     func trackDashboardStatsSyncComplete(withError error: Error? = nil) {
-        AppDelegate.shared.startupWaitingTimeTracker?.end(action: .syncDashboardStats, withError: error)
+        ServiceLocator.startupWaitingTimeTracker.end(action: .syncDashboardStats, withError: error)
     }
 }
 

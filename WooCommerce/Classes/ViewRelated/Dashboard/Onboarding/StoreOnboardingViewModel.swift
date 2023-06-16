@@ -100,7 +100,7 @@ class StoreOnboardingViewModel: ObservableObject {
 
     func reloadTasks() async {
         guard !defaults.completedAllStoreOnboardingTasks else {
-            await AppDelegate.shared.startupWaitingTimeTracker?.end(action: .loadOnboardingTasks)
+            ServiceLocator.startupWaitingTimeTracker.end(action: .loadOnboardingTasks)
             return
         }
 
@@ -205,7 +205,7 @@ private extension StoreOnboardingViewModel {
             stores.dispatch(StoreOnboardingTasksAction.loadOnboardingTasks(siteID: siteID) { result in
                 switch result {
                 case .success(let tasks):
-                    AppDelegate.shared.startupWaitingTimeTracker?.end(action: .loadOnboardingTasks)
+                    ServiceLocator.startupWaitingTimeTracker.end(action: .loadOnboardingTasks)
                     return continuation.resume(returning: tasks.filter({ task in
                         if case .unsupported = task.type {
                             return false
@@ -230,7 +230,7 @@ private extension StoreOnboardingViewModel {
                         return StoreOnboardingTask(isComplete: true, type: .launchStore)
                     }))
                 case .failure(let error):
-                    AppDelegate.shared.startupWaitingTimeTracker?.end(action: .loadOnboardingTasks, withError: error)
+                    ServiceLocator.startupWaitingTimeTracker.end(action: .loadOnboardingTasks, withError: error)
                     return continuation.resume(throwing: error)
                 }
             })

@@ -58,8 +58,7 @@ struct OwnerUpgradesView: View {
                     Image(availableProduct.wooPlan?.headerImageFileName ?? "")
                         .frame(maxWidth: .infinity, alignment: .center)
                         .listRowInsets(.zero)
-                    //TODO: move the background color to woo-express-essential-plan-benefits.json
-                        .listRowBackground(Color(red: 238/255, green: 226/255, blue: 211/255))
+                        .listRowBackground(availableProduct.wooPlan?.headerImageCardColor ?? .clear)
 
                     VStack(alignment: .leading) {
                         Text(availableProduct.wooPlan?.shortName ?? availableProduct.wpComPlan.displayName)

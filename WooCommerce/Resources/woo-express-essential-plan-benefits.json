@@ -5,6 +5,7 @@
     "plan_id": "debug.woocommerce.express.essential.monthly",
     "plan_description": "Everything you need to launch an online store.",
     "header_image_filename": "express-essential-header",
+    "header_image_card_color": "rgba(238, 226, 211, 1)",
     "feature_categories": [
         {
             "title": "General features",

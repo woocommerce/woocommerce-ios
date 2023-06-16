@@ -28,9 +28,9 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private(set) var shouldShowFreeTrialFeatures = false
 
-    /// Defines if the view should show the "Cancel Free Trial"  button.
+    /// Defines if the view should show the "Cancel Upgrade"  button.
     ///
-    private(set) var shouldShowCancelTrialButton = false
+    @Published private(set) var shouldShowCancelUpgradeButton = false
 
     /// Indicates if the view should should a redacted state.
     ///

@@ -77,7 +77,8 @@ struct OwnerUpgradesView: View {
                 }
                 .listRowSeparator(.hidden)
 
-                if let wooPlan = availableProduct.wooPlan {
+                if let wooPlan = availableProduct.wooPlan,
+                    upgradesViewModel.isHardcodedPlanDataStillValid {
                     Section {
                         ForEach(wooPlan.planFeatureGroups, id: \.title) { featureGroup in
                             NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
@@ -88,6 +89,14 @@ struct OwnerUpgradesView: View {
                         Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, wooPlan.shortName))
                     }
                     .headerProminence(.increased)
+                } else {
+                    NavigationLink(destination: {
+                        /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
+                        AuthenticatedWebView(isPresented: .constant(true),
+                                             url: WooConstants.URLs.fallbackWooExpressHome.asURL())
+                    }, label: {
+                        Text(Localization.featureDetailsUnavailableText)
+                    })
                 }
             }
 
@@ -97,9 +106,6 @@ struct OwnerUpgradesView: View {
             } else {
                 renderSingleUpgrade()
             }
-        }
-        .task {
-            await upgradesViewModel.fetchPlans()
         }
     }
 }
@@ -213,6 +219,9 @@ private extension OwnerUpgradesView {
             comment: "Title for the section header for the list of feature categories on the Upgrade plan screen. " +
             "Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with " +
             "the plan name.")
+
+        static let featureDetailsUnavailableText = NSLocalizedString(
+            "See plan details", comment: "Title for a link to view Woo Express plan details on the web, as a fallback.")
     }
 }
 

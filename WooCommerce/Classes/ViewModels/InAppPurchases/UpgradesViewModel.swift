@@ -10,17 +10,22 @@ final class UpgradesViewModel: ObservableObject {
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
     private(set) var isSiteOwner: Bool
+    private let stores: StoresManager
 
     @Published var wpcomPlans: [WPComPlanProduct]
     @Published var entitledWpcomPlanIDs: Set<String>
     @Published var upgradePlan: WooWPComPlan? = nil
+    @Published var isHardcodedPlanDataStillValid = true
 
     private let localPlans: [WooPlan]
 
-    init(siteID: Int64, inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
+    init(siteID: Int64,
+         inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
-        isSiteOwner = ServiceLocator.stores.sessionManager.defaultSite?.isSiteOwner ?? false
+        self.stores = stores
+        isSiteOwner = stores.sessionManager.defaultSite?.isSiteOwner ?? false
 
         wpcomPlans = []
         entitledWpcomPlanIDs = []
@@ -29,12 +34,22 @@ final class UpgradesViewModel: ObservableObject {
         } else {
             self.localPlans = []
         }
+
+        Task {
+            await fetchViewData()
+        }
+    }
+
+    @MainActor
+    private func fetchViewData() async {
+        await fetchPlans()
+        await checkHardcodedPlanDataValidity()
     }
 
     /// Retrieves all In-App Purchases WPCom plans
     ///
     @MainActor
-    func fetchPlans() async {
+    private func fetchPlans() async {
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 DDLogError("IAP not supported")
@@ -51,6 +66,18 @@ final class UpgradesViewModel: ObservableObject {
             // TODO: Handle errors
             // https://github.com/woocommerce/woocommerce-ios/issues/9886
             DDLogError("fetchPlans \(error)")
+        }
+    }
+
+
+    @MainActor
+    private func checkHardcodedPlanDataValidity() async {
+        isHardcodedPlanDataStillValid = await withCheckedContinuation { continuation in
+            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
+                .hardcodedPlanUpgradeDetailsMilestone1AreAccurate,
+                defaultValue: true) { isEnabled in
+                continuation.resume(returning: isEnabled)
+            })
         }
     }
 

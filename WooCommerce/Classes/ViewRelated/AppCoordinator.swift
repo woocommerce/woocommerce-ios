@@ -95,6 +95,26 @@ final class AppCoordinator {
         localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
             self?.handleLocalNotificationResponse(response)
         }
+        updateSitePropertiesIfNeeded()
+    }
+}
+
+private extension AppCoordinator {
+    // Fetch latest site properties and update the default store if anything has changed:
+    //
+    func updateSitePropertiesIfNeeded() {
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            let action = SiteAction.syncSite(siteID: siteID, completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let site):
+                    self.stores.updateDefaultStore(site)
+                case .failure(let error):
+                    DDLogError("⛔️ Failed to sync default store \(error)")
+                }
+            })
+            stores.dispatch(action)
+        }
     }
 }
 

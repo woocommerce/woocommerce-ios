@@ -7,10 +7,10 @@ struct AztecAIViewFactory {
     /// - Returns: View that contains the Jetpack AI CTA.
     func aiButtonNextToFormatBar(onTap: @escaping () -> Void) -> UIView {
         let configuration: UIButton.Configuration = {
-            var configuration = UIButton.Configuration.filled()
-            configuration.image = .magicWandIcon(size: Layout.AIButton.imageSize)
+            var configuration = UIButton.Configuration.borderless()
+            configuration.image = .sparklesImage
             configuration.imagePadding = 0
-            configuration.background.backgroundColor = .tertiaryLabel
+            configuration.baseForegroundColor = .brand
             configuration.contentInsets = Layout.AIButton.contentInsets
             return configuration
         }()

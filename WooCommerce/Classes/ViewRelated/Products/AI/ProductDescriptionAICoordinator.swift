@@ -10,19 +10,23 @@ final class ProductDescriptionAICoordinator: Coordinator {
     private let product: ProductFormDataModel
     private let source: Source
     private let analytics: Analytics
+    private let userDefaults: UserDefaults
     private let onApply: (ProductDescriptionGenerationOutput) -> Void
 
-    private var bottomSheetPresenter: BottomSheetPresenter?
+    private var productDescriptionGenerationBottomSheetPresenter: BottomSheetPresenter?
+    private var celebrationViewBottomSheetPresenter: BottomSheetPresenter?
 
     init(product: ProductFormDataModel,
          navigationController: UINavigationController,
          source: Source,
          analytics: Analytics,
+         userDefaults: UserDefaults = .standard,
          onApply: @escaping (ProductDescriptionGenerationOutput) -> Void) {
         self.product = product
         self.navigationController = navigationController
         self.source = source
         self.analytics = analytics
+        self.userDefaults = userDefaults
         self.onApply = onApply
     }
 
@@ -34,14 +38,7 @@ final class ProductDescriptionAICoordinator: Coordinator {
 // MARK: Navigation
 private extension ProductDescriptionAICoordinator {
     func presentAIBottomSheet() {
-        let presenter = BottomSheetPresenter(configure: { bottomSheet in
-            var sheet = bottomSheet
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .none
-            sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium(), .large()]
-        })
-        bottomSheetPresenter = presenter
+        productDescriptionGenerationBottomSheetPresenter = buildBottomSheetPresenter()
 
         let controller = ProductDescriptionGenerationHostingController(viewModel:
                 .init(siteID: product.siteID,
@@ -51,14 +48,49 @@ private extension ProductDescriptionAICoordinator {
             guard let self else { return }
             self.onApply(output)
             self.dismissDescriptionGenerationBottomSheetIfNeeded()
+            if !self.userDefaults.usedProductDescriptionAI {
+                self.userDefaults[.usedProductDescriptionAI] = true
+                self.showProductDescriptionAICelebrationView()
+            }
         }))
 
         navigationController.view.endEditing(true)
-        presenter.present(controller, from: navigationController)
+        productDescriptionGenerationBottomSheetPresenter?.present(controller, from: navigationController)
         analytics.track(event: .ProductFormAI.productDescriptionAIButtonTapped(source: source))
     }
 
     func dismissDescriptionGenerationBottomSheetIfNeeded() {
-        bottomSheetPresenter?.dismiss(onDismiss: {})
+        productDescriptionGenerationBottomSheetPresenter?.dismiss(onDismiss: {})
+    }
+
+    func showProductDescriptionAICelebrationView() {
+        celebrationViewBottomSheetPresenter = buildBottomSheetPresenter()
+        let controller = ProductDescriptionGenerationCelebrationHostingController(viewModel: .init(onTappingGotIt: { [weak self] in
+            self?.celebrationViewBottomSheetPresenter?.dismiss()
+            self?.celebrationViewBottomSheetPresenter = nil
+        }))
+        celebrationViewBottomSheetPresenter?.present(controller, from: navigationController)
+    }
+}
+
+// MARK: Bottom sheet helpers
+//
+private extension ProductDescriptionAICoordinator {
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
+    }
+}
+
+// MARK: UserDefaults helpers
+//
+private extension UserDefaults {
+    @objc dynamic var usedProductDescriptionAI: Bool {
+        bool(forKey: Key.usedProductDescriptionAI.rawValue)
     }
 }

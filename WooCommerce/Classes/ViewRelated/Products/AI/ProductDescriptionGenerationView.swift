@@ -100,6 +100,7 @@ struct ProductDescriptionGenerationView: View {
                             .buttonStyle(PlainButtonStyle())
                             .fixedSize(horizontal: true, vertical: false)
                         }
+                        .renderedIf(viewModel.isGenerationInProgress == false)
                     }
                     .padding(Layout.suggestedTextInsets)
                     .background(
@@ -109,13 +110,17 @@ struct ProductDescriptionGenerationView: View {
                 }
 
                 HStack(alignment: .center, spacing: Layout.defaultSpacing) {
-                    if let suggestedText = viewModel.suggestedText {
+                    if viewModel.suggestedText != nil {
                         // CTA to regenerate description.
                         Button {
                             viewModel.generateDescription()
                         } label: {
-                            Label(Localization.regenerateText, systemImage: "arrow.counterclockwise")
-                                .bodyStyle()
+                            if viewModel.isGenerationInProgress {
+                                ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                            } else {
+                                Label(Localization.regenerateText, systemImage: "arrow.counterclockwise")
+                                    .bodyStyle()
+                            }
                         }
                         .buttonStyle(PlainButtonStyle())
                         .disabled(viewModel.isGenerationInProgress || viewModel.isGenerationEnabled == false)

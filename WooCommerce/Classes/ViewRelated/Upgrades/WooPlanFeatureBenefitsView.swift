@@ -1,6 +1,5 @@
 import SwiftUI
 import Yosemite
-import WooFoundation
 
 struct WooPlanFeatureBenefitsView: View {
     let wooPlanFeatureGroup: WooPlanFeatureGroup

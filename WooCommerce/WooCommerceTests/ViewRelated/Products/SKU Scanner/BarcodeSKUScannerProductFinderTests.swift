@@ -3,8 +3,8 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-final class BarcodeSKUScannerProductFinderTests: XCTestCase {
-    private var sut: BarcodeSKUScannerProductFinder!
+final class BarcodeSKUScannerItemFinderTests: XCTestCase {
+    private var sut: BarcodeSKUScannerItemFinder!
     var stores: MockStoresManager!
     var storageManager: MockStorageManager!
     var analyticsProvider: MockAnalyticsProvider!
@@ -17,7 +17,7 @@ final class BarcodeSKUScannerProductFinderTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
-        sut = BarcodeSKUScannerProductFinder(stores: stores, analytics: analytics)
+        sut = BarcodeSKUScannerItemFinder(stores: stores, analytics: analytics)
 
     }
 

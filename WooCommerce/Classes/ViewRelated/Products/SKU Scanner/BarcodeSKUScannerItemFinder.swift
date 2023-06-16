@@ -1,9 +1,9 @@
 import Foundation
 import Yosemite
 
-/// Given a scanned barcode this struct searches for the matching product, refining the barcode if necessary to handle the format exceptions
+/// Given a scanned barcode this struct searches for the matching product or variation, refining the barcode if necessary to handle the format exceptions
 ///
-struct BarcodeSKUScannerProductFinder {
+struct BarcodeSKUScannerItemFinder {
     private let stores: StoresManager
     private let analytics: Analytics
 
@@ -13,12 +13,12 @@ struct BarcodeSKUScannerProductFinder {
         self.analytics = analytics
     }
 
-    func findProduct(from barcode: ScannedBarcode, siteID: Int64, source: WooAnalyticsEvent.Orders.BarcodeScanningSource) async throws -> Product {
+    func searchBySKU(from barcode: ScannedBarcode, siteID: Int64, source: WooAnalyticsEvent.Orders.BarcodeScanningSource) async throws -> SKUSearchResult {
         do {
-            let product = try await retrieveProduct(from: barcode.payloadStringValue, siteID: siteID)
+            let result = try await search(by: barcode.payloadStringValue, siteID: siteID)
             analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUSuccess(from: source))
 
-            return product
+            return result
         } catch {
             analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUFailure(from: source,
                                                                                                symbology: barcode.symbology,
@@ -31,17 +31,17 @@ struct BarcodeSKUScannerProductFinder {
 
             // Re-start the search in case we can remove the country code (Apple adds it by default for UPC-A, but merchants might not have it)
             if let refinedBarcode = barcode.removeCountryCodeIfPossible() {
-                return try await findProduct(from: refinedBarcode, siteID: siteID, source: source)
+                return try await searchBySKU(from: refinedBarcode, siteID: siteID, source: source)
             } else if let refinedBarcode = barcode.removeCheckDigitIfPossible() {
                 // Try one more time if we can remove the barcode check digit, as some merchants might have added the SKU without it
-                return try await retrieveProduct(from: refinedBarcode.payloadStringValue, siteID: siteID)
+                return try await search(by: refinedBarcode.payloadStringValue, siteID: siteID)
             } else {
                 throw error
             }
         }
     }
 
-    private func retrieveProduct(from sku: String, siteID: Int64) async throws -> Product {
+    private func search(by sku: String, siteID: Int64) async throws -> SKUSearchResult {
         try await withCheckedThrowingContinuation { continuation in
             let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID,
                                                                         sku: sku) { result in

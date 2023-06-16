@@ -542,7 +542,7 @@ private extension ProductStore {
             "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",
             "- Product description: ```\(description)```",
             "- Product URL: \(url).",
-            "Identify the language used in the product name and use the same language in your response.",
+            "Identify the language used in the product name and product description to use in your response.",
             "The length should be up to 3 sentences.",
             "Use a 9th grade reading level.",
             "Add related hashtags at the end of the message.",

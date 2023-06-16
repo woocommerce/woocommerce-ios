@@ -9,7 +9,7 @@ final class UpgradesViewModel: ObservableObject {
 
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
-    private(set) var userIsAdministrator: Bool
+    private(set) var isSiteOwner: Bool
 
     @Published var wpcomPlans: [WPComPlanProduct]
     @Published var entitledWpcomPlanIDs: Set<String>
@@ -20,7 +20,8 @@ final class UpgradesViewModel: ObservableObject {
     init(siteID: Int64, inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
-        userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
+        isSiteOwner = ServiceLocator.stores.sessionManager.defaultSite?.isSiteOwner ?? false
+
         wpcomPlans = []
         entitledWpcomPlanIDs = []
         if let essentialPlan = WooPlan() {

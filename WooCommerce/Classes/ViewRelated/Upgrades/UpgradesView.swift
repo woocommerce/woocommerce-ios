@@ -35,7 +35,7 @@ struct UpgradesView: View {
 
             Spacer()
 
-            if upgradesViewModel.userIsAdministrator {
+            if upgradesViewModel.isSiteOwner {
                 OwnerUpgradesView(upgradesViewModel: upgradesViewModel)
             } else {
                 NonOwnerUpgradesView(upgradesViewModel: upgradesViewModel)

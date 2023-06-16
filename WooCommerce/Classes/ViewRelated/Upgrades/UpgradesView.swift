@@ -51,10 +51,6 @@ struct OwnerUpgradesView: View {
 
     @State var isPurchasing = false
 
-    private var showingInAppPurchasesDebug: Bool {
-        ServiceLocator.generalAppSettings.betaFeatureEnabled(.inAppPurchases)
-    }
-
     var body: some View {
         List {
             if let availableProduct = upgradesViewModel.upgradePlan {
@@ -62,7 +58,7 @@ struct OwnerUpgradesView: View {
                     Image(availableProduct.wooPlan?.headerImageFileName ?? "")
                         .frame(maxWidth: .infinity, alignment: .center)
                         .listRowInsets(.zero)
-                        //TODO: move the background color to woo-express-essential-plan-benefits.json
+                    //TODO: move the background color to woo-express-essential-plan-benefits.json
                         .listRowBackground(Color(red: 238/255, green: 226/255, blue: 211/255))
 
                     VStack(alignment: .leading) {
@@ -82,30 +78,25 @@ struct OwnerUpgradesView: View {
                 .listRowSeparator(.hidden)
 
                 if let wooPlan = availableProduct.wooPlan {
-                    Text("Get the most out of \(wooPlan.shortName)")
-                        .font(.title3.weight(.semibold))
                     Section {
                         ForEach(wooPlan.planFeatureGroups, id: \.title) { featureGroup in
-                            WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                            NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
+                                WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                            }
                         }
+                    } header: {
+                        Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, wooPlan.shortName))
                     }
+                    .headerProminence(.increased)
                 }
             }
 
-            Spacer()
-
-            VStack {
-                if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
-                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                    Spacer()
-                } else if showingInAppPurchasesDebug {
-                    renderAllUpgrades()
-                } else {
-                    renderSingleUpgrade()
-                }
+            if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
+                ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                Spacer()
+            } else {
+                renderSingleUpgrade()
             }
-
-            Spacer()
         }
         .task {
             await upgradesViewModel.fetchPlans()
@@ -173,6 +164,7 @@ private struct CurrentPlanDetailsView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding([.leading, .trailing])
+        .padding(.vertical, UpgradesView.Layout.smallPadding)
     }
 
     private enum Localization {
@@ -198,22 +190,6 @@ struct UpgradesView_Preview: PreviewProvider {
 
 private extension OwnerUpgradesView {
     @ViewBuilder
-    func renderAllUpgrades() -> some View {
-        VStack {
-            ForEach(upgradesViewModel.wpcomPlans, id: \.id) { wpcomPlan in
-                let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, wpcomPlan.displayName)
-                Button(buttonText) {
-                    Task {
-                        isPurchasing = true
-                        await upgradesViewModel.purchasePlan(with: wpcomPlan.id)
-                        isPurchasing = false
-                    }
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
     func renderSingleUpgrade() -> some View {
         if let upgradePlan = upgradesViewModel.upgradePlan {
             let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
@@ -232,6 +208,11 @@ private extension OwnerUpgradesView {
     struct Localization {
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")
+        static let featuresHeaderTextFormat = NSLocalizedString(
+            "Get the most out of %1$@",
+            comment: "Title for the section header for the list of feature categories on the Upgrade plan screen. " +
+            "Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with " +
+            "the plan name.")
     }
 }
 
@@ -251,5 +232,6 @@ private extension UpgradesView {
 
     struct Layout {
         static let contentSpacing: CGFloat = 8
+        static let smallPadding: CGFloat = 8
     }
 }

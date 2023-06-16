@@ -7,6 +7,7 @@ import Storage
 public class ProductStore: Store {
     private let remote: ProductsRemoteProtocol
     private let generativeContentRemote: GenerativeContentRemoteProtocol
+    private let productVariationStorageManager: ProductVariationStorageManager
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
@@ -23,6 +24,7 @@ public class ProductStore: Store {
                 network: Network,
                 remote: ProductsRemoteProtocol,
                 generativeContentRemote: GenerativeContentRemoteProtocol) {
+        productVariationStorageManager = ProductVariationStorageManager(storageManager: storageManager)
         self.remote = remote
         self.generativeContentRemote = generativeContentRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -334,7 +336,7 @@ private extension ProductStore {
 
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
-    func retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
         remote.searchProductsBySKU(for: siteID,
                                    keyword: sku,
                                    pageNumber: Remote.Default.firstPageNumber,
@@ -345,9 +347,16 @@ private extension ProductStore {
                 guard let product = products.first(where: { $0.sku == sku }) else {
                     return onCompletion(.failure(ProductLoadError.notFound))
                 }
-                self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID, onCompletion: {
-                    onCompletion(.success(product))
-                })
+
+                if let productVariation = product.toProductVariation() {
+                    self.productVariationStorageManager.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation], siteID: siteID, productID: productVariation.productID, onCompletion: {
+                        onCompletion(.success(.variation(productVariation)))
+                    })
+                } else {
+                    self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID, onCompletion: {
+                        onCompletion(.success(.product(product)))
+                    })
+                }
             case .failure:
                 onCompletion(.failure(ProductLoadError.notFound))
             }

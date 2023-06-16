@@ -17,7 +17,7 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
 
     /// Represents all of the app startup actions waiting to be completed.
     ///
-    private var startupActionsPending = StartupAction.allCases
+    private(set) var startupActionsPending = StartupAction.allCases
 
     init(analyticsService: Analytics = ServiceLocator.analytics,
          currentTimeInMillis: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {

@@ -12,8 +12,8 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         hasGeneratedMessage ? Localization.regenerate : Localization.generate
     }
 
-    var generateButtonImageName: String {
-        hasGeneratedMessage ? "arrow.counterclockwise" : "sparkles"
+    var generateButtonImage: UIImage {
+        hasGeneratedMessage ? UIImage(systemName: "arrow.counterclockwise")! : .sparklesImage
     }
 
     var shareSheet: ShareSheet {

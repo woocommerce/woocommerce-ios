@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 14.1
+Several exciting developments this week! You can now scan a SKU barcode or QR code to search for a product when creating an order. It's also possible to automatically generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products and share them using AI. Do try it out and share your feedback!
+
 ## 14.0
 This release includes several bug fixes and improvements to help you get your business started and ensure a smooth experience. Stay tuned for more enhancements in the future. 
 

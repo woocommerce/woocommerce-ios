@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-05-30 17:54:05+0000 */
+/* Translation-Revision-Date: 2023-06-12 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -350,9 +350,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Sobre o aplicativo";
 
-/* Title for the feature announcement banner intended to upsell card readers */
-"Accept payments easily" = "Aceite pagamentos com facilidade";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "Aceite os termos de serviço durante a configuração.";
 
@@ -516,6 +513,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit variation when there are no images. */
 "Add a variation image" = "Adicionar uma imagem da variação";
+
+/* Placeholder text on the product sharing message generation screen */
+"Add an optional message" = "Adicionar uma mensagem opcional";
 
 /* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
 "Add another credit card" = "Adicionar outro cartão de crédito";
@@ -1018,6 +1018,10 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to create a product manually */
 "Blank" = "Em branco";
 
+/* Title of the Blaze view.
+   Title of the hub menu Blaze button */
+"Blaze" = "Blaze";
+
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Bloco de citação";
 
@@ -1496,9 +1500,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Recolhido";
-
-/* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
-"Collect Information" = "Coletar informação";
 
 /* Navigates to Collect a payment via the Simple Payment screen
    Text on the button that starts collecting a card present payment. */
@@ -2074,6 +2075,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Data: Do mais antigo para o mais recente";
+
+/* Message describing days left on a Plan to expire.Reads as 'Days left in trial: 15' */
+"Days left in trial: %1$@" = "Dias restantes de teste: %1$@";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Padrão";
@@ -2675,6 +2679,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "Erro ao gerar o código QR. Tente novamente mais tarde";
 
+/* Error message on the product sharing message generation screen when generation fails. */
+"Error generating message. Please try again." = "Erro ao gerar a mensagem. Tente novamente.";
+
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Erro ao encontrar o endereço no Apple Maps";
 
@@ -2711,6 +2718,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Quem não ama uma oferta?";
+
+/* Subtitle that can be read under the Plan upgrade name */
+"Everything you need to launch an online store" = "Tudo de que você precisa para lançar uma loja online";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "Excluir %1$d categorias";
@@ -3015,6 +3025,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Criando variação";
 
+/* Text to show the loading state on the product sharing message generation screen */
+"Generating..." = "Gerando...";
+
 /* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "Limite de geração excedido";
 
@@ -3049,9 +3062,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "Receba notificações por push sobre novos pedidos, avaliações, etc. no seu dispositivo.";
-
-/* Message for the feature announcement banner intended to upsell card readers */
-"Get ready to accept payments with a card reader." = "Prepare-se para aceitar pagamentos com um leitor de cartão.";
 
 /* Title for the account creation form. */
 "Get started in minutes" = "Comece em minutos";
@@ -3365,8 +3375,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "Pagamento presencial do pedido #%1$@ para %2$@ blog_id %3$@";
 
-/* Navigates to In-Person Payments screen
-   Title for a dismissal alert on the upsell card reader feature announcement banner */
+/* Navigates to In-Person Payments screen */
 "In-Person Payments" = "Pagamentos presenciais";
 
 /* Main prompt for the screen to select the preferred provider for In-Person Payments */
@@ -3733,7 +3742,6 @@ which should be translated separately and considered part of this sentence. */
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
    Label for the banner Learn more button
-   Settings > Privacy Settings. A text link to the cookie policy.
    Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title of button shown in the Orders → All Orders tab if the list is empty.
@@ -4441,9 +4449,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Nenhuma variação a ser gerada";
 
-/* Message for a dismissal alert on the upsell card reader feature announcement banner */
-"No worries! You can always get started with In-Person Payments in Settings" = "Não se preocupe! Você pode começar a usar os pagamentos presenciais quando quiser em Configurações";
-
 /* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
 "No worries! You can always go to Settings in the Menu to send us feedback." = "Não se preocupe! Você pode acessar Configurações no menu e enviar seu feedback quando quiser.";
 
@@ -4926,6 +4931,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Colocando seu produto na lixeira...";
 
+/* Navigation title for the Upgrades screen */
+"Plans" = "Planos";
+
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carregue o leitor";
 
@@ -5316,6 +5324,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Link do produto";
 
+/* Error message on the Order details view when the scanner cannot find a matching product */
+"Product not found. Failed to add product to order." = "Produto não encontrado. Falha ao adicionar o produto ao pedido.";
+
 /* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
 "Product not found. Failed to create a New Order" = "Produto não encontrado. Falha ao criar um novo pedido";
 
@@ -5354,6 +5365,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Produtos divulgados em vez do produto visualizado no momento (isto é, produtos mais rentáveis)";
 
+/* Description of the hub menu Blaze button */
+"Promote products with Blaze" = "Promova produtos com o Blaze";
+
+/* Button title Promote with Blaze in Edit Product More Options Action Sheet */
+"Promote with Blaze" = "Promova com o Blaze";
+
 /* One of the possible options in Product Visibility */
 "Public" = "Público";
 
@@ -5378,8 +5395,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Puerto Rico" = "Porto Rico";
 
-/* Title for the WebView opened to upsell card readers */
-"Purchase Card Reader" = "Comprar leitor de cartão";
+/* The title of the button to purchase a Plan.Reads as 'Purchase Essential Monthly' */
+"Purchase %1$@" = "Comprar %1$@";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "Data da compra";
@@ -5390,9 +5407,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "Observação de compra";
-
-/* Title for the button on the feature announcement banner intended to upsell card readers */
-"Purchase card reader" = "Comprar leitor de cartão";
 
 /* Title for purchase note alert. */
 "Purchase note" = "Nota de compra";
@@ -5450,9 +5464,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Leia nossas dicas de solução de problemas";
-
-/* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
-"Read privacy policy" = "Ler política de privacidade";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "Reader is ready" = "O leitor está pronto";
@@ -5540,6 +5551,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
 "Refunding payment" = "Reembolsando pagamento";
+
+/* Action button to regenerate message on the product sharing message generation screen */
+"Regenerate" = "Gerar novamente";
 
 /* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "Gerar código do cupom novamente";
@@ -5693,6 +5707,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry action title
    Retry button on the error notice for the upgrade view
    Retry button title for the privacy screen notices
+   Retry button title on the Order details view whenthe scanner cannot find a matching product
+   Retry button title on the Order list view when the scanner cannot finda matching product and create a new order
    Retry the last action
    Retry title on the notice action button */
 "Retry" = "Tentar novamente";
@@ -5768,9 +5784,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS enviado";
-
-/* Title for the plan section on the subscriptions view. Uppercased */
-"SUBSCRIPTION STATUS" = "STATUS DA ASSINATURA";
 
 /* Header label of the domain suggestions on the domain selector. */
 "SUGGESTIONS" = "SUGESTÕES";
@@ -6088,9 +6101,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Seychelles" = "Seychelles";
 
-/* Button label to share a web page
+/* Action button to share the generated message on the product sharing message generation screen
+   Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Compartilhar";
+
+/* Title of the product sharing message generation screen. The placeholder is the name of the product */
+"Share %1$@" = "Compartilhar %1$@";
 
 /* Action title for sharing coupon from the Coupon Details screen
    Button to share coupon from the Coupon Creation Success screen. */
@@ -6111,9 +6128,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the feedback action button on the In-Person Payments feedback banner
    Title of the feedback button in the action sheet. */
 "Share feedback" = "Compartilhar feedback";
-
-/* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
-"Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Compartilhar informações de como nossos serviços são usados com nossas ferramentas de análise enquanto estiver acessando sua conta do WordPress.com.";
 
 /* Title for button allowing users to share information about the app with friends, such as via Messages */
 "Share with Friends" = "Compartilhe com seus amigos";
@@ -6588,6 +6602,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subscription title with subscription number. Reads like: 'Subscription #123' */
 "Subscription #%d" = "Assinatura %d";
 
+/* Title for the plan section on the subscriptions view. Uppercased */
+"Subscription Status" = "Status da assinatura";
+
 /* Label for the subscription price setting in the subscription settings screen. */
 "Subscription price" = "Preço da assinatura";
 
@@ -6689,9 +6706,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "São Tomé e Príncipe";
-
-/* Title for the section to contact support on the subscriptions view. Uppercased */
-"TROUBLESHOOTING" = "SOLUÇÃO DE PROBLEMAS";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
@@ -7271,9 +7285,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "Este campo é obrigatório";
 
-/* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
-"This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Essa informação nos ajuda a melhorar nossos produtos, tornar anúncios mais relevantes, personalizar sua experiência no WordPress.com e outras opções descritas em nossa política de privacidade.";
-
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "Esta é a versão compatível com URL para o título do produto";
 
@@ -7470,6 +7481,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Solução de problemas";
+
+/* Title for the section to contact support on the subscriptions view. Uppercased */
+"Troubleshooting" = "Solução de problemas";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Confiar";
@@ -7939,7 +7953,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Atualizando seus produtos...";
 
-/* Title for the WebView when upgrading a free trial plan */
+/* Title for the WebView when upgrading a free trial plan
+   Title on the button to upgrade a free trial plan. */
 "Upgrade Now" = "Faça upgrade agora mesmo";
 
 /* Cell title for Upsells products in Linked Products Settings screen
@@ -8231,9 +8246,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Main description for the free trial summary screen */
 "We offer everything you need to build and grow an online store, powered by WooCommerce and hosted on WordPress.com." = "Oferecemos tudo que você precisa para criar sua loja online e faze-la crescer, desenvolvida pelo WooCommerce e hospedada no WordPress.com.";
 
-/* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
-"We use other tracking tools, including some from third parties. Read about these and how to control them." = "Nós usamos outras ferramentas de acompanhamento, inclusive algumas de terceiros. Leia mais sobre elas e como controlá-las.";
-
 /* Main description on the privacy screen. */
 "We value your privacy. Your personal data is used to optimize our mobile apps, improve security, conduct analytics, and enhance your user experience." = "Valorizamos sua privacidade. Seus dados pessoais são usados para otimizar nossos aplicativos móveis, aumentar a segurança, conduzir atividades de análise e aprimorar a experiência do usuário.";
 
@@ -8428,6 +8440,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "Trabalhe conosco";
 
+/* Action button to generate message on the product sharing message generation screen */
+"Write it for me" = "Escreva por mim";
+
 /* Title in the product description AI generator view. */
 "Write product description" = "Escrever descrição do produto";
 
@@ -8551,6 +8566,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "Sem autorização para encerrar a conta.";
+
+/* Message describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
+"Your Plan: %1$@" = "Seu plano: %1$@";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "É necessário atualizar o software do seu leitor de cartão para receber pagamentos. Se você cancelar, bloqueará a conexão do leitor.";

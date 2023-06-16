@@ -1,1 +1,1 @@
-En esta actualización, hemos realizado varias mejoras para aumentar la compatibilidad con plugins de terceros. De esta forma, la experiencia es más fluida a la hora de cargar listas de pedidos, listas de productos y variaciones de productos. No es oro todo lo que reluce; el código a veces también seduce.
+Esta versión incluye varias correcciones de errores y mejoras que te ayudarán a poner en marcha tu negocio y a garantizar una experiencia fluida. No te pierdas las mejoras que están por venir.

@@ -349,7 +349,10 @@ private extension ProductStore {
                 }
 
                 if let productVariation = product.toProductVariation() {
-                    self.productVariationStorageManager.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation], siteID: siteID, productID: productVariation.productID, onCompletion: {
+                    self.productVariationStorageManager.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                                                                  siteID: siteID,
+                                                                                                  productID: productVariation.productID,
+                                                                                                  onCompletion: {
                         onCompletion(.success(.variation(productVariation)))
                     })
                 } else {

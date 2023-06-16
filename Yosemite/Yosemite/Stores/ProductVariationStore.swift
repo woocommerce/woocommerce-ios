@@ -334,7 +334,8 @@ private extension ProductVariationStore {
             guard let self = self else { return }
             switch result {
             case .success(let productVariation):
-                self.productVariationStorageManager.deleteStoredProductVariation(siteID: productVariation.siteID, productVariationID: productVariation.productVariationID)
+                self.productVariationStorageManager.deleteStoredProductVariation(siteID: productVariation.siteID,
+                                                                                 productVariationID: productVariation.productVariationID)
                 onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))

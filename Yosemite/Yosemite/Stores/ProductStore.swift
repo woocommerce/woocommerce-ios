@@ -70,10 +70,8 @@ public class ProductStore: Store {
                                  productCategory,
                                  excludedProductIDs,
                                  onCompletion):
-
             searchProducts(siteID: siteID,
                            keyword: keyword,
-                           filter: filter,
                            pageNumber: pageNumber,
                            pageSize: pageSize,
                            stockStatus: stockStatus,
@@ -82,6 +80,12 @@ public class ProductStore: Store {
                            productCategory: productCategory,
                            excludedProductIDs: excludedProductIDs,
                            onCompletion: onCompletion)
+        case let .searchProductsBySKU(siteID: siteID,
+                                      keyword: keyword,
+                                      pageNumber: pageNumber,
+                                      pageSize: pageSize,
+                                      completion: onCompletion):
+            searchProductsBySKU(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, completion: onCompletion)
         case .synchronizeProducts(let siteID,
                                   let pageNumber,
                                   let pageSize,
@@ -148,7 +152,6 @@ private extension ProductStore {
     ///
     func searchProducts(siteID: Int64,
                         keyword: String,
-                        filter: ProductSearchFilter,
                         pageNumber: Int,
                         pageSize: Int,
                         stockStatus: ProductStockStatus?,
@@ -157,34 +160,37 @@ private extension ProductStore {
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        switch filter {
-        case .all:
-            remote.searchProducts(for: siteID,
-                                  keyword: keyword,
-                                  pageNumber: pageNumber,
-                                  pageSize: pageSize,
-                                  stockStatus: stockStatus,
-                                  productStatus: productStatus,
-                                  productType: productType,
-                                  productCategory: productCategory,
-                                  excludedProductIDs: excludedProductIDs) { [weak self] result in
-                self?.handleSearchResults(siteID: siteID,
-                                          keyword: keyword,
-                                          filter: filter,
-                                          result: result,
-                                          onCompletion: onCompletion)
-            }
-        case .sku:
-            remote.searchProductsBySKU(for: siteID,
-                                       keyword: keyword,
-                                       pageNumber: pageNumber,
-                                       pageSize: pageSize) { [weak self] result in
-                self?.handleSearchResults(siteID: siteID,
-                                          keyword: keyword,
-                                          filter: filter,
-                                          result: result,
-                                          onCompletion: onCompletion)
-            }
+        remote.searchProducts(for: siteID,
+                              keyword: keyword,
+                              pageNumber: pageNumber,
+                              pageSize: pageSize,
+                              stockStatus: stockStatus,
+                              productStatus: productStatus,
+                              productType: productType,
+                              productCategory: productCategory,
+                              excludedProductIDs: excludedProductIDs) { [weak self] result in
+            self?.handleSearchResults(siteID: siteID,
+                                      keyword: keyword,
+                                      filter: .all,
+                                      result: result,
+                                      onCompletion: onCompletion)
+        }
+    }
+
+    func searchProductsBySKU(for siteID: Int64,
+                                keyword: String,
+                                pageNumber: Int,
+                                pageSize: Int,
+                                completion: @escaping (Result<[SKUSearchResult], Error>) -> Void) {
+        remote.searchProductsBySKU(for: siteID,
+                                   keyword: keyword,
+                                   pageNumber: pageNumber,
+                                   pageSize: pageSize) { [weak self] result in
+            self?.handleSearchResults(siteID: siteID,
+                                      keyword: keyword,
+                                      filter: .sku,
+                                      result: result,
+                                      onCompletion: completion)
         }
     }
 

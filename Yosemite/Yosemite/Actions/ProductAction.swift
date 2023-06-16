@@ -36,6 +36,12 @@ public enum ProductAction: Action {
                         excludedProductIDs: [Int64] = [],
                         onCompletion: (Result<Void, Error>) -> Void)
 
+    case searchProductsBySKU(siteID: Int64,
+                             keyword: String,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             completion: (Result<[SKUSearchResult], Error>) -> Void)
+
     /// Synchronizes the Products matching the specified criteria.
     ///
     /// - Parameter onCompletion: called when sync completes, returns an error or a boolean that indicates whether there might be more products to sync.

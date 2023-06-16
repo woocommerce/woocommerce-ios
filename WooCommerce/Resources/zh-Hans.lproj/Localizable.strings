@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-13 09:54:29+0000 */
+/* Translation-Revision-Date: 2023-06-16 12:16:08+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -2077,7 +2077,7 @@ which should be translated separately and considered part of this sentence. */
 "Date: Oldest to Newest" = "日期：最旧到最新";
 
 /* Message describing days left on a Plan to expire.Reads as 'Days left in trial: 15' */
-"Days left in trial: %1$@" = "免费试用剩余时间：1$@";
+"Days left in trial: %1$@" = "免费试用剩余时间：%1$@";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "默认";

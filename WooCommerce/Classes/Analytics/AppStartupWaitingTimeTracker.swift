@@ -25,22 +25,16 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     }
 
     /// Ends the waiting time for the provided startup action.
-    /// If all startup actions are completed without errors, evaluate the elapsed time from the init,
+    /// If all startup actions are completed, evaluate the elapsed time from the init,
     /// and send it as an analytics event.
     ///
-    func end(action: StartupAction, withError error: Error? = nil) {
+    func end(action: StartupAction) {
         // Ignore any actions after the pending startup actions are complete.
         guard startupActionsPending.isNotEmpty else {
             return
         }
 
         startupActionsPending.removeAll { $0 == action }
-
-        // If there was an error, stop all tracking and don't send the analytics event, to avoid skewing the analytics.
-        guard error == nil else {
-            end()
-            return
-        }
 
         // If all actions completed without any errors, send the analytics event.
         if startupActionsPending.isEmpty {
@@ -49,6 +43,9 @@ class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     }
 
     /// Ends the tracker without sending an analytics event.
+    ///
+    /// This can be used to stop tracking in scenarios that would skew the waiting time analysis.
+    /// For example, when the app is backgrounded or a startup action has an API error or network connection error.
     ///
     override func end() {
         startupActionsPending.removeAll()

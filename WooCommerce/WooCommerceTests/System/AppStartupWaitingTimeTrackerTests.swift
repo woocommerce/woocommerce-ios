@@ -20,15 +20,15 @@ final class AppStartupWaitingTimeTrackerTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_tracker_triggers_expected_analytics_event_after_all_actions_are_complete() {
+    func test_tracker_triggers_expected_analytics_event_after_all_actions_end() {
         // Given
         tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
 
-        // When only one action is complete
+        // When only one action is ended
         tracker.end(action: .syncDashboardStats)
         XCTAssertEqual(analyticsProvider.receivedEvents.count, 0)
 
-        // When all actions are complete
+        // When all actions are ended
         tracker.end(action: .loadOnboardingTasks)
 
         // Then
@@ -36,18 +36,7 @@ final class AppStartupWaitingTimeTrackerTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.applicationOpenedWaitingTimeLoaded.rawValue))
     }
 
-    func test_tracker_does_not_trigger_analytics_event_if_action_has_error() {
-        // Given
-        tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
-
-        // When
-        completeAllStartupActions(withError: MockError.mockError)
-
-        // Then
-        XCTAssertEqual(analyticsProvider.receivedEvents.count, 0)
-    }
-
-    func test_tracker_does_not_trigger_analytics_event_again_after_tracker_is_completed() {
+    func test_ending_action_again_after_all_actions_are_ended_does_not_trigger_analytics_event_again() {
         // Given
         tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
 
@@ -81,9 +70,9 @@ private extension AppStartupWaitingTimeTrackerTests {
         case mockError
     }
 
-    func completeAllStartupActions(withError error: Error? = nil) {
+    func completeAllStartupActions() {
         AppStartupWaitingTimeTracker.StartupAction.allCases.forEach { action in
-            tracker.end(action: action, withError: error)
+            tracker.end(action: action)
         }
     }
 }

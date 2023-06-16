@@ -1354,6 +1354,10 @@ extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.productAddNewFromBarcodeScanningTapped())
     }
 
+    func trackBarcodeScanningNotPermitted() {
+        analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderCreation, reason: .cameraAccessNotPermitted))
+    }
+
     /// Attempts to map SKU to Product
     ///
     private func mapFromScannedBarcodetoProduct(barcode: ScannedBarcode, onCompletion: @escaping (Result<Product, Error>) -> Void) {

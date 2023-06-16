@@ -449,7 +449,8 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        if item.variationID != 0, let variation = retrieveVariation(for: item) {
+        if item.variationID != 0,
+            let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let parent = allProducts.first(where: { $0.productID == item.parent })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
             return ProductRowViewModel(id: item.itemID,
@@ -963,7 +964,7 @@ private extension EditableOrderViewModel {
     func updateOrderWithBaseItem(_ item: OrderBaseItem) {
         guard currentOrderItems.contains(where: { $0.productOrVariationID == item.itemID }) else {
             // If it's not part of the current order, send the correct productType to the synchronizer
-            switch product {
+            switch item {
             case let .product(product):
                 allProducts.insert(product)
                 selectedProducts.append(product)
@@ -977,7 +978,7 @@ private extension EditableOrderViewModel {
             return
         }
         // Increase quantity if exists
-        let match = productRows.first(where: { $0.productOrVariationID == product.itemID })
+        let match = productRows.first(where: { $0.productOrVariationID == item.itemID })
         match?.incrementQuantity()
     }
 
@@ -1423,28 +1424,6 @@ extension EditableOrderViewModel {
                 return false
             }
         }
-    }
-}
-
-private extension EditableOrderViewModel {
-    // Attempts to retrieve the product variation associated with a given OrderItem, if any, from locally stored variations.
-    // If none is found, falls back to attempt to retrieve the variation from a model parent
-    // If none is found, returns nil
-    // https://github.com/woocommerce/woocommerce-ios/issues/9808
-    func retrieveVariation(for item: OrderItem) -> ProductVariation? {
-        guard let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) else {
-            let product = allProducts.first(where: { $0.productID == item.variationID })
-            return product?.toProductVariation()
-        }
-        return variation
-    }
-
-    func retrieveVariation(for id: Int64) -> ProductVariation? {
-        guard let variation = allProductVariations.first(where: { $0.productVariationID == id }) else {
-            let product = allProducts.first(where: { $0.productID == id })
-            return product?.toProductVariation()
-        }
-        return variation
     }
 }
 

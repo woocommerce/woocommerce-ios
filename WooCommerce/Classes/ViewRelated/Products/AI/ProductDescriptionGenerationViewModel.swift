@@ -72,8 +72,7 @@ private extension ProductDescriptionGenerationViewModel {
         await withCheckedContinuation { continuation in
             stores.dispatch(ProductAction.generateProductDescription(siteID: siteID,
                                                                      name: name,
-                                                                     features: features,
-                                                                     languageCode: Locale.current.identifier) { result in
+                                                                     features: features) { result in
                 continuation.resume(returning: result)
             })
         }

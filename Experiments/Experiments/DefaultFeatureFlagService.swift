@@ -68,7 +68,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .addCouponToOrder:
             return ( buildConfig == .localDeveloper || buildConfig == .alpha ) && !isUITesting
         case .addProductToOrderViaSKUScanner:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha)
+            return true
         case .productBundles:
             return true
         case .freeTrial:
@@ -100,7 +100,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .sdkLessGoogleSignIn:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shareProductAI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

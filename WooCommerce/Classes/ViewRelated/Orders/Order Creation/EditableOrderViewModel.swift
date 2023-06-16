@@ -163,7 +163,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Products list
     ///
-    private var allProducts: [Product] = []
+    private var allProducts: Set<Product> = []
 
     /// Product Variations Results Controller.
     ///
@@ -175,7 +175,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Product Variations list
     ///
-    private var allProductVariations: [ProductVariation] = []
+    private var allProductVariations: Set<ProductVariation> = []
 
     /// View model for the product list
     ///
@@ -190,11 +190,11 @@ final class EditableOrderViewModel: ObservableObject {
             topProductsProvider: TopProductsFromCachedOrdersProvider(),
             onProductSelectionStateChanged: { [weak self] product in
                 guard let self = self else { return }
-                self.addOrRemoveProductToOrder(product)
+                self.changeSelectionStateForProduct(product)
             },
             onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
                 guard let self = self else { return }
-                self.addOrRemoveProductVariationToOrder(variation, parent: parentProduct)
+                self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
             }, onMultipleSelectionCompleted: { [weak self] _ in
                 guard let self = self else { return }
                 self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
@@ -325,7 +325,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Initial product ID given to the order when is created, if any
     ///
-    private let initialProductID: Int64?
+    private let initialProduct: Product?
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -340,7 +340,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         initialProductID: Int64? = nil) {
+         initialProduct: Product? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -351,7 +351,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
-        self.initialProductID = initialProductID
+        self.initialProduct = initialProduct
         self.barcodeSKUScannerProductFinder = BarcodeSKUScannerProductFinder(stores: stores)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
@@ -903,11 +903,9 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product (from the product list) to the order.
     ///
-    func addOrRemoveProductToOrder(_ product: Product) {
+    func changeSelectionStateForProduct(_ product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
-        if !allProducts.contains(product) {
-            allProducts.append(product)
-        }
+        allProducts.insert(product)
 
         if !selectedProducts.contains(where: { $0.productID == product.productID }) {
             selectedProducts.append(product)
@@ -920,15 +918,10 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
-    func addOrRemoveProductVariationToOrder(_ variation: ProductVariation, parent product: Product) {
+    func changeSelectionStateForProductVariation(_ variation: ProductVariation, parent product: Product) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
-        if !allProducts.contains(product) {
-            allProducts.append(product)
-        }
-
-        if !allProductVariations.contains(variation) {
-            allProductVariations.append(variation)
-        }
+        allProducts.insert(product)
+        allProductVariations.insert(variation)
 
         if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
             selectedProductVariations.append(variation)
@@ -951,17 +944,42 @@ private extension EditableOrderViewModel {
                 return self.createProductRows(items: items)
             }
             .assign(to: &$productRows)
-        configureInitialOrderFromScannedItemIfNeeded()
+        configureOrderWithInitialProductIfNeeded()
     }
 
     /// If given an initial product ID on initialization, updates the Order with the item
     ///
-    func configureInitialOrderFromScannedItemIfNeeded() {
-        guard let productID = self.initialProductID else {
+    func configureOrderWithInitialProductIfNeeded() {
+        guard let product = self.initialProduct else {
             return
         }
 
-        updateOrderWithProductID(productID)
+        updateOrderWithProduct(product)
+    }
+
+    /// Updates the Order with the given product
+    ///
+    func updateOrderWithProduct(_ product: Product) {
+        guard currentOrderItems.contains(where: { $0.productOrVariationID == product.productID }) else {
+            // If it's not part of the current order, send the correct productType to the synchronizer
+            productSelectorViewModel.toggleSelection(id: product.productID)
+
+            if let productVariation = product.toProductVariation() {
+                allProductVariations.insert(productVariation)
+
+                selectedProductVariations.append(productVariation)
+                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
+            } else {
+                allProducts.insert(product)
+
+                selectedProducts.append(product)
+                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+            }
+            return
+        }
+        // Increase quantity if exists
+        let match = productRows.first(where: { $0.productOrVariationID == product.productID })
+        match?.incrementQuantity()
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1213,7 +1231,7 @@ private extension EditableOrderViewModel {
     func updateProductsResultsController() {
         do {
             try productsResultsController.performFetch()
-            allProducts = productsResultsController.fetchedObjects
+            allProducts = Set(productsResultsController.fetchedObjects)
         } catch {
             DDLogError("⛔️ Error fetching products for order: \(error)")
         }
@@ -1224,7 +1242,7 @@ private extension EditableOrderViewModel {
     func updateProductVariationsResultsController() {
         do {
             try productVariationsResultsController.performFetch()
-            allProductVariations = productVariationsResultsController.fetchedObjects
+            allProductVariations = Set(productVariationsResultsController.fetchedObjects)
         } catch {
             DDLogError("⛔️ Error fetching product variations for order: \(error)")
         }
@@ -1317,10 +1335,7 @@ extension EditableOrderViewModel {
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: self.flow.analyticsFlow,
                                                                                     source: .orderCreation,
                                                                                     addedVia: .scanning))
-                    // The scanned product or variation was added locally when it was found
-                    // Let's refresh our references so we can retrieve it
-                    self.updateLocalItemsReferences()
-                    self.updateOrderWithProductID(product.productID)
+                    self.updateOrderWithProduct(product)
                     onCompletion(.success(()))
                 }
             case .failure:
@@ -1339,6 +1354,10 @@ extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.productAddNewFromBarcodeScanningTapped())
     }
 
+    func trackBarcodeScanningNotPermitted() {
+        analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderCreation, reason: .cameraAccessNotPermitted))
+    }
+
     /// Attempts to map SKU to Product
     ///
     private func mapFromScannedBarcodetoProduct(barcode: ScannedBarcode, onCompletion: @escaping (Result<Product, Error>) -> Void) {
@@ -1350,28 +1369,6 @@ extension EditableOrderViewModel {
                 onCompletion(.failure(error))
             }
         }
-    }
-
-    /// Updates the Order with the given product
-    ///
-    func updateOrderWithProductID(_ productID: Int64) {
-        guard currentOrderItems.contains(where: { $0.productOrVariationID == productID }) else {
-            // If it's not part of the current order, send the correct productType to the synchronizer
-            productSelectorViewModel.toggleSelection(id: productID)
-            if let productVariation = retrieveVariation(for: productID) {
-                selectedProductVariations.append(productVariation)
-                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
-            } else if let product = allProducts.first(where: { $0.productID == productID }) {
-                selectedProducts.append(product)
-                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
-            } else {
-                DDLogError("⛔️ID \(productID) not found")
-            }
-            return
-        }
-        // Increase quantity if exists
-        let match = productRows.first(where: { $0.productOrVariationID == productID })
-        match?.incrementQuantity()
     }
 }
 

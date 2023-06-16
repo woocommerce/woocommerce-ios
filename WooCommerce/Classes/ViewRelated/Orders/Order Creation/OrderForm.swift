@@ -312,6 +312,7 @@ private struct ProductsSection: View {
                         let capturePermissionStatus = viewModel.capturePermissionStatus
                         switch capturePermissionStatus {
                         case .notPermitted:
+                            viewModel.trackBarcodeScanningNotPermitted()
                             logPermissionStatus(status: .notPermitted)
                             self.showPermissionsSheet = true
                         case .notDetermined:

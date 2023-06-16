@@ -1973,6 +1973,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertNil(migratedOrderStatsV4Totals.entity.attributesByName["totalCoupons"])
         XCTAssertNil(migratedOrderStatsV4Totals.entity.attributesByName["totalProducts"])
     }
+
+    func test_migrating_from_89_to_90_adds_new_isSiteOwner_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 89")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["isSiteOwner"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 90")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSiteEntity = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let isSiteOwner = try XCTUnwrap(migratedSiteEntity.value(forKey: "isSiteOwner") as? Bool)
+        XCTAssertFalse(isSiteOwner, "Confirm expected property exists, and is false.")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -13,7 +13,7 @@ public extension Product {
                          productID: parentID,
                          productVariationID: productID,
                          attributes: attributes.map { ProductVariationAttribute(id: $0.attributeID, name: $0.name, option: $0.options.first ?? "") },
-                         image: nil,
+                         image: images.first,
                          permalink: permalink,
                          dateCreated: dateCreated,
                          dateModified: dateModified,

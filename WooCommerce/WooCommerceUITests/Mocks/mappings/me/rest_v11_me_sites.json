@@ -4,7 +4,7 @@
         "method": "GET",
         "queryParameters": {
           "fields": {
-            "equalTo": "ID,name,description,URL,options,jetpack,jetpack_connection"
+            "equalTo": "ID,name,description,URL,options,jetpack,jetpack_connection,capabilities"
           },
           "options": {
             "equalTo": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
@@ -20,6 +20,30 @@
                       "name": "Your WooCommerce Store",
                       "description": "",
                       "URL": "http:\/\/yourwoosite.com",
+                      "capabilities": {
+                        "edit_pages": true,
+                        "edit_posts": true,
+                        "edit_others_posts": true,
+                        "edit_others_pages": true,
+                        "delete_posts": true,
+                        "delete_others_posts": true,
+                        "edit_theme_options": false,
+                        "edit_users": false,
+                        "list_users": false,
+                        "manage_categories": true,
+                        "manage_options": false,
+                        "moderate_comments": true,
+                        "activate_wordads": false,
+                        "promote_users": false,
+                        "publish_posts": true,
+                        "upload_files": true,
+                        "delete_users": false,
+                        "remove_users": false,
+                        "own_site": false,
+                        "view_hosting": false,
+                        "view_stats": true,
+                        "activate_plugins": false
+                      },
                       "jetpack": true,
                       "jetpack_connection": true,
                       "options": {

@@ -471,6 +471,10 @@ extension WooAnalyticsEvent {
             case orderList = "order_list"
         }
 
+        enum BarcodeScanningFailureReason: String {
+            case cameraAccessNotPermitted = "camera_access_not_permitted"
+        }
+
         enum OrderProductAdditionVia: String {
             case scanning
             case manually
@@ -526,6 +530,11 @@ extension WooAnalyticsEvent {
 
         static func barcodeScanningSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func barcodeScanningFailure(from source: BarcodeScanningSource, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
+                                                                              Keys.reason: reason.rawValue])
         }
 
         static func barcodeScanningSearchViaSKUSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {

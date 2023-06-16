@@ -246,7 +246,7 @@ extension SiteRemote {
     enum SiteParameter {
         enum Fields {
             static let key = "fields"
-            static let value = "ID,name,description,URL,options,jetpack,jetpack_connection"
+            static let value = "ID,name,description,URL,options,jetpack,jetpack_connection,capabilities"
         }
         enum Options {
             static let key = "options"

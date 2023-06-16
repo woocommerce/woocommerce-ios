@@ -1816,12 +1816,12 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_order_created_when_initialItem_is_productVariation_type_then_initial_order_contains_productVariation() {
         // Given
         let variationID: Int64 = 33
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: variationID, productTypeKey: "variation")
+        let variation = ProductVariation.fake().copy(siteID: sampleSiteID, productVariationID: variationID)
 
-        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: variation)
 
         //When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialItem: .product(product))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialItem: .variation(variation))
         guard let orderItem = viewModel.currentOrderItems.first else {
             XCTFail("The Order should contain one item")
             return

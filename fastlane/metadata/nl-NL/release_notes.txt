@@ -1,1 +1,1 @@
-In deze update hebben we verschillende verbeteringen doorgevoerd die de compatibiliteit met plugins van derden verbeteren. Zo geniet je van een soepelere ervaring wanneer je bestellijsten, productlijsten en productvariaties laadt. Het is niet alles goud wat er blinkt; soms is het gewoon code!
+Met deze release hebben we een aantal bugs verholpen en verbeteringen doorgevoerd om je bedrijf op te starten en je ervaring soepeler te maken. Houd de nieuwe toekomstige verbeteringen in de gaten!

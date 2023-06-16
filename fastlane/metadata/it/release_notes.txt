@@ -1,1 +1,1 @@
-In questo aggiornamento abbiamo apportato diversi miglioramenti per aumentare la compatibilità con i plugin di terze parti, garantendo un'esperienza più fluida durante il caricamento di elenchi di ordini ed elenchi e varianti di prodotti. Non è sempre oro quello che luccica, qualche volta è... codice!
+Questo rilascio include diverse correzioni ai bug e miglioramenti per aiutarti a iniziare a lavorare con la tua attività e assicurarti un'esperienza fluida. Rimani aggiornato per ulteriori miglioramenti futuri.

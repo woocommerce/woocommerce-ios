@@ -1,1 +1,1 @@
-Bu güncellemede sipariş listelerini, ürün listelerini ve ürün varyasyonlarını yüklerken daha sorunsuz bir deneyim sağlamak üzere üçüncü taraf eklentilerle uyumluluğu geliştirmek için çeşitli iyileştirmeler yaptık. Her parlayan altın değildir; bazen kodu önemlidir!
+Bu sürüm, işletmenizi kurmanıza yardımcı olmak ve sorunsuz bir deneyim sağlamak için birkaç hata düzeltmesi ve iyileştirme içerir. Gelecekteki geliştirmelerimiz için beklemede kalın.

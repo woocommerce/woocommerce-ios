@@ -43,7 +43,7 @@ struct BarcodeSKUScannerItemFinder {
 
     private func search(by sku: String, siteID: Int64) async throws -> SKUSearchResult {
         try await withCheckedThrowingContinuation { continuation in
-            let action = ProductAction.retrieveFirstProductMatchFromSKU(siteID: siteID,
+            let action = ProductAction.retrieveFirstItemMatchFromSKU(siteID: siteID,
                                                                         sku: sku) { result in
                 switch result {
                 case let .success(matchedProduct):

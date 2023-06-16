@@ -69,7 +69,7 @@ public enum ProductAction: Action {
 
     /// Retrieves the first Product with exact-match SKU
     ///
-    case retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: (Result<SKUSearchResult, Error>) -> Void)
+    case retrieveFirstItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: (Result<SKUSearchResult, Error>) -> Void)
 
     /// Deletes all of the cached products.
     ///

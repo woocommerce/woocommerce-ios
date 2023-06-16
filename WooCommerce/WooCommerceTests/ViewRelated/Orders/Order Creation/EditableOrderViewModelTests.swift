@@ -1650,7 +1650,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstItemMatchFromSKU(_, _, let onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Expected failure, got success")
@@ -1704,7 +1704,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstItemMatchFromSKU(_, _, let onCompletion):
                 let product = Product.fake().copy(productID: self.sampleSiteID, purchasable: true)
                 onCompletion(.success(product))
             default:
@@ -1749,7 +1749,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { [weak self] action in
             switch action {
-            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstItemMatchFromSKU(_, _, let onCompletion):
                 self?.storageManager.insertSampleProduct(readOnlyProduct: product)
                 onCompletion(.success(product))
             default:

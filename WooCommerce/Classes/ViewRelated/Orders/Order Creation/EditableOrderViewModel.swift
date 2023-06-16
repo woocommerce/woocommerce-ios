@@ -1327,7 +1327,7 @@ extension EditableOrderViewModel {
     ///
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
         analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderCreation))
-        mapFromScannedBarcodetoProduct(barcode: barcode) { [weak self] result in
+        mapScannedBarcodetoBaseItem(barcode: barcode) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case let .success(result):
@@ -1360,7 +1360,7 @@ extension EditableOrderViewModel {
 
     /// Attempts to map SKU to Product
     ///
-    private func mapFromScannedBarcodetoProduct(barcode: ScannedBarcode, onCompletion: @escaping (Result<OrderBaseItem, Error>) -> Void) {
+    private func mapScannedBarcodetoBaseItem(barcode: ScannedBarcode, onCompletion: @escaping (Result<OrderBaseItem, Error>) -> Void) {
         Task {
             do {
                 let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: barcode, siteID: siteID, source: .orderCreation)

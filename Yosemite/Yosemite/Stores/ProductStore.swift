@@ -55,8 +55,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrieveFirstProductMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
-            retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
+        case .retrieveFirstItemMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
+            retrieveFirstItemMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -336,7 +336,7 @@ private extension ProductStore {
 
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
-    func retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+    func retrieveFirstItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
         remote.searchProductsBySKU(for: siteID,
                                    keyword: sku,
                                    pageNumber: Remote.Default.firstPageNumber,

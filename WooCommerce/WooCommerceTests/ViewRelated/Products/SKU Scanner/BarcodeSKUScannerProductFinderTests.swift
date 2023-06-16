@@ -38,7 +38,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         let symbology = BarcodeSymbology.aztec
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstItemMatchFromSKU(_, _, let onCompletion):
                 onCompletion(.failure(testError))
             default:
                 XCTFail("Expected failure, got success")
@@ -66,7 +66,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         let returningProduct = Product.fake()
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstProductMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstItemMatchFromSKU(_, _, let onCompletion):
                 onCompletion(.success(returningProduct))
             default:
                 break
@@ -99,7 +99,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case let .retrieveFirstProductMatchFromSKU(_, givenSKU, onCompletion):
+            case let .retrieveFirstItemMatchFromSKU(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
                     onCompletion(.success(returningProduct))
                 } else {
@@ -125,7 +125,7 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case let .retrieveFirstProductMatchFromSKU(_, givenSKU, onCompletion):
+            case let .retrieveFirstItemMatchFromSKU(_, givenSKU, onCompletion):
                 if givenSKU == productSKU {
                     onCompletion(.success(returningProduct))
                 } else {

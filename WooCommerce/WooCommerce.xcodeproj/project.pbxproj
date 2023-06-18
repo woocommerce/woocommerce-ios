@@ -118,6 +118,8 @@
 		021EBB382A3076F4003634CA /* BlazeEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */; };
 		021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */; };
 		0221121E288973C20028F0AF /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0221121D288973C20028F0AF /* LocalNotification.swift */; };
+		02251B8B2A3DBB01003CCD9A /* AddProductFromImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02251B8A2A3DBB01003CCD9A /* AddProductFromImageView.swift */; };
+		02251B8D2A3DBECA003CCD9A /* LiveTextInteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02251B8C2A3DBECA003CCD9A /* LiveTextInteractionView.swift */; };
 		0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */; };
 		0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */; };
 		0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */; };
@@ -2456,6 +2458,8 @@
 		021EBB372A3076F4003634CA /* BlazeEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorSearchUICommand.swift; sourceTree = "<group>"; };
 		0221121D288973C20028F0AF /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
+		02251B8A2A3DBB01003CCD9A /* AddProductFromImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageView.swift; sourceTree = "<group>"; };
+		02251B8C2A3DBECA003CCD9A /* LiveTextInteractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTextInteractionView.swift; sourceTree = "<group>"; };
 		0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelTests.swift; sourceTree = "<group>"; };
 		0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelProductListFilterTests.swift; sourceTree = "<group>"; };
 		0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModel.swift; sourceTree = "<group>"; };
@@ -5922,6 +5926,8 @@
 				EEBDF7E32A317BBB00EFEF47 /* FirstProductCreated */,
 				02ECD1E324FF5E0B00735BE5 /* AddProductCoordinator.swift */,
 				02ECD1E524FFB4E900735BE5 /* ProductFactory.swift */,
+				02251B8A2A3DBB01003CCD9A /* AddProductFromImageView.swift */,
+				02251B8C2A3DBECA003CCD9A /* LiveTextInteractionView.swift */,
 			);
 			path = "Add Product";
 			sourceTree = "<group>";
@@ -12349,6 +12355,7 @@
 				DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */,
 				02B1AA6729A4709400D54FCB /* FilterTabBar.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
+				02251B8D2A3DBECA003CCD9A /* LiveTextInteractionView.swift in Sources */,
 				DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */,
 				03582BE2299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift in Sources */,
 				02F36F472978349500D97EA0 /* DomainPurchaseSuccessView.swift in Sources */,
@@ -12459,6 +12466,7 @@
 				26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */,
 				4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */,
 				77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */,
+				02251B8B2A3DBB01003CCD9A /* AddProductFromImageView.swift in Sources */,
 				B910686027F1F28F00AD0575 /* GhostableViewController.swift in Sources */,
 				AE8AEA8628084EC90054BDA2 /* MaxWidthPreference.swift in Sources */,
 				DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */,

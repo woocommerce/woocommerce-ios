@@ -1,4 +1,5 @@
 import UIKit
+import VisionKit
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -83,6 +84,17 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
+        if #available(iOS 16.0, *), ImageAnalyzer.isSupported {
+            let addProductFromImage = AddProductFromImageHostingController { [weak self] data in
+                self?.navigationController.dismiss(animated: true) { [weak self] in
+                    self?.addProduct(name: data.name, description: data.description, sku: data.sku)
+                }
+            }
+            let navController = UINavigationController(rootViewController: addProductFromImage)
+            navigationController.present(navController, animated: true)
+            return
+        }
+
         switch source {
         case .productsTab, .productOnboarding:
             ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
@@ -95,6 +107,52 @@ final class AddProductCoordinator: Coordinator {
         } else {
             presentProductTypeBottomSheet(creationType: .manual)
         }
+    }
+
+    func addProduct(name: String, description: String?, sku: String?) {
+        guard let product = ProductFactory().createNewProduct(type: .simple,
+                                                              isVirtual: .random(),
+                                                              siteID: siteID)?
+            .copy(name: name,
+                  fullDescription: description,
+                  sku: sku) else {
+            return
+        }
+        showProduct(product)
+    }
+
+    /// Presents a product onto the current navigation stack.
+    ///
+    func presentProduct(_ product: Product) {
+        let model = EditableProductModel(product: product)
+        let currencyCode = ServiceLocator.currencySettings.currencyCode
+        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let productImageActionHandler = productImageUploader
+            .actionHandler(key: .init(siteID: product.siteID,
+                                      productOrVariationID: .product(id: model.productID),
+                                      isLocalID: true),
+                           originalStatuses: model.imageStatuses)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .add,
+                                             productImageActionHandler: productImageActionHandler)
+        viewModel.onProductCreated = { [weak self] product in
+            guard let self else { return }
+            self.onProductCreated(product)
+            if self.isFirstProduct, let url = URL(string: product.permalink) {
+                self.showFirstProductCreatedView(productURL: url,
+                                                 productName: product.name,
+                                                 productDescription: product.fullDescription ?? product.shortDescription ?? "",
+                                                 showShareProductButton: viewModel.canShareProduct())
+            }
+        }
+        let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       eventLogger: ProductFormEventLogger(),
+                                                       productImageActionHandler: productImageActionHandler,
+                                                       currency: currency,
+                                                       presentationStyle: .navigationStack)
+        // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+        viewController.hidesBottomBarWhenPushed = true
+        navigationController.pushViewController(viewController, animated: true)
     }
 }
 
@@ -228,7 +286,7 @@ private extension AddProductCoordinator {
 
     /// Presents a product onto the current navigation stack.
     ///
-    func presentProduct(_ product: Product) {
+    func showProduct(_ product: Product) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)

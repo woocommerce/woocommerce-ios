@@ -28,7 +28,9 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                              feature: GenerativeContentRemoteFeature) async throws -> String {
         let path = "sites/\(siteID)/\(Path.text)"
         /// We are skipping cache entirely to avoid showing outdated/duplicated text.
-        let parameters = [ParameterKey.textContent: base, ParameterKey.skipCache: "true"]
+        let parameters = [ParameterKey.textContent: base,
+                          ParameterKey.skipCache: "true",
+                          ParameterKey.feature: feature.rawValue]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
         return try await enqueue(request)
     }
@@ -44,5 +46,6 @@ private extension GenerativeContentRemote {
     enum ParameterKey {
         static let textContent = "content"
         static let skipCache = "skip_cache"
+        static let feature = "feature"
     }
 }

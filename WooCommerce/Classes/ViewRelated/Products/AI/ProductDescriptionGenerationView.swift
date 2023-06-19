@@ -93,6 +93,7 @@ struct ProductDescriptionGenerationView: View {
                             .redacted(reason: viewModel.isGenerationInProgress ? .placeholder : [])
                             .shimmering(active: viewModel.isGenerationInProgress)
 
+                        // Learn more link. The link has to be inline for the markdown text to work.
                         Text("\(Localization.poweredBy) [\(Localization.learnMore)](https://automattic.com/ai-guidelines/)")
                             .captionStyle(foregroundColor: .secondary)
                             .environment(\.openURL, OpenURLAction { url in

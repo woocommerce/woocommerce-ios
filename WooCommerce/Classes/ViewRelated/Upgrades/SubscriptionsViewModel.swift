@@ -86,9 +86,8 @@ final class SubscriptionsViewModel: ObservableObject {
     /// Opens the subscriptions management URL
     ///
     func onManageSubscriptionButtonTapped() {
-        if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
-            UIApplication.shared.open(url)
-        }
+        let url = WooConstants.URLs.inAppPurchasesAccountSubscriptionsLink.asURL()
+        UIApplication.shared.open(url)
     }
 }
 

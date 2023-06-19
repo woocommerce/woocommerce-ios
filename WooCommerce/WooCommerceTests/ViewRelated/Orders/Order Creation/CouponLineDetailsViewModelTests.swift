@@ -5,11 +5,13 @@ import WooFoundation
 @testable import struct Yosemite.OrderCouponLine
 
 final class CouponLineDetailsViewModelTests: XCTestCase {
+    private let sampleSiteID: Int64 = 120934
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
         // Given
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                    code: "",
+                                                   siteID: sampleSiteID,
                                                    didSelectSave: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
@@ -30,6 +32,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                    code: "COUPON",
+                                                   siteID: sampleSiteID,
                                                    didSelectSave: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
@@ -52,6 +55,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         var savedCouponLine: OrderCouponLine?
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                    code: "COUPON",
+                                                   siteID: sampleSiteID,
                                                    didSelectSave: { newCouponLine in
             savedCouponLine = newCouponLine
         })
@@ -68,6 +72,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                    code: "",
+                                                   siteID: sampleSiteID,
                                                    didSelectSave: { _ in })
 
         // Then

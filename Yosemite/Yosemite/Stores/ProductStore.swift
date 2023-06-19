@@ -549,7 +549,7 @@ private extension ProductStore {
             "Do not include the URL in the message.",
         ].joined(separator: "\n")
         Task {
-            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt)
+            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
             }
             await MainActor.run {

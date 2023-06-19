@@ -57,18 +57,12 @@
             "rating_count": 0,
             "upsell_ids": [],
             "cross_sell_ids": [],
-            "parent_id": 846,
+            "parent_id": 0,
             "purchase_note": "",
             "categories": [],
             "tags": [],
             "images": [],
-            "attributes": [
-                {
-                    "id": 0,
-                    "name": "Darkness",
-                    "option": "87%"
-                }
-            ],
+            "attributes": [],
             "default_attributes": [],
             "variations": [],
             "grouped_products": [],

@@ -59,5 +59,8 @@ private extension ProductDescriptionGenerationCelebrationView {
 struct ProductDescriptionGenerationCelebrationView_Previews: PreviewProvider {
     static var previews: some View {
         ProductDescriptionGenerationCelebrationView(viewModel: .init(onTappingGotIt: {}))
+
+        ProductDescriptionGenerationCelebrationView(viewModel: .init(onTappingGotIt: {}))
+            .preferredColorScheme(.dark)
     }
 }

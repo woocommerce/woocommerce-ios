@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "ai-description-celebration.pdf",
+      "filename" : "ai-description-celebration-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "ai-description-celebration-dark.pdf",
       "idiom" : "universal"
     }
   ],

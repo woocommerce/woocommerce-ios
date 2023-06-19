@@ -36,8 +36,13 @@ struct ProductDescriptionGenerationView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
                 VStack(alignment: .leading, spacing: Layout.titleAndProductNameSpacing) {
-                    Text(Localization.title)
-                        .headlineStyle()
+                    AdaptiveStack(horizontalAlignment: .leading,
+                                  spacing: Layout.titleAndProductNameSpacing) {
+                        Text(Localization.title)
+                            .headlineStyle()
+                        BadgeView(text: Localization.experimental.uppercased(),
+                                  customizations: Constants.badgeViewCustomization)
+                    }
 
                     if #available(iOS 16.0, *) {
                         TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
@@ -173,6 +178,12 @@ private extension ProductDescriptionGenerationView {
         static let productFeaturesPlaceholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
         static let suggestedTextInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     }
+    enum Constants {
+        static let badgeViewCustomization = BadgeView.Customizations(
+            textColor: .withColorStudio(name: .yellow, shade: .shade60),
+            backgroundColor: .withColorStudio(name: .yellow, shade: .shade5)
+        )
+    }
 }
 
 private extension ProductDescriptionGenerationView {
@@ -206,6 +217,10 @@ private extension ProductDescriptionGenerationView {
         static let sampleFeatures = NSLocalizedString(
             "Example: Potted, Cactus, Plant, Decorative, Easy-care",
             comment: "Label for sample product features to enter in the product description AI generator view."
+        )
+        static let experimental = NSLocalizedString(
+            "Experimental",
+            comment: "Label to indicate the experimental feature in the product description AI generator view."
         )
     }
 }

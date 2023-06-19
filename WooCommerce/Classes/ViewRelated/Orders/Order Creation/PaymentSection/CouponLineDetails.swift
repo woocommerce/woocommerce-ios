@@ -17,6 +17,10 @@ struct CouponLineDetails: View {
 
     @FocusState private var focusedField: Field?
 
+    /// Defines whether we should show a progress view instead of the done button.
+    ///
+    @State private var showValidateCouponLoading: Bool = false
+
     init(viewModel: CouponLineDetailsViewModel) {
         self.viewModel = viewModel
     }
@@ -37,6 +41,7 @@ struct CouponLineDetails: View {
                     .onTapGesture {
                         focusedField = .couponCode
                     }
+                    .disabled(showValidateCouponLoading)
 
                     Spacer(minLength: Layout.sectionSpacing)
 
@@ -67,11 +72,30 @@ struct CouponLineDetails: View {
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button(Localization.done) {
-                        viewModel.saveData()
-                        presentation.wrappedValue.dismiss()
+                    if showValidateCouponLoading {
+                        ProgressView()
+                    } else {
+                        Button(Localization.done) {
+
+
+                            //viewModel.saveData()
+                            //presentation.wrappedValue.dismiss()
+                            showValidateCouponLoading = true
+
+                            viewModel.validateAndSaveData() { result in
+                                showValidateCouponLoading = false
+
+                                switch result {
+                                case .success(()):
+                                    presentation.wrappedValue.dismiss()
+                                case let .failure(error):
+
+
+                                }
+                            }
+                        }
+                        //.disabled(viewModel.shouldDisableDoneButton)
                     }
-                    .disabled(viewModel.shouldDisableDoneButton)
                 }
             }
         }

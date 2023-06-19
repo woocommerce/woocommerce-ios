@@ -67,7 +67,7 @@ final class CouponLineDetailsViewModel: ObservableObject {
                                           feedbackType: .error)
                     onCompletion(false)
                 }
-            case let .failure(_):
+            case .failure(_):
                 self?.notice = Notice(title: Localization.couponNotValidatedNoticeTitle,
                                       feedbackType: .error)
                 onCompletion(false)

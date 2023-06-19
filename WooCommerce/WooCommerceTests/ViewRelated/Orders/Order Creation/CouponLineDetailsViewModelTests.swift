@@ -3,6 +3,7 @@ import XCTest
 import WooFoundation
 @testable import WooCommerce
 @testable import struct Yosemite.OrderCouponLine
+@testable import enum Yosemite.CouponAction
 
 final class CouponLineDetailsViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 120934
@@ -77,5 +78,99 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isExistingCouponLine)
+    }
+
+    func test_validateAndSaveData_then_calls_action_with_right_parameters() {
+        // Given
+        let passedCouponCode = "coupon-code"
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
+                                                   code: passedCouponCode,
+                                                   siteID: sampleSiteID,
+                                                   stores: stores,
+                                                   didSelectSave: { _ in })
+        var retrievedCouponCode: String?
+        var retrievedSiteID: Int64?
+
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .validateCouponCode(code, siteID, onCompletion):
+                retrievedCouponCode = code
+                retrievedSiteID = siteID
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.validateAndSaveData() { shouldDismiss in
+                promise(shouldDismiss)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(passedCouponCode, retrievedCouponCode)
+        XCTAssertEqual(sampleSiteID, retrievedSiteID)
+    }
+
+    func test_validateAndSaveData_when_coupon_is_validated_then_completes_successfully() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
+                                                   code: "",
+                                                   siteID: sampleSiteID,
+                                                   stores: stores,
+                                                   didSelectSave: { _ in })
+
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .validateCouponCode(_, _, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        let result = waitFor { promise in
+            viewModel.validateAndSaveData() { shouldDismiss in
+                promise(shouldDismiss)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_validateAndSaveData_when_coupon_is_not_validated_then_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
+                                                   code: "",
+                                                   siteID: sampleSiteID,
+                                                   stores: stores,
+                                                   didSelectSave: { _ in })
+
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .validateCouponCode(_, _, onCompletion):
+                let error = NSError(domain: "Test", code: 503, userInfo: nil)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        let result = waitFor { promise in
+            viewModel.validateAndSaveData() { shouldDismiss in
+                promise(shouldDismiss)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(result)
     }
 }

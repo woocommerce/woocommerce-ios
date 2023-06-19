@@ -3,12 +3,12 @@ import Foundation
 struct FeatureHighlightStore {
     private enum Keys {
         static let didUserDismissTooltipKey = "did-user-dismiss-tooltip-key"
-        static let followConversationTooltipCounterKey = "follow-conversation-tooltip-counter"
+        static let writeWithAITooltipCounterKey = "write-with-ai-tooltip-counter"
     }
 
-    private let userStore: UserPersistentRepository
+    private let userStore: UserDefaults
 
-    init(userStore: UserPersistentRepository = UserPersistentStoreFactory.instance()) {
+    init(userStore: UserDefaults = UserDefaults.standard) {
         self.userStore = userStore
     }
 
@@ -21,17 +21,17 @@ struct FeatureHighlightStore {
         }
     }
 
-    var followConversationTooltipCounter: Int {
+    var writeWithAITooltipCounter: Int {
         get {
-            return userStore.integer(forKey: Keys.followConversationTooltipCounterKey)
+            return userStore.integer(forKey: Keys.writeWithAITooltipCounterKey)
         }
         set {
-            userStore.set(newValue, forKey: Keys.followConversationTooltipCounterKey)
+            userStore.set(newValue, forKey: Keys.writeWithAITooltipCounterKey)
         }
     }
 
     /// Tooltip will only be shown 3 times if the user never interacts with it.
     var shouldShowTooltip: Bool {
-        followConversationTooltipCounter < 3 && !didDismissTooltip
+        writeWithAITooltipCounter < 3 && !didDismissTooltip
     }
 }

@@ -680,7 +680,8 @@ extension EditableOrderViewModel {
         let feeLineViewModel: FeeLineDetailsViewModel
         let couponLineViewModel: CouponLineDetailsViewModel
 
-        init(itemsTotal: String = "0",
+        init(siteID: Int64 = 0,
+             itemsTotal: String = "0",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
@@ -730,6 +731,7 @@ extension EditableOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
             self.couponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: shouldShowCoupon,
                                                                   code: couponCode,
+                                                                  siteID: siteID,
                                                                   didSelectSave: saveCouponLineClosure)
         }
     }
@@ -1022,7 +1024,8 @@ private extension EditableOrderViewModel {
                     }
                 }()
 
-                return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
+                return PaymentDataViewModel(siteID: siteID,
+                                            itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,

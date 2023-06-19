@@ -55,27 +55,37 @@ final class CouponLineDetailsViewModel: ObservableObject {
         didSelectSave(couponLine)
     }
 
-    func validateAndSaveData(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func validateAndSaveData(onCompletion: @escaping (Bool) -> Void) {
         let action = CouponAction.validateCouponCode(code: code, siteID: siteID) { [weak self] result in
             switch result {
             case let .success(couponExistsRemotely):
                 if couponExistsRemotely {
                     self?.saveData()
-                    onCompletion(.success(()))
+                    onCompletion(true)
                 } else {
-                    self?.notice = Notice(title: Localization.scannedProductErrorNoticeMessage,
+                    self?.notice = Notice(title: Localization.couponNotFoundNoticeTitle,
                                           feedbackType: .error)
-                    onCompletion(.failure(CouponValidationError.couponNotFound))
+                    onCompletion(false)
                 }
-            case let .failure(error):
-                self?.notice = Notice(title: Localization.scannedProductErrorNoticeMessage,
+            case let .failure(_):
+                self?.notice = Notice(title: Localization.couponNotValidatedNoticeTitle,
                                       feedbackType: .error)
-                onCompletion(.failure(error))
+                onCompletion(false)
             }
         }
 
         Task { @MainActor in
             stores.dispatch(action)
         }
+    }
+}
+
+private extension CouponLineDetailsViewModel {
+    enum Localization {
+        static let couponNotFoundNoticeTitle = NSLocalizedString("We couldn't find a coupon with that code. Please try again",
+                                                                 comment: "Title for the error notice when we couldn't find" +
+                                                                 "a coupon with the given code to add to an order.")
+        static let couponNotValidatedNoticeTitle = NSLocalizedString("Something when wrong when validating your coupon code. Please try again",
+                                                                     comment: "Notice title when validating a coupon code fails.")
     }
 }

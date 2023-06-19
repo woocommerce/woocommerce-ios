@@ -76,30 +76,22 @@ struct CouponLineDetails: View {
                         ProgressView()
                     } else {
                         Button(Localization.done) {
-
-
-                            //viewModel.saveData()
-                            //presentation.wrappedValue.dismiss()
                             showValidateCouponLoading = true
 
-                            viewModel.validateAndSaveData() { result in
+                            viewModel.validateAndSaveData() { shouldDimiss in
                                 showValidateCouponLoading = false
 
-                                switch result {
-                                case .success(()):
+                                if shouldDimiss {
                                     presentation.wrappedValue.dismiss()
-                                case let .failure(error):
-
-
                                 }
                             }
                         }
-                        //.disabled(viewModel.shouldDisableDoneButton)
                     }
                 }
             }
         }
         .wooNavigationBarStyle()
+        .notice($viewModel.notice)
     }
 }
 
@@ -127,6 +119,7 @@ struct CouponLineDetails_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: true,
                                                    code: "",
+                                                   siteID: 0,
                                                    didSelectSave: { _ in })
         CouponLineDetails(viewModel: viewModel)
     }

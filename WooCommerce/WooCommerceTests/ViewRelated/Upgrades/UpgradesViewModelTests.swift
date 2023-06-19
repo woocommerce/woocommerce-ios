@@ -20,9 +20,7 @@ final class UpgradesViewModelTests: XCTestCase {
                                     inAppPurchasesPlanManager: MockInAppPurchasesForWPComPlansManager(plans: []))
 
         // Then
-        XCTAssert(sut.wpcomPlans.isEmpty)
         XCTAssert(sut.entitledWpcomPlanIDs.isEmpty)
-        XCTAssertNil(sut.upgradePlan)
     }
 
     func test_upgrades_when_fetchPlans_is_invoked_then_fetch_mocked_wpcom_plan() async {
@@ -33,26 +31,13 @@ final class UpgradesViewModelTests: XCTestCase {
         await sut.fetchPlans()
 
         // Then
-        assertEqual("Debug Essential Monthly", sut.wpcomPlans.first?.displayName)
-        assertEqual("1 Month of Debug Essential", sut.wpcomPlans.first?.description)
-        assertEqual("debug.woocommerce.express.essential.monthly", sut.wpcomPlans.first?.id)
-        assertEqual("$99.99", sut.wpcomPlans.first?.displayPrice)
-    }
-
-    func test_upgrades_when_retrievePlanDetailsIfAvailable_retrieves_debug_wpcom_plan() async {
-        // Given (no injected plans)
-        let fakeInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager()
-        let sut = UpgradesViewModel(siteID: sampleSiteID,
-                                    inAppPurchasesPlanManager: fakeInAppPurchasesManager)
-
-        // When
-        await sut.fetchPlans()
-        XCTAssertEqual(sut.wpcomPlans.first?.displayName, "Debug Monthly", "Precondition")
-
-        let wpcomPlan = sut.retrievePlanDetailsIfAvailable(.essentialMonthly)
-
-        // Then
-        XCTAssertNil(wpcomPlan)
+        guard case .loaded(let plan) = sut.upgradeViewState else {
+            return XCTFail("expected `.loaded` state not found")
+        }
+        assertEqual("Debug Essential Monthly", plan.wpComPlan.displayName)
+        assertEqual("1 Month of Debug Essential", plan.wpComPlan.description)
+        assertEqual("debug.woocommerce.express.essential.monthly", plan.wpComPlan.id)
+        assertEqual("$99.99", plan.wpComPlan.displayPrice)
     }
 
     func test_upgrades_when_retrievePlanDetailsIfAvailable_retrieves_injected_wpcom_plan() async {
@@ -68,12 +53,14 @@ final class UpgradesViewModelTests: XCTestCase {
 
         // When
         await sut.fetchPlans()
-        let wpcomPlan = sut.retrievePlanDetailsIfAvailable(.essentialMonthly)
 
         // Then
-        assertEqual("Test awesome plan", wpcomPlan?.wpComPlan.displayName)
-        assertEqual("All the Woo, all the time", wpcomPlan?.wpComPlan.description)
-        assertEqual("debug.woocommerce.express.essential.monthly", wpcomPlan?.wpComPlan.id)
-        assertEqual("$1.50", wpcomPlan?.wpComPlan.displayPrice)
+        guard case .loaded(let plan) = sut.upgradeViewState else {
+            return XCTFail("expected `.loaded` state not found")
+        }
+        assertEqual("Test awesome plan", plan.wpComPlan.displayName)
+        assertEqual("All the Woo, all the time", plan.wpComPlan.description)
+        assertEqual("debug.woocommerce.express.essential.monthly", plan.wpComPlan.id)
+        assertEqual("$1.50", plan.wpComPlan.displayPrice)
     }
 }

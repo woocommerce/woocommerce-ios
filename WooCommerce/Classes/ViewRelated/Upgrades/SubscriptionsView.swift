@@ -103,7 +103,7 @@ private extension SubscriptionsView {
         static let manageSubscription = NSLocalizedString("Manage Your Subscription", comment: "Title for the button to manage subscriptions")
         static let troubleshooting = NSLocalizedString("Troubleshooting",
                                                        comment: "Title for the section to contact support on the subscriptions view. Uppercased")
-        static let report = NSLocalizedString("Report subscription issue", comment: "Title for the button to contact support on the Subscriptions view")
+        static let report = NSLocalizedString("Report Subscription Issue", comment: "Title for the button to contact support on the Subscriptions view")
 
         static func currentPlan(_ plan: String) -> String {
             let format = NSLocalizedString("Current: %@", comment: "Reads like: Current: Free Trial")

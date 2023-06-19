@@ -28,7 +28,7 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private(set) var shouldShowFreeTrialFeatures = false
 
-    /// Defines if the view should show the "Manage your subscription"  button.
+    /// Defines if the view should show the "Manage Your Subscription"  button.
     ///
     @Published private(set) var shouldShowManageSubscriptionButton = false
 

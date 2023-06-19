@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Yosemite
 
 /// Hosting controller for `UpgradesView`
 /// To be used to display available current plan Subscriptions, available plan Upgrades,
@@ -62,6 +63,7 @@ struct LoadedOwnerUpgradesView: View {
     @State var upgradePlan: WooWPComPlan
     @State private var isPurchasing = false
     let purchasePlanAction: () async -> Void
+    @State var isLoading: Bool = false
 
     var body: some View {
         List {
@@ -93,6 +95,7 @@ struct LoadedOwnerUpgradesView: View {
                         NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
                             WooPlanFeatureGroupRow(featureGroup: featureGroup)
                         }
+                        .disabled(isLoading)
                     }
                 } header: {
                     Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, upgradePlan.wooPlan.shortName))
@@ -106,6 +109,7 @@ struct LoadedOwnerUpgradesView: View {
                 }, label: {
                     Text(Localization.featureDetailsUnavailableText)
                 })
+                .disabled(isLoading)
             }
 
             let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
@@ -116,7 +120,10 @@ struct LoadedOwnerUpgradesView: View {
                     isPurchasing = false
                 }
             }
+            .disabled(isLoading)
         }
+        .redacted(reason: isLoading ? .placeholder : [])
+        .shimmering(active: isLoading)
     }
 }
 
@@ -129,7 +136,7 @@ struct OwnerUpgradesView: View {
                 await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
             })
         case .loading:
-            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+            LoadedOwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
         case .waiting:
             EmptyWaitingView()
         case .completed:
@@ -137,6 +144,48 @@ struct OwnerUpgradesView: View {
         default:
             EmptyView()
         }
+    }
+}
+
+private extension WooWPComPlan {
+    static func skeletonPlan() -> WooWPComPlan {
+        return WooWPComPlan(
+            wpComPlan: SkeletonWPComPlanProduct(),
+            wooPlan: WooPlan(id: "skeleton.plan.monthly",
+                             name: "Skeleton Plan Monthly",
+                             shortName: "Skeleton",
+                             planFrequency: .month,
+                             planDescription: "A skeleton plan to show (redacted) while we're loading",
+                             headerImageFileName: "express-essential-header",
+                             headerImageCardColor: .withColorStudio(name: .orange, shade: .shade5),
+                             planFeatureGroups: [
+                                WooPlanFeatureGroup(title: "Feature group 1",
+                                                    description: "A feature description with a realistic length to " +
+                                                    "ensure the cell looks correct when redacted",
+                                                    imageFilename: "",
+                                                    imageCardColor: .withColorStudio(name: .blue, shade: .shade5),
+                                                    features: []),
+                                WooPlanFeatureGroup(title: "Feature group 2",
+                                                    description: "A feature description with a realistic length to " +
+                                                    "ensure the cell looks correct when redacted",
+                                                    imageFilename: "",
+                                                    imageCardColor: .withColorStudio(name: .green, shade: .shade5),
+                                                    features: []),
+                                WooPlanFeatureGroup(title: "Feature group 3",
+                                                    description: "A feature description with a realistic length to " +
+                                                    "ensure the cell looks correct when redacted",
+                                                    imageFilename: "",
+                                                    imageCardColor: .withColorStudio(name: .pink, shade: .shade5),
+                                                    features: []),
+                             ]),
+            hardcodedPlanDataIsValid: true)
+    }
+
+    private struct SkeletonWPComPlanProduct: WPComPlanProduct {
+        let displayName: String = "Skeleton Plan Monthly"
+        let description: String = "A skeleton plan to show (redacted) while we're loading"
+        let id: String = "skeleton.wpcom.plan.product"
+        let displayPrice: String = "$39"
     }
 }
 

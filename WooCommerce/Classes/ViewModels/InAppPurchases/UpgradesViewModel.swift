@@ -50,8 +50,8 @@ final class UpgradesViewModel: ObservableObject {
         if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .userNotAllowedToUpgrade
         } else {
-            Task { [weak self] in
-                await self?.fetchPlans()
+            Task {
+                await self.fetchPlans()
             }
         }
     }

@@ -61,6 +61,9 @@ which should be translated separately and considered part of this sentence. */
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ Copy";
 
+/* Value describing the days left on a plan before expiry. Reads as '15 days left' */
+"%1$@ days left" = "%1$@ days left";
+
 /* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
 "%1$@ every %2$@" = "%1$@ every %2$@";
 
@@ -2119,8 +2122,8 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "days";
 
-/* Message describing days left on a Plan to expire.Reads as 'Days left in trial: 15' */
-"Days left in trial: %1$@" = "Days left in trial: %1$@";
+/* Label for the text describing days left on a Plan to expire.Reads as 'Days left in plan: 15 days left' */
+"Days left in plan" = "Days left in plan";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Default";
@@ -2725,9 +2728,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when user information cannot be fetched after authentication. */
 "Error fetching user information." = "Error fetching user information.";
 
-/* Error message on the product sharing message generation screen when generation fails. */
-"Error generating message. Please try again." = "Error generating message. Please try again.";
-
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "Error generating QR Code. Please try again later";
 
@@ -2770,9 +2770,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Everyone loves a deal";
-
-/* Subtitle that can be read under the Plan upgrade name */
-"Everything you need to launch an online store" = "Everything you need to launch an online store";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */
@@ -3122,6 +3119,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to contact support when Jetpack setup fails */
 "Get support" = "Get support";
 
+/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
+"Get the most out of %1$@" = "Get the most out of %1$@";
+
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "Get the most out of your store";
 
@@ -3182,8 +3182,14 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google sign up failed.";
 
+/* Dismiss button title in AI product description celebration screen. */
+"Got it" = "Got it";
+
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "Got It!";
+
+/* Title in AI product description celebration screen. */
+"Great start!" = "Great start!";
 
 /* Country option for a site address. */
 "Greece" = "Greece";
@@ -4630,6 +4636,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.";
 
+/* Text describing that only the site owner can upgrade the site's plan. */
+"Only the site owner can manage upgrades" = "Only the site owner can manage upgrades";
+
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Oops, some unexpected errors happened.";
 
@@ -5005,6 +5014,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Placing your product in the trash...";
 
+/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
+"plan ended" = "plan ended";
+
 /* Navigation title for the Upgrades screen */
 "Plans" = "Plans";
 
@@ -5096,6 +5108,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "Please install the free Jetpack plugin to access your store on this app.";
+
+/* Instructions to review the AI generated description. */
+"Please keep in mind that this product description was generated using our AI-powered tool. Please review and edit the content to ensure it aligns with your brand and messaging." = "Please keep in mind that this product description was generated using our AI-powered tool. Please review and edit the content to ensure it aligns with your brand and messaging.";
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Please log out before connecting to a different wordpress.com site";
@@ -7933,6 +7948,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Unable to update price";
 
+/* Text describing that is not possible to upgrade the site's plan. */
+"Unable to upgrade" = "Unable to upgrade";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Unable to verify In-Person Payments for this store";
 
@@ -8605,7 +8623,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "Work with us";
 
-/* Action button to generate message on the product sharing message generation screen */
+/* Product description AI row on Product form screen when the feature is available. */
 "Write it for me" = "Write it for me";
 
 /* Add a note screen - Write Note section title */
@@ -8613,6 +8631,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in the product description AI generator view. */
 "Write product description" = "Write product description";
+
+/* Action button to generate message on the product sharing message generation screen */
+"Write with AI" = "Write with AI";
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Wrong account?";
@@ -8754,7 +8775,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Your free store address" = "Your free store address";
 
 /* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now.";
+"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now.";
 
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow.";
@@ -8777,8 +8798,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Your phone will be ready to collect payments in a moment...";
 
-/* Message describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
-"Your Plan: %1$@" = "Your Plan: %1$@";
+/* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
+"Your plan" = "Your plan";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Your reader will automatically restart and reconnect after the update is complete.";
@@ -8811,7 +8832,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Your store will be created based on the options of your choice!";
 
-/* Info details for an expired free trial */
+/* Info details for an expired plan */
 "Your subscription has ended and you have limited access to all the features." = "Your subscription has ended and you have limited access to all the features.";
 
 /* Message for the alert after the support request is created. */

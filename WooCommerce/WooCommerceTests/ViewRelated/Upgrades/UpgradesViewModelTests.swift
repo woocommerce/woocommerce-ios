@@ -1,23 +1,35 @@
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 final class UpgradesViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 12345
     private var mockInAppPurchasesManager: MockInAppPurchasesForWPComPlansManager!
+    private var stores: MockStoresManager!
 
     private var sut: UpgradesViewModel!
 
     override func setUp() {
         let plans = MockInAppPurchasesForWPComPlansManager.Defaults.debugInAppPurchasesPlans
         mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: plans)
-        sut = UpgradesViewModel(siteID: sampleSiteID, inAppPurchasesPlanManager: mockInAppPurchasesManager)
+        stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case .isRemoteFeatureFlagEnabled(.hardcodedPlanUpgradeDetailsMilestone1AreAccurate, defaultValue: _, let completion):
+                completion(true)
+            default:
+                break
+            }
+        }
+        sut = UpgradesViewModel(siteID: sampleSiteID, inAppPurchasesPlanManager: mockInAppPurchasesManager, stores: stores)
     }
 
     func test_upgrades_are_initialized_with_empty_values() async {
         // Given, When
         let sut = UpgradesViewModel(siteID: sampleSiteID,
-                                    inAppPurchasesPlanManager: MockInAppPurchasesForWPComPlansManager(plans: []))
+                                    inAppPurchasesPlanManager: MockInAppPurchasesForWPComPlansManager(plans: []),
+                                    stores: stores)
 
         // Then
         XCTAssert(sut.entitledWpcomPlanIDs.isEmpty)
@@ -49,7 +61,8 @@ final class UpgradesViewModelTests: XCTestCase {
                 displayPrice: "$1.50")
         let inAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: [expectedPlan])
         let sut = UpgradesViewModel(siteID: sampleSiteID,
-                                    inAppPurchasesPlanManager: inAppPurchasesManager)
+                                    inAppPurchasesPlanManager: inAppPurchasesManager,
+                                    stores: stores)
 
         // When
         await sut.fetchPlans()

@@ -35,10 +35,10 @@ struct UpgradesView: View {
 
             Spacer()
 
-            if upgradesViewModel.isSiteOwner {
-                OwnerUpgradesView(upgradesViewModel: upgradesViewModel)
-            } else {
+            if case .userNotAllowedToUpgrade = upgradesViewModel.upgradeViewState {
                 NonOwnerUpgradesView(upgradesViewModel: upgradesViewModel)
+            } else {
+                OwnerUpgradesView(upgradesViewModel: upgradesViewModel)
             }
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
@@ -91,15 +91,12 @@ struct OwnerUpgradesView: View {
                 }
             }
 
-            if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
+            if case .loading = upgradesViewModel.upgradeViewState {
                 ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 Spacer()
             } else {
                 renderSingleUpgrade()
             }
-        }
-        .task {
-            await upgradesViewModel.fetchPlans()
         }
     }
 }

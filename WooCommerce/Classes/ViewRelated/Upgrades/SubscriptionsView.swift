@@ -100,7 +100,7 @@ private extension SubscriptionsView {
         static let subscriptionStatus = NSLocalizedString("Subscription Status", comment: "Title for the plan section on the subscriptions view. Uppercased")
         static let experienceFeatures = NSLocalizedString("Experience more of our features and services beyond the app",
                                                     comment: "Title for the features list in the Subscriptions Screen")
-        static let manageSubscription = NSLocalizedString("Manage your subscription", comment: "Title for the button to manage subscriptions")
+        static let manageSubscription = NSLocalizedString("Manage Your Subscription", comment: "Title for the button to manage subscriptions")
         static let troubleshooting = NSLocalizedString("Troubleshooting",
                                                        comment: "Title for the section to contact support on the subscriptions view. Uppercased")
         static let report = NSLocalizedString("Report subscription issue", comment: "Title for the button to contact support on the Subscriptions view")

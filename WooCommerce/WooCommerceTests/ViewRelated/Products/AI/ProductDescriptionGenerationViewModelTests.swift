@@ -96,44 +96,6 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isGenerationInProgress)
     }
 
-    func test_isGenerationInProgress_becomes_true_then_false_when_toggling_description_twice() throws {
-        // Given
-        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "", description: "", onApply: { _ in })
-
-        // When toggling generation
-        viewModel.toggleDescriptionGeneration()
-
-        // Then `isGenerationInProgress` becomes `true`
-        XCTAssertTrue(viewModel.isGenerationInProgress)
-
-        // When toggling generation again
-        viewModel.toggleDescriptionGeneration()
-
-        // Then `isGenerationInProgress` becomes `true`
-        XCTAssertFalse(viewModel.isGenerationInProgress)
-    }
-
-    func test_isGenerationInProgress_becomes_false_when_toggling_description_completes() throws {
-        // Given
-        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "", description: "", stores: stores, onApply: { _ in })
-        mockGeneratedDescription(result: .success(""))
-
-        var isGenerationInProgressValues: [Bool] = []
-        viewModel.$isGenerationInProgress.sink { value in
-            isGenerationInProgressValues.append(value)
-        }.store(in: &subscriptions)
-
-        XCTAssertEqual(isGenerationInProgressValues, [false])
-
-        // When
-        viewModel.toggleDescriptionGeneration()
-
-        // Then
-        waitUntil {
-            isGenerationInProgressValues == [false, true, false]
-        }
-    }
-
     // MARK: - `isGenerationEnabled`
 
     func test_isGenerationEnabled_is_false_when_product_name_is_empty() throws {

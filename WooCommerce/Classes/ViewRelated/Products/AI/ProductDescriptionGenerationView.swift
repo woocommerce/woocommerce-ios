@@ -173,12 +173,6 @@ private extension ProductDescriptionGenerationView {
         static let productFeaturesPlaceholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
         static let suggestedTextInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     }
-    enum Constants {
-        static let badgeViewCustomization = BadgeView.Customizations(
-            textColor: .withColorStudio(name: .yellow, shade: .shade60),
-            backgroundColor: .withColorStudio(name: .yellow, shade: .shade5)
-        )
-    }
 }
 
 private extension ProductDescriptionGenerationView {

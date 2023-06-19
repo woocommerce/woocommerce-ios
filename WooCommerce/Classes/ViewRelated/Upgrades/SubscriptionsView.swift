@@ -68,7 +68,7 @@ struct SubscriptionsView: View {
             .renderedIf(viewModel.shouldShowFreeTrialFeatures)
 
             Button(role: .destructive, action: {
-                viewModel.onCancelPlanButtonTapped?()
+                viewModel.onCancelPlanButtonTapped()
             }, label: {
                 Text(Localization.cancelUpgrade)
             })

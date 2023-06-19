@@ -64,10 +64,6 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private let featureFlagService: FeatureFlagService
 
-    /// Closure to be invoked when the Cancel button is tapped
-    ///
-    var onCancelPlanButtonTapped: (() -> ())?
-
     init(stores: StoresManager = ServiceLocator.stores,
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
@@ -85,6 +81,14 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     func loadPlan() {
         storePlanSynchronizer.reloadPlan()
+    }
+
+    /// Opens the subscriptions management URL
+    ///
+    func onCancelPlanButtonTapped() {
+        if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+            UIApplication.shared.open(url)
+        }
     }
 }
 

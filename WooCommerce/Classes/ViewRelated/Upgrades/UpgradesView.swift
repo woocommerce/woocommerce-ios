@@ -59,63 +59,62 @@ struct EmptyCompletedView: View {
 }
 
 struct LoadedOwnerUpgradesView: View {
-    @ObservedObject var upgradesViewModel: UpgradesViewModel
-
-    @State var isPurchasing = false
+    @State var upgradePlan: WooWPComPlan
+    @State private var isPurchasing = false
+    let purchasePlanAction: () async -> Void
 
     var body: some View {
         List {
-            if let availableProduct = upgradesViewModel.upgradePlan {
-                Section {
-                    Image(availableProduct.wooPlan?.headerImageFileName ?? "")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .listRowInsets(.zero)
-                        .listRowBackground(availableProduct.wooPlan?.headerImageCardColor ?? .clear)
+            Section {
+                Image(upgradePlan.wooPlan.headerImageFileName)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .listRowInsets(.zero)
+                    .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
 
-                    VStack(alignment: .leading) {
-                        Text(availableProduct.wooPlan?.shortName ?? availableProduct.wpComPlan.displayName)
-                            .font(.largeTitle)
-                        Text(availableProduct.wooPlan?.planDescription ?? "")
-                            .font(.subheadline)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text(availableProduct.wpComPlan.displayPrice)
-                            .font(.largeTitle)
-                        Text(availableProduct.wooPlan?.planFrequency.localizedString ?? "")
-                            .font(.footnote)
-                    }
+                VStack(alignment: .leading) {
+                    Text(upgradePlan.wooPlan.shortName)
+                        .font(.largeTitle)
+                    Text(upgradePlan.wooPlan.planDescription)
+                        .font(.subheadline)
                 }
-                .listRowSeparator(.hidden)
 
-                if let wooPlan = availableProduct.wooPlan,
-                    upgradesViewModel.isHardcodedPlanDataStillValid {
-                    Section {
-                        ForEach(wooPlan.planFeatureGroups, id: \.title) { featureGroup in
-                            NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
-                                WooPlanFeatureGroupRow(featureGroup: featureGroup)
-                            }
-                        }
-                    } header: {
-                        Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, wooPlan.shortName))
-                    }
-                    .headerProminence(.increased)
-                } else {
-                    NavigationLink(destination: {
-                        /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
-                        AuthenticatedWebView(isPresented: .constant(true),
-                                             url: WooConstants.URLs.fallbackWooExpressHome.asURL())
-                    }, label: {
-                        Text(Localization.featureDetailsUnavailableText)
-                    })
+                VStack(alignment: .leading) {
+                    Text(upgradePlan.wpComPlan.displayPrice)
+                        .font(.largeTitle)
+                    Text(upgradePlan.wooPlan.planFrequency.localizedString)
+                        .font(.footnote)
                 }
             }
+            .listRowSeparator(.hidden)
 
-            if case .loading = upgradesViewModel.upgradeViewState {
-                ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                Spacer()
+            if upgradePlan.hardcodedPlanDataIsValid {
+                Section {
+                    ForEach(upgradePlan.wooPlan.planFeatureGroups, id: \.title) { featureGroup in
+                        NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
+                            WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                        }
+                    }
+                } header: {
+                    Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, upgradePlan.wooPlan.shortName))
+                }
+                .headerProminence(.increased)
             } else {
-                renderSingleUpgrade()
+                NavigationLink(destination: {
+                    /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
+                    AuthenticatedWebView(isPresented: .constant(true),
+                                         url: WooConstants.URLs.fallbackWooExpressHome.asURL())
+                }, label: {
+                    Text(Localization.featureDetailsUnavailableText)
+                })
+            }
+
+            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
+            Button(buttonText) {
+                Task {
+                    isPurchasing = true
+                    await purchasePlanAction()
+                    isPurchasing = false
+                }
             }
         }
     }
@@ -125,8 +124,12 @@ struct OwnerUpgradesView: View {
     @ObservedObject var upgradesViewModel: UpgradesViewModel
     var body: some View {
         switch upgradesViewModel.upgradeViewState {
-        case .normal, .loading:
-            LoadedOwnerUpgradesView(upgradesViewModel: upgradesViewModel)
+        case .loaded(let plan):
+            LoadedOwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
+                await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+            })
+        case .loading:
+            ActivityIndicator(isAnimating: .constant(true), style: .medium)
         case .waiting:
             EmptyWaitingView()
         case .completed:
@@ -218,22 +221,6 @@ struct UpgradesView_Preview: PreviewProvider {
     static var previews: some View {
         UpgradesView(upgradesViewModel: UpgradesViewModel(siteID: 0),
                      subscriptionsViewModel: SubscriptionsViewModel())
-    }
-}
-
-private extension LoadedOwnerUpgradesView {
-    @ViewBuilder
-    func renderSingleUpgrade() -> some View {
-        if let upgradePlan = upgradesViewModel.upgradePlan {
-            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
-            Button(buttonText) {
-                Task {
-                    isPurchasing = true
-                    await upgradesViewModel.purchasePlan(with: upgradePlan.wpComPlan.id)
-                    isPurchasing = false
-                }
-            }
-        }
     }
 }
 

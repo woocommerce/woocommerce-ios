@@ -5,9 +5,10 @@ import Yosemite
 
 final class BarcodeSKUScannerItemFinderTests: XCTestCase {
     private var sut: BarcodeSKUScannerItemFinder!
-    var stores: MockStoresManager!
-    var storageManager: MockStorageManager!
-    var analyticsProvider: MockAnalyticsProvider!
+    private var stores: MockStoresManager!
+    private var storageManager: MockStorageManager!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
     var analytics: WooAnalytics!
 
     override func setUp() {

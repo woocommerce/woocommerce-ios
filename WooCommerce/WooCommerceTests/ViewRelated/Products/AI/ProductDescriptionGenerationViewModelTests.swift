@@ -20,6 +20,23 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - `isProductNameEditable`
+    func test_isProductNameEditable_returns_true_when_initial_product_name_is_empty() {
+        // Given
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "", description: "", stores: stores, onApply: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.isProductNameEditable)
+    }
+
+    func test_isProductNameEditable_returns_false_when_initial_product_name_is_not_empty() {
+        // Given
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "Test", description: "", stores: stores, onApply: { _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.isProductNameEditable)
+    }
+
     // MARK: - `suggestedText`
 
     func test_suggestedText_is_set_after_generateDescription_success() throws {

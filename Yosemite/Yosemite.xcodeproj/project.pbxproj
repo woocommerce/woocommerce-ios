@@ -341,6 +341,7 @@
 		B9AECD442851D95600E78584 /* TotalRefundedCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD432851D95600E78584 /* TotalRefundedCalculationUseCase.swift */; };
 		B9AECD462851DBED00E78584 /* Order+CurrencyFormattedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD452851DBED00E78584 /* Order+CurrencyFormattedValues.swift */; };
 		B9AECD482851F28E00E78584 /* Order+CardPresentPaymentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD472851F28E00E78584 /* Order+CardPresentPaymentTests.swift */; };
+		B9C0C1082A3C666A00DF84EA /* ProductVariationStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C0C1072A3C666A00DF84EA /* ProductVariationStorageManager.swift */; };
 		B9F146972A0E30ED0039E159 /* Product+ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F146962A0E30ED0039E159 /* Product+ProductVariation.swift */; };
 		BAB3737927964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */; };
 		CC24A4F129ED4CEB0009D6DA /* ProductSubscription+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC24A4F029ED4CEB0009D6DA /* ProductSubscription+ReadOnlyConvertible.swift */; };
@@ -800,6 +801,7 @@
 		B9AECD432851D95600E78584 /* TotalRefundedCalculationUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TotalRefundedCalculationUseCase.swift; sourceTree = "<group>"; };
 		B9AECD452851DBED00E78584 /* Order+CurrencyFormattedValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CurrencyFormattedValues.swift"; sourceTree = "<group>"; };
 		B9AECD472851F28E00E78584 /* Order+CardPresentPaymentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+CardPresentPaymentTests.swift"; sourceTree = "<group>"; };
+		B9C0C1072A3C666A00DF84EA /* ProductVariationStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationStorageManager.swift; sourceTree = "<group>"; };
 		B9F146962A0E30ED0039E159 /* Product+ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductVariation.swift"; sourceTree = "<group>"; };
 		BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1434,6 +1436,7 @@
 		B56C1EBC20EABD1C00D749F9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				B9C0C1062A3C665300DF84EA /* ProductVariations */,
 				E18FDAFC28F97E9C008519BA /* InAppPurchases */,
 				02FF054423D983C40058E6E7 /* Media */,
 				0212AC60242C689600C51F6C /* Products */,
@@ -1784,6 +1787,14 @@
 			path = Tools;
 			sourceTree = "<group>";
 		};
+		B9C0C1062A3C665300DF84EA /* ProductVariations */ = {
+			isa = PBXGroup;
+			children = (
+				B9C0C1072A3C666A00DF84EA /* ProductVariationStorageManager.swift */,
+			);
+			path = ProductVariations;
+			sourceTree = "<group>";
+		};
 		D8652E1A26303D0600350F37 /* Payments */ = {
 			isa = PBXGroup;
 			children = (
@@ -2117,6 +2128,7 @@
 				74643EE1221F567E00EDC51A /* ShipmentAction.swift in Sources */,
 				02FF054E23D983F30058E6E7 /* MediaImageExporter.swift in Sources */,
 				2685C117263C98CF00D9EE97 /* AddOnGroupStore.swift in Sources */,
+				B9C0C1082A3C666A00DF84EA /* ProductVariationStorageManager.swift in Sources */,
 				CE01014F2368C41600783459 /* Refund+ReadOnlyType.swift in Sources */,
 				24163BA8257F41C500F94EC3 /* SessionManagerProtocol.swift in Sources */,
 				D83B093925DECFD900B21F45 /* CardPresentPaymentStore.swift in Sources */,

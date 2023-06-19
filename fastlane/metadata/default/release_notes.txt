@@ -1,1 +1,1 @@
-No new bells and whistles, just incremental improvements to bring you a faster, more stable app. All that glitters is not gold — sometimes it's code!
+This release includes several bug fixes and improvements to help you get your business started and ensure a smooth experience. Stay tuned for more enhancements in the future.

@@ -1,1 +1,1 @@
-Den här uppdateringen inkluderar flertalet förbättringar som stärker kompatibiliteten med tillägg från tredje part, vilket säkerställer en smidigare upplevelse vid inläsning av beställningslistor, produktlistor och produktvariationer. Allt som glittrar är inte guld – ibland är det kod.
+Den här versionen inkluderar ett flertal buggkorrigeringar och förbättringar som hjälper dig att komma igång med din verksamhet och säkerställer en smidig upplevelse. Håll ögonen öppna efter fler förbättringar framöver.

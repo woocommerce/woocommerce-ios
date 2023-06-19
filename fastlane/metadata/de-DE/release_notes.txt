@@ -1,1 +1,1 @@
-In diesem Update haben wir mehrere Verbesserungen vorgenommen, um die Kompatibilität mit Drittanbieter-Plugins zu verbessern und so für ein reibungsloseres Erlebnis beim Laden von Bestelllisten, Produktlisten und Produktvarianten zu sorgen. Es ist nicht alles Gold, was glänzt – manchmal ist es Code!
+Diese Version enthält verschiedene Fehlerkorrekturen und Verbesserungen, damit du mit deinem Geschäft starten und von einem reibungslosen Erlebnis profitieren kannst. In Zukunft wird es weitere Verbesserungen geben – bleib dran!

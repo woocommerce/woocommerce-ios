@@ -28,9 +28,9 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private(set) var shouldShowFreeTrialFeatures = false
 
-    /// Defines if the view should show the "Cancel Free Trial"  button.
+    /// Defines if the view should show the "Manage Your Subscription"  button.
     ///
-    private(set) var shouldShowCancelTrialButton = false
+    @Published private(set) var shouldShowManageSubscriptionButton = false
 
     /// Indicates if the view should should a redacted state.
     ///
@@ -52,6 +52,10 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private let storePlanSynchronizer: StorePlanSynchronizer
 
+    /// Retrieves asynchronously all WPCom plans In-App Purchases products.
+    ///
+    private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
+
     /// Analytics provider.
     ///
     private let analytics: Analytics
@@ -60,16 +64,14 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private let featureFlagService: FeatureFlagService
 
-    /// Closure to be invoked when the Cancel button is tapped
-    ///
-    var onCancelPlanButtonTapped: (() -> ())?
-
     init(stores: StoresManager = ServiceLocator.stores,
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
+         inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.storePlanSynchronizer = storePlanSynchronizer
+        self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         observePlan()
@@ -80,10 +82,37 @@ final class SubscriptionsViewModel: ObservableObject {
     func loadPlan() {
         storePlanSynchronizer.reloadPlan()
     }
+
+    /// Opens the subscriptions management URL
+    ///
+    func onManageSubscriptionButtonTapped() {
+        let url = WooConstants.URLs.inAppPurchasesAccountSubscriptionsLink.asURL()
+        UIApplication.shared.open(url)
+    }
 }
 
 // MARK: Helpers
 private extension SubscriptionsViewModel {
+    /// Whether the In-App Purchases subscription management button should be rendered
+    ///
+    func shouldRenderManageSubscriptionsButton() {
+        Task { @MainActor in
+            do {
+                let plans = try await inAppPurchasesPlanManager.fetchPlans()
+                guard let plan = plans.first(where: { $0.id == AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue }) else {
+                    return
+                }
+                guard try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.id) else {
+                    return
+                }
+                shouldShowManageSubscriptionButton = true
+            } catch {
+                DDLogError("⛔️ Failed to retrieve WPCOM In-App Purchases plans: \(error)")
+            }
+        }
+    }
+
+
     /// Observes and reacts to plan changes
     ///
     func observePlan() {
@@ -111,6 +140,8 @@ private extension SubscriptionsViewModel {
         errorNotice = nil
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
+
+        shouldRenderManageSubscriptionsButton()
     }
 
     func updateLoadingViewProperties() {
@@ -218,6 +249,10 @@ private extension SubscriptionsViewModel {
 
 // MARK: Definitions
 private extension SubscriptionsViewModel {
+    enum AvailableInAppPurchasesWPComPlans: String {
+        case essentialMonthly = "debug.woocommerce.express.essential.monthly"
+    }
+
     enum Localization {
         static let trialEnded = NSLocalizedString("Trial ended", comment: "Plan name for an expired free trial")
         static let trialEndedInfo = NSLocalizedString("Your free trial has ended and you have limited access to all the features. " +

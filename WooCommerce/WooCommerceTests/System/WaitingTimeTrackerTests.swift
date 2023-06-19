@@ -75,6 +75,20 @@ class WaitingTimeTrackerTests: XCTestCase {
         XCTAssertEqual(testAnalytics.lastReceivedStat, .analyticsHubWaitingTimeLoaded)
     }
 
+    func test_appStartup_track_scenario_triggers_expected_analytics_stat() {
+        // Given
+        let waitingTracker = WaitingTimeTracker(trackScenario: .appStartup,
+                                                analyticsService: testAnalytics,
+                                                currentTimeInMillis: { 0 }
+        )
+
+        // When
+        waitingTracker.end()
+
+        // Then
+        XCTAssertEqual(testAnalytics.lastReceivedStat, .applicationOpenedWaitingTimeLoaded)
+    }
+
     class TestAnalytics: Analytics {
         var lastReceivedStat: WooAnalyticsStat? = nil
         var lastReceivedWaitingTime: TimeInterval? = nil

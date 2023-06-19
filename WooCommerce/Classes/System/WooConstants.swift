@@ -300,6 +300,10 @@ extension WooConstants {
         ///
         case shippingCustomsInstructionsForEUCountries = "https://www.usps.com/international/new-eu-customs-rules.htm"
 
+        /// In-App Purchases subscriptions management URL
+        ///
+        case inAppPurchasesAccountSubscriptionsLink = "https://apps.apple.com/account/subscriptions"
+
         /// URL for Woo Express, which shows plan details. Note that this includes links to start a free trial and pricing for plans, and is only
         /// intended for use as a fallback. We should remove this when we fetch plan data from an API.
         case fallbackWooExpressHome = "https://woocommerce.com/express"

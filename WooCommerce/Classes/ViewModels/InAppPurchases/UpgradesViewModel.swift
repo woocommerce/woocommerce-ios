@@ -2,6 +2,22 @@ import Foundation
 import SwiftUI
 import Yosemite
 
+enum UpgradeViewState {
+    case normal
+    case loading
+    case waiting
+    case completed
+    case userNotAllowedToUpgrade
+    case error(UpgradesError)
+}
+
+enum UpgradesError: Error {
+    case purchaseError
+    case fetchError
+    case entitlementsError
+    case inAppPurchasesNotSupported
+}
+
 /// ViewModel for the Upgrades View
 /// Drives the site's available In-App Purchases plan upgrades
 ///
@@ -9,26 +25,46 @@ final class UpgradesViewModel: ObservableObject {
 
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
-    private(set) var isSiteOwner: Bool
+    private let stores: StoresManager
 
     @Published var wpcomPlans: [WPComPlanProduct]
     @Published var entitledWpcomPlanIDs: Set<String>
     @Published var upgradePlan: WooWPComPlan? = nil
+    @Published var isHardcodedPlanDataStillValid = true
+
+    @Published var upgradeViewState: UpgradeViewState = .loading
 
     private let localPlans: [WooPlan]
 
-    init(siteID: Int64, inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
+    init(siteID: Int64,
+         inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
-        isSiteOwner = ServiceLocator.stores.sessionManager.defaultSite?.isSiteOwner ?? false
+        self.stores = stores
 
         wpcomPlans = []
         entitledWpcomPlanIDs = []
+
         if let essentialPlan = WooPlan() {
             self.localPlans = [essentialPlan]
         } else {
             self.localPlans = []
         }
+
+        if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
+            self.upgradeViewState = .userNotAllowedToUpgrade
+        } else {
+            Task {
+                await fetchViewData()
+            }
+        }
+    }
+
+    @MainActor
+    private func fetchViewData() async {
+        await fetchPlans()
+        await checkHardcodedPlanDataValidity()
     }
 
     /// Retrieves all In-App Purchases WPCom plans
@@ -47,10 +83,22 @@ final class UpgradesViewModel: ObservableObject {
             if entitledWpcomPlanIDs.isEmpty {
                 self.upgradePlan = retrievePlanDetailsIfAvailable(.essentialMonthly)
             }
+            upgradeViewState = .normal
         } catch {
-            // TODO: Handle errors
-            // https://github.com/woocommerce/woocommerce-ios/issues/9886
             DDLogError("fetchPlans \(error)")
+            upgradeViewState = .error(UpgradesError.fetchError)
+        }
+    }
+
+
+    @MainActor
+    private func checkHardcodedPlanDataValidity() async {
+        isHardcodedPlanDataStillValid = await withCheckedContinuation { continuation in
+            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
+                .hardcodedPlanUpgradeDetailsMilestone1AreAccurate,
+                defaultValue: true) { isEnabled in
+                continuation.resume(returning: isEnabled)
+            })
         }
     }
 
@@ -60,12 +108,12 @@ final class UpgradesViewModel: ObservableObject {
     @MainActor
     func purchasePlan(with planID: String) async {
         do {
-            // TODO: Deal with purchase result
-            // https://github.com/woocommerce/woocommerce-ios/issues/9886
+            upgradeViewState = .waiting
             let _ = try await inAppPurchasesPlanManager.purchasePlan(with: planID, for: self.siteID)
+            upgradeViewState = .completed
         } catch {
-            // TODO: Handle errors
             DDLogError("purchasePlan \(error)")
+            upgradeViewState = .error(UpgradesError.purchaseError)
         }
     }
 
@@ -96,9 +144,8 @@ private extension UpgradesViewModel {
                 }
             }
         } catch {
-            // TODO: Handle errors
-            // https://github.com/woocommerce/woocommerce-ios/issues/9886
             DDLogError("loadEntitlements \(error)")
+            upgradeViewState = .error(UpgradesError.entitlementsError)
         }
     }
 }

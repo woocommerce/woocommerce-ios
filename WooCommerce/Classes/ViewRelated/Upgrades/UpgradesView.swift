@@ -35,10 +35,10 @@ struct UpgradesView: View {
 
             Spacer()
 
-            if upgradesViewModel.isSiteOwner {
-                OwnerUpgradesView(upgradesViewModel: upgradesViewModel)
-            } else {
+            if case .userNotAllowedToUpgrade = upgradesViewModel.upgradeViewState {
                 NonOwnerUpgradesView(upgradesViewModel: upgradesViewModel)
+            } else {
+                OwnerUpgradesView(upgradesViewModel: upgradesViewModel)
             }
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
@@ -46,7 +46,19 @@ struct UpgradesView: View {
     }
 }
 
-struct OwnerUpgradesView: View {
+struct EmptyWaitingView: View {
+    var body: some View {
+        Text("Waiting...")
+    }
+}
+
+struct EmptyCompletedView: View {
+    var body: some View {
+        Text("Completed!")
+    }
+}
+
+struct LoadedOwnerUpgradesView: View {
     @ObservedObject var upgradesViewModel: UpgradesViewModel
 
     @State var isPurchasing = false
@@ -58,8 +70,7 @@ struct OwnerUpgradesView: View {
                     Image(availableProduct.wooPlan?.headerImageFileName ?? "")
                         .frame(maxWidth: .infinity, alignment: .center)
                         .listRowInsets(.zero)
-                    //TODO: move the background color to woo-express-essential-plan-benefits.json
-                        .listRowBackground(Color(red: 238/255, green: 226/255, blue: 211/255))
+                        .listRowBackground(availableProduct.wooPlan?.headerImageCardColor ?? .clear)
 
                     VStack(alignment: .leading) {
                         Text(availableProduct.wooPlan?.shortName ?? availableProduct.wpComPlan.displayName)
@@ -77,7 +88,8 @@ struct OwnerUpgradesView: View {
                 }
                 .listRowSeparator(.hidden)
 
-                if let wooPlan = availableProduct.wooPlan {
+                if let wooPlan = availableProduct.wooPlan,
+                    upgradesViewModel.isHardcodedPlanDataStillValid {
                     Section {
                         ForEach(wooPlan.planFeatureGroups, id: \.title) { featureGroup in
                             NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
@@ -88,18 +100,39 @@ struct OwnerUpgradesView: View {
                         Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, wooPlan.shortName))
                     }
                     .headerProminence(.increased)
+                } else {
+                    NavigationLink(destination: {
+                        /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
+                        AuthenticatedWebView(isPresented: .constant(true),
+                                             url: WooConstants.URLs.fallbackWooExpressHome.asURL())
+                    }, label: {
+                        Text(Localization.featureDetailsUnavailableText)
+                    })
                 }
             }
 
-            if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
+            if case .loading = upgradesViewModel.upgradeViewState {
                 ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 Spacer()
             } else {
                 renderSingleUpgrade()
             }
         }
-        .task {
-            await upgradesViewModel.fetchPlans()
+    }
+}
+
+struct OwnerUpgradesView: View {
+    @ObservedObject var upgradesViewModel: UpgradesViewModel
+    var body: some View {
+        switch upgradesViewModel.upgradeViewState {
+        case .normal, .loading:
+            LoadedOwnerUpgradesView(upgradesViewModel: upgradesViewModel)
+        case .waiting:
+            EmptyWaitingView()
+        case .completed:
+            EmptyCompletedView()
+        default:
+            EmptyView()
         }
     }
 }
@@ -188,7 +221,7 @@ struct UpgradesView_Preview: PreviewProvider {
     }
 }
 
-private extension OwnerUpgradesView {
+private extension LoadedOwnerUpgradesView {
     @ViewBuilder
     func renderSingleUpgrade() -> some View {
         if let upgradePlan = upgradesViewModel.upgradePlan {
@@ -204,7 +237,7 @@ private extension OwnerUpgradesView {
     }
 }
 
-private extension OwnerUpgradesView {
+private extension LoadedOwnerUpgradesView {
     struct Localization {
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")
@@ -213,6 +246,9 @@ private extension OwnerUpgradesView {
             comment: "Title for the section header for the list of feature categories on the Upgrade plan screen. " +
             "Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with " +
             "the plan name.")
+
+        static let featureDetailsUnavailableText = NSLocalizedString(
+            "See plan details", comment: "Title for a link to view Woo Express plan details on the web, as a fallback.")
     }
 }
 

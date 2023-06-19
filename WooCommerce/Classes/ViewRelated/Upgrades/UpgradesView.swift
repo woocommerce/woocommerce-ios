@@ -46,7 +46,19 @@ struct UpgradesView: View {
     }
 }
 
-struct OwnerUpgradesView: View {
+struct EmptyWaitingView: View {
+    var body: some View {
+        Text("Waiting...")
+    }
+}
+
+struct EmptyCompletedView: View {
+    var body: some View {
+        Text("Completed!")
+    }
+}
+
+struct LoadedOwnerUpgradesView: View {
     @ObservedObject var upgradesViewModel: UpgradesViewModel
 
     @State var isPurchasing = false
@@ -97,6 +109,22 @@ struct OwnerUpgradesView: View {
             } else {
                 renderSingleUpgrade()
             }
+        }
+    }
+}
+
+struct OwnerUpgradesView: View {
+    @ObservedObject var upgradesViewModel: UpgradesViewModel
+    var body: some View {
+        switch upgradesViewModel.upgradeViewState {
+        case .normal, .loading:
+            LoadedOwnerUpgradesView(upgradesViewModel: upgradesViewModel)
+        case .waiting:
+            EmptyWaitingView()
+        case .completed:
+            EmptyCompletedView()
+        default:
+            EmptyView()
         }
     }
 }
@@ -185,7 +213,7 @@ struct UpgradesView_Preview: PreviewProvider {
     }
 }
 
-private extension OwnerUpgradesView {
+private extension LoadedOwnerUpgradesView {
     @ViewBuilder
     func renderSingleUpgrade() -> some View {
         if let upgradePlan = upgradesViewModel.upgradePlan {
@@ -201,7 +229,7 @@ private extension OwnerUpgradesView {
     }
 }
 
-private extension OwnerUpgradesView {
+private extension LoadedOwnerUpgradesView {
     struct Localization {
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")

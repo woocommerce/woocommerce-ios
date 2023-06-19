@@ -30,6 +30,10 @@ extension UserDefaults {
         case storePhoneNumber
         case hasSavedPrivacyBannerSettings
         case usedProductDescriptionAI
+
+        // Tooltip
+        case didUserDismissTooltip
+        case writeWithAITooltipCounter
     }
 }
 

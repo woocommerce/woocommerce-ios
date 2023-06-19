@@ -1,11 +1,6 @@
 import Foundation
 
 struct FeatureHighlightStore {
-    private enum Keys {
-        static let didUserDismissTooltipKey = "did-user-dismiss-tooltip-key"
-        static let writeWithAITooltipCounterKey = "write-with-ai-tooltip-counter"
-    }
-
     private let userStore: UserDefaults
 
     init(userStore: UserDefaults = UserDefaults.standard) {
@@ -14,19 +9,19 @@ struct FeatureHighlightStore {
 
     var didDismissTooltip: Bool {
         get {
-            return userStore.bool(forKey: Keys.didUserDismissTooltipKey)
+            return userStore.bool(forKey: UserDefaults.Key.didUserDismissTooltip.rawValue)
         }
         set {
-            userStore.set(newValue, forKey: Keys.didUserDismissTooltipKey)
+            userStore.set(newValue, forKey: UserDefaults.Key.didUserDismissTooltip.rawValue)
         }
     }
 
     var writeWithAITooltipCounter: Int {
         get {
-            return userStore.integer(forKey: Keys.writeWithAITooltipCounterKey)
+            return userStore.integer(forKey: UserDefaults.Key.writeWithAITooltipCounter.rawValue)
         }
         set {
-            userStore.set(newValue, forKey: Keys.writeWithAITooltipCounterKey)
+            userStore.set(newValue, forKey: UserDefaults.Key.writeWithAITooltipCounter.rawValue)
         }
     }
 

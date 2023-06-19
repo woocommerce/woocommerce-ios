@@ -17,12 +17,12 @@ final class TooltipAnchor: UIControl {
 
     private lazy var titleLabel: UILabel = {
         $0.textColor = .invertedLabel
-        $0.font = WPStyleGuide.fontForTextStyle(.body)
+        $0.font = UIFont.body
         return $0
     }(UILabel())
 
     private lazy var highlightLabel: UILabel = {
-        $0.font = WPStyleGuide.fontForTextStyle(.body)
+        $0.font = UIFont.body
         $0.text = "✨"
         return $0
     }(UILabel())

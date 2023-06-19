@@ -60,6 +60,7 @@ final class UpgradesViewModel: ObservableObject {
 
     @MainActor
     private func fetchViewData() async {
+        upgradeViewState = .loading
         await fetchPlans()
     }
 
@@ -115,7 +116,14 @@ final class UpgradesViewModel: ObservableObject {
     func purchasePlan(with planID: String) async {
         do {
             upgradeViewState = .waiting
-            let _ = try await inAppPurchasesPlanManager.purchasePlan(with: planID, for: self.siteID)
+            let result = try await inAppPurchasesPlanManager.purchasePlan(with: planID,
+                                                                          for: siteID)
+            // TODO: handle `pending` here... somehow – requires research
+            // TODO: handle `.success(.unverified(_))` here... somehow
+            guard case .success(.verified(_)) = result else {
+                await fetchViewData()
+                return
+            }
             upgradeViewState = .completed
         } catch {
             DDLogError("purchasePlan \(error)")

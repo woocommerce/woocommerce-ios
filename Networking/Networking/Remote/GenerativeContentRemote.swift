@@ -13,14 +13,19 @@ public protocol GenerativeContentRemoteProtocol {
     /// - Parameters:
     ///   - siteID: WPCOM ID of the site.
     ///   - base: Prompt for the AI-generated text.
+    ///   - feature: Used by backend to track AI-generation usage and measure costs
     /// - Returns: AI-generated text based on the prompt if Jetpack AI is enabled.
-    func generateText(siteID: Int64, base: String) async throws -> String
+    func generateText(siteID: Int64,
+                      base: String,
+                      feature: GenerativeContentRemoteFeature) async throws -> String
 }
 
 /// Product: Remote Endpoints
 ///
 public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol {
-    public func generateText(siteID: Int64, base: String) async throws -> String {
+    public func generateText(siteID: Int64,
+                             base: String,
+                             feature: GenerativeContentRemoteFeature) async throws -> String {
         let path = "sites/\(siteID)/\(Path.text)"
         /// We are skipping cache entirely to avoid showing outdated/duplicated text.
         let parameters = [ParameterKey.textContent: base, ParameterKey.skipCache: "true"]

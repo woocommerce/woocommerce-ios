@@ -31,9 +31,13 @@ struct ProductLiveTextImage: View {
         case .loading:
             ProgressView()
         case .empty:
-            Image(uiImage: .productImage)
-                .font(.system(size: 40))
-                .foregroundColor(.white)
+            VStack(spacing: 15) {
+                Image(systemName: "photo")
+                    .font(.system(size: 40))
+                Text("Upload a photo of the packaging to select text for name and features")
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
+            }
         case .failure:
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 40))
@@ -66,7 +70,7 @@ struct EditableProductImageView: View {
                     Image(systemName: "pencil.circle.fill")
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 30))
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(.init(uiColor: .accent))
                 }
                              .buttonStyle(.borderless)
             }

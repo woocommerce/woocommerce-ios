@@ -9,7 +9,6 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
-    var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()

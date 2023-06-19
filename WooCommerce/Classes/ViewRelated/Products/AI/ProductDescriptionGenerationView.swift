@@ -222,7 +222,7 @@ private extension ProductDescriptionGenerationView {
         )
         static let insertGeneratedText = NSLocalizedString("Apply",
                                                            comment: "Button title to insert AI-generated product description.")
-        static let generateText = NSLocalizedString("Write it with AI",
+        static let generateText = NSLocalizedString("Write with AI",
                                                     comment: "Button title to generate product description with Jetpack AI.")
         static let regenerateText = NSLocalizedString("Regenerate",
                                                       comment: "Button title to regenerate product description with Jetpack AI.")

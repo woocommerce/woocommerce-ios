@@ -36,10 +36,21 @@ struct UpgradesView: View {
 
             Spacer()
 
-            if case .userNotAllowedToUpgrade = upgradesViewModel.upgradeViewState {
-                NonOwnerUpgradesView(upgradesViewModel: upgradesViewModel)
-            } else {
-                OwnerUpgradesView(upgradesViewModel: upgradesViewModel)
+            switch upgradesViewModel.upgradeViewState {
+            case .userNotAllowedToUpgrade:
+                NonOwnerUpgradesView()
+            case .loading:
+                OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
+            case .loaded(let plan):
+                OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
+                    await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                })
+            case .waiting:
+                EmptyWaitingView()
+            case .completed:
+                EmptyCompletedView()
+            default:
+                EmptyView()
             }
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
@@ -59,7 +70,7 @@ struct EmptyCompletedView: View {
     }
 }
 
-struct LoadedOwnerUpgradesView: View {
+struct OwnerUpgradesView: View {
     @State var upgradePlan: WooWPComPlan
     @State private var isPurchasing = false
     let purchasePlanAction: () async -> Void
@@ -127,26 +138,6 @@ struct LoadedOwnerUpgradesView: View {
     }
 }
 
-struct OwnerUpgradesView: View {
-    @ObservedObject var upgradesViewModel: UpgradesViewModel
-    var body: some View {
-        switch upgradesViewModel.upgradeViewState {
-        case .loaded(let plan):
-            LoadedOwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
-                await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
-            })
-        case .loading:
-            LoadedOwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
-        case .waiting:
-            EmptyWaitingView()
-        case .completed:
-            EmptyCompletedView()
-        default:
-            EmptyView()
-        }
-    }
-}
-
 private extension WooWPComPlan {
     static func skeletonPlan() -> WooWPComPlan {
         return WooWPComPlan(
@@ -190,8 +181,6 @@ private extension WooWPComPlan {
 }
 
 struct NonOwnerUpgradesView: View {
-    @ObservedObject var upgradesViewModel: UpgradesViewModel
-
     private var siteName: String? {
         ServiceLocator.stores.sessionManager.defaultSite?.name
     }
@@ -273,7 +262,7 @@ struct UpgradesView_Preview: PreviewProvider {
     }
 }
 
-private extension LoadedOwnerUpgradesView {
+private extension OwnerUpgradesView {
     struct Localization {
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")

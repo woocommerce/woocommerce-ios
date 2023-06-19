@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0331A7512A39DECC001D2C2C /* Color+RGBStringDecoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7502A39DECC001D2C2C /* Color+RGBStringDecoding.swift */; };
 		0331A7532A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7522A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift */; };
+		0331A75B2A3B553A001D2C2C /* Color+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A75A2A3B553A001D2C2C /* Color+ColorStudio.swift */; };
 		03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9328F85686005E4A98 /* UTMParameters.swift */; };
 		03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */; };
 		03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */; };
@@ -61,6 +62,7 @@
 /* Begin PBXFileReference section */
 		0331A7502A39DECC001D2C2C /* Color+RGBStringDecoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGBStringDecoding.swift"; sourceTree = "<group>"; };
 		0331A7522A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGBStringDecoding-Tests.swift"; sourceTree = "<group>"; };
+		0331A75A2A3B553A001D2C2C /* Color+ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorStudio.swift"; sourceTree = "<group>"; };
 		03597A9328F85686005E4A98 /* UTMParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTMParameters.swift; sourceTree = "<group>"; };
 		03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUTMParameterProvider.swift; sourceTree = "<group>"; };
 		03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceComUTMProvider.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */,
+				0331A75A2A3B553A001D2C2C /* Color+ColorStudio.swift */,
 				26AF1F5028B8362800937BA9 /* ColorStudio.swift */,
 				26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */,
 				26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */,
@@ -510,6 +513,7 @@
 				03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */,
 				26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */,
 				689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */,
+				0331A75B2A3B553A001D2C2C /* Color+ColorStudio.swift in Sources */,
 				B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */,
 				03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */,
 				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,

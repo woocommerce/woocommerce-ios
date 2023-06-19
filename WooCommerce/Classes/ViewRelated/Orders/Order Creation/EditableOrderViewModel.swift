@@ -177,39 +177,6 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private var allProductVariations: Set<ProductVariation> = []
 
-    /// View model for the product list
-    ///
-    lazy var productSelectorViewModel: ProductSelectorViewModel = {
-        ProductSelectorViewModel(
-            siteID: siteID,
-            selectedItemIDs: selectedProductsAndVariationsIDs,
-            purchasableItemsOnly: true,
-            storageManager: storageManager,
-            stores: stores,
-            toggleAllVariationsOnSelection: false,
-            topProductsProvider: TopProductsFromCachedOrdersProvider(),
-            onProductSelectionStateChanged: { [weak self] product in
-                guard let self = self else { return }
-                self.changeSelectionStateForProduct(product)
-            },
-            onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
-                guard let self = self else { return }
-                self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
-            }, onMultipleSelectionCompleted: { [weak self] _ in
-                guard let self = self else { return }
-                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
-            }, onAllSelectionsCleared: { [weak self] in
-                guard let self = self else { return }
-                self.clearAllSelectedItems()
-                self.trackClearAllSelectedItemsTapped()
-            }, onSelectedVariationsCleared: { [weak self] in
-                guard let self = self else { return }
-                self.clearSelectedVariations()
-            }, onCloseButtonTapped: { [weak self] in
-                guard let self = self else { return }
-                self.syncOrderItemSelectionStateOnDismiss()
-            })
-    }()
 
     /// View models for each product row in the order.
     ///
@@ -408,6 +375,40 @@ final class EditableOrderViewModel: ObservableObject {
         selectedProductVariations.removeAll()
     }
 
+    /// View model for the product list, initialized with the selected order items
+    ///
+    func createProductSelectorViewModelWithOrderItemsSelected() -> ProductSelectorViewModel {
+        ProductSelectorViewModel(
+            siteID: siteID,
+            selectedItemIDs: selectedProductsAndVariationsIDs,
+            purchasableItemsOnly: true,
+            storageManager: storageManager,
+            stores: stores,
+            toggleAllVariationsOnSelection: false,
+            topProductsProvider: TopProductsFromCachedOrdersProvider(),
+            onProductSelectionStateChanged: { [weak self] product in
+                guard let self = self else { return }
+                self.changeSelectionStateForProduct(product)
+            },
+            onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
+                guard let self = self else { return }
+                self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
+            }, onMultipleSelectionCompleted: { [weak self] _ in
+                guard let self = self else { return }
+                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+            }, onAllSelectionsCleared: { [weak self] in
+                guard let self = self else { return }
+                self.clearAllSelectedItems()
+                self.trackClearAllSelectedItemsTapped()
+            }, onSelectedVariationsCleared: { [weak self] in
+                guard let self = self else { return }
+                self.clearSelectedVariations()
+            }, onCloseButtonTapped: { [weak self] in
+                guard let self = self else { return }
+                self.syncOrderItemSelectionStateOnDismiss()
+            })
+    }
+
     /// Synchronizes the item selection state by clearing all items, then retrieving the latest saved state
     ///
     func syncOrderItemSelectionStateOnDismiss() {
@@ -430,10 +431,8 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setProduct.send(input)
 
         if item.variationID != 0 {
-            productSelectorViewModel.toggleSelection(id: item.variationID)
             selectedProductVariations.removeAll(where: { $0.productVariationID == item.variationID })
         } else if item.productID != 0 {
-            productSelectorViewModel.toggleSelection(id: item.productID)
             selectedProducts.removeAll(where: { $0.productID == item.productID })
         }
 
@@ -962,8 +961,6 @@ private extension EditableOrderViewModel {
     func updateOrderWithProduct(_ product: Product) {
         guard currentOrderItems.contains(where: { $0.productOrVariationID == product.productID }) else {
             // If it's not part of the current order, send the correct productType to the synchronizer
-            productSelectorViewModel.toggleSelection(id: product.productID)
-
             if let productVariation = product.toProductVariation() {
                 allProductVariations.insert(productVariation)
 

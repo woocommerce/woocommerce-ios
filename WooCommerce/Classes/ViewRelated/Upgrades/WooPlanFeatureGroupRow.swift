@@ -25,11 +25,6 @@ struct WooPlanFeatureGroupRow: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-
-            Spacer()
-
-            Image(systemName: "chevron.right")
-                .foregroundColor(.secondary)
         }
         .padding(.vertical, 8)
     }

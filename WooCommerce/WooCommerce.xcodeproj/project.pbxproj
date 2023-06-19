@@ -554,6 +554,7 @@
 		0331A7002A334982001D2C2C /* MockInAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02863F6E2925FC29006A06AA /* MockInAppPurchasesForWPComPlansManager.swift */; };
 		0331A7022A37584B001D2C2C /* woo-express-essential-plan-benefits.json in Resources */ = {isa = PBXBuildFile; fileRef = 0331A7012A37584A001D2C2C /* woo-express-essential-plan-benefits.json */; };
 		0331A7552A3A1A4C001D2C2C /* WooPlanFeatureGroupRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7542A3A1A4C001D2C2C /* WooPlanFeatureGroupRow.swift */; };
+		0331A7592A3A3D52001D2C2C /* WooPlanFeatureBenefitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7582A3A3D52001D2C2C /* WooPlanFeatureBenefitsView.swift */; };
 		03582BE2299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03582BE1299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift */; };
 		035BA3A8291000E90056F0AD /* JustInTimeMessageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BA3A7291000E90056F0AD /* JustInTimeMessageViewModelTests.swift */; };
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
@@ -1836,6 +1837,8 @@
 		CE8CCD44239AC06E009DBD22 /* RefundDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CCD42239AC06E009DBD22 /* RefundDetailsViewController.xib */; };
 		CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */; };
 		CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */; };
+		CEC8188C2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */; };
+		CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */; };
 		CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758523D21AC200486676 /* AggregateOrderItem.swift */; };
 		CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */; };
 		CECC759523D6057E00486676 /* OrderItem+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC759423D6057E00486676 /* OrderItem+Woo.swift */; };
@@ -2883,6 +2886,7 @@
 		032E481C2982996E00469D92 /* CardPresentModalBuiltInConnectingFailedNonRetryable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingFailedNonRetryable.swift; sourceTree = "<group>"; };
 		0331A7012A37584A001D2C2C /* woo-express-essential-plan-benefits.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "woo-express-essential-plan-benefits.json"; sourceTree = "<group>"; };
 		0331A7542A3A1A4C001D2C2C /* WooPlanFeatureGroupRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanFeatureGroupRow.swift; sourceTree = "<group>"; };
+		0331A7582A3A3D52001D2C2C /* WooPlanFeatureBenefitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanFeatureBenefitsView.swift; sourceTree = "<group>"; };
 		03582BE1299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectOrderPaymentAnalytics.swift; sourceTree = "<group>"; };
 		035BA3A7291000E90056F0AD /* JustInTimeMessageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageViewModelTests.swift; sourceTree = "<group>"; };
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
@@ -4171,6 +4175,8 @@
 		CE8CCD42239AC06E009DBD22 /* RefundDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundDetailsViewController.xib; sourceTree = "<group>"; };
 		CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRulesViewModelTests.swift; sourceTree = "<group>"; };
 		CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalytics.swift; sourceTree = "<group>"; };
+		CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTracker.swift; sourceTree = "<group>"; };
+		CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
 		CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WooCommerce-Bridging-Header.h"; sourceTree = "<group>"; };
 		CECC758523D21AC200486676 /* AggregateOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregateOrderItem.swift; sourceTree = "<group>"; };
 		CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsCellViewModel.swift; sourceTree = "<group>"; };
@@ -6255,6 +6261,7 @@
 				267C01CE29E89E1700FCC97B /* StorePlanSynchronizer.swift */,
 				DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */,
 				68709D3C2A2ED94900A7FA6C /* UpgradesView.swift */,
+				0331A7582A3A3D52001D2C2C /* WooPlanFeatureBenefitsView.swift */,
 				0331A7542A3A1A4C001D2C2C /* WooPlanFeatureGroupRow.swift */,
 			);
 			name = Upgrades;
@@ -7557,6 +7564,7 @@
 				0247F511286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift */,
 				02AC30CE2888EC8100146A25 /* WooAnalyticsEvent+LoginOnboarding.swift */,
 				53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */,
+				CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */,
 				0263E3BA290BB21800E5F88F /* WooAnalyticsEvent+StoreCreation.swift */,
 				EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */,
 				0206E295299CD2C900C061C1 /* WooAnalyticsEvent+DomainSettings.swift */,
@@ -7943,6 +7951,7 @@
 				746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */,
 				26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */,
 				B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */,
+				CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -11709,6 +11718,7 @@
 				DEC6C51A2747758D006832D3 /* JCPJetpackInstallView.swift in Sources */,
 				DE37517C28DC5FC6000163CB /* Authenticator.swift in Sources */,
 				AED089F227C794BC0020AE10 /* View+CurrencySymbol.swift in Sources */,
+				CEC8188C2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift in Sources */,
 				03BB9EA7292E50B600251E9E /* CardPresentModalSelectSearchType.swift in Sources */,
 				DE4D23A629B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift in Sources */,
 				D85806292642BA5400A8AB6C /* LegacyPaymentCaptureOrchestrator.swift in Sources */,
@@ -11767,6 +11777,7 @@
 				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,
 				025B174A237AA49D00C780B4 /* Product+ProductForm.swift in Sources */,
 				DEC0293729C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift in Sources */,
+				0331A7592A3A3D52001D2C2C /* WooPlanFeatureBenefitsView.swift in Sources */,
 				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,
 				45912FE32526642200982948 /* ProductFormViewController+Helpers.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
@@ -12611,6 +12622,7 @@
 				D802548C26552F41001B2CC1 /* CardPresentModalProcessingTests.swift in Sources */,
 				02952B5127808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift in Sources */,
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
+				CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */,
 				02C2756D24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift in Sources */,
 				025678052575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift in Sources */,
 				0211252E25773FB00075AD2A /* MockAggregateOrderItem.swift in Sources */,

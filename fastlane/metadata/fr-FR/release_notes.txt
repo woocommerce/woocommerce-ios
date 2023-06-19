@@ -1,1 +1,1 @@
-Plusieurs améliorations ont été apportées dans cette mise à jour pour optimiser la compatibilité avec les extensions tierces, afin de garantir une expérience plus fluide lors du chargement des listes de commandes, des listes de produits et des variantes de produits. Il n’y a pas que l’or qui brille : le code aussi !
+Dans cette version, nous avons résolu plusieurs bugs et apporté des améliorations pour vous aider à lancer votre activité et vous garantir une expérience fluide. Revenez ici régulièrement pour vous tenir informé des autres améliorations à l’avenir.

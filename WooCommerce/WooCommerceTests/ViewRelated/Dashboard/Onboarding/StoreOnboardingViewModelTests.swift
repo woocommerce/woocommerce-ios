@@ -919,6 +919,66 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(eventProperties["hide"] as? Bool))
         XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
     }
+
+    func test_reloadTasks_notifies_waitingTimeTracker_when_completedAllStoreOnboardingTasks_is_true() async {
+        // Given
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        let tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
+        XCTAssert(tracker.startupActionsPending.contains(.loadOnboardingTasks))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults,
+                                           waitingTimeTracker: tracker)
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(tracker.startupActionsPending.contains(.loadOnboardingTasks))
+    }
+
+    func test_reloadTasks_ends_waitingTimeTracker_when_fetching_tasks_fails() async {
+        // Given
+        mockLoadOnboardingTasks(result: .failure(MockError()))
+        let tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
+        XCTAssert(tracker.startupActionsPending.contains(.loadOnboardingTasks))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults,
+                                           waitingTimeTracker: tracker)
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssert(tracker.startupActionsPending.isEmpty)
+    }
+
+    func test_reloadTasks_notifies_waitingTimeTracker_when_fetching_tasks_succeeds() async {
+        // Given
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: true, type: .addFirstProduct),
+            .init(isComplete: true, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: true, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        let tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
+        XCTAssert(tracker.startupActionsPending.contains(.loadOnboardingTasks))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults,
+                                           waitingTimeTracker: tracker)
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(tracker.startupActionsPending.contains(.loadOnboardingTasks))
+    }
 }
 
 private extension StoreOnboardingViewModelTests {

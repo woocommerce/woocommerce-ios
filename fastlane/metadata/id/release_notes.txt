@@ -1,1 +1,1 @@
-Dalam pembaruan kali ini, kami memperbaiki beberapa hal guna mengoptimalkan kompatibilitas dengan plugin-plugin pihak ketiga agar proses memuat daftar pesanan, daftar produk, dan variasi produk jadi lebih lancar. Tak selalu fulus yang bisa membuat segalanya mulus–terkadang perlu kode!
+Rilis ini mencakup sejumlah perbaikan bug dan penyempurnaan untuk membantu memulai bisnis dan memastikan pengalaman yang lancar untuk Anda. Nantikan penyempurnaan lainnya di masa mendatang.

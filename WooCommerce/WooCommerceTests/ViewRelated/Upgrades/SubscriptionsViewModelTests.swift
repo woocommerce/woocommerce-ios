@@ -36,7 +36,7 @@ final class SubscriptionsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.planName, NSLocalizedString("Free Trial", comment: ""))
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertFalse(viewModel.shouldShowCancelUpgradeButton)
+        XCTAssertFalse(viewModel.shouldShowManageSubscriptionButton)
         XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
@@ -69,7 +69,7 @@ final class SubscriptionsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.planName, NSLocalizedString("Trial ended", comment: ""))
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertFalse(viewModel.shouldShowCancelUpgradeButton)
+        XCTAssertFalse(viewModel.shouldShowManageSubscriptionButton)
         XCTAssertTrue(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
@@ -102,7 +102,7 @@ final class SubscriptionsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.planName, NSLocalizedString("eCommerce", comment: ""))
         XCTAssertTrue(viewModel.planInfo.isNotEmpty)
-        XCTAssertFalse(viewModel.shouldShowCancelUpgradeButton)
+        XCTAssertFalse(viewModel.shouldShowManageSubscriptionButton)
         XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }
@@ -159,7 +159,7 @@ final class SubscriptionsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.planName.isEmpty)
         XCTAssertTrue(viewModel.planInfo.isEmpty)
-        XCTAssertFalse(viewModel.shouldShowCancelUpgradeButton)
+        XCTAssertFalse(viewModel.shouldShowManageSubscriptionButton)
         XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNotNil(viewModel.errorNotice)
     }
@@ -187,7 +187,7 @@ final class SubscriptionsViewModelTests: XCTestCase {
         // Then
         assertEqual("plan ended", viewModel.planName)
         assertEqual("Your subscription has ended and you have limited access to all the features.", viewModel.planInfo)
-        XCTAssertFalse(viewModel.shouldShowCancelUpgradeButton)
+        XCTAssertFalse(viewModel.shouldShowManageSubscriptionButton)
         XCTAssertFalse(viewModel.shouldShowFreeTrialFeatures)
         XCTAssertNil(viewModel.errorNotice)
     }

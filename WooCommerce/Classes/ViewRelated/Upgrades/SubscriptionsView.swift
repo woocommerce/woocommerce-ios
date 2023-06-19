@@ -68,11 +68,11 @@ struct SubscriptionsView: View {
             .renderedIf(viewModel.shouldShowFreeTrialFeatures)
 
             Button(role: .destructive, action: {
-                viewModel.onCancelPlanButtonTapped()
+                viewModel.onManageSubscriptionButtonTapped()
             }, label: {
-                Text(Localization.cancelUpgrade)
+                Text(Localization.manageSubscription)
             })
-            .renderedIf(viewModel.shouldShowCancelUpgradeButton)
+            .renderedIf(viewModel.shouldShowManageSubscriptionButton)
 
             Section(Localization.troubleshooting) {
                 Button(Localization.report) {
@@ -100,7 +100,7 @@ private extension SubscriptionsView {
         static let subscriptionStatus = NSLocalizedString("Subscription Status", comment: "Title for the plan section on the subscriptions view. Uppercased")
         static let experienceFeatures = NSLocalizedString("Experience more of our features and services beyond the app",
                                                     comment: "Title for the features list in the Subscriptions Screen")
-        static let cancelUpgrade = NSLocalizedString("Cancel Upgrade", comment: "Title for the button to cancel an Upgrade")
+        static let manageSubscription = NSLocalizedString("Manage your Subscription", comment: "Title for the button to manage Subscriptions")
         static let troubleshooting = NSLocalizedString("Troubleshooting",
                                                        comment: "Title for the section to contact support on the subscriptions view. Uppercased")
         static let report = NSLocalizedString("Report Subscription Issue", comment: "Title for the button to contact support on the Subscriptions view")

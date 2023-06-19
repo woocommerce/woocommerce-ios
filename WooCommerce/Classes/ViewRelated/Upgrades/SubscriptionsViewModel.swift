@@ -28,9 +28,9 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     private(set) var shouldShowFreeTrialFeatures = false
 
-    /// Defines if the view should show the "Cancel Upgrade"  button.
+    /// Defines if the view should show the "Manage your subscription"  button.
     ///
-    @Published private(set) var shouldShowCancelUpgradeButton = false
+    @Published private(set) var shouldShowManageSubscriptionButton = false
 
     /// Indicates if the view should should a redacted state.
     ///
@@ -85,7 +85,7 @@ final class SubscriptionsViewModel: ObservableObject {
 
     /// Opens the subscriptions management URL
     ///
-    func onCancelPlanButtonTapped() {
+    func onManageSubscriptionButtonTapped() {
         if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
             UIApplication.shared.open(url)
         }
@@ -96,7 +96,7 @@ final class SubscriptionsViewModel: ObservableObject {
 private extension SubscriptionsViewModel {
     ///
     ///
-    func shouldRenderCancelButton() {
+    func shouldRenderManageSubscriptionButton() {
         Task { @MainActor in
             do {
                 let plans = try await inAppPurchasesPlanManager.fetchPlans()
@@ -106,7 +106,7 @@ private extension SubscriptionsViewModel {
                 guard try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.id) else {
                     return
                 }
-                shouldShowCancelUpgradeButton = true
+                shouldShowManageSubscriptionButton = true
             } catch {
             }
         }
@@ -141,7 +141,7 @@ private extension SubscriptionsViewModel {
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
 
-        shouldRenderCancelButton()
+        shouldRenderManageSubscriptionButton()
     }
 
     func updateLoadingViewProperties() {

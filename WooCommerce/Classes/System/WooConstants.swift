@@ -300,6 +300,10 @@ extension WooConstants {
         ///
         case shippingCustomsInstructionsForEUCountries = "https://www.usps.com/international/new-eu-customs-rules.htm"
 
+        /// In-App Purchases subscriptions management URL
+        ///
+        case inAppPurchasesAccountSubscriptionsLink = "https://apps.apple.com/account/subscriptions"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

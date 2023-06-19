@@ -1,5 +1,11 @@
 import Foundation
 
+/// Used by backend to track AI-generation usage and measure costs
+public enum GenerativeContentRemoteFeature: String {
+    case productDescription = "woo_ios_product_description"
+    case productSharing = "woo_ios_share_product"
+}
+
 /// Protocol for `GenerativeContentRemote` mainly used for mocking.
 ///
 public protocol GenerativeContentRemoteProtocol {

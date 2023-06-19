@@ -113,10 +113,11 @@ public struct CalloutStyle: ViewModifier {
 }
 
 public struct CaptionStyle: ViewModifier {
+    let foregroundColor: Color
     public func body(content: Content) -> some View {
         content
             .font(.caption)
-            .foregroundColor(Color(.text))
+            .foregroundColor(foregroundColor)
     }
 }
 
@@ -222,7 +223,7 @@ public extension View {
         self.modifier(CalloutStyle())
     }
 
-    func captionStyle() -> some View {
-        self.modifier(CaptionStyle())
+    func captionStyle(foregroundColor: Color = .init(uiColor: .text)) -> some View {
+        self.modifier(CaptionStyle(foregroundColor: foregroundColor))
     }
 }

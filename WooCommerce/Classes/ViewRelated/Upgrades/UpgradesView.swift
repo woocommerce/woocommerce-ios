@@ -77,64 +77,71 @@ struct OwnerUpgradesView: View {
     @State var isLoading: Bool = false
 
     var body: some View {
-        List {
-            Section {
-                Image(upgradePlan.wooPlan.headerImageFileName)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .listRowInsets(.zero)
-                    .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
-
-                VStack(alignment: .leading) {
-                    Text(upgradePlan.wooPlan.shortName)
-                        .font(.largeTitle)
-                    Text(upgradePlan.wooPlan.planDescription)
-                        .font(.subheadline)
-                }
-
-                VStack(alignment: .leading) {
-                    Text(upgradePlan.wpComPlan.displayPrice)
-                        .font(.largeTitle)
-                    Text(upgradePlan.wooPlan.planFrequency.localizedString)
-                        .font(.footnote)
-                }
-            }
-            .listRowSeparator(.hidden)
-
-            if upgradePlan.hardcodedPlanDataIsValid {
+        VStack {
+            List {
                 Section {
-                    ForEach(upgradePlan.wooPlan.planFeatureGroups, id: \.title) { featureGroup in
-                        NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
-                            WooPlanFeatureGroupRow(featureGroup: featureGroup)
-                        }
-                        .disabled(isLoading)
-                    }
-                } header: {
-                    Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, upgradePlan.wooPlan.shortName))
-                }
-                .headerProminence(.increased)
-            } else {
-                NavigationLink(destination: {
-                    /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
-                    AuthenticatedWebView(isPresented: .constant(true),
-                                         url: WooConstants.URLs.fallbackWooExpressHome.asURL())
-                }, label: {
-                    Text(Localization.featureDetailsUnavailableText)
-                })
-                .disabled(isLoading)
-            }
+                    Image(upgradePlan.wooPlan.headerImageFileName)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .listRowInsets(.zero)
+                        .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
 
-            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
-            Button(buttonText) {
-                Task {
-                    isPurchasing = true
-                    await purchasePlanAction()
-                    isPurchasing = false
+                    VStack(alignment: .leading) {
+                        Text(upgradePlan.wooPlan.shortName)
+                            .font(.largeTitle)
+                        Text(upgradePlan.wooPlan.planDescription)
+                            .font(.subheadline)
+                    }
+
+                    VStack(alignment: .leading) {
+                        Text(upgradePlan.wpComPlan.displayPrice)
+                            .font(.largeTitle)
+                        Text(upgradePlan.wooPlan.planFrequency.localizedString)
+                            .font(.footnote)
+                    }
+                }
+                .listRowSeparator(.hidden)
+
+                if upgradePlan.hardcodedPlanDataIsValid {
+                    Section {
+                        ForEach(upgradePlan.wooPlan.planFeatureGroups, id: \.title) { featureGroup in
+                            NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
+                                WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                            }
+                            .disabled(isLoading)
+                        }
+                    } header: {
+                        Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, upgradePlan.wooPlan.shortName))
+                    }
+                    .headerProminence(.increased)
+                } else {
+                    NavigationLink(destination: {
+                        /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
+                        AuthenticatedWebView(isPresented: .constant(true),
+                                             url: WooConstants.URLs.fallbackWooExpressHome.asURL())
+                    }, label: {
+                        Text(Localization.featureDetailsUnavailableText)
+                    })
+                    .disabled(isLoading)
                 }
             }
-            .disabled(isLoading)
+            .redacted(reason: isLoading ? .placeholder : [])
+            .shimmering(active: isLoading)
+            VStack {
+                let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
+                Button(buttonText) {
+                    Task {
+                        isPurchasing = true
+                        await purchasePlanAction()
+                        isPurchasing = false
+                    }
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
+                .disabled(isLoading)
+                .redacted(reason: isLoading ? .placeholder : [])
+                .shimmering(active: isLoading)
+            }
+            .padding()
         }
-        .redacted(reason: isLoading ? .placeholder : [])
-        .shimmering(active: isLoading)
     }
 }
 

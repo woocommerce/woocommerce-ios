@@ -1953,6 +1953,33 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains(expectedDescription))
     }
 
+    func test_generateProductSharingMessage_uses_correct_feature() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductSharingMessage(
+                siteID: self.sampleSiteID,
+                url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description"
+            ) { result in
+                promise(())
+            })
+        }
+
+        // Then
+        let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
+        XCTAssertEqual(feature, GenerativeContentRemoteFeature.productSharing)
+    }
+
     // MARK: - ProductAction.retrieveFirstProductMatchFromSKU
 
     func test_retrieveFirstProductMatchFromSKU_retrieves_product_when_successful_exact_SKU_match_then_returns_matched_product() throws {

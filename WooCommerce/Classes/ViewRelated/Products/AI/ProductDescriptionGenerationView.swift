@@ -28,9 +28,6 @@ struct ProductDescriptionGenerationView: View {
     @State private var copyTextNotice: Notice?
     @FocusState private var isFeaturesFieldInFocus: Bool
 
-    @State private var isShowingLegalPage = false
-    private let legalURL = URL(string: "https://automattic.com/ai-guidelines/")
-
     init(viewModel: ProductDescriptionGenerationViewModel) {
         self.viewModel = viewModel
     }
@@ -39,12 +36,8 @@ struct ProductDescriptionGenerationView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
                 VStack(alignment: .leading, spacing: Layout.titleAndProductNameSpacing) {
-                    AdaptiveStack(horizontalAlignment: .leading) {
-                        Text(Localization.title)
-                            .headlineStyle()
-                        BadgeView(text: Localization.experimental.uppercased(),
-                                  customizations: Constants.badgeViewCustomization)
-                    }
+                    Text(Localization.title)
+                        .headlineStyle()
 
                     if #available(iOS 16.0, *) {
                         TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
@@ -92,15 +85,6 @@ struct ProductDescriptionGenerationView: View {
                             .textSelection(.enabled)
                             .redacted(reason: viewModel.isGenerationInProgress ? .placeholder : [])
                             .shimmering(active: viewModel.isGenerationInProgress)
-
-                        // Learn more link. The link has to be inline for the markdown text to work.
-                        Text("\(Localization.poweredBy) [\(Localization.learnMore)](https://automattic.com/ai-guidelines/)")
-                            .captionStyle(foregroundColor: .secondary)
-                            .environment(\.openURL, OpenURLAction { url in
-                                isShowingLegalPage = true
-                                return .handled
-                              })
-                            .renderedIf(viewModel.isGenerationInProgress == false)
 
                         HStack {
                             Spacer()
@@ -173,7 +157,6 @@ struct ProductDescriptionGenerationView: View {
             }.padding(insets: Layout.insets)
         }
         .notice($copyTextNotice, autoDismiss: true)
-        .safariSheet(isPresented: $isShowingLegalPage, url: legalURL)
     }
 }
 
@@ -229,18 +212,6 @@ private extension ProductDescriptionGenerationView {
         static let sampleFeatures = NSLocalizedString(
             "Example: Potted, Cactus, Plant, Decorative, Easy-care",
             comment: "Label for sample product features to enter in the product description AI generator view."
-        )
-        static let experimental = NSLocalizedString(
-            "Experimental",
-            comment: "Label to indicate the experimental feature in the product description AI generator view."
-        )
-        static let poweredBy = NSLocalizedString(
-            "Powered by experimental AI.",
-            comment: "Label to mention the AI feature on the product description AI generator view."
-        )
-        static let learnMore = NSLocalizedString(
-            "Learn more",
-            comment: "Label to link to the legal page for AI features on the product description AI generator view."
         )
     }
 }

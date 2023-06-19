@@ -24,7 +24,7 @@ struct LiveTextInteractionView: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIViewType, context: Context) {
         Task {
-            let configuration = ImageAnalyzer.Configuration([.text])
+            let configuration = ImageAnalyzer.Configuration([.text, .machineReadableCode])
             do {
                 if let image = imageView.image {
                     let analysis = try await analyzer.analyze(image, configuration: configuration)

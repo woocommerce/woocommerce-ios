@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-13 09:54:29+0000 */
+/* Translation-Revision-Date: 2023-06-19 02:10:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -2076,9 +2076,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "날짜: 오래된 순";
 
-/* Message describing days left on a Plan to expire.Reads as 'Days left in trial: 15' */
-"Days left in trial: %1$@" = "남은 평가판 일수: %1$@";
-
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "기본";
 
@@ -2679,9 +2676,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "QR 코드 생성 오류입니다. 나중에 다시 시도하세요.";
 
-/* Error message on the product sharing message generation screen when generation fails. */
-"Error generating message. Please try again." = "메시지를 생성하는 동안 오류가 발생했습니다. 다시 시도하세요.";
-
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps에서 주소를 찾는 중 오류 발생";
 
@@ -2718,9 +2712,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "누구나 좋아하는 딜";
-
-/* Subtitle that can be read under the Plan upgrade name */
-"Everything you need to launch an online store" = "온라인 스토어를 시작하는 데 필요한 모든 것";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "%1$d개 카테고리 제외";
@@ -3128,6 +3119,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "알겠습니다!";
+
+/* Dismiss button title in AI product description celebration screen. */
+"Got it" = "알겠습니다";
 
 /* Country option for a site address. */
 "Greece" = "그리스";
@@ -8440,7 +8434,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "채용 공고";
 
-/* Action button to generate message on the product sharing message generation screen */
+/* Product description AI row on Product form screen when the feature is available. */
 "Write it for me" = "작성";
 
 /* Title in the product description AI generator view. */
@@ -8567,9 +8561,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "계정을 종료할 권한이 없습니다.";
 
-/* Message describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
-"Your Plan: %1$@" = "회원님의 요금제: %1$@";
-
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";
 
@@ -8581,9 +8572,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the free domain view. */
 "Your free store address" = "무료 스토어 주소";
-
-/* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "무료 평가판이 종료되었으며, 모든 기능에 대한 접근 권한이 제한되었습니다. 지금 Woo Express Performance 요금제를 구독하세요.";
 
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Woo Express 무료 평가판이 내일(%1$@) 종료됩니다. 지금이 회원님 자신의 미래를 소유할 때입니다. 요금제를 선택하고 성장할 준비를 하세요.";
@@ -8633,7 +8621,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "선택하신 옵션에 따라 스토어가 생성되었습니다!";
 
-/* Info details for an expired free trial */
+/* Info details for an expired plan */
 "Your subscription has ended and you have limited access to all the features." = "구독이 종료되었으며, 모든 기능에 대한 접근 권한이 제한되었습니다.";
 
 /* Message for the alert after the support request is created. */

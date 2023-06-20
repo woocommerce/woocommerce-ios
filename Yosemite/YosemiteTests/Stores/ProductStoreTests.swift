@@ -1811,6 +1811,30 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains("```Trendy, cool, fun```"))
     }
 
+    func test_generateProductDescription_uses_correct_feature() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product name",
+                                                                           features: "Trendy, cool, fun") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
+        XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDescription)
+    }
+
     // MARK: - ProductAction.generateProductSharingMessage
 
     func test_generateProductSharingMessage_returns_text_on_success() throws {
@@ -1927,6 +1951,33 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains(expectedURL))
         XCTAssertTrue(base.contains(expectedName))
         XCTAssertTrue(base.contains(expectedDescription))
+    }
+
+    func test_generateProductSharingMessage_uses_correct_feature() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductSharingMessage(
+                siteID: self.sampleSiteID,
+                url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description"
+            ) { result in
+                promise(())
+            })
+        }
+
+        // Then
+        let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
+        XCTAssertEqual(feature, GenerativeContentRemoteFeature.productSharing)
     }
 
     // MARK: - ProductAction.retrieveFirstItemMatchFromSKU

@@ -55,20 +55,19 @@ struct UpgradesView: View {
                 UpgradeWaitingView(planName: plan.wooPlan.shortName)
             case .completed:
                 EmptyCompletedView()
-            case .error(let upgradeError):
+            case .prePurchaseError(let error):
                 VStack {
-                    UpgradesErrorView(upgradeError,
+                    PrePurchaseUpgradesErrorView(error,
                                       onRetryButtonTapped: {
                         upgradesViewModel.retryFetch()
-                    },
-                                      onCancelUpgradeTapped: {
-                        presentationMode.wrappedValue.dismiss()
                     })
                     .padding(Layout.padding)
 
                     Spacer()
                 }
                 .background(Color(.listBackground))
+            case .purchaseUpgradeError(let error):
+                EmptyView()
             }
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
@@ -76,24 +75,18 @@ struct UpgradesView: View {
     }
 }
 
-struct UpgradesErrorView: View {
+struct PrePurchaseUpgradesErrorView: View {
 
-    private let upgradeError: UpgradesError
+    private let error: PrePurchaseError
 
-    /// Closure invoked when the "Retry" or "Try payment again" button is tapped
+    /// Closure invoked when the "Retry" button is tapped
     ///
     var onRetryButtonTapped: (() -> Void)
 
-    /// Closure invoked when the "Cancel upgrade" button is tapped
-    /// 
-    var onCancelUpgradeTapped: (() -> Void) = {}
-
-    init(_ upgradeError: UpgradesError,
-         onRetryButtonTapped: @escaping (() -> Void),
-         onCancelUpgradeTapped: @escaping (() -> Void) ) {
-        self.upgradeError = upgradeError
+    init(_ error: PrePurchaseError,
+         onRetryButtonTapped: @escaping (() -> Void)) {
+        self.error = error
         self.onRetryButtonTapped = onRetryButtonTapped
-        self.onCancelUpgradeTapped = onCancelUpgradeTapped
     }
 
     var body: some View {
@@ -102,7 +95,7 @@ struct UpgradesErrorView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {
-                switch upgradeError {
+                switch error {
                 case .fetchError, .entitlementsError:
                     VStack(alignment: .center) {
                         Text(Localization.fetchErrorMessage)
@@ -124,31 +117,6 @@ struct UpgradesErrorView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
-                case .purchaseError:
-                    Text(Localization.purchaseErrorTitleMessage)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .multilineTextAlignment(.center)
-                    Text(Localization.purchaseErrorAccentMessage)
-                        .bold()
-                        .headlineStyle()
-                        .multilineTextAlignment(.center)
-                    Text(Localization.purchaseErrorSubtitleMessage)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .multilineTextAlignment(.center)
-                    Button(Localization.retryPaymentButtonText) {
-                        onRetryButtonTapped()
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .fixedSize(horizontal: true, vertical: true)
-                    Button(Localization.cancelUpgradeButtonText) {
-                        onCancelUpgradeTapped()
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                    .fixedSize(horizontal: true, vertical: true)
                 case .inAppPurchasesNotSupported:
                     Text(Localization.inAppPurchasesNotSupportedErrorMessage)
                         .bold()

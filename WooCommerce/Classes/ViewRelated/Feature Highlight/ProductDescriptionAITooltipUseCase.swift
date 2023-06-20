@@ -1,6 +1,6 @@
 import Foundation
 
-struct FeatureHighlightStore {
+struct ProductDescriptionAITooltipUseCase {
     private let userStore: UserDefaults
 
     init(userStore: UserDefaults = UserDefaults.standard) {

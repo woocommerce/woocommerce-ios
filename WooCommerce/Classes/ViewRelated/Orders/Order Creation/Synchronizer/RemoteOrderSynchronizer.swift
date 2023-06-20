@@ -453,7 +453,7 @@ private extension RemoteOrderSynchronizer {
 
 // MARK: Order Helpers
 private extension Order {
-    /// Returns true if the order contains any local line (items, shipping, or fees).
+    /// Returns true if the order contains any local line (items, shipping, fees, or coupons).
     ///
     func containsLocalLines() -> Bool {
         let containsLocalLineItems = items.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.itemID) }

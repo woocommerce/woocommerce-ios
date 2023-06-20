@@ -11,6 +11,7 @@
 - [***] Orders: Users can add products to orders by scanning their sku barcode or QR-code [https://github.com/woocommerce/woocommerce-ios/pull/9972] 
 - [Internal] Store creation: a workaround was previously implemented that can result in an inaccurate app experience like when the free trial banner is not shown immediately after store creation due to out-of-sync site properties. Now that the API issue is fixed, the app now waits for the site for a bit longer but ensures all necessary properties are synced. [https://github.com/woocommerce/woocommerce-ios/pull/9957]
 - [Internal] Product details AI: Updated prompts to identify the language in provided text to use in responses for product description and sharing. [https://github.com/woocommerce/woocommerce-ios/pull/9961]
+- [*] Blaze: products can now be promoted in WordPress.com and Tumblr from the app if the site/product is eligible. Two entry points: 1) Menu tab > General, 2) Product form > more menu. [https://github.com/woocommerce/woocommerce-ios/pull/9906]
 
 14.0
 -----

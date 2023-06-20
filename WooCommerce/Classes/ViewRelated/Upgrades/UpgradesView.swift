@@ -403,9 +403,9 @@ private extension OwnerUpgradesView {
 
 private extension NonOwnerUpgradesView {
     struct Localization {
-        static let unableToUpgradeText = NSLocalizedString("Unable to upgrade",
+        static let unableToUpgradeText = NSLocalizedString("You can’t upgrade because you are not the store owner",
                                                            comment: "Text describing that is not possible to upgrade the site's plan.")
-        static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades",
+        static let unableToUpgradeInstructions = NSLocalizedString("Please contact the store owner to upgrade your plan.",
                                                                    comment: "Text describing that only the site owner can upgrade the site's plan.")
     }
 }

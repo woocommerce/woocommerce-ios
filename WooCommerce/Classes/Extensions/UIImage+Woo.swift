@@ -405,12 +405,6 @@ extension UIImage {
         return UIImage(named: "icon-fixed-product-discount")!
     }
 
-    /// Magic wand icon
-    ///
-    static func magicWandIcon(size: CGSize = .init(width: 24, height: 24)) -> UIImage {
-        .image(fromText: "🪄", size: size)!
-    }
-
     /// Percentage discount icon
     ///
     static var percentageDiscountIcon: UIImage {

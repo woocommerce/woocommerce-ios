@@ -26,6 +26,7 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
     @State private var copyTextNotice: Notice?
+    @FocusState private var isFeaturesFieldInFocus: Bool
 
     init(viewModel: ProductDescriptionGenerationViewModel) {
         self.viewModel = viewModel
@@ -41,9 +42,11 @@ struct ProductDescriptionGenerationView: View {
                     if #available(iOS 16.0, *) {
                         TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
                             .subheadlineStyle()
+                            .disabled(viewModel.isProductNameEditable == false)
                     } else {
                         TextField(Localization.productNamePlaceholder, text: $viewModel.name)
                             .subheadlineStyle()
+                            .disabled(viewModel.isProductNameEditable == false)
                     }
                 }
 
@@ -57,8 +60,10 @@ struct ProductDescriptionGenerationView: View {
                         .padding(insets: Layout.productFeaturesInsets)
                         .frame(minHeight: Layout.minimuEditorSize, maxHeight: .infinity)
                         .overlay(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                                .stroke(Color(isFeaturesFieldInFocus ? .accent : .separator))
                         )
+                        .focused($isFeaturesFieldInFocus)
 
                     if viewModel.features.isEmpty {
                         Text(Localization.productDescriptionPlaceholder)
@@ -70,36 +75,57 @@ struct ProductDescriptionGenerationView: View {
                     }
                 }
 
+                Text(Localization.sampleFeatures)
+                    .footnoteStyle()
+
                 if let suggestedText = viewModel.suggestedText {
-                    Text(suggestedText)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .textSelection(.enabled)
-                        .padding(Layout.suggestedTextInsets)
-                        .background(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                                .foregroundColor(.init(uiColor: .secondarySystemBackground))
-                        )
+                    VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
+                        Text(suggestedText)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .textSelection(.enabled)
+                            .redacted(reason: viewModel.isGenerationInProgress ? .placeholder : [])
+                            .shimmering(active: viewModel.isGenerationInProgress)
+
+                        HStack {
+                            Spacer()
+                            // CTA to copy the generated text.
+                            Button {
+                                UIPasteboard.general.string = suggestedText
+                                copyTextNotice = .init(title: Localization.textCopiedNotice)
+                                ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
+                            } label: {
+                                Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
+                                    .secondaryBodyStyle()
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .fixedSize(horizontal: true, vertical: false)
+                        }
+                        .renderedIf(viewModel.isGenerationInProgress == false)
+                    }
+                    .padding(Layout.suggestedTextInsets)
+                    .background(
+                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                            .foregroundColor(.init(uiColor: .secondarySystemBackground))
+                    )
                 }
 
                 HStack(alignment: .center, spacing: Layout.defaultSpacing) {
-                    if let suggestedText = viewModel.suggestedText {
-                        // CTA to copy the generated text.
+                    if viewModel.suggestedText != nil {
+                        // CTA to regenerate description.
                         Button {
-                            UIPasteboard.general.string = suggestedText
-                            copyTextNotice = .init(title: Localization.textCopiedNotice)
-                            ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
+                            viewModel.generateDescription()
                         } label: {
-                            Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
-                        }.buttonStyle(PlainButtonStyle())
+                            if viewModel.isGenerationInProgress {
+                                ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                            } else {
+                                Label(Localization.regenerateText, systemImage: "arrow.counterclockwise")
+                                    .bodyStyle()
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .disabled(viewModel.isGenerationInProgress || viewModel.isGenerationEnabled == false)
 
                         Spacer()
-
-                        // CTA to start or stop text generation based on the current state.
-                        Button {
-                            viewModel.toggleDescriptionGeneration()
-                        } label: {
-                            Image(systemName: viewModel.isGenerationInProgress ? "pause.circle": "arrow.counterclockwise")
-                        }.buttonStyle(PlainButtonStyle())
 
                         // CTA to apply the generated text.
                         Button(Localization.insertGeneratedText) {
@@ -109,8 +135,14 @@ struct ProductDescriptionGenerationView: View {
                         .fixedSize(horizontal: true, vertical: false)
                     } else {
                         // CTA to generate text for the first pass.
-                        Button(Localization.generateText) {
+                        Button {
                             viewModel.generateDescription()
+                        } label: {
+                            Label {
+                                Text(Localization.generateText)
+                            } icon: {
+                                Image(uiImage: .sparklesImage)
+                            }
                         }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGenerationInProgress))
                         .disabled(viewModel.isGenerationEnabled == false)
@@ -146,15 +178,15 @@ private extension ProductDescriptionGenerationView {
 private extension ProductDescriptionGenerationView {
     enum Localization {
         static let title = NSLocalizedString(
-            "Write product description",
+            "Write a description",
             comment: "Title in the product description AI generator view."
         )
         static let productNamePlaceholder = NSLocalizedString(
-            "Enter product name",
+            "Enter your product name",
             comment: "Product name placeholder in the product description AI generator view."
         )
         static let productDescriptionPlaceholder = NSLocalizedString(
-            "Describe your product features",
+            "Highlight your product's unique features and audience with keywords for a tailored description.",
             comment: "Product features placeholder in the product description AI generator view."
         )
         static let copyGeneratedText = NSLocalizedString(
@@ -167,8 +199,14 @@ private extension ProductDescriptionGenerationView {
         )
         static let insertGeneratedText = NSLocalizedString("Apply",
                                                            comment: "Button title to insert AI-generated product description.")
-        static let generateText = NSLocalizedString("Generate",
+        static let generateText = NSLocalizedString("Write with AI",
                                                     comment: "Button title to generate product description with Jetpack AI.")
+        static let regenerateText = NSLocalizedString("Regenerate",
+                                                      comment: "Button title to regenerate product description with Jetpack AI.")
+        static let sampleFeatures = NSLocalizedString(
+            "Example: Potted, cactus, plant, decorative, easy-care",
+            comment: "Label for sample product features to enter in the product description AI generator view."
+        )
     }
 }
 

@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Yosemite
 
 /// Hosting controller for `UpgradesView`
 /// To be used to display available current plan Subscriptions, available plan Upgrades,
@@ -35,10 +36,21 @@ struct UpgradesView: View {
 
             Spacer()
 
-            if upgradesViewModel.isSiteOwner {
-                OwnerUpgradesView(upgradesViewModel: upgradesViewModel)
-            } else {
-                NonOwnerUpgradesView(upgradesViewModel: upgradesViewModel)
+            switch upgradesViewModel.upgradeViewState {
+            case .userNotAllowedToUpgrade:
+                NonOwnerUpgradesView()
+            case .loading:
+                OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
+            case .loaded(let plan):
+                OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
+                    await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                })
+            case .waiting:
+                EmptyWaitingView()
+            case .completed:
+                EmptyCompletedView()
+            default:
+                EmptyView()
             }
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
@@ -46,67 +58,129 @@ struct UpgradesView: View {
     }
 }
 
-struct OwnerUpgradesView: View {
-    @ObservedObject var upgradesViewModel: UpgradesViewModel
+struct EmptyWaitingView: View {
+    var body: some View {
+        Text("Waiting...")
+    }
+}
 
-    @State var isPurchasing = false
+struct EmptyCompletedView: View {
+    var body: some View {
+        Text("Completed!")
+    }
+}
+
+struct OwnerUpgradesView: View {
+    @State var upgradePlan: WooWPComPlan
+    @State private var isPurchasing = false
+    let purchasePlanAction: () async -> Void
+    @State var isLoading: Bool = false
 
     var body: some View {
         List {
-            if let availableProduct = upgradesViewModel.upgradePlan {
+            Section {
+                Image(upgradePlan.wooPlan.headerImageFileName)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .listRowInsets(.zero)
+                    .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
+
+                VStack(alignment: .leading) {
+                    Text(upgradePlan.wooPlan.shortName)
+                        .font(.largeTitle)
+                    Text(upgradePlan.wooPlan.planDescription)
+                        .font(.subheadline)
+                }
+
+                VStack(alignment: .leading) {
+                    Text(upgradePlan.wpComPlan.displayPrice)
+                        .font(.largeTitle)
+                    Text(upgradePlan.wooPlan.planFrequency.localizedString)
+                        .font(.footnote)
+                }
+            }
+            .listRowSeparator(.hidden)
+
+            if upgradePlan.hardcodedPlanDataIsValid {
                 Section {
-                    Image(availableProduct.wooPlan?.headerImageFileName ?? "")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .listRowInsets(.zero)
-                    //TODO: move the background color to woo-express-essential-plan-benefits.json
-                        .listRowBackground(Color(red: 238/255, green: 226/255, blue: 211/255))
-
-                    VStack(alignment: .leading) {
-                        Text(availableProduct.wooPlan?.shortName ?? availableProduct.wpComPlan.displayName)
-                            .font(.largeTitle)
-                        Text(availableProduct.wooPlan?.planDescription ?? "")
-                            .font(.subheadline)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text(availableProduct.wpComPlan.displayPrice)
-                            .font(.largeTitle)
-                        Text(availableProduct.wooPlan?.planFrequency.localizedString ?? "")
-                            .font(.footnote)
-                    }
-                }
-                .listRowSeparator(.hidden)
-
-                if let wooPlan = availableProduct.wooPlan {
-                    Section {
-                        ForEach(wooPlan.planFeatureGroups, id: \.title) { featureGroup in
-                            NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
-                                WooPlanFeatureGroupRow(featureGroup: featureGroup)
-                            }
+                    ForEach(upgradePlan.wooPlan.planFeatureGroups, id: \.title) { featureGroup in
+                        NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
+                            WooPlanFeatureGroupRow(featureGroup: featureGroup)
                         }
-                    } header: {
-                        Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, wooPlan.shortName))
+                        .disabled(isLoading)
                     }
-                    .headerProminence(.increased)
+                } header: {
+                    Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, upgradePlan.wooPlan.shortName))
                 }
+                .headerProminence(.increased)
+            } else {
+                NavigationLink(destination: {
+                    /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
+                    AuthenticatedWebView(isPresented: .constant(true),
+                                         url: WooConstants.URLs.fallbackWooExpressHome.asURL())
+                }, label: {
+                    Text(Localization.featureDetailsUnavailableText)
+                })
+                .disabled(isLoading)
             }
 
-            if upgradesViewModel.wpcomPlans.isEmpty || isPurchasing {
-                ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                Spacer()
-            } else {
-                renderSingleUpgrade()
+            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
+            Button(buttonText) {
+                Task {
+                    isPurchasing = true
+                    await purchasePlanAction()
+                    isPurchasing = false
+                }
             }
+            .disabled(isLoading)
         }
-        .task {
-            await upgradesViewModel.fetchPlans()
-        }
+        .redacted(reason: isLoading ? .placeholder : [])
+        .shimmering(active: isLoading)
+    }
+}
+
+private extension WooWPComPlan {
+    static func skeletonPlan() -> WooWPComPlan {
+        return WooWPComPlan(
+            wpComPlan: SkeletonWPComPlanProduct(),
+            wooPlan: WooPlan(id: "skeleton.plan.monthly",
+                             name: "Skeleton Plan Monthly",
+                             shortName: "Skeleton",
+                             planFrequency: .month,
+                             planDescription: "A skeleton plan to show (redacted) while we're loading",
+                             headerImageFileName: "express-essential-header",
+                             headerImageCardColor: .withColorStudio(name: .orange, shade: .shade5),
+                             planFeatureGroups: [
+                                WooPlanFeatureGroup(title: "Feature group 1",
+                                                    description: "A feature description with a realistic length to " +
+                                                    "ensure the cell looks correct when redacted",
+                                                    imageFilename: "",
+                                                    imageCardColor: .withColorStudio(name: .blue, shade: .shade5),
+                                                    features: []),
+                                WooPlanFeatureGroup(title: "Feature group 2",
+                                                    description: "A feature description with a realistic length to " +
+                                                    "ensure the cell looks correct when redacted",
+                                                    imageFilename: "",
+                                                    imageCardColor: .withColorStudio(name: .green, shade: .shade5),
+                                                    features: []),
+                                WooPlanFeatureGroup(title: "Feature group 3",
+                                                    description: "A feature description with a realistic length to " +
+                                                    "ensure the cell looks correct when redacted",
+                                                    imageFilename: "",
+                                                    imageCardColor: .withColorStudio(name: .pink, shade: .shade5),
+                                                    features: []),
+                             ]),
+            hardcodedPlanDataIsValid: true)
+    }
+
+    private struct SkeletonWPComPlanProduct: WPComPlanProduct {
+        let displayName: String = "Skeleton Plan Monthly"
+        let description: String = "A skeleton plan to show (redacted) while we're loading"
+        let id: String = "skeleton.wpcom.plan.product"
+        let displayPrice: String = "$39"
     }
 }
 
 struct NonOwnerUpgradesView: View {
-    @ObservedObject var upgradesViewModel: UpgradesViewModel
-
     private var siteName: String? {
         ServiceLocator.stores.sessionManager.defaultSite?.name
     }
@@ -189,22 +263,6 @@ struct UpgradesView_Preview: PreviewProvider {
 }
 
 private extension OwnerUpgradesView {
-    @ViewBuilder
-    func renderSingleUpgrade() -> some View {
-        if let upgradePlan = upgradesViewModel.upgradePlan {
-            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
-            Button(buttonText) {
-                Task {
-                    isPurchasing = true
-                    await upgradesViewModel.purchasePlan(with: upgradePlan.wpComPlan.id)
-                    isPurchasing = false
-                }
-            }
-        }
-    }
-}
-
-private extension OwnerUpgradesView {
     struct Localization {
         static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
                                                              "Reads as 'Purchase Essential Monthly'")
@@ -213,6 +271,9 @@ private extension OwnerUpgradesView {
             comment: "Title for the section header for the list of feature categories on the Upgrade plan screen. " +
             "Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with " +
             "the plan name.")
+
+        static let featureDetailsUnavailableText = NSLocalizedString(
+            "See plan details", comment: "Title for a link to view Woo Express plan details on the web, as a fallback.")
     }
 }
 

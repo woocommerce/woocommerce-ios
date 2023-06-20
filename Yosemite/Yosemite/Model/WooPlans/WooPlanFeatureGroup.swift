@@ -51,4 +51,9 @@ public struct WooPlanFeatureGroup: Decodable {
 public struct WooPlanFeature: Codable {
     public let title: String
     public let description: String
+
+    public init(title: String, description: String) {
+        self.title = title
+        self.description = description
+    }
 }

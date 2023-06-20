@@ -124,21 +124,27 @@ struct UpgradesErrorView: View {
                     Text(Localization.purchaseErrorMessage1)
                         .font(.body)
                         .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.center)
+                        .padding(.bottom)
                     Text(Localization.purchaseErrorMessage2)
                         .bold()
                         .headlineStyle()
                         .multilineTextAlignment(.center)
+                        .padding(.bottom)
                     Text(Localization.purchaseErrorMessage3)
                         .font(.body)
                         .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.center)
+                        .padding(.bottom)
                     Button(Localization.retryPaymentButtonText) {
                         // TODO: Handle retry
                         onRetryPaymentButtonTapped()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
+                    .padding(.bottom)
                     Button(Localization.cancelUpgradeButtonText) {
                         // TODO: Handle cancel flow
                         onCancelUpgradeTapped()

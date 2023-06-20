@@ -204,7 +204,7 @@ private extension ProductDescriptionGenerationView {
         static let regenerateText = NSLocalizedString("Regenerate",
                                                       comment: "Button title to regenerate product description with Jetpack AI.")
         static let sampleFeatures = NSLocalizedString(
-            "Example: Potted, Cactus, Plant, Decorative, Easy-care",
+            "Example: Potted, cactus, plant, decorative, easy-care",
             comment: "Label for sample product features to enter in the product description AI generator view."
         )
     }

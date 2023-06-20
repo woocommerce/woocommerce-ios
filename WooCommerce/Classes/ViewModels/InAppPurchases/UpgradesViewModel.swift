@@ -6,7 +6,7 @@ enum UpgradeViewState {
     case loading
     case loaded(WooWPComPlan)
     case purchasing(WooWPComPlan)
-    case waiting
+    case waiting(WooWPComPlan)
     case completed
     case userNotAllowedToUpgrade
     case error(UpgradesError)
@@ -133,7 +133,7 @@ final class UpgradesViewModel: ObservableObject {
                 /// If the user cancelled, the state will be `.loaded(_)` by now, so we don't advance to waiting.
                 /// Likewise, errors will have moved us to `.error(_)`, so we won't advance then either.
                 if case .purchasing(_) = self.upgradeViewState {
-                    self.upgradeViewState = .waiting
+                    self.upgradeViewState = .waiting(wooWPComPlan)
                 }
             }
         }

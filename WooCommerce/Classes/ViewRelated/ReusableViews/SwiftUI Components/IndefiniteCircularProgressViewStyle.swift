@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     var size: CGFloat
+    var lineWidth: CGFloat = Constants.lineWidth
     private let arcStart: Double = Constants.initialArcStart
     private let animationDuration: Double = 1.6
 
@@ -15,7 +16,7 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
             ZStack {
                 progressCircleView()
                     .rotationEffect(viewRotation)
-            }.padding()
+            }
             configuration.label
         }
         .onAppear() {
@@ -38,7 +39,7 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
         Circle()
             .stroke(
                 Color(.primary),
-                lineWidth: Constants.lineWidth)
+                lineWidth: lineWidth)
             .opacity(Constants.backgroundOpacity)
             .overlay(progressFill())
             .frame(width: size, height: size)
@@ -51,7 +52,7 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
                 to: CGFloat(arcEnd))
             .stroke(
                 Color(.primary),
-                style: StrokeStyle(lineWidth: Constants.lineWidth, lineCap: .round))
+                style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
             .frame(width: size)
             .rotationEffect(rotation)
     }

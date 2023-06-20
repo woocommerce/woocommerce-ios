@@ -24,4 +24,9 @@ extension UIColor {
         UIColor(light: UIColor.separator.color(for: UITraitCollection(userInterfaceStyle: .dark)),
                 dark: UIColor.separator.color(for: UITraitCollection(userInterfaceStyle: .light)))
     }
+
+    static var invertedTooltipBackgroundColor: UIColor {
+        UIColor(light: UIColor.systemGray5.color(for: UITraitCollection(userInterfaceStyle: .dark)),
+                dark: .white)
+    }
 }

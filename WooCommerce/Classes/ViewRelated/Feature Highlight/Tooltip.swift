@@ -8,11 +8,6 @@ final class Tooltip: UIView {
         static let cornerRadius: CGFloat = 4
         static let arrowTipYLength: CGFloat = 8
         static let arrowTipYControlLength: CGFloat = 9
-        static let invertedTooltipBackgroundColor = UIColor(
-            light: UIColor.systemGray5.color(for: UITraitCollection(userInterfaceStyle: .dark)),
-            dark: .white
-        )
-
 
         enum Spacing {
             static let contentStackViewInterItemSpacing: CGFloat = 4
@@ -184,8 +179,8 @@ final class Tooltip: UIView {
     }
 
     override func layoutSubviews() {
-        arrowShapeLayer?.strokeColor = Constants.invertedTooltipBackgroundColor.cgColor
-        arrowShapeLayer?.fillColor = Constants.invertedTooltipBackgroundColor.cgColor
+        arrowShapeLayer?.strokeColor = UIColor.invertedTooltipBackgroundColor.cgColor
+        arrowShapeLayer?.fillColor = UIColor.invertedTooltipBackgroundColor.cgColor
         containerView.layer.shadowOpacity = traitCollection.userInterfaceStyle == .light ? 0.5 : 0
     }
 
@@ -236,8 +231,8 @@ final class Tooltip: UIView {
 
         arrowShapeLayer.path = arrowPath.cgPath
 
-        arrowShapeLayer.strokeColor = Constants.invertedTooltipBackgroundColor.cgColor
-        arrowShapeLayer.fillColor = Constants.invertedTooltipBackgroundColor.cgColor
+        arrowShapeLayer.strokeColor = UIColor.invertedTooltipBackgroundColor.cgColor
+        arrowShapeLayer.fillColor = UIColor.invertedTooltipBackgroundColor.cgColor
         arrowShapeLayer.lineWidth = 4.0
 
         arrowShapeLayer.position = CGPoint(x: offsetX - Self.arrowWidth/2, y: offsetY)
@@ -283,7 +278,7 @@ final class Tooltip: UIView {
     }
 
     private func setUpContainerView() {
-        containerView.backgroundColor = Constants.invertedTooltipBackgroundColor
+        containerView.backgroundColor = UIColor.invertedTooltipBackgroundColor
         containerView.layer.cornerRadius = Constants.cornerRadius
         containerView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(containerView)

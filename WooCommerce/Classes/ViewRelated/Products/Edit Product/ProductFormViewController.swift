@@ -620,6 +620,15 @@ private extension ProductFormViewController {
             y: rectOfButtonInTableView.maxY
         )
     }
+
+    func isDescriptionAICellVisible() -> Bool {
+        guard let indexPath = findDescriptionAICellIndexPath() else {
+            return false
+        }
+
+        let cellRect = tableView.rectForRow(at: indexPath)
+        return tableView.bounds.contains(cellRect)
+    }
 }
 
 // MARK: - Observations & responding to changes

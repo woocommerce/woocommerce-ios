@@ -1,32 +1,32 @@
 import Foundation
 
 struct ProductDescriptionAITooltipUseCase {
-    private let userStore: UserDefaults
+    private let userDefaults: UserDefaults
 
-    init(userStore: UserDefaults = UserDefaults.standard) {
-        self.userStore = userStore
+    init(userDefaults: UserDefaults = UserDefaults.standard) {
+        self.userDefaults = userDefaults
     }
 
-    var didDismissTooltip: Bool {
+    var hasDismissedWriteWithAITooltip: Bool {
         get {
-            return userStore.bool(forKey: UserDefaults.Key.didUserDismissTooltip.rawValue)
+            userDefaults.bool(forKey: UserDefaults.Key.hasDismissedWriteWithAITooltip.rawValue)
         }
         set {
-            userStore.set(newValue, forKey: UserDefaults.Key.didUserDismissTooltip.rawValue)
+            userDefaults.set(newValue, forKey: UserDefaults.Key.hasDismissedWriteWithAITooltip.rawValue)
         }
     }
 
-    var writeWithAITooltipCounter: Int {
+    var numberOfTimesWriteWithAITooltipIsShown: Int {
         get {
-            return userStore.integer(forKey: UserDefaults.Key.writeWithAITooltipCounter.rawValue)
+            userDefaults.integer(forKey: UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown.rawValue)
         }
         set {
-            userStore.set(newValue, forKey: UserDefaults.Key.writeWithAITooltipCounter.rawValue)
+            userDefaults.set(newValue, forKey: UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown.rawValue)
         }
     }
 
     /// Tooltip will only be shown 3 times if the user never interacts with it.
     var shouldShowTooltip: Bool {
-        writeWithAITooltipCounter < 3 && !didDismissTooltip
+        numberOfTimesWriteWithAITooltipIsShown < 3 && !hasDismissedWriteWithAITooltip
     }
 }

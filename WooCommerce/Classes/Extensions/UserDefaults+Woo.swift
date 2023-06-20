@@ -32,8 +32,8 @@ extension UserDefaults {
         case usedProductDescriptionAI
 
         // Tooltip
-        case didUserDismissTooltip
-        case writeWithAITooltipCounter
+        case hasDismissedWriteWithAITooltip
+        case numberOfTimesWriteWithAITooltipIsShown
     }
 }
 

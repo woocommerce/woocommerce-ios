@@ -33,8 +33,7 @@ struct UpgradesView: View {
     var body: some View {
         VStack {
             CurrentPlanDetailsView(planName: subscriptionsViewModel.planName, daysLeft: subscriptionsViewModel.planDaysLeft)
-
-            Spacer()
+                .background(Color(UIColor.systemBackground))
 
             switch upgradesViewModel.upgradeViewState {
             case .userNotAllowedToUpgrade:
@@ -49,12 +48,18 @@ struct UpgradesView: View {
                 EmptyWaitingView()
             case .completed:
                 EmptyCompletedView()
-            default:
-                EmptyView()
+            case .error(let upgradeError):
+                UpgradesErrorView(upgradeError,
+                                  onRetryButtonTapped: {},
+                                  onRetryPaymentButtonTapped: {},
+                                  onCancelUpgradeTapped: {})
+                .padding(Layout.padding)
             }
+            Spacer()
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
         .padding(.top)
+        .background(Color(.listBackground).ignoresSafeArea())
     }
 }
 
@@ -141,8 +146,9 @@ struct UpgradesErrorView: View {
                     EmptyView()
                 }
             }
-            Spacer()
         }
+        .padding(.bottom)
+        .background(Color(UIColor.systemBackground))
     }
 
     private enum Localization {
@@ -296,12 +302,9 @@ struct NonOwnerUpgradesView: View {
 
     var body: some View {
         VStack {
-            Spacer()
 
             Image(uiImage: .noStoreImage)
                 .frame(maxWidth: .infinity, alignment: .center)
-
-            Spacer()
 
             VStack(alignment: .center, spacing: UpgradesView.Layout.contentSpacing) {
                 Text(Localization.unableToUpgradeText)
@@ -401,6 +404,7 @@ private extension UpgradesView {
     }
 
     struct Layout {
+        static let padding: CGFloat = 16
         static let contentSpacing: CGFloat = 8
         static let smallPadding: CGFloat = 8
     }

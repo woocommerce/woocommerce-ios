@@ -53,9 +53,10 @@ struct UpgradesView: View {
             case .error(let upgradeError):
                 UpgradesErrorView(upgradeError,
                                   onRetryButtonTapped: {
-                    upgradesViewModel.retry()
+                    upgradesViewModel.retryFetch()
                 },
                                   onRetryPaymentButtonTapped: {
+                    upgradesViewModel.retryFetch()
                 },
                                   onCancelUpgradeTapped: {
                     presentationMode.wrappedValue.dismiss()

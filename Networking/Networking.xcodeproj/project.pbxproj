@@ -668,6 +668,8 @@
 		CE6D666C2379E19D007835A1 /* Array+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6D666B2379E19D007835A1 /* Array+Woo.swift */; };
 		CE6D666F2379E82A007835A1 /* ArrayWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6D666E2379E82A007835A1 /* ArrayWooTests.swift */; };
 		CE831FE72A17FC1800E8BEFB /* order-with-composite-product.json in Resources */ = {isa = PBXBuildFile; fileRef = CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */; };
+		CE865A9F2A41E42F0049B03C /* date-modified-gmt.json in Resources */ = {isa = PBXBuildFile; fileRef = CE865A9E2A41E42F0049B03C /* date-modified-gmt.json */; };
+		CE865AA32A4207A50049B03C /* date-modified-gmt-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE865AA22A4207A50049B03C /* date-modified-gmt-without-data.json */; };
 		CEC4BF8F234E382F008D9195 /* RefundMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4BF8E234E382F008D9195 /* RefundMapperTests.swift */; };
 		CEC4BF91234E40B5008D9195 /* refund-single.json in Resources */ = {isa = PBXBuildFile; fileRef = CEC4BF90234E40B5008D9195 /* refund-single.json */; };
 		CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CEC4BF92234E7EE0008D9195 /* refunds-all.json */; };
@@ -1614,6 +1616,8 @@
 		CE6D666B2379E19D007835A1 /* Array+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Woo.swift"; sourceTree = "<group>"; };
 		CE6D666E2379E82A007835A1 /* ArrayWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayWooTests.swift; sourceTree = "<group>"; };
 		CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-composite-product.json"; sourceTree = "<group>"; };
+		CE865A9E2A41E42F0049B03C /* date-modified-gmt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "date-modified-gmt.json"; sourceTree = "<group>"; };
+		CE865AA22A4207A50049B03C /* date-modified-gmt-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "date-modified-gmt-without-data.json"; sourceTree = "<group>"; };
 		CEC4BF8E234E382F008D9195 /* RefundMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundMapperTests.swift; sourceTree = "<group>"; };
 		CEC4BF90234E40B5008D9195 /* refund-single.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "refund-single.json"; sourceTree = "<group>"; };
 		CEC4BF92234E7EE0008D9195 /* refunds-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "refunds-all.json"; sourceTree = "<group>"; };
@@ -2777,6 +2781,8 @@
 				688908AD28FF920C0081A07E /* customer-2.json */,
 				03EB99952907F03000F06A39 /* empty-data-array.json */,
 				E137619829151C7400FD098F /* error-wp-rest-forbidden.json */,
+				CE865A9E2A41E42F0049B03C /* date-modified-gmt.json */,
+				CE865AA22A4207A50049B03C /* date-modified-gmt-without-data.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -3601,6 +3607,7 @@
 				26B2F74724C55A6E0065CCC8 /* leaderboards-year.json in Resources */,
 				31054714262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json in Resources */,
 				EE57C134297F985A00BC31E7 /* product-variations-bulk-update-without-data.json in Resources */,
+				CE865A9F2A41E42F0049B03C /* date-modified-gmt.json in Resources */,
 				2683D71024456EE4002A1589 /* categories-extra.json in Resources */,
 				A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */,
 				E18152C228F85E0A0011A0EC /* iap-products.json in Resources */,
@@ -3661,6 +3668,7 @@
 				02F096C22406691100C0C1D5 /* media-library.json in Resources */,
 				028CB717290223CB00331C09 /* create-account-error-password.json in Resources */,
 				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
+				CE865AA32A4207A50049B03C /* date-modified-gmt-without-data.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
 				DE4D23BE29B6E10F003A4B5D /* announcements.json in Resources */,
 				02616F8F2921336C0095BC00 /* site-creation-domain-error.json in Resources */,

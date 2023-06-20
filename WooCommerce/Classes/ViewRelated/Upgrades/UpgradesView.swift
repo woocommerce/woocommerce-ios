@@ -58,6 +58,25 @@ struct UpgradesView: View {
     }
 }
 
+struct UpgradesErrorView: View {
+
+    let upgradeError: UpgradesError
+
+    init(_ upgradeError: UpgradesError) {
+        self.upgradeError = upgradeError
+    }
+
+    var body: some View {
+        VStack {
+            Image(uiImage: .planUpgradeError)
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            Text("Error \(upgradeError.localizedDescription)")
+        }
+    }
+}
+
+
 struct EmptyWaitingView: View {
     var body: some View {
         Text("Waiting...")

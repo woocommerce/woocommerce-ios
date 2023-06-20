@@ -680,6 +680,19 @@ private extension ProductFormViewController {
         return nil
     }
 
+    func findDescriptionAICellIndexPath() -> IndexPath? {
+        for (sectionIndex, section) in tableViewModel.sections.enumerated() {
+            if case .primaryFields(rows: let sectionRows) = section {
+                for (rowIndex, row) in sectionRows.enumerated() {
+                    if case .descriptionAI = row {
+                        return IndexPath(row: rowIndex, section: sectionIndex)
+                    }
+                }
+            }
+        }
+        return nil
+    }
+
     func onProductUpdated(product: ProductModel) {
         updateMoreDetailsButtonVisibility()
         tableViewModel = DefaultProductFormTableViewModel(product: product,

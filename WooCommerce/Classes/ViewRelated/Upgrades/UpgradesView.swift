@@ -50,7 +50,7 @@ struct UpgradesView: View {
                 EmptyCompletedView()
             case .error(let upgradeError):
                 UpgradesErrorView(upgradeError,
-                                  onRetryButtonTapped: {},
+                                  onRetryButtonTapped: {upgradesViewModel.retry()},
                                   onRetryPaymentButtonTapped: {},
                                   onCancelUpgradeTapped: {})
                 .padding(Layout.padding)
@@ -71,7 +71,7 @@ struct UpgradesErrorView: View {
     let shouldRetry: Bool = true
 
     /// Closure invoked when the "Retry" button is tapped
-    var onRetryButtonTapped: (() -> Void) = {}
+    var onRetryButtonTapped: (() -> Void)
 
     /// Closure invoked when the "Try payment again" buton is tapped
     var onRetryPaymentButtonTapped: (() -> Void) = {}
@@ -103,7 +103,6 @@ struct UpgradesErrorView: View {
                             .headlineStyle()
                             .multilineTextAlignment(.center)
                         Button(Localization.retry) {
-                            // TODO: Handle retry
                             onRetryButtonTapped()
                         }
                         .buttonStyle(PrimaryButtonStyle())

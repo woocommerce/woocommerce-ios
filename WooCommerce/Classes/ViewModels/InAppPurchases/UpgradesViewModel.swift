@@ -58,6 +58,12 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
+    public func retry() {
+        Task {
+            await fetchViewData()
+        }
+    }
+
     @MainActor
     private func fetchViewData() async {
         upgradeViewState = .loading

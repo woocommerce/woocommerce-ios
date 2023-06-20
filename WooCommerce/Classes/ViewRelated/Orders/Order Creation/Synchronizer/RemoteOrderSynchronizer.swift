@@ -462,7 +462,7 @@ private extension Order {
         let containsLocalCoupons = coupons.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.couponID) }
         return containsLocalLineItems || containsLocalShippingLines || containsLocalFeeLines || containsLocalCoupons
     }
-    
+
     /// Removes the `itemID`, `total` & `subtotal` values from local items.
     /// This is needed to:
     /// 1. Create the item without the local ID, the remote API would fail otherwise.

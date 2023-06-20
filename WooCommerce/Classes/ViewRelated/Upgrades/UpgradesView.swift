@@ -96,7 +96,7 @@ struct UpgradesErrorView: View {
 
             VStack(alignment: .center) {
                 switch upgradeError {
-                case .fetchError:
+                case .fetchError, .entitlementsError:
                     VStack(alignment: .center) {
                         Text(Localization.fetchErrorMessage)
                             .bold()
@@ -110,7 +110,7 @@ struct UpgradesErrorView: View {
                         .fixedSize(horizontal: true, vertical: true)
                         .renderedIf(shouldRetry)
                     }
-                case .maximumSitesUpgraded, .entitlementsError:
+                case .maximumSitesUpgraded:
                     Text(Localization.maximumSitesUpgradedErrorMessage)
                         .bold()
                         .headlineStyle()

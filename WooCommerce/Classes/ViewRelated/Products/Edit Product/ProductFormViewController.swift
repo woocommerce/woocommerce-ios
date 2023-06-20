@@ -1780,6 +1780,15 @@ private enum Localization {
         "Cannot duplicate product",
         comment: "The title of the alert when there is an error duplicating the product"
     )
+
+    enum AITooltip {
+        static let title = NSLocalizedString("Write with AI",
+                                             comment: "The title of the Write with AI tooltip")
+        static let message = NSLocalizedString("Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!",
+                                               comment: "The message for the Write with AI tooltip")
+        static let gotIt = NSLocalizedString("Got it",
+                                             comment: "Button title that dismisses the Write with AI tooltip")
+    }
 }
 
 private enum ActionSheetStrings {

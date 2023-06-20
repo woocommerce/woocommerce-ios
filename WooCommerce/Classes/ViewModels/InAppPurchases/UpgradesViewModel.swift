@@ -30,7 +30,7 @@ enum PrePurchaseError: Error {
 }
 
 enum PurchaseUpgradeError {
-    case inAppPurchaseFailed
+    case inAppPurchaseFailed(WooWPComPlan)
     case planActivationFailed
 }
 
@@ -141,7 +141,7 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
-        guard case .loaded(let wooWPComPlan) = upgradeViewState else {
+        guard let wooWPComPlan = planCanBePurchasedFromCurrentState() else {
             return
         }
 
@@ -178,7 +178,16 @@ final class UpgradesViewModel: ObservableObject {
         } catch {
             DDLogError("purchasePlan \(error)")
             stopObservingInAppPurchaseDrawerDismissal()
-            upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed)
+            upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan))
+        }
+    }
+
+    private func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
+        switch upgradeViewState {
+        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
+            return plan
+        default:
+            return nil
         }
     }
 

@@ -66,37 +66,45 @@ struct UpgradesErrorView: View {
     let shouldRetry: Bool = true
 
     /// Closure invoked when the "Retry" button is tapped
-    var onRetryButtonTapped: (() -> Void)?
+    var onRetryButtonTapped: (() -> Void) = {}
 
     /// Closure invoked when the "Try payment again" buton is tapped
-    var onRetryPaymentButtonTapped: (() -> Void)?
+    var onRetryPaymentButtonTapped: (() -> Void) = {}
 
     /// Closure invoked when the "Cancel upgrade" button is tapped
-    var onCancelUpgradeTapped: (() -> Void)?
+    var onCancelUpgradeTapped: (() -> Void) = {}
 
-    init(_ upgradeError: UpgradesError) {
+    init(_ upgradeError: UpgradesError,
+         onRetryButtonTapped: @escaping (() -> Void),
+         onRetryPaymentButtonTapped: @escaping (() -> Void),
+         onCancelUpgradeTapped: @escaping (() -> Void) ) {
         self.upgradeError = upgradeError
+        self.onRetryButtonTapped = onRetryButtonTapped
+        self.onRetryPaymentButtonTapped = onRetryPaymentButtonTapped
+        self.onCancelUpgradeTapped = onCancelUpgradeTapped
     }
 
     var body: some View {
         VStack(alignment: .center) {
-            Spacer()
             Image(uiImage: .planUpgradeError)
                 .frame(maxWidth: .infinity, alignment: .center)
 
-            VStack() {
+            VStack(alignment: .center) {
                 switch upgradeError {
                 case .fetchError:
-                    Text(Localization.fetchErrorMessage)
-                        .bold()
-                        .headlineStyle()
-                    Button(Localization.retry) {
-                        // TODO: Handle retry
-                        onRetryButtonTapped?()
+                    VStack(alignment: .center) {
+                        Text(Localization.fetchErrorMessage)
+                            .bold()
+                            .headlineStyle()
+                            .multilineTextAlignment(.center)
+                        Button(Localization.retry) {
+                            // TODO: Handle retry
+                            onRetryButtonTapped()
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .fixedSize(horizontal: true, vertical: true)
+                        .renderedIf(shouldRetry)
                     }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .fixedSize(horizontal: true, vertical: true)
-                    .renderedIf(shouldRetry)
                 case .maximumSitesUpgraded, .entitlementsError:
                     Text(Localization.maximumSitesUpgradedErrorMessage)
                         .bold()
@@ -116,18 +124,21 @@ struct UpgradesErrorView: View {
                         .foregroundColor(.secondary)
                     Button(Localization.retryPaymentButtonText) {
                         // TODO: Handle retry
-                        onRetryPaymentButtonTapped?()
+                        onRetryPaymentButtonTapped()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
                     Button(Localization.cancelUpgradeButtonText) {
                         // TODO: Handle cancel flow
-                        onCancelUpgradeTapped?()
+                        onCancelUpgradeTapped()
                     }
                     .buttonStyle(SecondaryButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
-                default:
-                    Text("Other error")
+                case .inAppPurchasesNotSupported:
+                    // TODO:
+                    // We shouldn't reach this option
+                    // Redirect to web purchases instead
+                    EmptyView()
                 }
             }
             Spacer()

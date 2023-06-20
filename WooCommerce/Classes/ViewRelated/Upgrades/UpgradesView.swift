@@ -70,15 +70,14 @@ struct UpgradesView: View {
 
 struct UpgradesErrorView: View {
 
-    let upgradeError: UpgradesError
-    let errorTitle: String? = nil
-    let errorSubtitle: String? = nil
-    let shouldRetry: Bool = true
+    private let upgradeError: UpgradesError
 
     /// Closure invoked when the "Retry" or "Try payment again" button is tapped
+    ///
     var onRetryButtonTapped: (() -> Void)
 
     /// Closure invoked when the "Cancel upgrade" button is tapped
+    /// 
     var onCancelUpgradeTapped: (() -> Void) = {}
 
     init(_ upgradeError: UpgradesError,
@@ -107,7 +106,6 @@ struct UpgradesErrorView: View {
                         }
                         .buttonStyle(PrimaryButtonStyle())
                         .fixedSize(horizontal: true, vertical: true)
-                        .renderedIf(shouldRetry)
                     }
                 case .maximumSitesUpgraded:
                     Text(Localization.maximumSitesUpgradedErrorMessage)

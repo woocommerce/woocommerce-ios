@@ -152,10 +152,15 @@ struct UpgradesErrorView: View {
                     .buttonStyle(SecondaryButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
                 case .inAppPurchasesNotSupported:
-                    // TODO:
-                    // We shouldn't reach this option
-                    // Redirect to web purchases instead
-                    EmptyView()
+                    Text(Localization.inAppPurchasesNotSupportedErrorMessage)
+                        .bold()
+                        .headlineStyle()
+                        .multilineTextAlignment(.center)
+                        .padding(.bottom)
+                    Text(Localization.inAppPurchasesNotSupportedErrorSubtitle)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
                 }
             }
         }
@@ -180,6 +185,12 @@ struct UpgradesErrorView: View {
         static let retryPaymentButtonText = NSLocalizedString("Try Payment Again", comment: "")
 
         static let cancelUpgradeButtonText = NSLocalizedString("Cancel Upgrade", comment: "")
+
+        static let inAppPurchasesNotSupportedErrorMessage = NSLocalizedString("In-App Purchases not supported",
+                                                                              comment: "")
+
+        static let inAppPurchasesNotSupportedErrorSubtitle = NSLocalizedString("Please contact support for assistance.",
+                                                                               comment: "")
 
     }
 }

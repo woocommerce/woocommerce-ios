@@ -22,6 +22,8 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 }
 
 struct UpgradesView: View {
+    @Environment(\.presentationMode) var presentationMode
+
     @ObservedObject var upgradesViewModel: UpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
@@ -50,9 +52,14 @@ struct UpgradesView: View {
                 EmptyCompletedView()
             case .error(let upgradeError):
                 UpgradesErrorView(upgradeError,
-                                  onRetryButtonTapped: {upgradesViewModel.retry()},
-                                  onRetryPaymentButtonTapped: {},
-                                  onCancelUpgradeTapped: {})
+                                  onRetryButtonTapped: {
+                    upgradesViewModel.retry()
+                },
+                                  onRetryPaymentButtonTapped: {
+                },
+                                  onCancelUpgradeTapped: {
+                    presentationMode.wrappedValue.dismiss()
+                })
                 .padding(Layout.padding)
             }
             Spacer()

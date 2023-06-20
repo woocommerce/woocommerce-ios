@@ -11,7 +11,6 @@ final class TooltipPresenter {
         static let horizontalBufferMargin: CGFloat = 20
         static let tooltipTopConstraintAnimationOffset: CGFloat = 8
         static let tooltipAnimationDuration: TimeInterval = 0.2
-        static let anchorBottomConstraintConstant: CGFloat = 58
     }
 
     enum TooltipVerticalPosition {
@@ -142,7 +141,7 @@ final class TooltipPresenter {
     private func setUpTooltipConstraints() {
         tooltip.translatesAutoresizingMaskIntoConstraints = false
 
-        var tooltipConstraints = [
+        var tooltipConstraints: [NSLayoutConstraint?] = [
             tooltip.centerXAnchor.constraint(equalTo: containerView.centerXAnchor, constant: extraArrowOffsetX())
         ]
 
@@ -150,9 +149,15 @@ final class TooltipPresenter {
         case .view(let targetView):
             switch tooltipOrientation() {
             case .bottom:
-                tooltipTopConstraint = targetView.topAnchor.constraint(equalTo: tooltip.bottomAnchor)
+                tooltipTopConstraint = targetView.topAnchor.constraint(
+                    equalTo: tooltip.bottomAnchor,
+                    constant: totalVerticalBuffer
+                )
             case .top:
-                tooltipTopConstraint = tooltip.topAnchor.constraint(equalTo: targetView.bottomAnchor)
+                tooltipTopConstraint = tooltip.topAnchor.constraint(
+                    equalTo: targetView.bottomAnchor,
+                    constant: totalVerticalBuffer
+                )
             }
         case .point(let targetPoint):
             switch tooltipOrientation() {
@@ -163,12 +168,12 @@ final class TooltipPresenter {
             case .top:
                 tooltipTopConstraint = tooltip.topAnchor.constraint(
                     equalTo: containerView.topAnchor,
-                    constant: targetPoint().y)
+                    constant: targetPoint().y + totalVerticalBuffer)
             }
         }
 
-        tooltipConstraints.append(tooltipTopConstraint!)
-        NSLayoutConstraint.activate(tooltipConstraints)
+        tooltipConstraints.append(tooltipTopConstraint)
+        NSLayoutConstraint.activate(tooltipConstraints.compactMap { $0 })
     }
 
     /// `orientationDidChangeNotification` is published when the device is at `faceUp` or `faceDown`

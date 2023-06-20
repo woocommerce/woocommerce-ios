@@ -58,15 +58,13 @@ final class CouponLineDetailsViewModel: ObservableObject {
     func validateAndSaveData(onCompletion: @escaping (Bool) -> Void) {
         let action = CouponAction.validateCouponCode(code: code.lowercased(), siteID: siteID) { [weak self] result in
             switch result {
-            case let .success(couponExistsRemotely):
-                if couponExistsRemotely {
-                    self?.saveData()
-                    onCompletion(true)
-                } else {
-                    self?.notice = Notice(title: Localization.couponNotFoundNoticeTitle,
-                                          feedbackType: .error)
-                    onCompletion(false)
-                }
+            case .success(true):
+                self?.saveData()
+                onCompletion(true)
+            case .success(false):
+                self?.notice = Notice(title: Localization.couponNotFoundNoticeTitle,
+                                      feedbackType: .error)
+                onCompletion(false)
             case .failure(_):
                 self?.notice = Notice(title: Localization.couponNotValidatedNoticeTitle,
                                       feedbackType: .error)

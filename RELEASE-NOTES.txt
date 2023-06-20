@@ -2,7 +2,7 @@
 
 14.2
 -----
-
+- [Internal] Blaze status check was updated to save an API request. The Blaze eligibility for each site should remain the same. [https://github.com/woocommerce/woocommerce-ios/pull/10020]
 
 14.1
 -----

@@ -1994,6 +1994,31 @@ final class MigrationTests: XCTestCase {
         let isSiteOwner = try XCTUnwrap(migratedSiteEntity.value(forKey: "isSiteOwner") as? Bool)
         XCTAssertFalse(isSiteOwner, "Confirm expected property exists, and is false.")
     }
+
+    func test_migrating_from_90_to_91_adds_new_isAdmin_and_canBlaze_attributes() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 90")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["isAdmin"], "Precondition. Property does not exist.")
+        XCTAssertNil(site.entity.attributesByName["canBlaze"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 91")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSiteEntity = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let isAdmin = try XCTUnwrap(migratedSiteEntity.value(forKey: "isAdmin") as? Bool)
+        XCTAssertFalse(isAdmin, "Confirm expected property exists, and is false by default.")
+
+        let canBlaze = try XCTUnwrap(migratedSiteEntity.value(forKey: "canBlaze") as? Bool)
+        XCTAssertFalse(canBlaze, "Confirm expected property exists, and is false by default.")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

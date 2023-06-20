@@ -21,6 +21,7 @@ enum ProductFormSection: Equatable {
         case variationName(name: String)
         case description(description: String?, isEditable: Bool, isDescriptionAIEnabled: Bool)
         case descriptionAI
+        case learnMoreAboutAI
     }
 
     enum SettingsRow: Equatable {

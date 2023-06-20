@@ -23,6 +23,8 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         name.isNotEmpty && features.isNotEmpty
     }
 
+    let isProductNameEditable: Bool
+
     private let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
@@ -42,6 +44,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.onApply = onApply
+        self.isProductNameEditable = name.isEmpty
     }
 
     /// Generates product description async.
@@ -53,17 +56,6 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         task = Task { @MainActor in
             let result = await generateProductDescription()
             handleGenerationResult(result)
-        }
-    }
-
-    /// Stops or starts product description generation, depending on whether it is in progress.
-    func toggleDescriptionGeneration() {
-        if isGenerationInProgress {
-            analytics.track(event: .ProductFormAI.productDescriptionAIPauseButtonTapped())
-            task?.cancel()
-            isGenerationInProgress = false
-        } else {
-            generateDescription()
         }
     }
 

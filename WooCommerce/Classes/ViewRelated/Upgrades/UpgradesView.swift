@@ -65,8 +65,14 @@ struct UpgradesErrorView: View {
     let errorSubtitle: String? = nil
     let shouldRetry: Bool = true
 
-    /// Closure invoked when the "Retry" button is pressed
+    /// Closure invoked when the "Retry" button is tapped
     var onRetryButtonTapped: (() -> Void)?
+
+    /// Closure invoked when the "Try payment again" buton is tapped
+    var onRetryPaymentButtonTapped: (() -> Void)?
+
+    /// Closure invoked when the "Cancel upgrade" button is tapped
+    var onCancelUpgradeTapped: (() -> Void)?
 
     init(_ upgradeError: UpgradesError) {
         self.upgradeError = upgradeError
@@ -85,6 +91,7 @@ struct UpgradesErrorView: View {
                         .bold()
                         .headlineStyle()
                     Button(Localization.retry) {
+                        // TODO: Handle retry
                         onRetryButtonTapped?()
                     }
                     .buttonStyle(PrimaryButtonStyle())
@@ -97,6 +104,28 @@ struct UpgradesErrorView: View {
                     Text(Localization.maximumSitesUpgradedErrorSubtitle)
                         .font(.body)
                         .foregroundColor(.secondary)
+                case .purchaseError:
+                    Text(Localization.purchaseErrorMessage1)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                    Text(Localization.purchaseErrorMessage2)
+                        .bold()
+                        .headlineStyle()
+                    Text(Localization.purchaseErrorMessage3)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                    Button(Localization.retryPaymentButtonText) {
+                        // TODO: Handle retry
+                        onRetryPaymentButtonTapped?()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .fixedSize(horizontal: true, vertical: true)
+                    Button(Localization.cancelUpgradeButtonText) {
+                        // TODO: Handle cancel flow
+                        onCancelUpgradeTapped?()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                    .fixedSize(horizontal: true, vertical: true)
                 default:
                     Text("Other error")
                 }
@@ -116,6 +145,13 @@ struct UpgradesErrorView: View {
         static let maximumSitesUpgradedErrorSubtitle = NSLocalizedString("An Apple ID can only be used to upgrade one store",
                                                                          comment: "Clarification message displayed when " +
                                                                          "the merchant already has one store upgraded under the same Apple ID")
+        static let purchaseErrorMessage1 = NSLocalizedString("We encountered an error confirming your payment", comment: "")
+        static let purchaseErrorMessage2 = NSLocalizedString("No payment has been taken", comment: "")
+        static let purchaseErrorMessage3 = NSLocalizedString("Please try again, or contact support for assistance.", comment: "")
+        static let retryPaymentButtonText = NSLocalizedString("Try Payment Again", comment: "")
+
+        static let cancelUpgradeButtonText = NSLocalizedString("Cancel Upgrade", comment: "")
+
     }
 }
 

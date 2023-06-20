@@ -1129,6 +1129,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Upgrade plan error
+    ///
+    static var planUpgradeError: UIImage {
+        return UIImage(imageLiteralResourceName: "plan-upgrade-error")
+    }
+
     /// Megaphone Icon
     ///
     static var megaphoneIcon: UIImage {

@@ -58,6 +58,15 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
+    /// Sync wrapper for `fetchViewData`, so can be called directly from where this
+    /// ViewModel is referenced, outside of the initializer
+    ///
+    public func retryFetch() {
+        Task {
+            await fetchViewData()
+        }
+    }
+
     @MainActor
     private func fetchViewData() async {
         upgradeViewState = .loading

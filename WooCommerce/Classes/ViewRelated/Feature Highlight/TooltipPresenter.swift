@@ -7,7 +7,7 @@ import UIKit
 /// Must be retained to respond to device orientation and size category changes.
 final class TooltipPresenter {
     private enum Constants {
-        static let verticalTooltipDistanceToFocus: CGFloat = 8
+        static let verticalTooltipDistanceToFocus: CGFloat = 0
         static let horizontalBufferMargin: CGFloat = 20
         static let tooltipTopConstraintAnimationOffset: CGFloat = 8
         static let tooltipAnimationDuration: TimeInterval = 0.2

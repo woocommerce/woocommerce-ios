@@ -103,11 +103,10 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
             }
         }
 
-        // When
-        waitFor { promise in
-            viewModel.validateAndSaveData() { _ in
-                promise(())
-            }
+        viewModel.validateAndSaveData() { _ in }
+
+        waitUntil() {
+            retrievedCouponCode != nil
         }
 
         // Then

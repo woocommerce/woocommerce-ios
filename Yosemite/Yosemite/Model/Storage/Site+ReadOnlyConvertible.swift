@@ -47,6 +47,8 @@ extension Storage.Site: ReadOnlyConvertible {
                     jetpackConnectionActivePlugins: jetpackConnectionActivePlugins ?? [],
                     timezone: timezone ?? "",
                     gmtOffset: gmtOffset,
-                    isPublic: isPublic)
+                    isPublic: isPublic,
+                    canBlaze: canBlaze,
+                    isAdmin: isAdmin)
     }
 }

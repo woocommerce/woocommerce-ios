@@ -294,7 +294,7 @@ private extension RemoteOrderSynchronizer {
             }
             .handleEvents(receiveOutput: { order in
                 // Set a `blocking` state if the order contains new lines
-                self.state = .syncing(blocking: order.containsLocalLines())
+                self.state = .syncing(blocking: order.containsLocalLines() || order.isCouponLineChanged(self.currencyFormatter))
             })
             .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
@@ -453,16 +453,32 @@ private extension RemoteOrderSynchronizer {
 
 // MARK: Order Helpers
 private extension Order {
-    /// Returns true if the order contains any local line (items, shipping, fees, or coupons).
+    /// Returns true if the order contains any local line (items, shipping, or fees).
     ///
     func containsLocalLines() -> Bool {
         let containsLocalLineItems = items.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.itemID) }
         let containsLocalShippingLines = shippingLines.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.shippingID) }
         let containsLocalFeeLines = fees.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.feeID) }
-        let containsLocalCoupons = coupons.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.couponID) }
-        return containsLocalLineItems || containsLocalShippingLines || containsLocalFeeLines || containsLocalCoupons
+        return containsLocalLineItems || containsLocalShippingLines || containsLocalFeeLines
     }
-    
+
+    /// Returns true if the there are any changes to the coupon lines
+    ///
+    func isCouponLineChanged(_ currencyFormatter: CurrencyFormatter) -> Bool {
+        // Check for newly added local coupon lines
+        if (coupons.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.couponID) }) {
+            return true
+        }
+
+        // Check for deleted coupon lines by comparing the discount total
+        // from all coupons with order's `discountTotal`
+        let discountTotalFromOrder = currencyFormatter.convertToDecimal(discountTotal) ?? .zero
+        let discountTotalFromCoupons = coupons
+            .map { currencyFormatter.convertToDecimal($0.discount) ?? .zero }
+            .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+        return discountTotalFromOrder != discountTotalFromCoupons
+    }
+
     /// Removes the `itemID`, `total` & `subtotal` values from local items.
     /// This is needed to:
     /// 1. Create the item without the local ID, the remote API would fail otherwise.

@@ -1,7 +1,7 @@
 import UIKit
 
 final class Tooltip: UIView {
-    static let arrowWidth: CGFloat = 17
+    private static let arrowWidth: CGFloat = 17
 
     private enum Constants {
         static let leadingIconUnicode = "✨"

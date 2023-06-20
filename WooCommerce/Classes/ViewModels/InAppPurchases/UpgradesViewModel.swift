@@ -3,8 +3,8 @@ import SwiftUI
 import Yosemite
 
 enum UpgradeViewState {
-    case normal
     case loading
+    case loaded(WooWPComPlan)
     case waiting
     case completed
     case userNotAllowedToUpgrade
@@ -16,6 +16,7 @@ enum UpgradesError: Error {
     case fetchError
     case entitlementsError
     case inAppPurchasesNotSupported
+    case maximumSitesUpgraded
 }
 
 /// ViewModel for the Upgrades View
@@ -27,10 +28,7 @@ final class UpgradesViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
 
-    @Published var wpcomPlans: [WPComPlanProduct]
     @Published var entitledWpcomPlanIDs: Set<String>
-    @Published var upgradePlan: WooWPComPlan? = nil
-    @Published var isHardcodedPlanDataStillValid = true
 
     @Published var upgradeViewState: UpgradeViewState = .loading
 
@@ -43,7 +41,6 @@ final class UpgradesViewModel: ObservableObject {
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
         self.stores = stores
 
-        wpcomPlans = []
         entitledWpcomPlanIDs = []
 
         if let essentialPlan = WooPlan() {
@@ -63,8 +60,8 @@ final class UpgradesViewModel: ObservableObject {
 
     @MainActor
     private func fetchViewData() async {
+        upgradeViewState = .loading
         await fetchPlans()
-        await checkHardcodedPlanDataValidity()
     }
 
     /// Retrieves all In-App Purchases WPCom plans
@@ -73,27 +70,37 @@ final class UpgradesViewModel: ObservableObject {
     func fetchPlans() async {
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
-                DDLogError("IAP not supported")
+                upgradeViewState = .error(.inAppPurchasesNotSupported)
                 return
             }
 
-            self.wpcomPlans = try await inAppPurchasesPlanManager.fetchPlans()
+            async let wpcomPlans = inAppPurchasesPlanManager.fetchPlans()
+            async let hardcodedPlanDataIsValid = checkHardcodedPlanDataValidity()
 
-            await loadUserEntitlements()
-            if entitledWpcomPlanIDs.isEmpty {
-                self.upgradePlan = retrievePlanDetailsIfAvailable(.essentialMonthly)
+            try await loadUserEntitlements(for: wpcomPlans)
+            guard entitledWpcomPlanIDs.isEmpty else {
+                upgradeViewState = .error(.maximumSitesUpgraded)
+                return
             }
-            upgradeViewState = .normal
+
+            guard let plan = try await retrievePlanDetailsIfAvailable(.essentialMonthly,
+                                                                      from: wpcomPlans,
+                                                                      hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
+            else {
+                upgradeViewState = .error(.fetchError)
+                return
+            }
+            upgradeViewState = .loaded(plan)
         } catch {
             DDLogError("fetchPlans \(error)")
-            upgradeViewState = .error(UpgradesError.fetchError)
+            upgradeViewState = .error(.fetchError)
         }
     }
 
 
     @MainActor
-    private func checkHardcodedPlanDataValidity() async {
-        isHardcodedPlanDataStillValid = await withCheckedContinuation { continuation in
+    private func checkHardcodedPlanDataValidity() async -> Bool {
+        return await withCheckedContinuation { continuation in
             stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
                 .hardcodedPlanUpgradeDetailsMilestone1AreAccurate,
                 defaultValue: true) { isEnabled in
@@ -109,7 +116,14 @@ final class UpgradesViewModel: ObservableObject {
     func purchasePlan(with planID: String) async {
         do {
             upgradeViewState = .waiting
-            let _ = try await inAppPurchasesPlanManager.purchasePlan(with: planID, for: self.siteID)
+            let result = try await inAppPurchasesPlanManager.purchasePlan(with: planID,
+                                                                          for: siteID)
+            // TODO: handle `pending` here... somehow – requires research
+            // TODO: handle `.success(.unverified(_))` here... somehow
+            guard case .success(.verified(_)) = result else {
+                await fetchViewData()
+                return
+            }
             upgradeViewState = .completed
         } catch {
             DDLogError("purchasePlan \(error)")
@@ -119,13 +133,16 @@ final class UpgradesViewModel: ObservableObject {
 
     /// Retrieves a specific In-App Purchase WPCom plan from the available products
     ///
-    func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans) -> WooWPComPlan? {
-        let match = type.rawValue
-        guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == match }) else {
+    private func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans,
+                                                from wpcomPlans: [WPComPlanProduct],
+                                                hardcodedPlanDataIsValid: Bool) -> WooWPComPlan? {
+        guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == type.rawValue }),
+              let wooPlan = localPlans.first(where: { $0.id == wpcomPlanProduct.id }) else {
             return nil
         }
-        let wooPlan = localPlans.first { $0.id == wpcomPlanProduct.id }
-        return WooWPComPlan(wpComPlan: wpcomPlanProduct, wooPlan: wooPlan)
+        return WooWPComPlan(wpComPlan: wpcomPlanProduct,
+                            wooPlan: wooPlan,
+                            hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
     }
 }
 
@@ -134,9 +151,9 @@ private extension UpgradesViewModel {
     /// via In-App Purchases
     ///
     @MainActor
-    func loadUserEntitlements() async {
+    func loadUserEntitlements(for plans: [WPComPlanProduct]) async {
         do {
-            for wpcomPlan in self.wpcomPlans {
+            for wpcomPlan in plans {
                 if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: wpcomPlan.id) {
                     self.entitledWpcomPlanIDs.insert(wpcomPlan.id)
                 } else {
@@ -158,5 +175,6 @@ extension UpgradesViewModel {
 
 struct WooWPComPlan {
     let wpComPlan: WPComPlanProduct
-    let wooPlan: WooPlan?
+    let wooPlan: WooPlan
+    let hardcodedPlanDataIsValid: Bool
 }

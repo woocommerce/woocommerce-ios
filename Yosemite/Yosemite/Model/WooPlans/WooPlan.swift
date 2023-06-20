@@ -11,14 +11,14 @@ public struct WooPlan: Decodable {
     public let headerImageCardColor: Color
     public let planFeatureGroups: [WooPlanFeatureGroup]
 
-    init(id: String,
-         name: String,
-         shortName: String,
-         planFrequency: PlanFrequency,
-         planDescription: String,
-         headerImageFileName: String,
-         headerImageCardColor: Color,
-         planFeatureGroups: [WooPlanFeatureGroup]) {
+    public init(id: String,
+                name: String,
+                shortName: String,
+                planFrequency: PlanFrequency,
+                planDescription: String,
+                headerImageFileName: String,
+                headerImageCardColor: Color,
+                planFeatureGroups: [WooPlanFeatureGroup]) {
         self.id = id
         self.name = name
         self.shortName = shortName

@@ -120,18 +120,18 @@ struct UpgradesErrorView: View {
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                 case .purchaseError:
-                    Text(Localization.purchaseErrorMessage1)
+                    Text(Localization.purchaseErrorTitleMessage)
                         .font(.body)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.center)
                         .padding(.bottom)
-                    Text(Localization.purchaseErrorMessage2)
+                    Text(Localization.purchaseErrorAccentMessage)
                         .bold()
                         .headlineStyle()
                         .multilineTextAlignment(.center)
                         .padding(.bottom)
-                    Text(Localization.purchaseErrorMessage3)
+                    Text(Localization.purchaseErrorSubtitleMessage)
                         .font(.body)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -166,29 +166,48 @@ struct UpgradesErrorView: View {
     }
 
     private enum Localization {
-        static let retry = NSLocalizedString("Retry", comment: "Title of the button to attempt a retry")
-        static let fetchErrorMessage = NSLocalizedString("We encountered an error loading plan information",
-                                                         comment: "Error message displayed when " +
-                                                         "we're unable to fetch In-App Purchases plans from the server")
-        static let maximumSitesUpgradedErrorMessage = NSLocalizedString("A WooCommerce app store subscription with your Apple ID already exists",
-                                                                        comment: "Error message displayed when " +
-                                                                        "the merchant already has one store upgraded under the same Apple ID")
-        static let maximumSitesUpgradedErrorSubtitle = NSLocalizedString("An Apple ID can only be used to upgrade one store",
-                                                                         comment: "Clarification message displayed when " +
-                                                                         "the merchant already has one store upgraded under the same Apple ID")
-        static let purchaseErrorMessage1 = NSLocalizedString("We encountered an error confirming your payment", comment: "")
-        static let purchaseErrorMessage2 = NSLocalizedString("No payment has been taken", comment: "")
-        static let purchaseErrorMessage3 = NSLocalizedString("Please try again, or contact support for assistance.", comment: "")
-        static let retryPaymentButtonText = NSLocalizedString("Try Payment Again", comment: "")
+        static let retry = NSLocalizedString(
+            "Retry", comment: "Title of the button to attempt a retry when fetching or purchasing plans fais.")
 
-        static let cancelUpgradeButtonText = NSLocalizedString("Cancel Upgrade", comment: "")
+        static let fetchErrorMessage = NSLocalizedString(
+            "We encountered an error loading plan information", comment: "Error message displayed when " +
+            "we're unable to fetch In-App Purchases plans from the server.")
 
-        static let inAppPurchasesNotSupportedErrorMessage = NSLocalizedString("In-App Purchases not supported",
-                                                                              comment: "")
+        static let maximumSitesUpgradedErrorMessage = NSLocalizedString(
+            "A WooCommerce app store subscription with your Apple ID already exists",
+            comment: "Error message displayed when the merchant already has one store upgraded under the same Apple ID.")
 
-        static let inAppPurchasesNotSupportedErrorSubtitle = NSLocalizedString("Please contact support for assistance.",
-                                                                               comment: "")
+        static let maximumSitesUpgradedErrorSubtitle = NSLocalizedString(
+            "An Apple ID can only be used to upgrade one store",
+            comment: "Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID.")
 
+        static let purchaseErrorTitleMessage = NSLocalizedString(
+            "We encountered an error confirming your payment",
+            comment: "Error message displayed when a payment fails when attempting to purchase a plan.")
+
+        static let purchaseErrorAccentMessage = NSLocalizedString(
+            "No payment has been taken",
+            comment: "Bolded message confirming that no payment has been taken when the upgrade failed.")
+
+        static let purchaseErrorSubtitleMessage = NSLocalizedString(
+            "Please try again, or contact support for assistance",
+            comment: "Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID.")
+
+        static let retryPaymentButtonText = NSLocalizedString(
+            "Try Payment Again",
+            comment: "Title of the button displayed when purchasing a plan fails, so the merchant can try again.")
+
+        static let cancelUpgradeButtonText = NSLocalizedString(
+            "Cancel Upgrade",
+            comment: "Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.")
+
+        static let inAppPurchasesNotSupportedErrorMessage = NSLocalizedString(
+            "In-App Purchases not supported",
+            comment: "Error message displayed when In-App Purchases are not supported.")
+
+        static let inAppPurchasesNotSupportedErrorSubtitle = NSLocalizedString(
+            "Please contact support for assistance.",
+            comment: "Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed.")
     }
 }
 

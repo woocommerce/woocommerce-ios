@@ -292,11 +292,11 @@ final class Tooltip: UIView {
         containerBottomConstraint = bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
 
         NSLayoutConstraint.activate([
-            containerTopConstraint!,
+            containerTopConstraint,
             containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
             trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            containerBottomConstraint!
-        ])
+            containerBottomConstraint
+        ].compactMap { $0 })
     }
 
     private func setUpConstraints() {

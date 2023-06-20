@@ -61,7 +61,8 @@ struct UpgradesView: View {
                                       onRetryButtonTapped: {
                         upgradesViewModel.retryFetch()
                     })
-                    .padding(Layout.padding)
+                    .padding(.top, Layout.errorViewTopPadding)
+                    .padding(.horizontal, Layout.errorViewHorizontalPadding)
 
                     Spacer()
                 }
@@ -131,12 +132,16 @@ struct PrePurchaseUpgradesErrorView: View {
         }
         .padding(.horizontal, Layout.horizontalEdgesPadding)
         .padding(.vertical, Layout.verticalEdgesPadding)
-        .background(Color(UIColor.secondarySystemGroupedBackground))
+        .background {
+            RoundedRectangle(cornerSize: .init(width: Layout.cornerRadius, height: Layout.cornerRadius))
+                .fill(Color(UIColor.secondarySystemGroupedBackground))
+                  }
     }
 
     private enum Layout {
         static let horizontalEdgesPadding: CGFloat = 16
         static let verticalEdgesPadding: CGFloat = 40
+        static let cornerRadius: CGFloat = 12
         static let spacingBetweenImageAndText: CGFloat = 32
         static let textSpacing: CGFloat = 16
     }
@@ -463,6 +468,8 @@ private extension UpgradesView {
     }
 
     struct Layout {
+        static let errorViewHorizontalPadding: CGFloat = 20
+        static let errorViewTopPadding: CGFloat = 36
         static let padding: CGFloat = 16
         static let contentSpacing: CGFloat = 8
         static let smallPadding: CGFloat = 8

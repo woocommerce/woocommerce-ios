@@ -55,9 +55,6 @@ struct UpgradesView: View {
                                   onRetryButtonTapped: {
                     upgradesViewModel.retryFetch()
                 },
-                                  onRetryPaymentButtonTapped: {
-                    upgradesViewModel.retryFetch()
-                },
                                   onCancelUpgradeTapped: {
                     presentationMode.wrappedValue.dismiss()
                 })
@@ -78,22 +75,17 @@ struct UpgradesErrorView: View {
     let errorSubtitle: String? = nil
     let shouldRetry: Bool = true
 
-    /// Closure invoked when the "Retry" button is tapped
+    /// Closure invoked when the "Retry" or "Try payment again" button is tapped
     var onRetryButtonTapped: (() -> Void)
-
-    /// Closure invoked when the "Try payment again" buton is tapped
-    var onRetryPaymentButtonTapped: (() -> Void) = {}
 
     /// Closure invoked when the "Cancel upgrade" button is tapped
     var onCancelUpgradeTapped: (() -> Void) = {}
 
     init(_ upgradeError: UpgradesError,
          onRetryButtonTapped: @escaping (() -> Void),
-         onRetryPaymentButtonTapped: @escaping (() -> Void),
          onCancelUpgradeTapped: @escaping (() -> Void) ) {
         self.upgradeError = upgradeError
         self.onRetryButtonTapped = onRetryButtonTapped
-        self.onRetryPaymentButtonTapped = onRetryPaymentButtonTapped
         self.onCancelUpgradeTapped = onCancelUpgradeTapped
     }
 
@@ -146,14 +138,12 @@ struct UpgradesErrorView: View {
                         .multilineTextAlignment(.center)
                         .padding(.bottom)
                     Button(Localization.retryPaymentButtonText) {
-                        // TODO: Handle retry
-                        onRetryPaymentButtonTapped()
+                        onRetryButtonTapped()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
                     .padding(.bottom)
                     Button(Localization.cancelUpgradeButtonText) {
-                        // TODO: Handle cancel flow
                         onCancelUpgradeTapped()
                     }
                     .buttonStyle(SecondaryButtonStyle())

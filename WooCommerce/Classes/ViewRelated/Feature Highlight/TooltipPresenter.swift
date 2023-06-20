@@ -28,9 +28,7 @@ final class TooltipPresenter {
     private var spotlightView: QuickStartSpotlightView?
     private var primaryTooltipAction: (() -> Void)?
     private var secondaryTooltipAction: (() -> Void)?
-    private var anchor: TooltipAnchor?
     private var tooltipTopConstraint: NSLayoutConstraint?
-    private var anchorAction: (() -> Void)?
     private let target: Target
 
     private var targetMidX: CGFloat {
@@ -102,33 +100,6 @@ final class TooltipPresenter {
         )
     }
 
-    func attachAnchor(withTitle title: String, onView view: UIView, anchorAction: @escaping (() -> Void)) {
-        let anchor = TooltipAnchor()
-        self.anchor = anchor
-        self.anchorAction = anchorAction
-        anchor.title = title
-        anchor.addTarget(self, action: #selector(didTapAnchor), for: .touchUpInside)
-        anchor.translatesAutoresizingMaskIntoConstraints = false
-        anchor.alpha = 0
-        view.addSubview(anchor)
-
-        NSLayoutConstraint.activate([
-            anchor.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            view.safeAreaLayoutGuide.bottomAnchor.constraint(
-                equalTo: anchor.bottomAnchor,
-                constant: Constants.anchorBottomConstraintConstant
-            )
-        ])
-    }
-
-    func toggleAnchorVisibility(_ isVisible: Bool) {
-        guard let anchor = anchor else {
-            return
-        }
-
-        anchor.toggleVisibility(isVisible)
-    }
-
     func showTooltip() {
         containerView.addSubview(tooltip)
         self.tooltip.alpha = 0
@@ -153,7 +124,6 @@ final class TooltipPresenter {
             tooltipTopConstraint.constant += Constants.tooltipTopConstraintAnimationOffset
             self.containerView.layoutIfNeeded()
         } completion: { isSuccess in
-            self.anchor = nil
             self.primaryTooltipAction?()
             self.tooltip.removeFromSuperview()
             self.spotlightView?.removeFromSuperview()
@@ -180,10 +150,6 @@ final class TooltipPresenter {
                 self.showSpotlightView()
             }
         }
-    }
-
-    @objc private func didTapAnchor() {
-        anchorAction?()
     }
 
     private func configureDismissal() {

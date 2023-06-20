@@ -1980,9 +1980,9 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productSharing)
     }
 
-    // MARK: - ProductAction.retrieveFirstItemMatchFromSKU
+    // MARK: - ProductAction.retrieveFirstPurchasableItemMatchFromSKU
 
-    func test_retrieveFirstItemMatchFromSKU_when_successful_exact_SKU_match_product_then_returns_matched_product() throws {
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_successful_exact_SKU_match_product_then_returns_matched_product() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
@@ -1995,7 +1995,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let productSKU = "chocobars"
         let result = waitFor { promise in
-            let action = ProductAction.retrieveFirstItemMatchFromSKU(siteID: self.sampleSiteID,
+            let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
                                                                         sku: productSKU,
                                                                         onCompletion: { product in
                 promise(product)
@@ -2014,7 +2014,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(productMatch.sku, expectedProductSKU)
     }
 
-    func test_retrieveFirstItemMatchFromSKU_when_successful_exact_SKU_match_product_variation_then_returns_matched_product_variation() throws {
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_successful_exact_SKU_match_product_variation_then_returns_matched_product_variation() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search-variation")
@@ -2028,7 +2028,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let productSKU = "chocobars"
         let result = waitFor { promise in
-            let action = ProductAction.retrieveFirstItemMatchFromSKU(siteID: self.sampleSiteID,
+            let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
                                                                         sku: productSKU,
                                                                         onCompletion: { product in
                 promise(product)
@@ -2047,7 +2047,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(variationMatch.sku, expectedProductSKU)
     }
 
-    func test_retrieveFirstItemMatchFromSKU_when_partial_SKU_match_then_returns_not_found_error() throws {
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_partial_SKU_match_then_returns_not_found_error() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
@@ -2055,7 +2055,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let productSKU = "choco"
         let result = waitFor { promise in
-            let action = ProductAction.retrieveFirstItemMatchFromSKU(siteID: self.sampleSiteID,
+            let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
                                                                         sku: productSKU,
                                                                         onCompletion: { product in
                 promise(product)
@@ -2068,7 +2068,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.notFound)
     }
 
-    func test_retrieveFirstItemMatchFromSKU_when_unsuccessful_SKU_match_then_returns_not_found_error() throws {
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_unsuccessful_SKU_match_then_returns_not_found_error() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
@@ -2076,7 +2076,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let productSKU = "non-existing-product-sku"
         let result = waitFor { promise in
-            let action = ProductAction.retrieveFirstItemMatchFromSKU(siteID: self.sampleSiteID,
+            let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
                                                                         sku: productSKU,
                                                                         onCompletion: { product in
                 promise(product)
@@ -2090,7 +2090,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.notFound)
     }
 
-    func test_retrieveFirstItemMatchFromSKU_when_unsuccessful_SKU_match_then_does_not_upsert_product_to_storage() throws {
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_unsuccessful_SKU_match_then_does_not_upsert_product_to_storage() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
@@ -2098,7 +2098,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let nonExistingProductSKU = "non-existing-product-sku"
         let onFailure = waitFor { promise in
-            let action = ProductAction.retrieveFirstItemMatchFromSKU(siteID: self.sampleSiteID,
+            let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
                                                                         sku: nonExistingProductSKU,
                                                                         onCompletion: { product in
                 promise(false)
@@ -2111,7 +2111,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 0)
     }
 
-    func test_retrieveFirstItemMatchFromSKU_when_successful_SKU_match_product_then_upserts_product_to_storage() {
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_successful_SKU_match_product_then_upserts_product_to_storage() {
          // Given
          let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
          let expectedProductSKU = "chocobars"
@@ -2122,7 +2122,7 @@ final class ProductStoreTests: XCTestCase {
 
          // When
          let onSuccess: Bool = waitFor { promise in
-             let action = ProductAction.retrieveFirstItemMatchFromSKU(siteID: self.sampleSiteID, sku: expectedProductSKU, onCompletion: { product in
+             let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID, sku: expectedProductSKU, onCompletion: { product in
                  promise(true)
              })
              store.onAction(action)
@@ -2136,7 +2136,7 @@ final class ProductStoreTests: XCTestCase {
          XCTAssertEqual(storedProduct?.sku, expectedProductSKU)
      }
 
-    func test_retrieveFirstItemMatchFromSKU_when_successful_SKU_match_variation_then_upserts_product_to_storage() {
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_successful_SKU_match_variation_then_upserts_product_to_storage() {
          // Given
          let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
          let expectedProductSKU = "chocobars"
@@ -2147,7 +2147,7 @@ final class ProductStoreTests: XCTestCase {
 
          // When
          let onSuccess: Bool = waitFor { promise in
-             let action = ProductAction.retrieveFirstItemMatchFromSKU(siteID: self.sampleSiteID, sku: expectedProductSKU, onCompletion: { product in
+             let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID, sku: expectedProductSKU, onCompletion: { product in
                  promise(true)
              })
              store.onAction(action)

@@ -1024,7 +1024,7 @@ private extension EditableOrderViewModel {
                     }
                 }()
 
-                return PaymentDataViewModel(siteID: siteID,
+                return PaymentDataViewModel(siteID: self.siteID,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",

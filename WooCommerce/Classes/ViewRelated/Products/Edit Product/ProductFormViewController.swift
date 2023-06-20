@@ -46,6 +46,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
     private let productImageUploader: ProductImageUploaderProtocol
+    private var tooltipPresenter: TooltipPresenter?
 
     private let currency: String
 
@@ -70,6 +71,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
+
+    private var tooltipUseCase = ProductDescriptionAITooltipUseCase()
+    private var didShowTooltip = false {
+        didSet {
+            tooltipUseCase.numberOfTimesWriteWithAITooltipIsShown += 1
+        }
+    }
 
     /// The coordinator for sharing products
     ///
@@ -629,6 +637,32 @@ private extension ProductFormViewController {
         let cellRect = tableView.rectForRow(at: indexPath)
         return tableView.bounds.contains(cellRect)
     }
+
+    func configureTooltipPresenter() {
+        guard shouldConfigureTooltipPresenter() && tooltipPresenter == nil else {
+            return
+        }
+
+        let tooltip = Tooltip()
+
+        tooltip.title = Localization.AITooltip.title
+        tooltip.message = Localization.AITooltip.message
+        tooltip.primaryButtonTitle = Localization.AITooltip.gotIt
+        tooltip.dismissalAction = { [weak self] in
+            self?.tooltipPresenter?.dismissTooltip()
+        }
+        tooltipPresenter = TooltipPresenter(
+            containerView: tableView,
+            tooltip: tooltip,
+            target: .point(tooltipTargetPoint)
+        )
+        tooltipPresenter?.tooltipVerticalPosition = .below
+
+        if isDescriptionAICellVisible() {
+            tooltipPresenter?.showTooltip()
+            didShowTooltip = true
+        }
+    }
 }
 
 // MARK: - Observations & responding to changes
@@ -789,6 +823,8 @@ private extension ProductFormViewController {
         } else {
             tableView.reloadData()
         }
+
+        configureTooltipPresenter()
     }
 
     func updateDataSourceActions() {

@@ -90,7 +90,7 @@ struct UpgradesErrorView: View {
 
     var body: some View {
         VStack(alignment: .center) {
-            Image(uiImage: .planUpgradeError)
+            Image("plan-upgrade-error")
                 .frame(maxWidth: .infinity, alignment: .center)
 
             VStack(alignment: .center) {

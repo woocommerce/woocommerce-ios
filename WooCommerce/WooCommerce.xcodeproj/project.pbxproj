@@ -2199,7 +2199,6 @@
 		EE45E29D2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E29C2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift */; };
 		EE45E29F2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E29E2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift */; };
 		EE45E2B72A409BA40085F227 /* Tooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B22A409B9E0085F227 /* Tooltip.swift */; };
-		EE45E2B82A409BA40085F227 /* TooltipAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2AF2A409B9D0085F227 /* TooltipAnchor.swift */; };
 		EE45E2B92A409BA40085F227 /* FeatureHighlightStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B02A409B9D0085F227 /* FeatureHighlightStore.swift */; };
 		EE45E2BA2A409BA40085F227 /* TooltipPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B12A409B9D0085F227 /* TooltipPresenter.swift */; };
 		EE45E2BD2A409C9E0085F227 /* QuickStartSpotlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2BC2A409C9E0085F227 /* QuickStartSpotlightView.swift */; };
@@ -4547,7 +4546,6 @@
 		EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingViewModelTests.swift; sourceTree = "<group>"; };
 		EE45E29C2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationCelebrationView.swift; sourceTree = "<group>"; };
 		EE45E29E2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationCelebrationViewModel.swift; sourceTree = "<group>"; };
-		EE45E2AF2A409B9D0085F227 /* TooltipAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipAnchor.swift; sourceTree = "<group>"; };
 		EE45E2B02A409B9D0085F227 /* FeatureHighlightStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureHighlightStore.swift; sourceTree = "<group>"; };
 		EE45E2B12A409B9D0085F227 /* TooltipPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipPresenter.swift; sourceTree = "<group>"; };
 		EE45E2B22A409B9E0085F227 /* Tooltip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tooltip.swift; sourceTree = "<group>"; };
@@ -10340,7 +10338,6 @@
 				EE45E2BB2A409C770085F227 /* SpotlightView */,
 				EE45E2B02A409B9D0085F227 /* FeatureHighlightStore.swift */,
 				EE45E2B22A409B9E0085F227 /* Tooltip.swift */,
-				EE45E2AF2A409B9D0085F227 /* TooltipAnchor.swift */,
 				EE45E2B12A409B9D0085F227 /* TooltipPresenter.swift */,
 			);
 			path = "Feature Highlight";
@@ -11883,7 +11880,6 @@
 				CE29A63029F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift in Sources */,
 				DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */,
 				EE45E2BF2A409E250085F227 /* UIColor+Tooltip.swift in Sources */,
-				EE45E2B82A409BA40085F227 /* TooltipAnchor.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
 				0262DA5B23A244830029AF30 /* Product+ShippingSettingsViewModels.swift in Sources */,
 				02D29A8E29F7C26000473D6D /* InputAccessoryView.swift in Sources */,

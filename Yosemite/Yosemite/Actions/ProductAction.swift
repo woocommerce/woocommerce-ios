@@ -1,6 +1,10 @@
 import Foundation
 import Networking
 
+public enum SKUSearchResult {
+    case product(Product)
+    case variation(ProductVariation)
+}
 
 /// ProductAction: Defines all of the Actions supported by the ProductStore.
 ///
@@ -65,7 +69,7 @@ public enum ProductAction: Action {
 
     /// Retrieves the first Product with exact-match SKU
     ///
-    case retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: (Result<Product, Error>) -> Void)
+    case retrieveFirstItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: (Result<SKUSearchResult, Error>) -> Void)
 
     /// Deletes all of the cached products.
     ///

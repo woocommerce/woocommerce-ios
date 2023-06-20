@@ -9,14 +9,18 @@ final class TextViewTableViewCell: UITableViewCell {
         var iconAccessibilityLabel: String? = nil
         var iconTint: UIColor? = nil
         var text: String? = nil
+        var attributedText: NSAttributedString? = nil
         var placeholder: String? = nil
         var textViewMinimumHeight: CGFloat? = nil
+        var isEditable: Bool = true
+        var isSelectable: Bool = false
         var isScrollEnabled: Bool = true
         var onTextChange: ((_ text: String) -> Void)? = nil
         var onTextDidBeginEditing: (() -> Void)? = nil
         var keyboardType: UIKeyboardType = .default
         var style: Style = .body
         var edgeInsets: UIEdgeInsets?
+        var onLinkTapped: ((URL) -> Void)?
     }
 
     @IBOutlet private weak var noteIconView: UIView!
@@ -52,6 +56,8 @@ final class TextViewTableViewCell: UITableViewCell {
         }
     }
 
+    private var onLinkTapped: ((URL) -> Void)?
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -67,6 +73,7 @@ final class TextViewTableViewCell: UITableViewCell {
         iconImage?.accessibilityLabel = viewModel.iconAccessibilityLabel
         iconTint = viewModel.iconTint
         noteTextView.text = viewModel.text
+        noteTextView.attributedText = viewModel.attributedText
         noteTextView.placeholder = viewModel.placeholder
         if let minimumHeight = viewModel.textViewMinimumHeight {
             textViewHeightConstraint.constant = minimumHeight
@@ -75,6 +82,12 @@ final class TextViewTableViewCell: UITableViewCell {
         noteTextView.onTextChange = viewModel.onTextChange
         noteTextView.onTextDidBeginEditing = viewModel.onTextDidBeginEditing
         noteTextView.keyboardType = viewModel.keyboardType
+        noteTextView.isEditable = viewModel.isEditable
+        noteTextView.isSelectable = viewModel.isSelectable
+        if let onLinkTapped = viewModel.onLinkTapped {
+            self.onLinkTapped = onLinkTapped
+            noteTextView.delegate = self
+        }
         self.applyStyle(style: viewModel.style)
 
         // Compensate for line fragment padding and container insets if icon is nil
@@ -99,12 +112,23 @@ final class TextViewTableViewCell: UITableViewCell {
     }
 }
 
+extension TextViewTableViewCell: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        if let onLinkTapped {
+            onLinkTapped(URL)
+            return false
+        }
+        return true
+    }
+}
+
 // Styles
 extension TextViewTableViewCell {
 
     enum Style {
         case body
         case headline
+        case caption
     }
 
     func applyStyle(style: Style) {
@@ -117,6 +141,10 @@ extension TextViewTableViewCell {
             noteTextView.adjustsFontForContentSizeCategory = true
             noteTextView.font = .headline
             noteTextView.textColor = .text
+        case .caption:
+            noteTextView.adjustsFontForContentSizeCategory = true
+            noteTextView.font = .caption1
+            noteTextView.textColor = .secondaryLabel
         }
     }
 }

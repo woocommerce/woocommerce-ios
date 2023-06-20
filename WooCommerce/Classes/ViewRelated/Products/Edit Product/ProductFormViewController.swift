@@ -592,6 +592,11 @@ private extension ProductFormViewController {
 
         updateMoreDetailsButtonVisibility()
     }
+
+    func shouldConfigureTooltipPresenter() -> Bool {
+        self.aiEligibilityChecker.isFeatureEnabled(.description)
+        && tooltipUseCase.shouldShowTooltip
+    }
 }
 
 // MARK: - Observations & responding to changes

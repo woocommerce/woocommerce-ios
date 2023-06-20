@@ -32,9 +32,11 @@ struct UpgradesView: View {
 
     var body: some View {
         VStack {
-            CurrentPlanDetailsView(planName: subscriptionsViewModel.planName, daysLeft: subscriptionsViewModel.planDaysLeft)
-
-            Spacer()
+            Group {
+                CurrentPlanDetailsView(planName: subscriptionsViewModel.planName, daysLeft: subscriptionsViewModel.planDaysLeft)
+                Spacer()
+            }
+            .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
             switch upgradesViewModel.upgradeViewState {
             case .userNotAllowedToUpgrade:

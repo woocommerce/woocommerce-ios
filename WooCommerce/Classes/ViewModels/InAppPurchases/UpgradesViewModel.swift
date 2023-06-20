@@ -10,6 +10,15 @@ enum UpgradeViewState {
     case completed
     case userNotAllowedToUpgrade
     case error(UpgradesError)
+
+    var shouldShowPlanDetailsView: Bool {
+        switch self {
+        case .loading, .loaded, .purchasing, .error, .userNotAllowedToUpgrade:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 enum UpgradesError: Error {

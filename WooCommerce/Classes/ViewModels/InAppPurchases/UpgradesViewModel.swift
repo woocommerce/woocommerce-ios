@@ -5,6 +5,7 @@ import Yosemite
 enum UpgradeViewState {
     case loading
     case loaded(WooWPComPlan)
+    case purchasing(WooWPComPlan)
     case waiting
     case completed
     case userNotAllowedToUpgrade
@@ -114,6 +115,11 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
+        guard case .loaded(let wooWPComPlan) = upgradeViewState else {
+            return
+        }
+
+        upgradeViewState = .purchasing(wooWPComPlan)
         do {
             let result = try await inAppPurchasesPlanManager.purchasePlan(with: planID,
                                                                           for: siteID)

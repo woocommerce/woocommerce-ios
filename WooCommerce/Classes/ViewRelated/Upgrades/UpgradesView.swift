@@ -43,8 +43,12 @@ struct UpgradesView: View {
                 OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
             case .loaded(let plan):
                 OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
-                    await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                    Task {
+                        await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                    }
                 })
+            case .purchasing(let plan):
+                OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
             case .waiting:
                 EmptyWaitingView()
             case .completed:
@@ -72,8 +76,8 @@ struct EmptyCompletedView: View {
 
 struct OwnerUpgradesView: View {
     @State var upgradePlan: WooWPComPlan
-    @State private var isPurchasing = false
-    let purchasePlanAction: () async -> Void
+    @State var isPurchasing = false
+    let purchasePlanAction: () -> Void
     @State var isLoading: Bool = false
 
     var body: some View {
@@ -129,11 +133,7 @@ struct OwnerUpgradesView: View {
             VStack {
                 let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
                 Button(buttonText) {
-                    Task {
-                        isPurchasing = true
-                        await purchasePlanAction()
-                        isPurchasing = false
-                    }
+                    purchasePlanAction()
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
                 .disabled(isLoading)

@@ -104,9 +104,9 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         }
 
         // When
-        _ = waitFor { promise in
-            viewModel.validateAndSaveData() { shouldDismiss in
-                promise(shouldDismiss)
+        waitFor { promise in
+            viewModel.validateAndSaveData() { _ in
+                promise(())
             }
         }
 

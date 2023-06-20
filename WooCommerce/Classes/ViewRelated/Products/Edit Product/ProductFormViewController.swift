@@ -341,6 +341,18 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
 
+    // MARK: - UIScrollViewDelegate
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !didShowTooltip else {
+            return
+        }
+
+        if isDescriptionAICellVisible() {
+            tooltipPresenter?.showTooltip()
+            didShowTooltip = true
+        }
+    }
+
     // MARK: - UITableViewDelegate
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

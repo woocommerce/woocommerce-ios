@@ -82,7 +82,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
 
     func test_validateAndSaveData_then_calls_action_with_right_parameters() {
         // Given
-        let passedCouponCode = "coupon-code"
+        let passedCouponCode = "COUPON_CODE"
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                    code: passedCouponCode,
@@ -111,7 +111,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(passedCouponCode, retrievedCouponCode)
+        XCTAssertEqual(passedCouponCode.lowercased(), retrievedCouponCode)
         XCTAssertEqual(sampleSiteID, retrievedSiteID)
     }
 

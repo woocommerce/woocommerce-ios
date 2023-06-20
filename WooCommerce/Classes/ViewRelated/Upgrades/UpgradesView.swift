@@ -90,6 +90,13 @@ struct UpgradesErrorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
                     .renderedIf(shouldRetry)
+                case .maximumSitesUpgraded:
+                    Text(Localization.maximumSitesUpgradedErrorMessage)
+                        .bold()
+                        .headlineStyle()
+                    Text(Localization.maximumSitesUpgradedErrorSubtitle)
+                        .font(.body)
+                        .foregroundColor(.secondary)
                 default:
                     Text("Other error")
                 }
@@ -103,6 +110,12 @@ struct UpgradesErrorView: View {
         static let fetchErrorMessage = NSLocalizedString("We encountered an error loading plan information",
                                                          comment: "Error message displayed when " +
                                                          "we're unable to fetch In-App Purchases plans from the server")
+        static let maximumSitesUpgradedErrorMessage = NSLocalizedString("A WooCommerce app store subscription with your Apple ID already exists",
+                                                                        comment: "Error message displayed when " +
+                                                                        "the merchant already has one store upgraded under the same Apple ID")
+        static let maximumSitesUpgradedErrorSubtitle = NSLocalizedString("An Apple ID can only be used to upgrade one store",
+                                                                         comment: "Clarification message displayed when " +
+                                                                         "the merchant already has one store upgraded under the same Apple ID")
     }
 }
 

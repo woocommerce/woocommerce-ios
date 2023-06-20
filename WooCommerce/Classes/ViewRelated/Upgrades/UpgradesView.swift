@@ -90,7 +90,7 @@ struct UpgradesErrorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
                     .renderedIf(shouldRetry)
-                case .maximumSitesUpgraded:
+                case .maximumSitesUpgraded, .entitlementsError:
                     Text(Localization.maximumSitesUpgradedErrorMessage)
                         .bold()
                         .headlineStyle()

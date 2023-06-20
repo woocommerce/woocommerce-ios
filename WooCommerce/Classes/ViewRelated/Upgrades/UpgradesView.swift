@@ -89,11 +89,11 @@ struct UpgradesErrorView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: Layout.spacingBetweenImageAndText) {
             Image("plan-upgrade-error")
                 .frame(maxWidth: .infinity, alignment: .center)
 
-            VStack(alignment: .center) {
+            VStack(alignment: .center, spacing: Layout.textSpacing) {
                 switch upgradeError {
                 case .fetchError, .entitlementsError:
                     VStack(alignment: .center) {
@@ -112,7 +112,6 @@ struct UpgradesErrorView: View {
                         .bold()
                         .headlineStyle()
                         .multilineTextAlignment(.center)
-                        .padding(.bottom)
                     Text(Localization.maximumSitesUpgradedErrorSubtitle)
                         .font(.body)
                         .foregroundColor(.secondary)
@@ -123,24 +122,20 @@ struct UpgradesErrorView: View {
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.center)
-                        .padding(.bottom)
                     Text(Localization.purchaseErrorAccentMessage)
                         .bold()
                         .headlineStyle()
                         .multilineTextAlignment(.center)
-                        .padding(.bottom)
                     Text(Localization.purchaseErrorSubtitleMessage)
                         .font(.body)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.center)
-                        .padding(.bottom)
                     Button(Localization.retryPaymentButtonText) {
                         onRetryButtonTapped()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .fixedSize(horizontal: true, vertical: true)
-                    .padding(.bottom)
                     Button(Localization.cancelUpgradeButtonText) {
                         onCancelUpgradeTapped()
                     }
@@ -151,7 +146,6 @@ struct UpgradesErrorView: View {
                         .bold()
                         .headlineStyle()
                         .multilineTextAlignment(.center)
-                        .padding(.bottom)
                     Text(Localization.inAppPurchasesNotSupportedErrorSubtitle)
                         .font(.body)
                         .foregroundColor(.secondary)
@@ -159,8 +153,16 @@ struct UpgradesErrorView: View {
                 }
             }
         }
-        .padding(.bottom)
+        .padding(.horizontal, Layout.horizontalEdgesPadding)
+        .padding(.vertical, Layout.verticalEdgesPadding)
         .background(Color(UIColor.systemBackground))
+    }
+
+    private enum Layout {
+        static let horizontalEdgesPadding: CGFloat = 16
+        static let verticalEdgesPadding: CGFloat = 40
+        static let spacingBetweenImageAndText: CGFloat = 32
+        static let textSpacing: CGFloat = 16
     }
 
     private enum Localization {

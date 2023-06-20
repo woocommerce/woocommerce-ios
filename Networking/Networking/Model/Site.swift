@@ -72,7 +72,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let isPublic: Bool
 
-    /// Whether the site is eligible for Blaze.
+    /// Whether the site is partially eligible for Blaze. For the site to be fully eligible for Blaze, `isAdmin` needs to be `true` as well.
     ///
     public let canBlaze: Bool
 

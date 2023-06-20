@@ -10,7 +10,7 @@ struct AztecAIViewFactory {
             var configuration = UIButton.Configuration.borderless()
             configuration.image = .sparklesImage
             configuration.imagePadding = 0
-            configuration.baseForegroundColor = .brand
+            configuration.baseForegroundColor = .accent
             configuration.contentInsets = Layout.AIButton.contentInsets
             return configuration
         }()

@@ -2201,7 +2201,6 @@
 		EE45E2B72A409BA40085F227 /* Tooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B22A409B9E0085F227 /* Tooltip.swift */; };
 		EE45E2B92A409BA40085F227 /* FeatureHighlightStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B02A409B9D0085F227 /* FeatureHighlightStore.swift */; };
 		EE45E2BA2A409BA40085F227 /* TooltipPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B12A409B9D0085F227 /* TooltipPresenter.swift */; };
-		EE45E2BD2A409C9E0085F227 /* QuickStartSpotlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2BC2A409C9E0085F227 /* QuickStartSpotlightView.swift */; };
 		EE45E2BF2A409E250085F227 /* UIColor+Tooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2BE2A409E250085F227 /* UIColor+Tooltip.swift */; };
 		EE46CEDF29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */; };
 		EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */; };
@@ -4549,7 +4548,6 @@
 		EE45E2B02A409B9D0085F227 /* FeatureHighlightStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeatureHighlightStore.swift; sourceTree = "<group>"; };
 		EE45E2B12A409B9D0085F227 /* TooltipPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TooltipPresenter.swift; sourceTree = "<group>"; };
 		EE45E2B22A409B9E0085F227 /* Tooltip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tooltip.swift; sourceTree = "<group>"; };
-		EE45E2BC2A409C9E0085F227 /* QuickStartSpotlightView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickStartSpotlightView.swift; sourceTree = "<group>"; };
 		EE45E2BE2A409E250085F227 /* UIColor+Tooltip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Tooltip.swift"; sourceTree = "<group>"; };
 		EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingStoreDetailsCoordinator.swift; sourceTree = "<group>"; };
 		EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandler.swift; sourceTree = "<group>"; };
@@ -10335,20 +10333,11 @@
 		EE45E2AB2A409B4C0085F227 /* Feature Highlight */ = {
 			isa = PBXGroup;
 			children = (
-				EE45E2BB2A409C770085F227 /* SpotlightView */,
 				EE45E2B02A409B9D0085F227 /* FeatureHighlightStore.swift */,
 				EE45E2B22A409B9E0085F227 /* Tooltip.swift */,
 				EE45E2B12A409B9D0085F227 /* TooltipPresenter.swift */,
 			);
 			path = "Feature Highlight";
-			sourceTree = "<group>";
-		};
-		EE45E2BB2A409C770085F227 /* SpotlightView */ = {
-			isa = PBXGroup;
-			children = (
-				EE45E2BC2A409C9E0085F227 /* QuickStartSpotlightView.swift */,
-			);
-			path = SpotlightView;
 			sourceTree = "<group>";
 		};
 		EE46CEE029CB31E7004E4524 /* StoreDetails */ = {
@@ -12146,7 +12135,6 @@
 				DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */,
 				02CE4304276993DA0006EAEF /* CaptureDevicePermissionChecker.swift in Sources */,
 				DEF8CF1F29AC870A00800A60 /* WPComEmailLoginViewModel.swift in Sources */,
-				EE45E2BD2A409C9E0085F227 /* QuickStartSpotlightView.swift in Sources */,
 				74A33D8021C3F234009E25DE /* LicensesViewController.swift in Sources */,
 				02EEA9282923338100D05F47 /* StoreCreationPlanView.swift in Sources */,
 				454453CA27566CDE00464AC5 /* HubMenuViewModel.swift in Sources */,

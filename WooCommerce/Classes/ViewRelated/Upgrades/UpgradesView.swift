@@ -61,18 +61,48 @@ struct UpgradesView: View {
 struct UpgradesErrorView: View {
 
     let upgradeError: UpgradesError
+    let errorTitle: String? = nil
+    let errorSubtitle: String? = nil
+    let shouldRetry: Bool = true
+
+    /// Closure invoked when the "Retry" button is pressed
+    var onRetryButtonTapped: (() -> Void)?
 
     init(_ upgradeError: UpgradesError) {
         self.upgradeError = upgradeError
     }
 
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
+            Spacer()
             Image(uiImage: .planUpgradeError)
                 .frame(maxWidth: .infinity, alignment: .center)
 
-            Text("Error \(upgradeError.localizedDescription)")
+            VStack() {
+                switch upgradeError {
+                case .fetchError:
+                    Text(Localization.fetchErrorMessage)
+                        .bold()
+                        .headlineStyle()
+                    Button(Localization.retry) {
+                        onRetryButtonTapped?()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .fixedSize(horizontal: true, vertical: true)
+                    .renderedIf(shouldRetry)
+                default:
+                    Text("Other error")
+                }
+            }
+            Spacer()
         }
+    }
+
+    private enum Localization {
+        static let retry = NSLocalizedString("Retry", comment: "Title of the button to attempt a retry")
+        static let fetchErrorMessage = NSLocalizedString("We encountered an error loading plan information",
+                                                         comment: "Error message displayed when " +
+                                                         "we're unable to fetch In-App Purchases plans from the server")
     }
 }
 

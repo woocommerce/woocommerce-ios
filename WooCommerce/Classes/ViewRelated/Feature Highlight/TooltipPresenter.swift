@@ -9,8 +9,6 @@ final class TooltipPresenter {
         static let tooltipTopConstraintAnimationOffset: CGFloat = 8
         static let tooltipAnimationDuration: TimeInterval = 0.2
         static let anchorBottomConstraintConstant: CGFloat = 58
-        static let spotlightViewBufferHeight: CGFloat = 38
-        static let spotlightViewRadius: CGFloat = 20
     }
 
     enum TooltipVerticalPosition {
@@ -25,7 +23,6 @@ final class TooltipPresenter {
     }
 
     private let containerView: UIView
-    private var spotlightView: QuickStartSpotlightView?
     private var primaryTooltipAction: (() -> Void)?
     private var secondaryTooltipAction: (() -> Void)?
     private var tooltipTopConstraint: NSLayoutConstraint?
@@ -52,20 +49,10 @@ final class TooltipPresenter {
 
     private(set) var tooltip: Tooltip
     var tooltipVerticalPosition: TooltipVerticalPosition = .auto
-    private let shouldShowSpotlightView: Bool
 
     private var totalVerticalBuffer: CGFloat {
         Constants.verticalTooltipDistanceToFocus
         + Constants.tooltipTopConstraintAnimationOffset
-    }
-
-    private var spotlightVerticalBuffer: CGFloat {
-        switch target {
-        case .view:
-            return totalVerticalBuffer
-        case .point:
-            return totalVerticalBuffer + Constants.spotlightViewBufferHeight
-        }
     }
 
     private var previousDeviceOrientation: UIDeviceOrientation?
@@ -73,13 +60,11 @@ final class TooltipPresenter {
     init(containerView: UIView,
          tooltip: Tooltip,
          target: Target,
-         shouldShowSpotlightView: Bool,
          primaryTooltipAction: (() -> Void)? = nil,
          secondaryTooltipAction: (() -> Void)? = nil
     ) {
         self.containerView = containerView
         self.tooltip = tooltip
-        self.shouldShowSpotlightView = shouldShowSpotlightView
         self.primaryTooltipAction = primaryTooltipAction
         self.secondaryTooltipAction = secondaryTooltipAction
         self.target = target
@@ -126,7 +111,6 @@ final class TooltipPresenter {
         } completion: { isSuccess in
             self.primaryTooltipAction?()
             self.tooltip.removeFromSuperview()
-            self.spotlightView?.removeFromSuperview()
             NotificationCenter.default.removeObserver(self)
         }
     }
@@ -145,10 +129,6 @@ final class TooltipPresenter {
             tooltipTopConstraint.constant -= Constants.tooltipTopConstraintAnimationOffset
 
             self.containerView.layoutIfNeeded()
-        } completion: { success in
-            if self.shouldShowSpotlightView {
-                self.showSpotlightView()
-            }
         }
     }
 
@@ -163,121 +143,30 @@ final class TooltipPresenter {
             tooltip.centerXAnchor.constraint(equalTo: containerView.centerXAnchor, constant: extraArrowOffsetX())
         ]
 
-        let verticalExtraSpotlightOffset: CGFloat = 14
-
         switch target {
         case .view(let targetView):
             switch tooltipOrientation() {
             case .bottom:
-                tooltipTopConstraint = targetView.topAnchor.constraint(
-                    equalTo: tooltip.bottomAnchor,
-                    constant: spotlightVerticalBuffer + verticalExtraSpotlightOffset
-                )
+                tooltipTopConstraint = targetView.topAnchor.constraint(equalTo: tooltip.bottomAnchor)
             case .top:
-                tooltipTopConstraint = tooltip.topAnchor.constraint(
-                    equalTo: targetView.bottomAnchor,
-                    constant: spotlightVerticalBuffer + verticalExtraSpotlightOffset
-                )
+                tooltipTopConstraint = tooltip.topAnchor.constraint(equalTo: targetView.bottomAnchor)
             }
         case .point(let targetPoint):
             switch tooltipOrientation() {
             case .bottom:
                 tooltipTopConstraint = tooltip.bottomAnchor.constraint(
                     equalTo: containerView.topAnchor,
-                    constant: targetPoint().y + totalVerticalBuffer
-                )
+                    constant: targetPoint().y + totalVerticalBuffer)
             case .top:
                 tooltipTopConstraint = tooltip.topAnchor.constraint(
                     equalTo: containerView.topAnchor,
-                    constant: targetPoint().y
-                    + spotlightVerticalBuffer + verticalExtraSpotlightOffset
-                )
+                    constant: targetPoint().y)
             }
         }
 
         tooltipConstraints.append(tooltipTopConstraint!)
         NSLayoutConstraint.activate(tooltipConstraints)
     }
-
-    private func showSpotlightView() {
-        spotlightView?.removeFromSuperview()
-        spotlightView = QuickStartSpotlightView()
-        guard let spotlightView = spotlightView else {
-            return
-        }
-
-        spotlightView.translatesAutoresizingMaskIntoConstraints = false
-        spotlightView.isUserInteractionEnabled = false
-        containerView.addSubview(spotlightView)
-
-        if let constraints = spotlightViewConstraints() {
-            NSLayoutConstraint.activate(constraints)
-        }
-    }
-
-    private func spotlightViewConstraints() -> [NSLayoutConstraint]? {
-        guard let spotlightView = spotlightView else {
-            return nil
-        }
-
-        // `leftAnchor` is used because the `arrowOffsetX` is calculated as an absolute point.
-        // So it is required to constraint always to left (or right) to support LTR and RTL languages.
-        var constraints = [
-            spotlightView.leftAnchor.constraint(
-                equalTo: containerView.leftAnchor,
-                constant: arrowOffsetX() + tooltip.frame.minX - Constants.spotlightViewRadius
-            )
-        ]
-
-        let verticalConstraint: NSLayoutConstraint
-
-        switch target {
-        case .view(let targetView):
-            verticalConstraint = spotlightVerticalConstraint(spotlightView, targetView: targetView)
-        case .point(let targetPoint):
-            verticalConstraint = spotlightVerticalConstraint(spotlightView, targetPoint: targetPoint)
-        }
-
-        constraints.append(verticalConstraint)
-
-        return constraints
-    }
-
-    private func spotlightVerticalConstraint(
-        _ spotlightView: QuickStartSpotlightView,
-        targetView: UIView) -> NSLayoutConstraint {
-            switch tooltipOrientation() {
-            case .bottom:
-                return targetView.topAnchor.constraint(
-                    equalTo: spotlightView.topAnchor,
-                    constant: spotlightVerticalBuffer
-                )
-            case .top:
-                return targetView.bottomAnchor.constraint(
-                    equalTo: spotlightView.topAnchor,
-                    constant: Constants.spotlightViewRadius
-                )
-            }
-        }
-
-    private func spotlightVerticalConstraint(
-        _ spotlightView: QuickStartSpotlightView,
-        targetPoint: (() -> CGPoint)) -> NSLayoutConstraint {
-            switch tooltipOrientation() {
-            case .bottom:
-                return spotlightView.bottomAnchor.constraint(
-                    equalTo: containerView.topAnchor,
-                    constant: targetPoint().y
-                    + spotlightVerticalBuffer
-                )
-            case .top:
-                return spotlightView.topAnchor.constraint(
-                    equalTo: containerView.topAnchor,
-                    constant: targetPoint().y
-                    + totalVerticalBuffer
-                )
-            }
-        }
 
     /// `orientationDidChangeNotification` is published when the device is at `faceUp` or `faceDown`
     ///  states too. The sizing won't be affected in these cases so no need to reset the tooltip. Here we filter out changes

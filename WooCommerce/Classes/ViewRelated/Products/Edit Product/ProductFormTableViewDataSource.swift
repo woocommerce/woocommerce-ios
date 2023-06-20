@@ -383,7 +383,7 @@ private extension ProductFormTableViewDataSource {
     enum Constants {
         static let legalURL = URL(string: "https://automattic.com/ai-guidelines/")!
         static let learnMoreTextHeight: CGFloat = 16
-        static let learnMoreTextInsets: UIEdgeInsets = .init(top: 8, left: 0, bottom: 0, right: 0)
+        static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: -8, right: 0)
     }
     enum Localization {
         static let legalText = NSLocalizedString(

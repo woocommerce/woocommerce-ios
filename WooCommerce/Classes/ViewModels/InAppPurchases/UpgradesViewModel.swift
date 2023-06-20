@@ -115,13 +115,11 @@ final class UpgradesViewModel: ObservableObject {
     @MainActor
     func purchasePlan(with planID: String) async {
         do {
-            upgradeViewState = .waiting
             let result = try await inAppPurchasesPlanManager.purchasePlan(with: planID,
                                                                           for: siteID)
             // TODO: handle `pending` here... somehow – requires research
             // TODO: handle `.success(.unverified(_))` here... somehow
             guard case .success(.verified(_)) = result else {
-                await fetchViewData()
                 return
             }
             upgradeViewState = .completed

@@ -1,5 +1,7 @@
 import UIKit
 
+// Imported from WordPress iOS - https://github.com/wordpress-mobile/WordPress-iOS/blob/trunk/WordPress/Classes/ViewRelated/Feature%20Highlight/Tooltip.swift
+
 final class Tooltip: UIView {
     private static let arrowWidth: CGFloat = 17
 

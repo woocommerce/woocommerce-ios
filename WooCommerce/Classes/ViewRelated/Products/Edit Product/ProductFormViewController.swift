@@ -597,6 +597,29 @@ private extension ProductFormViewController {
         self.aiEligibilityChecker.isFeatureEnabled(.description)
         && tooltipUseCase.shouldShowTooltip
     }
+
+    func tooltipTargetPoint() -> CGPoint {
+        guard let indexPath = findDescriptionAICellIndexPath() else {
+            return .zero
+        }
+
+        guard let cell = tableView.cellForRow(at: indexPath),
+              let buttonCell = cell as? ButtonTableViewCell,
+              let imageView = buttonCell.button.imageView else {
+            return .zero
+        }
+
+        let rectOfButtonInTableView = tableView.convert(buttonCell.button.frame, from: buttonCell)
+
+        let rectOfImageViewInButton = buttonCell.convert(imageView.frame, from: buttonCell.imageView)
+        let rectOfImageViewInCell = buttonCell.convert(rectOfImageViewInButton, from: buttonCell.button)
+        let rectOfImageViewInTableView = tableView.convert(rectOfImageViewInCell, from: buttonCell)
+
+        return CGPoint(
+            x: rectOfImageViewInTableView.midX,
+            y: rectOfButtonInTableView.maxY
+        )
+    }
 }
 
 // MARK: - Observations & responding to changes

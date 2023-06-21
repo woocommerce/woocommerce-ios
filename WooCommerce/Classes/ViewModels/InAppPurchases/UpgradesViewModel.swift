@@ -9,11 +9,12 @@ enum UpgradeViewState {
     case waiting(WooWPComPlan)
     case completed
     case userNotAllowedToUpgrade
-    case error(UpgradesError)
+    case prePurchaseError(PrePurchaseError)
+    case purchaseUpgradeError(PurchaseUpgradeError)
 
     var shouldShowPlanDetailsView: Bool {
         switch self {
-        case .loading, .loaded, .purchasing, .error, .userNotAllowedToUpgrade:
+        case .loading, .loaded, .purchasing, .prePurchaseError, .userNotAllowedToUpgrade:
             return true
         default:
             return false
@@ -21,12 +22,16 @@ enum UpgradeViewState {
     }
 }
 
-enum UpgradesError: Error {
-    case purchaseError
+enum PrePurchaseError: Error {
     case fetchError
     case entitlementsError
     case inAppPurchasesNotSupported
     case maximumSitesUpgraded
+}
+
+enum PurchaseUpgradeError {
+    case inAppPurchaseFailed(WooWPComPlan)
+    case planActivationFailed
 }
 
 /// ViewModel for the Upgrades View
@@ -89,7 +94,7 @@ final class UpgradesViewModel: ObservableObject {
     func fetchPlans() async {
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
-                upgradeViewState = .error(.inAppPurchasesNotSupported)
+                upgradeViewState = .prePurchaseError(.inAppPurchasesNotSupported)
                 return
             }
 
@@ -98,7 +103,7 @@ final class UpgradesViewModel: ObservableObject {
 
             try await loadUserEntitlements(for: wpcomPlans)
             guard entitledWpcomPlanIDs.isEmpty else {
-                upgradeViewState = .error(.maximumSitesUpgraded)
+                upgradeViewState = .prePurchaseError(.maximumSitesUpgraded)
                 return
             }
 
@@ -106,13 +111,13 @@ final class UpgradesViewModel: ObservableObject {
                                                                       from: wpcomPlans,
                                                                       hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
             else {
-                upgradeViewState = .error(.fetchError)
+                upgradeViewState = .prePurchaseError(.fetchError)
                 return
             }
             upgradeViewState = .loaded(plan)
         } catch {
             DDLogError("fetchPlans \(error)")
-            upgradeViewState = .error(.fetchError)
+            upgradeViewState = .prePurchaseError(.fetchError)
         }
     }
 
@@ -136,7 +141,7 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
-        guard case .loaded(let wooWPComPlan) = upgradeViewState else {
+        guard let wooWPComPlan = planCanBePurchasedFromCurrentState() else {
             return
         }
 
@@ -173,7 +178,16 @@ final class UpgradesViewModel: ObservableObject {
         } catch {
             DDLogError("purchasePlan \(error)")
             stopObservingInAppPurchaseDrawerDismissal()
-            upgradeViewState = .error(UpgradesError.purchaseError)
+            upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan))
+        }
+    }
+
+    private func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
+        switch upgradeViewState {
+        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
+            return plan
+        default:
+            return nil
         }
     }
 
@@ -235,7 +249,7 @@ private extension UpgradesViewModel {
             }
         } catch {
             DDLogError("loadEntitlements \(error)")
-            upgradeViewState = .error(UpgradesError.entitlementsError)
+            upgradeViewState = .prePurchaseError(.entitlementsError)
         }
     }
 }

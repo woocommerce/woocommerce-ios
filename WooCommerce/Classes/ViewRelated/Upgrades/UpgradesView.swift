@@ -55,20 +55,32 @@ struct UpgradesView: View {
                 UpgradeWaitingView(planName: plan.wooPlan.shortName)
             case .completed:
                 EmptyCompletedView()
-            case .error(let upgradeError):
+            case .prePurchaseError(let error):
                 VStack {
-                    UpgradesErrorView(upgradeError,
+                    PrePurchaseUpgradesErrorView(error,
                                       onRetryButtonTapped: {
                         upgradesViewModel.retryFetch()
-                    },
-                                      onCancelUpgradeTapped: {
-                        presentationMode.wrappedValue.dismiss()
                     })
-                    .padding(Layout.padding)
+                    .padding(.top, Layout.errorViewTopPadding)
+                    .padding(.horizontal, Layout.errorViewHorizontalPadding)
 
                     Spacer()
                 }
                 .background(Color(.listBackground))
+            case .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
+                PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan)) {
+                    Task {
+                        await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                    }
+                } secondaryAction: {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            case .purchaseUpgradeError(.planActivationFailed):
+                PurchaseUpgradeErrorView(error: .planActivationFailed,
+                                         primaryAction: nil,
+                                         secondaryAction: {
+                    presentationMode.wrappedValue.dismiss()
+                })
             }
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
@@ -76,24 +88,18 @@ struct UpgradesView: View {
     }
 }
 
-struct UpgradesErrorView: View {
+struct PrePurchaseUpgradesErrorView: View {
 
-    private let upgradeError: UpgradesError
+    private let error: PrePurchaseError
 
-    /// Closure invoked when the "Retry" or "Try payment again" button is tapped
+    /// Closure invoked when the "Retry" button is tapped
     ///
     var onRetryButtonTapped: (() -> Void)
 
-    /// Closure invoked when the "Cancel upgrade" button is tapped
-    /// 
-    var onCancelUpgradeTapped: (() -> Void) = {}
-
-    init(_ upgradeError: UpgradesError,
-         onRetryButtonTapped: @escaping (() -> Void),
-         onCancelUpgradeTapped: @escaping (() -> Void) ) {
-        self.upgradeError = upgradeError
+    init(_ error: PrePurchaseError,
+         onRetryButtonTapped: @escaping (() -> Void)) {
+        self.error = error
         self.onRetryButtonTapped = onRetryButtonTapped
-        self.onCancelUpgradeTapped = onCancelUpgradeTapped
     }
 
     var body: some View {
@@ -102,7 +108,7 @@ struct UpgradesErrorView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {
-                switch upgradeError {
+                switch error {
                 case .fetchError, .entitlementsError:
                     VStack(alignment: .center) {
                         Text(Localization.fetchErrorMessage)
@@ -124,31 +130,6 @@ struct UpgradesErrorView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
-                case .purchaseError:
-                    Text(Localization.purchaseErrorTitleMessage)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .multilineTextAlignment(.center)
-                    Text(Localization.purchaseErrorAccentMessage)
-                        .bold()
-                        .headlineStyle()
-                        .multilineTextAlignment(.center)
-                    Text(Localization.purchaseErrorSubtitleMessage)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .multilineTextAlignment(.center)
-                    Button(Localization.retryPaymentButtonText) {
-                        onRetryButtonTapped()
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .fixedSize(horizontal: true, vertical: true)
-                    Button(Localization.cancelUpgradeButtonText) {
-                        onCancelUpgradeTapped()
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-                    .fixedSize(horizontal: true, vertical: true)
                 case .inAppPurchasesNotSupported:
                     Text(Localization.inAppPurchasesNotSupportedErrorMessage)
                         .bold()
@@ -163,19 +144,23 @@ struct UpgradesErrorView: View {
         }
         .padding(.horizontal, Layout.horizontalEdgesPadding)
         .padding(.vertical, Layout.verticalEdgesPadding)
-        .background(Color(UIColor.secondarySystemGroupedBackground))
+        .background {
+            RoundedRectangle(cornerSize: .init(width: Layout.cornerRadius, height: Layout.cornerRadius))
+                .fill(Color(UIColor.secondarySystemGroupedBackground))
+                  }
     }
 
     private enum Layout {
         static let horizontalEdgesPadding: CGFloat = 16
         static let verticalEdgesPadding: CGFloat = 40
+        static let cornerRadius: CGFloat = 12
         static let spacingBetweenImageAndText: CGFloat = 32
         static let textSpacing: CGFloat = 16
     }
 
     private enum Localization {
         static let retry = NSLocalizedString(
-            "Retry", comment: "Title of the button to attempt a retry when fetching or purchasing plans fais.")
+            "Retry", comment: "Title of the button to attempt a retry when fetching or purchasing plans fails.")
 
         static let fetchErrorMessage = NSLocalizedString(
             "We encountered an error loading plan information", comment: "Error message displayed when " +
@@ -188,22 +173,6 @@ struct UpgradesErrorView: View {
         static let maximumSitesUpgradedErrorSubtitle = NSLocalizedString(
             "An Apple ID can only be used to upgrade one store",
             comment: "Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID.")
-
-        static let purchaseErrorTitleMessage = NSLocalizedString(
-            "We encountered an error confirming your payment",
-            comment: "Error message displayed when a payment fails when attempting to purchase a plan.")
-
-        static let purchaseErrorAccentMessage = NSLocalizedString(
-            "No payment has been taken",
-            comment: "Bolded message confirming that no payment has been taken when the upgrade failed.")
-
-        static let purchaseErrorSubtitleMessage = NSLocalizedString(
-            "Please try again, or contact support for assistance",
-            comment: "Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID.")
-
-        static let retryPaymentButtonText = NSLocalizedString(
-            "Try Payment Again",
-            comment: "Title of the button displayed when purchasing a plan fails, so the merchant can try again.")
 
         static let cancelUpgradeButtonText = NSLocalizedString(
             "Cancel Upgrade",
@@ -219,6 +188,168 @@ struct UpgradesErrorView: View {
     }
 }
 
+struct PurchaseUpgradeErrorView: View {
+    let error: PurchaseUpgradeError
+    let primaryAction: (() -> Void)?
+    let secondaryAction: (() -> Void)
+
+    var body: some View {
+        VStack {
+            VStack(alignment: .leading, spacing: Layout.spacing) {
+                Image(systemName: "exclamationmark.circle")
+                    .font(.system(size: Layout.exclamationImageSize))
+                    .foregroundColor(.withColorStudio(name: .red, shade: .shade20))
+                VStack(alignment: .leading, spacing: Layout.textSpacing) {
+                    Text(error.localizedTitle)
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text(error.localizedDescription)
+                    Text(error.localizedActionDirection)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                    if let actionHint = error.localizedActionHint {
+                        Text(actionHint)
+                            .font(.footnote)
+                    }
+                    if let errorCode = error.localizedErrorCode {
+                        Text(errorCode)
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    if let primaryButtonTitle = error.localizedPrimaryButtonLabel {
+                        Button(primaryButtonTitle) {
+                            primaryAction?()
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                    }
+
+                    Button(error.localizedSecondaryButtonTitle) {
+                        secondaryAction()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                }
+            }
+            .padding(.horizontal, Layout.horizontalPadding)
+            .padding(.top, Layout.topPadding)
+            .padding(.bottom)
+        }
+    }
+
+    enum Layout {
+        static let exclamationImageSize: CGFloat = 56
+        static let horizontalPadding: CGFloat = 16
+        static let topPadding: CGFloat = 80
+        static let spacing: CGFloat = 40
+        static let textSpacing: CGFloat = 16
+    }
+}
+
+private extension PurchaseUpgradeError {
+    var localizedTitle: String {
+        switch self {
+        case .inAppPurchaseFailed:
+            return Localization.purchaseErrorTitle
+        case .planActivationFailed:
+            return Localization.activationErrorTitle
+        }
+    }
+
+    var localizedDescription: String {
+        switch self {
+        case .inAppPurchaseFailed:
+            return Localization.purchaseErrorDescription
+        case .planActivationFailed:
+            return Localization.activationErrorDescription
+        }
+    }
+
+    var localizedActionDirection: String {
+        switch self {
+        case .inAppPurchaseFailed:
+            return Localization.purchaseErrorActionDirection
+        case .planActivationFailed:
+            return Localization.activationErrorActionDirection
+        }
+    }
+
+    var localizedActionHint: String? {
+        switch self {
+        case .inAppPurchaseFailed:
+            return Localization.purchaseErrorActionHint
+        case .planActivationFailed:
+            return nil
+        }
+    }
+
+    var localizedErrorCode: String? {
+        return nil
+    }
+
+    var localizedPrimaryButtonLabel: String? {
+        switch self {
+        case .inAppPurchaseFailed:
+            return Localization.retryPaymentButtonText
+        case .planActivationFailed:
+            return nil
+        }
+    }
+
+    var localizedSecondaryButtonTitle: String {
+        switch self {
+        case .inAppPurchaseFailed:
+            return Localization.cancelUpgradeButtonText
+        case .planActivationFailed:
+            return Localization.returnToMyStoreButtonText
+        }
+    }
+
+    private enum Localization {
+        /// Purchase errors
+        static let purchaseErrorTitle = NSLocalizedString(
+            "Error confirming payment",
+            comment: "Error message displayed when a payment fails when attempting to purchase a plan.")
+
+        static let purchaseErrorDescription = NSLocalizedString(
+            "We encountered an error confirming your payment.",
+            comment: "Error description displayed when a payment fails when attempting to purchase a plan.")
+
+        static let purchaseErrorActionDirection = NSLocalizedString(
+            "No payment has been taken",
+            comment: "Bolded message confirming that no payment has been taken when the upgrade failed.")
+
+        static let purchaseErrorActionHint = NSLocalizedString(
+            "Please try again, or contact support for assistance",
+            comment: "Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID.")
+
+        static let retryPaymentButtonText = NSLocalizedString(
+            "Try Payment Again",
+            comment: "Title of the button displayed when purchasing a plan fails, so the merchant can try again.")
+
+        static let cancelUpgradeButtonText = NSLocalizedString(
+            "Cancel Upgrade",
+            comment: "Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow.")
+
+        /// Upgrade errors
+        static let activationErrorTitle = NSLocalizedString(
+            "Error activating plan",
+            comment: "Error message displayed when plan activation fails after purchasing a plan.")
+
+        static let activationErrorDescription = NSLocalizedString(
+            "Your subscription is active, but there was an error activating the plan on your store.",
+            comment: "Error description displayed when plan activation fails after purchasing a plan.")
+
+        static let activationErrorActionDirection = NSLocalizedString(
+            "Please contact support for assistance.",
+            comment: "Bolded message advising the merchant to contact support when the plan activation failed.")
+
+        static let returnToMyStoreButtonText = NSLocalizedString(
+            "Return to My Store",
+            comment: "Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow.")
+    }
+}
 
 struct UpgradeWaitingView: View {
     let planName: String
@@ -495,6 +626,8 @@ private extension UpgradesView {
     }
 
     struct Layout {
+        static let errorViewHorizontalPadding: CGFloat = 20
+        static let errorViewTopPadding: CGFloat = 36
         static let padding: CGFloat = 16
         static let contentSpacing: CGFloat = 8
         static let smallPadding: CGFloat = 8

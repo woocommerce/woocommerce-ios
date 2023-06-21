@@ -7,7 +7,7 @@ enum UpgradeViewState {
     case loaded(WooWPComPlan)
     case purchasing(WooWPComPlan)
     case waiting(WooWPComPlan)
-    case completed
+    case completed(WooWPComPlan)
     case userNotAllowedToUpgrade
     case prePurchaseError(PrePurchaseError)
     case purchaseUpgradeError(PurchaseUpgradeError)
@@ -169,7 +169,7 @@ final class UpgradesViewModel: ObservableObject {
             case .userCancelled:
                 upgradeViewState = .loaded(wooWPComPlan)
             case .success(.verified(_)):
-                upgradeViewState = .completed
+                upgradeViewState = .completed(wooWPComPlan)
             default:
                 // TODO: handle `pending` here... somehow – requires research
                 // TODO: handle `.success(.unverified(_))` here... somehow

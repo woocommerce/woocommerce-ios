@@ -149,23 +149,28 @@ private extension StoreCreationProgressViewModel.Progress {
                 comment: "Subtitle text in the store creation loading screen")
 
             static let step2 = NSLocalizedString(
-                "**#Track sales and popular products:** Stay updated on your store's real-time performance. Identify your top-selling products and make informed decisions for maximum profitability.",
+                "**#Track sales and popular products:** Stay updated on your store's real-time performance. " +
+                "Identify your top-selling products and make informed decisions for maximum profitability.",
                 comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
 
             static let step3 = NSLocalizedString(
-                "**#Manage and create orders:** Handle orders with ease. Scroll, search, and change order status. Create new orders on the fly for in-store or phone purchases. Simplify your order management process.",
+                "**#Manage and create orders:** Handle orders with ease. Scroll, search, and change order status. " +
+                "Create new orders on the fly for in-store or phone purchases. Simplify your order management process.",
                 comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
 
             static let step4 = NSLocalizedString(
-                "**#Take payments in person:** Expand your sales opportunities by accepting payments in person. Use the app to securely process credit card transactions or even connect with compatible card readers for convenient in-person payments.",
+                "**#Take payments in person:** Expand your sales opportunities by accepting payments in person. " +
+                "Use the app to securely process credit card transactions or even connect with compatible card readers for convenient in-person payments.",
                 comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
 
             static let step5 = NSLocalizedString(
-                "**#Add and edit products with a touch:** Add new products, update details, upload images, and manage variations, all from the app. Keep your inventory up to date effortlessly.",
+                "**#Add and edit products with a touch:** Add new products, update details, upload images, and manage variations, " +
+                "all from the app. Keep your inventory up to date effortlessly.",
                 comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
 
             static let step6 = NSLocalizedString(
-                "**#Get notified of every sale:** Never miss a beat with instant sale notifications. Receive alerts for each new sale, allowing you to celebrate your success and stay on top of your store's activity.",
+                "**#Get notified of every sale:** Never miss a beat with instant sale notifications. " +
+                "Receive alerts for each new sale, allowing you to celebrate your success and stay on top of your store's activity.",
                 comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
         }
     }

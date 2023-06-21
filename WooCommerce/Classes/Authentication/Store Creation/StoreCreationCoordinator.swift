@@ -513,7 +513,7 @@ private extension StoreCreationCoordinator {
                 waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)
                 analytics.track(event: .StoreCreation.siteCreationRequestSuccess(
                     siteID: siteResult.siteID,
-                    domainName: siteResult.url.trimHTTPScheme()
+                    domainName: siteResult.siteSlug
                 ))
                 analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
 

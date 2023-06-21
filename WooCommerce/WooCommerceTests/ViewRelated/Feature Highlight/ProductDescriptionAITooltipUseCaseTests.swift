@@ -2,30 +2,10 @@ import XCTest
 @testable import WooCommerce
 
 final class ProductDescriptionAITooltipUseCaseTests: XCTestCase {
-    // MARK: isDescriptionAIEnabled
-    func test_shouldShowTooltip_is_true_only_when_isDescriptionAIEnabled_is_true() {
-        var sut = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: true,
-                                                     userDefaults: MockUserDefaults())
-        sut.hasDismissedWriteWithAITooltip = false
-        sut.numberOfTimesWriteWithAITooltipIsShown = 1
-
-        XCTAssertTrue(sut.shouldShowTooltip)
-    }
-
-    func test_shouldShowTooltip_is_true_when_isDescriptionAIEnabled_is_false() {
-        var sut = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: false,
-                                                     userDefaults: MockUserDefaults())
-        sut.hasDismissedWriteWithAITooltip = false
-        sut.numberOfTimesWriteWithAITooltipIsShown = 1
-
-        XCTAssertFalse(sut.shouldShowTooltip)
-    }
-
     // MARK: Counter
 
     func test_shouldShowTooltip_is_true_only_when_counter_is_below_3() {
-        var sut = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: true,
-                                                     userDefaults: MockUserDefaults())
+        var sut = ProductDescriptionAITooltipUseCase(userDefaults: MockUserDefaults())
         sut.hasDismissedWriteWithAITooltip = false
         sut.numberOfTimesWriteWithAITooltipIsShown = 2
 
@@ -33,8 +13,7 @@ final class ProductDescriptionAITooltipUseCaseTests: XCTestCase {
     }
 
     func test_shouldShowTooltip_is_false_when_counter_is_3() {
-        var sut = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: true,
-                                                     userDefaults: MockUserDefaults())
+        var sut = ProductDescriptionAITooltipUseCase(userDefaults: MockUserDefaults())
         sut.hasDismissedWriteWithAITooltip = false
         sut.numberOfTimesWriteWithAITooltipIsShown = 3
 
@@ -44,8 +23,7 @@ final class ProductDescriptionAITooltipUseCaseTests: XCTestCase {
     // MARK: Dismissed by user
 
     func test_shouldShowTooltip_is_true_only_when_hasDismissedWriteWithAITooltip_is_false() {
-        var sut = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: true,
-                                                     userDefaults: MockUserDefaults())
+        var sut = ProductDescriptionAITooltipUseCase(userDefaults: MockUserDefaults())
         sut.hasDismissedWriteWithAITooltip = false
         sut.numberOfTimesWriteWithAITooltipIsShown = 1
 
@@ -53,8 +31,7 @@ final class ProductDescriptionAITooltipUseCaseTests: XCTestCase {
     }
 
     func test_shouldShowTooltip_is_false_when_hasDismissedWriteWithAITooltip_is_true() {
-        var sut = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: true,
-                                                     userDefaults: MockUserDefaults())
+        var sut = ProductDescriptionAITooltipUseCase(userDefaults: MockUserDefaults())
         sut.hasDismissedWriteWithAITooltip = true
         sut.numberOfTimesWriteWithAITooltipIsShown = 1
 

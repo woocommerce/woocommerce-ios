@@ -72,7 +72,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
 
-    private var tooltipUseCase: ProductDescriptionAITooltipUseCase
+    private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase()
     private var didShowTooltip = false {
         didSet {
             tooltipUseCase.numberOfTimesWriteWithAITooltipIsShown += 1
@@ -98,7 +98,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.productImageUploader = productImageUploader
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
-        self.tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency,
@@ -638,11 +637,15 @@ private extension ProductFormViewController {
     }
 
     func configureTooltipPresenter() {
+        guard aiEligibilityChecker.isFeatureEnabled(.description) else {
+            return
+        }
+
         guard tooltipUseCase.shouldShowTooltip && tooltipPresenter == nil else {
             return
         }
 
-        let tooltip = Tooltip(availableWidth: tableView.bounds.width)
+        let tooltip = Tooltip(containerWidth: tableView.bounds.width)
 
         tooltip.title = Localization.AITooltip.title
         tooltip.message = Localization.AITooltip.message

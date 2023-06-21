@@ -16,7 +16,7 @@ extension WooAnalyticsEvent {
             static let countryCode = "country_code"
             static let isFreeTrial = "is_free_trial"
             static let waitingTime = "waiting_time"
-            static let blogID = "blog_id"
+            static let newSiteID = "new_site_id"
             static let initialDomain = "initial_domain"
         }
 
@@ -39,7 +39,7 @@ extension WooAnalyticsEvent {
         /// Tracked when site creation request success
         static func siteCreationRequestSuccess(siteID: Int64, domainName: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationFreeTrialCreatedSuccess,
-                              properties: [Key.blogID: siteID,
+                              properties: [Key.newSiteID: siteID,
                                            Key.initialDomain: domainName])
         }
 

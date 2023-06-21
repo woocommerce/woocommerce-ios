@@ -397,10 +397,26 @@ private extension UpgradeWaitingView {
         static let textSpacing: CGFloat = 16
     }
 }
+struct CompletedView: View {
+    @State private var confettiTrigger: Int = 0
 
-struct EmptyCompletedView: View {
+    let doneAction: (() -> Void)
+
     var body: some View {
-        Text("Completed!")
+        Image("plan-upgrade-success-celebration")
+        Text("Woo! You’re off to a great start!")
+        Text("Your purchase is complete and you're on the Essential plan.")
+        Text("You can manage your subscription in your iPhone Settings → Your Name → Subscriptions")
+        Button("Done") {
+            doneAction()
+        }
+        .buttonStyle(PrimaryButtonStyle())
+        .confettiCannon(counter: $confettiTrigger, num: 100)
+        .onAppear {
+            // On any change of this variable the animation is run
+            confettiTrigger += 1
+        }
+        .background(Color(.listBackground))
     }
 }
 

@@ -1135,6 +1135,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "plan-upgrade-error")
     }
 
+    /// Upgrade plan success celebratory image
+    ///
+    static var planUpgradeSuccessCelebration: UIImage {
+        return UIImage(imageLiteralResourceName: "plan-upgrade-success-celebration")
+    }
+
     /// Megaphone Icon
     ///
     static var megaphoneIcon: UIImage {

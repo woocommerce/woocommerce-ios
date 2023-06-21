@@ -645,7 +645,7 @@ private extension ProductFormViewController {
             return
         }
 
-        let tooltip = Tooltip(availableWidth: tableView.bounds.width)
+        let tooltip = Tooltip(containerWidth: tableView.bounds.width)
 
         tooltip.title = Localization.AITooltip.title
         tooltip.message = Localization.AITooltip.message

@@ -631,12 +631,8 @@ private extension ProductFormViewController {
 
         let rectOfButtonInTableView = tableView.convert(buttonCell.button.frame, from: buttonCell)
 
-        let rectOfImageViewInButton = buttonCell.convert(imageView.frame, from: buttonCell.imageView)
-        let rectOfImageViewInCell = buttonCell.convert(rectOfImageViewInButton, from: buttonCell.button)
-        let rectOfImageViewInTableView = tableView.convert(rectOfImageViewInCell, from: buttonCell)
-
         return CGPoint(
-            x: rectOfImageViewInTableView.midX,
+            x: rectOfButtonInTableView.minX + imageView.frame.midX,
             y: rectOfButtonInTableView.maxY
         )
     }

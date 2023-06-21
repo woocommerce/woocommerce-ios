@@ -78,7 +78,9 @@ private extension StoreCreationProgressView {
             .tint(.init(uiColor: .accent))
     }
     var subtitle: some View {
-        Text(viewModel.subtitle)
+        // The subtitle is in an `.init` in order to support markdown.
+        Text(.init(viewModel.subtitle))
+            .bodyStyle()
     }
 
     var bottomLeftBackgroundImage: some View {

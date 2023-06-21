@@ -46,6 +46,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
     private let productImageUploader: ProductImageUploaderProtocol
+    private var tooltipPresenter: TooltipPresenter?
 
     private let currency: String
 
@@ -70,6 +71,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
+
+    private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase()
+    private var didShowTooltip = false {
+        didSet {
+            tooltipUseCase.numberOfTimesWriteWithAITooltipIsShown += 1
+        }
+    }
 
     /// The coordinator for sharing products
     ///
@@ -333,6 +341,18 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
 
+    // MARK: - UIScrollViewDelegate
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !didShowTooltip else {
+            return
+        }
+
+        if isDescriptionAICellVisible() {
+            tooltipPresenter?.showTooltip()
+            didShowTooltip = true
+        }
+    }
+
     // MARK: - UITableViewDelegate
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -594,6 +614,81 @@ private extension ProductFormViewController {
     }
 }
 
+// MARK: - Tooltip
+//
+private extension ProductFormViewController {
+    func tooltipTargetPoint() -> CGPoint {
+        guard let indexPath = findDescriptionAICellIndexPath() else {
+            return .zero
+        }
+
+        guard let cell = tableView.cellForRow(at: indexPath),
+              let buttonCell = cell as? ButtonTableViewCell,
+              let imageView = buttonCell.button.imageView else {
+            return .zero
+        }
+
+        let rectOfButtonInTableView = tableView.convert(buttonCell.button.frame, from: buttonCell)
+
+        return CGPoint(
+            x: rectOfButtonInTableView.minX + imageView.frame.midX,
+            y: rectOfButtonInTableView.maxY
+        )
+    }
+
+    func configureTooltipPresenter() {
+        guard aiEligibilityChecker.isFeatureEnabled(.description) else {
+            return
+        }
+
+        guard tooltipUseCase.shouldShowTooltip && tooltipPresenter == nil else {
+            return
+        }
+
+        let tooltip = Tooltip(containerWidth: tableView.bounds.width)
+
+        tooltip.title = Localization.AITooltip.title
+        tooltip.message = Localization.AITooltip.message
+        tooltip.primaryButtonTitle = Localization.AITooltip.gotIt
+        tooltipPresenter = TooltipPresenter(
+            containerView: tableView,
+            tooltip: tooltip,
+            target: .point(tooltipTargetPoint),
+            primaryTooltipAction: { [weak self] in
+                self?.tooltipUseCase.hasDismissedWriteWithAITooltip = true
+            }
+        )
+        tooltipPresenter?.tooltipVerticalPosition = .below
+
+        if isDescriptionAICellVisible() {
+            tooltipPresenter?.showTooltip()
+            didShowTooltip = true
+        }
+    }
+
+    func isDescriptionAICellVisible() -> Bool {
+        guard let indexPath = findDescriptionAICellIndexPath() else {
+            return false
+        }
+
+        let cellRect = tableView.rectForRow(at: indexPath)
+        return tableView.bounds.contains(cellRect)
+    }
+
+    func findDescriptionAICellIndexPath() -> IndexPath? {
+        for (sectionIndex, section) in tableViewModel.sections.enumerated() {
+            if case .primaryFields(rows: let sectionRows) = section {
+                for (rowIndex, row) in sectionRows.enumerated() {
+                    if case .descriptionAI = row {
+                        return IndexPath(row: rowIndex, section: sectionIndex)
+                    }
+                }
+            }
+        }
+        return nil
+    }
+}
+
 // MARK: - Observations & responding to changes
 //
 private extension ProductFormViewController {
@@ -739,6 +834,8 @@ private extension ProductFormViewController {
         } else {
             tableView.reloadData()
         }
+
+        configureTooltipPresenter()
     }
 
     func updateDataSourceActions() {
@@ -1784,6 +1881,15 @@ private enum Localization {
         "Cannot duplicate product",
         comment: "The title of the alert when there is an error duplicating the product"
     )
+
+    enum AITooltip {
+        static let title = NSLocalizedString("Write with AI",
+                                             comment: "The title of the Write with AI tooltip")
+        static let message = NSLocalizedString("Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!",
+                                               comment: "The message for the Write with AI tooltip")
+        static let gotIt = NSLocalizedString("Got it",
+                                             comment: "Button title that dismisses the Write with AI tooltip")
+    }
 }
 
 private enum ActionSheetStrings {

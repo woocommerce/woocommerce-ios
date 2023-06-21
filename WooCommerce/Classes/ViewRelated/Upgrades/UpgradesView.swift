@@ -33,62 +33,66 @@ struct UpgradesView: View {
     }
 
     var body: some View {
-        VStack {
+        NavigationView {
             VStack {
-                UpgradeTopBarView(dismiss: {
-                    presentationMode.wrappedValue.dismiss()
-                })
-
-                CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
-                                       daysLeft: subscriptionsViewModel.planDaysLeft)
-            }
-            .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
-
-            switch upgradesViewModel.upgradeViewState {
-            case .loading:
-                OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
-            case .loaded(let plan):
-                OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
-                    Task {
-                        await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
-                    }
-                })
-            case .purchasing(let plan):
-                OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
-            case .waiting(let plan):
-                UpgradeWaitingView(planName: plan.wooPlan.shortName)
-            case .completed(let plan):
-                CompletedUpgradeView(planName: plan.wooPlan.shortName,
-                                     doneAction: {
-                    presentationMode.wrappedValue.dismiss()
-                })
-            case .prePurchaseError(let error):
                 VStack {
-                    PrePurchaseUpgradesErrorView(error,
-                                                 onRetryButtonTapped: {
-                        upgradesViewModel.retryFetch()
+                    // TODO: Once we remove iOS 15 support, we can do this with .toolbar instead.
+                    UpgradeTopBarView(dismiss: {
+                        presentationMode.wrappedValue.dismiss()
                     })
-                    .padding(.top, Layout.errorViewTopPadding)
-                    .padding(.horizontal, Layout.errorViewHorizontalPadding)
 
-                    Spacer()
+                    CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
+                                           daysLeft: subscriptionsViewModel.planDaysLeft)
                 }
-                .background(Color(.systemGroupedBackground))
-            case .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
-                PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan)) {
-                    Task {
-                        await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
+
+                switch upgradesViewModel.upgradeViewState {
+                case .loading:
+                    OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
+                case .loaded(let plan):
+                    OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
+                        Task {
+                            await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                        }
+                    })
+                case .purchasing(let plan):
+                    OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
+                case .waiting(let plan):
+                    UpgradeWaitingView(planName: plan.wooPlan.shortName)
+                case .completed(let plan):
+                    CompletedUpgradeView(planName: plan.wooPlan.shortName,
+                                         doneAction: {
+                        presentationMode.wrappedValue.dismiss()
+                    })
+                case .prePurchaseError(let error):
+                    VStack {
+                        PrePurchaseUpgradesErrorView(error,
+                                                     onRetryButtonTapped: {
+                            upgradesViewModel.retryFetch()
+                        })
+                        .padding(.top, Layout.errorViewTopPadding)
+                        .padding(.horizontal, Layout.errorViewHorizontalPadding)
+
+                        Spacer()
                     }
-                } secondaryAction: {
-                    presentationMode.wrappedValue.dismiss()
+                    .background(Color(.systemGroupedBackground))
+                case .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
+                    PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan)) {
+                        Task {
+                            await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                        }
+                    } secondaryAction: {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                case .purchaseUpgradeError(.planActivationFailed):
+                    PurchaseUpgradeErrorView(error: .planActivationFailed,
+                                             primaryAction: nil,
+                                             secondaryAction: {
+                        presentationMode.wrappedValue.dismiss()
+                    })
                 }
-            case .purchaseUpgradeError(.planActivationFailed):
-                PurchaseUpgradeErrorView(error: .planActivationFailed,
-                                         primaryAction: nil,
-                                         secondaryAction: {
-                    presentationMode.wrappedValue.dismiss()
-                })
             }
+            .navigationBarHidden(true)
         }
     }
 }
@@ -553,6 +557,7 @@ struct OwnerUpgradesView: View {
                     .disabled(isLoading)
                 }
             }
+            .listStyle(.insetGrouped)
             .redacted(reason: isLoading ? .placeholder : [])
             .shimmering(active: isLoading)
             VStack {

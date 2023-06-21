@@ -39,8 +39,6 @@ struct UpgradesView: View {
             .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
             switch upgradesViewModel.upgradeViewState {
-            case .userNotAllowedToUpgrade:
-                NonOwnerUpgradesView()
             case .loading:
                 OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
             case .loaded(let plan):
@@ -139,6 +137,8 @@ struct PrePurchaseUpgradesErrorView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
+                case .userNotAllowedToUpgrade:
+                    NonOwnerUpgradesView()
                 }
             }
         }

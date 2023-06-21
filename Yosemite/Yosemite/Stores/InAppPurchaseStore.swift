@@ -335,6 +335,23 @@ public extension InAppPurchaseStore {
                     comment: "Error message used when In-app purchases are not supported for this user/site")
             }
         }
+
+        public var errorCode: String {
+            switch self {
+            case .unverifiedTransaction:
+                return "iap.T.100"
+            case .inAppPurchasesNotSupported:
+                return "iap.T.105"
+            case .transactionProductUnknown:
+                return "iap.T.110"
+            case .transactionMissingAppAccountToken:
+                return "iap.A.100"
+            case .appAccountTokenMissingSiteIdentifier:
+                return "iap.A.105"
+            case .storefrontUnknown:
+                return "iap.A.110"
+            }
+        }
     }
 
     enum Constants {

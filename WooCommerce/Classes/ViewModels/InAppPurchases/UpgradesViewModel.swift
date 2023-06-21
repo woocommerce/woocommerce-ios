@@ -30,8 +30,8 @@ enum PrePurchaseError: Error {
 }
 
 enum PurchaseUpgradeError {
-    case inAppPurchaseFailed(WooWPComPlan)
-    case planActivationFailed
+    case inAppPurchaseFailed(WooWPComPlan, InAppPurchaseStore.Errors)
+    case planActivationFailed(InAppPurchaseStore.Errors)
     case unknown
 }
 
@@ -188,18 +188,18 @@ final class UpgradesViewModel: ObservableObject {
             case .unverifiedTransaction,
                     .transactionProductUnknown,
                     .inAppPurchasesNotSupported:
-                upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan))
+                upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan, recognisedError))
             case .transactionMissingAppAccountToken,
                     .appAccountTokenMissingSiteIdentifier,
                     .storefrontUnknown:
-                upgradeViewState = .purchaseUpgradeError(.planActivationFailed)
+                upgradeViewState = .purchaseUpgradeError(.planActivationFailed(recognisedError))
             }
         }
     }
 
     private func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
         switch upgradeViewState {
-        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
+        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
             return plan
         default:
             return nil

@@ -88,8 +88,8 @@ struct UpgradesView: View {
                         Spacer()
                     }
                     .background(Color(.systemGroupedBackground))
-                case .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
-                    PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan)) {
+                case .purchaseUpgradeError(.inAppPurchaseFailed(let plan, let iapStoreError)):
+                    PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan, iapStoreError)) {
                         Task {
                             await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
                         }
@@ -255,7 +255,7 @@ struct PurchaseUpgradeErrorView: View {
                             .font(.footnote)
                     }
                     if let errorCode = error.localizedErrorCode {
-                        Text(errorCode)
+                        Text(String(format: Localization.errorCodeFormat, errorCode))
                             .font(.footnote)
                             .foregroundColor(.secondary)
                     }
@@ -303,6 +303,11 @@ struct PurchaseUpgradeErrorView: View {
         static let getSupport = NSLocalizedString(
             "Get support",
             comment: "Button title to allow merchants to open the support screens when there's an error with their plan purchase")
+        static let errorCodeFormat = NSLocalizedString(
+            "Error code %1$@",
+            comment: "A string shown on the error screen when there's an issue purchasing a plan, to inform the user " +
+            "of the error code for use with Support. %1$@ will be replaced with the error code and must be included " +
+            "in the translations.")
     }
 }
 
@@ -350,7 +355,12 @@ private extension PurchaseUpgradeError {
     }
 
     var localizedErrorCode: String? {
-        return nil
+        switch self {
+        case .inAppPurchaseFailed(_, let underlyingError), .planActivationFailed(let underlyingError):
+            return underlyingError.errorCode
+        case .unknown:
+            return nil
+        }
     }
 
     var localizedPrimaryButtonLabel: String? {

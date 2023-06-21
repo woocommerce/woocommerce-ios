@@ -30,7 +30,6 @@
   "testTargets" : [
     {
       "skippedTests" : [
-        "CouponLineDetailsViewModelTests\/test_validateAndSaveData_then_calls_action_with_right_parameters()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_false_when_not_entitled()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_true_when_entitled()",
         "StripeCardReaderIntegrationTests"

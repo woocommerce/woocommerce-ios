@@ -50,11 +50,6 @@ final class CouponLineDetailsViewModel: ObservableObject {
         self.didSelectSave = didSelectSave
     }
 
-    func saveData() {
-        let couponLine = OrderFactory.newOrderCouponLine(code: code)
-        didSelectSave(couponLine)
-    }
-
     func validateAndSaveData(onCompletion: @escaping (Bool) -> Void) {
         let action = CouponAction.validateCouponCode(code: code.lowercased(), siteID: siteID) { [weak self] result in
             switch result {
@@ -72,9 +67,14 @@ final class CouponLineDetailsViewModel: ObservableObject {
             }
         }
 
-        Task { @MainActor in
-            stores.dispatch(action)
-        }
+        stores.dispatch(action)
+    }
+}
+
+private extension CouponLineDetailsViewModel {
+    func saveData() {
+        let couponLine = OrderFactory.newOrderCouponLine(code: code)
+        didSelectSave(couponLine)
     }
 }
 

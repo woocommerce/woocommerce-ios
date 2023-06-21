@@ -59,7 +59,7 @@ final class HubMenuViewModelTests: XCTestCase {
                                          stores: stores)
         viewModel.setupMenuElements()
 
-        // Then inbox isin the menu
+        // Then inbox is in the menu
         XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Inbox.id
         }))

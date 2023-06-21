@@ -473,24 +473,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£0.00")
     }
 
-    func test_supportsAddingCouponToOrder_is_false_when_feature_flag_is_turned_off() {
-        // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               featureFlagService: MockFeatureFlagService(isAddCouponToOrderEnabled: false))
-
-        // Then
-        XCTAssertFalse(viewModel.paymentDataViewModel.supportsAddingCouponToOrder)
-    }
-
-    func test_supportsAddingCouponToOrder_is_true_when_feature_flag_is_turned_on() {
-        // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               featureFlagService: MockFeatureFlagService(isAddCouponToOrderEnabled: true))
-
-        // Then
-        XCTAssertTrue(viewModel.paymentDataViewModel.supportsAddingCouponToOrder)
-    }
-
     // MARK: - Add Products to Order via SKU Scanner Tests
 
     func test_trackBarcodeScanningButtonTapped_tracks_right_event() {

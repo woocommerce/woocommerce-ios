@@ -668,7 +668,6 @@ extension EditableOrderViewModel {
         let taxesTotal: String
 
         // We only support one (the first) coupon line
-        let supportsAddingCouponToOrder: Bool
         let couponSummary: String?
         let couponCode: String
         let discountTotal: String
@@ -701,7 +700,6 @@ extension EditableOrderViewModel {
              discountTotal: String = "",
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
-             supportsAddingCouponToOrder: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
              saveCouponLineClosure: @escaping (OrderCouponLine?) -> Void = { _ in },
@@ -720,7 +718,6 @@ extension EditableOrderViewModel {
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shouldShowCoupon = shouldShowCoupon
-            self.supportsAddingCouponToOrder = supportsAddingCouponToOrder
             self.couponSummary = couponSummary
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
@@ -1043,7 +1040,6 @@ private extension EditableOrderViewModel {
                                             discountTotal: order.discountTotal,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
-                                            supportsAddingCouponToOrder: self.featureFlagService.isFeatureFlagEnabled(.addCouponToOrder),
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
                                             saveCouponLineClosure: self.saveCouponLine,

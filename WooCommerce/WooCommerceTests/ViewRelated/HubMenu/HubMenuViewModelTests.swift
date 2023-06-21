@@ -33,18 +33,11 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
-    func test_menuElements_include_inbox_and_coupons_when_store_has_eligible_wc_version() {
-        // Given the store is eligible for inbox with only WC plugin and coupons feature is enabled in app settings
+    func test_menuElements_include_inbox_when_store_has_eligible_wc_version() {
+        // Given the store is eligible for inbox with only WC plugin
         let featureFlagService = MockFeatureFlagService(isInboxOn: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCouponManagementFeatureSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
@@ -66,13 +59,9 @@ final class HubMenuViewModelTests: XCTestCase {
                                          stores: stores)
         viewModel.setupMenuElements()
 
-        // Then both inbox and coupons are in the menu
+        // Then inbox isin the menu
         XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Inbox.id
-        }))
-
-        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Coupons.id
         }))
     }
 
@@ -93,14 +82,6 @@ final class HubMenuViewModelTests: XCTestCase {
                 break
             }
         }
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCouponManagementFeatureSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
 
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
@@ -112,100 +93,6 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Inbox.id
-        }))
-    }
-
-    func test_menuElements_do_not_include_inbox_and_coupons_when_store_has_ineligible_wc_version_and_coupons_disabled() {
-        // Given the store is ineligible WC version for inbox and coupons feature is disabled in app settings
-        let featureFlagService = MockFeatureFlagService(isInboxOn: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
-                switch systemPluginName {
-                case PluginName.wooCommerce:
-                    onCompletion(Fixtures.wcPluginIneligibleForInbox)
-                default:
-                    onCompletion(nil)
-                }
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCouponManagementFeatureSwitchState(let onCompletion):
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        // Then neither inbox nor coupons is in the menu
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Inbox.id
-        }))
-
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Coupons.id
-        }))
-    }
-
-    func test_menuElements_include_coupons_when_couponManagement_is_enabled_in_app_settings() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let featureFlagService = MockFeatureFlagService(isInboxOn: false)
-
-        // When
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCouponManagementFeatureSwitchState(let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Coupons.id
-        }))
-    }
-
-    func test_menuElements_do_not_include_coupons_when_couponManagement_is_not_enabled_in_app_settings() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let featureFlagService = MockFeatureFlagService(isInboxOn: false)
-
-        // When
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .loadCouponManagementFeatureSwitchState(let onCompletion):
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Coupons.id
         }))
     }
 

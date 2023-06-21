@@ -65,7 +65,6 @@ final class GeneralAppSettingsTests: XCTestCase {
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
-                                                  isCouponManagementSwitchEnabled: true,
                                                   isInAppPurchasesSwitchEnabled: false,
                                                   isTapToPayOnIPhoneSwitchEnabled: false,
                                                   knownCardReaders: readers,
@@ -89,7 +88,6 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.knownCardReaders, readers)
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
-        assertEqual(newSettings.isCouponManagementSwitchEnabled, true)
         assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
         assertEqual(newSettings.featureAnnouncementCampaignSettings, featureAnnouncementCampaignSettings)
         assertEqual(newSettings.sitesWithAtLeastOneIPPTransactionFinished, sitesWithAtLeastOneIPPTransactionFinished)
@@ -116,7 +114,6 @@ private extension GeneralAppSettingsTests {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,
                            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-                           isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
                            isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
                            isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
                            knownCardReaders: knownCardReaders,

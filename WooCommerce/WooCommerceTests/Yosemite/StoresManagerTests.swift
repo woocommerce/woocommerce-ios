@@ -414,10 +414,10 @@ final class StoresManagerTests: XCTestCase {
         let sut = DefaultStoresManager(sessionManager: mockSessionManager, defaults: defaults)
 
         // When
-        defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] = true
+        defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] = 3
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] as? Bool))
+        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] as? Int), 3)
 
         // When
         sut.updateDefaultStore(storeID: 0)

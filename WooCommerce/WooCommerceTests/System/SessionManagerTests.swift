@@ -220,10 +220,10 @@ class SessionManagerTests: XCTestCase {
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
 
         // When
-        defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] = true
+        defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] = 3
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] as? Bool))
+        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] as? Int), 3)
 
         // When
         sut.reset()

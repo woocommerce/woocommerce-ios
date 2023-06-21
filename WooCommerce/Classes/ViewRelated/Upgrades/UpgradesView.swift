@@ -407,6 +407,7 @@ struct CompletedUpgradeView: View {
         VStack {
             Image("plan-upgrade-success-celebration")
                 .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, Constants.completedUpgradeViewTopPadding)
             Text(Localization.title)
                 .font(.title)
                 .fontWeight(.bold)
@@ -420,17 +421,25 @@ struct CompletedUpgradeView: View {
                 .font(.footnote)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
+            Spacer()
             Button(Localization.doneButtonText) {
                 doneAction()
             }
             .buttonStyle(PrimaryButtonStyle())
 
         }
-        .confettiCannon(counter: $confettiTrigger, num: 100)
+        .confettiCannon(counter: $confettiTrigger, num: Constants.numberOfElements)
         .onAppear {
             confettiTrigger += 1
         }
         .background(Color(.listBackground))
+        .padding(Constants.padding)
+    }
+
+    private struct Constants {
+        static let completedUpgradeViewTopPadding: CGFloat = 70
+        static let padding: CGFloat = 16
+        static let numberOfElements: Int = 100
     }
 
     private enum Localization {

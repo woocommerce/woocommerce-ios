@@ -105,6 +105,7 @@ struct OrderPaymentSection: View {
             TitleAndValueRow(title: viewModel.couponSummary ?? Localization.coupon, value: .content(viewModel.discountTotal), selectionStyle: .highlight) {
                 shouldShowCouponLineDetails = true
             }
+            disabled(viewModel.shouldDisableAddingCoupons)
         } else {
             Button(Localization.addCoupon) {
                 shouldShowCouponLineDetails = true
@@ -112,6 +113,7 @@ struct OrderPaymentSection: View {
             .buttonStyle(PlusButtonStyle())
             .padding()
             .accessibilityIdentifier("add-coupon-button")
+            .disabled(viewModel.shouldDisableAddingCoupons)
         }
     }
 }

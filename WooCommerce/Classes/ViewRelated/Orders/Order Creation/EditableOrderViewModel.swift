@@ -673,6 +673,7 @@ extension EditableOrderViewModel {
         let couponCode: String
         let discountTotal: String
         let shouldShowCoupon: Bool
+        let shouldDisableAddingCoupons: Bool
 
         /// Whether payment data is being reloaded (during remote sync)
         ///
@@ -697,6 +698,7 @@ extension EditableOrderViewModel {
              taxesTotal: String = "0",
              orderTotal: String = "0",
              shouldShowCoupon: Bool = false,
+             shouldDisableAddingCoupons: Bool = false,
              couponSummary: String? = nil,
              couponCode: String = "",
              discountTotal: String = "",
@@ -721,6 +723,7 @@ extension EditableOrderViewModel {
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shouldShowCoupon = shouldShowCoupon
+            self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.supportsAddingCouponToOrder = supportsAddingCouponToOrder
             self.couponSummary = couponSummary
             self.couponCode = couponCode
@@ -1041,6 +1044,7 @@ private extension EditableOrderViewModel {
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
+                                            shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponSummary: self.summarizeCoupons(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: order.discountTotal,
@@ -1404,6 +1408,13 @@ extension EditableOrderViewModel {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
 
+            guard !isCouponsError(error) else {
+                orderSynchronizer.setCoupon.send(nil)
+                return Notice(title: Localization.couponsErrorNoticeTitle,
+                              message: Localization.couponsErrorNoticeMessage,
+                              feedbackType: .error)
+            }
+
             let errorMessage: String
             switch flow {
             case .creation:
@@ -1427,6 +1438,14 @@ extension EditableOrderViewModel {
             default:
                 return false
             }
+        }
+
+        private static func isCouponsError(_ error: Error) -> Bool {
+            if case .unknown(code: "woocommerce_rest_invalid_coupon", _) = error as? DotcomError {
+                return true
+            }
+
+            return false
         }
     }
 }
@@ -1476,6 +1495,12 @@ private extension EditableOrderViewModel {
         static let scannedProductErrorNoticeRetryActionTitle = NSLocalizedString("Retry",
                                                           comment: "Retry button title on the Order details view when" +
                                                                                  "the scanner cannot find a matching product")
+        static let couponsErrorNoticeTitle = NSLocalizedString("Unable to add coupon.",
+                                                                 comment: "Info message when the user tries to add a coupon" +
+                                                                 "that is not applicated to the products")
+        static let couponsErrorNoticeMessage = NSLocalizedString("Sorry, this coupon is not applicable to selected products.",
+                                                                 comment: "Info message when the user tries to add a coupon" +
+                                                                 "that is not applicated to the products")
 
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",

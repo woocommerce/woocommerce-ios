@@ -1465,8 +1465,6 @@ private extension EditableOrderViewModel {
         static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
                                                                     "To edit all the details, view the order in your WooCommerce store admin.",
                                                                     comment: "Info message shown when the order contains multiple fees and shipping lines")
-        static let scannedProductErrorNoticeMessage = NSLocalizedString("Product not found. Failed to add product to order.",
-                                                          comment: "Error message on the Order details view when the scanner cannot find a matching product")
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",
                                                    comment: "The singular coupon summary. Reads like: Coupon (code1)")

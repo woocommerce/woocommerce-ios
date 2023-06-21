@@ -16,6 +16,8 @@ extension WooAnalyticsEvent {
             static let countryCode = "country_code"
             static let isFreeTrial = "is_free_trial"
             static let waitingTime = "waiting_time"
+            static let blogID = "blog_id"
+            static let initialDomain = "initial_domain"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -32,6 +34,13 @@ extension WooAnalyticsEvent {
                                            Key.flow: flow.rawValue,
                                            Key.isFreeTrial: isFreeTrial,
                                            Key.waitingTime: waitingTime])
+        }
+
+        /// Tracked when site creation request success
+        static func siteCreationRequestSuccess(siteID: Int64, domainName: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationFreeTrialCreatedSuccess,
+                              properties: [Key.blogID: siteID,
+                                           Key.initialDomain: domainName])
         }
 
         /// Tracked when site creation fails.

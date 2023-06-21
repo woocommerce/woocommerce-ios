@@ -170,10 +170,6 @@ public class AppSettingsStore: Store {
             forgetPreferredInPersonPaymentGateway(siteID: siteID)
         case .resetGeneralStoreSettings:
             resetGeneralStoreSettings()
-        case .setCouponManagementFeatureSwitchState(let isEnabled, let onCompletion):
-            setCouponManagementFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .loadCouponManagementFeatureSwitchState(let onCompletion):
-            loadCouponManagementFeatureSwitchState(onCompletion: onCompletion)
         case .setFeatureAnnouncementDismissed(campaign: let campaign, remindAfterDays: let remindAfterDays, onCompletion: let completion):
             setFeatureAnnouncementDismissed(campaign: campaign, remindAfterDays: remindAfterDays, onCompletion: completion)
         case .getFeatureAnnouncementVisibility(campaign: let campaign, onCompletion: let completion):
@@ -264,23 +260,6 @@ private extension AppSettingsStore {
     ///
     func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isViewAddOnsSwitchEnabled)))
-    }
-
-    /// Sets the state for the Coupon Mangagement beta feature switch into `GeneralAppSettings`.
-    ///
-    func setCouponManagementFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
-        do {
-            try generalAppSettings.setValue(isEnabled, for: \.isCouponManagementSwitchEnabled)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
-        }
-    }
-
-    /// Loads the most recent state for the Coupon Management beta feature switch from `GeneralAppSettings`.
-    ///
-    func loadCouponManagementFeatureSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        onCompletion(.success(generalAppSettings.value(for: \.isCouponManagementSwitchEnabled)))
     }
 
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`

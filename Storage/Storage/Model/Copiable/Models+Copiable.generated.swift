@@ -37,7 +37,6 @@ extension Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
-        let isCouponManagementSwitchEnabled = isCouponManagementSwitchEnabled ?? self.isCouponManagementSwitchEnabled
         let isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled ?? self.isInAppPurchasesSwitchEnabled
         let isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled ?? self.isTapToPayOnIPhoneSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
@@ -51,7 +50,6 @@ extension Storage.GeneralAppSettings {
             installationDate: installationDate,
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isCouponManagementSwitchEnabled: isCouponManagementSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
             knownCardReaders: knownCardReaders,

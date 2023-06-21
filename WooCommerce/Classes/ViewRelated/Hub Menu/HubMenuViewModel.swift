@@ -130,20 +130,14 @@ final class HubMenuViewModel: ObservableObject {
             }
         }
 
-        let action = AppSettingsAction.loadCouponManagementFeatureSwitchState { [weak self] result in
-            guard let self = self else { return }
-            guard case let .success(enabled) = result, enabled else {
-                return
-            }
-            if let index = self.generalElements.firstIndex(where: { item in
-                type(of: item).id == Reviews.id
-            }) {
-                self.generalElements.insert(Coupons(), at: index)
-            } else {
-                self.generalElements.append(Coupons())
-            }
+        if let index = self.generalElements.firstIndex(where: { item in
+            type(of: item).id == Reviews.id
+        }) {
+            self.generalElements.insert(Coupons(), at: index)
+        } else {
+            self.generalElements.append(Coupons())
         }
-        stores.dispatch(action)
+
 
         // Blaze menu.
         if isSiteEligibleForBlaze {

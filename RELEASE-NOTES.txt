@@ -2,7 +2,7 @@
 
 14.2
 -----
-
+- [*] Store creation: the progress view copy was updated to inform the merchants that it can take a few minutes for the store to be ready. [https://github.com/woocommerce/woocommerce-ios/pull/10047]
 
 14.1
 -----

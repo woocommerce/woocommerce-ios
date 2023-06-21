@@ -5,10 +5,20 @@ import Yosemite
 enum UpgradeViewState {
     case loading
     case loaded(WooWPComPlan)
-    case waiting
+    case purchasing(WooWPComPlan)
+    case waiting(WooWPComPlan)
     case completed
     case userNotAllowedToUpgrade
     case error(UpgradesError)
+
+    var shouldShowPlanDetailsView: Bool {
+        switch self {
+        case .loading, .loaded, .purchasing, .error, .userNotAllowedToUpgrade:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 enum UpgradesError: Error {
@@ -118,23 +128,79 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
+    private let notificationCenter: NotificationCenter = NotificationCenter.default
+    private var applicationDidBecomeActiveObservationToken: NSObjectProtocol?
+
     /// Triggers the purchase of the specified In-App Purchases WPCom plans by the passed plan ID
     /// linked to the current site ID
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
+        guard case .loaded(let wooWPComPlan) = upgradeViewState else {
+            return
+        }
+
+        upgradeViewState = .purchasing(wooWPComPlan)
+
+        observeInAppPurchaseDrawerDismissal { [weak self] in
+            /// The drawer gets dismissed when the IAP is cancelled too. That gets dealt with in the `do-catch`
+            /// below, but this is usually received before the `.userCancelled`, so we need to wait a little
+            /// before we try to advance to the waiting state.
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                guard let self else { return }
+                /// If the user cancelled, the state will be `.loaded(_)` by now, so we don't advance to waiting.
+                /// Likewise, errors will have moved us to `.error(_)`, so we won't advance then either.
+                if case .purchasing(_) = self.upgradeViewState {
+                    self.upgradeViewState = .waiting(wooWPComPlan)
+                }
+            }
+        }
+
         do {
             let result = try await inAppPurchasesPlanManager.purchasePlan(with: planID,
                                                                           for: siteID)
-            // TODO: handle `pending` here... somehow – requires research
-            // TODO: handle `.success(.unverified(_))` here... somehow
-            guard case .success(.verified(_)) = result else {
+            stopObservingInAppPurchaseDrawerDismissal()
+            switch result {
+            case .userCancelled:
+                upgradeViewState = .loaded(wooWPComPlan)
+            case .success(.verified(_)):
+                upgradeViewState = .completed
+            default:
+                // TODO: handle `pending` here... somehow – requires research
+                // TODO: handle `.success(.unverified(_))` here... somehow
                 return
             }
-            upgradeViewState = .completed
         } catch {
             DDLogError("purchasePlan \(error)")
+            stopObservingInAppPurchaseDrawerDismissal()
             upgradeViewState = .error(UpgradesError.purchaseError)
+        }
+    }
+
+    /// Observes the `didBecomeActiveNotification` for one invocation of the notification.
+    /// Using this in the scope of `purchasePlan` tells us when Apple's IAP view has completed.
+    ///
+    /// However, it can also be triggered by other actions, e.g. a phone call ending.
+    ///
+    /// One good example test is to start an IAP, then background the app and foreground it again
+    /// before the IAP drawer is shown.  You'll see that this notification is received, even though the
+    /// IAP drawer is then shown on top. Dismissing or completing the IAP will not then trigger this
+    /// notification again.
+    ///
+    /// It's not perfect, but it's what we have.
+    private func observeInAppPurchaseDrawerDismissal(whenFired action: @escaping (() -> Void)) {
+        applicationDidBecomeActiveObservationToken = notificationCenter.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main) { [weak self] notification in
+                action()
+                self?.stopObservingInAppPurchaseDrawerDismissal()
+            }
+    }
+
+    private func stopObservingInAppPurchaseDrawerDismissal() {
+        if let token = applicationDidBecomeActiveObservationToken {
+            notificationCenter.removeObserver(token)
         }
     }
 

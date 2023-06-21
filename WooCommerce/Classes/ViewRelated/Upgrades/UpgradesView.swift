@@ -34,8 +34,9 @@ struct UpgradesView: View {
 
     var body: some View {
         VStack {
-            CurrentPlanDetailsView(planName: subscriptionsViewModel.planName, daysLeft: subscriptionsViewModel.planDaysLeft)
-                .background(Color(UIColor.systemBackground))
+            CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
+                                   daysLeft: subscriptionsViewModel.planDaysLeft)
+            .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
             switch upgradesViewModel.upgradeViewState {
             case .userNotAllowedToUpgrade:
@@ -44,27 +45,34 @@ struct UpgradesView: View {
                 OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
             case .loaded(let plan):
                 OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
-                    await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                    Task {
+                        await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                    }
                 })
-            case .waiting:
-                EmptyWaitingView()
+            case .purchasing(let plan):
+                OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
+            case .waiting(let plan):
+                UpgradeWaitingView(planName: plan.wooPlan.shortName)
             case .completed:
                 EmptyCompletedView()
             case .error(let upgradeError):
-                UpgradesErrorView(upgradeError,
-                                  onRetryButtonTapped: {
-                    upgradesViewModel.retryFetch()
-                },
-                                  onCancelUpgradeTapped: {
-                    presentationMode.wrappedValue.dismiss()
-                })
-                .padding(Layout.padding)
+                VStack {
+                    UpgradesErrorView(upgradeError,
+                                      onRetryButtonTapped: {
+                        upgradesViewModel.retryFetch()
+                    },
+                                      onCancelUpgradeTapped: {
+                        presentationMode.wrappedValue.dismiss()
+                    })
+                    .padding(Layout.padding)
+
+                    Spacer()
+                }
+                .background(Color(.listBackground))
             }
-            Spacer()
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
         .padding(.top)
-        .background(Color(.listBackground).ignoresSafeArea())
     }
 }
 
@@ -155,7 +163,7 @@ struct UpgradesErrorView: View {
         }
         .padding(.horizontal, Layout.horizontalEdgesPadding)
         .padding(.vertical, Layout.verticalEdgesPadding)
-        .background(Color(UIColor.systemBackground))
+        .background(Color(UIColor.secondarySystemGroupedBackground))
     }
 
     private enum Layout {
@@ -212,9 +220,50 @@ struct UpgradesErrorView: View {
 }
 
 
-struct EmptyWaitingView: View {
+struct UpgradeWaitingView: View {
+    let planName: String
+
     var body: some View {
-        Text("Waiting...")
+        VStack {
+            VStack(alignment: .leading, spacing: Layout.spacing) {
+                ProgressView()
+                    .progressViewStyle(IndefiniteCircularProgressViewStyle(size: Layout.progressIndicatorSize,
+                                                                           lineWidth: Layout.progressIndicatorLineWidth))
+                VStack(alignment: .leading, spacing: Layout.textSpacing) {
+                    Text(Localization.title)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Text(String(format: Localization.descriptionFormatString, planName))
+                }
+            }
+            .padding(.horizontal, Layout.horizontalPadding)
+            .padding(.vertical, Layout.verticalPadding)
+
+            Spacer()
+        }
+    }
+}
+
+private extension UpgradeWaitingView {
+    enum Localization {
+        static let title = NSLocalizedString("You’re almost there",
+                                             comment: "Title for the progress screen shown after an In-App Purchase " +
+                                             "for a Woo Express plan, while we upgrade the site.")
+
+        static let descriptionFormatString = NSLocalizedString(
+            "Please bear with us while we process the payment for your %1$@ plan.",
+            comment: "Detail text shown after an In-App Purchase for a Woo Express plan, shown while we upgrade the " +
+            "site. %1$@ is replaced with the short plan name. " +
+            "Reads as: 'Please bear with us while we process the payment for your Essential plan.'")
+    }
+
+    enum Layout {
+        static let progressIndicatorSize: CGFloat = 56
+        static let progressIndicatorLineWidth: CGFloat = 6
+        static let horizontalPadding: CGFloat = 16
+        static let verticalPadding: CGFloat = 80
+        static let spacing: CGFloat = 40
+        static let textSpacing: CGFloat = 16
     }
 }
 
@@ -226,8 +275,8 @@ struct EmptyCompletedView: View {
 
 struct OwnerUpgradesView: View {
     @State var upgradePlan: WooWPComPlan
-    @State private var isPurchasing = false
-    let purchasePlanAction: () async -> Void
+    @State var isPurchasing = false
+    let purchasePlanAction: () -> Void
     @State var isLoading: Bool = false
 
     var body: some View {
@@ -283,11 +332,7 @@ struct OwnerUpgradesView: View {
             VStack {
                 let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
                 Button(buttonText) {
-                    Task {
-                        isPurchasing = true
-                        await purchasePlanAction()
-                        isPurchasing = false
-                    }
+                    purchasePlanAction()
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
                 .disabled(isLoading)

@@ -613,7 +613,11 @@ private extension ProductFormViewController {
 
         updateMoreDetailsButtonVisibility()
     }
+}
 
+// MARK: - Tooltip
+//
+private extension ProductFormViewController {
     func tooltipTargetPoint() -> CGPoint {
         guard let indexPath = findDescriptionAICellIndexPath() else {
             return .zero
@@ -631,15 +635,6 @@ private extension ProductFormViewController {
             x: rectOfButtonInTableView.minX + imageView.frame.midX,
             y: rectOfButtonInTableView.maxY
         )
-    }
-
-    func isDescriptionAICellVisible() -> Bool {
-        guard let indexPath = findDescriptionAICellIndexPath() else {
-            return false
-        }
-
-        let cellRect = tableView.rectForRow(at: indexPath)
-        return tableView.bounds.contains(cellRect)
     }
 
     func configureTooltipPresenter() {
@@ -666,6 +661,28 @@ private extension ProductFormViewController {
             tooltipPresenter?.showTooltip()
             didShowTooltip = true
         }
+    }
+
+    func isDescriptionAICellVisible() -> Bool {
+        guard let indexPath = findDescriptionAICellIndexPath() else {
+            return false
+        }
+
+        let cellRect = tableView.rectForRow(at: indexPath)
+        return tableView.bounds.contains(cellRect)
+    }
+
+    func findDescriptionAICellIndexPath() -> IndexPath? {
+        for (sectionIndex, section) in tableViewModel.sections.enumerated() {
+            if case .primaryFields(rows: let sectionRows) = section {
+                for (rowIndex, row) in sectionRows.enumerated() {
+                    if case .descriptionAI = row {
+                        return IndexPath(row: rowIndex, section: sectionIndex)
+                    }
+                }
+            }
+        }
+        return nil
     }
 }
 
@@ -742,19 +759,6 @@ private extension ProductFormViewController {
             if case .primaryFields(rows: let sectionRows) = section {
                 for (rowIndex, row) in sectionRows.enumerated() {
                     if case .linkedProductsPromo = row {
-                        return IndexPath(row: rowIndex, section: sectionIndex)
-                    }
-                }
-            }
-        }
-        return nil
-    }
-
-    func findDescriptionAICellIndexPath() -> IndexPath? {
-        for (sectionIndex, section) in tableViewModel.sections.enumerated() {
-            if case .primaryFields(rows: let sectionRows) = section {
-                for (rowIndex, row) in sectionRows.enumerated() {
-                    if case .descriptionAI = row {
                         return IndexPath(row: rowIndex, section: sectionIndex)
                     }
                 }

@@ -109,5 +109,11 @@ private extension StoreCreationProgressView {
 struct StoreCreationProgressView_Previews: PreviewProvider {
     static var previews: some View {
         StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(estimatedTimePerProgress: 1))
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .buildingFoundations, estimatedTimePerProgress: 1))
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .organizingStockRoom, estimatedTimePerProgress: 1))
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .applyingFinishingTouches, estimatedTimePerProgress: 1))
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .turningOnTheLights, estimatedTimePerProgress: 1))
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .openingTheDoors, estimatedTimePerProgress: 1))
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .finished, estimatedTimePerProgress: 1))
     }
 }

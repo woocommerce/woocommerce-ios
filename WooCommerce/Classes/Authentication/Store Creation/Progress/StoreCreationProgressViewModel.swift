@@ -14,7 +14,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
         case finished = 6.0
     }
 
-    @Published private var progress: Progress = .creatingStore
+    @Published private var progress: Progress
 
     let totalProgressAmount = StoreCreationProgressViewModel.Progress.finished.rawValue
 
@@ -33,14 +33,17 @@ final class StoreCreationProgressViewModel: ObservableObject {
     private let progressViewAnimationTimerInterval: TimeInterval
 
     /// - Parameters:
+    ///   - initialProgress: The initial value of the progress for SwiftUI previews.
     ///   - estimatedTimePerProgress:
     ///     Approx interval at which progress will be incremented to next case.
     ///     This value is used to animate the progress view until next increment happens.
     ///
     ///   - progressViewAnimationTimerInterval: Animation timer interval DI for unit test purposes.
     ///
-    init(estimatedTimePerProgress: TimeInterval,
+    init(initialProgress: Progress = .creatingStore,
+         estimatedTimePerProgress: TimeInterval,
          progressViewAnimationTimerInterval: TimeInterval = 0.1) {
+        self.progress = initialProgress
         self.estimatedTimePerProgress = estimatedTimePerProgress
         self.progressViewAnimationTimerInterval = progressViewAnimationTimerInterval
         $progress

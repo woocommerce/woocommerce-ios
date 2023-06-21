@@ -83,4 +83,8 @@ public enum CouponAction: Action {
     case retrieveCoupon(siteID: Int64,
                         couponID: Int64,
                         onCompletion: (Result<Coupon, Error>) -> Void)
+
+    case validateCouponCode(code: String,
+                            siteID: Int64,
+                            onCompletion: (Result<Bool, Error>) -> Void)
 }

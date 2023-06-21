@@ -2,19 +2,36 @@ import XCTest
 
 import WooFoundation
 @testable import WooCommerce
-@testable import struct Yosemite.OrderCouponLine
+@testable import Yosemite
 
 final class CouponLineDetailsViewModelTests: XCTestCase {
+    private let sampleSiteID: Int64 = 120934
+    private let initialCode = "COUPON"
+    private var stores: MockStoresManager!
+    private var viewModel: CouponLineDetailsViewModel!
+
+    override func setUp() {
+        super.setUp()
+        stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
+                                               code: initialCode,
+                                               siteID: sampleSiteID,
+                                               stores: stores,
+                                               didSelectSave: { _ in })
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        stores = nil
+        viewModel = nil
+    }
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
         // Given
-        let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
-                                                   code: "",
-                                                   didSelectSave: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When
-        viewModel.code = "COUPON"
+        viewModel.code = "COUPON-1"
 
         // Then
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
@@ -28,9 +45,6 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_disables_done_button_for_prefilled_data_and_enables_with_changes() {
         // Given
-        let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
-                                                   code: "COUPON",
-                                                   didSelectSave: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When
@@ -40,37 +54,102 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
 
         // When
-        viewModel.code = "COUPON"
+        viewModel.code = initialCode
 
         // Then
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
-    }
-
-
-    func test_view_model_creates_coupon_line_with_data_from_fields() {
-        // Given
-        var savedCouponLine: OrderCouponLine?
-        let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
-                                                   code: "COUPON",
-                                                   didSelectSave: { newCouponLine in
-            savedCouponLine = newCouponLine
-        })
-
-        // When
-        viewModel.code = "COUPON"
-        viewModel.saveData()
-
-        // Then
-        XCTAssertEqual(savedCouponLine?.code, "COUPON")
     }
 
     func test_view_model_initializes_correctly_with_no_existing_coupon_line() {
         // Given
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                    code: "",
+                                                   siteID: sampleSiteID,
                                                    didSelectSave: { _ in })
 
         // Then
         XCTAssertFalse(viewModel.isExistingCouponLine)
+    }
+
+    func test_validateAndSaveData_then_calls_action_with_right_parameters() {
+        // Given
+        let passedCouponCode = "COUPON_CODE"
+        viewModel.code = passedCouponCode
+
+        var parameters: (String, Int64)?
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .validateCouponCode(code, siteID, completion):
+                parameters = (code, siteID)
+                completion(.success(true))
+            default:
+                break
+            }
+        }
+
+        waitFor { [weak self] promise in
+            self?.viewModel.validateAndSaveData() { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertEqual(parameters?.0, passedCouponCode.lowercased())
+        XCTAssertEqual(parameters?.1, sampleSiteID)
+    }
+
+    func test_validateAndSaveData_when_coupon_is_validated_then_completes_successfully() {
+        // Given
+        var savedCouponLine: OrderCouponLine?
+        viewModel.didSelectSave = { newCouponLine in
+            savedCouponLine = newCouponLine
+        }
+
+        let passedCouponCode = "COUPON"
+        viewModel.code = passedCouponCode
+
+
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .validateCouponCode(_, _, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        let result = waitFor { [weak self] promise in
+            self?.viewModel.validateAndSaveData() { shouldDismiss in
+                promise(shouldDismiss)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result)
+        XCTAssertEqual(savedCouponLine?.code, passedCouponCode)
+    }
+
+    func test_validateAndSaveData_when_coupon_is_not_validated_then_fails() {
+        // Given
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .validateCouponCode(_, _, onCompletion):
+                let error = NSError(domain: "Test", code: 503, userInfo: nil)
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        let result = waitFor { [weak self] promise in
+            self?.viewModel.validateAndSaveData() { shouldDismiss in
+                promise(shouldDismiss)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(result)
     }
 }

@@ -2,6 +2,7 @@
 
 14.2
 -----
+- [*] Orders: Users can can now add coupons to orders [https://github.com/woocommerce/woocommerce-ios/pull/10035]
 
 
 14.1

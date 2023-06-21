@@ -653,6 +653,7 @@ private extension ProductFormViewController {
             target: .point(tooltipTargetPoint),
             primaryTooltipAction: { [weak self] in
                 self?.tooltipUseCase.hasDismissedWriteWithAITooltip = true
+                ServiceLocator.analytics.track(.productDetailViewProductDescriptionAITooltipDismissed)
             }
         )
         tooltipPresenter?.tooltipVerticalPosition = .below

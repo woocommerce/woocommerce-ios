@@ -327,7 +327,7 @@ public extension InAppPurchaseStore {
                     comment: "Error message used when we received a transaction for an unknown product")
             case .storefrontUnknown:
                 return NSLocalizedString(
-                    "Couldn't determine App Stoure country",
+                    "Couldn't determine App Store country",
                     comment: "Error message used when we can't determine the user's App Store country")
             case .inAppPurchasesNotSupported:
                 return NSLocalizedString(

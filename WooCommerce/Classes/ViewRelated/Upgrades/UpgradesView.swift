@@ -98,8 +98,9 @@ struct UpgradesView: View {
                     } getSupportAction: {
                         supportHandler()
                     }
-                case .purchaseUpgradeError(.planActivationFailed):
-                    PurchaseUpgradeErrorView(error: .planActivationFailed,
+                case .purchaseUpgradeError(let underlyingError):
+                    // handles .planActivationFailed and .unknown underlyingErrors
+                    PurchaseUpgradeErrorView(error: underlyingError,
                                              primaryAction: nil,
                                              secondaryAction: {
                         presentationMode.wrappedValue.dismiss()
@@ -312,6 +313,8 @@ private extension PurchaseUpgradeError {
             return Localization.purchaseErrorTitle
         case .planActivationFailed:
             return Localization.activationErrorTitle
+        case .unknown:
+            return Localization.unknownErrorTitle
         }
     }
 
@@ -321,6 +324,8 @@ private extension PurchaseUpgradeError {
             return Localization.purchaseErrorDescription
         case .planActivationFailed:
             return Localization.activationErrorDescription
+        case .unknown:
+            return Localization.unknownErrorDescription
         }
     }
 
@@ -328,8 +333,8 @@ private extension PurchaseUpgradeError {
         switch self {
         case .inAppPurchaseFailed:
             return Localization.purchaseErrorActionDirection
-        case .planActivationFailed:
-            return Localization.activationErrorActionDirection
+        case .planActivationFailed, .unknown:
+            return Localization.errorContactSupportActionDirection
         }
     }
 
@@ -338,6 +343,8 @@ private extension PurchaseUpgradeError {
         case .inAppPurchaseFailed:
             return Localization.purchaseErrorActionHint
         case .planActivationFailed:
+            return nil
+        case .unknown:
             return nil
         }
     }
@@ -352,6 +359,8 @@ private extension PurchaseUpgradeError {
             return Localization.retryPaymentButtonText
         case .planActivationFailed:
             return nil
+        case .unknown:
+            return nil
         }
     }
 
@@ -359,7 +368,7 @@ private extension PurchaseUpgradeError {
         switch self {
         case .inAppPurchaseFailed:
             return Localization.cancelUpgradeButtonText
-        case .planActivationFailed:
+        case .planActivationFailed, .unknown:
             return Localization.returnToMyStoreButtonText
         }
     }
@@ -399,13 +408,22 @@ private extension PurchaseUpgradeError {
             "Your subscription is active, but there was an error activating the plan on your store.",
             comment: "Error description displayed when plan activation fails after purchasing a plan.")
 
-        static let activationErrorActionDirection = NSLocalizedString(
+        static let errorContactSupportActionDirection = NSLocalizedString(
             "Please contact support for assistance.",
             comment: "Bolded message advising the merchant to contact support when the plan activation failed.")
 
         static let returnToMyStoreButtonText = NSLocalizedString(
             "Return to My Store",
             comment: "Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow.")
+
+        /// Unknown errors
+        static let unknownErrorTitle = NSLocalizedString(
+            "Error during purchase",
+            comment: "Title of an unknown error after purchasing a plan")
+
+        static let unknownErrorDescription = NSLocalizedString(
+            "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded.",
+            comment: "Description of an unknown error after purchasing a plan")
     }
 }
 

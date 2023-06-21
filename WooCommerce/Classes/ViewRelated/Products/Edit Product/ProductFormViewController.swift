@@ -637,6 +637,10 @@ private extension ProductFormViewController {
     }
 
     func configureTooltipPresenter() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
+            return
+        }
+
         guard aiEligibilityChecker.isFeatureEnabled(.description) else {
             return
         }

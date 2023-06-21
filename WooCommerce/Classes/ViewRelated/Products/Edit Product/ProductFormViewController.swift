@@ -72,7 +72,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
 
-    private var tooltipUseCase = ProductDescriptionAITooltipUseCase()
+    private var tooltipUseCase: ProductDescriptionAITooltipUseCase
     private var didShowTooltip = false {
         didSet {
             tooltipUseCase.numberOfTimesWriteWithAITooltipIsShown += 1
@@ -98,6 +98,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.productImageUploader = productImageUploader
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
+        self.tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency,
@@ -613,11 +614,6 @@ private extension ProductFormViewController {
         updateMoreDetailsButtonVisibility()
     }
 
-    func shouldConfigureTooltipPresenter() -> Bool {
-        self.aiEligibilityChecker.isFeatureEnabled(.description)
-        && tooltipUseCase.shouldShowTooltip
-    }
-
     func tooltipTargetPoint() -> CGPoint {
         guard let indexPath = findDescriptionAICellIndexPath() else {
             return .zero
@@ -647,7 +643,7 @@ private extension ProductFormViewController {
     }
 
     func configureTooltipPresenter() {
-        guard shouldConfigureTooltipPresenter() && tooltipPresenter == nil else {
+        guard tooltipUseCase.shouldShowTooltip && tooltipPresenter == nil else {
             return
         }
 

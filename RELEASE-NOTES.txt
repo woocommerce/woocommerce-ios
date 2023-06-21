@@ -2,7 +2,7 @@
 
 14.2
 -----
-
+- [Internal] Performance: When loading the refunds on an order (e.g. in order details), we now only request them from remote if they are not already in local storage. [https://github.com/woocommerce/woocommerce-ios/pull/10039]
 
 14.1
 -----

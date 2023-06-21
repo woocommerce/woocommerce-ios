@@ -34,8 +34,14 @@ struct UpgradesView: View {
 
     var body: some View {
         VStack {
-            CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
-                                   daysLeft: subscriptionsViewModel.planDaysLeft)
+            VStack {
+                UpgradeTopBarView(dismiss: {
+                    presentationMode.wrappedValue.dismiss()
+                })
+
+                CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
+                                       daysLeft: subscriptionsViewModel.planDaysLeft)
+            }
             .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
             switch upgradesViewModel.upgradeViewState {
@@ -59,7 +65,7 @@ struct UpgradesView: View {
             case .prePurchaseError(let error):
                 VStack {
                     PrePurchaseUpgradesErrorView(error,
-                                      onRetryButtonTapped: {
+                                                 onRetryButtonTapped: {
                         upgradesViewModel.retryFetch()
                     })
                     .padding(.top, Layout.errorViewTopPadding)
@@ -67,7 +73,7 @@ struct UpgradesView: View {
 
                     Spacer()
                 }
-                .background(Color(.listBackground))
+                .background(Color(.systemGroupedBackground))
             case .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
                 PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan)) {
                     Task {
@@ -84,8 +90,6 @@ struct UpgradesView: View {
                 })
             }
         }
-        .navigationBarTitle(UpgradesView.Localization.navigationTitle)
-        .padding(.top)
     }
 }
 
@@ -156,8 +160,8 @@ struct PrePurchaseUpgradesErrorView: View {
         .padding(.vertical, Layout.verticalEdgesPadding)
         .background {
             RoundedRectangle(cornerSize: .init(width: Layout.cornerRadius, height: Layout.cornerRadius))
-                .fill(Color(UIColor.secondarySystemGroupedBackground))
-                  }
+                .fill(Color(.secondarySystemGroupedBackground))
+        }
     }
 
     private enum Layout {
@@ -410,7 +414,7 @@ private extension UpgradeWaitingView {
         static let progressIndicatorSize: CGFloat = 56
         static let progressIndicatorLineWidth: CGFloat = 6
         static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 80
+        static let verticalPadding: CGFloat = 152
         static let spacing: CGFloat = 40
         static let textSpacing: CGFloat = 16
     }
@@ -469,7 +473,7 @@ struct CompletedUpgradeView: View {
     }
 
     private struct Layout {
-        static let completedUpgradeViewTopPadding: CGFloat = 30
+        static let completedUpgradeViewTopPadding: CGFloat = 70
         static let padding: CGFloat = 16
         static let groupSpacing: CGFloat = 32
         static let textSpacing: CGFloat = 16
@@ -652,6 +656,41 @@ private struct CurrentPlanDetailsView: View {
     }
 }
 
+private struct UpgradeTopBarView: View {
+    let dismiss: () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+
+            Text(Localization.navigationTitle)
+                .fontWeight(.bold)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            Spacer()
+        }
+        .background(Color(.systemGroupedBackground))
+        .overlay(alignment: .leading) {
+            Button(action: dismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: Layout.closeButtonSize))
+                    .foregroundColor(Color(.label))
+                    .padding()
+                    .frame(alignment: .leading)
+            }
+        }
+    }
+
+    private enum Localization {
+        static let navigationTitle = NSLocalizedString("Upgrade", comment: "Navigation title for the Upgrades screen")
+    }
+
+    private enum Layout {
+        static let closeButtonSize: CGFloat = 16
+    }
+}
+
 struct UpgradesView_Preview: PreviewProvider {
     static var previews: some View {
         UpgradesView(upgradesViewModel: UpgradesViewModel(siteID: 0),
@@ -675,10 +714,6 @@ private extension OwnerUpgradesView {
 }
 
 private extension UpgradesView {
-    struct Localization {
-        static let navigationTitle = NSLocalizedString("Plans", comment: "Navigation title for the Upgrades screen")
-    }
-
     struct Layout {
         static let errorViewHorizontalPadding: CGFloat = 20
         static let errorViewTopPadding: CGFloat = 36

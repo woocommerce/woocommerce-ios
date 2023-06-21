@@ -2047,6 +2047,27 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(variationMatch.sku, expectedProductSKU)
     }
 
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_successful_exact_SKU_match_product_but_not_purchasable_then_returns_error() throws {
+        // Given
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search-non-purchasable")
+
+        // When
+        let productSKU = "chocobars"
+        let result = waitFor { promise in
+            let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
+                                                                        sku: productSKU,
+                                                                        onCompletion: { product in
+                promise(product)
+            })
+            store.onAction(action)
+        }
+
+        let error = try XCTUnwrap(result.failure as? ProductLoadError)
+        XCTAssertEqual(result.isFailure, true)
+        XCTAssertEqual(error, ProductLoadError.notPurchasable)
+    }
+
     func test_retrieveFirstPurchasableItemMatchFromSKU_when_partial_SKU_match_then_returns_not_found_error() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

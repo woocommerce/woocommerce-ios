@@ -652,13 +652,13 @@ private extension ProductFormViewController {
         tooltip.title = Localization.AITooltip.title
         tooltip.message = Localization.AITooltip.message
         tooltip.primaryButtonTitle = Localization.AITooltip.gotIt
-        tooltip.dismissalAction = { [weak self] in
-            self?.tooltipPresenter?.dismissTooltip()
-        }
         tooltipPresenter = TooltipPresenter(
             containerView: tableView,
             tooltip: tooltip,
-            target: .point(tooltipTargetPoint)
+            target: .point(tooltipTargetPoint),
+            primaryTooltipAction: { [weak self] in
+                self?.tooltipUseCase.hasDismissedWriteWithAITooltip = true
+            }
         )
         tooltipPresenter?.tooltipVerticalPosition = .below
 

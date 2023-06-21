@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-13 13:54:03+0000 */
+/* Translation-Revision-Date: 2023-06-19 02:10:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -2076,9 +2076,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Fecha: De antiguas a nuevas";
 
-/* Message describing days left on a Plan to expire.Reads as 'Days left in trial: 15' */
-"Days left in trial: %1$@" = "Días restantes de prueba: %1$@";
-
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Por defecto";
 
@@ -2679,9 +2676,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "Se ha producido un error al generar el código QR. Por favor, inténtalo de nuevo más tarde";
 
-/* Error message on the product sharing message generation screen when generation fails. */
-"Error generating message. Please try again." = "Se ha producido un error al generar el mensaje. Inténtalo de nuevo.";
-
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Error al encontrar la dirección en los Mapas de Apple";
 
@@ -2718,9 +2712,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "A todo el mundo le gustan las ofertas";
-
-/* Subtitle that can be read under the Plan upgrade name */
-"Everything you need to launch an online store" = "Todo lo que necesitas para publicar una tienda en línea";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "Excluir %1$d categorías";
@@ -3128,6 +3119,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "¡Entendido!";
+
+/* Dismiss button title in AI product description celebration screen. */
+"Got it" = "Entendido";
 
 /* Country option for a site address. */
 "Greece" = "Grecia";
@@ -8440,7 +8434,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "Trabaja con nosotros";
 
-/* Action button to generate message on the product sharing message generation screen */
+/* Product description AI row on Product form screen when the feature is available. */
 "Write it for me" = "Escríbelo por mí";
 
 /* Title in the product description AI generator view. */
@@ -8567,9 +8561,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "No estás autorizado a cerrar la cuenta.";
 
-/* Message describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
-"Your Plan: %1$@" = "Tu plan: %1$@";
-
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Para recibir pagos, debes actualizar el software de tu lector de tarjetas. Si cancelas esta acción, se bloqueará la conexión con el lector.";
 
@@ -8581,9 +8572,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the free domain view. */
 "Your free store address" = "Dirección de tu tienda gratuita";
-
-/* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "Tu prueba gratuita ha terminado y tienes acceso limitado a todas las funciones. Suscríbete ahora al plan Woo Express Performance.";
 
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Tu prueba gratuita de Woo Express termina mañana (%1$@). Ahora es el momento de tomar las riendas de tu futuro: elige un plan y prepárate para crecer.";
@@ -8633,7 +8621,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Tu tienda se creará en función de las opciones que elijas.";
 
-/* Info details for an expired free trial */
+/* Info details for an expired plan */
 "Your subscription has ended and you have limited access to all the features." = "Tu suscripción ha finalizado y tienes acceso restringido a todas las funciones.";
 
 /* Message for the alert after the support request is created. */

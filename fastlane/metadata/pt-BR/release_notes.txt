@@ -1,1 +1,1 @@
-Esta versão inclui várias correções de bug e melhorias para ajudar você a começar seu negócio e tornar sua experiência mais agradável. Fique de olho porque traremos mais melhorias.
+Várias melhorias incríveis esta semana! Agora você pode ler um código de barras SKU ou código QR para procurar um produto quando criar um pedido. Também é possível gerar descrições automáticas de produto otimizadas para conversão e SEO para seus produtos do WooCommerce e compartilhá-las usando IA. Experimente e compartilhe seu feedback.

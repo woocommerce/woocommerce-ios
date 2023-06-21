@@ -36,6 +36,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         case .descriptionAI:
             return [ButtonTableViewCell.self]
+        case .learnMoreAboutAI:
+            return [TextViewTableViewCell.self]
         }
     }
 
@@ -57,6 +59,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         case .descriptionAI:
             return ButtonTableViewCell.self
+        case .learnMoreAboutAI:
+            return TextViewTableViewCell.self
         }
     }
 }

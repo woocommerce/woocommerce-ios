@@ -388,9 +388,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertEqual(quantityRulesViewModel?.details, expectedDetails)
     }
 
-    // MARK: - `descriptionAI`
+    // MARK: - `descriptionAI` & `learnMoreAboutAI`
 
-    func test_descriptionAI_row_is_shown_when_editable_and_descriptionAIEnabled() {
+    func test_descriptionAI_and_learnMoreAboutAI_rows_are_shown_when_editable_and_descriptionAIEnabled() {
         // Given
         let product = Product.fake().copy()
         let model = EditableProductModel(product: product)
@@ -411,6 +411,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
         var containsDescriptionRow = false
         var containsDescriptionAIRow = false
+        var containsLearnMoreAboutAIRow = false
         for row in rows {
             switch row {
             case let .description(_, isEditable, isDescriptionAIEnabled):
@@ -419,15 +420,18 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                 XCTAssertTrue(isDescriptionAIEnabled)
             case .descriptionAI:
                 containsDescriptionAIRow = true
+            case .learnMoreAboutAI:
+                containsLearnMoreAboutAIRow = true
             default:
                 continue
             }
         }
         XCTAssertTrue(containsDescriptionRow)
         XCTAssertTrue(containsDescriptionAIRow)
+        XCTAssertTrue(containsLearnMoreAboutAIRow)
     }
 
-    func test_descriptionAI_row_is_not_shown_when_form_is_readonly_with_nonempty_description() {
+    func test_descriptionAI_and_learnMoreAboutAI_rows_are_not_shown_when_form_is_readonly_with_nonempty_description() {
         // Given
         let product = Product.fake().copy(fullDescription: "desc")
         let model = EditableProductModel(product: product)
@@ -448,6 +452,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
         var containsDescriptionRow = false
         var containsDescriptionAIRow = false
+        var containsLearnMoreAboutAIRow = false
         for row in rows {
             switch row {
             case let .description(_, isEditable, isDescriptionAIEnabled):
@@ -456,15 +461,18 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                 XCTAssertFalse(isDescriptionAIEnabled)
             case .descriptionAI:
                 containsDescriptionAIRow = true
+            case .learnMoreAboutAI:
+                containsLearnMoreAboutAIRow =  true
             default:
                 continue
             }
         }
         XCTAssertTrue(containsDescriptionRow)
         XCTAssertFalse(containsDescriptionAIRow)
+        XCTAssertFalse(containsLearnMoreAboutAIRow)
     }
 
-    func test_descriptionAI_row_is_not_shown_when_descriptionAIEnabled_is_false() {
+    func test_descriptionAI_and_learnMoreAboutAI_rows_are_not_shown_when_descriptionAIEnabled_is_false() {
         // Given
         let product = Product.fake().copy()
         let model = EditableProductModel(product: product)
@@ -485,6 +493,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
         var containsDescriptionRow = false
         var containsDescriptionAIRow = false
+        var containsLearnMoreAboutAIRow = false
         for row in rows {
             switch row {
             case let .description(_, isEditable, isDescriptionAIEnabled):
@@ -493,15 +502,18 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                 XCTAssertFalse(isDescriptionAIEnabled)
             case .descriptionAI:
                 containsDescriptionAIRow = true
+            case .learnMoreAboutAI:
+                containsLearnMoreAboutAIRow = true
             default:
                 continue
             }
         }
         XCTAssertTrue(containsDescriptionRow)
         XCTAssertFalse(containsDescriptionAIRow)
+        XCTAssertFalse(containsLearnMoreAboutAIRow)
     }
 
-    func test_descriptionAI_row_is_not_shown_when_productDescriptionAIFromStoreOnboarding_feature_is_disabled() {
+    func test_descriptionAI_and_learnMoreAboutAI_rows_are_not_shown_when_productDescriptionAIFromStoreOnboarding_feature_is_disabled() {
         // Given
         let product = Product.fake().copy()
         let model = EditableProductModel(product: product)
@@ -522,6 +534,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
         var containsDescriptionRow = false
         var containsDescriptionAIRow = false
+        var containsLearnMoreAboutAIRow = false
         for row in rows {
             switch row {
             case let .description(_, isEditable, isDescriptionAIEnabled):
@@ -530,12 +543,15 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                 XCTAssertFalse(isDescriptionAIEnabled)
             case .descriptionAI:
                 containsDescriptionAIRow = true
+            case .learnMoreAboutAI:
+                containsLearnMoreAboutAIRow = true
             default:
                 continue
             }
         }
         XCTAssertTrue(containsDescriptionRow)
         XCTAssertFalse(containsDescriptionAIRow)
+        XCTAssertFalse(containsLearnMoreAboutAIRow)
     }
 }
 

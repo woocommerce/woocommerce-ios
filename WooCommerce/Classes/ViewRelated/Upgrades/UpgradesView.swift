@@ -22,6 +22,8 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 }
 
 struct UpgradesView: View {
+    @Environment(\.presentationMode) var presentationMode
+
     @ObservedObject var upgradesViewModel: UpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
@@ -32,9 +34,9 @@ struct UpgradesView: View {
 
     var body: some View {
         VStack {
-            CurrentPlanDetailsView(planName: subscriptionsViewModel.planName, daysLeft: subscriptionsViewModel.planDaysLeft)
-
-            Spacer()
+            CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
+                                   daysLeft: subscriptionsViewModel.planDaysLeft)
+            .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
             switch upgradesViewModel.upgradeViewState {
             case .userNotAllowedToUpgrade:
@@ -43,14 +45,30 @@ struct UpgradesView: View {
                 OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
             case .loaded(let plan):
                 OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
-                    await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                    Task {
+                        await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                    }
                 })
-            case .waiting:
-                EmptyWaitingView()
+            case .purchasing(let plan):
+                OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
+            case .waiting(let plan):
+                UpgradeWaitingView(planName: plan.wooPlan.shortName)
             case .completed:
                 EmptyCompletedView()
-            default:
-                EmptyView()
+            case .error(let upgradeError):
+                VStack {
+                    UpgradesErrorView(upgradeError,
+                                      onRetryButtonTapped: {
+                        upgradesViewModel.retryFetch()
+                    },
+                                      onCancelUpgradeTapped: {
+                        presentationMode.wrappedValue.dismiss()
+                    })
+                    .padding(Layout.padding)
+
+                    Spacer()
+                }
+                .background(Color(.listBackground))
             }
         }
         .navigationBarTitle(UpgradesView.Localization.navigationTitle)
@@ -58,9 +76,194 @@ struct UpgradesView: View {
     }
 }
 
-struct EmptyWaitingView: View {
+struct UpgradesErrorView: View {
+
+    private let upgradeError: UpgradesError
+
+    /// Closure invoked when the "Retry" or "Try payment again" button is tapped
+    ///
+    var onRetryButtonTapped: (() -> Void)
+
+    /// Closure invoked when the "Cancel upgrade" button is tapped
+    /// 
+    var onCancelUpgradeTapped: (() -> Void) = {}
+
+    init(_ upgradeError: UpgradesError,
+         onRetryButtonTapped: @escaping (() -> Void),
+         onCancelUpgradeTapped: @escaping (() -> Void) ) {
+        self.upgradeError = upgradeError
+        self.onRetryButtonTapped = onRetryButtonTapped
+        self.onCancelUpgradeTapped = onCancelUpgradeTapped
+    }
+
     var body: some View {
-        Text("Waiting...")
+        VStack(alignment: .center, spacing: Layout.spacingBetweenImageAndText) {
+            Image("plan-upgrade-error")
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            VStack(alignment: .center, spacing: Layout.textSpacing) {
+                switch upgradeError {
+                case .fetchError, .entitlementsError:
+                    VStack(alignment: .center) {
+                        Text(Localization.fetchErrorMessage)
+                            .bold()
+                            .headlineStyle()
+                            .multilineTextAlignment(.center)
+                        Button(Localization.retry) {
+                            onRetryButtonTapped()
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .fixedSize(horizontal: true, vertical: true)
+                    }
+                case .maximumSitesUpgraded:
+                    Text(Localization.maximumSitesUpgradedErrorMessage)
+                        .bold()
+                        .headlineStyle()
+                        .multilineTextAlignment(.center)
+                    Text(Localization.maximumSitesUpgradedErrorSubtitle)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                case .purchaseError:
+                    Text(Localization.purchaseErrorTitleMessage)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.center)
+                    Text(Localization.purchaseErrorAccentMessage)
+                        .bold()
+                        .headlineStyle()
+                        .multilineTextAlignment(.center)
+                    Text(Localization.purchaseErrorSubtitleMessage)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.center)
+                    Button(Localization.retryPaymentButtonText) {
+                        onRetryButtonTapped()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .fixedSize(horizontal: true, vertical: true)
+                    Button(Localization.cancelUpgradeButtonText) {
+                        onCancelUpgradeTapped()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                    .fixedSize(horizontal: true, vertical: true)
+                case .inAppPurchasesNotSupported:
+                    Text(Localization.inAppPurchasesNotSupportedErrorMessage)
+                        .bold()
+                        .headlineStyle()
+                        .multilineTextAlignment(.center)
+                    Text(Localization.inAppPurchasesNotSupportedErrorSubtitle)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
+        }
+        .padding(.horizontal, Layout.horizontalEdgesPadding)
+        .padding(.vertical, Layout.verticalEdgesPadding)
+        .background(Color(UIColor.secondarySystemGroupedBackground))
+    }
+
+    private enum Layout {
+        static let horizontalEdgesPadding: CGFloat = 16
+        static let verticalEdgesPadding: CGFloat = 40
+        static let spacingBetweenImageAndText: CGFloat = 32
+        static let textSpacing: CGFloat = 16
+    }
+
+    private enum Localization {
+        static let retry = NSLocalizedString(
+            "Retry", comment: "Title of the button to attempt a retry when fetching or purchasing plans fais.")
+
+        static let fetchErrorMessage = NSLocalizedString(
+            "We encountered an error loading plan information", comment: "Error message displayed when " +
+            "we're unable to fetch In-App Purchases plans from the server.")
+
+        static let maximumSitesUpgradedErrorMessage = NSLocalizedString(
+            "A WooCommerce app store subscription with your Apple ID already exists",
+            comment: "Error message displayed when the merchant already has one store upgraded under the same Apple ID.")
+
+        static let maximumSitesUpgradedErrorSubtitle = NSLocalizedString(
+            "An Apple ID can only be used to upgrade one store",
+            comment: "Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID.")
+
+        static let purchaseErrorTitleMessage = NSLocalizedString(
+            "We encountered an error confirming your payment",
+            comment: "Error message displayed when a payment fails when attempting to purchase a plan.")
+
+        static let purchaseErrorAccentMessage = NSLocalizedString(
+            "No payment has been taken",
+            comment: "Bolded message confirming that no payment has been taken when the upgrade failed.")
+
+        static let purchaseErrorSubtitleMessage = NSLocalizedString(
+            "Please try again, or contact support for assistance",
+            comment: "Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID.")
+
+        static let retryPaymentButtonText = NSLocalizedString(
+            "Try Payment Again",
+            comment: "Title of the button displayed when purchasing a plan fails, so the merchant can try again.")
+
+        static let cancelUpgradeButtonText = NSLocalizedString(
+            "Cancel Upgrade",
+            comment: "Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.")
+
+        static let inAppPurchasesNotSupportedErrorMessage = NSLocalizedString(
+            "In-App Purchases not supported",
+            comment: "Error message displayed when In-App Purchases are not supported.")
+
+        static let inAppPurchasesNotSupportedErrorSubtitle = NSLocalizedString(
+            "Please contact support for assistance.",
+            comment: "Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed.")
+    }
+}
+
+
+struct UpgradeWaitingView: View {
+    let planName: String
+
+    var body: some View {
+        VStack {
+            VStack(alignment: .leading, spacing: Layout.spacing) {
+                ProgressView()
+                    .progressViewStyle(IndefiniteCircularProgressViewStyle(size: Layout.progressIndicatorSize,
+                                                                           lineWidth: Layout.progressIndicatorLineWidth))
+                VStack(alignment: .leading, spacing: Layout.textSpacing) {
+                    Text(Localization.title)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Text(String(format: Localization.descriptionFormatString, planName))
+                }
+            }
+            .padding(.horizontal, Layout.horizontalPadding)
+            .padding(.vertical, Layout.verticalPadding)
+
+            Spacer()
+        }
+    }
+}
+
+private extension UpgradeWaitingView {
+    enum Localization {
+        static let title = NSLocalizedString("You’re almost there",
+                                             comment: "Title for the progress screen shown after an In-App Purchase " +
+                                             "for a Woo Express plan, while we upgrade the site.")
+
+        static let descriptionFormatString = NSLocalizedString(
+            "Please bear with us while we process the payment for your %1$@ plan.",
+            comment: "Detail text shown after an In-App Purchase for a Woo Express plan, shown while we upgrade the " +
+            "site. %1$@ is replaced with the short plan name. " +
+            "Reads as: 'Please bear with us while we process the payment for your Essential plan.'")
+    }
+
+    enum Layout {
+        static let progressIndicatorSize: CGFloat = 56
+        static let progressIndicatorLineWidth: CGFloat = 6
+        static let horizontalPadding: CGFloat = 16
+        static let verticalPadding: CGFloat = 80
+        static let spacing: CGFloat = 40
+        static let textSpacing: CGFloat = 16
     }
 }
 
@@ -72,69 +275,72 @@ struct EmptyCompletedView: View {
 
 struct OwnerUpgradesView: View {
     @State var upgradePlan: WooWPComPlan
-    @State private var isPurchasing = false
-    let purchasePlanAction: () async -> Void
+    @State var isPurchasing = false
+    let purchasePlanAction: () -> Void
     @State var isLoading: Bool = false
 
     var body: some View {
-        List {
-            Section {
-                Image(upgradePlan.wooPlan.headerImageFileName)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .listRowInsets(.zero)
-                    .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
-
-                VStack(alignment: .leading) {
-                    Text(upgradePlan.wooPlan.shortName)
-                        .font(.largeTitle)
-                    Text(upgradePlan.wooPlan.planDescription)
-                        .font(.subheadline)
-                }
-
-                VStack(alignment: .leading) {
-                    Text(upgradePlan.wpComPlan.displayPrice)
-                        .font(.largeTitle)
-                    Text(upgradePlan.wooPlan.planFrequency.localizedString)
-                        .font(.footnote)
-                }
-            }
-            .listRowSeparator(.hidden)
-
-            if upgradePlan.hardcodedPlanDataIsValid {
+        VStack {
+            List {
                 Section {
-                    ForEach(upgradePlan.wooPlan.planFeatureGroups, id: \.title) { featureGroup in
-                        NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
-                            WooPlanFeatureGroupRow(featureGroup: featureGroup)
-                        }
-                        .disabled(isLoading)
-                    }
-                } header: {
-                    Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, upgradePlan.wooPlan.shortName))
-                }
-                .headerProminence(.increased)
-            } else {
-                NavigationLink(destination: {
-                    /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
-                    AuthenticatedWebView(isPresented: .constant(true),
-                                         url: WooConstants.URLs.fallbackWooExpressHome.asURL())
-                }, label: {
-                    Text(Localization.featureDetailsUnavailableText)
-                })
-                .disabled(isLoading)
-            }
+                    Image(upgradePlan.wooPlan.headerImageFileName)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .listRowInsets(.zero)
+                        .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
 
-            let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
-            Button(buttonText) {
-                Task {
-                    isPurchasing = true
-                    await purchasePlanAction()
-                    isPurchasing = false
+                    VStack(alignment: .leading) {
+                        Text(upgradePlan.wooPlan.shortName)
+                            .font(.largeTitle)
+                        Text(upgradePlan.wooPlan.planDescription)
+                            .font(.subheadline)
+                    }
+
+                    VStack(alignment: .leading) {
+                        Text(upgradePlan.wpComPlan.displayPrice)
+                            .font(.largeTitle)
+                        Text(upgradePlan.wooPlan.planFrequency.localizedString)
+                            .font(.footnote)
+                    }
+                }
+                .listRowSeparator(.hidden)
+
+                if upgradePlan.hardcodedPlanDataIsValid {
+                    Section {
+                        ForEach(upgradePlan.wooPlan.planFeatureGroups, id: \.title) { featureGroup in
+                            NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
+                                WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                            }
+                            .disabled(isLoading)
+                        }
+                    } header: {
+                        Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, upgradePlan.wooPlan.shortName))
+                    }
+                    .headerProminence(.increased)
+                } else {
+                    NavigationLink(destination: {
+                        /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
+                        AuthenticatedWebView(isPresented: .constant(true),
+                                             url: WooConstants.URLs.fallbackWooExpressHome.asURL())
+                    }, label: {
+                        Text(Localization.featureDetailsUnavailableText)
+                    })
+                    .disabled(isLoading)
                 }
             }
-            .disabled(isLoading)
+            .redacted(reason: isLoading ? .placeholder : [])
+            .shimmering(active: isLoading)
+            VStack {
+                let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
+                Button(buttonText) {
+                    purchasePlanAction()
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
+                .disabled(isLoading)
+                .redacted(reason: isLoading ? .placeholder : [])
+                .shimmering(active: isLoading)
+            }
+            .padding()
         }
-        .redacted(reason: isLoading ? .placeholder : [])
-        .shimmering(active: isLoading)
     }
 }
 
@@ -187,12 +393,9 @@ struct NonOwnerUpgradesView: View {
 
     var body: some View {
         VStack {
-            Spacer()
 
             Image(uiImage: .noStoreImage)
                 .frame(maxWidth: .infinity, alignment: .center)
-
-            Spacer()
 
             VStack(alignment: .center, spacing: UpgradesView.Layout.contentSpacing) {
                 Text(Localization.unableToUpgradeText)
@@ -279,9 +482,9 @@ private extension OwnerUpgradesView {
 
 private extension NonOwnerUpgradesView {
     struct Localization {
-        static let unableToUpgradeText = NSLocalizedString("Unable to upgrade",
+        static let unableToUpgradeText = NSLocalizedString("You can’t upgrade because you are not the store owner",
                                                            comment: "Text describing that is not possible to upgrade the site's plan.")
-        static let unableToUpgradeInstructions = NSLocalizedString("Only the site owner can manage upgrades",
+        static let unableToUpgradeInstructions = NSLocalizedString("Please contact the store owner to upgrade your plan.",
                                                                    comment: "Text describing that only the site owner can upgrade the site's plan.")
     }
 }
@@ -292,6 +495,7 @@ private extension UpgradesView {
     }
 
     struct Layout {
+        static let padding: CGFloat = 16
         static let contentSpacing: CGFloat = 8
         static let smallPadding: CGFloat = 8
     }

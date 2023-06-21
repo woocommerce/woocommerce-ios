@@ -846,6 +846,10 @@ private extension ProductFormViewController {
         tableViewDataSource.descriptionAIAction = { [weak self] in
             self?.showProductDescriptionAI()
         }
+        tableViewDataSource.openAILegalPageAction = { [weak self] url in
+            guard let self else { return }
+            WebviewHelper.launch(url.absoluteString, with: self)
+        }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in

@@ -26,7 +26,9 @@ final class GenerativeContentRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-ai/completions", filename: "generative-text-success")
 
         // When
-        let generatedText = try await remote.generateText(siteID: sampleSiteID, base: "generate a product description for wapuu pencil")
+        let generatedText = try await remote.generateText(siteID: sampleSiteID,
+                                                          base: "generate a product description for wapuu pencil",
+                                                          feature: .productDescription)
 
         // Then
         XCTAssertEqual(generatedText, "The Wapuu Pencil is a perfect writing tool for those who love cute things.")
@@ -39,7 +41,9 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
         // When
         await assertThrowsError {
-            _ = try await remote.generateText(siteID: sampleSiteID, base: "generate a product description for wapuu pencil")
+            _ = try await remote.generateText(siteID: sampleSiteID,
+                                              base: "generate a product description for wapuu pencil",
+                                              feature: .productDescription)
         } errorAssert: { error in
             // Then
             error as? WordPressApiError == .unknown(code: "inactive", message: "OpenAI features have been disabled")

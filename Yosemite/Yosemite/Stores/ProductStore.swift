@@ -7,6 +7,7 @@ import Storage
 public class ProductStore: Store {
     private let remote: ProductsRemoteProtocol
     private let generativeContentRemote: GenerativeContentRemoteProtocol
+    private let productVariationStorageManager: ProductVariationStorageManager
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
@@ -23,6 +24,7 @@ public class ProductStore: Store {
                 network: Network,
                 remote: ProductsRemoteProtocol,
                 generativeContentRemote: GenerativeContentRemoteProtocol) {
+        productVariationStorageManager = ProductVariationStorageManager(storageManager: storageManager)
         self.remote = remote
         self.generativeContentRemote = generativeContentRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -53,8 +55,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrieveFirstProductMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
-            retrieveFirstProductMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
+        case .retrieveFirstItemMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
+            retrieveFirstItemMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -334,7 +336,7 @@ private extension ProductStore {
 
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
-    func retrieveFirstProductMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func retrieveFirstItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
         remote.searchProductsBySKU(for: siteID,
                                    keyword: sku,
                                    pageNumber: Remote.Default.firstPageNumber,
@@ -345,9 +347,19 @@ private extension ProductStore {
                 guard let product = products.first(where: { $0.sku == sku }) else {
                     return onCompletion(.failure(ProductLoadError.notFound))
                 }
-                self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID, onCompletion: {
-                    onCompletion(.success(product))
-                })
+
+                if let productVariation = product.toProductVariation() {
+                    self.productVariationStorageManager.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                                                                  siteID: siteID,
+                                                                                                  productID: productVariation.productID,
+                                                                                                  onCompletion: {
+                        onCompletion(.success(.variation(productVariation)))
+                    })
+                } else {
+                    self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID, onCompletion: {
+                        onCompletion(.success(.product(product)))
+                    })
+                }
             case .failure:
                 onCompletion(.failure(ProductLoadError.notFound))
             }
@@ -526,7 +538,7 @@ private extension ProductStore {
             "and use them in your sentences without listing them out."
         ].joined(separator: "\n")
         Task {
-            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt) }
+            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription) }
             await MainActor.run {
                 completion(result)
             }
@@ -549,7 +561,7 @@ private extension ProductStore {
             "Do not include the URL in the message.",
         ].joined(separator: "\n")
         Task {
-            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt)
+            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
             }
             await MainActor.run {

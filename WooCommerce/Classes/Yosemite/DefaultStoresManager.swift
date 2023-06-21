@@ -238,6 +238,8 @@ class DefaultStoresManager: StoresManager {
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.shouldHideStoreOnboardingTaskList] = nil
         defaults[.usedProductDescriptionAI] = nil
+        defaults[.hasDismissedWriteWithAITooltip] = nil
+        defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 

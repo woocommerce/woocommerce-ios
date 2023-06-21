@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 public struct WooPlan: Decodable {
     public let id: String
@@ -7,21 +8,24 @@ public struct WooPlan: Decodable {
     public let planFrequency: PlanFrequency
     public let planDescription: String
     public let headerImageFileName: String
+    public let headerImageCardColor: Color
     public let planFeatureGroups: [WooPlanFeatureGroup]
 
-    init(id: String,
-         name: String,
-         shortName: String,
-         planFrequency: PlanFrequency,
-         planDescription: String,
-         headerImageFileName: String,
-         planFeatureGroups: [WooPlanFeatureGroup]) {
+    public init(id: String,
+                name: String,
+                shortName: String,
+                planFrequency: PlanFrequency,
+                planDescription: String,
+                headerImageFileName: String,
+                headerImageCardColor: Color,
+                planFeatureGroups: [WooPlanFeatureGroup]) {
         self.id = id
         self.name = name
         self.shortName = shortName
         self.planFrequency = planFrequency
         self.planDescription = planDescription
         self.headerImageFileName = headerImageFileName
+        self.headerImageCardColor = headerImageCardColor
         self.planFeatureGroups = planFeatureGroups
     }
 
@@ -53,6 +57,8 @@ public struct WooPlan: Decodable {
         planFrequency = try container.decode(PlanFrequency.self, forKey: .planFrequency)
         planDescription = try container.decode(String.self, forKey: .planDescription)
         headerImageFileName = try container.decode(String.self, forKey: .headerImageFileName)
+        let headerImageCardColorRGBString = try container.decode(String.self, forKey: .headerImageCardColor)
+        headerImageCardColor = try Color(rgbString: headerImageCardColorRGBString)
         planFeatureGroups = try container.decode([WooPlanFeatureGroup].self, forKey: .planFeatureGroups)
     }
 
@@ -63,6 +69,7 @@ public struct WooPlan: Decodable {
         case planFrequency = "plan_frequency"
         case planDescription = "plan_description"
         case headerImageFileName = "header_image_filename"
+        case headerImageCardColor = "header_image_card_color"
         case planFeatureGroups = "feature_categories"
     }
 

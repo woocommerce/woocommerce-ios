@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 91 (Release 14.2.0.0)
+- @jaclync 2023-06-20
+    - Added `isAdmin` and `canBlaze` attributes to `Site` entity.
+
 ## Model 90 (Release 14.1.0.0)
 - @iamgabrielma 2023-06-14
     - Added `isSiteOwner` attribute to `Site` entity.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-13 11:54:03+0000 */
+/* Translation-Revision-Date: 2023-06-19 05:23:40+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -64,6 +64,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@-kortets sista siffror är %2$@";
+
+/* Value describing the days left on a plan before expiry. Reads as '15 days left' */
+"%1$@ days left" = "%1$@ dagar kvar";
 
 /* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
 "%1$@ every %2$@" = "%1$@ var %2$@";
@@ -2076,8 +2079,8 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Datum: äldsta till nyaste";
 
-/* Message describing days left on a Plan to expire.Reads as 'Days left in trial: 15' */
-"Days left in trial: %1$@" = "Dagar kvar i provperiod: %1$@";
+/* Label for the text describing days left on a Plan to expire.Reads as 'Days left in plan: 15 days left' */
+"Days left in plan" = "Dagar kvar i paketet";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Standard";
@@ -2679,9 +2682,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "Det gick inte att generera QR-koden. Försök igen senare";
 
-/* Error message on the product sharing message generation screen when generation fails. */
-"Error generating message. Please try again." = "Det gick inte att generera meddelandet. Försök igen.";
-
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Det gick inte att hitta adressen i Apple Maps";
 
@@ -2718,9 +2718,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Alla gillar ett erbjudande";
-
-/* Subtitle that can be read under the Plan upgrade name */
-"Everything you need to launch an online store" = "Allt du behöver för att lansera en onlinebutik";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "Exkludera %1$d kategorier";
@@ -3128,6 +3125,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "Jag förstår!";
+
+/* Dismiss button title in AI product description celebration screen. */
+"Got it" = "Jag förstår";
+
+/* Title in AI product description celebration screen. */
+"Great start!" = "Bra start!";
 
 /* Country option for a site address. */
 "Greece" = "Grekland";
@@ -7793,6 +7796,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Kan inte uppdatera pris";
 
+/* Text describing that is not possible to upgrade the site's plan. */
+"Unable to upgrade" = "Kan inte uppgradera.";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Det gick inte att verifiera personliga betalningar för den här butiken.";
 
@@ -8440,11 +8446,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "Jobba med oss";
 
-/* Action button to generate message on the product sharing message generation screen */
+/* Product description AI row on Product form screen when the feature is available. */
 "Write it for me" = "Skriv det åt mig";
 
 /* Title in the product description AI generator view. */
 "Write product description" = "Skriv en produktbeskrivning";
+
+/* Action button to generate message on the product sharing message generation screen */
+"Write with AI" = "Skriv med AI";
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Fel konto?";
@@ -8567,9 +8576,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "Du har inte behörighet att stänga kontot.";
 
-/* Message describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
-"Your Plan: %1$@" = "Ditt paket: %1$@";
-
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Din kortläsarprogramvara behöver uppdateras för att du ska kunna ta emot betalningar. Om du avbryter blockeras din läsaranslutning.";
 
@@ -8581,9 +8587,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the free domain view. */
 "Your free store address" = "Din kostnadsfria butiksadress";
-
-/* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "Din kostnadsfria provperiod är slut och du har begränsad tillgång till alla funktioner. Prenumerera på Woo Express Performance Plan nu.";
 
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Din kostnadsfria Woo Express-provperiod löper ut imorgon (%1$@). Det är dags att ta kontroll över din framtid – välj ett paket och gör dig redo att börja växa.";
@@ -8605,6 +8608,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Du kommer snart att kunna ta emot betalningar med din telefon ...";
+
+/* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
+"Your plan" = "Ditt paket";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Din läsare kommer att startas om automatiskt och sedan återansluta när uppdateringen är klar";
@@ -8633,7 +8639,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "Din butik kommer att skapas utifrån de alternativ du väljer.";
 
-/* Info details for an expired free trial */
+/* Info details for an expired plan */
 "Your subscription has ended and you have limited access to all the features." = "Din prenumeration har avslutats och du har begränsad åtkomst till alla funktionerna.";
 
 /* Message for the alert after the support request is created. */

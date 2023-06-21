@@ -32,7 +32,7 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
-    private let barcodeSKUScannerProductFinder: BarcodeSKUScannerProductFinder
+    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
 
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
@@ -76,12 +76,12 @@ final class OrdersRootViewController: UIViewController {
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         barcodeSKUScannerProductFinder: BarcodeSKUScannerProductFinder = BarcodeSKUScannerProductFinder()) {
+         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
-        self.barcodeSKUScannerProductFinder = barcodeSKUScannerProductFinder
+        self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
@@ -166,8 +166,8 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents the Order Creation flow with a scanned Product
     ///
-    private func presentOrderCreationFlowWithScannedProduct(_ product: Product) {
-        let viewModel = EditableOrderViewModel(siteID: siteID, initialProduct: product)
+    private func presentOrderCreationFlowWithScannedProduct(_ result: SKUSearchResult) {
+        let viewModel = EditableOrderViewModel(siteID: siteID, initialItem: result)
         setupNavigation(viewModel: viewModel)
     }
 
@@ -239,11 +239,11 @@ final class OrdersRootViewController: UIViewController {
     /// - Parameters:
     ///   - scannedBarcode: The scanned barcode
     ///   - onCompletion: The closure to be trigged when the scanning completes. Succeeds with a Product, or fails with an Error.
-    private func handleScannedBarcode(_ scannedBarcode: ScannedBarcode, onCompletion: @escaping ((Result<Product, Error>) -> Void)) {
+    private func handleScannedBarcode(_ scannedBarcode: ScannedBarcode, onCompletion: @escaping ((Result<SKUSearchResult, Error>) -> Void)) {
         Task {
             do {
-                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: scannedBarcode, siteID: siteID, source: .orderList)
-                onCompletion(.success(matchedProduct))
+                let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .orderList)
+                onCompletion(.success(result))
             } catch {
                 onCompletion(.failure(error))
             }

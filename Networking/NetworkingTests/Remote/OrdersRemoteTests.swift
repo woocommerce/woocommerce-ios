@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+import TestKit
 
 
 /// OrdersRemoteTests:
@@ -582,6 +583,33 @@ final class OrdersRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let received = try XCTUnwrap(request.parameters["force"] as? String)
         XCTAssertEqual(received, "true")
+    }
+
+    // MARK: - Fetch Date Modified Tests
+
+    func test_fetchDateModified_properly_returns_date_modified() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "date-modified-gmt")
+
+        // When
+        let date = try await remote.fetchDateModified(for: self.sampleSiteID, orderID: self.sampleOrderID)
+
+        // Then
+        let expectedDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2023-03-29T03:23:02")
+        assertEqual(expectedDate, date)
+    }
+
+    func test_fetchDateModified_properly_relays_networking_errors() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)", error: expectedError)
+
+        // When & Then
+        await assertThrowsError({
+            _ = try await remote.fetchDateModified(for: self.sampleSiteID, orderID: self.sampleOrderID)
+        }, errorAssert: { ($0 as? NetworkError) == expectedError })
     }
 }
 

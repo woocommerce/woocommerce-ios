@@ -5,6 +5,10 @@ import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
+/// Encapsulates the item type an order can have, products or variations
+///
+typealias OrderBaseItem = SKUSearchResult
+
 /// View model used in Order Creation and Editing flows.
 ///
 final class EditableOrderViewModel: ObservableObject {
@@ -177,7 +181,6 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private var allProductVariations: Set<ProductVariation> = []
 
-
     /// View models for each product row in the order.
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
@@ -290,13 +293,13 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let orderSynchronizer: OrderSynchronizer
 
-    /// Initial product ID given to the order when is created, if any
+    /// Initial product or variation given to the order when is created, if any
     ///
-    private let initialProduct: Product?
+    private let initialItem: OrderBaseItem?
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
-    private let barcodeSKUScannerProductFinder: BarcodeSKUScannerProductFinder
+    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
 
     init(siteID: Int64,
          flow: Flow = .creation,
@@ -307,7 +310,7 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         initialProduct: Product? = nil) {
+         initialItem: OrderBaseItem? = nil) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -318,8 +321,8 @@ final class EditableOrderViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
-        self.initialProduct = initialProduct
-        self.barcodeSKUScannerProductFinder = BarcodeSKUScannerProductFinder(stores: stores)
+        self.initialItem = initialItem
+        self.barcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(stores: stores)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -447,7 +450,8 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        if item.variationID != 0, let variation = retrieveVariation(for: item) {
+        if item.variationID != 0,
+            let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let parent = allProducts.first(where: { $0.productID == item.parent })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
             return ProductRowViewModel(id: item.itemID,
@@ -945,39 +949,39 @@ private extension EditableOrderViewModel {
                 return self.createProductRows(items: items)
             }
             .assign(to: &$productRows)
-        configureOrderWithInitialProductIfNeeded()
+        configureOrderWithinitialItemIfNeeded()
     }
 
     /// If given an initial product ID on initialization, updates the Order with the item
     ///
-    func configureOrderWithInitialProductIfNeeded() {
-        guard let product = self.initialProduct else {
+    func configureOrderWithinitialItemIfNeeded() {
+        guard let item = initialItem else {
             return
         }
 
-        updateOrderWithProduct(product)
+        updateOrderWithBaseItem(item)
     }
 
     /// Updates the Order with the given product
     ///
-    func updateOrderWithProduct(_ product: Product) {
-        guard currentOrderItems.contains(where: { $0.productOrVariationID == product.productID }) else {
+    func updateOrderWithBaseItem(_ item: OrderBaseItem) {
+        guard currentOrderItems.contains(where: { $0.productOrVariationID == item.itemID }) else {
             // If it's not part of the current order, send the correct productType to the synchronizer
-            if let productVariation = product.toProductVariation() {
-                allProductVariations.insert(productVariation)
-
-                selectedProductVariations.append(productVariation)
-                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
-            } else {
+            switch item {
+            case let .product(product):
                 allProducts.insert(product)
-
                 selectedProducts.append(product)
                 orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+            case let .variation(productVariation):
+                allProductVariations.insert(productVariation)
+                selectedProductVariations.append(productVariation)
+                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
             }
+
             return
         }
         // Increase quantity if exists
-        let match = productRows.first(where: { $0.productOrVariationID == product.productID })
+        let match = productRows.first(where: { $0.productOrVariationID == item.itemID })
         match?.incrementQuantity()
     }
 
@@ -1327,15 +1331,15 @@ extension EditableOrderViewModel {
     ///
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
         analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderCreation))
-        mapFromScannedBarcodetoProduct(barcode: barcode) { [weak self] result in
+        mapScannedBarcodetoBaseItem(barcode: barcode) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case let .success(product):
+            case let .success(result):
                 Task { @MainActor in
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: self.flow.analyticsFlow,
                                                                                     source: .orderCreation,
                                                                                     addedVia: .scanning))
-                    self.updateOrderWithProduct(product)
+                    self.updateOrderWithBaseItem(result)
                     onCompletion(.success(()))
                 }
             case .failure:
@@ -1360,11 +1364,11 @@ extension EditableOrderViewModel {
 
     /// Attempts to map SKU to Product
     ///
-    private func mapFromScannedBarcodetoProduct(barcode: ScannedBarcode, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    private func mapScannedBarcodetoBaseItem(barcode: ScannedBarcode, onCompletion: @escaping (Result<OrderBaseItem, Error>) -> Void) {
         Task {
             do {
-                let matchedProduct = try await barcodeSKUScannerProductFinder.findProduct(from: barcode, siteID: siteID, source: .orderCreation)
-                onCompletion(.success(matchedProduct))
+                let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: barcode, siteID: siteID, source: .orderCreation)
+                onCompletion(.success(result))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -1427,25 +1431,14 @@ extension EditableOrderViewModel {
     }
 }
 
-private extension EditableOrderViewModel {
-    // Attempts to retrieve the product variation associated with a given OrderItem, if any, from locally stored variations.
-    // If none is found, falls back to attempt to retrieve the variation from a model parent
-    // If none is found, returns nil
-    // https://github.com/woocommerce/woocommerce-ios/issues/9808
-    func retrieveVariation(for item: OrderItem) -> ProductVariation? {
-        guard let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) else {
-            let product = allProducts.first(where: { $0.productID == item.variationID })
-            return product?.toProductVariation()
+private extension OrderBaseItem {
+    var itemID: Int64 {
+        switch self {
+        case let .product(product):
+            return product.productID
+        case let .variation(variation):
+            return variation.productVariationID
         }
-        return variation
-    }
-
-    func retrieveVariation(for id: Int64) -> ProductVariation? {
-        guard let variation = allProductVariations.first(where: { $0.productVariationID == id }) else {
-            let product = allProducts.first(where: { $0.productID == id })
-            return product?.toProductVariation()
-        }
-        return variation
     }
 }
 

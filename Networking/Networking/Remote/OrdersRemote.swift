@@ -306,6 +306,31 @@ public class OrdersRemote: Remote {
         let mapper = OrderMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Retrieves the date a specific `Order` was last modified.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - orderID: Identifier of the Order.
+    /// - Returns:
+    ///     Async result with a `Date` or an error
+    ///
+    public func fetchDateModified(for siteID: Int64, orderID: Int64) async throws -> Date {
+        let parameters = [
+            ParameterKeys.fields: ParameterValues.dateModifiedField
+        ]
+
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = EntityDateModifiedMapper()
+
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 
@@ -345,6 +370,7 @@ public extension OrdersRemote {
             "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
             "is_editable", "needs_payment", "needs_processing", "gift_cards"
         ]
+        static let dateModifiedField = "date_modified_gmt"
     }
 
     /// Order fields supported for update

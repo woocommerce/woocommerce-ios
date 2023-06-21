@@ -29,6 +29,7 @@ final class ProductFormTableViewDataSource: NSObject {
     var openLinkedProductsAction: (() -> Void)?
     var reloadLinkedPromoAction: (() -> Void)?
     var descriptionAIAction: (() -> Void)?
+    var openAILegalPageAction: ((URL) -> Void)?
 
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
@@ -98,6 +99,8 @@ private extension ProductFormTableViewDataSource {
             configureDescription(cell: cell, description: description, isEditable: editable, isAIEnabled: isAIEnabled)
         case .descriptionAI:
             configureDescriptionAI(cell: cell)
+        case .learnMoreAboutAI:
+            configureLearnMoreAI(cell: cell)
         }
     }
     func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
@@ -213,7 +216,7 @@ private extension ProductFormTableViewDataSource {
             fatalError()
         }
         let title = NSLocalizedString(
-            "Write it for me",
+            "Write with AI",
             comment: "Product description AI row on Product form screen when the feature is available."
         )
         cell.configure(style: .subtle,
@@ -225,6 +228,50 @@ private extension ProductFormTableViewDataSource {
             self?.descriptionAIAction?()
         }
         cell.accessoryType = .none
+        cell.hideSeparator()
+    }
+
+    func configureLearnMoreAI(cell: UITableViewCell) {
+        guard let cell = cell as? TextViewTableViewCell else {
+            fatalError("Unexpected table view cell for the AI legal cell")
+        }
+        let attributedText = {
+            let content = String.localizedStringWithFormat(Localization.legalText, Localization.learnMore)
+            let font: UIFont = .caption1
+            let foregroundColor: UIColor = .secondaryLabel
+            let linkColor: UIColor = .accent
+            let linkContent = Localization.learnMore
+
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .left
+
+            let attributedString = NSMutableAttributedString(
+                string: content,
+                attributes: [.font: font,
+                             .foregroundColor: foregroundColor,
+                             .paragraphStyle: paragraphStyle,
+                            ]
+            )
+            let legalLink = NSAttributedString(string: linkContent,
+                                               attributes: [.font: font,
+                                                            .foregroundColor: linkColor,
+                                                            .underlineStyle: NSUnderlineStyle.single.rawValue,
+                                                            .underlineColor: linkColor,
+                                                            .link: Constants.legalURL])
+            attributedString.replaceFirstOccurrence(of: linkContent, with: legalLink)
+            return attributedString
+        }()
+        cell.configure(with: .init(attributedText: attributedText,
+                                   textViewMinimumHeight: Constants.learnMoreTextHeight,
+                                   isEditable: false,
+                                   isSelectable: true,
+                                   isScrollEnabled: false,
+                                   style: .caption,
+                                   edgeInsets: Constants.learnMoreTextInsets,
+                                   onLinkTapped: { [weak self] url in
+            self?.openAILegalPageAction?(url)
+        }))
+        cell.selectionStyle = .none
         cell.hideSeparator()
     }
 
@@ -329,5 +376,24 @@ private extension ProductFormTableViewDataSource {
                                 numberOfLinesForTitle: 0,
                                 isActionable: false,
                                 showsSeparator: false))
+    }
+}
+
+private extension ProductFormTableViewDataSource {
+    enum Constants {
+        static let legalURL = URL(string: "https://automattic.com/ai-guidelines/")!
+        static let learnMoreTextHeight: CGFloat = 16
+        static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: -8, right: 0)
+    }
+    enum Localization {
+        static let legalText = NSLocalizedString(
+            "Powered by AI. %1$@.",
+            comment: "Label to indicate AI-generated content in the product detail screen. " +
+            "Reads: Powered by AI. Learn more."
+        )
+        static let learnMore = NSLocalizedString(
+            "Learn more",
+            comment: "Title for the link to open the legal URL for AI-generated content in the product detail screen"
+        )
     }
 }

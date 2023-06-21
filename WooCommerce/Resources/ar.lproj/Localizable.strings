@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-13 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-06-19 02:10:05+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -2076,9 +2076,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "التاريخ: الأقدم إلى الأحدث";
 
-/* Message describing days left on a Plan to expire.Reads as 'Days left in trial: 15' */
-"Days left in trial: %1$@" = "الأيام المتبقية في الإصدار التجريبي: %1$@";
-
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "الافتراضي";
 
@@ -2679,9 +2676,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "خطأ في أثناء إنشاء رمز الاستجابة السريعة. ترجى المحاولة مجددًا في وقت لاحق";
 
-/* Error message on the product sharing message generation screen when generation fails. */
-"Error generating message. Please try again." = "خطأ في أثناء إنشاء الرسالة. ترجى المحاولة مجددًا.";
-
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "حدث خطأ في أثناء العثور على العنوان في خرائط Apple";
 
@@ -2718,9 +2712,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "يحب الجميع الصفقات";
-
-/* Subtitle that can be read under the Plan upgrade name */
-"Everything you need to launch an online store" = "كل ما تحتاج إليه لبدء متجر على الإنترنت";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "استبعاد ⁦%1$d⁩ من التصنيفات";
@@ -3128,6 +3119,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "فهمت!";
+
+/* Dismiss button title in AI product description celebration screen. */
+"Got it" = "فهمت";
 
 /* Country option for a site address. */
 "Greece" = "اليونان";
@@ -8440,7 +8434,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "العمل معنا";
 
-/* Action button to generate message on the product sharing message generation screen */
+/* Product description AI row on Product form screen when the feature is available. */
 "Write it for me" = "كتابة ذلك من أجلي";
 
 /* Title in the product description AI generator view. */
@@ -8567,9 +8561,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "لست مخولاً لإغلاق الحساب.";
 
-/* Message describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
-"Your Plan: %1$@" = "خطتك: %1$@";
-
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "يتعيَّن تحديث برنامج قارئ البطاقة الخاص بك لتحصيل المدفوعات. سيؤدي الإلغاء إلى حظر اتصال القارئ الخاص بك.";
 
@@ -8581,9 +8572,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the free domain view. */
 "Your free store address" = "عنوان متجرك المجاني";
-
-/* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to Woo Express Performance Plan now." = "انتهى الإصدار التجريبي المجاني الخاص بك، وأصبح لديك وصول محدود إلى كل الميزات. اشترك في خطة الأداء من Woo Express الآن.";
 
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "ينتهي الإصدار التجريبي المجاني الذي تستخدمه من Woo Express غدًا (%1$@). حان الوقت الآن لإيجاد مكانتك في المستقبل - اختر خطة واستعد للتطور.";
@@ -8633,7 +8621,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the store creation summary screen. */
 "Your store will be created based on the options of your choice!" = "سيتم إنشاء متجرك استنادًا إلى الخيارات التي تحددها!";
 
-/* Info details for an expired free trial */
+/* Info details for an expired plan */
 "Your subscription has ended and you have limited access to all the features." = "انتهى اشتراكك، وأصبح لديك وصول محدود إلى كل الميزات.";
 
 /* Message for the alert after the support request is created. */

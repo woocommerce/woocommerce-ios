@@ -9,7 +9,7 @@
             "date_created_gmt": "2020-06-12T14:36:02",
             "date_modified": "2021-02-23T10:46:54",
             "date_modified_gmt": "2021-02-23T02:46:54",
-            "type": "variation",
+            "type": "simple",
             "status": "publish",
             "featured": false,
             "catalog_visibility": "visible",
@@ -57,18 +57,12 @@
             "rating_count": 0,
             "upsell_ids": [],
             "cross_sell_ids": [],
-            "parent_id": 846,
+            "parent_id": 0,
             "purchase_note": "",
             "categories": [],
             "tags": [],
             "images": [],
-            "attributes": [
-                {
-                    "id": 0,
-                    "name": "Darkness",
-                    "option": "87%"
-                }
-            ],
+            "attributes": [],
             "default_attributes": [],
             "variations": [],
             "grouped_products": [],

@@ -141,10 +141,11 @@ final class TooltipPresenter {
     private func setUpTooltipConstraints() {
         tooltip.translatesAutoresizingMaskIntoConstraints = false
 
-        var tooltipConstraints: [NSLayoutConstraint?] = [
+        var tooltipConstraints = [
             tooltip.centerXAnchor.constraint(equalTo: containerView.centerXAnchor, constant: extraArrowOffsetX())
         ]
 
+        let tooltipTopConstraint: NSLayoutConstraint
         switch target {
         case .view(let targetView):
             switch tooltipOrientation() {
@@ -171,9 +172,10 @@ final class TooltipPresenter {
                     constant: targetPoint().y + totalVerticalBuffer)
             }
         }
-
         tooltipConstraints.append(tooltipTopConstraint)
-        NSLayoutConstraint.activate(tooltipConstraints.compactMap { $0 })
+        self.tooltipTopConstraint = tooltipTopConstraint
+
+        NSLayoutConstraint.activate(tooltipConstraints)
     }
 
     /// `orientationDidChangeNotification` is published when the device is at `faceUp` or `faceDown`

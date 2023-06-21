@@ -54,7 +54,9 @@ struct UpgradesView: View {
             case .waiting(let plan):
                 UpgradeWaitingView(planName: plan.wooPlan.shortName)
             case .completed:
-                EmptyCompletedView()
+                CompletedUpgradeView(doneAction: {
+                    presentationMode.wrappedValue.dismiss()
+                })
             case .prePurchaseError(let error):
                 VStack {
                     PrePurchaseUpgradesErrorView(error,
@@ -397,6 +399,7 @@ private extension UpgradeWaitingView {
         static let textSpacing: CGFloat = 16
     }
 }
+
 struct CompletedUpgradeView: View {
     // Confetti animation runs on any change of this variable
     @State private var confettiTrigger: Int = 0
@@ -428,7 +431,9 @@ struct CompletedUpgradeView: View {
             .buttonStyle(PrimaryButtonStyle())
 
         }
-        .confettiCannon(counter: $confettiTrigger, num: Constants.numberOfElements)
+        .confettiCannon(counter: $confettiTrigger,
+                        num: Constants.numberOfConfettiElements,
+                        radius: Constants.confettiRadius)
         .onAppear {
             confettiTrigger += 1
         }
@@ -439,7 +444,8 @@ struct CompletedUpgradeView: View {
     private struct Constants {
         static let completedUpgradeViewTopPadding: CGFloat = 70
         static let padding: CGFloat = 16
-        static let numberOfElements: Int = 100
+        static let numberOfConfettiElements: Int = 100
+        static let confettiRadius: CGFloat = 500
     }
 
     private enum Localization {

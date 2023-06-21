@@ -17,7 +17,7 @@ final class Tooltip: UIView {
             static let contentStackViewTop: CGFloat = 12
             static let contentStackViewBottom: CGFloat = 4
             static let contentStackViewHorizontal: CGFloat = 16
-            static let superHorizontalMargin: CGFloat = 16
+            static let superHorizontalMargin: CGFloat = 32
             static let buttonStackViewHeight: CGFloat = 40
         }
     }
@@ -168,8 +168,8 @@ final class Tooltip: UIView {
     private var containerBottomConstraint: NSLayoutConstraint?
     private var arrowShapeLayer: CAShapeLayer?
 
-    init(availableWidth: CGFloat = UIScreen.main.bounds.width) {
-        self.availableWidth = availableWidth - Constants.Spacing.superHorizontalMargin
+    init(containerWidth: CGFloat = UIScreen.main.bounds.width) {
+        self.availableWidth = containerWidth - Constants.Spacing.superHorizontalMargin
         super.init(frame: .zero)
         commonInit()
     }
@@ -257,8 +257,8 @@ final class Tooltip: UIView {
         )
     }
 
-    func copy(availableWidth: CGFloat) -> Tooltip {
-        let copyTooltip = Tooltip(availableWidth: availableWidth)
+    func copy(containerWidth: CGFloat) -> Tooltip {
+        let copyTooltip = Tooltip(containerWidth: containerWidth)
         copyTooltip.title = title
         copyTooltip.message = message
         copyTooltip.primaryButtonTitle = primaryButtonTitle

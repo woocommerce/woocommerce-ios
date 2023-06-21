@@ -1,12 +1,9 @@
 import Foundation
 
 struct ProductDescriptionAITooltipUseCase {
-    private let isDescriptionAIEnabled: Bool
     private let userDefaults: UserDefaults
 
-    init(isDescriptionAIEnabled: Bool,
-         userDefaults: UserDefaults = UserDefaults.standard) {
-        self.isDescriptionAIEnabled = isDescriptionAIEnabled
+    init(userDefaults: UserDefaults = UserDefaults.standard) {
         self.userDefaults = userDefaults
     }
 
@@ -30,6 +27,6 @@ struct ProductDescriptionAITooltipUseCase {
 
     /// Tooltip will only be shown 3 times if the user never interacts with it.
     var shouldShowTooltip: Bool {
-        isDescriptionAIEnabled && numberOfTimesWriteWithAITooltipIsShown < 3 && !hasDismissedWriteWithAITooltip
+        numberOfTimesWriteWithAITooltipIsShown < 3 && !hasDismissedWriteWithAITooltip
     }
 }

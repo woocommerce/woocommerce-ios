@@ -17,7 +17,7 @@ final class Tooltip: UIView {
             static let contentStackViewTop: CGFloat = 12
             static let contentStackViewBottom: CGFloat = 4
             static let contentStackViewHorizontal: CGFloat = 16
-            static let superHorizontalMargin: CGFloat = 16
+            static let superHorizontalMargin: CGFloat = 32
             static let buttonStackViewHeight: CGFloat = 40
         }
     }

@@ -209,7 +209,7 @@ final class TooltipPresenter {
             self.containerView.layoutIfNeeded()
         } completion: { isSuccess in
             self.tooltip.removeFromSuperview()
-            self.tooltip = self.tooltip.copy()
+            self.tooltip = self.tooltip.copy(availableWidth: self.containerView.bounds.width)
             self.showTooltip()
         }
     }

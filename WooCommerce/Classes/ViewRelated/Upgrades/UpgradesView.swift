@@ -138,7 +138,14 @@ struct PrePurchaseUpgradesErrorView: View {
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                 case .userNotAllowedToUpgrade:
-                    NonOwnerUpgradesView()
+                    Text(Localization.unableToUpgradeText)
+                        .bold()
+                        .headlineStyle()
+                        .multilineTextAlignment(.center)
+                    Text(Localization.unableToUpgradeInstructions)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
                 }
             }
         }
@@ -185,6 +192,14 @@ struct PrePurchaseUpgradesErrorView: View {
         static let inAppPurchasesNotSupportedErrorSubtitle = NSLocalizedString(
             "Please contact support for assistance.",
             comment: "Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed.")
+
+        static let unableToUpgradeText = NSLocalizedString(
+            "You can’t upgrade because you are not the store owner",
+            comment: "Text describing that is not possible to upgrade the site's plan.")
+
+        static let unableToUpgradeInstructions = NSLocalizedString(
+            "Please contact the store owner to upgrade your plan.",
+            comment: "Text describing that only the site owner can upgrade the site's plan.")
     }
 }
 
@@ -517,34 +532,6 @@ private extension WooWPComPlan {
     }
 }
 
-struct NonOwnerUpgradesView: View {
-    private var siteName: String? {
-        ServiceLocator.stores.sessionManager.defaultSite?.name
-    }
-
-    var body: some View {
-        VStack {
-
-            Image(uiImage: .noStoreImage)
-                .frame(maxWidth: .infinity, alignment: .center)
-
-            VStack(alignment: .center, spacing: UpgradesView.Layout.contentSpacing) {
-                Text(Localization.unableToUpgradeText)
-                    .bold()
-                    .headlineStyle()
-                if let siteName = siteName {
-                    Text(siteName)
-                }
-                Text(Localization.unableToUpgradeInstructions)
-                    .font(.body)
-                    .foregroundColor(.secondary)
-            }
-
-            Spacer()
-        }
-    }
-}
-
 private struct CurrentPlanDetailsView: View {
     @State var planName: String
     @State var daysLeft: String
@@ -608,15 +595,6 @@ private extension OwnerUpgradesView {
 
         static let featureDetailsUnavailableText = NSLocalizedString(
             "See plan details", comment: "Title for a link to view Woo Express plan details on the web, as a fallback.")
-    }
-}
-
-private extension NonOwnerUpgradesView {
-    struct Localization {
-        static let unableToUpgradeText = NSLocalizedString("You can’t upgrade because you are not the store owner",
-                                                           comment: "Text describing that is not possible to upgrade the site's plan.")
-        static let unableToUpgradeInstructions = NSLocalizedString("Please contact the store owner to upgrade your plan.",
-                                                                   comment: "Text describing that only the site owner can upgrade the site's plan.")
     }
 }
 

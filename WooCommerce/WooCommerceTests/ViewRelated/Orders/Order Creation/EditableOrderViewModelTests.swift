@@ -1676,10 +1676,11 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_addScannedProductToOrder_when_sku_is_not_found_then_returns_productNotFound_error_and_shows_autodismissable_notice_with_retry_action() {
         // Given
+        let actionError = NSError(domain: "Error", code: 0)
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstItemMatchFromSKU(_, _, let onCompletion):
-                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
+                onCompletion(.failure(actionError))
             default:
                 XCTFail("Expected failure, got success")
             }
@@ -1707,7 +1708,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             })
         }
 
-        let expectedNotice = EditableOrderViewModel.NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction: {})
+        let expectedNotice = EditableOrderViewModel.NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: actionError, withRetryAction: {})
 
         // Then
         XCTAssertEqual(expectedError, .productNotFound)
@@ -1732,7 +1733,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case .retrieveFirstItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
                 let product = Product.fake().copy(productID: self.sampleSiteID, purchasable: true)
                 onCompletion(.success(.product(product)))
             default:
@@ -1777,7 +1778,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { [weak self] action in
             switch action {
-            case .retrieveFirstItemMatchFromSKU(_, _, let onCompletion):
+            case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
                 self?.storageManager.insertSampleProduct(readOnlyProduct: product)
                 onCompletion(.success(.product(product)))
             default:

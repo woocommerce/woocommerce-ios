@@ -55,8 +55,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .retrieveFirstItemMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
-            retrieveFirstItemMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
+        case .retrieveFirstPurchasableItemMatchFromSKU(siteID: let siteID, sku: let sku, onCompletion: let onCompletion):
+            retrieveFirstPurchasableItemMatchFromSKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -336,7 +336,7 @@ private extension ProductStore {
 
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
-    func retrieveFirstItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+    func retrieveFirstPurchasableItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
         remote.searchProductsBySKU(for: siteID,
                                    keyword: sku,
                                    pageNumber: Remote.Default.firstPageNumber,
@@ -344,8 +344,14 @@ private extension ProductStore {
                                    completion: { result in
             switch result {
             case let .success(products):
-                guard let product = products.first(where: { $0.sku == sku }) else {
+                let skuProducts = products.filter { $0.sku == sku }
+
+                guard !skuProducts.isEmpty else {
                     return onCompletion(.failure(ProductLoadError.notFound))
+                }
+
+                guard let product = products.first(where: { $0.purchasable }) else {
+                    return onCompletion(.failure(ProductLoadError.notPurchasable))
                 }
 
                 if let productVariation = product.toProductVariation() {
@@ -1042,6 +1048,7 @@ public enum ProductUpdateError: Error, Equatable {
 public enum ProductLoadError: Error, Equatable {
     case notFound
     case notFoundInStorage
+    case notPurchasable
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {

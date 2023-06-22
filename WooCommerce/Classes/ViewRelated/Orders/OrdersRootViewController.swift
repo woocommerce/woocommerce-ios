@@ -223,8 +223,8 @@ final class OrdersRootViewController: UIViewController {
                                                                                     source: .orderList,
                                                                                     addedVia: .scanning))
                     self.presentOrderCreationFlowWithScannedProduct(product)
-                case .failure:
-                    self.displayScannedProductErrorNotice()
+                case let .failure(error):
+                    self.displayScannedProductErrorNotice(error)
                 }
             }
         }, onPermissionsDenied: { [weak self] in
@@ -252,10 +252,8 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents an Error notice
     ///
-    private func displayScannedProductErrorNotice() {
-        let notice = Notice(title: Localization.scannedProductErrorNoticeMessage,
-                            feedbackType: .error,
-                            actionTitle: Localization.scannedProductErrorNoticeRetryActionTitle) { [weak self] in
+    private func displayScannedProductErrorNotice(_ error: Error) {
+        let notice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error) { [weak self] in
             self?.presentOrderCreationFlowByProductScanning()
         }
 
@@ -535,11 +533,5 @@ private extension OrdersRootViewController {
         )
         static let emptyOrderDetails = NSLocalizedString("No order selected",
                                                          comment: "Message on the detail view of the Orders tab before any order is selected")
-        static let scannedProductErrorNoticeMessage = NSLocalizedString("Product not found. Failed to create a New Order",
-                                                          comment: "Error message on the Order list view when the scanner cannot find a matching product " +
-                                                          "and create a new order")
-        static let scannedProductErrorNoticeRetryActionTitle = NSLocalizedString("Retry",
-                                                          comment: "Retry button title on the Order list view when the scanner cannot find" +
-                                                          "a matching product and create a new order")
     }
 }

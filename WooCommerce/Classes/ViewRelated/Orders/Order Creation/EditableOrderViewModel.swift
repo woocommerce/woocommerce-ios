@@ -1138,7 +1138,8 @@ private extension EditableOrderViewModel {
     ///
     func trackCreateOrderSuccess() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
-                                                                                try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
+                                                                                try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
+                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count)))
     }
 
     /// Tracks an order creation failure

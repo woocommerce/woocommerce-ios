@@ -645,11 +645,16 @@ private extension ProductFormViewController {
             return
         }
 
+        if let tooltip = tooltipPresenter?.tooltip {
+            tooltip.removeFromSuperview()
+            self.tooltipPresenter = nil
+        }
+
         guard product.description?.isEmpty == true else {
             return
         }
 
-        guard tooltipUseCase.shouldShowTooltip && tooltipPresenter == nil else {
+        guard tooltipUseCase.shouldShowTooltip else {
             return
         }
 

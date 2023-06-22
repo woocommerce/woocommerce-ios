@@ -645,6 +645,10 @@ private extension ProductFormViewController {
             return
         }
 
+        guard product.description?.isEmpty == true else {
+            return
+        }
+
         guard tooltipUseCase.shouldShowTooltip && tooltipPresenter == nil else {
             return
         }

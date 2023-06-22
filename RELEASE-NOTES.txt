@@ -4,6 +4,7 @@
 -----
 - [*] Coupons: The Coupons Management feature is fully released and not in Beta anymore [https://github.com/woocommerce/woocommerce-ios/pull/10032]
 - [Internal] Performance: When loading a single order (e.g. in order details), we now load the order from storage unless it has been modified remotely. [https://github.com/woocommerce/woocommerce-ios/pull/10036]
+- [*] Store creation: the progress view copy was updated to inform the merchants that it can take a few minutes for the store to be ready. [https://github.com/woocommerce/woocommerce-ios/pull/10047]
 
 14.1
 -----

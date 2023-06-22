@@ -8,12 +8,21 @@ import Yosemite
 ///
 @MainActor
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
+    private let authentication: Authentication = ServiceLocator.authenticationManager
+
     init(siteID: Int64) {
         let upgradesViewModel = UpgradesViewModel(siteID: siteID)
         let subscriptionsViewModel = SubscriptionsViewModel()
 
-        super.init(rootView: UpgradesView(upgradesViewModel: upgradesViewModel,
-                                          subscriptionsViewModel: subscriptionsViewModel))
+        super.init(rootView: UpgradesView(upgradesViewModel: upgradesViewModel, subscriptionsViewModel: subscriptionsViewModel))
+
+        rootView.supportHandler = { [weak self] in
+            self?.openSupport()
+        }
+    }
+
+    func openSupport() {
+        authentication.presentSupport(from: self, screen: .purchasePlanError)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -27,7 +36,10 @@ struct UpgradesView: View {
     @ObservedObject var upgradesViewModel: UpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
-    init(upgradesViewModel: UpgradesViewModel, subscriptionsViewModel: SubscriptionsViewModel) {
+    var supportHandler: () -> Void = {}
+
+    init(upgradesViewModel: UpgradesViewModel,
+         subscriptionsViewModel: SubscriptionsViewModel) {
         self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
     }
@@ -83,13 +95,16 @@ struct UpgradesView: View {
                         }
                     } secondaryAction: {
                         presentationMode.wrappedValue.dismiss()
+                    } getSupportAction: {
+                        supportHandler()
                     }
                 case .purchaseUpgradeError(.planActivationFailed):
                     PurchaseUpgradeErrorView(error: .planActivationFailed,
                                              primaryAction: nil,
                                              secondaryAction: {
                         presentationMode.wrappedValue.dismiss()
-                    })
+                    },
+                                             getSupportAction: supportHandler)
                 }
             }
             .navigationBarHidden(true)
@@ -218,6 +233,7 @@ struct PurchaseUpgradeErrorView: View {
     let error: PurchaseUpgradeError
     let primaryAction: (() -> Void)?
     let secondaryAction: (() -> Void)
+    let getSupportAction: (() -> Void)
 
     var body: some View {
         VStack {
@@ -241,6 +257,16 @@ struct PurchaseUpgradeErrorView: View {
                         Text(errorCode)
                             .font(.footnote)
                             .foregroundColor(.secondary)
+                    }
+                    Button(action: getSupportAction) {
+                        HStack {
+                            Image(systemName: "questionmark.circle")
+                                .font(.body.weight(.semibold))
+                                .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
+                            Text(Localization.getSupport)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
+                        }
                     }
 
                     Spacer()
@@ -270,6 +296,12 @@ struct PurchaseUpgradeErrorView: View {
         static let topPadding: CGFloat = 80
         static let spacing: CGFloat = 40
         static let textSpacing: CGFloat = 16
+    }
+
+    enum Localization {
+        static let getSupport = NSLocalizedString(
+            "Get support",
+            comment: "Button title to allow merchants to open the support screens when there's an error with their plan purchase")
     }
 }
 

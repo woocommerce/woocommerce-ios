@@ -206,16 +206,17 @@ extension OrderDetailsViewModel {
                 group.leave()
             }
 
+            // Refunds require order.refunds data, so sync them only after the order is loaded
+            group.enter()
+            self.syncRefunds() { _ in
+                group.leave()
+            }
+
             // Subscriptions require order.renewalSubscriptionID, so sync them only after the order is loaded
             group.enter()
             self.syncSubscriptions { _ in
                 group.leave()
             }
-        }
-
-        group.enter()
-        syncRefunds() { _ in
-            group.leave()
         }
 
         group.enter()

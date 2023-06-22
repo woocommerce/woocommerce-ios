@@ -2,6 +2,7 @@
 
 14.2
 -----
+- [Internal] Performance: When loading the refunds on an order (e.g. in order details), we now only request them from remote if they are not already in local storage. [https://github.com/woocommerce/woocommerce-ios/pull/10039]
 - [*] Orders: Users can can now add coupons to orders [https://github.com/woocommerce/woocommerce-ios/pull/10035]
 
 - [*] Coupons: The Coupons Management feature is fully released and not in Beta anymore [https://github.com/woocommerce/woocommerce-ios/pull/10032]

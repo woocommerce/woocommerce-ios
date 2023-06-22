@@ -3,6 +3,7 @@
 14.2
 -----
 - [Internal] Performance: When loading a single order (e.g. in order details), we now load the order from storage unless it has been modified remotely. [https://github.com/woocommerce/woocommerce-ios/pull/10036]
+- [Internal] Performance: When the Orders tab is opened, we now only sync orders that have been created or modified since the last successful sync. [https://github.com/woocommerce/woocommerce-ios/pull/10065]
 
 14.1
 -----

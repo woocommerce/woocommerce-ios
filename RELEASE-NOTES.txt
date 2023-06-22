@@ -2,7 +2,7 @@
 
 14.2
 -----
-
+- [*] Fixed the unusable state of the app when the default store runs on an expired free trial plan. [https://github.com/woocommerce/woocommerce-ios/pull/10059]
 
 14.1
 -----

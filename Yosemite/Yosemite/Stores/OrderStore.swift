@@ -41,19 +41,21 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .fetchFilteredOrders(let siteID, let statuses, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
+        case let .fetchFilteredOrders(siteID, statuses, after, before, modifiedAfter, deleteAllBeforeSaving, pageSize, onCompletion):
             fetchFilteredOrders(siteID: siteID,
                                 statuses: statuses,
                                 after: after,
                                 before: before,
+                                modifiedAfter: modifiedAfter,
                                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                                 pageSize: pageSize,
                                 onCompletion: onCompletion)
-        case .synchronizeOrders(let siteID, let statuses, let after, let before, let pageNumber, let pageSize, let onCompletion):
+        case let .synchronizeOrders(siteID, statuses, after, before, modifiedAfter, pageNumber, pageSize, onCompletion):
             synchronizeOrders(siteID: siteID,
                               statuses: statuses,
                               after: after,
                               before: before,
+                              modifiedAfter: modifiedAfter,
                               pageNumber: pageNumber,
                               pageSize: pageSize,
                               onCompletion: onCompletion)
@@ -128,16 +130,19 @@ private extension OrderStore {
     ///
     /// The orders will only be deleted if one of the executed `GET` requests succeed.
     ///
-    /// - Parameter statuses The statuses to use for the filtered list. If this is not provided,
+    /// - Parameters:
+    ///     - statuses: The statuses to use for the filtered list. If this is not provided,
     ///                       only the all orders list will be fetched. See `OrderStatusEnum`
     ///                       for possible values.
-    /// - Parameter after Limit response to resources published after a given ISO8601 compliant date.
-    /// - Parameter before Limit response to resources published before a given ISO8601 compliant date.
+    ///     - after: Limit response to resources published after a given ISO8601 compliant date.
+    ///     - before: Limit response to resources published before a given ISO8601 compliant date.
+    ///     - modifiedAfter: Limit response to resources modified after a given ISO8601 compliant date.
     ///
     func fetchFilteredOrders(siteID: Int64,
                              statuses: [String]?,
                              after: Date?,
                              before: Date?,
+                             modifiedAfter: Date?,
                              deleteAllBeforeSaving: Bool,
                              pageSize: Int,
                              onCompletion: @escaping (TimeInterval, Error?) -> Void) {
@@ -176,11 +181,12 @@ private extension OrderStore {
                 return
             }
             self.remote.loadAllOrders(for: siteID,
-                                         statuses: statuses,
-                                         after: after,
-                                         before: before,
-                                         pageNumber: pageNumber,
-                                         pageSize: pageSize) { [weak self] result in
+                                      statuses: statuses,
+                                      after: after,
+                                      before: before,
+                                      modifiedAfter: modifiedAfter,
+                                      pageNumber: pageNumber,
+                                      pageSize: pageSize) { [weak self] result in
                 guard let self = self else {
                     return
                 }
@@ -231,6 +237,7 @@ private extension OrderStore {
                            statuses: [String]?,
                            after: Date?,
                            before: Date?,
+                           modifiedAfter: Date?,
                            pageNumber: Int,
                            pageSize: Int,
                            onCompletion: @escaping (TimeInterval, Error?) -> Void) {
@@ -239,6 +246,7 @@ private extension OrderStore {
                              statuses: statuses,
                              after: after,
                              before: before,
+                             modifiedAfter: modifiedAfter,
                              pageNumber: pageNumber,
                              pageSize: pageSize) { [weak self] result in
             switch result {

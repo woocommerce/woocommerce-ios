@@ -123,7 +123,7 @@ private extension RequirementsChecker {
         let action = UIAlertAction(title: Localization.upgrade, style: .default) { [weak self] _ in
             guard let self else { return }
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
-                let upgradesController = UINavigationController(rootViewController: UpgradesHostingController(siteID: siteID))
+                let upgradesController = UpgradesHostingController(siteID: siteID)
                 self.baseViewController?.present(upgradesController, animated: true)
             } else {
                 let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)

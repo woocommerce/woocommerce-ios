@@ -647,7 +647,7 @@ private extension StorePickerViewController {
                                                 preferredStyle: .alert)
         let action = UIAlertAction(title: Localization.ExpiredWPComPlanAlert.upgrade, style: .default) { [weak self] _ in
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
-                let upgradesController = UINavigationController(rootViewController: UpgradesHostingController(siteID: siteID))
+                let upgradesController = UpgradesHostingController(siteID: siteID)
                 self?.topmostPresentedViewController.present(upgradesController, animated: true)
             } else {
                 let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)

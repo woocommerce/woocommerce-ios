@@ -513,11 +513,10 @@ private extension StoreCreationCoordinator {
     /// While on the in-progress UI, it waits for Jetpack to be installed on the site.
     @MainActor
     func handleFreeTrialStoreCreation(from navigationController: UINavigationController, result: Result<SiteCreationResult, SiteCreationError>) {
-        // Make sure that nothing is presented on the view controller before showing the loading screen
-        navigationController.presentedViewController?.dismiss(animated: true)
-
         switch result {
         case .success(let siteResult):
+            // Make sure that nothing is presented on the view controller before showing the loading screen
+            navigationController.presentedViewController?.dismiss(animated: true)
             // Show a progress view while the free trial store is created.
             showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
             // Wait for jetpack to be installed
@@ -525,7 +524,7 @@ private extension StoreCreationCoordinator {
             waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)
             analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
         case .failure(let error):
-            showStoreCreationErrorAlert(from: navigationController, error: error)
+            showStoreCreationErrorAlert(from: navigationController.topmostPresentedViewController, error: error)
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
                                                                      error: error,
                                                                      flow: .native,
@@ -710,7 +709,7 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func showStoreCreationErrorAlert(from navigationController: UINavigationController, error: SiteCreationError) {
+    func showStoreCreationErrorAlert(from viewController: UIViewController, error: SiteCreationError) {
         let message: String = {
             switch error {
             case .invalidDomain, .domainExists:
@@ -724,7 +723,7 @@ private extension StoreCreationCoordinator {
                                                 preferredStyle: .alert)
         alertController.view.tintColor = .text
         _ = alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
-        navigationController.present(alertController, animated: true)
+        viewController.present(alertController, animated: true)
     }
 
     @MainActor

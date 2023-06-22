@@ -468,31 +468,22 @@ private extension StoreCreationCoordinator {
         let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
         }, onContinue: { [weak self] in
-            Task {
-                await self?.createFreeTrialStore(from: navigationController,
-                                                 storeName: storeName,
-                                                 profilerData: profilerData)
-            }
-
-            self?.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
+            guard let self else { return }
+            let result = await self.createFreeTrialStore(storeName: storeName,
+                                                         profilerData: profilerData)
+            self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
+            self.handleFreeTrialStoreCreation(from: navigationController, result: result)
         })
         navigationController.present(summaryViewController, animated: true)
     }
 
-    /// This method shows a progress view and proceeds to:
+    /// This method creates a free trial store async:
     /// - Create a simple site
     /// - Enable Free Trial on the site
-    /// - Wait for JetPack to be installed on the site.
+    /// - Schedule a local notification to notify the user when the site is ready
     ///
     @MainActor
-    func createFreeTrialStore(from navigationController: UINavigationController, storeName: String, profilerData: SiteProfilerData?) async {
-
-        // Make sure that nothing is presented on the view controller before showing the loading screen
-        navigationController.presentedViewController?.dismiss(animated: true)
-
-        // Show a progress view while the free trial store is created.
-        showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
-
+    func createFreeTrialStore(storeName: String, profilerData: SiteProfilerData?) async -> Result<SiteCreationResult, SiteCreationError> {
         // Create store site
         let createStoreResult = await createStore(name: storeName, flow: .wooexpress)
         if let profilerData {
@@ -508,24 +499,32 @@ private extension StoreCreationCoordinator {
             case .success:
                 cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
                 scheduleLocalNotificationWhenStoreIsReady()
-                // Wait for jetpack to be installed
-                DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
-                waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)
-                analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
-
+                return .success(siteResult)
             case .failure(let error):
-                navigationController.popViewController(animated: true)
-                showStoreCreationErrorAlert(from: navigationController, error: SiteCreationError(remoteError: error))
-
-                // TODO: Confirm if we should track a different error here.
-                analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
-                                                                         error: error,
-                                                                         flow: .native,
-                                                                         isFreeTrial: true))
+                return .failure(SiteCreationError(remoteError: error))
             }
 
         case .failure(let error):
-            navigationController.popViewController(animated: true)
+            return .failure(error)
+        }
+    }
+
+    /// Handles the result from the async free trial store creation and navigates to the in-progress UI on success or show an alert on failure.
+    /// While on the in-progress UI, it waits for Jetpack to be installed on the site.
+    @MainActor
+    func handleFreeTrialStoreCreation(from navigationController: UINavigationController, result: Result<SiteCreationResult, SiteCreationError>) {
+        // Make sure that nothing is presented on the view controller before showing the loading screen
+        navigationController.presentedViewController?.dismiss(animated: true)
+
+        switch result {
+        case .success(let siteResult):
+            // Show a progress view while the free trial store is created.
+            showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
+            // Wait for jetpack to be installed
+            DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
+            waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)
+            analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
+        case .failure(let error):
             showStoreCreationErrorAlert(from: navigationController, error: error)
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
                                                                      error: error,

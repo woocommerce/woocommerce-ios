@@ -81,7 +81,7 @@ private extension RequirementsChecker {
             case .success(let plan):
                 // Normalize dates in the same timezone.
                 let today = Date().startOfDay(timezone: .current)
-                guard let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
+                guard plan.isFreeTrial, let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
                     return checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
                 }
                 let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
@@ -117,8 +117,13 @@ private extension RequirementsChecker {
                                                 message: Localization.expiredPlanDescription,
                                                 preferredStyle: .alert)
         let action = UIAlertAction(title: Localization.upgrade, style: .default) { _ in
-            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
-            AppDelegate.shared.tabBarController?.present(controller, animated: true)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
+                let upgradesController = UINavigationController(rootViewController: UpgradesHostingController(siteID: siteID))
+                AppDelegate.shared.tabBarController?.present(upgradesController, animated: true)
+            } else {
+                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
+                AppDelegate.shared.tabBarController?.present(controller, animated: true)
+            }
         }
         alertController.addAction(action)
         AppDelegate.shared.tabBarController?.present(alertController, animated: true)

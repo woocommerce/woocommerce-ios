@@ -6,7 +6,6 @@ import Yosemite
 /// To be used to display available current plan Subscriptions, available plan Upgrades,
 /// and the CTA to upgrade
 ///
-@MainActor
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
     init(siteID: Int64) {
         let upgradesViewModel = UpgradesViewModel(siteID: siteID)

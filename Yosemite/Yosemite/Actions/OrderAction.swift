@@ -23,12 +23,15 @@ public enum OrderAction: Action {
     ///               doesn't matter. It will be converted to UTC later.
     ///     - before: Only include orders created before this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
+    ///     - modifiedAfter: Only include orders modified after this date. The time zone of the `Date`
+    ///               doesn't matter. It will be converted to UTC later.
     ///
     case fetchFilteredOrders(
         siteID: Int64,
         statuses: [String]?,
         after: Date? = nil,
         before: Date? = nil,
+        modifiedAfter: Date? = nil,
         deleteAllBeforeSaving: Bool,
         pageSize: Int,
         onCompletion: (TimeInterval, Error?) -> Void
@@ -41,11 +44,14 @@ public enum OrderAction: Action {
     ///               doesn't matter. It will be converted to UTC later.
     ///     - before: Only include orders created before this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
+    ///     - modifiedAfter: Only include orders modified after this date. The time zone of the `Date`
+    ///               doesn't matter. It will be converted to UTC later.
     ///
     case synchronizeOrders(siteID: Int64,
                            statuses: [String]?,
                            after: Date? = nil,
                            before: Date? = nil,
+                           modifiedAfter: Date? = nil,
                            pageNumber: Int,
                            pageSize: Int,
                            onCompletion: (TimeInterval, Error?) -> Void)

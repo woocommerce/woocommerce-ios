@@ -668,11 +668,11 @@ extension EditableOrderViewModel {
         let taxesTotal: String
 
         // We only support one (the first) coupon line
-        let supportsAddingCouponToOrder: Bool
         let couponSummary: String?
         let couponCode: String
         let discountTotal: String
         let shouldShowCoupon: Bool
+        let shouldDisableAddingCoupons: Bool
 
         /// Whether payment data is being reloaded (during remote sync)
         ///
@@ -684,7 +684,8 @@ extension EditableOrderViewModel {
         let feeLineViewModel: FeeLineDetailsViewModel
         let couponLineViewModel: CouponLineDetailsViewModel
 
-        init(itemsTotal: String = "0",
+        init(siteID: Int64 = 0,
+             itemsTotal: String = "0",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
@@ -696,12 +697,12 @@ extension EditableOrderViewModel {
              taxesTotal: String = "0",
              orderTotal: String = "0",
              shouldShowCoupon: Bool = false,
+             shouldDisableAddingCoupons: Bool = false,
              couponSummary: String? = nil,
              couponCode: String = "",
              discountTotal: String = "",
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
-             supportsAddingCouponToOrder: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
              saveCouponLineClosure: @escaping (OrderCouponLine?) -> Void = { _ in },
@@ -720,7 +721,7 @@ extension EditableOrderViewModel {
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shouldShowCoupon = shouldShowCoupon
-            self.supportsAddingCouponToOrder = supportsAddingCouponToOrder
+            self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.couponSummary = couponSummary
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
@@ -734,6 +735,7 @@ extension EditableOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
             self.couponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: shouldShowCoupon,
                                                                   code: couponCode,
+                                                                  siteID: siteID,
                                                                   didSelectSave: saveCouponLineClosure)
         }
     }
@@ -1026,7 +1028,8 @@ private extension EditableOrderViewModel {
                     }
                 }()
 
-                return PaymentDataViewModel(itemsTotal: orderTotals.itemsTotal.stringValue,
+                return PaymentDataViewModel(siteID: self.siteID,
+                                            itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
@@ -1038,12 +1041,12 @@ private extension EditableOrderViewModel {
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
+                                            shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponSummary: self.summarizeCoupons(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: order.discountTotal,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
-                                            supportsAddingCouponToOrder: self.featureFlagService.isFeatureFlagEnabled(.addCouponToOrder),
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
                                             saveCouponLineClosure: self.saveCouponLine,
@@ -1131,7 +1134,8 @@ private extension EditableOrderViewModel {
     ///
     func trackCreateOrderSuccess() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
-                                                                                try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
+                                                                                try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
+                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count)))
     }
 
     /// Tracks an order creation failure
@@ -1339,10 +1343,10 @@ extension EditableOrderViewModel {
                     self.updateOrderWithBaseItem(result)
                     onCompletion(.success(()))
                 }
-            case .failure:
+            case let .failure(error):
                 Task { @MainActor in
                     onCompletion(.failure(ScannerError.productNotFound))
-                    self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction: { [weak self] in
+                    self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: error, withRetryAction: { [weak self] in
                         self?.autodismissableNotice = nil
                         onRetryRequested()
                     })
@@ -1387,11 +1391,8 @@ extension EditableOrderViewModel {
             return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
         }
 
-        static func createProductNotFoundAfterSKUScanningErrorNotice(withRetryAction action: @escaping () -> Void) -> Notice {
-            Notice(title: Localization.scannedProductErrorNoticeMessage,
-                   feedbackType: .error,
-                   actionTitle: Localization.scannedProductErrorNoticeRetryActionTitle,
-                   actionHandler: action)
+        static func createProductNotFoundAfterSKUScanningErrorNotice(for error: Error, withRetryAction action: @escaping () -> Void) -> Notice {
+            BarcodeSKUScannerErrorNoticeFactory.notice(for: error, actionHandler: action)
         }
 
         /// Returns an order sync error notice.
@@ -1399,6 +1400,13 @@ extension EditableOrderViewModel {
         static func syncOrderErrorNotice(_ error: Error, flow: Flow, with orderSynchronizer: OrderSynchronizer) -> Notice {
             guard !isEmailError(error, order: orderSynchronizer.order) else {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
+            }
+
+            guard !isCouponsError(error) else {
+                orderSynchronizer.setCoupon.send(nil)
+                return Notice(title: Localization.couponsErrorNoticeTitle,
+                              message: Localization.couponsErrorNoticeMessage,
+                              feedbackType: .error)
             }
 
             let errorMessage: String
@@ -1424,6 +1432,14 @@ extension EditableOrderViewModel {
             default:
                 return false
             }
+        }
+
+        private static func isCouponsError(_ error: Error) -> Bool {
+            if case .unknown(code: "woocommerce_rest_invalid_coupon", _) = error as? DotcomError {
+                return true
+            }
+
+            return false
         }
     }
 }
@@ -1468,11 +1484,12 @@ private extension EditableOrderViewModel {
         static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
                                                                     "To edit all the details, view the order in your WooCommerce store admin.",
                                                                     comment: "Info message shown when the order contains multiple fees and shipping lines")
-        static let scannedProductErrorNoticeMessage = NSLocalizedString("Product not found. Failed to add product to order.",
-                                                          comment: "Error message on the Order details view when the scanner cannot find a matching product")
-        static let scannedProductErrorNoticeRetryActionTitle = NSLocalizedString("Retry",
-                                                          comment: "Retry button title on the Order details view when" +
-                                                                                 "the scanner cannot find a matching product")
+        static let couponsErrorNoticeTitle = NSLocalizedString("Unable to add coupon.",
+                                                                 comment: "Info message when the user tries to add a coupon" +
+                                                                 "that is not applicated to the products")
+        static let couponsErrorNoticeMessage = NSLocalizedString("Sorry, this coupon is not applicable to selected products.",
+                                                                 comment: "Info message when the user tries to add a coupon" +
+                                                                 "that is not applicated to the products")
 
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",

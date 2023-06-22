@@ -1162,13 +1162,14 @@ lane :test_without_building do |options|
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
     device: options[:device],
+    reset_simulator: true,
     parallel_testing: parallel_testing_value,
     concurrent_workers: CONCURRENT_SIMULATORS,
     max_concurrent_simulators: CONCURRENT_SIMULATORS,
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,
-    # settins for XML test report generation via `trainer`
+    # settings for XML test report generation via `trainer`
     output_types: '',
     fail_build: false
   )

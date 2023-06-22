@@ -77,6 +77,9 @@ extension CustomHelpCenterContent {
         /// No WooCommerce site error  using `NoWooErrorViewModel`
         ///
         case noWooError
+
+        /// The merchant is dealing with an error while they're purchasing a plan.
+        case purchasePlanError
     }
 
     init(screen: Screen, flow: AuthenticatorAnalyticsTracker.Flow) {
@@ -94,6 +97,9 @@ extension CustomHelpCenterContent {
         case .noWooError:
             step = "not_woo_store" // Matching Android `Step` value
             url = WooConstants.URLs.helpCenterForNoWooError.asURL()
+        case .purchasePlanError:
+            step = "purchase_plan_error"
+            url = WooConstants.URLs.helpCenter.asURL()
         }
 
         trackingProperties = [

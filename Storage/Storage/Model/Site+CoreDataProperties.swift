@@ -24,6 +24,8 @@ extension Site {
     @NSManaged public var jetpackConnectionActivePlugins: [String]?
     @NSManaged public var isPublic: Bool
     @NSManaged public var isSiteOwner: Bool
+    @NSManaged public var isAdmin: Bool
+    @NSManaged public var canBlaze: Bool
 
 }
 

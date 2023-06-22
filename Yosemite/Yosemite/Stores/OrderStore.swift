@@ -255,6 +255,30 @@ private extension OrderStore {
     /// Retrieves a specific order associated with a given Site ID (if any!).
     ///
     func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
+        // Check first if the order exists in storage. If it doesn't, fetch it from remote.
+        let storage = storageManager.viewStorage
+        guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
+            return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        }
+
+        Task {
+            // If the order exists in storage, fetch the last modified date to see if it has been updated remotely.
+            let dateModified = try? await remote.fetchDateModified(for: siteID, orderID: orderID)
+
+            // If the stored order is up to date with remote, return it.
+            // Otherwise, fetch the updated order from remote.
+            await MainActor.run {
+                guard dateModified == storedOrder.dateModified else {
+                    return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+                }
+                onCompletion(storedOrder, nil)
+            }
+        }
+    }
+
+    /// Loads a specific order associated with a given Site ID from remote.
+    ///
+    private func loadOrderFromRemote(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let order = order else {
                 if case NetworkError.notFound? = error {

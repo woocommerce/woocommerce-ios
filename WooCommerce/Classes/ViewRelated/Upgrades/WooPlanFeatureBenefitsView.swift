@@ -34,6 +34,7 @@ struct WooPlanFeatureBenefitsView: View {
             .padding()
         }
         .navigationTitle(wooPlanFeatureGroup.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private enum Layout {

@@ -1,10 +1,28 @@
 import XCTest
+import WordPressUI
 @testable import Yosemite
 @testable import WooCommerce
 
 final class RequirementsCheckerTests: XCTestCase {
 
     private let freeTrialID = "1052"
+    private var viewController: UIViewController!
+
+    override func setUp() {
+        viewController = UIViewController()
+
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = UIViewController()
+        window.makeKeyAndVisible()
+        window.rootViewController = viewController
+
+        super.setUp()
+    }
+
+    override func tearDown() {
+        viewController = nil
+        super.tearDown()
+    }
 
     // MARK: - checkSiteEligibility
 
@@ -271,5 +289,58 @@ final class RequirementsCheckerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try XCTUnwrap(checkResult).isFailure)
+    }
+
+    // MARK: - checkEligibilityForDefaultStore
+
+    func test_checkEligibilityForDefaultStore_presents_wc_version_alert_when_highest_Woo_version_is_not_3() {
+        // Given
+        let site = Site.fake().copy(siteID: 123, isWordPressComStore: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        let checker = RequirementsChecker(stores: stores, baseViewController: viewController)
+
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveSiteAPI(_, let onCompletion):
+                onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v2"])))
+            default:
+                break
+            }
+        }
+
+        // When
+        checker.checkEligibilityForDefaultStore()
+
+        // Then
+        waitUntil {
+            self.viewController.presentedViewController is FancyAlertViewController
+        }
+    }
+
+    func test_checkEligibilityForDefaultStore_presents_plan_upgrade_alert_for_wpcom_store_with_expired_free_trial_plan() {
+        // Given
+        let site = Site.fake().copy(siteID: 123, isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        let checker = RequirementsChecker(stores: stores, baseViewController: viewController)
+
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                let sitePlan = WPComSitePlan(id: self.freeTrialID,
+                                             hasDomainCredit: false,
+                                             expiryDate: Date().addingDays(-3))
+                completion(.success(sitePlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        checker.checkEligibilityForDefaultStore()
+
+        // Then
+        waitUntil {
+            self.viewController.presentedViewController is UIAlertController
+        }
     }
 }

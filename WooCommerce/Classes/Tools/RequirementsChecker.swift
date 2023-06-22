@@ -26,9 +26,12 @@ enum RequirementCheckResult: Int, CaseIterable {
 final class RequirementsChecker {
 
     private let stores: StoresManager
+    private let baseViewController: UIViewController?
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         baseViewController: UIViewController? = nil) {
         self.stores = stores
+        self.baseViewController = baseViewController
     }
 
     /// This function checks the default site's API version and then displays a warning if the
@@ -110,24 +113,25 @@ private extension RequirementsChecker {
         let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
-        AppDelegate.shared.tabBarController?.present(fancyAlert, animated: true)
+        baseViewController?.present(fancyAlert, animated: true)
     }
 
     func displayWPComPlanUpgradeAlert(siteID: Int64) {
         let alertController = UIAlertController(title: Localization.expiredPlan,
                                                 message: Localization.expiredPlanDescription,
                                                 preferredStyle: .alert)
-        let action = UIAlertAction(title: Localization.upgrade, style: .default) { _ in
+        let action = UIAlertAction(title: Localization.upgrade, style: .default) { [weak self] _ in
+            guard let self else { return }
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
                 let upgradesController = UINavigationController(rootViewController: UpgradesHostingController(siteID: siteID))
-                AppDelegate.shared.tabBarController?.present(upgradesController, animated: true)
+                self.baseViewController?.present(upgradesController, animated: true)
             } else {
                 let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
-                AppDelegate.shared.tabBarController?.present(controller, animated: true)
+                self.baseViewController?.present(controller, animated: true)
             }
         }
         alertController.addAction(action)
-        AppDelegate.shared.tabBarController?.present(alertController, animated: true)
+        baseViewController?.present(alertController, animated: true)
     }
 
     /// This function simply checks the provided site's API version. No warning will be displayed to the user.

@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var universalLinkRouter: UniversalLinkRouter?
 
-    private lazy var requirementsChecker = RequirementsChecker()
+    private lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
 
     // MARK: - AppDelegate Methods
 

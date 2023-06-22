@@ -197,7 +197,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
 
-        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+        RequirementsChecker.checkEligibilityForDefaultStore()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -514,7 +514,7 @@ extension AppDelegate {
     ///
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
-        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+        RequirementsChecker.checkEligibilityForDefaultStore()
     }
 }
 

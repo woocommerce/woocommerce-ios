@@ -36,6 +36,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
 
     // MARK: - Stub responses
     var resultForLoadAllCoupons: Result<[Coupon], Error>?
+    var resultForSearchCoupons: Result<[Coupon], Error>?
 
     // MARK: - CouponsRemoteProtocol conformance
     func loadAllCoupons(for siteID: Int64,
@@ -60,6 +61,8 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         spySearchCouponsSiteID = siteID
         spySearchCouponsPageSize = pageSize
         spySearchCouponsPageNumber = pageNumber
+        guard let result = resultForSearchCoupons else { return }
+        completion(result)
     }
 
     func deleteCoupon(for siteID: Int64,

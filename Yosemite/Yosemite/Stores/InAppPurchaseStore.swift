@@ -327,12 +327,29 @@ public extension InAppPurchaseStore {
                     comment: "Error message used when we received a transaction for an unknown product")
             case .storefrontUnknown:
                 return NSLocalizedString(
-                    "Couldn't determine App Stoure country",
+                    "Couldn't determine App Store country",
                     comment: "Error message used when we can't determine the user's App Store country")
             case .inAppPurchasesNotSupported:
                 return NSLocalizedString(
                     "In-app purchases are not supported for this user yet",
                     comment: "Error message used when In-app purchases are not supported for this user/site")
+            }
+        }
+
+        public var errorCode: String {
+            switch self {
+            case .unverifiedTransaction:
+                return "iap.T.100"
+            case .inAppPurchasesNotSupported:
+                return "iap.T.105"
+            case .transactionProductUnknown:
+                return "iap.T.110"
+            case .transactionMissingAppAccountToken:
+                return "iap.A.100"
+            case .appAccountTokenMissingSiteIdentifier:
+                return "iap.A.105"
+            case .storefrontUnknown:
+                return "iap.A.110"
             }
         }
     }

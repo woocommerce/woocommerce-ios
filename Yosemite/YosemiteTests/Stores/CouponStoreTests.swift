@@ -591,6 +591,92 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertNotNil(storedCoupon)
         XCTAssertEqual(storedCoupon?.amount, "10.00") // Updated amount reflecting the response.
     }
+
+    func test_validateCouponCode_calls_remote_using_correct_request_parameters() {
+        setUpUsingSpyRemote()
+        // Given
+        let expectedKeyword = "coupon-code"
+        let expectedPageNumber = 1
+        let expectedPageSize = 25
+        let action = CouponAction.validateCouponCode(code: expectedKeyword, siteID: sampleSiteID) { _ in }
+
+        // When
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(remote.didCallSearchCoupons)
+        XCTAssertEqual(remote.spySearchCouponsSiteID, sampleSiteID)
+        XCTAssertEqual(remote.spySearchCouponsKeyword, expectedKeyword)
+        XCTAssertEqual(remote.spySearchCouponsPageNumber, expectedPageNumber)
+        XCTAssertEqual(remote.spySearchCouponsPageSize, expectedPageSize)
+    }
+
+    func test_validateCouponCode_when_search_includes_the_coupon_code_then_returns_true() {
+        setUpUsingSpyRemote()
+        // Given
+        let couponCode = "coupon-code"
+        let coupons = [Networking.Coupon.fake().copy(code: couponCode), Networking.Coupon.fake()]
+        remote.resultForSearchCoupons = .success(coupons)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = CouponAction.validateCouponCode(code: couponCode, siteID: 1) { result in
+                promise(result)
+            }
+
+            self.store.onAction(action)
+        }
+
+        // Then
+        guard case let .success(isValidated) = result else {
+            return XCTFail("Expected success but it wasn't.")
+        }
+
+        XCTAssertTrue(isValidated)
+    }
+
+    func test_validateCouponCode_when_search_doesnt_include_the_coupon_code_then_returns_false() {
+        setUpUsingSpyRemote()
+        // Given
+        let couponCode = "coupon-code"
+        let coupons = [Networking.Coupon.fake(), Networking.Coupon.fake()]
+        remote.resultForSearchCoupons = .success(coupons)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = CouponAction.validateCouponCode(code: couponCode, siteID: 1) { result in
+                promise(result)
+            }
+
+            self.store.onAction(action)
+        }
+
+        // Then
+        guard case let .success(isValidated) = result else {
+            return XCTFail("Expected success but it wasn't.")
+        }
+
+        XCTAssertFalse(isValidated)
+    }
+
+    func test_validateCouponCode_when_search_fails_then_it_fails() {
+        setUpUsingSpyRemote()
+        // Given
+        let couponCode = "coupon-code"
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 418)
+        remote.resultForSearchCoupons = .failure(expectedError)
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = CouponAction.validateCouponCode(code: couponCode, siteID: 1) { result in
+                promise(result)
+            }
+
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
 }
 
 private extension CouponStoreTests {

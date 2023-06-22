@@ -3,6 +3,7 @@
 14.2
 -----
 - [*] Fixed the unusable state of the app when the default store runs on an expired free trial plan. [https://github.com/woocommerce/woocommerce-ios/pull/10059]
+- [Internal] Performance: When loading a single order (e.g. in order details), we now load the order from storage unless it has been modified remotely. [https://github.com/woocommerce/woocommerce-ios/pull/10036]
 
 14.1
 -----

@@ -386,6 +386,46 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.usedProductDescriptionAI])
     }
 
+    func test_updating_default_storeID_sets_hasDismissedWriteWithAITooltip_to_nil() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let mockSessionManager = MockSessionManager()
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager, defaults: defaults)
+
+        // When
+        defaults[UserDefaults.Key.hasDismissedWriteWithAITooltip] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.hasDismissedWriteWithAITooltip] as? Bool))
+
+        // When
+        sut.updateDefaultStore(storeID: 0)
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.hasDismissedWriteWithAITooltip])
+    }
+
+    func test_updating_default_storeID_sets_numberOfTimesWriteWithAITooltipIsShown_to_nil() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let mockSessionManager = MockSessionManager()
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager, defaults: defaults)
+
+        // When
+        defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] = 3
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] as? Int), 3)
+
+        // When
+        sut.updateDefaultStore(storeID: 0)
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown])
+    }
+
     /// Verifies that user is logged out when application password regeneration fails
     ///
     func test_it_deauthenticates_upon_receiving_application_password_generation_failure_notification() {

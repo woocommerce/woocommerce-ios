@@ -1,0 +1,1 @@
+¡Esta semana hay varias novedades interesantes! Ahora puedes explorar el código de barras de un SKU o un código QR para buscar un producto al crear un pedido. También puedes generar automáticamente descripciones de producto aptas para conversiones y optimizadas para SEO para tus productos de WooCommerce, y compartirlas usando la IA. Pruébalo y déjanos tus comentarios.

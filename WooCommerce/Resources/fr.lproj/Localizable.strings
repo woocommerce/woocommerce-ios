@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-19 02:10:05+0000 */
+/* Translation-Revision-Date: 2023-06-20 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -64,6 +64,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "Carte %1$@ se terminant %2$@";
+
+/* Value describing the days left on a plan before expiry. Reads as '15 days left' */
+"%1$@ days left" = "%1$@ jours restants";
 
 /* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
 "%1$@ every %2$@" = "%1$@ renouvelables après %2$@";
@@ -2076,6 +2079,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Date : Des plus anciens aux plus récents";
 
+/* Label for the text describing days left on a Plan to expire.Reads as 'Days left in plan: 15 days left' */
+"Days left in plan" = "jours avant l’expiration du plan";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Valeur par défaut";
 
@@ -3060,6 +3066,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to contact support when Jetpack setup fails */
 "Get support" = "Obtenir de l’aide";
 
+/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
+"Get the most out of %1$@" = "Tirez le meilleur parti de %1$@";
+
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "Exploiter au mieux votre boutique";
 
@@ -3122,6 +3131,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dismiss button title in AI product description celebration screen. */
 "Got it" = "J’ai compris";
+
+/* Title in AI product description celebration screen. */
+"Great start!" = "C’est un excellent début !";
 
 /* Country option for a site address. */
 "Greece" = "Grèce";
@@ -4559,6 +4571,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Seul le propriétaire du site peut gérer les moyens de paiement des étiquettes d’expédition. Veuillez contacter %1$@ (%2$@) pour gérer les moyens de paiement.";
 
+/* Text describing that only the site owner can upgrade the site's plan. */
+"Only the site owner can manage upgrades" = "Seul le propriétaire du site peut gérer les options payantes";
+
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Oups. des erreurs inattendues se sont produites.";
 
@@ -5016,6 +5031,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "Veuillez installer l’extension Jetpack gratuite pour accéder à votre boutique dans cette application.";
+
+/* Instructions to review the AI generated description. */
+"Please keep in mind that this product description was generated using our AI-powered tool. Please review and edit the content to ensure it aligns with your brand and messaging." = "N’oubliez pas que cette description de produit a été générée à l’aide de notre outil d’intelligence artificielle. Passez-la en revue et modifiez le contenu pour vous assurer qu’il correspond à votre marque et au message que vous voulez communiquer.";
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Veuillez vous déconnecter avant de connecter un site WordPress.com différent.";
@@ -7787,6 +7805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Impossible de mettre le prix à jour";
 
+/* Text describing that is not possible to upgrade the site's plan. */
+"Unable to upgrade" = "Impossible de passer à une option payante";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Impossible de vérifier les paiements en personne pour cette boutique";
 
@@ -8440,6 +8461,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title in the product description AI generator view. */
 "Write product description" = "Écrire la description du produit";
 
+/* Action button to generate message on the product sharing message generation screen */
+"Write with AI" = "Rédiger avec l’IA";
+
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Mauvais compte ?";
 
@@ -8573,6 +8597,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "Votre adresse gratuite de la boutique";
 
+/* Info details for an expired free trial */
+"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "Votre essai gratuit est terminé, et votre accès à toutes les fonctionnalités est limité. Abonnez-vous maintenant à un plan Woo Express.";
+
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Votre période d’essai gratuit de Woo Express se termine demain (%1$@). Le moment est venu de prendre votre avenir en main. Choisissez un plan et préparez-vous à prospérer.";
 
@@ -8593,6 +8620,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Votre téléphone sera prêt à accepter des paiements dans quelques instants...";
+
+/* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
+"Your plan" = "Votre plan";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Votre lecteur redémarrera et se reconnectera automatiquement une fois la mise à jour terminée";
@@ -8731,6 +8761,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "paiements, appuyer pour payer, woocommerce, woo, paiements en personne, paiements en personne, percevoir un paiement, paiements, lecteur, lecteur de carte, commander un lecteur de carte";
+
+/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
+"plan ended" = "plan ayant expiré";
 
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "Nous accordons depuis toujours une énorme importance au respect de votre privée. Nous utilisons, stockons et traitons vos données personnelles pour optimiser notre application (et votre expérience) de diverses manières. Certains usages de vos données sont indispensables au bon fonctionnement de l’application, tandis que d’autres peuvent être personnalisés dans vos Réglages.";

@@ -101,7 +101,6 @@ private extension GeneralAppSettingsTests {
     func createGeneralAppSettings(installationDate: Date? = nil,
                                   feedbacks: [FeedbackType: FeedbackSettings] = [:],
                                   isViewAddOnsSwitchEnabled: Bool = false,
-                                  isCouponManagementSwitchEnabled: Bool = false,
                                   isInAppPurchasesSwitchEnabled: Bool = false,
                                   isTapToPayOnIPhoneSwitchEnabled: Bool = false,
                                   knownCardReaders: [String] = [],

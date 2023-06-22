@@ -24,7 +24,6 @@ extension Storage.GeneralAppSettings {
         installationDate: NullableCopiableProp<Date> = .copy,
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
-        isCouponManagementSwitchEnabled: CopiableProp<Bool> = .copy,
         isInAppPurchasesSwitchEnabled: CopiableProp<Bool> = .copy,
         isTapToPayOnIPhoneSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,

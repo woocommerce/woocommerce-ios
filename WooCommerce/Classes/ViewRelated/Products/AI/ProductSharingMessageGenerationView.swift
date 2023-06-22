@@ -42,14 +42,15 @@ struct ProductSharingMessageGenerationView: View {
 
             // Generated message text field
             ZStack(alignment: .topLeading) {
-                TextEditor(text: viewModel.generationInProgress ? .constant("") : $viewModel.messageContent)
+                TextEditor(text: $viewModel.messageContent)
                     .bodyStyle()
                     .foregroundColor(.secondary)
+                    .disabled(viewModel.generationInProgress)
+                    .opacity(viewModel.generationInProgress ? 0 : 1)
                     .padding(insets: Constants.messageContentInsets)
                     .overlay(
                         RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
                     )
-                    .disabled(viewModel.generationInProgress)
 
                 // Placeholder text
                 Text(Localization.placeholder)
@@ -62,13 +63,16 @@ struct ProductSharingMessageGenerationView: View {
                                 viewModel.generationInProgress == false)
             }
             .overlay(
-                // Skeleton view for loading state
-                Text(Constants.dummyText)
-                    .bodyStyle()
-                    .redacted(reason: .placeholder)
-                    .shimmering()
-                    .padding(insets: Constants.placeholderInsets)
-                    .renderedIf(viewModel.generationInProgress)
+                VStack {
+                    // Skeleton view for loading state
+                    Text(Constants.dummyText)
+                        .bodyStyle()
+                        .redacted(reason: .placeholder)
+                        .shimmering()
+                        .padding(insets: Constants.placeholderInsets)
+                        .renderedIf(viewModel.generationInProgress)
+                    Spacer()
+                }
             )
 
             // Error message

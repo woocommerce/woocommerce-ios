@@ -3,6 +3,7 @@
 14.2
 -----
 - [Internal] Performance: When loading a single order (e.g. in order details), we now load the order from storage unless it has been modified remotely. [https://github.com/woocommerce/woocommerce-ios/pull/10036]
+- [Internal] App size: Replaced 30MB PDFs on Store Creation waiting screen with ~400KB PNGs - to assess impact on app bundle size. [https://github.com/woocommerce/woocommerce-ios/pull/10067]
 
 14.1
 -----

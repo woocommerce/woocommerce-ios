@@ -105,7 +105,7 @@ struct OrderPaymentSection: View {
             TitleAndValueRow(title: viewModel.couponSummary ?? Localization.coupon, value: .content(viewModel.discountTotal), selectionStyle: .highlight) {
                 shouldShowCouponLineDetails = true
             }
-            disabled(viewModel.shouldDisableAddingCoupons)
+            .disabled(viewModel.shouldDisableAddingCoupons)
         } else {
             Button(Localization.addCoupon) {
                 shouldShowCouponLineDetails = true

@@ -90,6 +90,30 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 
+    func test_loadAllOrders_includes_modifiedAfter_parameter_when_provided() {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let modifiedAfter = Date()
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        _ = waitFor { promise in
+            remote.loadAllOrders(for: self.sampleSiteID, modifiedAfter: modifiedAfter) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        guard let queryParameters = network.queryParameters else {
+            XCTFail("Cannot parse query from the API request")
+            return
+        }
+
+        let dateFormatter = DateFormatter.Defaults.iso8601
+        let expectedParam = "modified_after=\(dateFormatter.string(from: modifiedAfter))"
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
+    }
+
     // MARK: - Load Order Tests
 
     /// Verifies that loadOrder properly parses the `order` sample response.

@@ -13,6 +13,8 @@ public class OrdersRemote: Remote {
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
+    ///     - modifiedAfter: If given, limit response to resources modified after a given compliant date. Passing a local date is fine. This
+    ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
@@ -21,6 +23,7 @@ public class OrdersRemote: Remote {
                               statuses: [String]? = nil,
                               after: Date? = nil,
                               before: Date? = nil,
+                              modifiedAfter: Date? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
                               completion: @escaping (Result<[Order], Error>) -> Void) {
@@ -40,6 +43,9 @@ public class OrdersRemote: Remote {
             }
             if let before = before {
                 parameters[ParameterKeys.before] = utcDateFormatter.string(from: before)
+            }
+            if let modifiedAfter {
+                parameters[ParameterKeys.modifiedAfter] = utcDateFormatter.string(from: modifiedAfter)
             }
 
             return parameters
@@ -360,6 +366,7 @@ public extension OrdersRemote {
         static let after: String            = "after"
         static let before: String           = "before"
         static let force: String            = "force"
+        static let modifiedAfter: String    = "modified_after"
     }
 
     enum ParameterValues {

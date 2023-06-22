@@ -3,7 +3,7 @@ import UIKit
 /// Displays a button inside a `UITableViewCell`.
 ///
 final class ButtonTableViewCell: UITableViewCell {
-    @IBOutlet private var button: ButtonActivityIndicator!
+    @IBOutlet private(set) var button: ButtonActivityIndicator!
     @IBOutlet private weak var topConstraint: NSLayoutConstraint!
     @IBOutlet private weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet private weak var trailingConstraint: NSLayoutConstraint!

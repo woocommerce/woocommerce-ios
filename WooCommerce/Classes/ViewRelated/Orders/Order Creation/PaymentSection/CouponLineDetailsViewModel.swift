@@ -1,6 +1,10 @@
 import SwiftUI
 import Yosemite
 
+enum CouponValidationError: Error {
+    case couponNotFound
+}
+
 final class CouponLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the coupon line is updated.
@@ -25,19 +29,61 @@ final class CouponLineDetailsViewModel: ObservableObject {
         return code == initialCode
     }
 
+    @Published var notice: Notice?
+
     private let initialCode: String?
+
+    private let siteID: Int64
+
+    private let stores: StoresManager
 
     init(isExistingCouponLine: Bool,
          code: String,
+         siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          didSelectSave: @escaping ((OrderCouponLine?) -> Void)) {
         self.isExistingCouponLine = isExistingCouponLine
         self.code = code
+        self.siteID = siteID
+        self.stores = stores
         self.initialCode = code
         self.didSelectSave = didSelectSave
     }
 
+    func validateAndSaveData(onCompletion: @escaping (Bool) -> Void) {
+        let action = CouponAction.validateCouponCode(code: code.lowercased(), siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(true):
+                self?.saveData()
+                onCompletion(true)
+            case .success(false):
+                self?.notice = Notice(title: Localization.couponNotFoundNoticeTitle,
+                                      feedbackType: .error)
+                onCompletion(false)
+            case .failure(_):
+                self?.notice = Notice(title: Localization.couponNotValidatedNoticeTitle,
+                                      feedbackType: .error)
+                onCompletion(false)
+            }
+        }
+
+        stores.dispatch(action)
+    }
+}
+
+private extension CouponLineDetailsViewModel {
     func saveData() {
         let couponLine = OrderFactory.newOrderCouponLine(code: code)
         didSelectSave(couponLine)
+    }
+}
+
+private extension CouponLineDetailsViewModel {
+    enum Localization {
+        static let couponNotFoundNoticeTitle = NSLocalizedString("We couldn't find a coupon with that code. Please try again",
+                                                                 comment: "Title for the error notice when we couldn't find" +
+                                                                 "a coupon with the given code to add to an order.")
+        static let couponNotValidatedNoticeTitle = NSLocalizedString("Something when wrong when validating your coupon code. Please try again",
+                                                                     comment: "Notice title when validating a coupon code fails.")
     }
 }

@@ -190,6 +190,48 @@ class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.usedProductDescriptionAI])
     }
 
+    /// Verifies that `hasDismissedWriteWithAITooltip` is set to `nil` upon reset
+    ///
+    func test_hasDismissedWriteWithAITooltip_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[UserDefaults.Key.hasDismissedWriteWithAITooltip] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.hasDismissedWriteWithAITooltip] as? Bool))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.hasDismissedWriteWithAITooltip])
+    }
+
+    /// Verifies that `numberOfTimesWriteWithAITooltipIsShown` is set to `nil` upon reset
+    ///
+    func test_numberOfTimesWriteWithAITooltipIsShown_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] = 3
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown] as? Int), 3)
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown])
+    }
+
     /// Verifies that `shouldHideStoreOnboardingTaskList` is set to `nil` upon reset
     ///
     func test_shouldHideStoreOnboardingTaskList_is_set_to_nil_upon_reset() throws {

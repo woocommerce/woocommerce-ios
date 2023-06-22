@@ -17,7 +17,7 @@ final class Tooltip: UIView {
             static let contentStackViewTop: CGFloat = 12
             static let contentStackViewBottom: CGFloat = 4
             static let contentStackViewHorizontal: CGFloat = 16
-            static let superHorizontalMargin: CGFloat = 16
+            static let superHorizontalMargin: CGFloat = 32
             static let buttonStackViewHeight: CGFloat = 40
         }
     }
@@ -103,9 +103,7 @@ final class Tooltip: UIView {
     var dismissalAction: (() -> Void)?
     var secondaryButtonAction: (() -> Void)?
 
-    private var maxWidth: CGFloat {
-        UIScreen.main.bounds.width - Constants.Spacing.superHorizontalMargin
-    }
+    private let availableWidth: CGFloat
 
     private lazy var titleLabel: UILabel = {
         $0.font = UIFont.body
@@ -170,12 +168,14 @@ final class Tooltip: UIView {
     private var containerBottomConstraint: NSLayoutConstraint?
     private var arrowShapeLayer: CAShapeLayer?
 
-    init() {
+    init(containerWidth: CGFloat = UIScreen.main.bounds.width) {
+        self.availableWidth = containerWidth - Constants.Spacing.superHorizontalMargin
         super.init(frame: .zero)
         commonInit()
     }
 
     required init?(coder: NSCoder) {
+        self.availableWidth = UIScreen.main.bounds.width - Constants.Spacing.superHorizontalMargin
         super.init(coder: coder)
         commonInit()
     }
@@ -205,7 +205,7 @@ final class Tooltip: UIView {
             containerTopConstraint?.constant = Constants.arrowTipYControlLength
             containerBottomConstraint?.constant = 0
         case .bottom:
-            offsetY = Self.height(withTitle: titleLabel.text, message: message)
+            offsetY = height(withTitle: titleLabel.text, message: message)
             arrowTipY = Constants.arrowTipYLength
             arrowTipYControl = Constants.arrowTipYControlLength
             containerTopConstraint?.constant = 0
@@ -244,21 +244,21 @@ final class Tooltip: UIView {
 
     func size() -> CGSize {
         CGSize(
-            width: Self.width(
+            width: width(
                 title: titleLabel.text,
                 message: message,
                 primaryButtonTitle: primaryButton.titleLabel?.text,
                 secondaryButtonTitle: secondaryButton.titleLabel?.text
             ),
-            height: Self.height(
+            height: height(
                 withTitle: title,
                 message: message
             )
         )
     }
 
-    func copy() -> Tooltip {
-        let copyTooltip = Tooltip()
+    func copy(containerWidth: CGFloat) -> Tooltip {
+        let copyTooltip = Tooltip(containerWidth: containerWidth)
         copyTooltip.title = title
         copyTooltip.message = message
         copyTooltip.primaryButtonTitle = primaryButtonTitle
@@ -319,7 +319,7 @@ final class Tooltip: UIView {
                 constant: Constants.Spacing.contentStackViewBottom
             ),
             containerView.widthAnchor.constraint(
-                lessThanOrEqualToConstant: maxWidth
+                lessThanOrEqualToConstant: availableWidth
             ),
             buttonsStackView.heightAnchor.constraint(equalToConstant: Constants.Spacing.buttonStackViewHeight)
         ])
@@ -339,7 +339,7 @@ final class Tooltip: UIView {
         secondaryButtonAction?()
     }
 
-    private static func height(
+    private func height(
         withTitle title: String?,
         message: String?
     ) -> CGFloat {
@@ -363,7 +363,7 @@ final class Tooltip: UIView {
         return totalHeight
     }
 
-    private static func width(
+    private func width(
         title: String?,
         message: String?,
         primaryButtonTitle: String?,
@@ -387,9 +387,8 @@ final class Tooltip: UIView {
         return max(max(titleWidth, messageWidth), buttonsWidth) + Constants.Spacing.contentStackViewHorizontal * 2
     }
 
-    private static func maxContentWidth() -> CGFloat {
-        UIScreen.main.bounds.width
-        - Constants.Spacing.superHorizontalMargin
+    private func maxContentWidth() -> CGFloat {
+        availableWidth
         - (Constants.Spacing.contentStackViewHorizontal * 2)
     }
 }

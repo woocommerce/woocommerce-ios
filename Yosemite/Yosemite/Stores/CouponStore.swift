@@ -74,6 +74,8 @@ public final class CouponStore: Store {
                           onCompletion: onCompletion)
         case .retrieveCoupon(let siteID, let couponID, let onCompletion):
             retrieveCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
+        case .validateCouponCode(let code, let siteID, let onCompletion):
+            validateCouponCode(code: code, siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -259,6 +261,17 @@ private extension CouponStore {
                 self.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
                     onCompletion(.success(coupon))
                 }
+            }
+        }
+    }
+
+    func validateCouponCode(code: String, siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.searchCoupons(for: siteID, keyword: code, pageNumber: Remote.Default.firstPageNumber, pageSize: 25) { result in
+            switch result {
+            case let .success(coupons):
+                onCompletion(.success(coupons.contains(where: { $0.code == code })))
+            case let .failure(error):
+                onCompletion(.failure(error))
             }
         }
     }

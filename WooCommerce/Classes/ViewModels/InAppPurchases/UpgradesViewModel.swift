@@ -7,7 +7,7 @@ enum UpgradeViewState {
     case loaded(WooWPComPlan)
     case purchasing(WooWPComPlan)
     case waiting(WooWPComPlan)
-    case completed
+    case completed(WooWPComPlan)
     case prePurchaseError(PrePurchaseError)
     case purchaseUpgradeError(PurchaseUpgradeError)
 
@@ -30,8 +30,9 @@ enum PrePurchaseError: Error {
 }
 
 enum PurchaseUpgradeError {
-    case inAppPurchaseFailed(WooWPComPlan)
-    case planActivationFailed
+    case inAppPurchaseFailed(WooWPComPlan, InAppPurchaseStore.Errors)
+    case planActivationFailed(InAppPurchaseStore.Errors)
+    case unknown
 }
 
 /// ViewModel for the Upgrades View
@@ -169,7 +170,7 @@ final class UpgradesViewModel: ObservableObject {
             case .userCancelled:
                 upgradeViewState = .loaded(wooWPComPlan)
             case .success(.verified(_)):
-                upgradeViewState = .completed
+                upgradeViewState = .completed(wooWPComPlan)
             default:
                 // TODO: handle `pending` here... somehow – requires research
                 // TODO: handle `.success(.unverified(_))` here... somehow
@@ -178,13 +179,27 @@ final class UpgradesViewModel: ObservableObject {
         } catch {
             DDLogError("purchasePlan \(error)")
             stopObservingInAppPurchaseDrawerDismissal()
-            upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan))
+            guard let recognisedError = error as? InAppPurchaseStore.Errors else {
+                upgradeViewState = .purchaseUpgradeError(.unknown)
+                return
+            }
+
+            switch recognisedError {
+            case .unverifiedTransaction,
+                    .transactionProductUnknown,
+                    .inAppPurchasesNotSupported:
+                upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan, recognisedError))
+            case .transactionMissingAppAccountToken,
+                    .appAccountTokenMissingSiteIdentifier,
+                    .storefrontUnknown:
+                upgradeViewState = .purchaseUpgradeError(.planActivationFailed(recognisedError))
+            }
         }
     }
 
     private func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
         switch upgradeViewState {
-        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
+        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
             return plan
         default:
             return nil

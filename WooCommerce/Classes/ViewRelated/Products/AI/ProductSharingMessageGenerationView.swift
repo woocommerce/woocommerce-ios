@@ -32,7 +32,7 @@ struct ProductSharingMessageGenerationView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Constants.defaultSpacing) {
+        ScrollableVStack(alignment: .leading, spacing: Constants.defaultSpacing) {
 
             // View title
             Text(viewModel.viewTitle)
@@ -45,6 +45,8 @@ struct ProductSharingMessageGenerationView: View {
                 TextEditor(text: $viewModel.messageContent)
                     .bodyStyle()
                     .foregroundColor(.secondary)
+                    .disabled(viewModel.generationInProgress)
+                    .opacity(viewModel.generationInProgress ? 0 : 1)
                     .padding(insets: Constants.messageContentInsets)
                     .overlay(
                         RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
@@ -57,25 +59,28 @@ struct ProductSharingMessageGenerationView: View {
                     .padding(insets: Constants.placeholderInsets)
                     // Allows gestures to pass through to the `TextEditor`.
                     .allowsHitTesting(false)
-                    .renderedIf(viewModel.messageContent.isEmpty)
+                    .renderedIf(viewModel.messageContent.isEmpty &&
+                                viewModel.generationInProgress == false)
             }
-            .renderedIf(viewModel.generationInProgress == false)
-
-            // Skeleton view for loading state
-            Text(Constants.dummyText)
-                .secondaryBodyStyle()
-                .redacted(reason: .placeholder)
-                .shimmering()
-                .padding(Constants.placeholderInsets)
-                .background(RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(uiColor: .secondarySystemFill)))
-                .renderedIf(viewModel.generationInProgress)
+            .overlay(
+                VStack {
+                    // Skeleton view for loading state
+                    Text(Constants.dummyText)
+                        .bodyStyle()
+                        .redacted(reason: .placeholder)
+                        .shimmering()
+                        .padding(insets: Constants.placeholderInsets)
+                        .renderedIf(viewModel.generationInProgress)
+                    Spacer()
+                }
+            )
 
             // Error message
             viewModel.errorMessage.map { message in
                 Text(message).errorStyle()
             }
 
-            AdaptiveStack {
+            AdaptiveStack(spacing: Constants.horizontalSpacing) {
                 // Action button to generate message
                 Button(action: {
                     Task {
@@ -94,11 +99,8 @@ struct ProductSharingMessageGenerationView: View {
                            vertical: shouldKeepGenerateButtonAtFixedSize)
 
                 // Button for more information about legal
-                Button {
+                Button(Localization.learnMore) {
                     isShowingLegalPage = true
-                } label: {
-                    Image(systemName: "info.circle")
-                        .font(.headline)
                 }
                 .buttonStyle(.plain)
                 .foregroundColor(.accentColor)
@@ -118,7 +120,6 @@ struct ProductSharingMessageGenerationView: View {
             }
             .safariSheet(isPresented: $isShowingLegalPage, url: legalURL)
         }
-        .padding(insets: Constants.insets)
     }
 }
 
@@ -131,7 +132,10 @@ private extension ProductSharingMessageGenerationView {
         static let placeholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
         static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
         "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam," +
-        "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
+        "nisi ut aliquip ex ea commodo consequat."
+        static let dummyTextInsets: EdgeInsets = .init(top: 12, leading: 16, bottom: 12, trailing: 16)
+        static let horizontalSpacing: CGFloat = 8
     }
     enum Localization {
         static let generateInProgress = NSLocalizedString(
@@ -145,6 +149,10 @@ private extension ProductSharingMessageGenerationView {
         static let placeholder = NSLocalizedString(
             "Add an optional message",
             comment: "Placeholder text on the product sharing message generation screen"
+        )
+        static let learnMore = NSLocalizedString(
+            "Learn more",
+            comment: "Button to open the legal page for AI-generated contents on the product sharing message generation screen"
         )
     }
 }

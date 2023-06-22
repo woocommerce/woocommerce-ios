@@ -31,25 +31,6 @@ class BetaFeaturesTests: XCTestCase {
         let enabled = appSettings.betaFeatureEnabled(.viewAddOns)
         XCTAssertEqual(enabled, true)
     }
-
-    func test_couponManagement_defaults_to_false() {
-        let enabled = appSettings.betaFeatureEnabled(.couponManagement)
-        XCTAssertEqual(enabled, false)
-    }
-
-    func test_couponManagement_defaults_saves_value() throws {
-        try appSettings.setBetaFeatureEnabled(.couponManagement, enabled: true)
-        let enabled = appSettings.betaFeatureEnabled(.couponManagement)
-        XCTAssertEqual(enabled, true)
-    }
-
-    func test_couponManagement_binding_reads_and_writes_value() {
-        let enabledBinding = appSettings.betaFeatureEnabledBinding(.couponManagement)
-        XCTAssertEqual(enabledBinding.wrappedValue, false)
-        enabledBinding.wrappedValue = true
-        let enabled = appSettings.betaFeatureEnabled(.couponManagement)
-        XCTAssertEqual(enabled, true)
-    }
 }
 
 private final class MockInMemoryStorage: FileStorage {

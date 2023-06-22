@@ -2405,6 +2405,7 @@ extension WooAnalyticsEvent {
             case banner
             case upgradesScreen = "upgrades_screen"
             case localNotification = "local_notification"
+            case expiredTrialPlanAlert = "expired_trial_plan_alert"
         }
 
         static func freeTrialUpgradeNowTapped(source: Source) -> WooAnalyticsEvent {

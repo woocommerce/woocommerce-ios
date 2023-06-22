@@ -538,12 +538,14 @@ private extension StorePickerViewController {
     ///
     func displaySiteWCRequirementWarningIfNeeded(siteID: Int64, siteName: String) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] result in
+        RequirementsChecker.checkSiteEligibility(for: siteID) { [weak self] result in
             switch result {
             case .success(.validWCVersion):
                 self?.updateUIForValidSite()
             case .success(.invalidWCVersion):
                 self?.updateUIForInvalidSite(named: siteName)
+            case .success(.expiredWPComPlan):
+                self?.updateUIForExpiredWPComPlan(siteID: siteID)
             case .failure:
                 self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             }
@@ -567,6 +569,14 @@ private extension StorePickerViewController {
         default:
             updateUIForInvalidSiteFound(named: siteName)
         }
+    }
+
+    /// Update the UI upon receiving a response for an invalid WC site
+    ///
+    func updateUIForExpiredWPComPlan(siteID: Int64) {
+        toggleDismissButton(enabled: false)
+        updateActionButtonAndTableState(animating: false, enabled: false)
+        displayExpiredWPComPlanAlert(siteID: siteID)
     }
 
     /// Update the UI upon receiving an error or empty response instead of site info
@@ -627,6 +637,17 @@ private extension StorePickerViewController {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         present(fancyAlert, animated: true)
+    }
+
+    func displayExpiredWPComPlanAlert(siteID: Int64) {
+        let alertController = UIAlertController(title: Localization.ExpiredWPComPlanAlert.title,
+                                                message: Localization.ExpiredWPComPlanAlert.message,
+                                                preferredStyle: .alert)
+        let alert = UIAlertAction(title: Localization.ExpiredWPComPlanAlert.upgrade, style: .default) { [weak self] _ in
+            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
+            self?.topmostPresentedViewController.present(controller, animated: true)
+        }
+        present(alertController, animated: true)
     }
 }
 
@@ -880,6 +901,15 @@ private extension StorePickerViewController {
                 "Close account",
                 comment: "Button to close the WordPress.com account on the store picker."
             )
+        }
+
+        enum ExpiredWPComPlanAlert {
+            static let title = NSLocalizedString("Site plan expired", comment: "Title of the expired WPCom plan alert")
+            static let message = NSLocalizedString(
+                "We have paused your store, but you can continue by picking a plan that suits you best.",
+                comment: "Message on the expired WPCom plan alert"
+            )
+            static let upgrade = NSLocalizedString("Upgrade", comment: "Button to upgrade a WPCom plan on the expired WPCom plan alert")
         }
     }
 }

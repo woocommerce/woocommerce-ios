@@ -16,8 +16,8 @@ enum RequirementCheckResult: Int, CaseIterable {
     ///
     case invalidWCVersion
 
-    /// The site is running an expired free trial plan
-    case expiredFreeTrialPlan
+    /// The site is running an expired WPCom plan
+    case expiredWPComPlan
 }
 
 
@@ -62,9 +62,8 @@ class RequirementsChecker {
             switch result {
             case .success(.invalidWCVersion):
                 displayWCVersionAlert()
-            case .success(.expiredFreeTrialPlan):
-                // TODO: display upgrade alert
-                break
+            case .success(.expiredWPComPlan):
+                displayWPComPlanUpgradeAlert(siteID: siteID)
             default:
                 break
             }
@@ -82,12 +81,12 @@ private extension RequirementsChecker {
             case .success(let plan):
                 // Normalize dates in the same timezone.
                 let today = Date().startOfDay(timezone: .current)
-                guard plan.isFreeTrial, let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
+                guard let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
                     return checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
                 }
                 let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
                 if daysLeft <= 0 {
-                    onCompletion?(.success(.expiredFreeTrialPlan))
+                    onCompletion?(.success(.expiredWPComPlan))
                 } else {
                     checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
                 }
@@ -95,7 +94,7 @@ private extension RequirementsChecker {
                 // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
                 // Generally, expiry is `.success(plan)` with a plan expiry date in the past, but in some cases, we just
                 // don't get any plans marked as `current` in the plans response.
-                onCompletion?(.success(.expiredFreeTrialPlan))
+                onCompletion?(.success(.expiredWPComPlan))
             case .failure(let error):
                 onCompletion?(.failure(error))
                 DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")
@@ -111,6 +110,17 @@ private extension RequirementsChecker {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         AppDelegate.shared.tabBarController?.present(fancyAlert, animated: true)
+    }
+
+    static func displayWPComPlanUpgradeAlert(siteID: Int64) {
+        let alertController = UIAlertController(title: Localization.expiredPlan,
+                                                message: Localization.expiredPlanDescription,
+                                                preferredStyle: .alert)
+        let alert = UIAlertAction(title: Localization.upgrade, style: .default) { _ in
+            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
+            AppDelegate.shared.tabBarController?.present(controller, animated: true)
+        }
+        AppDelegate.shared.tabBarController?.present(alertController, animated: true)
     }
 
     /// This function simply checks the provided site's API version. No warning will be displayed to the user.
@@ -143,5 +153,16 @@ private extension RequirementsChecker {
                 onCompletion?(.failure(error))
             }
         }
+    }
+}
+
+private extension RequirementsChecker {
+    enum Localization {
+        static let expiredPlan = NSLocalizedString("Site plan expired", comment: "Title of the expired WPCom plan alert")
+        static let expiredPlanDescription = NSLocalizedString(
+            "We have paused your store, but you can continue by picking a plan that suits you best.",
+            comment: "Message on the expired WPCom plan alert"
+        )
+        static let upgrade = NSLocalizedString("Upgrade", comment: "Button to upgrade a WPCom plan on the expired WPCom plan alert")
     }
 }

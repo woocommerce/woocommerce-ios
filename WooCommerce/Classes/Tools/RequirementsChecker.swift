@@ -101,7 +101,7 @@ private extension RequirementsChecker {
                 DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")
             }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Display the WC version alert
@@ -143,11 +143,12 @@ private extension RequirementsChecker {
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
     func retrieveSiteAPIAction(siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) -> SettingAction {
-        return SettingAction.retrieveSiteAPI(siteID: siteID) { result in
+        return SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let siteAPI):
                 let saveTelemetryAvailabilityAction = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: siteAPI.telemetryIsAvailable)
-                ServiceLocator.stores.dispatch(saveTelemetryAvailabilityAction)
+                self.stores.dispatch(saveTelemetryAvailabilityAction)
 
                 if siteAPI.highestWooVersion == .mark3 {
                     onCompletion?(.success(.validWCVersion))

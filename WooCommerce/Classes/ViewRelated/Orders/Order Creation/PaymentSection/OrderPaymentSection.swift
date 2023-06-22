@@ -58,7 +58,6 @@ struct OrderPaymentSection: View {
                 .sheet(isPresented: $shouldShowCouponLineDetails) {
                     CouponLineDetails(viewModel: viewModel.couponLineViewModel)
                 }
-                .renderedIf(viewModel.supportsAddingCouponToOrder)
 
             TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
 

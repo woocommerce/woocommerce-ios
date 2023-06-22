@@ -144,10 +144,6 @@ public enum FeatureFlag: Int {
     ///
     case dashboardOnboarding
 
-    ///Ability to add coupon to order
-    ///
-    case addCouponToOrder
-
     /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner

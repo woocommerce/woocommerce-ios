@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 // Imported from WordPress iOS
@@ -58,6 +59,7 @@ final class TooltipPresenter {
     }
 
     private var previousDeviceOrientation: UIDeviceOrientation?
+    private var cancellable: AnyCancellable?
 
     init(containerView: UIView,
          tooltip: Tooltip,
@@ -85,11 +87,21 @@ final class TooltipPresenter {
             name: UIDevice.orientationDidChangeNotification,
             object: nil
         )
+
+        cancellable = containerView.publisher(for: \.bounds)
+            .removeDuplicates()
+            .sink { [weak self] frame in
+                guard let self else { return }
+                guard let lastSubview = self.containerView.subviews.last, lastSubview != self.tooltip else {
+                    return
+                }
+                self.containerView.bringSubviewToFront(self.tooltip)
+            }
     }
 
     func showTooltip() {
         containerView.addSubview(tooltip)
-        self.tooltip.alpha = 0
+        tooltip.alpha = 0
         tooltip.addArrowHead(toXPosition: arrowOffsetX(), arrowPosition: tooltipOrientation())
         setUpTooltipConstraints()
 

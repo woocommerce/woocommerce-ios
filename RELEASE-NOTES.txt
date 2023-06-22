@@ -2,7 +2,7 @@
 
 14.2
 -----
-
+- [Internal] Performance: When loading a single order (e.g. in order details), we now load the order from storage unless it has been modified remotely. [https://github.com/woocommerce/woocommerce-ios/pull/10036]
 
 14.1
 -----

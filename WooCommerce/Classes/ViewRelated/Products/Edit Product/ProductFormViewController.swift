@@ -348,6 +348,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
 
         if isDescriptionAICellVisible() {
+            // Question: if `tooltipPresenter` is nil, do we still want to set `didShowTooltip = true`?
             tooltipPresenter?.showTooltip()
             didShowTooltip = true
         }
@@ -637,6 +638,7 @@ private extension ProductFormViewController {
     }
 
     func configureTooltipPresenter() {
+        // Question: can all the visibility logic be wrapped into the use case?
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
             return
         }

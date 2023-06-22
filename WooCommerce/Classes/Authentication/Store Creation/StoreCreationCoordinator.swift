@@ -469,9 +469,9 @@ private extension StoreCreationCoordinator {
             self?.showDiscardChangesAlert(flow: .native)
         }, onContinue: { [weak self] in
             guard let self else { return }
+            self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
             let result = await self.createFreeTrialStore(storeName: storeName,
                                                          profilerData: profilerData)
-            self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
             self.handleFreeTrialStoreCreation(from: navigationController, result: result)
         })
         navigationController.present(summaryViewController, animated: true)

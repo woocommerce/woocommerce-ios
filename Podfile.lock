@@ -6,8 +6,8 @@ PODS:
   - AppAuth/Core (1.6.1)
   - AppAuth/ExternalUserAgent (1.6.1):
     - AppAuth/Core
-  - Automattic-Tracks-iOS (2.0.0):
-    - Sentry (~> 7.25)
+  - Automattic-Tracks-iOS (2.2.0):
+    - Sentry (~> 8.0)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
   - CocoaLumberjack (3.7.4):
@@ -28,14 +28,17 @@ PODS:
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
-  - Sentry (7.31.5):
-    - Sentry/Core (= 7.31.5)
-  - Sentry/Core (7.31.5)
+  - Sentry (8.8.0):
+    - Sentry/Core (= 8.8.0)
+    - SentryPrivate (= 8.8.0)
+  - Sentry/Core (8.8.0):
+    - SentryPrivate (= 8.8.0)
+  - SentryPrivate (8.8.0)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (2.19.1)
   - SVProgressHUD (2.2.5)
-  - UIDeviceIdentifier (2.2.0)
+  - UIDeviceIdentifier (2.3.0)
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
@@ -74,7 +77,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 2.0.0)
+  - Automattic-Tracks-iOS (~> 2.2)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -107,6 +110,7 @@ SPEC REPOS:
     - NSObject-SafeExpectations
     - "NSURL+IDN"
     - Sentry
+    - SentryPrivate
     - Sodium
     - Sourcery
     - StripeTerminal
@@ -140,7 +144,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: e48b432bb4ba88b10cb2bcc50d7f3af21e78b9c2
-  Automattic-Tracks-iOS: 8b065227e3fb341d19bd502ff748fcffb8199a1d
+  Automattic-Tracks-iOS: a1b020ab02f0e5a39c5d4e6870a498273f286158
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
@@ -150,12 +154,13 @@ SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
-  Sentry: 4c9babff9034785067c896fd580b1f7de44da020
+  Sentry: 927dfb29d18a14d924229a59cc2ad149f43349f2
+  SentryPrivate: 4350d865f898224ab9fa02b37d6ee7fbb623f47e
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: 93e18a93c6f92e51ceedc5b78ab3075327075a80
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  UIDeviceIdentifier: f33af270ba9045ea18b31d9aab88e42a0082ea67
+  UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 8a27a3c61ca0d740df66f260902aa2ca8528c61b
@@ -173,6 +178,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 5f53669f9d2f0ae214694ed798118d704a40c937
+PODFILE CHECKSUM: 33119766b8581a4e76206f345a770ca2c617f78d
 
 COCOAPODS: 1.12.1

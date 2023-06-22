@@ -116,10 +116,11 @@ private extension RequirementsChecker {
         let alertController = UIAlertController(title: Localization.expiredPlan,
                                                 message: Localization.expiredPlanDescription,
                                                 preferredStyle: .alert)
-        let alert = UIAlertAction(title: Localization.upgrade, style: .default) { _ in
+        let action = UIAlertAction(title: Localization.upgrade, style: .default) { _ in
             let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
             AppDelegate.shared.tabBarController?.present(controller, animated: true)
         }
+        alertController.addAction(action)
         AppDelegate.shared.tabBarController?.present(alertController, animated: true)
     }
 

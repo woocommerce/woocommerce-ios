@@ -643,10 +643,11 @@ private extension StorePickerViewController {
         let alertController = UIAlertController(title: Localization.ExpiredWPComPlanAlert.title,
                                                 message: Localization.ExpiredWPComPlanAlert.message,
                                                 preferredStyle: .alert)
-        let alert = UIAlertAction(title: Localization.ExpiredWPComPlanAlert.upgrade, style: .default) { [weak self] _ in
+        let action = UIAlertAction(title: Localization.ExpiredWPComPlanAlert.upgrade, style: .default) { [weak self] _ in
             let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
             self?.topmostPresentedViewController.present(controller, animated: true)
         }
+        alertController.addAction(action)
         present(alertController, animated: true)
     }
 }

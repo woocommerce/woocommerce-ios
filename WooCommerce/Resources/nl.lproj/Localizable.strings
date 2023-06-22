@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-20 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-06-22 05:12:49+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -3067,7 +3067,7 @@ which should be translated separately and considered part of this sentence. */
 "Get support" = "Krijg ondersteuning";
 
 /* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
-"Get the most out of %1$@" = "Haal het meeste uit %$1@";
+"Get the most out of %1$@" = "Haal het meeste uit %1$@";
 
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "Haal het optimale uit je winkel";

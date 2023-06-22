@@ -88,8 +88,8 @@ struct UpgradesView: View {
                         Spacer()
                     }
                     .background(Color(.systemGroupedBackground))
-                case .purchaseUpgradeError(.inAppPurchaseFailed(let plan)):
-                    PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan)) {
+                case .purchaseUpgradeError(.inAppPurchaseFailed(let plan, let iapStoreError)):
+                    PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan, iapStoreError)) {
                         Task {
                             await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
                         }
@@ -98,8 +98,9 @@ struct UpgradesView: View {
                     } getSupportAction: {
                         supportHandler()
                     }
-                case .purchaseUpgradeError(.planActivationFailed):
-                    PurchaseUpgradeErrorView(error: .planActivationFailed,
+                case .purchaseUpgradeError(let underlyingError):
+                    // handles .planActivationFailed and .unknown underlyingErrors
+                    PurchaseUpgradeErrorView(error: underlyingError,
                                              primaryAction: nil,
                                              secondaryAction: {
                         presentationMode.wrappedValue.dismiss()
@@ -254,7 +255,7 @@ struct PurchaseUpgradeErrorView: View {
                             .font(.footnote)
                     }
                     if let errorCode = error.localizedErrorCode {
-                        Text(errorCode)
+                        Text(String(format: Localization.errorCodeFormat, errorCode))
                             .font(.footnote)
                             .foregroundColor(.secondary)
                     }
@@ -302,6 +303,11 @@ struct PurchaseUpgradeErrorView: View {
         static let getSupport = NSLocalizedString(
             "Get support",
             comment: "Button title to allow merchants to open the support screens when there's an error with their plan purchase")
+        static let errorCodeFormat = NSLocalizedString(
+            "Error code %1$@",
+            comment: "A string shown on the error screen when there's an issue purchasing a plan, to inform the user " +
+            "of the error code for use with Support. %1$@ will be replaced with the error code and must be included " +
+            "in the translations.")
     }
 }
 
@@ -312,6 +318,8 @@ private extension PurchaseUpgradeError {
             return Localization.purchaseErrorTitle
         case .planActivationFailed:
             return Localization.activationErrorTitle
+        case .unknown:
+            return Localization.unknownErrorTitle
         }
     }
 
@@ -321,6 +329,8 @@ private extension PurchaseUpgradeError {
             return Localization.purchaseErrorDescription
         case .planActivationFailed:
             return Localization.activationErrorDescription
+        case .unknown:
+            return Localization.unknownErrorDescription
         }
     }
 
@@ -328,8 +338,8 @@ private extension PurchaseUpgradeError {
         switch self {
         case .inAppPurchaseFailed:
             return Localization.purchaseErrorActionDirection
-        case .planActivationFailed:
-            return Localization.activationErrorActionDirection
+        case .planActivationFailed, .unknown:
+            return Localization.errorContactSupportActionDirection
         }
     }
 
@@ -339,11 +349,18 @@ private extension PurchaseUpgradeError {
             return Localization.purchaseErrorActionHint
         case .planActivationFailed:
             return nil
+        case .unknown:
+            return nil
         }
     }
 
     var localizedErrorCode: String? {
-        return nil
+        switch self {
+        case .inAppPurchaseFailed(_, let underlyingError), .planActivationFailed(let underlyingError):
+            return underlyingError.errorCode
+        case .unknown:
+            return nil
+        }
     }
 
     var localizedPrimaryButtonLabel: String? {
@@ -352,6 +369,8 @@ private extension PurchaseUpgradeError {
             return Localization.retryPaymentButtonText
         case .planActivationFailed:
             return nil
+        case .unknown:
+            return nil
         }
     }
 
@@ -359,7 +378,7 @@ private extension PurchaseUpgradeError {
         switch self {
         case .inAppPurchaseFailed:
             return Localization.cancelUpgradeButtonText
-        case .planActivationFailed:
+        case .planActivationFailed, .unknown:
             return Localization.returnToMyStoreButtonText
         }
     }
@@ -399,13 +418,22 @@ private extension PurchaseUpgradeError {
             "Your subscription is active, but there was an error activating the plan on your store.",
             comment: "Error description displayed when plan activation fails after purchasing a plan.")
 
-        static let activationErrorActionDirection = NSLocalizedString(
+        static let errorContactSupportActionDirection = NSLocalizedString(
             "Please contact support for assistance.",
             comment: "Bolded message advising the merchant to contact support when the plan activation failed.")
 
         static let returnToMyStoreButtonText = NSLocalizedString(
             "Return to My Store",
             comment: "Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow.")
+
+        /// Unknown errors
+        static let unknownErrorTitle = NSLocalizedString(
+            "Error during purchase",
+            comment: "Title of an unknown error after purchasing a plan")
+
+        static let unknownErrorDescription = NSLocalizedString(
+            "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded.",
+            comment: "Description of an unknown error after purchasing a plan")
     }
 }
 

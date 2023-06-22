@@ -23,25 +23,25 @@ enum RequirementCheckResult: Int, CaseIterable {
 
 /// Responsible for checking the minimum requirements for the app and its features!
 ///
-class RequirementsChecker {
+final class RequirementsChecker {
 
-    /// Private: NO-OP
-    ///
-    private init() { }
+    private let stores: StoresManager
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
 
     /// This function checks the default site's API version and then displays a warning if the
     /// site's WC version is not valid.
     ///
     /// If the site is WPCom, the site plan is fetched first to determine if the site is running on an expired plan.
     ///
-    static func checkSiteEligibility(for siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
-        switch siteID {
-        case WooConstants.placeholderStoreID:
+    func checkSiteEligibility(for site: Site, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
+        guard site.isWordPressComStore else {
             // Skips site plan check for non-WPCom site
-            checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
-        default:
-            checkWPComSitePlan(for: siteID, onCompletion: onCompletion)
+            return checkMinimumWooVersion(for: site.siteID, onCompletion: onCompletion)
         }
+        checkWPComSitePlan(for: site.siteID, onCompletion: onCompletion)
     }
 
     /// This function checks the default site's API version and then displays a warning
@@ -49,21 +49,21 @@ class RequirementsChecker {
     ///
     /// NOTE: When checking the default site's WC version, if 1) an error occurs or 2) the server response is invalid, WC version alert will *not* be displayed.
     ///
-    static func checkEligibilityForDefaultStore() {
-        guard ServiceLocator.stores.isAuthenticated else {
+    func checkEligibilityForDefaultStore() {
+        guard stores.isAuthenticated else {
             return
         }
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID, siteID != 0 else {
+        guard let site = stores.sessionManager.defaultSite, site.siteID != 0 else {
             DDLogWarn("⚠️ Cannot check WC version on default store — default siteID is nil or 0.")
             return
         }
 
-        checkSiteEligibility(for: siteID) { result in
+        checkSiteEligibility(for: site) { [weak self] result in
             switch result {
             case .success(.invalidWCVersion):
-                displayWCVersionAlert()
+                self?.displayWCVersionAlert()
             case .success(.expiredWPComPlan):
-                displayWPComPlanUpgradeAlert(siteID: siteID)
+                self?.displayWPComPlanUpgradeAlert(siteID: site.siteID)
             default:
                 break
             }
@@ -75,20 +75,21 @@ class RequirementsChecker {
 // MARK: - Private helpers
 //
 private extension RequirementsChecker {
-    static func checkWPComSitePlan(for siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
-        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+    func checkWPComSitePlan(for siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
+        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let plan):
                 // Normalize dates in the same timezone.
                 let today = Date().startOfDay(timezone: .current)
                 guard plan.isFreeTrial, let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
-                    return checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
+                    return self.checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
                 }
                 let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
                 if daysLeft <= 0 {
                     onCompletion?(.success(.expiredWPComPlan))
                 } else {
-                    checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
+                    self.checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
                 }
             case .failure(LoadSiteCurrentPlanError.noCurrentPlan):
                 // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
@@ -105,14 +106,14 @@ private extension RequirementsChecker {
 
     /// Display the WC version alert
     ///
-    static func displayWCVersionAlert() {
+    func displayWCVersionAlert() {
         let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         AppDelegate.shared.tabBarController?.present(fancyAlert, animated: true)
     }
 
-    static func displayWPComPlanUpgradeAlert(siteID: Int64) {
+    func displayWPComPlanUpgradeAlert(siteID: Int64) {
         let alertController = UIAlertController(title: Localization.expiredPlan,
                                                 message: Localization.expiredPlanDescription,
                                                 preferredStyle: .alert)
@@ -134,14 +135,14 @@ private extension RequirementsChecker {
     /// - parameter siteID: The SiteID to perform a version check on
     /// - parameter onCompletion: Closure to be executed upon completion with the result of the requirement check
     ///
-    static func checkMinimumWooVersion(for siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
+    func checkMinimumWooVersion(for siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
         let action = retrieveSiteAPIAction(siteID: siteID, onCompletion: onCompletion)
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
-    static func retrieveSiteAPIAction(siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) -> SettingAction {
+    func retrieveSiteAPIAction(siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) -> SettingAction {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { result in
             switch result {
             case .success(let siteAPI):

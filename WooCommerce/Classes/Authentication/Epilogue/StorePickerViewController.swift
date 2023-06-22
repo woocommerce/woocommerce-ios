@@ -77,6 +77,8 @@ final class StorePickerViewController: UIViewController {
 
     private var stateSubscription: AnyCancellable?
 
+    private lazy var requirementsChecker = RequirementsChecker()
+
     // MARK: - Private Properties
 
     /// Default Action Button.
@@ -151,7 +153,7 @@ final class StorePickerViewController: UIViewController {
                 return
             }
 
-            displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
+            displaySiteWCRequirementWarningIfNeeded(site: site)
         }
     }
 
@@ -536,18 +538,18 @@ private extension StorePickerViewController {
 
     /// If the provided site's WC version is not valid, display a warning to the user.
     ///
-    func displaySiteWCRequirementWarningIfNeeded(siteID: Int64, siteName: String) {
+    func displaySiteWCRequirementWarningIfNeeded(site: Site) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        RequirementsChecker.checkSiteEligibility(for: siteID) { [weak self] result in
+        requirementsChecker.checkSiteEligibility(for: site) { [weak self] result in
             switch result {
             case .success(.validWCVersion):
                 self?.updateUIForValidSite()
             case .success(.invalidWCVersion):
-                self?.updateUIForInvalidSite(named: siteName)
+                self?.updateUIForInvalidSite(named: site.name)
             case .success(.expiredWPComPlan):
-                self?.updateUIForExpiredWPComPlan(siteID: siteID)
+                self?.updateUIForExpiredWPComPlan(siteID: site.siteID)
             case .failure:
-                self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
+                self?.updateUIForEmptyOrErroredSite(named: site.name, with: site.siteID)
             }
         }
     }

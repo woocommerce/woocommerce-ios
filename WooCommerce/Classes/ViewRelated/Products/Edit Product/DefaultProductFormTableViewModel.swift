@@ -71,9 +71,9 @@ private extension DefaultProductFormTableViewModel {
                                                                                       isEditable: editable,
                                                                                       isDescriptionAIEnabled: isDescriptionAIEnabled)
                 guard isDescriptionAIEnabled else {
-                    return [descriptionRow]
+                    return [descriptionRow, .separator]
                 }
-                return [descriptionRow, .descriptionAI, .learnMoreAboutAI]
+                return [descriptionRow, .descriptionAI, .learnMoreAboutAI, .separator]
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
             }

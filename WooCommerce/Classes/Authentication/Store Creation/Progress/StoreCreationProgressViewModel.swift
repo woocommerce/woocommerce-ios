@@ -14,7 +14,7 @@ final class StoreCreationProgressViewModel: ObservableObject {
         case finished = 6.0
     }
 
-    @Published private var progress: Progress = .creatingStore
+    @Published private var progress: Progress
 
     let totalProgressAmount = StoreCreationProgressViewModel.Progress.finished.rawValue
 
@@ -24,16 +24,8 @@ final class StoreCreationProgressViewModel: ObservableObject {
         progress.title
     }
 
-    var subtitle: AttributedString {
-        var prefix = AttributedString(Localization.funWooFact)
-        prefix.font = .headline
-        prefix.foregroundColor = .init(.text)
-
-        var attributedText = AttributedString(progress.subtitle)
-        attributedText.font = .body
-        attributedText.foregroundColor = .init(.text)
-
-        return prefix + " " + attributedText
+    var subtitle: String {
+        progress.subtitle
     }
 
     private var incrementProgressValueTimer: Timer?
@@ -41,14 +33,17 @@ final class StoreCreationProgressViewModel: ObservableObject {
     private let progressViewAnimationTimerInterval: TimeInterval
 
     /// - Parameters:
+    ///   - initialProgress: The initial value of the progress for SwiftUI previews.
     ///   - estimatedTimePerProgress:
     ///     Approx interval at which progress will be incremented to next case.
     ///     This value is used to animate the progress view until next increment happens.
     ///
     ///   - progressViewAnimationTimerInterval: Animation timer interval DI for unit test purposes.
     ///
-    init(estimatedTimePerProgress: TimeInterval,
+    init(initialProgress: Progress = .creatingStore,
+         estimatedTimePerProgress: TimeInterval,
          progressViewAnimationTimerInterval: TimeInterval = 0.1) {
+        self.progress = initialProgress
         self.estimatedTimePerProgress = estimatedTimePerProgress
         self.progressViewAnimationTimerInterval = progressViewAnimationTimerInterval
         $progress
@@ -88,44 +83,40 @@ private extension StoreCreationProgressViewModel {
         let incrementProgressValueBy = (gapBetweenProgress / (estimatedTimePerProgress / progressViewAnimationTimerInterval))
         progressValue = min(progressValue + incrementProgressValueBy, next.rawValue)
     }
-
-    enum Localization {
-        static let funWooFact = NSLocalizedString("#FunWooFact:", comment: "Prefix for the subtitle text in the store creation loading screen")
-    }
 }
 
 private extension StoreCreationProgressViewModel.Progress {
     var title: String {
         switch self {
         case .creatingStore:
-            return Localization.Title.wooWeAreCreatingYourStore
+            return Localization.Title.step1
         case .buildingFoundations:
-            return Localization.Title.buildingTheFoundations
+            return Localization.Title.step2
         case .organizingStockRoom:
-            return Localization.Title.organizingTheStockRoom
+            return Localization.Title.step3
         case .applyingFinishingTouches:
-            return Localization.Title.finishingTouches
+            return Localization.Title.step4
         case .turningOnTheLights:
-            return Localization.Title.turningOnLights
+            return Localization.Title.step5
         case .openingTheDoors, .finished:
-            return Localization.Title.openingDoors
+            return Localization.Title.step6
         }
     }
 
     var subtitle: String {
         switch self {
         case .creatingStore:
-            return Localization.Subtitle.stores
+            return Localization.Subtitle.step1
         case .buildingFoundations:
-            return Localization.Subtitle.founded
+            return Localization.Subtitle.step2
         case .organizingStockRoom:
-            return Localization.Subtitle.catOrDog
+            return Localization.Subtitle.step3
         case .applyingFinishingTouches:
-            return Localization.Subtitle.meetups
+            return Localization.Subtitle.step4
         case .turningOnTheLights:
-            return Localization.Subtitle.wooTeam
+            return Localization.Subtitle.step5
         case .openingTheDoors, .finished:
-            return Localization.Subtitle.favColor
+            return Localization.Subtitle.step6
         }
     }
 }
@@ -133,50 +124,54 @@ private extension StoreCreationProgressViewModel.Progress {
 private extension StoreCreationProgressViewModel.Progress {
     enum Localization {
         enum Title {
-            static let wooWeAreCreatingYourStore = NSLocalizedString("Woo! We are creating your store",
-                                                                     comment: "Title text in the store creation loading screen")
+            static let step1 = NSLocalizedString("Creating Your Store! It'll be just a few minutes",
+                                                 comment: "Title text in the store creation loading screen")
 
-            static let buildingTheFoundations = NSLocalizedString("Building the foundations",
-                                                                  comment: "Title text in the store creation loading screen")
+            static let step2 = NSLocalizedString("Building the foundations",
+                                                 comment: "Title text in the store creation loading screen")
 
-            static let organizingTheStockRoom = NSLocalizedString("Organizing the stock room",
-                                                                  comment: "Title text in the store creation loading screen")
+            static let step3 = NSLocalizedString("Organizing the stock room",
+                                                 comment: "Title text in the store creation loading screen")
 
-            static let finishingTouches = NSLocalizedString("Applying the finishing touches",
-                                                            comment: "Title text in the store creation loading screen")
+            static let step4 = NSLocalizedString("Applying the finishing touches",
+                                                 comment: "Title text in the store creation loading screen")
 
-            static let turningOnLights = NSLocalizedString("Turning on the lights",
-                                                            comment: "Title text in the store creation loading screen")
+            static let step5 = NSLocalizedString("Turning on the lights",
+                                                 comment: "Title text in the store creation loading screen")
 
-            static let openingDoors = NSLocalizedString("Opening the doors",
-                                                            comment: "Title text in the store creation loading screen")
+            static let step6 = NSLocalizedString("Opening the doors",
+                                                 comment: "Title text in the store creation loading screen")
         }
 
         enum Subtitle {
-            static let stores = NSLocalizedString(
-                "Did you know that Woo powers more than 3.5 million stores worldwide? You’re in good company.",
+            static let step1 = NSLocalizedString(
+                "You will be notified once the store is ready! Sit back, relax, and let us work our magic while sharing helpful tips. 🔮",
                 comment: "Subtitle text in the store creation loading screen")
 
-            static let founded = NSLocalizedString(
-                "Did you know that Woo was founded by two South Africans and a Norwegian? "
-                + "Here are three alternative ways to say “store” in those countries – Winkel, ivenkile, and butikk.",
-                comment: "Subtitle text in the store creation loading screen")
+            static let step2 = NSLocalizedString(
+                "**#Track sales and popular products:** Stay updated on your store's real-time performance. " +
+                "Identify your top-selling products and make informed decisions for maximum profitability.",
+                comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
 
-            static let catOrDog = NSLocalizedString(
-                "Are you Team Cat or Team Dog? The Woo team is split 50/50!",
-                comment: "Subtitle text in the store creation loading screen")
+            static let step3 = NSLocalizedString(
+                "**#Manage and create orders:** Handle orders with ease. Scroll, search, and change order status. " +
+                "Create new orders on the fly for in-store or phone purchases. Simplify your order management process.",
+                comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
 
-            static let meetups = NSLocalizedString(
-                "There are more than 150 WooCommerce meetups held all over the world! A great way to meet fellow store owners.",
-                comment: "Subtitle text in the store creation loading screen")
+            static let step4 = NSLocalizedString(
+                "**#Take payments in person:** Expand your sales opportunities by accepting payments in person. " +
+                "Use the app to securely process credit card transactions or even connect with compatible card readers for convenient in-person payments.",
+                comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
 
-            static let wooTeam = NSLocalizedString(
-                "The Woo team is made up of over 350 talented individuals, distributed across 30+ countries.",
-                comment: "Subtitle text in the store creation loading screen")
+            static let step5 = NSLocalizedString(
+                "**#Add and edit products with a touch:** Add new products, update details, upload images, and manage variations, " +
+                "all from the app. Keep your inventory up to date effortlessly.",
+                comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
 
-            static let favColor = NSLocalizedString(
-                "Our favorite color is purple.",
-                comment: "Subtitle text in the store creation loading screen")
+            static let step6 = NSLocalizedString(
+                "**#Get notified of every sale:** Never miss a beat with instant sale notifications. " +
+                "Receive alerts for each new sale, allowing you to celebrate your success and stay on top of your store's activity.",
+                comment: "Subtitle text in the store creation loading screen. The text in ** marks is bolded.")
         }
     }
 }

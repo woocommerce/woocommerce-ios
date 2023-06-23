@@ -13,7 +13,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isStoreCreationM3ProfilerEnabled: Bool
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
-    private let isAddCouponToOrderEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
     private let isFreeTrial: Bool
     private let jetpackSetupWithApplicationPassword: Bool
@@ -39,7 +38,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isStoreCreationM3ProfilerEnabled: Bool = false,
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
-         isAddCouponToOrderEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
          isFreeTrial: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
@@ -64,7 +62,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isStoreCreationM3ProfilerEnabled = isStoreCreationM3ProfilerEnabled
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
-        self.isAddCouponToOrderEnabled = isAddCouponToOrderEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.isFreeTrial = isFreeTrial
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
@@ -104,8 +101,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDomainSettingsEnabled
         case .supportRequests:
             return isSupportRequestEnabled
-        case .addCouponToOrder:
-            return isAddCouponToOrderEnabled
         case .dashboardOnboarding:
             return isDashboardStoreOnboardingEnabled
         case .freeTrial:

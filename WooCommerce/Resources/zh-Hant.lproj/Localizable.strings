@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-19 02:10:05+0000 */
+/* Translation-Revision-Date: 2023-06-20 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -64,6 +64,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "卡號結尾是 %2$@ 的 %1$@ 卡";
+
+/* Value describing the days left on a plan before expiry. Reads as '15 days left' */
+"%1$@ days left" = "還剩 %1$@ 天";
 
 /* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
 "%1$@ every %2$@" = "每 %2$@ %1$@";
@@ -2076,6 +2079,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "日期：從最舊到最新排序";
 
+/* Label for the text describing days left on a Plan to expire.Reads as 'Days left in plan: 15 days left' */
+"Days left in plan" = "方案剩餘天數";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "預設";
 
@@ -3060,6 +3066,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to contact support when Jetpack setup fails */
 "Get support" = "取得支援";
 
+/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
+"Get the most out of %1$@" = "充分發揮 %1$@ 的優勢";
+
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "從自己的商店獲得最大利益";
 
@@ -3122,6 +3131,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dismiss button title in AI product description celebration screen. */
 "Got it" = "知道了";
+
+/* Title in AI product description celebration screen. */
+"Great start!" = "很棒的開始！";
 
 /* Country option for a site address. */
 "Greece" = "希臘";
@@ -4559,6 +4571,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "僅限網站擁有者能管理郵寄標籤付款方式。 請聯絡 %1$@ (%2$@) 以管理付款方式。";
 
+/* Text describing that only the site owner can upgrade the site's plan. */
+"Only the site owner can manage upgrades" = "只有網站擁有者可以管理升級項目";
+
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "糟糕，發生了一些未預期的錯誤。";
 
@@ -5016,6 +5031,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "請安裝免費的 Jetpack 外掛程式，以在此應用程式上存取你的商店。";
+
+/* Instructions to review the AI generated description. */
+"Please keep in mind that this product description was generated using our AI-powered tool. Please review and edit the content to ensure it aligns with your brand and messaging." = "在此提醒，這是系統使用 AI 工具產生的產品說明。 請詳細檢閱及編輯內容，確保內容符合你的品牌形象和你想傳遞的訊息。";
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "請先登出再連結至另一個 WordPress.com 網站";
@@ -7787,6 +7805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "無法更新價格";
 
+/* Text describing that is not possible to upgrade the site's plan. */
+"Unable to upgrade" = "無法升級";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "無法驗證此商店的親自收款功能";
 
@@ -8440,6 +8461,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title in the product description AI generator view. */
 "Write product description" = "商品說明";
 
+/* Action button to generate message on the product sharing message generation screen */
+"Write with AI" = "使用 AI 撰寫";
+
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "是否帳號有誤？";
 
@@ -8573,6 +8597,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "你的免費商店位址";
 
+/* Info details for an expired free trial */
+"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "你的免費試用已結束，存取所有功能時會受到限制。 立即訂購 Woo Express 方案。";
+
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "你的 Woo Express 免費試用將於明天 (%1$@) 結束。 掌握你的未來就趁現在：挑選一個方案，迎接業績飛速成長。";
 
@@ -8593,6 +8620,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "你的手機快要可以收款了…";
+
+/* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
+"Your plan" = "你的方案";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "更新完成後，你的讀卡機會自動重新啟動並重新連線";
@@ -8731,6 +8761,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "付款、點選支付、woocommerce、woo、親自收款、收取款項、款項、讀卡機、信用卡讀卡機、訂購讀卡機";
+
+/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
+"plan ended" = "方案已結束";
 
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "你的隱私權對我們而言至關重要，而且始終如此。 我們會使用、儲存及處理你的個人資料，並以各種方式最佳化我們的應用程式 (和你的體驗)。 我們必須使用某些資料來讓一切順利運作，其餘則可由你透過「設定」來自訂使用方式。";

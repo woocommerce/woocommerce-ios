@@ -1,0 +1,1 @@
+Several exciting developments this week! You can now scan a SKU barcode or QR code to search for a product when creating an order. It's also possible to automatically generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products and share them using AI. Prova och dela din feedback.

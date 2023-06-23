@@ -2,7 +2,6 @@ import Storage
 
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
-    case couponManagement
     case inAppPurchases
 }
 
@@ -11,8 +10,6 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsTitle
-        case .couponManagement:
-            return Localization.couponManagementTitle
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementTitle
         }
@@ -22,8 +19,6 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsDescription
-        case .couponManagement:
-            return Localization.couponManagementDescription
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
         }
@@ -33,8 +28,6 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return \.isViewAddOnsSwitchEnabled
-        case .couponManagement:
-            return \.isCouponManagementSwitchEnabled
         case .inAppPurchases:
             return \.isInAppPurchasesSwitchEnabled
         }
@@ -111,13 +104,6 @@ private extension BetaFeature {
         static let viewAddOnsDescription = NSLocalizedString(
             "Test out viewing Order Add-Ons as we get ready to launch",
             comment: "Cell description on the beta features screen to enable the order add-ons feature")
-
-        static let couponManagementTitle = NSLocalizedString(
-            "Coupon Management",
-            comment: "Cell title on beta features screen to enable coupon management")
-        static let couponManagementDescription = NSLocalizedString(
-            "Test out managing coupons as we get ready to launch",
-            comment: "Cell description on beta features screen to enable coupon management")
 
         static let inAppPurchasesManagementTitle = NSLocalizedString(
             "In-app purchases",

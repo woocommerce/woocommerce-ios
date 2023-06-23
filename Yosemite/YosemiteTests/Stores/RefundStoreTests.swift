@@ -465,6 +465,49 @@ class RefundStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 3)
         XCTAssertNil(retrieveError)
     }
+
+    func test_refunds_are_retrieved_from_remote_when_they_are_missing_from_storage() {
+        // Given
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refunds-all")
+
+        // When
+        let retrieveError: Error? = waitFor { promise in
+            let action = RefundAction.retrieveRefunds(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      refundIDs: [self.sampleRefundID, self.refundID],
+                                                      deleteStaleRefunds: false) { error in
+                promise(error)
+            }
+            refundStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 2)
+        XCTAssertNil(retrieveError)
+    }
+
+    func test_refunds_are_not_retrieved_from_remote_when_they_exist_in_storage() {
+        // Given
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(refundID: sampleRefundID), in: viewStorage)
+        network.simulateError(requestUrlSuffix: "refunds", error: NetworkError.timeout) // Relay error if remote request is made
+
+        // When
+        let retrieveError: Error? = waitFor { promise in
+            let action = RefundAction.retrieveRefunds(siteID: self.sampleSiteID,
+                                                      orderID: self.sampleOrderID,
+                                                      refundIDs: [self.sampleRefundID],
+                                                      deleteStaleRefunds: false) { error in
+                promise(error)
+            }
+            refundStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
+        XCTAssertNil(retrieveError)
+    }
 }
 
 

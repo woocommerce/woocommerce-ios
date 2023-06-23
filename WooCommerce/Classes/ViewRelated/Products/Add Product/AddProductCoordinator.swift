@@ -111,7 +111,7 @@ final class AddProductCoordinator: Coordinator {
 
     func addProduct(name: String, description: String?, sku: String?) {
         guard let product = ProductFactory().createNewProduct(type: .simple,
-                                                              isVirtual: .random(),
+                                                              isVirtual: false,
                                                               siteID: siteID)?
             .copy(name: name,
                   fullDescription: description,

@@ -668,11 +668,11 @@ extension EditableOrderViewModel {
         let taxesTotal: String
 
         // We only support one (the first) coupon line
-        let supportsAddingCouponToOrder: Bool
         let couponSummary: String?
         let couponCode: String
         let discountTotal: String
         let shouldShowCoupon: Bool
+        let shouldDisableAddingCoupons: Bool
 
         /// Whether payment data is being reloaded (during remote sync)
         ///
@@ -697,12 +697,12 @@ extension EditableOrderViewModel {
              taxesTotal: String = "0",
              orderTotal: String = "0",
              shouldShowCoupon: Bool = false,
+             shouldDisableAddingCoupons: Bool = false,
              couponSummary: String? = nil,
              couponCode: String = "",
              discountTotal: String = "",
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
-             supportsAddingCouponToOrder: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
              saveCouponLineClosure: @escaping (OrderCouponLine?) -> Void = { _ in },
@@ -721,7 +721,7 @@ extension EditableOrderViewModel {
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shouldShowCoupon = shouldShowCoupon
-            self.supportsAddingCouponToOrder = supportsAddingCouponToOrder
+            self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.couponSummary = couponSummary
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
@@ -1041,12 +1041,12 @@ private extension EditableOrderViewModel {
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
+                                            shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponSummary: self.summarizeCoupons(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: order.discountTotal,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
-                                            supportsAddingCouponToOrder: self.featureFlagService.isFeatureFlagEnabled(.addCouponToOrder),
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
                                             saveCouponLineClosure: self.saveCouponLine,
@@ -1134,7 +1134,8 @@ private extension EditableOrderViewModel {
     ///
     func trackCreateOrderSuccess() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
-                                                                                try? orderDurationRecorder.millisecondsSinceOrderAddNew()))
+                                                                                try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
+                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count)))
     }
 
     /// Tracks an order creation failure
@@ -1401,6 +1402,13 @@ extension EditableOrderViewModel {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
 
+            guard !isCouponsError(error) else {
+                orderSynchronizer.setCoupon.send(nil)
+                return Notice(title: Localization.couponsErrorNoticeTitle,
+                              message: Localization.couponsErrorNoticeMessage,
+                              feedbackType: .error)
+            }
+
             let errorMessage: String
             switch flow {
             case .creation:
@@ -1424,6 +1432,14 @@ extension EditableOrderViewModel {
             default:
                 return false
             }
+        }
+
+        private static func isCouponsError(_ error: Error) -> Bool {
+            if case .unknown(code: "woocommerce_rest_invalid_coupon", _) = error as? DotcomError {
+                return true
+            }
+
+            return false
         }
     }
 }
@@ -1468,6 +1484,13 @@ private extension EditableOrderViewModel {
         static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
                                                                     "To edit all the details, view the order in your WooCommerce store admin.",
                                                                     comment: "Info message shown when the order contains multiple fees and shipping lines")
+        static let couponsErrorNoticeTitle = NSLocalizedString("Unable to add coupon.",
+                                                                 comment: "Info message when the user tries to add a coupon" +
+                                                                 "that is not applicated to the products")
+        static let couponsErrorNoticeMessage = NSLocalizedString("Sorry, this coupon is not applicable to selected products.",
+                                                                 comment: "Info message when the user tries to add a coupon" +
+                                                                 "that is not applicated to the products")
+
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",
                                                    comment: "The singular coupon summary. Reads like: Coupon (code1)")

@@ -506,6 +506,7 @@ extension WooAnalyticsEvent {
             static let searchFilter = "search_filter"
             static let barcodeFormat = "barcode_format"
             static let reason = "reason"
+            static let couponsCount = "coupons_count"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -633,8 +634,8 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [:]
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount]
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
                 properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew

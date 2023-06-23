@@ -87,15 +87,26 @@ private extension RefundStore {
     /// Retrieves all Refunds by an orderID.
     ///
     func retrieveRefunds(siteID: Int64, orderID: Int64, refundIDs: [Int64], deleteStaleRefunds: Bool, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadRefunds(for: siteID, by: orderID, with: refundIDs) { [weak self] (refunds, error) in
-            guard let refunds = refunds else {
-                onCompletion(error)
-                return
+        if deleteStaleRefunds {
+            self.deleteStaleRefunds(siteID: siteID, orderID: orderID, newRefundIDs: refundIDs)
+        }
+
+        let storedRefunds = storageManager.viewStorage.loadRefunds(siteID: siteID, orderID: orderID)
+        let missingRefundIDs = refundIDs.filter { refundID in
+            !storedRefunds.contains { $0.refundID == refundID }
+        }
+
+        // If all refund IDs exist in storage, skip the remote request.
+        if missingRefundIDs.isEmpty {
+            return onCompletion(nil)
+        }
+
+        // Request any refunds that don't exist in storage.
+        remote.loadRefunds(for: siteID, by: orderID, with: missingRefundIDs) { [weak self] (refunds, error) in
+            guard let refunds else {
+                return onCompletion(error)
             }
 
-            if deleteStaleRefunds {
-                self?.deleteStaleRefunds(siteID: siteID, orderID: orderID, newRefundIDs: refundIDs)
-            }
             self?.upsertStoredRefundsInBackground(readOnlyRefunds: refunds) {
                 onCompletion(nil)
             }

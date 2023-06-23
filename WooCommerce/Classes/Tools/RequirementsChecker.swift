@@ -98,8 +98,6 @@ private extension RequirementsChecker {
             stores.dispatch(PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
                 switch result {
                 case .success(let plan):
-                    print(plan)
-                    print(plan.isFreePlan)
                     // When a plan expired, the site gets reverted to a simple site with plan ID "1"
                     continuation.resume(returning: plan.isFreePlan)
                 case .failure(LoadSiteCurrentPlanError.noCurrentPlan):

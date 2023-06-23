@@ -180,14 +180,3 @@ private extension RequirementsChecker {
         }
     }
 }
-
-private extension RequirementsChecker {
-    enum Localization {
-        static let expiredPlan = NSLocalizedString("Site plan expired", comment: "Title of the expired WPCom plan alert")
-        static let expiredPlanDescription = NSLocalizedString(
-            "We have paused your store, but you can continue by picking a plan that suits you best.",
-            comment: "Message on the expired WPCom plan alert"
-        )
-        static let upgrade = NSLocalizedString("Upgrade", comment: "Button to upgrade a WPCom plan on the expired WPCom plan alert")
-    }
-}

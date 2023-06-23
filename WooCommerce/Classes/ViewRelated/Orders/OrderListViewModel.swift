@@ -255,12 +255,14 @@ final class OrderListViewModel {
                                pageNumber: Int,
                                pageSize: Int,
                                reason: OrderListSyncActionUseCase.SyncReason?,
+                               lastFullSyncTimestamp: Date?,
                                completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
                                                  filters: filters)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
+                                 lastFullSyncTimestamp: lastFullSyncTimestamp,
                                  completionHandler: { [weak self] timeInterval, error in
             /// A bit of a side-effect: `onDidChangeContent` is not called for first load
             self?.ippSurveySource = self?.feedbackBannerSurveySource()

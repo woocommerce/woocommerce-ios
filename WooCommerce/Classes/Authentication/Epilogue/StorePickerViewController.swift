@@ -650,7 +650,7 @@ private extension StorePickerViewController {
                 let upgradesController = UpgradesHostingController(siteID: siteID)
                 self?.topmostPresentedViewController.present(upgradesController, animated: true)
             } else {
-                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
+                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredWPComPlanAlert)
                 self?.topmostPresentedViewController.present(controller, animated: true)
             }
         }

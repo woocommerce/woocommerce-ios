@@ -134,7 +134,7 @@ private extension RequirementsChecker {
                 let upgradesController = UpgradesHostingController(siteID: siteID)
                 self.baseViewController?.present(upgradesController, animated: true)
             } else {
-                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredTrialPlanAlert)
+                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredWPComPlanAlert)
                 self.baseViewController?.present(controller, animated: true)
             }
         }

@@ -1,0 +1,1 @@
+Bu hafta çeşitli heyecan verici gelişmeler var! Artık sipariş oluştururken herhangi bir ürünü aramak için SKU barkodunu veya QR kodunu taratabilirsiniz. Ayrıca yapay zeka kullanarak WooCommerce ürünleriniz için dönüştürülebilir ve SEO için optimize edilmiş ürün açıklamalarını otomatik olarak oluşturabilir ve paylaşabilirsiniz. Deneyin ve geri bildiriminizi paylaşın!

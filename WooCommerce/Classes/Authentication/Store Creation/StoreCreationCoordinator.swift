@@ -522,6 +522,10 @@ private extension StoreCreationCoordinator {
             // Wait for jetpack to be installed
             DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
             waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteResult.siteID, expectedStoreName: siteResult.name)
+            analytics.track(event: .StoreCreation.siteCreationRequestSuccess(
+                siteID: siteResult.siteID,
+                domainName: siteResult.siteSlug
+            ))
             analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
         case .failure(let error):
             showStoreCreationErrorAlert(from: navigationController.topmostPresentedViewController, error: error)

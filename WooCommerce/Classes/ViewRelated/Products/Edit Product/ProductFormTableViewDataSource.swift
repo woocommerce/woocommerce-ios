@@ -101,6 +101,8 @@ private extension ProductFormTableViewDataSource {
             configureDescriptionAI(cell: cell)
         case .learnMoreAboutAI:
             configureLearnMoreAI(cell: cell)
+        case .separator:
+            configureSeparator(cell: cell)
         }
     }
     func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
@@ -275,6 +277,16 @@ private extension ProductFormTableViewDataSource {
         cell.hideSeparator()
     }
 
+    func configureSeparator(cell: UITableViewCell) {
+        guard let cell = cell as? SpacerTableViewCell else {
+            fatalError("Unexpected table view cell for the separator cell")
+        }
+        cell.selectionStyle = .none
+        cell.backgroundColor = .listBackground
+        cell.showSeparator()
+        cell.configure(height: Constants.settingsHeaderHeight)
+    }
+
     func configureLinkedProductsPromo(cell: UITableViewCell, viewModel: FeatureAnnouncementCardViewModel) {
         guard let cell = cell as? FeatureAnnouncementCardCell else {
             fatalError()
@@ -383,7 +395,8 @@ private extension ProductFormTableViewDataSource {
     enum Constants {
         static let legalURL = URL(string: "https://automattic.com/ai-guidelines/")!
         static let learnMoreTextHeight: CGFloat = 16
-        static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: -8, right: 0)
+        static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: 4, right: 0)
+        static let settingsHeaderHeight = CGFloat(16)
     }
     enum Localization {
         static let legalText = NSLocalizedString(

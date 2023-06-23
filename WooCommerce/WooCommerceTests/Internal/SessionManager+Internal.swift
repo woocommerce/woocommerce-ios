@@ -20,7 +20,8 @@ extension SessionManager {
     static func makeForTesting(authenticated: Bool = false,
                                isWPCom: Bool = true,
                                defaultRoles: [User.Role] = [.administrator],
-                               displayName: String? = nil) -> SessionManager {
+                               displayName: String? = nil,
+                               defaultSite: Site? = nil) -> SessionManager {
         let manager = SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
         // Force setting to `nil` if `authenticated` is `false` so that any auto-loaded credentials
         // will be removed.
@@ -36,6 +37,11 @@ extension SessionManager {
                                              email: "",
                                              username: credentials.username,
                                              gravatarUrl: nil)
+        }
+
+        if let defaultSite {
+            manager.defaultSite = defaultSite
+            manager.defaultStoreID = defaultSite.siteID
         }
         return manager
     }

@@ -387,7 +387,8 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             siteID: siteID,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            reason: SyncReason(rawValue: reason ?? "")) { [weak self] totalDuration, error in
+            reason: SyncReason(rawValue: reason ?? ""),
+            lastFullSyncTimestamp: lastFullSyncTimestamp) { [weak self] totalDuration, error in
                 guard let self = self else {
                     return
                 }

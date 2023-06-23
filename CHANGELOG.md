@@ -1,6 +1,11 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 14.2
+Did you know we’re working on a new feature for managing coupons? It's now possible add coupons when creating an order from the app. You can also manage your coupons by heading over to the menu tab and clicking on the Coupons feature. 
+
+Lastly, we’ve made some performance tweaks to improve speed of the orders section. But we’re not done. Keep an eye out for more enhancements in the future.
+
 ## 14.1
 Several exciting developments this week! You can now scan a SKU barcode or QR code to search for a product when creating an order. It's also possible to automatically generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products and share them using AI. Do try it out and share your feedback!
 

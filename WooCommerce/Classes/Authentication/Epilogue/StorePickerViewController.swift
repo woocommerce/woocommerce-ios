@@ -77,6 +77,8 @@ final class StorePickerViewController: UIViewController {
 
     private var stateSubscription: AnyCancellable?
 
+    private lazy var requirementsChecker = RequirementsChecker()
+
     // MARK: - Private Properties
 
     /// Default Action Button.
@@ -151,7 +153,7 @@ final class StorePickerViewController: UIViewController {
                 return
             }
 
-            displaySiteWCRequirementWarningIfNeeded(siteID: site.siteID, siteName: site.name)
+            displaySiteWCRequirementWarningIfNeeded(site: site)
         }
     }
 
@@ -536,16 +538,18 @@ private extension StorePickerViewController {
 
     /// If the provided site's WC version is not valid, display a warning to the user.
     ///
-    func displaySiteWCRequirementWarningIfNeeded(siteID: Int64, siteName: String) {
+    func displaySiteWCRequirementWarningIfNeeded(site: Site) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] result in
+        requirementsChecker.checkSiteEligibility(for: site) { [weak self] result in
             switch result {
             case .success(.validWCVersion):
                 self?.updateUIForValidSite()
             case .success(.invalidWCVersion):
-                self?.updateUIForInvalidSite(named: siteName)
+                self?.updateUIForInvalidSite(named: site.name)
+            case .success(.expiredWPComPlan):
+                self?.updateUIForExpiredWPComPlan(siteID: site.siteID)
             case .failure:
-                self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
+                self?.updateUIForEmptyOrErroredSite(named: site.name, with: site.siteID)
             }
         }
     }
@@ -567,6 +571,13 @@ private extension StorePickerViewController {
         default:
             updateUIForInvalidSiteFound(named: siteName)
         }
+    }
+
+    /// Update the UI upon receiving a response for an invalid WC site
+    ///
+    func updateUIForExpiredWPComPlan(siteID: Int64) {
+        updateActionButtonAndTableState(animating: false, enabled: false)
+        displayExpiredWPComPlanAlert(siteID: siteID)
     }
 
     /// Update the UI upon receiving an error or empty response instead of site info
@@ -627,6 +638,19 @@ private extension StorePickerViewController {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         present(fancyAlert, animated: true)
+    }
+
+    func displayExpiredWPComPlanAlert(siteID: Int64) {
+        UIAlertController.presentExpiredWPComPlanAlert(from: self) { [weak self] in
+            guard let self else { return }
+            if self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
+                let upgradesController = UpgradesHostingController(siteID: siteID)
+                self.topmostPresentedViewController.present(upgradesController, animated: true)
+            } else {
+                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredWPComPlanAlert)
+                self.topmostPresentedViewController.present(controller, animated: true)
+            }
+        }
     }
 }
 

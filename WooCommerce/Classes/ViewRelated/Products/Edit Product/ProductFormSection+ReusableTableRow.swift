@@ -39,7 +39,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         case .learnMoreAboutAI:
             return [TextViewTableViewCell.self]
         case .separator:
-            return [WooBasicTableViewCell.self]
+            return [SpacerTableViewCell.self]
         }
     }
 
@@ -64,7 +64,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         case .learnMoreAboutAI:
             return TextViewTableViewCell.self
         case .separator:
-            return WooBasicTableViewCell.self
+            return SpacerTableViewCell.self
         }
     }
 }

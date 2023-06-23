@@ -278,12 +278,13 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureSeparator(cell: UITableViewCell) {
-        guard let cell = cell as? WooBasicTableViewCell else {
+        guard let cell = cell as? SpacerTableViewCell else {
             fatalError("Unexpected table view cell for the separator cell")
         }
         cell.selectionStyle = .none
-        cell.bodyLabel.text = ""
         cell.backgroundColor = .listBackground
+        cell.showSeparator()
+        cell.configure(height: Constants.settingsHeaderHeight)
     }
 
     func configureLinkedProductsPromo(cell: UITableViewCell, viewModel: FeatureAnnouncementCardViewModel) {
@@ -395,6 +396,7 @@ private extension ProductFormTableViewDataSource {
         static let legalURL = URL(string: "https://automattic.com/ai-guidelines/")!
         static let learnMoreTextHeight: CGFloat = 16
         static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: 8, right: 0)
+        static let settingsHeaderHeight = CGFloat(16)
     }
     enum Localization {
         static let legalText = NSLocalizedString(

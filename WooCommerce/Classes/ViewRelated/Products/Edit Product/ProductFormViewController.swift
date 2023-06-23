@@ -1894,7 +1894,3 @@ private enum ActionSheetStrings {
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
     static let duplicate = NSLocalizedString("Duplicate", comment: "Button title to duplicate a product in Product More Options Action Sheet")
 }
-
-private enum Constants {
-    static let settingsHeaderHeight = CGFloat(16)
-}

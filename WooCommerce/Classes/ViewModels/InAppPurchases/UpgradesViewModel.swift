@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Yosemite
+import LocalAuthentication
 
 enum UpgradeViewState {
     case loading
@@ -142,6 +143,12 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
+        guard await isLocallyAuthenticated() else {
+            DDLogError("Authentication failed")
+            upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
+            return
+        }
+
         guard let wooWPComPlan = planCanBePurchasedFromCurrentState() else {
             return
         }
@@ -205,6 +212,23 @@ final class UpgradesViewModel: ObservableObject {
             return plan
         default:
             return nil
+        }
+    }
+
+    @MainActor
+    private func isLocallyAuthenticated() async -> Bool {
+        let context = LAContext()
+        var authenticationError: NSError?
+
+        if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &authenticationError) {
+            do {
+                let isSuccess = try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "Parental control")
+                return isSuccess
+            } catch {
+                return false
+            }
+        } else {
+            return false
         }
     }
 

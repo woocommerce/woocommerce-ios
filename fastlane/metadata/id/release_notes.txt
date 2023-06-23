@@ -1,0 +1,1 @@
+Ada berbagai fitur baru yang menarik minggu ini! Kini Anda bisa memindai barcode atau kode QR SKU suatu produk untuk mencari produk tersebut saat akan membuat pesanan. Berkat teknologi AI, kini Anda bisa secara otomatis membuat deskripsi menarik yang ramah SEO untuk produk di WooCommerce dan membagikannya. Cobalah dan berikan feedback Anda!

@@ -58,7 +58,6 @@ struct OrderPaymentSection: View {
                 .sheet(isPresented: $shouldShowCouponLineDetails) {
                     CouponLineDetails(viewModel: viewModel.couponLineViewModel)
                 }
-                .renderedIf(viewModel.supportsAddingCouponToOrder)
 
             TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
 
@@ -105,6 +104,7 @@ struct OrderPaymentSection: View {
             TitleAndValueRow(title: viewModel.couponSummary ?? Localization.coupon, value: .content(viewModel.discountTotal), selectionStyle: .highlight) {
                 shouldShowCouponLineDetails = true
             }
+            .disabled(viewModel.shouldDisableAddingCoupons)
         } else {
             Button(Localization.addCoupon) {
                 shouldShowCouponLineDetails = true
@@ -112,6 +112,7 @@ struct OrderPaymentSection: View {
             .buttonStyle(PlusButtonStyle())
             .padding()
             .accessibilityIdentifier("add-coupon-button")
+            .disabled(viewModel.shouldDisableAddingCoupons)
         }
     }
 }

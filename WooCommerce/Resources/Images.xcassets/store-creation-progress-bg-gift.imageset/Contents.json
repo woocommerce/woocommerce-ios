@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "store-creation-progress-bg-gift.pdf",
-      "idiom" : "universal"
+      "filename" : "store-creation-progress-bg-gift.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "store-creation-progress-bg-gift@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "store-creation-progress-bg-gift@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

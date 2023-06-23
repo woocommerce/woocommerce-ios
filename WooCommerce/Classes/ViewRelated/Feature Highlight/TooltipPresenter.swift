@@ -7,11 +7,10 @@ import UIKit
 /// Must be retained to respond to device orientation and size category changes.
 final class TooltipPresenter {
     private enum Constants {
-        static let verticalTooltipDistanceToFocus: CGFloat = 8
+        static let verticalTooltipDistanceToFocus: CGFloat = 0
         static let horizontalBufferMargin: CGFloat = 20
         static let tooltipTopConstraintAnimationOffset: CGFloat = 8
         static let tooltipAnimationDuration: TimeInterval = 0.2
-        static let anchorBottomConstraintConstant: CGFloat = 58
     }
 
     enum TooltipVerticalPosition {
@@ -146,13 +145,20 @@ final class TooltipPresenter {
             tooltip.centerXAnchor.constraint(equalTo: containerView.centerXAnchor, constant: extraArrowOffsetX())
         ]
 
+        let tooltipTopConstraint: NSLayoutConstraint
         switch target {
         case .view(let targetView):
             switch tooltipOrientation() {
             case .bottom:
-                tooltipTopConstraint = targetView.topAnchor.constraint(equalTo: tooltip.bottomAnchor)
+                tooltipTopConstraint = targetView.topAnchor.constraint(
+                    equalTo: tooltip.bottomAnchor,
+                    constant: totalVerticalBuffer
+                )
             case .top:
-                tooltipTopConstraint = tooltip.topAnchor.constraint(equalTo: targetView.bottomAnchor)
+                tooltipTopConstraint = tooltip.topAnchor.constraint(
+                    equalTo: targetView.bottomAnchor,
+                    constant: totalVerticalBuffer
+                )
             }
         case .point(let targetPoint):
             switch tooltipOrientation() {
@@ -163,11 +169,12 @@ final class TooltipPresenter {
             case .top:
                 tooltipTopConstraint = tooltip.topAnchor.constraint(
                     equalTo: containerView.topAnchor,
-                    constant: targetPoint().y)
+                    constant: targetPoint().y + totalVerticalBuffer)
             }
         }
+        tooltipConstraints.append(tooltipTopConstraint)
+        self.tooltipTopConstraint = tooltipTopConstraint
 
-        tooltipConstraints.append(tooltipTopConstraint!)
         NSLayoutConstraint.activate(tooltipConstraints)
     }
 
@@ -204,7 +211,7 @@ final class TooltipPresenter {
             self.containerView.layoutIfNeeded()
         } completion: { isSuccess in
             self.tooltip.removeFromSuperview()
-            self.tooltip = self.tooltip.copy()
+            self.tooltip = self.tooltip.copy(containerWidth: self.containerView.bounds.width)
             self.showTooltip()
         }
     }

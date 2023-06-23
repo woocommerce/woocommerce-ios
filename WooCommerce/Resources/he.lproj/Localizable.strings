@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-19 02:10:05+0000 */
+/* Translation-Revision-Date: 2023-06-21 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -64,6 +64,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "כרטיס %1$@ שמסתיים בספרות %2$@";
+
+/* Value describing the days left on a plan before expiry. Reads as '15 days left' */
+"%1$@ days left" = "נותר %1$@ ימים";
 
 /* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
 "%1$@ every %2$@" = "%1$@ כל %2$@";
@@ -2076,6 +2079,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "תאריך: מהישן לחדש";
 
+/* Label for the text describing days left on a Plan to expire.Reads as 'Days left in plan: 15 days left' */
+"Days left in plan" = "ימים שנותרו בתוכנית";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "ברירת מחדל";
 
@@ -3060,6 +3066,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to contact support when Jetpack setup fails */
 "Get support" = "לקבלת תמיכה";
 
+/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
+"Get the most out of %1$@" = "להפיק את המרב מ-%1$@";
+
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "לנצל את מלוא הפוטנציאל של החנות שלך";
 
@@ -3122,6 +3131,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dismiss button title in AI product description celebration screen. */
 "Got it" = "הבנתי";
+
+/* Title in AI product description celebration screen. */
+"Great start!" = "התחלה נהדרת!";
 
 /* Country option for a site address. */
 "Greece" = "יוון";
@@ -4559,6 +4571,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "רק בעלי האתר יכולים לנהל את אמצעי התשלום של תוויות המשלוח. יש ליצור קשר עם %1$@ (%2$@) כדי לנהל את אמצעי התשלום.";
 
+/* Text describing that only the site owner can upgrade the site's plan. */
+"Only the site owner can manage upgrades" = "רק בעלי האתר יכולים לנהל את שהדרוגים";
+
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "אופס, אירעו כמה שגיאות לא צפויות.";
 
@@ -5016,6 +5031,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "יש להתקין את התוסף החינמי של Jetpack כדי לגשת לחנות באפליקציה הזאת.";
+
+/* Instructions to review the AI generated description. */
+"Please keep in mind that this product description was generated using our AI-powered tool. Please review and edit the content to ensure it aligns with your brand and messaging." = "חשוב לשים לב שתיאור המוצר נוצר דרך כלי שאנחנו מפעילים באמצעות בינה מלאכותית. יש לבדוק ולערוך את התוכן כדי לוודא שהוא מתאים למותג ולמסר שלך.";
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "יש להתנתק לפני ההתחברות לאתר WordPress.com שונה";
@@ -7787,6 +7805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "לא ניתן היה לעדכן את המחיר";
 
+/* Text describing that is not possible to upgrade the site's plan. */
+"Unable to upgrade" = "לא ניתן לשדרג";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "לא ניתן לאמת תשלומים באופן אישי בחנות זו";
 
@@ -8440,6 +8461,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title in the product description AI generator view. */
 "Write product description" = "לכתוב תיאור למוצר";
 
+/* Action button to generate message on the product sharing message generation screen */
+"Write with AI" = "לכתוב באמצעות בינה מלאכותית";
+
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "חשבון שגוי?";
 
@@ -8573,6 +8597,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "הכתובת של החנות החינמית שלך";
 
+/* Info details for an expired free trial */
+"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "תקופת הניסיון שלך הסתיימה ולכן הגישה שלך לכל האפשרויות הוגבלה. יש להירשם למינוי על תוכנית Woo Express עכשיו.";
+
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "תקופת הניסיון שלך עם Woo Express מסתיימת מחר (%1$@). זה הזמן המושלם לקבל שליטה על העתיד שלך – כדאי לבחור תוכנית ולהתחיל לצמוח כבר עכשיו.";
 
@@ -8593,6 +8620,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "הטלפון שלך יהיה מוכן לגביית תשלומים עוד רגע...";
+
+/* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
+"Your plan" = "התוכנית שלך";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "לאחר השלמת העדכון, קורא הכרטיסים יופעל מחדש באופן אוטומטי ויתחבר שוב";
@@ -8731,6 +8761,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "תשלומים, הצמדה לתשלום, tap to pay, ‏WooCommerce, ‏Woo, תשלומים באופן אישי, לגבות תשלומים באופן אישי, תשלומים, קורא, קורא כרטיסים, להזמין קורא כרטיסים";
+
+/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
+"plan ended" = "התוכנית הסתיימה";
 
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "הפרטיות שלך חשובה לנו מאוד, וכך היה תמיד. אנחנו משתמשים בנתונים האישיים שלך, מאחסנים ומעבדים אותם כדי לשפר את האפליקציה שלנו (ואת החוויה שלך) בדרכים שונות. יש שימושים בנתונים שאנחנו מחויבים לעשות כדי לאפשר פעילות תקינה של השירות, ויש שימושים שבאפשרותך לשנות מהמקטע 'הגדרות' אצלך.";

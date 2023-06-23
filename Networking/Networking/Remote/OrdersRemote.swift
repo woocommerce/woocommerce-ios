@@ -13,6 +13,8 @@ public class OrdersRemote: Remote {
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
+    ///     - modifiedAfter: If given, limit response to resources modified after a given compliant date. Passing a local date is fine. This
+    ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
@@ -21,6 +23,7 @@ public class OrdersRemote: Remote {
                               statuses: [String]? = nil,
                               after: Date? = nil,
                               before: Date? = nil,
+                              modifiedAfter: Date? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
                               completion: @escaping (Result<[Order], Error>) -> Void) {
@@ -40,6 +43,9 @@ public class OrdersRemote: Remote {
             }
             if let before = before {
                 parameters[ParameterKeys.before] = utcDateFormatter.string(from: before)
+            }
+            if let modifiedAfter {
+                parameters[ParameterKeys.modifiedAfter] = utcDateFormatter.string(from: modifiedAfter)
             }
 
             return parameters
@@ -306,6 +312,31 @@ public class OrdersRemote: Remote {
         let mapper = OrderMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Retrieves the date a specific `Order` was last modified.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - orderID: Identifier of the Order.
+    /// - Returns:
+    ///     Async result with a `Date` or an error
+    ///
+    public func fetchDateModified(for siteID: Int64, orderID: Int64) async throws -> Date {
+        let parameters = [
+            ParameterKeys.fields: ParameterValues.dateModifiedField
+        ]
+
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = EntityDateModifiedMapper()
+
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 
@@ -335,6 +366,7 @@ public extension OrdersRemote {
         static let after: String            = "after"
         static let before: String           = "before"
         static let force: String            = "force"
+        static let modifiedAfter: String    = "modified_after"
     }
 
     enum ParameterValues {
@@ -345,6 +377,7 @@ public extension OrdersRemote {
             "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
             "is_editable", "needs_payment", "needs_processing", "gift_cards"
         ]
+        static let dateModifiedField = "date_modified_gmt"
     }
 
     /// Order fields supported for update

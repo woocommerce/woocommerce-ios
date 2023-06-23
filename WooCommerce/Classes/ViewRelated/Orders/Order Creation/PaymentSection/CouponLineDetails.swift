@@ -17,6 +17,10 @@ struct CouponLineDetails: View {
 
     @FocusState private var focusedField: Field?
 
+    /// Defines whether we should show a progress view instead of the done button.
+    ///
+    @State private var showValidateCouponLoading: Bool = false
+
     init(viewModel: CouponLineDetailsViewModel) {
         self.viewModel = viewModel
     }
@@ -37,6 +41,7 @@ struct CouponLineDetails: View {
                     .onTapGesture {
                         focusedField = .couponCode
                     }
+                    .disabled(showValidateCouponLoading)
 
                     Spacer(minLength: Layout.sectionSpacing)
 
@@ -67,15 +72,26 @@ struct CouponLineDetails: View {
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button(Localization.done) {
-                        viewModel.saveData()
-                        presentation.wrappedValue.dismiss()
+                    if showValidateCouponLoading {
+                        ProgressView()
+                    } else {
+                        Button(Localization.done) {
+                            showValidateCouponLoading = true
+
+                            viewModel.validateAndSaveData() { shouldDimiss in
+                                showValidateCouponLoading = false
+
+                                if shouldDimiss {
+                                    presentation.wrappedValue.dismiss()
+                                }
+                            }
+                        }
                     }
-                    .disabled(viewModel.shouldDisableDoneButton)
                 }
             }
         }
         .wooNavigationBarStyle()
+        .notice($viewModel.notice)
     }
 }
 
@@ -103,6 +119,7 @@ struct CouponLineDetails_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: true,
                                                    code: "",
+                                                   siteID: 0,
                                                    didSelectSave: { _ in })
         CouponLineDetails(viewModel: viewModel)
     }

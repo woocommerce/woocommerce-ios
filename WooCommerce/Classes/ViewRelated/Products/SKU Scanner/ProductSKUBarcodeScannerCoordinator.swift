@@ -42,8 +42,8 @@ private extension ProductSKUBarcodeScannerCoordinator {
     func showSKUScanner() {
         let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] barcode in
             self?.onSKUBarcodeScanned(barcode)
-            self?.navigationController.popViewController(animated: true)
+            self?.navigationController.dismiss(animated: true)
         })
-        navigationController.show(scannerViewController, sender: self)
+        navigationController.present(scannerViewController, animated: true)
     }
 }

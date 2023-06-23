@@ -274,7 +274,6 @@ private extension ProductFormTableViewDataSource {
             self?.openAILegalPageAction?(url)
         }))
         cell.selectionStyle = .none
-        cell.hideSeparator()
     }
 
     func configureSeparator(cell: UITableViewCell) {

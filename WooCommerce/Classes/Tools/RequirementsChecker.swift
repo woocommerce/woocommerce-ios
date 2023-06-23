@@ -3,7 +3,6 @@ import UIKit
 import Yosemite
 import WordPressUI
 
-
 /// Result Enum for the RequirementsChecker
 ///
 enum RequirementCheckResult: Int, CaseIterable {
@@ -40,11 +39,25 @@ final class RequirementsChecker {
     /// If the site is WPCom, the site plan is fetched first to determine if the site is running on an expired plan.
     ///
     func checkSiteEligibility(for site: Site, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
-        guard site.isWordPressComStore else {
-            // Skips site plan check for non-WPCom site
-            return checkMinimumWooVersion(for: site.siteID, onCompletion: onCompletion)
+        Task { @MainActor in
+            do {
+                let result = try await checkMinimumWooVersion(for: site)
+                /// skips checking site plan for non-wpcom stores.
+                guard case .invalidWCVersion = result, site.isWordPressComStore else {
+                    onCompletion?(.success(result))
+                    return
+                }
+
+                let siteExpired = await checkIfWPComSitePlanExpired(for: site.siteID)
+                if siteExpired {
+                    onCompletion?(.success(.expiredWPComPlan))
+                } else {
+                    onCompletion?(.success(.invalidWCVersion))
+                }
+            } catch {
+                onCompletion?(.failure(error))
+            }
         }
-        checkWPComSitePlan(for: site.siteID, onCompletion: onCompletion)
     }
 
     /// This function checks the default site's API version and then displays a warning
@@ -78,33 +91,30 @@ final class RequirementsChecker {
 // MARK: - Private helpers
 //
 private extension RequirementsChecker {
-    func checkWPComSitePlan(for siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
-        let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let plan):
-                // Normalize dates in the same timezone.
-                let today = Date().startOfDay(timezone: .current)
-                guard plan.isFreeTrial, let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
-                    return self.checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
+    @MainActor
+    func checkIfWPComSitePlanExpired(for siteID: Int64) async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
+                switch result {
+                case .success(let plan):
+                    // Normalize dates in the same timezone.
+                    let today = Date().startOfDay(timezone: .current)
+                    guard plan.isFreeTrial, let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
+                        return continuation.resume(returning: false)
+                    }
+                    let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
+                    continuation.resume(returning: daysLeft <= 0)
+                case .failure(LoadSiteCurrentPlanError.noCurrentPlan):
+                    // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
+                    // Generally, expiry is `.success(plan)` with a plan expiry date in the past, but in some cases, we just
+                    // don't get any plans marked as `current` in the plans response.
+                    continuation.resume(returning: true)
+                case .failure(let error):
+                    continuation.resume(returning: false)
+                    DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")
                 }
-                let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
-                if daysLeft <= 0 {
-                    onCompletion?(.success(.expiredWPComPlan))
-                } else {
-                    self.checkMinimumWooVersion(for: siteID, onCompletion: onCompletion)
-                }
-            case .failure(LoadSiteCurrentPlanError.noCurrentPlan):
-                // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
-                // Generally, expiry is `.success(plan)` with a plan expiry date in the past, but in some cases, we just
-                // don't get any plans marked as `current` in the plans response.
-                onCompletion?(.success(.expiredWPComPlan))
-            case .failure(let error):
-                onCompletion?(.failure(error))
-                DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")
-            }
+            })
         }
-        stores.dispatch(action)
     }
 
     /// Display the WC version alert
@@ -139,9 +149,18 @@ private extension RequirementsChecker {
     /// - parameter siteID: The SiteID to perform a version check on
     /// - parameter onCompletion: Closure to be executed upon completion with the result of the requirement check
     ///
-    func checkMinimumWooVersion(for siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
-        let action = retrieveSiteAPIAction(siteID: siteID, onCompletion: onCompletion)
-        stores.dispatch(action)
+    @MainActor
+    func checkMinimumWooVersion(for site: Site) async throws -> RequirementCheckResult {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(retrieveSiteAPIAction(siteID: site.siteID) { result in
+                switch result {
+                case .success(let checkResult):
+                    continuation.resume(returning: checkResult)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
     }
 
     /// Returns a `SettingAction.retrieveSiteAPI` action

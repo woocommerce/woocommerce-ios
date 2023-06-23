@@ -215,19 +215,25 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
-    @MainActor
+    /// Evaluates the user’s identity, either with biometrics like Touch ID or Face ID, or by supplying the device passcode
+    /// and whether they can proceed with In-App Purchases
+    ///
     private func isLocallyAuthenticated() async -> Bool {
-        let context = LAContext()
+        let localAuthentication = LAContext()
         var authenticationError: NSError?
 
-        if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &authenticationError) {
+        // Assesses whether authentication can proceed for a given policy:
+        // Set to `.deviceOwnerAuthentication` which allows biometry, Apple watch, or device passcode.
+        if localAuthentication.canEvaluatePolicy(.deviceOwnerAuthentication, error: &authenticationError) {
             do {
-                let isSuccess = try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "Parental control")
-                return isSuccess
+                let evaluationResult = try await localAuthentication.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "Parental control")
+                return evaluationResult
             } catch {
+                DDLogError("⛔️ Unable to authenticate: \(error)")
                 return false
             }
         } else {
+            DDLogError("⛔️ Device authentication not available")
             return false
         }
     }

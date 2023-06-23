@@ -31,7 +31,7 @@ struct ProductLiveTextImage: View {
         case .loading:
             ProgressView()
         case .empty:
-            VStack(spacing: 15) {
+            VStack(spacing: 16) {
                 Image(systemName: "photo")
                     .font(.system(size: 40))
                 Text("Upload a photo of the packaging to select text for name and features")
@@ -53,7 +53,7 @@ struct ProductImageView: View {
     var body: some View {
         ProductLiveTextImage(imageState: imageState)
             .scaledToFit()
-            .frame(width: 500, height: 500)
+            .frame(height: 500)
     }
 }
 

@@ -156,7 +156,11 @@ private extension InAppPurchaseStore {
         } else {
             // Provide access to the product
             logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
-            try await submitTransaction(transaction)
+            /// We ignore 422 errors for product purchased because _usually_ from this method, these are renewals
+            /// that MobilePay already knows about, and when they're not, other client side checks should
+            /// prevent the purchase in the first place.
+            /// [See #10075 for details](https://github.com/woocommerce/woocommerce-ios/issues/10075)
+            try await submitTransaction(transaction, shouldIgnoreProductPurchasedErrors: true)
         }
         logInfo("Marking transaction \(transaction.id) as finished")
         await transaction.finish()
@@ -184,7 +188,8 @@ private extension InAppPurchaseStore {
         }
     }
 
-    func submitTransaction(_ transaction: StoreKit.Transaction) async throws {
+    func submitTransaction(_ transaction: StoreKit.Transaction,
+                           shouldIgnoreProductPurchasedErrors: Bool = false) async throws {
         guard useBackend else {
             return
         }
@@ -215,6 +220,9 @@ private extension InAppPurchaseStore {
             )
             logInfo("Successfully registered purchase with Order ID \(orderID)")
         } catch WordPressApiError.productPurchased {
+            guard shouldIgnoreProductPurchasedErrors else {
+                throw Errors.transactionAlreadyAssociatedWithAnUpgrade
+            }
             // Ignore errors for existing purchase
             logInfo("Existing order found for transaction \(transaction.id) on site \(siteID), ignoring")
         } catch {
@@ -317,6 +325,8 @@ public extension InAppPurchaseStore {
 
         case inAppPurchaseStoreKitFailed(StoreKitError)
 
+        case transactionAlreadyAssociatedWithAnUpgrade
+
         public var errorDescription: String? {
             switch self {
             case .unverifiedTransaction:
@@ -351,6 +361,12 @@ public extension InAppPurchaseStore {
                 return NSLocalizedString(
                     "The In-App Purchase failed, with StoreKit error: \(storeKitError)",
                     comment: "Error message used when a purchase failed with a store kit error")
+            case .transactionAlreadyAssociatedWithAnUpgrade:
+                return NSLocalizedString(
+                    "This In-App purchase was successful, but has already been used to upgrade a site. " +
+                    "Please contact support for more help.",
+                    comment: "Error message shown when the In-App Purchase transaction was already used " +
+                    "for another upgrade – their money was taken, but this site is not upgraded.")
             }
         }
 
@@ -406,6 +422,8 @@ public extension InAppPurchaseStore {
                 return "iap.A.105"
             case .storefrontUnknown:
                 return "iap.A.110"
+            case .transactionAlreadyAssociatedWithAnUpgrade:
+                return "iap.A.115"
             }
         }
     }

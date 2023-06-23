@@ -576,7 +576,6 @@ private extension StorePickerViewController {
     /// Update the UI upon receiving a response for an invalid WC site
     ///
     func updateUIForExpiredWPComPlan(siteID: Int64) {
-        toggleDismissButton(enabled: false)
         updateActionButtonAndTableState(animating: false, enabled: false)
         displayExpiredWPComPlanAlert(siteID: siteID)
     }

@@ -2028,6 +2028,7 @@
 		DE3877E4283E35E80075D87E /* DiscountTypeBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3877E3283E35E80075D87E /* DiscountTypeBottomSheetListSelectorCommandTests.swift */; };
 		DE3C5B1F286B18520049E6AA /* CardPresentPaymentsModalScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3C5B1E286B18520049E6AA /* CardPresentPaymentsModalScreen.swift */; };
 		DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */; };
+		DE4A33552A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A33542A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift */; };
 		DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */; };
 		DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */; };
 		DE4B3B5626A68DD000EEF2D8 /* View+InsetPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */; };
@@ -4382,6 +4383,7 @@
 		DE3877E3283E35E80075D87E /* DiscountTypeBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscountTypeBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		DE3C5B1E286B18520049E6AA /* CardPresentPaymentsModalScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsModalScreen.swift; sourceTree = "<group>"; };
 		DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCountryListSelectorCommand.swift; sourceTree = "<group>"; };
+		DE4A33542A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WPComSitePlan+SimpleSite.swift"; sourceTree = "<group>"; };
 		DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
 		DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+InsetPaddings.swift"; sourceTree = "<group>"; };
@@ -8268,6 +8270,7 @@
 				E1E649E82846188C0070B194 /* BetaFeature.swift */,
 				EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */,
 				26C98F9729C1246F00F96503 /* WPComSitePlan+FreeTrial.swift */,
+				DE4A33542A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift */,
 				2631D4F729ED0B5C00F13F20 /* WPComPlanNameSanitizer.swift */,
 			);
 			path = Model;
@@ -11721,6 +11724,7 @@
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
+				DE4A33552A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift in Sources */,
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
 				02B8650F24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,

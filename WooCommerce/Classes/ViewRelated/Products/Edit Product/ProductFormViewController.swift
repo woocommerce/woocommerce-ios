@@ -510,29 +510,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @objc private func shareProduct() {
         displayShareProduct(from: shareBarButtonItem, analyticSource: .productForm)
     }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let section = tableViewModel.sections[section]
-        switch section {
-        case .settings:
-            return Constants.settingsHeaderHeight
-        default:
-            return 0
-        }
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let section = tableViewModel.sections[section]
-        switch section {
-        case .settings:
-            let clearView = UIView(frame: .zero)
-            clearView.backgroundColor = .listBackground
-
-            return clearView
-        default:
-            return nil
-        }
-    }
 }
 
 // MARK: - Configuration

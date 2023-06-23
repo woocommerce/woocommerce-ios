@@ -123,7 +123,13 @@ private extension InAppPurchaseStore {
                 completion(.success(purchaseResult))
             } catch {
                 logError("Error purchasing product \(productID) for site \(siteID): \(error)")
-                completion(.failure(error))
+                if let purchaseError = error as? StoreKit.Product.PurchaseError {
+                    completion(.failure(Errors.inAppPurchaseProductPurchaseFailed(purchaseError)))
+                } else if let storeKitError = error as? StoreKitError {
+                    completion(.failure(Errors.inAppPurchaseStoreKitFailed(storeKitError)))
+                } else {
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -307,6 +313,10 @@ public extension InAppPurchaseStore {
         ///
         case inAppPurchasesNotSupported
 
+        case inAppPurchaseProductPurchaseFailed(StoreKit.Product.PurchaseError)
+
+        case inAppPurchaseStoreKitFailed(StoreKitError)
+
         public var errorDescription: String? {
             switch self {
             case .unverifiedTransaction:
@@ -333,6 +343,14 @@ public extension InAppPurchaseStore {
                 return NSLocalizedString(
                     "In-app purchases are not supported for this user yet",
                     comment: "Error message used when In-app purchases are not supported for this user/site")
+            case .inAppPurchaseProductPurchaseFailed(let purchaseError):
+                return NSLocalizedString(
+                    "The In-App Purchase failed, with product purchase error: \(purchaseError)",
+                    comment: "Error message used when a purchase failed")
+            case .inAppPurchaseStoreKitFailed(let storeKitError):
+                return NSLocalizedString(
+                    "The In-App Purchase failed, with StoreKit error: \(storeKitError)",
+                    comment: "Error message used when a purchase failed with a store kit error")
             }
         }
 
@@ -344,6 +362,44 @@ public extension InAppPurchaseStore {
                 return "iap.T.105"
             case .transactionProductUnknown:
                 return "iap.T.110"
+            case .inAppPurchaseProductPurchaseFailed(let purchaseError):
+                switch purchaseError {
+                case .invalidQuantity:
+                    return "iap.T.115.1"
+                case .productUnavailable:
+                    return "iap.T.115.2"
+                case .purchaseNotAllowed:
+                    return "iap.T.115.3"
+                case .ineligibleForOffer:
+                    return "iap.T.115.4"
+                case .invalidOfferIdentifier:
+                    return "iap.T.115.5"
+                case .invalidOfferPrice:
+                    return "iap.T.115.6"
+                case .invalidOfferSignature:
+                    return "iap.T.115.7"
+                case .missingOfferParameters:
+                    return "iap.T.115.8"
+                @unknown default:
+                    return "iap.T.115.0"
+                }
+            case .inAppPurchaseStoreKitFailed(let storeKitError):
+                switch storeKitError {
+                case .unknown:
+                    return "iap.T.120.1"
+                case .userCancelled:
+                    return "iap.T.120.2"
+                case .networkError(let networkError):
+                    return "iap.T.120.3.\(networkError.errorCode)"
+                case .systemError(_):
+                    return "iap.T.120.4"
+                case .notAvailableInStorefront:
+                    return "iap.T.120.5"
+                case .notEntitled:
+                    return "iap.T.120.6"
+                @unknown default:
+                    return "iap.T.120.0"
+                }
             case .transactionMissingAppAccountToken:
                 return "iap.A.100"
             case .appAccountTokenMissingSiteIdentifier:

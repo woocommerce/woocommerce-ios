@@ -279,7 +279,7 @@ private extension ProductFormTableViewDataSource {
 
     func configureSeparator(cell: UITableViewCell) {
         guard let cell = cell as? WooBasicTableViewCell else {
-            fatalError("Unexpected table view cell for the AI legal cell")
+            fatalError("Unexpected table view cell for the separator cell")
         }
         cell.selectionStyle = .none
         cell.bodyLabel.text = ""

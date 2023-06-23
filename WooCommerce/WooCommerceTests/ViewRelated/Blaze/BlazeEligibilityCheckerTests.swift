@@ -81,6 +81,20 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    func test_isEligible_is_false_when_site_user_is_not_admin() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockDefaultSite(isEligibleForBlaze: true, isAdmin: false)
+        mockRemoteFeatureFlag(isEnabled: true)
+        let checker = BlazeEligibilityChecker(stores: stores)
+
+        // When
+        let isEligible = await checker.isSiteEligible()
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
     // MARK: - `isProductEligible`
 
     func test_isProductEligible_is_true_when_wpcom_auth_and_feature_flag_enabled_and_blaze_approved_and_product_public_without_password() async {
@@ -177,11 +191,11 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
 }
 
 private extension BlazeEligibilityCheckerTests {
-    func mockDefaultSite(isEligibleForBlaze: Bool) {
+    func mockDefaultSite(isEligibleForBlaze: Bool, isAdmin: Bool = true) {
         stores.updateDefaultStore(storeID: 134)
         stores.updateDefaultStore(.fake().copy(siteID: 134,
                                                canBlaze: isEligibleForBlaze,
-                                               isAdmin: isEligibleForBlaze))
+                                               isAdmin: isAdmin))
     }
 
     func mockRemoteFeatureFlag(isEnabled: Bool) {

@@ -72,10 +72,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
 
-    private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase()
+    private var tooltipUseCase: ProductDescriptionAITooltipUseCase?
     private var didShowTooltip = false {
         didSet {
-            tooltipUseCase.numberOfTimesWriteWithAITooltipIsShown += 1
+            tooltipUseCase?.numberOfTimesWriteWithAITooltipIsShown += 1
         }
     }
 
@@ -98,10 +98,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.productImageUploader = productImageUploader
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
+        let isDescriptionAIEnabled = aiEligibilityChecker.isFeatureEnabled(.description)
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency,
-                                                               isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
+                                                               isDescriptionAIEnabled: isDescriptionAIEnabled)
+        if isDescriptionAIEnabled {
+            self.tooltipUseCase = ProductDescriptionAITooltipUseCase()
+        }
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
@@ -615,24 +619,12 @@ private extension ProductFormViewController {
     }
 
     func configureTooltipPresenter() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
-            return
-        }
-
-        guard aiEligibilityChecker.isFeatureEnabled(.description) else {
-            return
-        }
-
         if let tooltip = tooltipPresenter?.tooltip {
             tooltip.removeFromSuperview()
             self.tooltipPresenter = nil
         }
 
-        guard product.description?.isEmpty == true else {
-            return
-        }
-
-        guard tooltipUseCase.shouldShowTooltip else {
+        guard tooltipUseCase?.shouldShowTooltip(for: product) == true else {
             return
         }
 
@@ -646,7 +638,7 @@ private extension ProductFormViewController {
             tooltip: tooltip,
             target: .point(tooltipTargetPoint),
             primaryTooltipAction: { [weak self] in
-                self?.tooltipUseCase.hasDismissedWriteWithAITooltip = true
+                self?.tooltipUseCase?.hasDismissedWriteWithAITooltip = true
             }
         )
         tooltipPresenter?.tooltipVerticalPosition = .below

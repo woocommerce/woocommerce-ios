@@ -347,8 +347,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             return
         }
 
-        if isDescriptionAICellVisible() {
-            tooltipPresenter?.showTooltip()
+        if let tooltipPresenter,
+           isDescriptionAICellVisible() {
+            tooltipPresenter.showTooltip()
             didShowTooltip = true
         }
     }

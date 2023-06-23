@@ -510,29 +510,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @objc private func shareProduct() {
         displayShareProduct(from: shareBarButtonItem, analyticSource: .productForm)
     }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let section = tableViewModel.sections[section]
-        switch section {
-        case .settings:
-            return Constants.settingsHeaderHeight
-        default:
-            return 0
-        }
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let section = tableViewModel.sections[section]
-        switch section {
-        case .settings:
-            let clearView = UIView(frame: .zero)
-            clearView.backgroundColor = .listBackground
-
-            return clearView
-        default:
-            return nil
-        }
-    }
 }
 
 // MARK: - Configuration
@@ -1916,8 +1893,4 @@ private enum ActionSheetStrings {
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
     static let duplicate = NSLocalizedString("Duplicate", comment: "Button title to duplicate a product in Product More Options Action Sheet")
-}
-
-private enum Constants {
-    static let settingsHeaderHeight = CGFloat(16)
 }

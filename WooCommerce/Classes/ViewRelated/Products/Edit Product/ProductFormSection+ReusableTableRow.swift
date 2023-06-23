@@ -38,6 +38,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return [ButtonTableViewCell.self]
         case .learnMoreAboutAI:
             return [TextViewTableViewCell.self]
+        case .separator:
+            return [SpacerTableViewCell.self]
         }
     }
 
@@ -61,6 +63,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return ButtonTableViewCell.self
         case .learnMoreAboutAI:
             return TextViewTableViewCell.self
+        case .separator:
+            return SpacerTableViewCell.self
         }
     }
 }

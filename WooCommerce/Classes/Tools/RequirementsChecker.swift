@@ -123,10 +123,10 @@ private extension RequirementsChecker {
     }
 
     func displayWPComPlanUpgradeAlert(siteID: Int64) {
-        let alertController = UIAlertController(title: Localization.expiredPlan,
-                                                message: Localization.expiredPlanDescription,
-                                                preferredStyle: .alert)
-        let action = UIAlertAction(title: Localization.upgrade, style: .default) { [weak self] _ in
+        guard let baseViewController else {
+            return
+        }
+        UIAlertController.presentExpiredWPComPlanAlert(from: baseViewController) { [weak self] in
             guard let self else { return }
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
                 let upgradesController = UpgradesHostingController(siteID: siteID)
@@ -136,8 +136,6 @@ private extension RequirementsChecker {
                 self.baseViewController?.present(controller, animated: true)
             }
         }
-        alertController.addAction(action)
-        baseViewController?.present(alertController, animated: true)
     }
 
     /// This function simply checks the provided site's API version. No warning will be displayed to the user.

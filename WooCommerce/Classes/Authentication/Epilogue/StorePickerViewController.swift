@@ -641,10 +641,7 @@ private extension StorePickerViewController {
     }
 
     func displayExpiredWPComPlanAlert(siteID: Int64) {
-        let alertController = UIAlertController(title: Localization.ExpiredWPComPlanAlert.title,
-                                                message: Localization.ExpiredWPComPlanAlert.message,
-                                                preferredStyle: .alert)
-        let action = UIAlertAction(title: Localization.ExpiredWPComPlanAlert.upgrade, style: .default) { [weak self] _ in
+        UIAlertController.presentExpiredWPComPlanAlert(from: self) { [weak self] in
             guard let self else { return }
             if self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
                 let upgradesController = UpgradesHostingController(siteID: siteID)
@@ -654,8 +651,6 @@ private extension StorePickerViewController {
                 self.topmostPresentedViewController.present(controller, animated: true)
             }
         }
-        alertController.addAction(action)
-        present(alertController, animated: true)
     }
 }
 
@@ -909,15 +904,6 @@ private extension StorePickerViewController {
                 "Close account",
                 comment: "Button to close the WordPress.com account on the store picker."
             )
-        }
-
-        enum ExpiredWPComPlanAlert {
-            static let title = NSLocalizedString("Site plan expired", comment: "Title of the expired WPCom plan alert")
-            static let message = NSLocalizedString(
-                "We have paused your store, but you can continue by picking a plan that suits you best.",
-                comment: "Message on the expired WPCom plan alert"
-            )
-            static let upgrade = NSLocalizedString("Upgrade", comment: "Button to upgrade a WPCom plan on the expired WPCom plan alert")
         }
     }
 }

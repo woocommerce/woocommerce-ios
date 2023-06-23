@@ -95,6 +95,18 @@ extension UIAlertController {
             popoverPresentationController?.sourceRect = CGRect(x: window.bounds.midX, y: window.bounds.midY, width: 0, height: 0)
         }
     }
+
+    static func presentExpiredWPComPlanAlert(from viewController: UIViewController,
+                                             onUpgrade: @escaping () -> Void) {
+        let alertController = UIAlertController(title: ExpiredWPComPlanAlert.title,
+                                                message: ExpiredWPComPlanAlert.message,
+                                                preferredStyle: .alert)
+        let action = UIAlertAction(title: ExpiredWPComPlanAlert.upgrade, style: .default) { _ in
+            onUpgrade()
+        }
+        alertController.addAction(action)
+        viewController.present(alertController, animated: true)
+    }
 }
 
 private enum ActionSheetStrings {
@@ -134,4 +146,13 @@ private enum BarcodeScannerNoCameraPermissionAlert {
                           "Please enable camera permissions in your device settings",
                           comment: "Message of alert that links to settings for camera access.")
     }
+}
+
+private enum ExpiredWPComPlanAlert {
+    static let title = NSLocalizedString("Site plan expired", comment: "Title of the expired WPCom plan alert")
+    static let message = NSLocalizedString(
+        "We have paused your store, but you can continue by picking a plan that suits you best.",
+        comment: "Message on the expired WPCom plan alert"
+    )
+    static let upgrade = NSLocalizedString("Upgrade", comment: "Button to upgrade a WPCom plan on the expired WPCom plan alert")
 }

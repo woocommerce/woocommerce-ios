@@ -36,7 +36,8 @@ final class RequirementsChecker {
     /// This function checks the default site's API version and then displays a warning if the
     /// site's WC version is not valid.
     ///
-    /// If the site is WPCom, the site plan is fetched first to determine if the site is running on an expired plan.
+    /// If the site is WPCom, the site plan is fetched when minimum Woo version check fails
+    /// in order to determine if the site is running on an expired plan.
     ///
     func checkSiteEligibility(for site: Site, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
         Task { @MainActor in

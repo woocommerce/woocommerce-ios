@@ -187,7 +187,9 @@ final class UpgradesViewModel: ObservableObject {
             switch recognisedError {
             case .unverifiedTransaction,
                     .transactionProductUnknown,
-                    .inAppPurchasesNotSupported:
+                    .inAppPurchasesNotSupported,
+                    .inAppPurchaseProductPurchaseFailed,
+                    .inAppPurchaseStoreKitFailed:
                 upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan, recognisedError))
             case .transactionMissingAppAccountToken,
                     .appAccountTokenMissingSiteIdentifier,

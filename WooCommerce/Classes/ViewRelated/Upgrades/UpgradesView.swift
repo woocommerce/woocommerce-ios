@@ -678,10 +678,15 @@ private extension WooWPComPlan {
 
 private struct CurrentPlanDetailsView: View {
     @State var planName: String
-    @State var daysLeft: String
+    @State var daysLeft: Int?
 
     private var daysLeftText: String {
-        String.localizedStringWithFormat(Localization.daysLeftValue, daysLeft)
+        guard let daysLeft else {
+            return ""
+        }
+        return String.pluralize(daysLeft,
+                                singular: Localization.daysLeftValueSingular,
+                                plural: Localization.daysLeftValuePlural)
     }
 
     var body: some View {
@@ -715,8 +720,13 @@ private struct CurrentPlanDetailsView: View {
             "Days left in plan", comment: "Label for the text describing days left on a Plan to expire." +
             "Reads as 'Days left in plan: 15 days left'")
 
-        static let daysLeftValue = NSLocalizedString(
-            "%1$@ days left", comment: "Value describing the days left on a plan before expiry. Reads as '15 days left'")
+        static let daysLeftValuePlural = NSLocalizedString(
+            "%1ld days left", comment: "Value describing the days left on a plan before expiry (plural). " +
+            "%1ld must be included in the translation, and will be replaced with the count. Reads as '15 days left'")
+
+        static let daysLeftValueSingular = NSLocalizedString(
+            "%1$ld day left", comment: "Value describing the days left on a plan before expiry (singular). " +
+            "%1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left'")
     }
 }
 

@@ -646,12 +646,13 @@ private extension StorePickerViewController {
                                                 message: Localization.ExpiredWPComPlanAlert.message,
                                                 preferredStyle: .alert)
         let action = UIAlertAction(title: Localization.ExpiredWPComPlanAlert.upgrade, style: .default) { [weak self] _ in
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
+            guard let self else { return }
+            if self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
                 let upgradesController = UpgradesHostingController(siteID: siteID)
-                self?.topmostPresentedViewController.present(upgradesController, animated: true)
+                self.topmostPresentedViewController.present(upgradesController, animated: true)
             } else {
                 let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredWPComPlanAlert)
-                self?.topmostPresentedViewController.present(controller, animated: true)
+                self.topmostPresentedViewController.present(controller, animated: true)
             }
         }
         alertController.addAction(action)

@@ -98,13 +98,7 @@ private extension RequirementsChecker {
             stores.dispatch(PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
                 switch result {
                 case .success(let plan):
-                    // Normalize dates in the same timezone.
-                    let today = Date().startOfDay(timezone: .current)
-                    guard plan.isFreeTrial, let expiryDate = plan.expiryDate?.startOfDay(timezone: .current) else {
-                        return continuation.resume(returning: false)
-                    }
-                    let daysLeft = Calendar.current.dateComponents([.day], from: today, to: expiryDate).day ?? 0
-                    continuation.resume(returning: daysLeft <= 0)
+                    continuation.resume(returning: plan.isFreePlan)
                 case .failure(LoadSiteCurrentPlanError.noCurrentPlan):
                     // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
                     // Generally, expiry is `.success(plan)` with a plan expiry date in the past, but in some cases, we just

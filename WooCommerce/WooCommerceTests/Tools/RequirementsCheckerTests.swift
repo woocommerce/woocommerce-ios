@@ -6,7 +6,7 @@ import WordPressUI
 @MainActor
 final class RequirementsCheckerTests: XCTestCase {
 
-    private let freeTrialID = "1052"
+    private let freePlan = "1"
     private var viewController: UINavigationController!
 
     override func setUp() {
@@ -36,9 +36,7 @@ final class RequirementsCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
             case .loadSiteCurrentPlan(_, let completion):
-                let sitePlan = WPComSitePlan(id: self.freeTrialID,
-                                             hasDomainCredit: false,
-                                             expiryDate: Date().addingDays(-3))
+                let sitePlan = WPComSitePlan(id: self.freePlan, hasDomainCredit: false)
                 completion(.success(sitePlan))
             default:
                 break
@@ -271,9 +269,7 @@ final class RequirementsCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
             case .loadSiteCurrentPlan(_, let completion):
-                let sitePlan = WPComSitePlan(id: self.freeTrialID,
-                                             hasDomainCredit: false,
-                                             expiryDate: Date().addingDays(-3))
+                let sitePlan = WPComSitePlan(id: self.freePlan, hasDomainCredit: false)
                 completion(.success(sitePlan))
             default:
                 break
@@ -283,7 +279,7 @@ final class RequirementsCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case .retrieveSiteAPI(_, let completion):
-                completion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v2"])))
+                completion(.success(SiteAPI(siteID: site.siteID, namespaces: [])))
             default:
                 break
             }

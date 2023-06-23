@@ -5,12 +5,11 @@ import struct Yosemite.WPComSitePlan
 ///
 extension WPComSitePlan {
 
-    /// WooCommerce Core Free Trial ID.
+    /// WooCommerce Core Free WordPress plan ID.
     ///
     private static let freePlan = "1"
 
     /// Determines if a plan is a free plan.
-    /// Note: It doesn't take into account if the trial has expired or not.
     ///
     var isFreePlan: Bool {
         id == Self.freePlan

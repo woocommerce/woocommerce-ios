@@ -1,0 +1,1 @@
+Diversi sviluppi entusiasmanti questa settimana. Ora puoi scansionare un codice a barre SKU o un codice QR per cercare un prodotto durante la creazione di un ordine. È anche possibile generare automaticamente descrizioni dei prodotti che permettono la conversione e ottimizzate per la SEO per i prodotti WooCommerce e condividerle usando l'IA. Provala e condividi il tuo feedback.

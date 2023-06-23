@@ -28,12 +28,6 @@ public enum SiteAction: Action {
     ///   - siteID: ID of the site to load.
     ///   - completion: Called when the result of the synced site is available.
     case syncSite(siteID: Int64, completion: (Result<Site, Error>) -> Void)
-
-    /// Loads the Blaze status of a site.
-    /// - Parameter:
-    ///   - siteID: ID of the site to load.
-    ///   - completion: Called when the result of the Blaze status is available.
-    case loadBlazeStatus(siteID: Int64, completion: (Result<Bool, Error>) -> Void)
 }
 
 /// The result of site creation including necessary site information.

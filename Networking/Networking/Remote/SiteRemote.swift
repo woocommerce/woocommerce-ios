@@ -21,11 +21,6 @@ public protocol SiteRemoteProtocol {
     /// - Parameter siteID: Remote ID of the site to load.
     /// - Returns: The site that matches the site ID.
     func loadSite(siteID: Int64) async throws -> Site
-
-    /// Loads the Blaze status of a site.
-    /// - Parameter siteID: Remote ID of the site to load the Blaze status.
-    /// - Returns: A boolean that indicates whether Blaze is approved for the site.
-    func loadBlazeStatus(siteID: Int64) async throws -> Bool
 }
 
 /// Site: Remote Endpoints
@@ -114,13 +109,6 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         return try await enqueue(request)
-    }
-
-    public func loadBlazeStatus(siteID: Int64) async throws -> Bool {
-        let path = Path.loadBlazeStatus(siteID: siteID)
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
-        let response: BlazeStatusResponse = try await enqueue(request)
-        return response.isApproved
     }
 }
 
@@ -251,7 +239,7 @@ extension SiteRemote {
         enum Options {
             static let key = "options"
             static let value =
-            "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
+            "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public,can_blaze"
         }
     }
 }
@@ -273,10 +261,6 @@ private extension SiteRemote {
 
         static func loadSite(siteID: Int64) -> String {
             "sites/\(siteID)"
-        }
-
-        static func loadBlazeStatus(siteID: Int64) -> String {
-            "sites/\(siteID)/blaze/status"
         }
     }
 }

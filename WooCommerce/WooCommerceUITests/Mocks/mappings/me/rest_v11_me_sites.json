@@ -7,7 +7,7 @@
             "equalTo": "ID,name,description,URL,options,jetpack,jetpack_connection,capabilities"
           },
           "options": {
-            "equalTo": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public"
+            "equalTo": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public,can_blaze"
           }
         }
     },
@@ -54,6 +54,7 @@
                         "login_url": "http:\/\/yourwoosite.com/wp-login.php",
                         "is_wpcom_store": true,
                         "woocommerce_is_active": true,
+                        "can_blaze": false,
                         "jetpack_version": "8.1.1",
                         "main_network_site": "https:\/\/yourwoosite.com",
                         "active_modules": ["carousel", "comment-likes", "comments", "contact-form", "copy-post", "custom-content-types", "custom-css", "enhanced-distribution", "gravatar-hovercards", "infinite-scroll", "json-api", "latex", "lazy-images", "likes", "masterbar", "notes", "photon", "photon-cdn", "post-by-email", "protect", "publicize", "sharedaddy", "shortcodes", "shortlinks", "sitemaps", "sso", "stats", "subscriptions", "tiled-gallery", "verification-tools", "widget-visibility", "widgets"],

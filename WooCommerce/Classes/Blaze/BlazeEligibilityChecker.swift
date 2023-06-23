@@ -41,18 +41,16 @@ private extension BlazeEligibilityChecker {
         guard let site = stores.sessionManager.defaultSite else {
             return false
         }
+        guard site.isAdmin && site.canBlaze else {
+            return false
+        }
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return false
         }
         guard await isRemoteFeatureFlagEnabled(.blaze) else {
             return false
         }
-        do {
-            return try await isBlazeApproved(for: site)
-        } catch {
-            DDLogError("⛔️ Unable to load Blaze status for site ID \(site.siteID): \(error)")
-            return false
-        }
+        return true
     }
 }
 
@@ -62,15 +60,6 @@ private extension BlazeEligibilityChecker {
         await withCheckedContinuation { continuation in
             stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(remoteFeatureFlag, defaultValue: false) { isEnabled in
                 continuation.resume(returning: isEnabled)
-            })
-        }
-    }
-
-    @MainActor
-    func isBlazeApproved(for site: Site) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(SiteAction.loadBlazeStatus(siteID: site.siteID) { result in
-                continuation.resume(with: result)
             })
         }
     }

@@ -72,6 +72,14 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let isPublic: Bool
 
+    /// Whether the site is partially eligible for Blaze. For the site to be fully eligible for Blaze, `isAdmin` needs to be `true` as well.
+    ///
+    public let canBlaze: Bool
+
+    /// Whether the site's user has the admin role.
+    ///
+    public let isAdmin: Bool
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -83,6 +91,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let url = try siteContainer.decode(String.self, forKey: .url)
         let capabilitiesContainer = try siteContainer.nestedContainer(keyedBy: CapabilitiesKeys.self, forKey: .capabilities)
         let isSiteOwner = try capabilitiesContainer.decode(Bool.self, forKey: .isSiteOwner)
+        let isAdmin = try capabilitiesContainer.decode(Bool.self, forKey: .isAdmin)
         let isJetpackThePluginInstalled = try siteContainer.decode(Bool.self, forKey: .isJetpackThePluginInstalled)
         let isJetpackConnected = try siteContainer.decode(Bool.self, forKey: .isJetpackConnected)
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
@@ -94,6 +103,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let adminURL = try optionsContainer.decode(String.self, forKey: .adminURL)
         let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL)
         let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
+        let canBlaze = try optionsContainer.decode(Bool.self, forKey: .canBlaze)
         let isPublic = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .isPublic) ?? false
 
         self.init(siteID: siteID,
@@ -112,7 +122,9 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
                   timezone: timezone,
                   gmtOffset: gmtOffset,
-                  isPublic: isPublic)
+                  isPublic: isPublic,
+                  canBlaze: canBlaze,
+                  isAdmin: isAdmin)
     }
 
     /// Designated Initializer.
@@ -133,7 +145,9 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 jetpackConnectionActivePlugins: [String],
                 timezone: String,
                 gmtOffset: Double,
-                isPublic: Bool) {
+                isPublic: Bool,
+                canBlaze: Bool,
+                isAdmin: Bool) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -151,6 +165,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.timezone = timezone
         self.gmtOffset = gmtOffset
         self.isPublic = isPublic
+        self.canBlaze = canBlaze
+        self.isAdmin = isAdmin
     }
 }
 
@@ -188,6 +204,7 @@ private extension Site {
 
     enum CapabilitiesKeys: String, CodingKey {
         case isSiteOwner   = "own_site"
+        case isAdmin = "manage_options"
     }
 
     enum OptionKeys: String, CodingKey {
@@ -200,6 +217,7 @@ private extension Site {
         case loginURL = "login_url"
         case frameNonce = "frame_nonce"
         case isPublic = "blog_public"
+        case canBlaze = "can_blaze"
     }
 
     enum PlanKeys: String, CodingKey {

@@ -84,6 +84,7 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
+        // TODO-JC: A/B experiment
         if #available(iOS 16.0, *), ImageAnalyzer.isSupported {
             let addProductFromImage = AddProductFromImageHostingController { [weak self] data in
                 self?.navigationController.dismiss(animated: true) { [weak self] in

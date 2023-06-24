@@ -27,7 +27,9 @@ struct ProductLiveTextImage: View {
     var body: some View {
         switch imageState {
         case .success(let image):
-            LiveTextInteractionView(image: image)
+            ZoomableScrollView {
+                LiveTextInteractionView(image: image)
+            }
         case .loading:
             ProgressView()
         case .empty:

@@ -46,3 +46,11 @@ final class LiveTextImageView: UIImageView {
         .zero
     }
 }
+
+struct LiveTextInteractionView_Previews: PreviewProvider {
+    static var previews: some View {
+        if #available(iOS 16.0, *) {
+            LiveTextInteractionView(image: .wcPayPlugin)
+        }
+    }
+}

@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Yosemite
+import Combine
 
 enum UpgradeViewState {
     case loading
@@ -52,6 +53,8 @@ final class UpgradesViewModel: ObservableObject {
 
     private let analytics: Analytics
 
+    private var cancellables: Set<AnyCancellable> = []
+
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
          stores: StoresManager = ServiceLocator.stores,
@@ -69,6 +72,8 @@ final class UpgradesViewModel: ObservableObject {
             self.localPlans = []
         }
 
+        observeViewStateAndTrackAnalytics()
+
         if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
             analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .userNotAllowedToUpgrade))
@@ -77,6 +82,18 @@ final class UpgradesViewModel: ObservableObject {
                 await fetchViewData()
             }
         }
+    }
+
+    private func observeViewStateAndTrackAnalytics() {
+        $upgradeViewState.sink { [weak self] state in
+            switch state {
+            case .waiting:
+                self?.analytics.track(.planUpgradeProcessingScreenLoaded)
+            default:
+                break
+            }
+        }
+        .store(in: &cancellables)
     }
 
     /// Sync wrapper for `fetchViewData`, so can be called directly from where this

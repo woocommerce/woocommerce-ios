@@ -69,9 +69,7 @@ struct UpgradesView: View {
                 case .purchasing(let plan):
                     OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
                 case .waiting(let plan):
-                    UpgradeWaitingView(planName: plan.wooPlan.shortName, onViewLoaded: {
-                        upgradesViewModel.track(.planUpgradeProcessingScreenLoaded)
-                    })
+                    UpgradeWaitingView(planName: plan.wooPlan.shortName)
                 case .completed(let plan):
                     CompletedUpgradeView(planName: plan.wooPlan.shortName,
                                          doneAction: {
@@ -443,7 +441,6 @@ private extension PurchaseUpgradeError {
 
 struct UpgradeWaitingView: View {
     let planName: String
-    var onViewLoaded: (() -> Void)
 
     var body: some View {
         VStack {
@@ -462,9 +459,6 @@ struct UpgradeWaitingView: View {
             .padding(.vertical, Layout.verticalPadding)
 
             Spacer()
-        }
-        .onAppear {
-            onViewLoaded()
         }
     }
 }

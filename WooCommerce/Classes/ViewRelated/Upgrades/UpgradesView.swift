@@ -49,7 +49,7 @@ struct UpgradesView: View {
                 VStack {
                     // TODO: Once we remove iOS 15 support, we can do this with .toolbar instead.
                     UpgradeTopBarView(dismiss: {
-                        ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: .planDetails))
+                        upgradesViewModel.analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: .planDetails))
                         presentationMode.wrappedValue.dismiss()
                     })
 
@@ -110,7 +110,7 @@ struct UpgradesView: View {
             }
             .navigationBarHidden(true)
             .onAppear {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.InAppPurchases.planUpgradeScreenLoaded(source: .banner))
+                upgradesViewModel.analytics.track(event: WooAnalyticsEvent.InAppPurchases.planUpgradeScreenLoaded(source: .banner))
             }
         }
     }

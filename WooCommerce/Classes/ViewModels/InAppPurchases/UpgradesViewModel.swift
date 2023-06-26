@@ -50,7 +50,7 @@ final class UpgradesViewModel: ObservableObject {
 
     private let localPlans: [WooPlan]
 
-    private let analytics: Analytics
+    let analytics: Analytics
 
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),

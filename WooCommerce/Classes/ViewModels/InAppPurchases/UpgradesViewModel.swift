@@ -50,12 +50,16 @@ final class UpgradesViewModel: ObservableObject {
 
     private let localPlans: [WooPlan]
 
+    private let analytics: Analytics
+
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
         self.stores = stores
+        self.analytics = analytics
 
         entitledWpcomPlanIDs = []
 
@@ -67,7 +71,7 @@ final class UpgradesViewModel: ObservableObject {
 
         if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
-            ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .userNotAllowedToUpgrade))
+            analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .userNotAllowedToUpgrade))
         } else {
             Task {
                 await fetchViewData()
@@ -97,7 +101,7 @@ final class UpgradesViewModel: ObservableObject {
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 upgradeViewState = .prePurchaseError(.inAppPurchasesNotSupported)
-                ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .inAppPurchasesNotSupported))
+                analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .inAppPurchasesNotSupported))
                 return
             }
 
@@ -107,7 +111,7 @@ final class UpgradesViewModel: ObservableObject {
             try await loadUserEntitlements(for: wpcomPlans)
             guard entitledWpcomPlanIDs.isEmpty else {
                 upgradeViewState = .prePurchaseError(.maximumSitesUpgraded)
-                ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .maximumSitesUpgraded))
+                analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .maximumSitesUpgraded))
                 return
             }
 
@@ -116,14 +120,14 @@ final class UpgradesViewModel: ObservableObject {
                                                                       hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
             else {
                 upgradeViewState = .prePurchaseError(.fetchError)
-                ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .fetchError))
+                analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .fetchError))
                 return
             }
             upgradeViewState = .loaded(plan)
         } catch {
             DDLogError("fetchPlans \(error)")
             upgradeViewState = .prePurchaseError(.fetchError)
-            ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .fetchError))
+            analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .fetchError))
         }
     }
 
@@ -147,13 +151,13 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
-        ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseButtonTapped(planID))
+        analytics.track(event: .InAppPurchases.planUpgradePurchaseButtonTapped(planID))
         guard let wooWPComPlan = planCanBePurchasedFromCurrentState() else {
             return
         }
 
         upgradeViewState = .purchasing(wooWPComPlan)
-        ServiceLocator.analytics.track(.planUpgradeScreenLoaded)
+        analytics.track(.planUpgradeScreenLoaded)
 
         observeInAppPurchaseDrawerDismissal { [weak self] in
             /// The drawer gets dismissed when the IAP is cancelled too. That gets dealt with in the `do-catch`
@@ -176,10 +180,10 @@ final class UpgradesViewModel: ObservableObject {
             switch result {
             case .userCancelled:
                 upgradeViewState = .loaded(wooWPComPlan)
-                ServiceLocator.analytics.track(.planUpgradeProcessingScreenDismissed)
+                analytics.track(.planUpgradeProcessingScreenDismissed)
             case .success(.verified(_)):
                 upgradeViewState = .completed(wooWPComPlan)
-                ServiceLocator.analytics.track(.planUpgradeCompletedScreenLoaded)
+                analytics.track(.planUpgradeCompletedScreenLoaded)
             default:
                 // TODO: handle `pending` here... somehow – requires research
                 // TODO: handle `.success(.unverified(_))` here... somehow
@@ -190,7 +194,7 @@ final class UpgradesViewModel: ObservableObject {
             stopObservingInAppPurchaseDrawerDismissal()
             guard let recognisedError = error as? InAppPurchaseStore.Errors else {
                 upgradeViewState = .purchaseUpgradeError(.unknown)
-                ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .unknown))
+                analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .unknown))
                 return
             }
 
@@ -277,7 +281,7 @@ private extension UpgradesViewModel {
         } catch {
             DDLogError("loadEntitlements \(error)")
             upgradeViewState = .prePurchaseError(.entitlementsError)
-            ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .entitlementsError))
+            analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .entitlementsError))
         }
     }
 }

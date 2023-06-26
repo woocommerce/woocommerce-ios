@@ -290,7 +290,7 @@ extension UpgradesViewModel {
     func trackDismiss(step: WooAnalyticsEvent.InAppPurchases.Step) {
         analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: step))
     }
-    
+
     func track(_ stat: WooAnalyticsStat) {
         analytics.track(stat)
     }

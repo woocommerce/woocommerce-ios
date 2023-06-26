@@ -2,7 +2,7 @@
 
 14.3
 -----
-
+- [*] SKU Scanner: Add the SKU to the error message after a failure. [https://github.com/woocommerce/woocommerce-ios/pull/10085]
 
 14.2
 -----

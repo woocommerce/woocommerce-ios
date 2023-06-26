@@ -1393,7 +1393,9 @@ extension EditableOrderViewModel {
             return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
         }
 
-        static func createProductNotFoundAfterSKUScanningErrorNotice(for error: Error, code: ScannedBarcode, withRetryAction action: @escaping () -> Void) -> Notice {
+        static func createProductNotFoundAfterSKUScanningErrorNotice(for error: Error,
+                                                                     code: ScannedBarcode,
+                                                                     withRetryAction action: @escaping () -> Void) -> Notice {
             BarcodeSKUScannerErrorNoticeFactory.notice(for: error, code: code, actionHandler: action)
         }
 

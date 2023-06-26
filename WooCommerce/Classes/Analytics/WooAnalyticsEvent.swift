@@ -2430,19 +2430,29 @@ extension WooAnalyticsEvent {
             case productID = "product_ID"
             case source
             case step
+            case featureGroup = "feature_group"
         }
 
         enum Source: String {
             case banner
         }
-        
+
         enum Step: String {
             case planDetails = "plan_details"
             case prePurchaseError = "pre_purchase_error"
             case purchaseUpgradeError = "purchase_upgrade_error"
             case completed = "completed"
         }
-        
+
+        enum FeatureGroup: String {
+            case general
+            case payments
+            case productManagement = "product_management"
+            case themes
+            case marketing
+            case shipping
+        }
+
         static func planUpgradePurchaseButtonTapped(_ productID: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .planUpgradePurchaseButtonTapped, properties: [Keys.productID.rawValue: productID])
         }
@@ -2451,11 +2461,17 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .planUpgradeScreenLoaded,
                               properties: [Keys.source.rawValue: source.rawValue])
         }
-        
+
         static func planUpgradeScreenDismissed(step: Step) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .planUpgradeScreenDismissed,
                               properties: [Keys.step.rawValue: step.rawValue])
         }
+
+        static func planUpgradeFeatureScreenLoaded(featureGroup: FeatureGroup) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeScreenLoaded,
+                              properties: [Keys.featureGroup.rawValue: featureGroup.rawValue])
+        }
+
     }
 }
 

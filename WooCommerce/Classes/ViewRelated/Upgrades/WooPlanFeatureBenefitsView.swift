@@ -35,6 +35,9 @@ struct WooPlanFeatureBenefitsView: View {
         }
         .navigationTitle(wooPlanFeatureGroup.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradeFeatureScreenLoaded(featureGroup: .general))
+        }
     }
 
     private enum Layout {

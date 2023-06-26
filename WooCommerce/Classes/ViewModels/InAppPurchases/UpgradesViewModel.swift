@@ -142,6 +142,7 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
+        ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseButtonTapped(planID))
         guard let wooWPComPlan = planCanBePurchasedFromCurrentState() else {
             return
         }

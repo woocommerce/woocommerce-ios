@@ -2423,6 +2423,29 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - In-App Purchases
+extension WooAnalyticsEvent {
+    enum InAppPurchases {
+        enum Keys: String {
+            case productID = "product_ID"
+            case source
+        }
+
+        enum Source: String {
+            case banner
+        }
+        
+        static func planUpgradePurchaseButtonTapped(_ productID: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradePurchaseButtonTapped, properties: [Keys.productID.rawValue: productID])
+        }
+
+        static func planUpgradeScreenLoaded(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeScreenLoaded,
+                              properties: [Keys.source.rawValue: source.rawValue])
+        }
+    }
+}
+
 // MARK: - EU Shipping Notice Banner
 //
 extension WooAnalyticsEvent {

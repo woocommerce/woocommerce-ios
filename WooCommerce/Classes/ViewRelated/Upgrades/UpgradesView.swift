@@ -108,6 +108,9 @@ struct UpgradesView: View {
                 }
             }
             .navigationBarHidden(true)
+            .onAppear {
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.InAppPurchases.planUpgradeScreenLoaded(source: .banner))
+            }
         }
     }
 }

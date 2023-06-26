@@ -30,7 +30,7 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
 }
 
 struct UpgradesView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
 
     @ObservedObject var upgradesViewModel: UpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
@@ -49,7 +49,7 @@ struct UpgradesView: View {
                 VStack {
                     // TODO: Once we remove iOS 15 support, we can do this with .toolbar instead.
                     UpgradeTopBarView(dismiss: {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     })
 
                     CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
@@ -79,7 +79,7 @@ struct UpgradesView: View {
                 case .completed(let plan):
                     CompletedUpgradeView(planName: plan.wooPlan.shortName,
                                          doneAction: {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                         upgradesViewModel.trackDismiss(step: .completed)
                     })
                 case .prePurchaseError(let error):
@@ -102,7 +102,7 @@ struct UpgradesView: View {
                             await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
                         }
                     } secondaryAction: {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                         upgradesViewModel.trackDismiss(step: .purchaseUpgradeError)
                     } getSupportAction: {
                         supportHandler()
@@ -112,7 +112,7 @@ struct UpgradesView: View {
                     PurchaseUpgradeErrorView(error: underlyingError,
                                              primaryAction: nil,
                                              secondaryAction: {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                         upgradesViewModel.trackDismiss(step: .purchaseUpgradeError)
                     },
                                              getSupportAction: supportHandler)

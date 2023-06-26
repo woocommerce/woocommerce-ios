@@ -65,6 +65,8 @@ struct UpgradesView: View {
                         Task {
                             await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
                         }
+                    }, onDismiss: {
+                        upgradesViewModel.trackDismiss(step: .planDetails)
                     })
                 case .purchasing(let plan):
                     OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
@@ -593,6 +595,8 @@ struct OwnerUpgradesView: View {
     @State var isPurchasing = false
     let purchasePlanAction: () -> Void
     @State var isLoading: Bool = false
+    
+    var onDismiss: (() -> Void)?
 
     var body: some View {
         VStack {
@@ -656,6 +660,9 @@ struct OwnerUpgradesView: View {
                 .shimmering(active: isLoading)
             }
             .padding()
+        }
+        .onDisappear {
+            onDismiss?()
         }
     }
 }

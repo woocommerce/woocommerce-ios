@@ -595,7 +595,7 @@ struct OwnerUpgradesView: View {
     @State var isPurchasing = false
     let purchasePlanAction: () -> Void
     @State var isLoading: Bool = false
-    
+
     var onDismiss: (() -> Void)?
 
     var body: some View {

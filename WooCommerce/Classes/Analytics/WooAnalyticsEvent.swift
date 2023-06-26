@@ -2442,7 +2442,7 @@ extension WooAnalyticsEvent {
             case planDetails = "plan_details"
             case prePurchaseError = "pre_purchase_error"
             case purchaseUpgradeError = "purchase_upgrade_error"
-            case completed = "completed"
+            case completed
         }
 
         enum FeatureGroup: String {
@@ -2466,7 +2466,8 @@ extension WooAnalyticsEvent {
         }
 
         static func planUpgradePurchaseButtonTapped(_ productID: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .planUpgradePurchaseButtonTapped, properties: [Keys.productID.rawValue: productID])
+            WooAnalyticsEvent(statName: .planUpgradePurchaseButtonTapped,
+                              properties: [Keys.productID.rawValue: productID])
         }
 
         static func planUpgradeScreenLoaded(source: Source) -> WooAnalyticsEvent {
@@ -2485,9 +2486,9 @@ extension WooAnalyticsEvent {
         }
 
         static func planUpgradePurchaseFailed(error: InAppPurchasesError) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .planUpgradePurchaseFailed, properties: [Keys.error.rawValue: error.rawValue])
+            WooAnalyticsEvent(statName: .planUpgradePurchaseFailed,
+                              properties: [Keys.error.rawValue: error.rawValue])
         }
-
     }
 }
 

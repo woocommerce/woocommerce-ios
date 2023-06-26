@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-19 02:10:05+0000 */
+/* Translation-Revision-Date: 2023-06-22 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -64,6 +64,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ carta che termina %2$@";
+
+/* Value describing the days left on a plan before expiry. Reads as '15 days left' */
+"%1$@ days left" = "%1$@ giorni rimanenti";
 
 /* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
 "%1$@ every %2$@" = "%1$@ ogni %2$@";
@@ -2076,6 +2079,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Data: dal più vecchio al più recente";
 
+/* Label for the text describing days left on a Plan to expire.Reads as 'Days left in plan: 15 days left' */
+"Days left in plan" = "Giorni rimanenti nel piano";
+
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Predefinito";
 
@@ -3060,6 +3066,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to contact support when Jetpack setup fails */
 "Get support" = "Ottieni assistenza";
 
+/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
+"Get the most out of %1$@" = "Ottieni il massimo dallo sconto del %1$@";
+
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "Ottieni il massimo dal tuo negozio";
 
@@ -3122,6 +3131,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dismiss button title in AI product description celebration screen. */
 "Got it" = "OK";
+
+/* Title in AI product description celebration screen. */
+"Great start!" = "Ottimo inizio.";
 
 /* Country option for a site address. */
 "Greece" = "Grecia";
@@ -4559,6 +4571,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Solo il proprietario del sito può gestire i metodi di pagamento dell'etichetta di spedizione. Contatta %1$@ (%2$@) per gestire i metodi di pagamento.";
 
+/* Text describing that only the site owner can upgrade the site's plan. */
+"Only the site owner can manage upgrades" = "Solo il proprietario del sito può gestire gli aggiornamenti";
+
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Ops, si sono verificati alcuni errori imprevisti.";
 
@@ -5016,6 +5031,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "Installa il plugin Jetpack gratuito per accedere al negozio su questa app.";
+
+/* Instructions to review the AI generated description. */
+"Please keep in mind that this product description was generated using our AI-powered tool. Please review and edit the content to ensure it aligns with your brand and messaging." = "Tieni presente che questa descrizione del prodotto è stata generata usando il nostro strumento basato sull'IA. Rivedi e modifica il contenuto per assicurarti che sia in linea con il marchio e il messaggio.";
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Disconnettiti prima di connetterti a un sito WordPress.com differente";
@@ -7787,6 +7805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Impossibile aggiornare il prezzo";
 
+/* Text describing that is not possible to upgrade the site's plan. */
+"Unable to upgrade" = "Impossibile eseguire l'aggiornamento";
+
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Impossibile verificare i Pagamenti di persona per questo negozio";
 
@@ -8440,6 +8461,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title in the product description AI generator view. */
 "Write product description" = "Scrivi la descrizione del prodotto";
 
+/* Action button to generate message on the product sharing message generation screen */
+"Write with AI" = "Scrivi con l'IA";
+
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Account sbagliato?";
 
@@ -8573,6 +8597,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "L'indirizzo del tuo negozio gratuito";
 
+/* Info details for an expired free trial */
+"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "La tua prova gratuita è terminata e hai accesso limitato a tutte le funzionalità. Abbonati ora al piano Woo Express Plan.";
+
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "La tua prova gratuita di Woo Express termina domani (%1$@). Ora è il momento di pensare al tuo futuro: scegli un piano e preparati a crescere.";
 
@@ -8593,6 +8620,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Il telefono sarà pronto per riscuotere i pagamenti in un attimo...";
+
+/* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
+"Your plan" = "Il tuo piano";
 
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "Il lettore si riavvierà automaticamente e si riconnetterà al termine dell'aggiornamento";
@@ -8731,6 +8761,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pagamenti, tocca per pagare, woocommerce, woo, pagamenti di persona, pagamenti di persona riscuoti pagamento, pagamenti, lettore, lettore di carte, ordina lettore di carte";
+
+/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
+"plan ended" = "piano scaduto";
 
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "La privacy è di fondamentale importanza per noi e lo è sempre stata. Usiamo, archiviamo ed elaboriamo i dati personali per ottimizzare la nostra app (e la tua esperienza) in vari modi. Alcuni usi dei dati sono assolutamente necessari per un corretto funzionamento e altri puoi personalizzarli dalle Impostazioni.";

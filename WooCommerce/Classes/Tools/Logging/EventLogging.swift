@@ -33,7 +33,11 @@ struct WCEventLoggingDelegate: EventLoggingDelegate {
     func didQueueLogForUpload(_ log: LogFile) {
         DDLogDebug("📜 Added log to queue: \(log.uuid)")
 
-        DDLogDebug("📜\t There are \(ServiceLocator.crashLogging.queuedLogFileCount) logs in the queue.")
+        // We should not access `ServiceLocator.crashLogging`(Owner of this) in the same runloop because there is a change that it has not yet been initialized
+        // And we will create a run loop by calling it recursively.
+        DispatchQueue.main.async {
+            DDLogDebug("📜\t There are \(ServiceLocator.crashLogging.queuedLogFileCount) logs in the queue.")
+        }
     }
 
     func didStartUploadingLog(_ log: LogFile) {
@@ -42,7 +46,12 @@ struct WCEventLoggingDelegate: EventLoggingDelegate {
 
     func didFinishUploadingLog(_ log: LogFile) {
         DDLogDebug("📜 Finished uploading encrypted log: \(log.uuid)")
-        DDLogDebug("📜\t There are \(ServiceLocator.crashLogging.queuedLogFileCount) logs remaining in the queue.")
+
+        // We should not access `ServiceLocator.crashLogging`(Owner of this) in the same runloop because there is a change that it has not yet been initialized
+        // And we will create a run loop by calling it recursively.
+        DispatchQueue.main.async {
+            DDLogDebug("📜\t There are \(ServiceLocator.crashLogging.queuedLogFileCount) logs remaining in the queue.")
+        }
     }
 
     func uploadFailed(withError error: Error, forLog log: LogFile) {

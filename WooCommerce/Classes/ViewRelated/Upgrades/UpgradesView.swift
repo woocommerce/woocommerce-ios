@@ -49,7 +49,6 @@ struct UpgradesView: View {
                 VStack {
                     // TODO: Once we remove iOS 15 support, we can do this with .toolbar instead.
                     UpgradeTopBarView(dismiss: {
-                        upgradesViewModel.analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: .planDetails))
                         presentationMode.wrappedValue.dismiss()
                     })
 
@@ -75,12 +74,15 @@ struct UpgradesView: View {
                     CompletedUpgradeView(planName: plan.wooPlan.shortName,
                                          doneAction: {
                         presentationMode.wrappedValue.dismiss()
+                        upgradesViewModel.trackDismiss(step: .completed)
                     })
                 case .prePurchaseError(let error):
                     VStack {
                         PrePurchaseUpgradesErrorView(error,
                                                      onRetryButtonTapped: {
                             upgradesViewModel.retryFetch()
+                        }, onDismiss: {
+                            upgradesViewModel.trackDismiss(step: .prePurchaseError)
                         })
                         .padding(.top, Layout.errorViewTopPadding)
                         .padding(.horizontal, Layout.errorViewHorizontalPadding)
@@ -95,6 +97,7 @@ struct UpgradesView: View {
                         }
                     } secondaryAction: {
                         presentationMode.wrappedValue.dismiss()
+                        upgradesViewModel.trackDismiss(step: .purchaseUpgradeError)
                     } getSupportAction: {
                         supportHandler()
                     }
@@ -104,6 +107,7 @@ struct UpgradesView: View {
                                              primaryAction: nil,
                                              secondaryAction: {
                         presentationMode.wrappedValue.dismiss()
+                        upgradesViewModel.trackDismiss(step: .purchaseUpgradeError)
                     },
                                              getSupportAction: supportHandler)
                 }
@@ -121,10 +125,16 @@ struct PrePurchaseUpgradesErrorView: View {
     ///
     var onRetryButtonTapped: (() -> Void)
 
+    /// Closure invoked when the view is dismissed
+    ///
+    var onDismiss: (() -> Void)
+
     init(_ error: PrePurchaseError,
-         onRetryButtonTapped: @escaping (() -> Void)) {
+         onRetryButtonTapped: @escaping (() -> Void),
+         onDismiss: @escaping (() -> Void)) {
         self.error = error
         self.onRetryButtonTapped = onRetryButtonTapped
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -181,6 +191,9 @@ struct PrePurchaseUpgradesErrorView: View {
         .background {
             RoundedRectangle(cornerSize: .init(width: Layout.cornerRadius, height: Layout.cornerRadius))
                 .fill(Color(.secondarySystemGroupedBackground))
+        }
+        .onDisappear {
+            onDismiss()
         }
     }
 

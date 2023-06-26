@@ -50,7 +50,7 @@ final class UpgradesViewModel: ObservableObject {
 
     private let localPlans: [WooPlan]
 
-    let analytics: Analytics
+    private let analytics: Analytics
 
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
@@ -283,6 +283,12 @@ private extension UpgradesViewModel {
             upgradeViewState = .prePurchaseError(.entitlementsError)
             analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .entitlementsError))
         }
+    }
+}
+
+extension UpgradesViewModel {
+    func trackDismiss(step: WooAnalyticsEvent.InAppPurchases.Step) {
+        analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: step))
     }
 }
 

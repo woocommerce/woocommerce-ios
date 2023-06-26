@@ -20,7 +20,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     // the action returned will be for:
     //
     // 1. deleting all orders
-    // 2. fetching the filtered list
+    // 2. fetching the filtered list (any date modified)
     //
     func test_pulling_to_refresh_on_filtered_list_it_deletes_and_performs_fetch() {
         // Arrange
@@ -32,20 +32,23 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
                                        pageSize: pageSize,
                                        reason: .pullToRefresh,
+                                       lastFullSyncTimestamp: Date(),
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertTrue(deleteAllBeforeSaving)
         XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
+        XCTAssertNil(modifiedAfter)
     }
 
     // Test that when fetching the first page of a filtered list for reasons
-    // other than pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be the filtered list.
+    // other than pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be the filtered list,
+    // and only for orders modified after the last full sync.
     //
     func test_first_page_load_on_filtered_list_with_non_pull_to_refresh_reasons_will_only_perform_fetch() {
         // Arrange
@@ -54,25 +57,28 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                                  filters: filters)
 
         // Act
+        let lastSyncDate = Date()
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
                                        pageSize: pageSize,
                                        reason: nil,
+                                       lastFullSyncTimestamp: lastSyncDate,
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertFalse(deleteAllBeforeSaving)
         XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
+        XCTAssertEqual(modifiedAfter, lastSyncDate)
     }
 
     // Test that when pulling to refresh, the action returned will be for:
     //
     // 1. Deleting all the orders
-    // 2. Fetching the first page of all orders (any status)
+    // 2. Fetching the first page of all orders (any status, any date modified)
     //
     func test_pulling_to_refresh_on_all_orders_list_deletes_and_fetches_first_page_of_all_orders_only() {
         // Arrange
@@ -83,20 +89,22 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
                                        pageSize: pageSize,
                                        reason: .pullToRefresh,
+                                       lastFullSyncTimestamp: Date(),
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertTrue(deleteAllBeforeSaving)
         XCTAssertNil(statuses?.first)
+        XCTAssertNil(modifiedAfter)
     }
 
     // Test when fetching the first page of order list for reasons other than
-    // pull-to-refresh (e.g. `viewWillAppear`), the action should return all the orders.
+    // pull-to-refresh (e.g. `viewWillAppear`), the action should return all the orders modified after the last sync.
     //
     func test_first_page_load_with_non_pull_to_refresh_reasons_will_only_perform_single_fetch() {
         // Arrange
@@ -104,19 +112,22 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                                  filters: nil)
 
         // Act
+        let lastSyncDate = Date()
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
                                        pageSize: pageSize,
                                        reason: nil,
+                                       lastFullSyncTimestamp: lastSyncDate,
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
         XCTAssertFalse(deleteAllBeforeSaving)
         XCTAssertNil(statuses?.first)
+        XCTAssertEqual(modifiedAfter, lastSyncDate)
     }
 
     func test_subsequent_page_loads_on_filtered_list_will_fetch_the_given_page_on_that_list() {
@@ -129,6 +140,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex + 3,
                                        pageSize: pageSize,
                                        reason: nil,
+                                       lastFullSyncTimestamp: nil,
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
@@ -151,6 +163,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex + 5,
                                        pageSize: pageSize,
                                        reason: nil,
+                                       lastFullSyncTimestamp: nil,
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
@@ -180,6 +193,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
                                        pageSize: pageSize,
                                        reason: .newFiltersApplied,
+                                       lastFullSyncTimestamp: nil,
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert

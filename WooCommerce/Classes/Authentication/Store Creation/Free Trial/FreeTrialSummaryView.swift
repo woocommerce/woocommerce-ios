@@ -4,7 +4,7 @@ import UIKit
 /// Hosting controller to interact with UIKit.
 ///
 final class FreeTrialSummaryHostingController: UIHostingController<FreeTrialSummaryView> {
-    init(onClose: (() -> ())? = nil, onContinue: (() -> ())? = nil) {
+    init(onClose: (() -> ())? = nil, onContinue: (() async -> ())? = nil) {
         super.init(rootView: FreeTrialSummaryView(onClose: onClose, onContinue: onContinue))
         modalPresentationStyle = .fullScreen
     }
@@ -24,7 +24,9 @@ struct FreeTrialSummaryView: View {
 
     /// Closure invoked when the "Try For Free"  button is pressed
     ///
-    let onContinue: (() -> ())?
+    let onContinue: (() async -> ())?
+
+    @State private var isWaitingToContinue: Bool = false
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -97,11 +99,15 @@ struct FreeTrialSummaryView: View {
                 Divider()
 
                 Button {
-                    onContinue?()
+                    Task { @MainActor in
+                        isWaitingToContinue = true
+                        await onContinue?()
+                        isWaitingToContinue = false
+                    }
                 } label: {
                     Text(Localization.tryItForFree)
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWaitingToContinue))
                 .padding()
 
                 Text(Localization.noCardRequired)

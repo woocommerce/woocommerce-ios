@@ -1,12 +1,19 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+14.3
+-----
+
+
 14.2
 -----
+- [Internal] Blaze status check was updated to save an API request. The Blaze eligibility for each site should remain the same. [https://github.com/woocommerce/woocommerce-ios/pull/10020]
+- [*] Fixed the unusable state of the app when the default store runs on an expired free trial plan. [https://github.com/woocommerce/woocommerce-ios/pull/10059]
 - [Internal] Performance: When loading the refunds on an order (e.g. in order details), we now only request them from remote if they are not already in local storage. [https://github.com/woocommerce/woocommerce-ios/pull/10039]
 - [*] Orders: Users can can now add coupons to orders [https://github.com/woocommerce/woocommerce-ios/pull/10035]
 - [*] Coupons: The Coupons Management feature is fully released and not in Beta anymore [https://github.com/woocommerce/woocommerce-ios/pull/10032]
-- [*] Store creation: the progress view copy was updated to inform the merchants that it can take a few minutes for the store to be ready. [https://github.com/woocommerce/woocommerce-ios/pull/10047]
+- [*] Store creation: the progress view copy was updated to inform the merchants that it can take a few minutes for the store to be ready. The progress view is now only shown after necessary requests are made before the app is likely backgrounded. The error handling is also polished.  [https://github.com/woocommerce/woocommerce-ios/pull/10047, https://github.com/woocommerce/woocommerce-ios/pull/10069]
 - [Internal] Performance: When loading a single order (e.g. in order details), we now load the order from storage unless it has been modified remotely. [https://github.com/woocommerce/woocommerce-ios/pull/10036]
+- [Internal] Performance: When the Orders tab is opened, we now only sync orders that have been created or modified since the last successful sync. [https://github.com/woocommerce/woocommerce-ios/pull/10065]
 - [Internal] App size: Replaced 30MB PDFs on Store Creation waiting screen with ~400KB PNGs - to assess impact on app bundle size. [https://github.com/woocommerce/woocommerce-ios/pull/10067]
 
 14.1

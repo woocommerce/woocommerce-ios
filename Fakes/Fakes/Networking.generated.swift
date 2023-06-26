@@ -1674,7 +1674,9 @@ extension Networking.Site {
             jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
             gmtOffset: .fake(),
-            isPublic: .fake()
+            isPublic: .fake(),
+            canBlaze: .fake(),
+            isAdmin: .fake()
         )
     }
 }

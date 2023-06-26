@@ -51,6 +51,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var universalLinkRouter: UniversalLinkRouter?
 
+    private lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
+
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -197,7 +199,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
 
-        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+        requirementsChecker.checkEligibilityForDefaultStore()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -514,7 +516,7 @@ extension AppDelegate {
     ///
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
-        RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+        requirementsChecker.checkEligibilityForDefaultStore()
     }
 }
 

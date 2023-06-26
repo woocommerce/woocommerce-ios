@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-19 05:23:40+0000 */
+/* Translation-Revision-Date: 2023-06-22 22:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -3066,6 +3066,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to contact support when Jetpack setup fails */
 "Get support" = "Skaffa support";
 
+/* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
+"Get the most out of %1$@" = "Få ut det mesta möjliga av %1$@";
+
 /* Title of the Jetpack benefits view. */
 "Get the most out of your store" = "Få ut så mycket som möjligt av din butik";
 
@@ -4568,6 +4571,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Det är bara webbplatsens ägare som kan hantera betalningsmetoderna för fraktetiketter. Kontakta %1$@ (%2$@) för att hantera betalningsmetoder.";
 
+/* Text describing that only the site owner can upgrade the site's plan. */
+"Only the site owner can manage upgrades" = "Det är bara webbplatsägaren som kan hantera uppgraderingar";
+
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Hoppsan, det uppstod några oväntade fel.";
 
@@ -5025,6 +5031,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message on the Jetpack setup required screen. */
 "Please install the free Jetpack plugin to access your store on this app." = "Installera det kostnadsfria Jetpack-tillägget för att komma åt din butik med den här appen.";
+
+/* Instructions to review the AI generated description. */
+"Please keep in mind that this product description was generated using our AI-powered tool. Please review and edit the content to ensure it aligns with your brand and messaging." = "Tänk på att den här produktbeskrivningen har genererats med vårt AI-drivna verktyg. Granska och redigera innehållet för att säkerställa att det överensstämmer med ditt varumärke och ditt budskap.";
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Logga ut innan du ansluter till någon annan webbplats på wordpress.com";
@@ -8588,6 +8597,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "Din kostnadsfria butiksadress";
 
+/* Info details for an expired free trial */
+"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "Din kostnadsfria provperiod har avslutats och du har begränsad tillgång till alla funktioner. Prenumerera på Woo Express-paketet nu.";
+
 /* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
 "Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Din kostnadsfria Woo Express-provperiod löper ut imorgon (%1$@). Det är dags att ta kontroll över din framtid – välj ett paket och gör dig redo att börja växa.";
 
@@ -8749,6 +8761,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalningar, tryck för att betala, woocommerce, woo, personliga betalningar, ta emot personliga betalningar, betalningar, läsare, kortläsare, beställ kortläsare";
+
+/* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
+"plan ended" = "paketet har avslutats";
 
 /* Subtitle for the privacy banner */
 "privacy_banner_subtitle" = "Din integritet är och har alltid varit avgörande för oss. Vi använder, lagrar och behandlar dina personuppgifter för att optimera vår app (och din upplevelse) på en rad olika sätt. Vissa användningsområden för dina data är absolut nödvändiga för att få saker att fungera, andra kan du anpassa i dina inställningar.";

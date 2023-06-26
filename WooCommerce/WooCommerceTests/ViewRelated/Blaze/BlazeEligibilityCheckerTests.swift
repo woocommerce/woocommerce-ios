@@ -22,9 +22,8 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
     func test_isEligible_is_true_when_authenticated_with_wpcom_and_feature_flag_enabled_and_blaze_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
-        mockDefaultSite()
+        mockDefaultSite(isEligibleForBlaze: true)
         mockRemoteFeatureFlag(isEnabled: true)
-        mockBlazeStatus(result: .success(true))
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
@@ -36,7 +35,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
 
     func test_isEligible_is_false_when_authenticated_without_wpcom() async {
         // Given
-        mockDefaultSite()
+        mockDefaultSite(isEligibleForBlaze: true)
         let nonWPCOMCredentialsValues: [Credentials] = [
             .applicationPassword(username: "", password: "", siteAddress: ""),
             .wporg(username: "", password: "", siteAddress: "")
@@ -57,7 +56,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
     func test_isEligible_is_false_when_remote_feature_is_disabled() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
-        mockDefaultSite()
+        mockDefaultSite(isEligibleForBlaze: true)
         mockRemoteFeatureFlag(isEnabled: false)
         let checker = BlazeEligibilityChecker(stores: stores)
 
@@ -71,9 +70,22 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
     func test_isEligible_is_false_when_blaze_is_not_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
-        mockDefaultSite()
+        mockDefaultSite(isEligibleForBlaze: false)
         mockRemoteFeatureFlag(isEnabled: true)
-        mockBlazeStatus(result: .success(false))
+        let checker = BlazeEligibilityChecker(stores: stores)
+
+        // When
+        let isEligible = await checker.isSiteEligible()
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isEligible_is_false_when_site_user_is_not_admin() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockDefaultSite(isEligibleForBlaze: true, isAdmin: false)
+        mockRemoteFeatureFlag(isEnabled: true)
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
@@ -88,9 +100,8 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
     func test_isProductEligible_is_true_when_wpcom_auth_and_feature_flag_enabled_and_blaze_approved_and_product_public_without_password() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
-        mockDefaultSite()
+        mockDefaultSite(isEligibleForBlaze: true)
         mockRemoteFeatureFlag(isEnabled: true)
-        mockBlazeStatus(result: .success(true))
         let checker = BlazeEligibilityChecker(stores: stores)
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
 
@@ -166,8 +177,8 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
     func test_isProductEligible_is_false_when_blaze_is_not_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        mockDefaultSite(isEligibleForBlaze: false)
         mockRemoteFeatureFlag(isEnabled: true)
-        mockBlazeStatus(result: .success(false))
         let checker = BlazeEligibilityChecker(stores: stores)
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
 
@@ -180,18 +191,11 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
 }
 
 private extension BlazeEligibilityCheckerTests {
-    func mockDefaultSite() {
+    func mockDefaultSite(isEligibleForBlaze: Bool, isAdmin: Bool = true) {
         stores.updateDefaultStore(storeID: 134)
-        stores.updateDefaultStore(.fake().copy(siteID: 134))
-    }
-
-    func mockBlazeStatus(result: Result<Bool, Error>) {
-        stores.whenReceivingAction(ofType: SiteAction.self) { action in
-            guard case let .loadBlazeStatus(_, completion) = action else {
-                return XCTFail()
-            }
-            completion(result)
-        }
+        stores.updateDefaultStore(.fake().copy(siteID: 134,
+                                               canBlaze: isEligibleForBlaze,
+                                               isAdmin: isAdmin))
     }
 
     func mockRemoteFeatureFlag(isEnabled: Bool) {

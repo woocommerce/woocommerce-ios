@@ -55,6 +55,7 @@ struct OrderListSyncActionUseCase {
     func actionFor(pageNumber: Int,
                    pageSize: Int,
                    reason: SyncReason?,
+                   lastFullSyncTimestamp: Date?,
                    completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let statuses = (filters?.orderStatus ?? []).map { $0.rawValue }
         let startDate = filters?.dateRange?.computedStartDate
@@ -62,12 +63,14 @@ struct OrderListSyncActionUseCase {
 
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh || reason == SyncReason.newFiltersApplied
+            let modifiedAfter = deleteAllBeforeSaving ? nil : lastFullSyncTimestamp
 
             return OrderAction.fetchFilteredOrders(
                 siteID: siteID,
                 statuses: statuses,
                 after: startDate,
                 before: endDate,
+                modifiedAfter: modifiedAfter,
                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                 pageSize: pageSize,
                 onCompletion: completionHandler

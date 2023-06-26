@@ -90,12 +90,22 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     let featureFlagService: FeatureFlagService
 
+    /// Tracks if the component has been initialized.
+    ///
+    private var hasBeenInitialized = false
+
     init(featureFlagService: FeatureFlagService) {
         self.featureFlagService = featureFlagService
 
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .defaultAccountWasUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .logOutEventReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .StoresManagerDidUpdateDefaultSite, object: nil)
+
+        /// Marks the component as initialized in the next run loop.
+        ///
+        DispatchQueue.main.async {
+            self.hasBeenInitialized = true
+        }
     }
 
     var userHasOptedOut: Bool {
@@ -105,6 +115,35 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
     var currentUser: TracksUser? {
         guard !appIsCrashing else {
             return nil
+        }
+
+        /// Avoids to access `ServiceLocator.stores` if the component has not been initialized to avoid a deadlock.
+        /// Here are two ways we have identified the deadlock can happen.
+        ///
+        /// It is safe to access `SessionManager.standard.defaultAccountID` and `SessionManager.standard.anonymousUserID`
+        /// as they are backed up by `UserDefaults` and don't have internal dependencies.
+        ///
+        ///  -------------------------------------------------------------
+        ///
+        /// - `ServiceLocated.stores` is invoked when the app starts.
+        /// - It calls `ServiceLocator.storageManager` when restoring the auth state for a user.
+        /// - `StorageManager` has `WooCrashLoggingStack` as a dependency which initializes the `Sentry` SDK.
+        /// - When the `Sentry` SDK detects that there are queued crashes to be sent it tries to send them immediately, before sending those crashes,
+        ///   `Sentry` calls a `currentUser` delegate (this computed variable) to properly identity the crashes.
+        /// - The delegate accesses `ServiceLocator.stores` which causes a deadlock.
+        ///
+        ///   -------------------------------------------------------------
+        ///
+        /// - `ServiceLocated.stores` is invoked when the app starts.
+        /// - It calls `ServiceLocator.storageManager` when restoring the auth state for a user.
+        /// - If `ServiceLocator.storageManager` fails to load or migrate its DB it will log a message using the `WooCrashLoggingStack`
+        /// - `WooCrashLoggingStack`  initializes the `Sentry` SDK to log the message.
+        /// - `Sentry` calls a `currentUser` delegate(this computed variable) to properly identity the messages.
+        /// - The delegate accesses `ServiceLocator.stores` which causes a deadlock.
+        ///
+        guard hasBeenInitialized else {
+            let bestGuessedID = SessionManager.standard.defaultAccountID.map { "\($0)" } ?? SessionManager.standard.anonymousUserID
+            return TracksUser(userID: bestGuessedID, email: nil, username: nil)
         }
 
         guard let account = ServiceLocator.stores.sessionManager.defaultAccount else {

@@ -503,6 +503,35 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(containsJCPSites)
     }
 
+    /// Verifies that `synchronizeSites` effectively persists a site with Blaze properties from the remote.
+    ///
+    func test_synchronizeSites_effectively_persists_site_with_blaze_properties() throws {
+        // Given
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([
+            Site.fake().copy(siteID: 134, canBlaze: true, isAdmin: true)
+        ])
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadSites])
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
+        let site = try XCTUnwrap(viewStorage.loadSite(siteID: 134))
+        XCTAssertTrue(site.canBlaze)
+        XCTAssertTrue(site.isAdmin)
+    }
+
     // MARK: - AccountAction.synchronizeSitesAndReturnSelectedSiteInfo
 
     func test_synchronizeSitesAndReturnSelectedSiteInfo_effectively_persists_retrieved_sites_and_returns_the_matching_site() throws {

@@ -56,8 +56,6 @@ public final class SiteStore: Store {
             enableFreeTrial(siteID: siteID, profilerData: profilerData, completion: completion)
         case let .syncSite(siteID, completion):
             syncSite(siteID: siteID, completion: completion)
-        case let .loadBlazeStatus(siteID, completion):
-            loadBlazeStatus(siteID: siteID, completion: completion)
         }
     }
 }
@@ -117,17 +115,6 @@ private extension SiteStore {
                     return completion(.failure(SynchronizeSiteError.unknownSite))
                 }
                 completion(.success(syncedSite))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-    }
-
-    func loadBlazeStatus(siteID: Int64, completion: @escaping (Result<Bool, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let isApproved = try await remote.loadBlazeStatus(siteID: siteID)
-                completion(.success(isApproved))
             } catch {
                 completion(.failure(error))
             }

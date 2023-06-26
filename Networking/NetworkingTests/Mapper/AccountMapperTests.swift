@@ -46,6 +46,8 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(first.siteTimezone, TimeZone(secondsFromGMT: 12600))
         XCTAssertEqual(first.jetpackConnectionActivePlugins, [])
         XCTAssertEqual(first.isPublic, true)
+        XCTAssertEqual(first.canBlaze, true)
+        XCTAssertEqual(first.isAdmin, true)
 
         // The second site is a Jetpack CP site (connected to Jetpack without Jetpack-the-plugin).
         let second = sites!.last!
@@ -66,6 +68,8 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(second.siteTimezone, TimeZone(secondsFromGMT: -14400))
         XCTAssertEqual(second.jetpackConnectionActivePlugins, ["jetpack", "woocommerce-payments"])
         XCTAssertEqual(second.isPublic, false)
+        XCTAssertEqual(second.canBlaze, false)
+        XCTAssertEqual(second.isAdmin, false)
     }
 
     /// Verifies that the Plan field for Site is properly parsed.

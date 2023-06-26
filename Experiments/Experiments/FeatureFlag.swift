@@ -168,10 +168,6 @@ public enum FeatureFlag: Int {
     ///
     case compositeProducts
 
-    /// Enables UK-based stores taking In-Person Payments
-    ///
-    case IPPUKExpansion
-
     /// Enables read-only support for the Subscriptions extension in product and order details
     ///
     case readOnlySubscriptions

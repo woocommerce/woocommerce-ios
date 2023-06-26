@@ -295,7 +295,7 @@ private extension UpgradeViewState {
         case .loaded:
             return .planDetails
         case .waiting:
-            return .waiting
+            return .processing
         case .completed:
             return .completed
         case .prePurchaseError:

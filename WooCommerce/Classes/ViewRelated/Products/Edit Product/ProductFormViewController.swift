@@ -615,8 +615,8 @@ private extension ProductFormViewController {
     }
 
     func configureTooltipPresenter() {
-        if let tooltip = tooltipPresenter?.tooltip {
-            tooltip.removeFromSuperview()
+        if let tooltipPresenter {
+            tooltipPresenter.removeTooltip()
             self.tooltipPresenter = nil
         }
 

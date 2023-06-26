@@ -3,6 +3,7 @@
 14.3
 -----
 - [*] SKU Scanner: Add the SKU to the error message after a failure. [https://github.com/woocommerce/woocommerce-ios/pull/10085]
+- [*] Add URL route handler to open the `My Store` tab when a deeplink to `/mobile` is opened, instead of bouncing back to Safari [https://github.com/woocommerce/woocommerce-ios/pull/10077]
 
 14.2
 -----

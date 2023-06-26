@@ -77,8 +77,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .compositeProducts:
             return true
-        case .IPPUKExpansion:
-            return true
         case .readOnlySubscriptions:
             return true
         case .productDescriptionAI:

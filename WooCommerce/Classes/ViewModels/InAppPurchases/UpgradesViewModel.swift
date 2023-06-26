@@ -124,6 +124,7 @@ final class UpgradesViewModel: ObservableObject {
                 return
             }
             upgradeViewState = .loaded(plan)
+            analytics.track(.planUpgradeScreenLoaded)
         } catch {
             DDLogError("fetchPlans \(error)")
             upgradeViewState = .prePurchaseError(.fetchError)
@@ -157,7 +158,6 @@ final class UpgradesViewModel: ObservableObject {
         }
 
         upgradeViewState = .purchasing(wooWPComPlan)
-        analytics.track(.planUpgradeScreenLoaded)
 
         observeInAppPurchaseDrawerDismissal { [weak self] in
             /// The drawer gets dismissed when the IAP is cancelled too. That gets dealt with in the `do-catch`

@@ -109,9 +109,6 @@ struct UpgradesView: View {
                 }
             }
             .navigationBarHidden(true)
-            .onAppear {
-                upgradesViewModel.analytics.track(event: WooAnalyticsEvent.InAppPurchases.planUpgradeScreenLoaded(source: .banner))
-            }
         }
     }
 }

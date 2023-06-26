@@ -2453,7 +2453,7 @@ extension WooAnalyticsEvent {
             case marketing
             case shipping
         }
-        
+
         enum InAppPurchasesError: String {
             case fetchError
             case entitlementsError

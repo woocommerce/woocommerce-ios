@@ -148,6 +148,7 @@ final class UpgradesViewModel: ObservableObject {
         }
 
         upgradeViewState = .purchasing(wooWPComPlan)
+        ServiceLocator.analytics.track(.planUpgradeScreenLoaded)
 
         observeInAppPurchaseDrawerDismissal { [weak self] in
             /// The drawer gets dismissed when the IAP is cancelled too. That gets dealt with in the `do-catch`
@@ -170,8 +171,10 @@ final class UpgradesViewModel: ObservableObject {
             switch result {
             case .userCancelled:
                 upgradeViewState = .loaded(wooWPComPlan)
+                ServiceLocator.analytics.track(.planUpgradeProcessingScreenDismissed)
             case .success(.verified(_)):
                 upgradeViewState = .completed(wooWPComPlan)
+                ServiceLocator.analytics.track(.planUpgradeCompletedScreenLoaded)
             default:
                 // TODO: handle `pending` here... somehow – requires research
                 // TODO: handle `.success(.unverified(_))` here... somehow

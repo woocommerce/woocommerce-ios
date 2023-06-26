@@ -2429,10 +2429,18 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case productID = "product_ID"
             case source
+            case step
         }
 
         enum Source: String {
             case banner
+        }
+        
+        enum Step: String {
+            case planDetails = "plan_details"
+            case prePurchaseError = "pre_purchase_error"
+            case purchaseUpgradeError = "purchase_upgrade_error"
+            case completed = "completed"
         }
         
         static func planUpgradePurchaseButtonTapped(_ productID: String) -> WooAnalyticsEvent {
@@ -2442,6 +2450,11 @@ extension WooAnalyticsEvent {
         static func planUpgradeScreenLoaded(source: Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .planUpgradeScreenLoaded,
                               properties: [Keys.source.rawValue: source.rawValue])
+        }
+        
+        static func planUpgradeScreenDismissed(step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeScreenDismissed,
+                              properties: [Keys.step.rawValue: step.rawValue])
         }
     }
 }

@@ -939,6 +939,7 @@ public enum WooAnalyticsStat: String {
     // MARK: In-App Purchases
     case planUpgradePurchaseButtonTapped = "plan_upgrade_purchase_button_tapped"
     case planUpgradeScreenLoaded = "plan_upgrade_screen_loaded"
+    case planUpgradeScreenDismissed = "plan_upgrade_screen_dismissed"
     // MARK: Application password authorization in web view
     case applicationPasswordAuthorizationButtonTapped = "application_password_authorization_button_tapped"
     case applicationPasswordAuthorizationWebViewShown = "application_password_authorization_web_view_shown"

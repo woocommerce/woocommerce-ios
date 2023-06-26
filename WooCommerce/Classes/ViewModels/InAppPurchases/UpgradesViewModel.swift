@@ -67,6 +67,7 @@ final class UpgradesViewModel: ObservableObject {
 
         if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
+            ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .userNotAllowedToUpgrade))
         } else {
             Task {
                 await fetchViewData()
@@ -96,6 +97,7 @@ final class UpgradesViewModel: ObservableObject {
         do {
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 upgradeViewState = .prePurchaseError(.inAppPurchasesNotSupported)
+                ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .inAppPurchasesNotSupported))
                 return
             }
 
@@ -105,6 +107,7 @@ final class UpgradesViewModel: ObservableObject {
             try await loadUserEntitlements(for: wpcomPlans)
             guard entitledWpcomPlanIDs.isEmpty else {
                 upgradeViewState = .prePurchaseError(.maximumSitesUpgraded)
+                ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .maximumSitesUpgraded))
                 return
             }
 
@@ -113,12 +116,14 @@ final class UpgradesViewModel: ObservableObject {
                                                                       hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
             else {
                 upgradeViewState = .prePurchaseError(.fetchError)
+                ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .fetchError))
                 return
             }
             upgradeViewState = .loaded(plan)
         } catch {
             DDLogError("fetchPlans \(error)")
             upgradeViewState = .prePurchaseError(.fetchError)
+            ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .fetchError))
         }
     }
 
@@ -185,6 +190,7 @@ final class UpgradesViewModel: ObservableObject {
             stopObservingInAppPurchaseDrawerDismissal()
             guard let recognisedError = error as? InAppPurchaseStore.Errors else {
                 upgradeViewState = .purchaseUpgradeError(.unknown)
+                ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .unknown))
                 return
             }
 
@@ -271,6 +277,7 @@ private extension UpgradesViewModel {
         } catch {
             DDLogError("loadEntitlements \(error)")
             upgradeViewState = .prePurchaseError(.entitlementsError)
+            ServiceLocator.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: .entitlementsError))
         }
     }
 }

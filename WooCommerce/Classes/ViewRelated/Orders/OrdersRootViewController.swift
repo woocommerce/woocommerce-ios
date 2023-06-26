@@ -224,7 +224,7 @@ final class OrdersRootViewController: UIViewController {
                                                                                     addedVia: .scanning))
                     self.presentOrderCreationFlowWithScannedProduct(product)
                 case let .failure(error):
-                    self.displayScannedProductErrorNotice(error)
+                    self.displayScannedProductErrorNotice(error, code: scannedBarcode)
                 }
             }
         }, onPermissionsDenied: { [weak self] in
@@ -252,8 +252,8 @@ final class OrdersRootViewController: UIViewController {
 
     /// Presents an Error notice
     ///
-    private func displayScannedProductErrorNotice(_ error: Error) {
-        let notice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error) { [weak self] in
+    private func displayScannedProductErrorNotice(_ error: Error, code: ScannedBarcode) {
+        let notice = BarcodeSKUScannerErrorNoticeFactory.notice(for: error, code: code) { [weak self] in
             self?.presentOrderCreationFlowByProductScanning()
         }
 

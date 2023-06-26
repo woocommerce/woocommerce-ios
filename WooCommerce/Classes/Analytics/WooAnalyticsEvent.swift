@@ -2445,15 +2445,6 @@ extension WooAnalyticsEvent {
             case completed
         }
 
-        enum FeatureGroup: String {
-            case general
-            case payments
-            case productManagement = "product_management"
-            case themes
-            case marketing
-            case shipping
-        }
-
         enum InAppPurchasesError: String {
             case fetchError
             case entitlementsError
@@ -2480,9 +2471,9 @@ extension WooAnalyticsEvent {
                               properties: [Keys.step.rawValue: step.rawValue])
         }
 
-        static func planUpgradeFeatureScreenLoaded(featureGroup: FeatureGroup) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .planUpgradeScreenLoaded,
-                              properties: [Keys.featureGroup.rawValue: featureGroup.rawValue])
+        static func planUpgradeFeatureScreenLoaded(featureGroup: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeFeatureScreenLoaded,
+                              properties: [Keys.featureGroup.rawValue: featureGroup])
         }
 
         static func planUpgradePurchaseFailed(error: InAppPurchasesError) -> WooAnalyticsEvent {

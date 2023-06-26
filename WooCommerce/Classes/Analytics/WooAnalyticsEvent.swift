@@ -2442,6 +2442,7 @@ extension WooAnalyticsEvent {
             case planDetails = "plan_details"
             case prePurchaseError = "pre_purchase_error"
             case purchaseUpgradeError = "purchase_upgrade_error"
+            case waiting
             case completed
         }
 

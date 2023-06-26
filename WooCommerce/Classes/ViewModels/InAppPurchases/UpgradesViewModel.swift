@@ -180,7 +180,6 @@ final class UpgradesViewModel: ObservableObject {
             switch result {
             case .userCancelled:
                 upgradeViewState = .loaded(wooWPComPlan)
-                analytics.track(.planUpgradeProcessingScreenDismissed)
             case .success(.verified(_)):
                 upgradeViewState = .completed(wooWPComPlan)
                 analytics.track(.planUpgradeCompletedScreenLoaded)
@@ -262,6 +261,32 @@ final class UpgradesViewModel: ObservableObject {
                             wooPlan: wooPlan,
                             hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
     }
+
+    func onDisappear() {
+        guard let stepTracked = upgradeViewState.analyticsStep else {
+            return
+        }
+        analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: stepTracked))
+    }
+}
+
+private extension UpgradeViewState {
+    var analyticsStep: WooAnalyticsEvent.InAppPurchases.Step? {
+        switch self {
+        case .loading, .purchasing:
+            return nil
+        case .loaded:
+            return .planDetails
+        case .waiting:
+            return .waiting
+        case .completed:
+            return .completed
+        case .prePurchaseError:
+            return .prePurchaseError
+        case .purchaseUpgradeError:
+            return .purchaseUpgradeError
+        }
+    }
 }
 
 private extension UpgradesViewModel {
@@ -287,10 +312,6 @@ private extension UpgradesViewModel {
 }
 
 extension UpgradesViewModel {
-    func trackDismiss(step: WooAnalyticsEvent.InAppPurchases.Step) {
-        analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: step))
-    }
-
     func track(_ stat: WooAnalyticsStat) {
         analytics.track(stat)
     }

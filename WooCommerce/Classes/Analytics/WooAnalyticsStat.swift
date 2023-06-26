@@ -942,7 +942,6 @@ public enum WooAnalyticsStat: String {
     case planUpgradeScreenDismissed = "plan_upgrade_screen_dismissed"
     case planUpgradeFeatureScreenLoaded = "plan_upgrade_feature_screen_loaded"
     case planUpgradeProcessingScreenLoaded = "plan_upgrade_processing_screen_loaded"
-    case planUpgradeProcessingScreenDismissed = "plan_upgrade_processing_screen_dismissed"
     case planUpgradeCompletedScreenLoaded = "plan_upgrade_completed_screen_loaded"
     case planUpgradePurchaseFailed = "plan_upgrade_purchase_failed"
 

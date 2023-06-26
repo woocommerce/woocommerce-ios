@@ -65,30 +65,23 @@ struct UpgradesView: View {
                         Task {
                             await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
                         }
-                    }, onDismiss: {
-                        upgradesViewModel.trackDismiss(step: .planDetails)
                     })
                 case .purchasing(let plan):
                     OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
                 case .waiting(let plan):
                     UpgradeWaitingView(planName: plan.wooPlan.shortName, onViewLoaded: {
                         upgradesViewModel.track(.planUpgradeProcessingScreenLoaded)
-                    }, onViewDismissed: {
-                        upgradesViewModel.track(.planUpgradeProcessingScreenDismissed)
                     })
                 case .completed(let plan):
                     CompletedUpgradeView(planName: plan.wooPlan.shortName,
                                          doneAction: {
                         dismiss()
-                        upgradesViewModel.trackDismiss(step: .completed)
                     })
                 case .prePurchaseError(let error):
                     VStack {
                         PrePurchaseUpgradesErrorView(error,
                                                      onRetryButtonTapped: {
                             upgradesViewModel.retryFetch()
-                        }, onDismiss: {
-                            upgradesViewModel.trackDismiss(step: .prePurchaseError)
                         })
                         .padding(.top, Layout.errorViewTopPadding)
                         .padding(.horizontal, Layout.errorViewHorizontalPadding)
@@ -103,7 +96,6 @@ struct UpgradesView: View {
                         }
                     } secondaryAction: {
                         dismiss()
-                        upgradesViewModel.trackDismiss(step: .purchaseUpgradeError)
                     } getSupportAction: {
                         supportHandler()
                     }
@@ -113,12 +105,14 @@ struct UpgradesView: View {
                                              primaryAction: nil,
                                              secondaryAction: {
                         dismiss()
-                        upgradesViewModel.trackDismiss(step: .purchaseUpgradeError)
                     },
                                              getSupportAction: supportHandler)
                 }
             }
             .navigationBarHidden(true)
+        }
+        .onDisappear {
+            upgradesViewModel.onDisappear()
         }
     }
 }
@@ -131,16 +125,10 @@ struct PrePurchaseUpgradesErrorView: View {
     ///
     var onRetryButtonTapped: (() -> Void)
 
-    /// Closure invoked when the view is dismissed
-    ///
-    var onDismiss: (() -> Void)
-
     init(_ error: PrePurchaseError,
-         onRetryButtonTapped: @escaping (() -> Void),
-         onDismiss: @escaping (() -> Void)) {
+         onRetryButtonTapped: @escaping (() -> Void)) {
         self.error = error
         self.onRetryButtonTapped = onRetryButtonTapped
-        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -197,9 +185,6 @@ struct PrePurchaseUpgradesErrorView: View {
         .background {
             RoundedRectangle(cornerSize: .init(width: Layout.cornerRadius, height: Layout.cornerRadius))
                 .fill(Color(.secondarySystemGroupedBackground))
-        }
-        .onDisappear {
-            onDismiss()
         }
     }
 
@@ -459,7 +444,6 @@ private extension PurchaseUpgradeError {
 struct UpgradeWaitingView: View {
     let planName: String
     var onViewLoaded: (() -> Void)
-    var onViewDismissed: (() -> Void)
 
     var body: some View {
         VStack {
@@ -481,9 +465,6 @@ struct UpgradeWaitingView: View {
         }
         .onAppear {
             onViewLoaded()
-        }
-        .onDisappear {
-            onViewDismissed()
         }
     }
 }
@@ -596,8 +577,6 @@ struct OwnerUpgradesView: View {
     let purchasePlanAction: () -> Void
     @State var isLoading: Bool = false
 
-    var onDismiss: (() -> Void)?
-
     var body: some View {
         VStack {
             List {
@@ -660,9 +639,6 @@ struct OwnerUpgradesView: View {
                 .shimmering(active: isLoading)
             }
             .padding()
-        }
-        .onDisappear {
-            onDismiss?()
         }
     }
 }

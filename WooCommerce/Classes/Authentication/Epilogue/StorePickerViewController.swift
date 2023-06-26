@@ -643,13 +643,12 @@ private extension StorePickerViewController {
     func displayExpiredWPComPlanAlert(siteID: Int64) {
         UIAlertController.presentExpiredWPComPlanAlert(from: self) { [weak self] in
             guard let self else { return }
-            if self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
-                let upgradesController = UpgradesHostingController(siteID: siteID)
-                self.topmostPresentedViewController.present(upgradesController, animated: true)
-            } else {
-                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredWPComPlanAlert)
-                self.topmostPresentedViewController.present(controller, animated: true)
-            }
+            /// Since we cannot tell if the site is eligible for upgrading with IAP,
+            /// it's safer to navigate to the plans page just in case the site is not suitable
+            /// for upgrading WooExpress plans (e.g: expired Business plan).
+            /// Please place IAP here if we have a solution to check the case.
+            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredWPComPlanAlert)
+            self.topmostPresentedViewController.present(controller, animated: true)
         }
     }
 }

@@ -67,30 +67,16 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         XCTAssertFalse(configuration.isSupportedCountry)
     }
 
-    func test_configuration_for_UK_when_enabled_returns_supported() {
+    func test_configuration_for_UK() {
         // Given
         setupCountry(country: .gb)
 
         // When
-        let featureFlagService = MockFeatureFlagService(isIPPUKExpansionEnabled: true)
-        let loader = CardPresentConfigurationLoader(stores: stores, featureFlagService: featureFlagService)
+        let loader = CardPresentConfigurationLoader(stores: stores)
         let configuration = loader.configuration
 
         // Then
         XCTAssertTrue(configuration.isSupportedCountry)
-    }
-
-    func test_configuration_for_UK_when_disabled_returns_not_supported() {
-        // Given
-        setupCountry(country: .gb)
-
-        // When
-        let featureFlagService = MockFeatureFlagService(isIPPUKExpansionEnabled: false)
-        let loader = CardPresentConfigurationLoader(stores: stores, featureFlagService: featureFlagService)
-        let configuration = loader.configuration
-
-        // Then
-        XCTAssertFalse(configuration.isSupportedCountry)
     }
 }
 

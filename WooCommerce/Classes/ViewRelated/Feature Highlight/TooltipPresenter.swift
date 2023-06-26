@@ -117,6 +117,13 @@ final class TooltipPresenter {
         }
     }
 
+    // Silently removes the tooltip without firing the `primaryTooltipAction` callback
+    //
+    func removeTooltip() {
+        tooltip.removeFromSuperview()
+        NotificationCenter.default.removeObserver(self)
+    }
+
     private func animateTooltipIn() {
         UIView.animate(
             withDuration: Constants.tooltipAnimationDuration,

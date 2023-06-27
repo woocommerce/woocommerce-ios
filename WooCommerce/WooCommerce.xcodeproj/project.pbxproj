@@ -2208,6 +2208,7 @@
 		EE45E2BA2A409BA40085F227 /* TooltipPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B12A409B9D0085F227 /* TooltipPresenter.swift */; };
 		EE45E2BF2A409E250085F227 /* UIColor+Tooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2BE2A409E250085F227 /* UIColor+Tooltip.swift */; };
 		EE45E2C22A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2C12A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift */; };
+		EE45E2C42A4A85350085F227 /* TooltipPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2C32A4A85350085F227 /* TooltipPresenterTests.swift */; };
 		EE46CEDF29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */; };
 		EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */; };
 		EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */; };
@@ -4562,6 +4563,7 @@
 		EE45E2B22A409B9E0085F227 /* Tooltip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tooltip.swift; sourceTree = "<group>"; };
 		EE45E2BE2A409E250085F227 /* UIColor+Tooltip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Tooltip.swift"; sourceTree = "<group>"; };
 		EE45E2C12A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionAITooltipUseCaseTests.swift; sourceTree = "<group>"; };
+		EE45E2C32A4A85350085F227 /* TooltipPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipPresenterTests.swift; sourceTree = "<group>"; };
 		EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingStoreDetailsCoordinator.swift; sourceTree = "<group>"; };
 		EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandler.swift; sourceTree = "<group>"; };
 		EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ApplicationPassword.swift"; sourceTree = "<group>"; };
@@ -10364,6 +10366,7 @@
 			isa = PBXGroup;
 			children = (
 				EE45E2C12A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift */,
+				EE45E2C32A4A85350085F227 /* TooltipPresenterTests.swift */,
 			);
 			path = "Feature Highlight";
 			sourceTree = "<group>";
@@ -13166,6 +13169,7 @@
 				02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */,
 				CC923A1D2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift in Sources */,
 				267C01D129E9B18E00FCC97B /* StorePlanSynchronizerTests.swift in Sources */,
+				EE45E2C42A4A85350085F227 /* TooltipPresenterTests.swift in Sources */,
 				0388E1A629E04433007DF84D /* PaymentsRouteTests.swift in Sources */,
 				D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */,
 				CC04918F292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift in Sources */,

@@ -34,6 +34,17 @@ enum PurchaseUpgradeError: Error {
     case inAppPurchaseFailed(WooWPComPlan, InAppPurchaseStore.Errors)
     case planActivationFailed(InAppPurchaseStore.Errors)
     case unknown
+
+    var analyticErrorDetail: Error {
+        switch self {
+        case .inAppPurchaseFailed(_, let error):
+            return error
+        case .planActivationFailed(let error):
+            return error
+        default:
+            return self
+        }
+    }
 }
 
 /// ViewModel for the Upgrades View
@@ -91,7 +102,7 @@ final class UpgradesViewModel: ObservableObject {
             case .prePurchaseError(let error):
                 self?.analytics.track(event: .InAppPurchases.planUpgradePrePurchaseFailed(error: error))
             case .purchaseUpgradeError(let error):
-                self?.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: error))
+                self?.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: error.analyticErrorDetail))
             default:
                 break
             }

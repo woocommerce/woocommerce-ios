@@ -2477,9 +2477,16 @@ extension WooAnalyticsEvent {
                               properties: [Keys.featureGroup.rawValue: featureGroup])
         }
 
-        static func planUpgradePurchaseFailed(error: InAppPurchasesError) -> WooAnalyticsEvent {
+        static func planUpgradePrePurchaseFailed(error: PrePurchaseError) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .planUpgradePurchaseFailed,
-                              properties: [Keys.error.rawValue: error.rawValue])
+                              properties: [Keys.error.rawValue: error.localizedDescription],
+                              error: error)
+        }
+
+        static func planUpgradePurchaseFailed(error: PurchaseUpgradeError) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradePurchaseFailed,
+                              properties: [Keys.error.rawValue: error.localizedDescription],
+                              error: error)
         }
     }
 }

@@ -162,7 +162,7 @@ public enum FeatureFlag: Int {
 
     /// Local notification asking to purchase plan 24 hrs after Free trial subscription
     ///
-    case twentyHourHoursAfterFreeTrialSubscribedNotification
+    case twentyFourHoursAfterFreeTrialSubscribedNotification
 
     /// Enables manual error handling for site credential login.
     ///

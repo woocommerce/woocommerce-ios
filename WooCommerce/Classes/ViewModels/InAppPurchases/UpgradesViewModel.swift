@@ -192,7 +192,8 @@ final class UpgradesViewModel: ObservableObject {
                 upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan, recognisedError))
             case .transactionMissingAppAccountToken,
                     .appAccountTokenMissingSiteIdentifier,
-                    .storefrontUnknown:
+                    .storefrontUnknown,
+                    .transactionAlreadyAssociatedWithAnUpgrade:
                 upgradeViewState = .purchaseUpgradeError(.planActivationFailed(recognisedError))
             }
         }

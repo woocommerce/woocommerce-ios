@@ -30,7 +30,7 @@ struct UniversalLinkRouter {
     /// If `tabBarController: nil` is passed, some routes will not work, e.g. Payments related routes, which require the tab bar for navigation.
     ///
     static func defaultRoutes(tabBarController: MainTabBarController?) -> [Route] {
-        let routes = [OrderDetailsRoute()]
+        let routes: [Route] = [OrderDetailsRoute(), MyStoreRoute()]
         guard let tabBarController = tabBarController else {
             DDLogWarn("⛔️ Unable to create tab bar dependent Universal Link routes, some links will not be handled")
             return routes

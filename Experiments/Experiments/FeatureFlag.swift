@@ -160,6 +160,10 @@ public enum FeatureFlag: Int {
     ///
     case freeTrialInAppPurchasesUpgradeM1
 
+    /// Local notification asking to purchase plan 24 hrs after Free trial subscription
+    ///
+    case twentyHourHoursAfterFreeTrialSubscribedNotification
+
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin

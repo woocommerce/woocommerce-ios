@@ -614,7 +614,7 @@ private extension ProductFormViewController {
         )
     }
 
-    func configureTooltipPresenter() {
+    func updateTooltipPresenter() {
         if let tooltipPresenter {
             tooltipPresenter.removeTooltip()
             self.tooltipPresenter = nil
@@ -814,7 +814,7 @@ private extension ProductFormViewController {
             tableView.reloadData()
         }
 
-        configureTooltipPresenter()
+        updateTooltipPresenter()
     }
 
     func updateDataSourceActions() {

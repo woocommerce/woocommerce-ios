@@ -97,8 +97,8 @@ struct DomainSettingsView: View {
             isFetchingDataOnAppear = false
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(Localization.cancelButtonTitle) {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(Localization.doneButtonTitle) {
                     onClose()
                 }
                 .buttonStyle(TextButtonStyle())
@@ -123,8 +123,8 @@ private extension DomainSettingsView {
             "Learn more",
             comment: "Tappable text at the bottom of the domain settings screen that opens a webview."
         )
-        static let cancelButtonTitle = NSLocalizedString(
-            "Cancel",
+        static let doneButtonTitle = NSLocalizedString(
+            "Done",
             comment: "Navigation bar button on the domain settings screen to leave the flow."
         )
     }

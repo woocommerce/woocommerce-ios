@@ -101,6 +101,8 @@ final class UpgradesViewModel: ObservableObject {
                 self?.analytics.track(.planUpgradeProcessingScreenLoaded)
             case .loaded:
                 self?.analytics.track(.planUpgradeScreenLoaded)
+            case .completed:
+                self?.analytics.track(.planUpgradeCompletedScreenLoaded)
             case .prePurchaseError(let error):
                 self?.analytics.track(event: .InAppPurchases.planUpgradePrePurchaseFailed(error: error))
             case .purchaseUpgradeError(let error):
@@ -210,7 +212,6 @@ final class UpgradesViewModel: ObservableObject {
                 upgradeViewState = .loaded(wooWPComPlan)
             case .success(.verified(_)):
                 upgradeViewState = .completed(wooWPComPlan)
-                analytics.track(.planUpgradeCompletedScreenLoaded)
             default:
                 // TODO: handle `pending` here... somehow – requires research
                 // TODO: handle `.success(.unverified(_))` here... somehow

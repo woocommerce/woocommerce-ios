@@ -172,7 +172,6 @@ final class UpgradesViewModel: ObservableObject {
             case .success(.verified(_)):
                 upgradeViewState = .completed(wooWPComPlan)
             default:
-                // TODO: handle `pending` here... somehow – requires research
                 // TODO: handle `.success(.unverified(_))` here... somehow
                 return
             }

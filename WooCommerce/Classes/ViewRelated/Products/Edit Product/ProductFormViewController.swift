@@ -72,7 +72,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
 
-    private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase()
+    private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
     private var didShowTooltip = false {
         didSet {
             tooltipUseCase.numberOfTimesWriteWithAITooltipIsShown += 1
@@ -614,14 +614,10 @@ private extension ProductFormViewController {
         )
     }
 
-    func configureTooltipPresenter() {
+    func updateTooltipPresenter() {
         if let tooltipPresenter {
             tooltipPresenter.removeTooltip()
             self.tooltipPresenter = nil
-        }
-
-        guard aiEligibilityChecker.isFeatureEnabled(.description) else {
-            return
         }
 
         guard tooltipUseCase.shouldShowTooltip(for: product) == true else {
@@ -818,7 +814,7 @@ private extension ProductFormViewController {
             tableView.reloadData()
         }
 
-        configureTooltipPresenter()
+        updateTooltipPresenter()
     }
 
     func updateDataSourceActions() {

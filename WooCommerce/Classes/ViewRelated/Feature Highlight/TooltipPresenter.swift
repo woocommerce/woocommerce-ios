@@ -113,8 +113,7 @@ final class TooltipPresenter {
             self.containerView.layoutIfNeeded()
         } completion: { isSuccess in
             self.primaryTooltipAction?()
-            self.tooltip.removeFromSuperview()
-            NotificationCenter.default.removeObserver(self)
+            self.removeTooltip()
         }
     }
 

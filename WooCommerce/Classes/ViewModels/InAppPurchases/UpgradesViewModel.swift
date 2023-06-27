@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Yosemite
+import Combine
 
 enum UpgradeViewState {
     case loading
@@ -29,10 +30,21 @@ enum PrePurchaseError: Error {
     case userNotAllowedToUpgrade
 }
 
-enum PurchaseUpgradeError {
+enum PurchaseUpgradeError: Error {
     case inAppPurchaseFailed(WooWPComPlan, InAppPurchaseStore.Errors)
     case planActivationFailed(InAppPurchaseStore.Errors)
     case unknown
+
+    var analyticErrorDetail: Error {
+        switch self {
+        case .inAppPurchaseFailed(_, let error):
+            return error
+        case .planActivationFailed(let error):
+            return error
+        default:
+            return self
+        }
+    }
 }
 
 /// ViewModel for the Upgrades View
@@ -51,14 +63,20 @@ final class UpgradesViewModel: ObservableObject {
 
     private let localPlans: [WooPlan]
 
+    private let analytics: Analytics
+
+    private var cancellables: Set<AnyCancellable> = []
+
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
         self.storePlanSynchronizer = storePlanSynchronizer
         self.stores = stores
+        self.analytics = analytics
 
         entitledWpcomPlanIDs = []
 
@@ -68,6 +86,8 @@ final class UpgradesViewModel: ObservableObject {
             self.localPlans = []
         }
 
+        observeViewStateAndTrackAnalytics()
+
         if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
         } else {
@@ -75,6 +95,26 @@ final class UpgradesViewModel: ObservableObject {
                 await fetchViewData()
             }
         }
+    }
+
+    private func observeViewStateAndTrackAnalytics() {
+        $upgradeViewState.sink { [weak self] state in
+            switch state {
+            case .waiting:
+                self?.analytics.track(.planUpgradeProcessingScreenLoaded)
+            case .loaded:
+                self?.analytics.track(.planUpgradeScreenLoaded)
+            case .completed:
+                self?.analytics.track(.planUpgradeCompletedScreenLoaded)
+            case .prePurchaseError(let error):
+                self?.analytics.track(event: .InAppPurchases.planUpgradePrePurchaseFailed(error: error))
+            case .purchaseUpgradeError(let error):
+                self?.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: error.analyticErrorDetail))
+            default:
+                break
+            }
+        }
+        .store(in: &cancellables)
     }
 
     /// Sync wrapper for `fetchViewData`, so can be called directly from where this
@@ -145,6 +185,7 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
+        analytics.track(event: .InAppPurchases.planUpgradePurchaseButtonTapped(planID))
         guard let wooWPComPlan = planCanBePurchasedFromCurrentState() else {
             return
         }
@@ -253,6 +294,32 @@ final class UpgradesViewModel: ObservableObject {
                             wooPlan: wooPlan,
                             hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
     }
+
+    func onDisappear() {
+        guard let stepTracked = upgradeViewState.analyticsStep else {
+            return
+        }
+        analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: stepTracked))
+    }
+}
+
+private extension UpgradeViewState {
+    var analyticsStep: WooAnalyticsEvent.InAppPurchases.Step? {
+        switch self {
+        case .loading, .purchasing:
+            return nil
+        case .loaded:
+            return .planDetails
+        case .waiting:
+            return .processing
+        case .completed:
+            return .completed
+        case .prePurchaseError:
+            return .prePurchaseError
+        case .purchaseUpgradeError:
+            return .purchaseUpgradeError
+        }
+    }
 }
 
 private extension UpgradesViewModel {
@@ -273,6 +340,12 @@ private extension UpgradesViewModel {
             DDLogError("loadEntitlements \(error)")
             upgradeViewState = .prePurchaseError(.entitlementsError)
         }
+    }
+}
+
+extension UpgradesViewModel {
+    func track(_ stat: WooAnalyticsStat) {
+        analytics.track(stat)
     }
 }
 

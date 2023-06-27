@@ -2423,6 +2423,63 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - In-App Purchases
+extension WooAnalyticsEvent {
+    enum InAppPurchases {
+        enum Keys: String {
+            case productID = "product_ID"
+            case source
+            case step
+            case featureGroup = "feature_group"
+            case error
+        }
+
+        enum Source: String {
+            case banner
+        }
+
+        enum Step: String {
+            case planDetails = "plan_details"
+            case prePurchaseError = "pre_purchase_error"
+            case purchaseUpgradeError = "purchase_upgrade_error"
+            case processing
+            case completed
+        }
+
+        static func planUpgradePurchaseButtonTapped(_ productID: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradePurchaseButtonTapped,
+                              properties: [Keys.productID.rawValue: productID])
+        }
+
+        static func planUpgradeScreenLoaded(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeScreenLoaded,
+                              properties: [Keys.source.rawValue: source.rawValue])
+        }
+
+        static func planUpgradeScreenDismissed(step: Step) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeScreenDismissed,
+                              properties: [Keys.step.rawValue: step.rawValue])
+        }
+
+        static func planUpgradeFeatureScreenLoaded(featureGroup: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradeFeatureScreenLoaded,
+                              properties: [Keys.featureGroup.rawValue: featureGroup])
+        }
+
+        static func planUpgradePrePurchaseFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradePurchaseFailed,
+                              properties: [Keys.error.rawValue: error.localizedDescription],
+                              error: error)
+        }
+
+        static func planUpgradePurchaseFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .planUpgradePurchaseFailed,
+                              properties: [Keys.error.rawValue: error.localizedDescription],
+                              error: error)
+        }
+    }
+}
+
 // MARK: - EU Shipping Notice Banner
 //
 extension WooAnalyticsEvent {

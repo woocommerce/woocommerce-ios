@@ -82,6 +82,7 @@ struct StoreOnboardingTaskView: View {
                     Divider().dividerStyle().renderedIf(showDivider)
                 }
             }
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

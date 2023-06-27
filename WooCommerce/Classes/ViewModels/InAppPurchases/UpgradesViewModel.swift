@@ -99,6 +99,8 @@ final class UpgradesViewModel: ObservableObject {
             switch state {
             case .waiting:
                 self?.analytics.track(.planUpgradeProcessingScreenLoaded)
+            case .loaded:
+                self?.analytics.track(.planUpgradeScreenLoaded)
             case .prePurchaseError(let error):
                 self?.analytics.track(event: .InAppPurchases.planUpgradePrePurchaseFailed(error: error))
             case .purchaseUpgradeError(let error):
@@ -152,7 +154,6 @@ final class UpgradesViewModel: ObservableObject {
                 return
             }
             upgradeViewState = .loaded(plan)
-            analytics.track(.planUpgradeScreenLoaded)
         } catch {
             DDLogError("fetchPlans \(error)")
             upgradeViewState = .prePurchaseError(.fetchError)

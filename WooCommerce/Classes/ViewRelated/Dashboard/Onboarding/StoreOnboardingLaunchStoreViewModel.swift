@@ -136,9 +136,9 @@ private extension StoreOnboardingLaunchStoreViewModel {
 private extension StoreOnboardingLaunchStoreViewModel {
     enum Localization {
         static let upgradePlanToLaunchStore = NSLocalizedString(
-            "To launch your store, you need to upgrade to your plan. %1$@",
+            "To launch your store, you need to upgrade to our plan. %1$@",
             comment: "Message to ask the user to upgrade free trial plan to launch store."
-            + "Reads - To launch your store, you need to upgrade to your plan. Upgrade"
+            + "Reads - To launch your store, you need to upgrade to our plan. Upgrade"
         )
         static let learnMore = NSLocalizedString("Learn More", comment: "Title on the button to upgrade a free trial plan.")
     }

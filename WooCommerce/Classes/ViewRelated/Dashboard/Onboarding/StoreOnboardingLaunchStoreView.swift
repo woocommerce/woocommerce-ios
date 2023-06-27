@@ -5,6 +5,9 @@ import enum Yosemite.SiteLaunchError
 final class StoreOnboardingLaunchStoreHostingController: UIHostingController<StoreOnboardingLaunchStoreView> {
     init(viewModel: StoreOnboardingLaunchStoreViewModel) {
         super.init(rootView: StoreOnboardingLaunchStoreView(viewModel: viewModel))
+        rootView.onDismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 
     @available(*, unavailable)
@@ -21,6 +24,9 @@ final class StoreOnboardingLaunchStoreHostingController: UIHostingController<Sto
 
 /// Shows a preview of the site with a CTA to launch store if applicable.
 struct StoreOnboardingLaunchStoreView: View {
+    // Closure to be triggered when the Done button is tapped.
+    var onDismiss: () -> Void = {}
+
     // Tracks the scale of the view due to accessibility changes.
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -79,6 +85,14 @@ struct StoreOnboardingLaunchStoreView: View {
         .task {
             await viewModel.checkEligibilityToPublishStore()
         }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(Localization.doneButton) {
+                    onDismiss()
+                }
+                .buttonStyle(TextButtonStyle())
+            }
+        }
     }
 }
 
@@ -120,6 +134,7 @@ private extension StoreOnboardingLaunchStoreView {
             "Publish My Store",
             comment: "Title of the primary button on the store onboarding > launch store screen to publish a store."
         )
+        static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the launch store screen.")
     }
 }
 

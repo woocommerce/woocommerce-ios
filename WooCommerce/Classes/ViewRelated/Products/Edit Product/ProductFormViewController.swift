@@ -72,7 +72,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
 
-    private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase()
+    private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
     private var didShowTooltip = false {
         didSet {
             tooltipUseCase.numberOfTimesWriteWithAITooltipIsShown += 1
@@ -347,8 +347,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             return
         }
 
-        if isDescriptionAICellVisible() {
-            tooltipPresenter?.showTooltip()
+        if let tooltipPresenter,
+           isDescriptionAICellVisible() {
+            tooltipPresenter.showTooltip()
             didShowTooltip = true
         }
     }
@@ -613,25 +614,13 @@ private extension ProductFormViewController {
         )
     }
 
-    func configureTooltipPresenter() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
-            return
-        }
-
-        guard aiEligibilityChecker.isFeatureEnabled(.description) else {
-            return
-        }
-
-        if let tooltip = tooltipPresenter?.tooltip {
-            tooltip.removeFromSuperview()
+    func updateTooltipPresenter() {
+        if let tooltipPresenter {
+            tooltipPresenter.removeTooltip()
             self.tooltipPresenter = nil
         }
 
-        guard product.description?.isEmpty == true else {
-            return
-        }
-
-        guard tooltipUseCase.shouldShowTooltip else {
+        guard tooltipUseCase.shouldShowTooltip(for: product) == true else {
             return
         }
 
@@ -825,7 +814,7 @@ private extension ProductFormViewController {
             tableView.reloadData()
         }
 
-        configureTooltipPresenter()
+        updateTooltipPresenter()
     }
 
     func updateDataSourceActions() {

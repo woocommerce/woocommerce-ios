@@ -112,9 +112,15 @@ final class TooltipPresenter {
             self.containerView.layoutIfNeeded()
         } completion: { isSuccess in
             self.primaryTooltipAction?()
-            self.tooltip.removeFromSuperview()
-            NotificationCenter.default.removeObserver(self)
+            self.removeTooltip()
         }
+    }
+
+    // Silently removes the tooltip without firing the `primaryTooltipAction` callback
+    //
+    func removeTooltip() {
+        tooltip.removeFromSuperview()
+        NotificationCenter.default.removeObserver(self)
     }
 
     private func animateTooltipIn() {

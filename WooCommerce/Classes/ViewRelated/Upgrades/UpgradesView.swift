@@ -146,6 +146,7 @@ struct PrePurchaseUpgradesErrorView: View {
         VStack(alignment: .center, spacing: Layout.spacingBetweenImageAndText) {
             Image("plan-upgrade-error")
                 .frame(maxWidth: .infinity, alignment: .center)
+                .accessibilityHidden(true)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {
                 switch error {
@@ -257,6 +258,7 @@ struct PurchaseUpgradeErrorView: View {
                 Image(systemName: "exclamationmark.circle")
                     .font(.system(size: Layout.exclamationImageSize))
                     .foregroundColor(.withColorStudio(name: .red, shade: .shade20))
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: Layout.textSpacing) {
                     Text(error.localizedTitle)
                         .font(.title)
@@ -513,6 +515,7 @@ struct CompletedUpgradeView: View {
         VStack(spacing: Layout.groupSpacing) {
             Image("plan-upgrade-success-celebration")
                 .frame(maxWidth: .infinity, alignment: .center)
+                .accessibilityHidden(true)
 
             VStack(spacing: Layout.textSpacing) {
                 Text(Localization.title)
@@ -594,6 +597,7 @@ struct OwnerUpgradesView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                         .listRowInsets(.zero)
                         .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
+                        .accessibilityHidden(true)
 
                     VStack(alignment: .leading) {
                         Text(upgradePlan.wooPlan.shortName)

@@ -16,6 +16,7 @@ struct WooPlanFeatureBenefitsView: View {
                             .aspectRatio(contentMode: .fit)
                             .padding(.vertical, Layout.imageCardImageVerticalPadding)
                     )
+                    .accessibilityHidden(true)
 
                 Text(wooPlanFeatureGroup.title)
                     .font(.subheadline)
@@ -59,6 +60,7 @@ struct WooPlanFeatureBenefitRow: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Layout.checkmarkWidth)
                 .foregroundColor(.withColorStudio(name: .green, shade: .shade40))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: Layout.titleDescriptionVerticalSpacing) {
                 Text(feature.title)

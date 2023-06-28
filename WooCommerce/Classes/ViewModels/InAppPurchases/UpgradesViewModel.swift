@@ -54,6 +54,7 @@ final class UpgradesViewModel: ObservableObject {
 
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
+    private let storePlanSynchronizer: StorePlanSynchronizer
     private let stores: StoresManager
 
     @Published var entitledWpcomPlanIDs: Set<String>
@@ -68,10 +69,12 @@ final class UpgradesViewModel: ObservableObject {
 
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
+         storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
+        self.storePlanSynchronizer = storePlanSynchronizer
         self.stores = stores
         self.analytics = analytics
 
@@ -211,6 +214,8 @@ final class UpgradesViewModel: ObservableObject {
             case .userCancelled:
                 upgradeViewState = .loaded(wooWPComPlan)
             case .success(.verified(_)):
+                // refreshing the synchronizer removes the Upgrade Now banner by the time the flow is closed
+                storePlanSynchronizer.reloadPlan()
                 upgradeViewState = .completed(wooWPComPlan)
             default:
                 // TODO: handle `.success(.unverified(_))` here... somehow

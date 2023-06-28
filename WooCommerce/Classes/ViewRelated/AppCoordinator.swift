@@ -347,6 +347,7 @@ private extension AppCoordinator {
         let identifier = response.notification.request.identifier
         let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayBeforeFreeTrialExpires
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires
+        let twentyFourHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
 
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
             analytics.track(.localNotificationDismissed, withProperties: [
@@ -369,6 +370,12 @@ private extension AppCoordinator {
         case let identifier where identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: oneDayAfterFreeTrialExpiresIdentifier, with: "")) else {
+                return
+            }
+            openPlansPage(siteID: siteID)
+        case let identifier where identifier.hasPrefix(twentyFourHoursAfterFreeTrialSubscribed):
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let siteID = Int64(identifier.replacingOccurrences(of: twentyFourHoursAfterFreeTrialSubscribed, with: "")) else {
                 return
             }
             openPlansPage(siteID: siteID)

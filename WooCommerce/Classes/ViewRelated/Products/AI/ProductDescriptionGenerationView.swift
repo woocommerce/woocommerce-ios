@@ -101,6 +101,14 @@ struct ProductDescriptionGenerationView: View {
                             .fixedSize(horizontal: true, vertical: false)
                         }
                         .renderedIf(viewModel.isGenerationInProgress == false)
+
+                        // Feedback banner
+                        FeedbackView(onUpvote: {
+                            // TODO
+                        }, onDownvote: {
+                            // TODO
+                        })
+                        .renderedIf(viewModel.isGenerationInProgress == false)
                     }
                     .padding(Layout.suggestedTextInsets)
                     .background(

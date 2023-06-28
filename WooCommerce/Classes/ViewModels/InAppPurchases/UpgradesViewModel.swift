@@ -88,7 +88,7 @@ final class UpgradesViewModel: ObservableObject {
 
         observeViewStateAndTrackAnalytics()
 
-        if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
+        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
         } else {
             Task {

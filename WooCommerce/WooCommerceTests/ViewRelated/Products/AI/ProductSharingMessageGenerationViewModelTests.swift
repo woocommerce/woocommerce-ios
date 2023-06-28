@@ -182,6 +182,39 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")
     }
 
+    func test_handleFeedback_tracks_feedback_received() async throws {
+        // Given
+        let expectedString = "Check out this product!"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores,
+                                                                 analytics: analytics)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, _, completion):
+                completion(.success(expectedString))
+            default:
+                return
+            }
+        }
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
+
+        await viewModel.generateShareMessage()
+        XCTAssertTrue(viewModel.shouldShowFeedbackView)
+
+        // When
+        viewModel.handleFeedback(.up)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_ai_feedback"}))
+        let eventProperties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(eventProperties["source"] as? String, "product_sharing_message")
+        XCTAssertEqual(eventProperties["is_useful"] as? Bool, true)
+    }
+
     // MARK: `shareSheet`
     func test_shareSheet_has_expected_activityItems() async throws {
         // Given
@@ -278,5 +311,65 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isShareSheetPresented)
+    }
+
+    // MARK: `shouldShowFeedbackView`
+    func test_shouldShowFeedbackView_is_true_when_a_message_is_generated() async {
+        // Given
+        let expectedString = "Check out this product!"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, _, completion):
+                completion(.success(expectedString))
+            default:
+                return
+            }
+        }
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
+
+        // When
+        await viewModel.generateShareMessage()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowFeedbackView)
+    }
+
+    func test_handleFeedback_sets_shouldShowFeedbackView_to_false() async {
+        // Given
+        let expectedString = "Check out this product!"
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let delay: TimeInterval = 0
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 delayBeforeDismissingFeedbackBanner: delay,
+                                                                 stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, _, completion):
+                completion(.success(expectedString))
+            default:
+                return
+            }
+        }
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
+
+        await viewModel.generateShareMessage()
+        XCTAssertTrue(viewModel.shouldShowFeedbackView)
+
+        // When
+        viewModel.handleFeedback(.up)
+
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            XCTAssertFalse(viewModel.shouldShowFeedbackView)
+        }
     }
 }

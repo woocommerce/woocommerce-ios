@@ -40,6 +40,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private let stores: StoresManager
     private let isPad: Bool
     private let analytics: Analytics
+    private let delayBeforeDismissingFeedbackBanner: TimeInterval
 
     /// Whether a message has been successfully generated.
     /// This is needed to identify whether the next request is a retry.
@@ -50,6 +51,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
          productName: String,
          productDescription: String,
          isPad: Bool = UIDevice.isPad(),
+         delayBeforeDismissingFeedbackBanner: TimeInterval = 0.5,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
@@ -60,6 +62,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
+        self.delayBeforeDismissingFeedbackBanner = delayBeforeDismissingFeedbackBanner
     }
 
     @MainActor
@@ -94,13 +97,14 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     func handleFeedback(_ vote: FeedbackView.Vote) {
         analytics.track(event: .AIFeedback.feedbackSent(source: .productSharingMessage,
                                                         isUseful: vote == .up))
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeDismissingFeedbackBanner) { [weak self] in
             self?.shouldShowFeedbackView = false
         }
     }
 }
 
 private extension ProductSharingMessageGenerationViewModel {
+
     @MainActor
     func requestMessageFromAI() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in

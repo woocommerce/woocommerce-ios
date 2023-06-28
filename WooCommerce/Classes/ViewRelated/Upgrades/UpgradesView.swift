@@ -74,12 +74,10 @@ struct UpgradesView: View {
                         UpgradeWaitingView(planName: plan.wooPlan.shortName)
                     }
                 case .completed(let plan):
-                    ScrollView(.vertical) {
-                        CompletedUpgradeView(planName: plan.wooPlan.shortName,
-                                             doneAction: {
-                            dismiss()
-                        })
-                    }
+                    CompletedUpgradeView(planName: plan.wooPlan.shortName,
+                                         doneAction: {
+                        dismiss()
+                    })
                 case .prePurchaseError(let error):
                     ScrollView(.vertical) {
                         VStack {
@@ -515,28 +513,34 @@ struct CompletedUpgradeView: View {
     let doneAction: (() -> Void)
 
     var body: some View {
-        VStack(spacing: Layout.groupSpacing) {
-            Image("plan-upgrade-success-celebration")
-                .frame(maxWidth: .infinity, alignment: .center)
-                .accessibilityHidden(true)
+        VStack {
+            ScrollView(.vertical) {
+                VStack(spacing: Layout.groupSpacing) {
+                    Image("plan-upgrade-success-celebration")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .accessibilityHidden(true)
 
-            VStack(spacing: Layout.textSpacing) {
-                Text(Localization.title)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(LocalizedString(format: Localization.subtitle, planName))
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    VStack(spacing: Layout.textSpacing) {
+                        Text(Localization.title)
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(LocalizedString(format: Localization.subtitle, planName))
+                            .font(.title3)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    Text(Localization.hint)
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.top, Layout.completedUpgradeViewTopPadding)
+                .padding(.horizontal, Layout.padding)
             }
-
-            Text(Localization.hint)
-                .font(.footnote)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
@@ -544,6 +548,7 @@ struct CompletedUpgradeView: View {
                 doneAction()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Layout.padding)
         }
         .confettiCannon(counter: $confettiTrigger,
                         num: Constants.numberOfConfettiElements,
@@ -555,8 +560,7 @@ struct CompletedUpgradeView: View {
         .onAppear {
             confettiTrigger += 1
         }
-        .padding(.top, Layout.completedUpgradeViewTopPadding)
-        .padding([.bottom, .horizontal], Layout.padding)
+        .padding(.bottom, Layout.padding)
     }
 
     private struct Layout {

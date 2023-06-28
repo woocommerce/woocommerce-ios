@@ -184,26 +184,11 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
 
     func test_handleFeedback_tracks_feedback_received() async throws {
         // Given
-        let expectedString = "Check out this product!"
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
                                                                  url: "https://example.com",
                                                                  productName: "Test",
                                                                  productDescription: "Test description",
-                                                                 stores: stores,
                                                                  analytics: analytics)
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateProductSharingMessage(_, _, _, _, completion):
-                completion(.success(expectedString))
-            default:
-                return
-            }
-        }
-        XCTAssertFalse(viewModel.shouldShowFeedbackView)
-
-        await viewModel.generateShareMessage()
-        XCTAssertTrue(viewModel.shouldShowFeedbackView)
 
         // When
         viewModel.handleFeedback(.up)

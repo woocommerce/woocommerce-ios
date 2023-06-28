@@ -52,14 +52,11 @@ struct ProductSharingMessageGenerationView: View {
 
                     FeedbackView(title: Localization.feedbackQuestion,
                                  backgroundColor: .init(uiColor: .systemGray6),
-                                 onUpvote: {
-                        // TODO
-                    }, onDownvote: {
+                                 onVote: { vote in
                         // TODO
                     })
                     .padding(insets: Constants.feedbackViewInsets)
-                    .renderedIf(viewModel.messageContent.isNotEmpty &&
-                                viewModel.generationInProgress == false)
+                    .renderedIf(viewModel.shouldShowFeedbackView)
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))

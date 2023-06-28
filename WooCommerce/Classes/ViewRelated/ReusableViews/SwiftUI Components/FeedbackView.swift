@@ -3,8 +3,7 @@ import SwiftUI
 struct FeedbackView: View {
     let title: String
     var backgroundColor: Color = .init(uiColor: .systemGray5)
-    let onUpvote: () -> Void
-    let onDownvote: () -> Void
+    let onVote: (Vote) -> Void
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -22,7 +21,6 @@ struct FeedbackView: View {
             Spacer()
             HStack(spacing: Layout.buttonSpacing) {
                 Button {
-                    onUpvote()
                     vote = .up
                 } label: {
                     Image(systemName: vote == .up ? "hand.thumbsup.fill" : "hand.thumbsup")
@@ -34,7 +32,6 @@ struct FeedbackView: View {
                 .buttonStyle(.plain)
 
                 Button {
-                    onDownvote()
                     vote = .down
                 } label: {
                     Image(systemName: vote == .down ?  "hand.thumbsdown.fill" : "hand.thumbsdown")
@@ -51,6 +48,11 @@ struct FeedbackView: View {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .foregroundColor(backgroundColor)
         )
+        .onChange(of: vote) { newValue in
+            if let newValue {
+                onVote(newValue)
+            }
+        }
     }
 }
 

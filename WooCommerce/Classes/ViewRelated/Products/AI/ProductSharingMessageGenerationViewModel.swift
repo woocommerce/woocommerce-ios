@@ -5,6 +5,7 @@ import Yosemite
 final class ProductSharingMessageGenerationViewModel: ObservableObject {
     @Published var isSharePopoverPresented = false
     @Published var isShareSheetPresented = false
+    @Published var shouldShowFeedbackView = false
 
     let viewTitle: String
 

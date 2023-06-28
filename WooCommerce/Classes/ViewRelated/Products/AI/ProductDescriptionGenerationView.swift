@@ -103,9 +103,7 @@ struct ProductDescriptionGenerationView: View {
                         .renderedIf(viewModel.isGenerationInProgress == false)
 
                         // Feedback banner
-                        FeedbackView(title: Localization.feedbackQuestion, onUpvote: {
-                            // TODO
-                        }, onDownvote: {
+                        FeedbackView(title: Localization.feedbackQuestion, onVote: { vote in
                             // TODO
                         })
                         .renderedIf(viewModel.isGenerationInProgress == false)

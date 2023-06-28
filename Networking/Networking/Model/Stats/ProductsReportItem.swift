@@ -4,7 +4,7 @@ import class Aztec.HTMLParser
 
 /// Represents a single product in a products analytics report over a specific period.
 ///
-public struct ProductsReportItem: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductsReportItem: Decodable, Equatable {
 
     /// Product ID
     ///

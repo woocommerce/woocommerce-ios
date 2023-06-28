@@ -104,14 +104,12 @@ struct UpgradesView: View {
                     }
                 case .purchaseUpgradeError(let underlyingError):
                     // handles .planActivationFailed and .unknown underlyingErrors
-                    ScrollView(.vertical) {
-                        PurchaseUpgradeErrorView(error: underlyingError,
-                                                 primaryAction: nil,
-                                                 secondaryAction: {
-                            dismiss()
-                        },
-                                                 getSupportAction: supportHandler)
-                    }
+                    PurchaseUpgradeErrorView(error: underlyingError,
+                                             primaryAction: nil,
+                                             secondaryAction: {
+                        dismiss()
+                    },
+                                             getSupportAction: supportHandler)
                 }
             }
             .navigationBarHidden(true)

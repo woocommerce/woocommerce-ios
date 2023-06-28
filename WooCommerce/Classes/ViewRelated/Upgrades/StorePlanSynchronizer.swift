@@ -131,7 +131,7 @@ private extension StorePlanSynchronizer {
 
         if let subscribedDate = plan.subscribedDate,
            Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-            schedule24HrsAfterSuscribedNotification(siteID: siteID, subcribedDate: subscribedDate)
+            schedule24HrsAfterSubscribedNotification(siteID: siteID, subcribedDate: subscribedDate)
         }
     }
 
@@ -144,7 +144,7 @@ private extension StorePlanSynchronizer {
         localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
     }
 
-    func schedule24HrsAfterSuscribedNotification(siteID: Int64, subcribedDate: Date) {
+    func schedule24HrsAfterSubscribedNotification(siteID: Int64, subcribedDate: Date) {
         // TODO: #10094 Remove after adding remote feature flag
         guard featureFlagService.isFeatureFlagEnabled(.twentyFourHoursAfterFreeTrialSubscribedNotification) else {
             return

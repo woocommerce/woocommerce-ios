@@ -71,7 +71,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
 
     /// Handles when a feedback is sent.
     func handleFeedback(_ vote: FeedbackView.Vote) {
-        // TODO: analytics?
+        analytics.track(event: .ProductFormAI.feedbackSent(isUseful: vote == .up))
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.shouldShowFeedbackView = false
         }

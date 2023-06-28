@@ -398,6 +398,26 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
+    func test_plans_page_is_displayed_when_tapping_on_twentyFourHoursAfterFreeTrialSubscribed_notification() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            self.window.rootViewController?.topmostPresentedViewController is UpgradePlanCoordinatingController
+        }
+    }
+
     func test_local_notification_dismissal_is_tracked() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()

@@ -124,6 +124,8 @@ public class ProductStore: Store {
             generateProductDescription(siteID: siteID, name: name, features: features, completion: completion)
         case let .generateProductSharingMessage(siteID, url, name, description, completion):
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, completion: completion)
+        case let .generateProductDetails(siteID, scannedTexts, completion):
+            generateProductDetails(siteID: siteID, scannedTexts: scannedTexts, completion: completion)
         }
     }
 }
@@ -572,6 +574,35 @@ private extension ProductStore {
             }
             await MainActor.run {
                 completion(result)
+            }
+        }
+    }
+
+    func generateProductDetails(siteID: Int64, scannedTexts: [String], completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
+        let prompt = [
+            "Write a name and description of a product for an online store given the array of scanned text strings from a packaging photo at the end.",
+            "Return only a JSON with the name in `name` field, description in `description` field, " +
+            "and the detected language as the locale identifier in `language` field.",
+            "The output should be in valid JSON format.",
+            "Identify the language detected in the array and use the same language to write the name and description.",
+            "Make the description 50-60 words or less.",
+            "Use a 9th grade reading level.",
+            "Perform in-depth keyword research relating to the product in the same language of the product title, " +
+            "and use them in your sentences without listing them out." +
+            "\(scannedTexts)"
+        ].joined(separator: "\n")
+        Task {
+            do {
+                let jsonString = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription)
+                guard let jsonData = jsonString.data(using: .utf8) else {
+                    return completion(.failure(DotcomError.resourceDoesNotExist))
+                }
+                let details = try JSONDecoder().decode(ProductDetailsFromScannedTextsResponse.self, from: jsonData)
+                await MainActor.run {
+                    completion(.success(.init(name: details.name, description: details.description)))
+                }
+            } catch {
+                completion(.failure(error))
             }
         }
     }
@@ -1070,4 +1101,9 @@ public enum ProductLoadError: Error, Equatable {
             }
         }
     }
+}
+
+private struct ProductDetailsFromScannedTextsResponse: Decodable {
+    let name: String
+    let description: String
 }

@@ -11,8 +11,8 @@ struct AddProductFromImageData {
 
 @available(iOS 16.0, *)
 final class AddProductFromImageHostingController: UIHostingController<AddProductFromImageView> {
-    init(completion: @escaping (AddProductFromImageData) -> Void) {
-        super.init(rootView: AddProductFromImageView(completion: completion))
+    init(siteID: Int64, completion: @escaping (AddProductFromImageData) -> Void) {
+        super.init(rootView: AddProductFromImageView(siteID: siteID, completion: completion))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -36,9 +36,13 @@ struct ProductLiveTextImage: View {
             VStack(spacing: 16) {
                 Image(systemName: "photo")
                     .font(.system(size: 40))
-                Text("Upload a photo of the packaging to select text for name and features")
+                Label {
+                    Text("Take a packaing photo to create product details with AI")
+                } icon: {
+                    Image(uiImage: .sparklesImage)
+                }
+                    .foregroundColor(.init(uiColor: .accent))
                     .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.center)
             }
         case .failure:
             Image(systemName: "exclamationmark.triangle.fill")
@@ -55,7 +59,7 @@ struct ProductImageView: View {
     var body: some View {
         ProductLiveTextImage(imageState: imageState)
             .scaledToFit()
-            .frame(height: 500)
+            .frame(maxHeight: 400)
     }
 }
 
@@ -64,28 +68,61 @@ struct EditableProductImageView: View {
     @ObservedObject var viewModel: AddProductFromImageViewModel
 
     var body: some View {
-        ProductImageView(imageState: viewModel.imageState)
-            .overlay(alignment: .bottomTrailing) {
-                PhotosPicker(selection: $viewModel.imageSelection,
-                             matching: .images,
-                             photoLibrary: .shared()) {
-                    Image(systemName: "pencil.circle.fill")
-                        .symbolRenderingMode(.multicolor)
-                        .font(.system(size: 30))
-                        .foregroundColor(.init(uiColor: .accent))
+        PhotosPicker(selection: $viewModel.imageSelection,
+                     matching: .images,
+                     photoLibrary: .shared()) {
+            ProductImageView(imageState: viewModel.imageState)
+                .overlay(alignment: .bottomTrailing) {
+                    PhotosPicker(selection: $viewModel.imageSelection,
+                                 matching: .images,
+                                 photoLibrary: .shared()) {
+                        Image(systemName: "pencil.circle.fill")
+                            .symbolRenderingMode(.multicolor)
+                            .font(.system(size: 30))
+                            .foregroundColor(.init(uiColor: .accent))
+                    }
+                                 .buttonStyle(.borderless)
+                                 .renderedIf(viewModel.imageSelection != nil)
                 }
-                             .buttonStyle(.borderless)
-            }
+        }
     }
 }
 
+/////
+//
+//struct MultiSelectionRow<RowContent: SelectableRow>: View {
+//    var content: Binding<RowContent>
+//
+//    var body: some View {
+//        Button(action: {
+//            content.value.isSelected.toggle()
+//        }) {
+//            HStack {
+//                Text(content.value.text)
+//                Spacer()
+//                Image(systemName: content.value.isSelected ? "checkmark.circle.fill" : "circle")
+//            }
+//        }
+//    }
+//}
+//
+//protocol SelectableRow {
+//    var text: String { get }
+//    var isSelected: Bool { get set }
+//}
+//
+/////
+
 @available(iOS 16.0, *)
 struct AddProductFromImageView: View {
+    private let siteID: Int64
     private let completion: (AddProductFromImageData) -> Void
-    @StateObject private var viewModel = AddProductFromImageViewModel()
+    @StateObject private var viewModel: AddProductFromImageViewModel
 
-    init(completion: @escaping (AddProductFromImageData) -> Void) {
+    init(siteID: Int64, completion: @escaping (AddProductFromImageData) -> Void) {
+        self.siteID = siteID
         self.completion = completion
+        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID))
     }
 
     var body: some View {
@@ -99,27 +136,59 @@ struct AddProductFromImageView: View {
             }
             .listRowBackground(Color.clear)
             .padding([.top], 10)
+
             Section {
                 TextField("Name",
                           text: $viewModel.name,
-                          prompt: Text("Product Name"))
-                TextField("Features",
-                          text: $viewModel.features,
+                          axis: .vertical)
+                .fixedSize(horizontal: false, vertical: true)
+
+                TextField("Description",
+                          text: $viewModel.description,
                           axis: .vertical)
                 .lineLimit(2...5)
+                .fixedSize(horizontal: false, vertical: true)
             }
-            Section {
-                TextField("Barcode/SKU",
-                          text: $viewModel.sku,
-                          prompt: Text("Barcode/SKU"))
+            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
+            .shimmering(active: viewModel.isGeneratingDetails)
+
+            Text("Generating details with the scanned texts:")
+                .renderedIf(viewModel.isGeneratingDetails)
+            List(viewModel.scannedTexts, id: \.self, selection: $viewModel.selectedScannedTexts) { scannedText in
+//                Text(scannedText)
+                Button(action: {
+                    if viewModel.selectedScannedTexts.contains(scannedText) {
+                        viewModel.selectedScannedTexts.remove(scannedText)
+                    } else {
+                        viewModel.selectedScannedTexts.insert(scannedText)
+                    }
+                }) {
+                    HStack {
+                        Text(scannedText)
+                        Spacer()
+                        Image(systemName: viewModel.selectedScannedTexts.contains(scannedText) ? "checkmark.circle.fill" : "circle")
+                    }
+                }
             }
+            .environment(\.editMode, .constant(EditMode.active))
+            .renderedIf(viewModel.scannedTexts.isNotEmpty)
+
+            // TODO-JC: language picker
+//            Section {
+//                Picker(selection: $selectedSiteIDSourceType, label: EmptyView()) {
+//                    ForEach(SiteIDSourceType.allCases, id: \.self) { option in
+//                        Text(option.title)
+//                    }
+//                }
+//                .pickerStyle(.segmented)
+//            }
         }
         .navigationTitle("Add product")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Continue") {
-                    // TODO: pass image
-                    completion(.init(name: viewModel.name, description: viewModel.features, sku: viewModel.sku, image: nil))
+                    // TODO-JC: pass image
+                    completion(.init(name: viewModel.name, description: viewModel.description, sku: viewModel.sku, image: nil))
                 }
                 .buttonStyle(LinkButtonStyle())
             }
@@ -130,7 +199,7 @@ struct AddProductFromImageView: View {
 struct AddProductFromImageView_Previews: PreviewProvider {
     static var previews: some View {
         if #available(iOS 16.0, *) {
-            AddProductFromImageView(completion: { _ in })
+            AddProductFromImageView(siteID: 2023, completion: { _ in })
         }
     }
 }

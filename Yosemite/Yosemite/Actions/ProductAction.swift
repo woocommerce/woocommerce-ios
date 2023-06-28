@@ -127,4 +127,13 @@ public enum ProductAction: Action {
                                        name: String,
                                        description: String,
                                        completion: (Result<String, Error>) -> Void)
+
+    /// Generates a product details (e.g. name and description) with Jetpack AI given the scanned texts.
+    ///
+    case generateProductDetails(siteID: Int64, scannedTexts: [String], completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
+}
+
+public struct ProductDetailsFromScannedTexts {
+    public let name: String
+    public let description: String
 }

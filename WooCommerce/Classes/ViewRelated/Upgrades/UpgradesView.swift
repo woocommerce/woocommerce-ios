@@ -460,7 +460,9 @@ struct UpgradeWaitingView: View {
                     Text(Localization.title)
                         .font(.largeTitle)
                         .fontWeight(.bold)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(String(format: Localization.descriptionFormatString, planName))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .padding(.horizontal, Layout.horizontalPadding)

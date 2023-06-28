@@ -49,7 +49,7 @@ struct CouponLineDetails: View {
                         Section {
                             Button(Localization.remove) {
                                 focusedField = nil
-                                viewModel.didSelectSave(nil)
+                                viewModel.removeCoupon()
                                 presentation.wrappedValue.dismiss()
                             }
                             .padding()
@@ -120,7 +120,7 @@ struct CouponLineDetails_Previews: PreviewProvider {
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: true,
                                                    code: "",
                                                    siteID: 0,
-                                                   didSelectSave: { _ in })
+                                                   didSelectSave: { _, _  in })
         CouponLineDetails(viewModel: viewModel)
     }
 }

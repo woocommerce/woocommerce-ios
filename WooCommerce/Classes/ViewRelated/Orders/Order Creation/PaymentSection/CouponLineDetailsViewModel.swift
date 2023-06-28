@@ -9,7 +9,7 @@ final class CouponLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the coupon line is updated.
     ///
-    var didSelectSave: ((OrderCouponLine?) -> Void)
+    var didSelectSave: ((String?, String?) -> Void)
 
     /// Stores the coupon code entered by the merchant.
     ///
@@ -41,13 +41,17 @@ final class CouponLineDetailsViewModel: ObservableObject {
          code: String,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         didSelectSave: @escaping ((OrderCouponLine?) -> Void)) {
+         didSelectSave: @escaping ((String?, String?) -> Void)) {
         self.isExistingCouponLine = isExistingCouponLine
         self.code = code
         self.siteID = siteID
         self.stores = stores
         self.initialCode = code
         self.didSelectSave = didSelectSave
+    }
+
+    func removeCoupon() {
+        didSelectSave(initialCode, nil)
     }
 
     func validateAndSaveData(onCompletion: @escaping (Bool) -> Void) {
@@ -73,8 +77,7 @@ final class CouponLineDetailsViewModel: ObservableObject {
 
 private extension CouponLineDetailsViewModel {
     func saveData() {
-        let couponLine = OrderFactory.newOrderCouponLine(code: code)
-        didSelectSave(couponLine)
+        didSelectSave(initialCode, code)
     }
 }
 

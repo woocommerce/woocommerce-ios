@@ -17,7 +17,11 @@ struct OrderPaymentSection: View {
 
     /// Indicates if the coupon line details screen should be shown or not.
     ///
-    @State private var shouldShowCouponLineDetails: Bool = false
+    @State private var shouldShowAddCouponLineDetails: Bool = false
+
+    /// Indicates if the coupon line details screen should be shown with an existing coupon.
+    ///
+    @State private var shouldShowExistingCouponLineDetails: Bool = false
 
     ///   Environment safe areas
     ///
@@ -54,8 +58,17 @@ struct OrderPaymentSection: View {
                     FeeLineDetails(viewModel: viewModel.feeLineViewModel)
                 }
 
-            couponRow
-                .sheet(isPresented: $shouldShowCouponLineDetails) {
+            ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
+                CouponSummaryRow(couponSummary: viewModel.title,
+                                 discount: viewModel.discount,
+                                 shouldShowCouponLineDetails: $shouldShowExistingCouponLineDetails)
+                    .sheet(isPresented: $shouldShowExistingCouponLineDetails) {
+                        CouponLineDetails(viewModel: viewModel.detailsViewModel)
+                    }
+            }
+
+            addCouponRow
+                .sheet(isPresented: $shouldShowAddCouponLineDetails) {
                     CouponLineDetails(viewModel: viewModel.couponLineViewModel)
                 }
 
@@ -99,20 +112,27 @@ struct OrderPaymentSection: View {
         }
     }
 
-    @ViewBuilder private var couponRow: some View {
-        if viewModel.shouldShowCoupon {
-            TitleAndValueRow(title: viewModel.couponSummary ?? Localization.coupon, value: .content(viewModel.discountTotal), selectionStyle: .highlight) {
-                shouldShowCouponLineDetails = true
-            }
-            .disabled(viewModel.shouldDisableAddingCoupons)
-        } else {
-            Button(Localization.addCoupon) {
-                shouldShowCouponLineDetails = true
-            }
-            .buttonStyle(PlusButtonStyle())
-            .padding()
-            .accessibilityIdentifier("add-coupon-button")
-            .disabled(viewModel.shouldDisableAddingCoupons)
+    @ViewBuilder private var addCouponRow: some View {
+        Button(Localization.addCoupon) {
+            shouldShowAddCouponLineDetails = true
+        }
+        .buttonStyle(PlusButtonStyle())
+        .padding()
+        .accessibilityIdentifier("add-coupon-button")
+        .disabled(viewModel.shouldDisableAddingCoupons)
+    }
+}
+
+struct CouponSummaryRow: View {
+    let couponSummary: String
+    let discount: String
+
+    @Binding var shouldShowCouponLineDetails: Bool
+
+
+    var body: some View {
+        TitleAndValueRow(title: couponSummary, value: .content(discount), selectionStyle: .highlight) {
+            shouldShowCouponLineDetails = true
         }
     }
 }

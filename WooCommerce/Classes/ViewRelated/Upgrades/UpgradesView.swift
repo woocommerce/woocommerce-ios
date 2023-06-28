@@ -70,11 +70,13 @@ struct UpgradesView: View {
                     OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
                 case .waiting(let plan):
                     UpgradeWaitingView(planName: plan.wooPlan.shortName)
+                        .scrollVerticallyIfNeeded()
                 case .completed(let plan):
                     CompletedUpgradeView(planName: plan.wooPlan.shortName,
                                          doneAction: {
                         dismiss()
                     })
+                    .scrollVerticallyIfNeeded()
                 case .prePurchaseError(let error):
                     VStack {
                         PrePurchaseUpgradesErrorView(error,
@@ -86,6 +88,7 @@ struct UpgradesView: View {
 
                         Spacer()
                     }
+                    .scrollVerticallyIfNeeded()
                     .background(Color(.systemGroupedBackground))
                 case .purchaseUpgradeError(.inAppPurchaseFailed(let plan, let iapStoreError)):
                     PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan, iapStoreError)) {
@@ -97,6 +100,7 @@ struct UpgradesView: View {
                     } getSupportAction: {
                         supportHandler()
                     }
+                    .scrollVerticallyIfNeeded()
                 case .purchaseUpgradeError(let underlyingError):
                     // handles .planActivationFailed and .unknown underlyingErrors
                     PurchaseUpgradeErrorView(error: underlyingError,
@@ -105,6 +109,7 @@ struct UpgradesView: View {
                         dismiss()
                     },
                                              getSupportAction: supportHandler)
+                    .scrollVerticallyIfNeeded()
                 }
             }
             .navigationBarHidden(true)

@@ -7,14 +7,12 @@ import WooFoundation
 //
 public final class StatsStoreV4: Store {
     private let siteStatsRemote: SiteStatsRemote
-    private let leaderboardsRemote: LeaderboardsRemote
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
     private let productsReportsRemote: ProductsReportsRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
-        self.leaderboardsRemote = LeaderboardsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
         self.productsReportsRemote = ProductsReportsRemote(network: network)
@@ -293,43 +291,6 @@ private extension StatsStoreV4 {
                                                    productsReport: productsReport,
                                                    quantity: quantity)
     }
-
-    @MainActor
-    func loadTopEarnerStatsWithDeprecatedAPI(siteID: Int64,
-                                             timeRange: StatsTimeRangeV4,
-                                             earliestDateToInclude: Date,
-                                             latestDateToInclude: Date,
-                                             quantity: Int,
-                                             forceRefresh: Bool) async throws -> TopEarnerStats {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<TopEarnerStats, Error>) -> Void in
-            let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
-            let earliestDate = dateFormatter.string(from: earliestDateToInclude)
-            let latestDate = dateFormatter.string(from: latestDateToInclude)
-            leaderboardsRemote.loadLeaderboardsDeprecated(for: siteID,
-                                                          unit: timeRange.leaderboardsGranularity,
-                                                          earliestDateToInclude: earliestDate,
-                                                          latestDateToInclude: latestDate,
-                                                          quantity: quantity,
-                                                          forceRefresh: forceRefresh) { [weak self] result in
-                guard let self = self else {
-                    return
-                }
-
-                switch result {
-                case .success(let leaderboards):
-                    self.convertLeaderboardsIntoTopEarners(siteID: siteID,
-                                                           granularity: timeRange.topEarnerStatsGranularity,
-                                                           date: latestDateToInclude,
-                                                           leaderboards: leaderboards,
-                                                           quantity: quantity) { result in
-                        continuation.resume(with: result)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
 }
 
 
@@ -480,44 +441,9 @@ extension StatsStoreV4 {
     }
 }
 
-// MARK: Convert Leaderboard into TopEarnerStats
+// MARK: Convert Products Report into TopEarnerStats
 //
 private extension StatsStoreV4 {
-
-    /// Converts a top-product `leaderboard` into a `StatsTopEarner`
-    /// Since  a `leaderboard` does not contain the necessary product information, this method fetches the related product before starting the conversion.
-    ///
-    func convertLeaderboardsIntoTopEarners(siteID: Int64,
-                                           granularity: StatGranularity,
-                                           date: Date,
-                                           leaderboards: [Leaderboard],
-                                           quantity: Int,
-                                           onCompletion: @escaping (Result<TopEarnerStats, Error>) -> Void) {
-
-        // Find the top products leaderboard by its ID
-        guard let topProducts = leaderboards.first(where: { $0.id == Constants.topProductsID }) else {
-            onCompletion(.failure(StatsStoreV4Error.missingTopProducts))
-            return
-        }
-
-        // Make sure we have all the necessary product data before converting and storing top earners.
-        loadProducts(for: topProducts, siteID: siteID) { [weak self] topProductsResult in
-            guard let self = self else { return }
-
-            switch topProductsResult {
-            case .success(let products):
-                let topEarners = self.mergeTopProductsAndStoredProductsIntoTopEarners(siteID: siteID,
-                                                                                      granularity: granularity,
-                                                                                      date: date,
-                                                                                      topProducts: topProducts,
-                                                                                      storedProducts: products,
-                                                                                      quantityLimit: quantity)
-                onCompletion(.success((topEarners)))
-            case .failure(let error):
-                onCompletion(.failure(error))
-            }
-        }
-    }
 
     /// Converts the `[ProductsReportItem]` list in a Products analytics report into `TopEarnerStats`
     ///
@@ -538,60 +464,6 @@ private extension StatsStoreV4 {
         }
         return TopEarnerStats(siteID: siteID, date: statsDate, granularity: granularity, limit: quantity.description, items: statsItems)
     }
-
-    /// Loads product objects that relates to the top products on a `leaderboard`
-    /// If product objects can't be found in the storage layer, they will be fetched from the remote layer.
-    ///
-    func loadProducts(for topProducts: Leaderboard, siteID: Int64, completion: @escaping (Result<[Product], Error>) -> Void) {
-
-        // Workout if we have stored all products that relate to the given leaderboard
-        let topProductIDs = LeaderboardStatsConverter.topProductsIDs(from: topProducts)
-        let topStoredProducts = loadStoredProducts(siteID: siteID, productIDs: topProductIDs)
-        let missingProductsIDs = LeaderboardStatsConverter.missingProductsIDs(from: topProducts, in: topStoredProducts)
-
-        // Return if we have all the products that we need
-        guard !missingProductsIDs.isEmpty else {
-            completion(.success(topStoredProducts))
-            return
-        }
-
-        // Fetch the products that we have not downloaded and stored yet
-        productsRemote.loadProducts(for: siteID, by: missingProductsIDs) { result in
-            switch result {
-            case .success(let products):
-                // Return the complete array of products that corresponds to a top product leaderboard
-                let completeTopProducts = products + topStoredProducts
-                completion(.success(completeTopProducts))
-
-            case .failure:
-                completion(result)
-            }
-        }
-    }
-
-    /// Returns all stored products for a given site ID
-    ///
-    func loadStoredProducts(siteID: Int64, productIDs: [Int64] ) -> [Networking.Product] {
-        let products = storageManager.viewStorage.loadProducts(siteID: siteID, productsIDs: productIDs)
-        return products.map { $0.toReadOnly() }
-    }
-
-    /// Merges a top-product leaderboard with an array of stored products into  a `TopEarnerStats` object
-    ///
-    func mergeTopProductsAndStoredProductsIntoTopEarners(siteID: Int64,
-                                                         granularity: StatGranularity,
-                                                         date: Date,
-                                                         topProducts: Leaderboard,
-                                                         storedProducts: [Product],
-                                                         quantityLimit: Int) -> TopEarnerStats {
-        let statsDate = Self.buildDateString(from: date, with: granularity)
-        let statsItems = LeaderboardStatsConverter.topEarnerStatsItems(from: topProducts, using: storedProducts)
-        return TopEarnerStats(siteID: siteID,
-                              date: statsDate,
-                              granularity: granularity,
-                              limit: String(quantityLimit),
-                              items: statsItems)
-    }
 }
 
 // MARK: - Public Helpers
@@ -611,17 +483,6 @@ public extension StatsStoreV4 {
         case .year:
             return DateFormatter.Stats.statsYearFormatter.string(from: date)
         }
-    }
-}
-
-// MARK: - Constants!
-//
-private extension StatsStoreV4 {
-
-    enum Constants {
-        /// ID of top products section in leaderboards API
-        ///
-        static let topProductsID = "products"
     }
 }
 

@@ -128,6 +128,11 @@ private extension StorePlanSynchronizer {
         if now.timeIntervalSince(normalizedDate) < Constants.oneDayTimeInterval {
             scheduleAfterExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
+
+        if let subscribedDate = plan.subscribedDate,
+           Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
+            schedule24HrsAfterSuscribedNotification(siteID: siteID, subcribedDate: subscribedDate)
+        }
     }
 
     func cancelFreeTrialExpirationNotifications(siteID: Int64) {
@@ -136,6 +141,26 @@ private extension StorePlanSynchronizer {
             siteID: siteID,
             expiryDate: Date() // placeholder date, irrelevant to the notification identifier
         ))
+        localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
+    }
+
+    func schedule24HrsAfterSuscribedNotification(siteID: Int64, subcribedDate: Date) {
+        // TODO: #10094 Remove after adding remote feature flag
+        guard featureFlagService.isFeatureFlagEnabled(.twentyFourHoursAfterFreeTrialSubscribedNotification) else {
+            return
+        }
+
+        let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
+
+        /// Scheduled 24 hrs after subcribed date
+        let triggerDateComponents = subcribedDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      trigger: trigger,
+                                                      remoteFeatureFlag: nil, // TODO: #10094 Add remote feature flag
+                                                      shouldSkipIfScheduled: true)
+        }
     }
 
     func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {

@@ -49,11 +49,13 @@ struct ProductSharingMessageGenerationView: View {
                         .disabled(viewModel.generationInProgress)
                         .opacity(viewModel.generationInProgress ? 0 : 1)
 
-                    FeedbackView(onUpvote: {
-                        // TODO
-                    }, onDownvote: {
-                        // TODO
-                    })
+                    FeedbackView(title: Localization.feedbackQuestion,
+                                 backgroundColor: .init(uiColor: .systemGray6),
+                                 onUpvote: {
+                                    // TODO
+                                }, onDownvote: {
+                                    // TODO
+                                })
                     .renderedIf(viewModel.messageContent.isNotEmpty &&
                                 viewModel.generationInProgress == false)
                 }
@@ -163,6 +165,10 @@ private extension ProductSharingMessageGenerationView {
         static let learnMore = NSLocalizedString(
             "Learn more",
             comment: "Button to open the legal page for AI-generated contents on the product sharing message generation screen"
+        )
+        static let feedbackQuestion = NSLocalizedString(
+            "Is the generated message helpful?",
+            comment: "Question to ask for feedback for the AI-generated content on the product sharing message generation screen"
         )
     }
 }

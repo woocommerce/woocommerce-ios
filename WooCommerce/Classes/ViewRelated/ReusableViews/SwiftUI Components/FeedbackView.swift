@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct FeedbackView: View {
+    let title: String
+    var backgroundColor: Color = .init(uiColor: .systemGray5)
     let onUpvote: () -> Void
     let onDownvote: () -> Void
 
@@ -9,7 +11,7 @@ struct FeedbackView: View {
 
     var body: some View {
         HStack {
-            Text(Localization.feedbackQuestion)
+            Text(title)
                 .subheadlineStyle()
             Spacer()
             HStack(spacing: Layout.buttonSpacing) {
@@ -39,7 +41,7 @@ struct FeedbackView: View {
         .padding(Layout.contentInsets)
         .background(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .foregroundColor(.init(uiColor: .systemGray5))
+                .foregroundColor(backgroundColor)
         )
     }
 }
@@ -51,16 +53,10 @@ private extension FeedbackView {
         static let iconSize: CGFloat = 20
         static let buttonSpacing: CGFloat = 16
     }
-    enum Localization {
-        static let feedbackQuestion = NSLocalizedString(
-            "Is the generated description helpful?",
-            comment: "Question to ask for feedback for the AI-generated content"
-        )
-    }
 }
 
 struct FeedbackView_Previews: PreviewProvider {
     static var previews: some View {
-        FeedbackView(onUpvote: {}, onDownvote: {})
+        FeedbackView(title: "Test", onUpvote: {}, onDownvote: {})
     }
 }

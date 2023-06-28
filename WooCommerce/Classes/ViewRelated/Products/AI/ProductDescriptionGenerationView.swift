@@ -103,7 +103,7 @@ struct ProductDescriptionGenerationView: View {
                         .renderedIf(viewModel.isGenerationInProgress == false)
 
                         // Feedback banner
-                        FeedbackView(onUpvote: {
+                        FeedbackView(title: Localization.feedbackQuestion, onUpvote: {
                             // TODO
                         }, onDownvote: {
                             // TODO
@@ -214,6 +214,10 @@ private extension ProductDescriptionGenerationView {
         static let sampleFeatures = NSLocalizedString(
             "Example: Potted, cactus, plant, decorative, easy-care",
             comment: "Label for sample product features to enter in the product description AI generator view."
+        )
+        static let feedbackQuestion = NSLocalizedString(
+            "Is the generated description helpful?",
+            comment: "Question to ask for feedback for the AI-generated content on the product description AI generator screen."
         )
     }
 }

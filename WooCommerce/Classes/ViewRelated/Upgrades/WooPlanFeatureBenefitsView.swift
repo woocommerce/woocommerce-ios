@@ -23,6 +23,7 @@ struct WooPlanFeatureBenefitsView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityAddTraits(.isHeader)
 
                 ForEach(wooPlanFeatureGroup.features, id: \.title) { feature in
                     WooPlanFeatureBenefitRow(feature: feature)
@@ -65,6 +66,7 @@ struct WooPlanFeatureBenefitRow: View {
             VStack(alignment: .leading, spacing: Layout.titleDescriptionVerticalSpacing) {
                 Text(feature.title)
                     .font(.body)
+                    .accessibilityAddTraits(.isHeader)
 
                 Text(feature.description)
                     .font(.footnote)

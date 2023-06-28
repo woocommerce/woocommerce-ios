@@ -60,6 +60,7 @@ struct UpgradesView: View {
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:
                     OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
+                        .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plan):
                     OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
                         Task {
@@ -820,5 +821,11 @@ private extension UpgradesView {
         static let padding: CGFloat = 16
         static let contentSpacing: CGFloat = 8
         static let smallPadding: CGFloat = 8
+    }
+
+    enum Localization {
+        static let plansLoadingAccessibilityLabel = NSLocalizedString(
+            "Loading plan details",
+            comment: "Accessibility label for the initial loading state of the Upgrades view")
     }
 }

@@ -25,5 +25,6 @@
     "woo_notification_store_creation_ready": false,
     "woo_notification_nudge_free_trial_after_1d": false,
     "woo_notification_1d_before_free_trial_expires": false,
-    "woo_notification_1d_after_free_trial_expires": false
+    "woo_notification_1d_after_free_trial_expires": false,
+    "woo_notification_24h_after_free_trial_subscribed": false
 }

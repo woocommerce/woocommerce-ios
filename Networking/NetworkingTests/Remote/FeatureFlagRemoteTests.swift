@@ -35,7 +35,8 @@ final class FeatureFlagRemoteTests: XCTestCase {
             .storeCreationCompleteNotification: false,
             .oneDayAfterStoreCreationNameWithoutFreeTrial: false,
             .oneDayBeforeFreeTrialExpiresNotification: false,
-            .oneDayAfterFreeTrialExpiresNotification: false
+            .oneDayAfterFreeTrialExpiresNotification: false,
+            .twentyFourHoursAfterFreeTrialSubscribed: false
         ])
     }
 

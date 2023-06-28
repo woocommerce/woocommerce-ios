@@ -668,6 +668,9 @@
 		CE6D666F2379E82A007835A1 /* ArrayWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6D666E2379E82A007835A1 /* ArrayWooTests.swift */; };
 		CE71E2292A4C35C900DB5376 /* reports-products.json in Resources */ = {isa = PBXBuildFile; fileRef = CE71E2282A4C35C900DB5376 /* reports-products.json */; };
 		CE71E2372A4C3F3900DB5376 /* reports-products-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE71E2362A4C3F3900DB5376 /* reports-products-without-data.json */; };
+		CE71E22F2A4C38C900DB5376 /* ProductsReportItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71E22E2A4C38C900DB5376 /* ProductsReportItem.swift */; };
+		CE71E2312A4C3DDA00DB5376 /* ProductsReportMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71E2302A4C3DDA00DB5376 /* ProductsReportMapper.swift */; };
+		CE71E2332A4C3EDD00DB5376 /* ProductsReportMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71E2322A4C3EDD00DB5376 /* ProductsReportMapperTests.swift */; };
 		CE831FE72A17FC1800E8BEFB /* order-with-composite-product.json in Resources */ = {isa = PBXBuildFile; fileRef = CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */; };
 		CE865A9D2A41E1480049B03C /* EntityDateModifiedMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */; };
 		CE865A9F2A41E42F0049B03C /* date-modified-gmt.json in Resources */ = {isa = PBXBuildFile; fileRef = CE865A9E2A41E42F0049B03C /* date-modified-gmt.json */; };
@@ -1619,6 +1622,9 @@
 		CE6D666E2379E82A007835A1 /* ArrayWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayWooTests.swift; sourceTree = "<group>"; };
 		CE71E2282A4C35C900DB5376 /* reports-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reports-products.json"; sourceTree = "<group>"; };
 		CE71E2362A4C3F3900DB5376 /* reports-products-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reports-products-without-data.json"; sourceTree = "<group>"; };
+		CE71E22E2A4C38C900DB5376 /* ProductsReportItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportItem.swift; sourceTree = "<group>"; };
+		CE71E2302A4C3DDA00DB5376 /* ProductsReportMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportMapper.swift; sourceTree = "<group>"; };
+		CE71E2322A4C3EDD00DB5376 /* ProductsReportMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportMapperTests.swift; sourceTree = "<group>"; };
 		CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-composite-product.json"; sourceTree = "<group>"; };
 		CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDateModifiedMapper.swift; sourceTree = "<group>"; };
 		CE865A9E2A41E42F0049B03C /* date-modified-gmt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "date-modified-gmt.json"; sourceTree = "<group>"; };
@@ -2048,6 +2054,7 @@
 				26B2F74224C545D50065CCC8 /* Leaderboard.swift */,
 				26B2F74A24C696C00065CCC8 /* LeaderboardRow.swift */,
 				26B2F74C24C696E70065CCC8 /* LeaderboardRowContent.swift */,
+				CE71E22E2A4C38C900DB5376 /* ProductsReportItem.swift */,
 			);
 			path = Stats;
 			sourceTree = "<group>";
@@ -2848,6 +2855,7 @@
 				0219B03823964BB3007DCD5E /* ProductShippingClassMapper.swift */,
 				025CA2C1238EBBAA00B05C81 /* ProductShippingClassListMapper.swift */,
 				45D685F723D0BC78005F87D0 /* ProductSkuMapper.swift */,
+				CE71E2302A4C3DDA00DB5376 /* ProductsReportMapper.swift */,
 				CE430673234BA6AD0073CBFF /* RefundMapper.swift */,
 				CE430675234BA7920073CBFF /* RefundListMapper.swift */,
 				7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */,
@@ -3008,6 +3016,7 @@
 				45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */,
 				26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */,
 				45D685FB23D0C739005F87D0 /* ProductSkuMapperTests.swift */,
+				CE71E2322A4C3EDD00DB5376 /* ProductsReportMapperTests.swift */,
 				4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */,
 				CEC4BF94234E7F34008D9195 /* RefundListMapperTests.swift */,
 				EE57C145297FCCD200BC31E7 /* ProductShippingClassListMapperTests.swift */,
@@ -3882,6 +3891,7 @@
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
 				57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */,
 				020D07BC23D856BF00FD9580 /* MediaRemote.swift in Sources */,
+				CE71E2312A4C3DDA00DB5376 /* ProductsReportMapper.swift in Sources */,
 				0286981429ED2D6400853B88 /* GenerativeContentRemote.swift in Sources */,
 				EE2C09C829AF6357009396F9 /* StoreOnboardingTask.swift in Sources */,
 				D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */,
@@ -4058,6 +4068,7 @@
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
 				74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */,
 				E1BAB2C72913FB5800C3982B /* WordPressApiError.swift in Sources */,
+				CE71E22F2A4C38C900DB5376 /* ProductsReportItem.swift in Sources */,
 				314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */,
 				CCF48B282628A4EB0034EA83 /* ShippingLabelAccountSettingsMapper.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatusEnum.swift in Sources */,
@@ -4211,6 +4222,7 @@
 				EEA658482966CBAD00112DF0 /* EntityIDMapperTests.swift in Sources */,
 				EE2C09C429AF5274009396F9 /* StoreOnboardingTaskListMapperTests.swift in Sources */,
 				DEC51AFB2769C66B009F3DF4 /* SystemStatusMapperTests.swift in Sources */,
+				CE71E2332A4C3EDD00DB5376 /* ProductsReportMapperTests.swift in Sources */,
 				DE34051F28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift in Sources */,
 				74AB5B4D21AF354E00859C12 /* SiteAPIMapperTests.swift in Sources */,
 				68F48B0F28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift in Sources */,

@@ -69,47 +69,52 @@ struct UpgradesView: View {
                 case .purchasing(let plan):
                     OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
                 case .waiting(let plan):
-                    UpgradeWaitingView(planName: plan.wooPlan.shortName)
-                        .scrollVerticallyIfNeeded()
-                case .completed(let plan):
-                    CompletedUpgradeView(planName: plan.wooPlan.shortName,
-                                         doneAction: {
-                        dismiss()
-                    })
-                    .scrollVerticallyIfNeeded()
-                case .prePurchaseError(let error):
-                    VStack {
-                        PrePurchaseUpgradesErrorView(error,
-                                                     onRetryButtonTapped: {
-                            upgradesViewModel.retryFetch()
-                        })
-                        .padding(.top, Layout.errorViewTopPadding)
-                        .padding(.horizontal, Layout.errorViewHorizontalPadding)
-
-                        Spacer()
+                    ScrollView(.vertical) {
+                        UpgradeWaitingView(planName: plan.wooPlan.shortName)
                     }
-                    .scrollVerticallyIfNeeded()
+                case .completed(let plan):
+                    ScrollView(.vertical) {
+                        CompletedUpgradeView(planName: plan.wooPlan.shortName,
+                                             doneAction: {
+                            dismiss()
+                        })
+                    }
+                case .prePurchaseError(let error):
+                    ScrollView(.vertical) {
+                        VStack {
+                            PrePurchaseUpgradesErrorView(error,
+                                                         onRetryButtonTapped: {
+                                upgradesViewModel.retryFetch()
+                            })
+                            .padding(.top, Layout.errorViewTopPadding)
+                            .padding(.horizontal, Layout.errorViewHorizontalPadding)
+
+                            Spacer()
+                        }
+                    }
                     .background(Color(.systemGroupedBackground))
                 case .purchaseUpgradeError(.inAppPurchaseFailed(let plan, let iapStoreError)):
-                    PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan, iapStoreError)) {
-                        Task {
-                            await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                    ScrollView(.vertical) {
+                        PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan, iapStoreError)) {
+                            Task {
+                                await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                            }
+                        } secondaryAction: {
+                            dismiss()
+                        } getSupportAction: {
+                            supportHandler()
                         }
-                    } secondaryAction: {
-                        dismiss()
-                    } getSupportAction: {
-                        supportHandler()
                     }
-                    .scrollVerticallyIfNeeded()
                 case .purchaseUpgradeError(let underlyingError):
                     // handles .planActivationFailed and .unknown underlyingErrors
-                    PurchaseUpgradeErrorView(error: underlyingError,
-                                             primaryAction: nil,
-                                             secondaryAction: {
-                        dismiss()
-                    },
-                                             getSupportAction: supportHandler)
-                    .scrollVerticallyIfNeeded()
+                    ScrollView(.vertical) {
+                        PurchaseUpgradeErrorView(error: underlyingError,
+                                                 primaryAction: nil,
+                                                 secondaryAction: {
+                            dismiss()
+                        },
+                                                 getSupportAction: supportHandler)
+                    }
                 }
             }
             .navigationBarHidden(true)

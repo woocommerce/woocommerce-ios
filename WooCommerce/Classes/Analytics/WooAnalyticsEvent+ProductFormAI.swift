@@ -4,7 +4,6 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let source = "source"
             static let isRetry = "is_retry"
-            static let isUseful = "is_useful"
         }
 
         /// Tracked when the user taps on the button to start the product description AI flow.
@@ -43,12 +42,6 @@ extension WooAnalyticsEvent {
         /// Tracked when the product description AI generation fails.
         static func productDescriptionAIGenerationFailed(error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDescriptionAIGenerationFailed, properties: [:], error: error)
-        }
-
-        /// Tracked when feedback for AI-generated content in sent.
-        static func feedbackSent(isUseful: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDescriptionAIFeedback,
-                              properties: [Key.isUseful: isUseful])
         }
     }
 }

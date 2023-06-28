@@ -5,7 +5,6 @@ extension WooAnalyticsEvent {
         private enum Key: String {
             case isRetry = "is_retry"
             case withMessage = "with_message"
-            case isUseful = "is_useful"
         }
 
         static func sheetDisplayed() -> WooAnalyticsEvent {
@@ -37,11 +36,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productSharingAIMessageGenerationFailed,
                               properties: [:],
                               error: error)
-        }
-
-        static func feedbackSent(isUseful: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productSharingAIFeedback,
-                              properties: [Key.isUseful.rawValue: isUseful])
         }
     }
 }

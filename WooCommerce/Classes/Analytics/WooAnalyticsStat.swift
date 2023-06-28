@@ -735,7 +735,6 @@ public enum WooAnalyticsStat: String {
     case productDescriptionAICopyButtonTapped = "product_description_ai_copy_button_tapped"
     case productDescriptionAIGenerationSuccess = "product_description_ai_generation_success"
     case productDescriptionAIGenerationFailed = "product_description_ai_generation_failed"
-    case productDescriptionAIFeedback = "product_description_ai_feedback"
 
     // MARK: First created product events
     case firstCreatedProductShown = "first_created_product_shown"
@@ -749,7 +748,10 @@ public enum WooAnalyticsStat: String {
     case productSharingAIDismissed = "product_sharing_ai_dismissed"
     case productSharingAIMessageGenerated = "product_sharing_ai_message_generated"
     case productSharingAIMessageGenerationFailed = "product_sharing_ai_message_generation_failed"
-    case productSharingAIFeedback = "product_sharing_ai_feedback"
+
+    // MARK: Product AI Feedback
+    //
+    case productAIFeedback = "product_ai_feedback"
 
     // MARK: Remote Request Events
     //

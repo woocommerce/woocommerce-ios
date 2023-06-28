@@ -22,6 +22,7 @@ struct LocalNotification {
         case oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: String)
         case oneDayBeforeFreeTrialExpires(siteID: Int64, expiryDate: Date)
         case oneDayAfterFreeTrialExpires(siteID: Int64)
+        case twentyFourHoursAfterFreeTrialSubscribed(siteID: Int64)
 
         var identifier: String {
             switch self {
@@ -33,6 +34,8 @@ struct LocalNotification {
                 return Identifier.Prefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
             case .oneDayAfterFreeTrialExpires(let siteID):
                 return Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)"
+            case let .twentyFourHoursAfterFreeTrialSubscribed(siteID):
+                return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(siteID)"
             }
         }
 
@@ -40,6 +43,7 @@ struct LocalNotification {
             enum Prefix {
                 static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
                 static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
+                static let twentyFourHoursAfterFreeTrialSubscribed = "twenty_four_hours_after_free_trial_subscribed"
             }
             static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
         }
@@ -50,6 +54,8 @@ struct LocalNotification {
                 return Identifier.Prefix.oneDayBeforeFreeTrialExpires
             } else if identifier.hasPrefix(Identifier.Prefix.oneDayAfterFreeTrialExpires) {
                 return Identifier.Prefix.oneDayAfterFreeTrialExpires
+            } else if identifier.hasPrefix(Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed) {
+                return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
             }
             return identifier
         }
@@ -121,6 +127,10 @@ extension LocalNotification {
         case .oneDayAfterFreeTrialExpires:
             title = Localization.OneDayAfterFreeTrialExpires.title
             body = String.localizedStringWithFormat(Localization.OneDayAfterFreeTrialExpires.body, name)
+
+        case .twentyFourHoursAfterFreeTrialSubscribed:
+            title = Localization.TwentyFourHoursAfterFreeTrialSubscribed.title
+            body = Localization.TwentyFourHoursAfterFreeTrialSubscribed.body
 
         }
 

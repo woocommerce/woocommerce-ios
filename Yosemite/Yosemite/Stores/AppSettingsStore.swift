@@ -192,6 +192,10 @@ public class AppSettingsStore: Store {
             setEUShippingNoticeDismissState(isDismissed: true, onCompletion: onCompletion)
         case .loadEUShippingNoticeDismissState(let onCompletion):
             loadEUShippingNoticeDismissState(onCompletion: onCompletion)
+        case .getLocalAnnouncementVisibility(let announcement, let onCompletion):
+            getLocalAnnouncementVisibility(announcement: announcement, onCompletion: onCompletion)
+        case .setLocalAnnouncementDismissed(let announcement, let onCompletion):
+            setLocalAnnouncementDismissed(announcement: announcement, onCompletion: onCompletion)
         }
     }
 }
@@ -598,6 +602,29 @@ private extension AppSettingsStore {
         } catch {
             let error = AppSettingsStoreErrors.deletePreselectedProvider
             onCompletion?(error)
+        }
+    }
+}
+
+// MARK: - Local Announcement Visibility
+//
+private extension AppSettingsStore {
+    func getLocalAnnouncementVisibility(announcement: LocalAnnouncement, onCompletion: (Bool) -> Void) {
+        guard let isDismissed = generalAppSettings.value(for: \.localAnnouncementDismissed)[announcement] else {
+            // If the announcement hasn't been dismissed, it is visible.
+            return onCompletion(true)
+        }
+        onCompletion(isDismissed == false)
+    }
+
+    func setLocalAnnouncementDismissed(announcement: LocalAnnouncement, onCompletion: (Result<Void, Error>) -> ()) {
+        do {
+            let settings = generalAppSettings.settings
+            let settingsToSave = settings.replacingAsDismissed(localAnnouncement: announcement)
+            try generalAppSettings.saveSettings(settingsToSave)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
         }
     }
 }

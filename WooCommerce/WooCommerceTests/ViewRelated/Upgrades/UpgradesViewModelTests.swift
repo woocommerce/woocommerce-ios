@@ -76,4 +76,22 @@ final class UpgradesViewModelTests: XCTestCase {
         assertEqual("debug.woocommerce.express.essential.monthly", plan.wpComPlan.id)
         assertEqual("$1.50", plan.wpComPlan.displayPrice)
     }
+
+    func test_upgradeViewState_when_initialized_is_loading_state() {
+        // Given, When
+        // see `setUp`
+
+        // Then
+        XCTAssertEqual(sut.upgradeViewState, .loading)
+    }
+
+    func test_upgradeViewState_when_initialized_by_non_owner_then_state_is_prepurchaseError_userNotAllowedToUpgrade() {
+         // Given
+         let site = Site.fake().copy(isSiteOwner: false)
+         let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
+         let sut = UpgradesViewModel(siteID: sampleSiteID, stores: stores)
+
+         // Then
+         XCTAssertEqual(sut.upgradeViewState, .prePurchaseError(.userNotAllowedToUpgrade))
+     }
 }

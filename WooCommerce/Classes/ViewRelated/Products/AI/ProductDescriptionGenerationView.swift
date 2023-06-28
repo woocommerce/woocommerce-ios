@@ -104,7 +104,7 @@ struct ProductDescriptionGenerationView: View {
 
                         // Feedback banner
                         FeedbackView(title: Localization.feedbackQuestion, onVote: { vote in
-                            // TODO
+                            viewModel.handleFeedback(vote)
                         })
                         .renderedIf(viewModel.shouldShowFeedbackView)
                     }

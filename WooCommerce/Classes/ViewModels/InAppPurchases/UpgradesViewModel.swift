@@ -61,7 +61,7 @@ final class UpgradesViewModel: ObservableObject {
 
     @Published var upgradeViewState: UpgradeViewState = .loading
 
-    private let localPlans: [WooPlan]
+    private let localPlans: [WooPlan] = [.loadHardcodedPlan()]
 
     private let analytics: Analytics
 
@@ -79,12 +79,6 @@ final class UpgradesViewModel: ObservableObject {
         self.analytics = analytics
 
         entitledWpcomPlanIDs = []
-
-        if let essentialPlan = WooPlan() {
-            self.localPlans = [essentialPlan]
-        } else {
-            self.localPlans = []
-        }
 
         observeViewStateAndTrackAnalytics()
 

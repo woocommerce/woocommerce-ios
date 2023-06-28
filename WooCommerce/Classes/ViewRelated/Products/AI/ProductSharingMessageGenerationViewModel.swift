@@ -5,6 +5,8 @@ import Yosemite
 final class ProductSharingMessageGenerationViewModel: ObservableObject {
     @Published var isSharePopoverPresented = false
     @Published var isShareSheetPresented = false
+
+    /// Whether feedback banner for the generated text should be displayed.
     @Published var shouldShowFeedbackView = false
 
     let viewTitle: String
@@ -88,7 +90,8 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         analytics.track(event: .ProductSharingAI.shareButtonTapped(withMessage: messageContent.isNotEmpty))
     }
 
-    func handleVote(_ vote: FeedbackView.Vote) {
+    /// Handles when a feedback is sent.
+    func handleFeedback(_ vote: FeedbackView.Vote) {
         // TODO: analytics?
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.shouldShowFeedbackView = false

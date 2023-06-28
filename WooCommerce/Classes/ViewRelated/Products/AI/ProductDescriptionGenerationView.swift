@@ -106,7 +106,7 @@ struct ProductDescriptionGenerationView: View {
                         FeedbackView(title: Localization.feedbackQuestion, onVote: { vote in
                             // TODO
                         })
-                        .renderedIf(viewModel.isGenerationInProgress == false)
+                        .renderedIf(viewModel.shouldShowFeedbackView)
                     }
                     .padding(Layout.suggestedTextInsets)
                     .background(

@@ -1,0 +1,6 @@
+framework module WooCommerceShared {
+  umbrella header "WooCommerceShared.h"
+
+  export *
+  module * { export * }
+}

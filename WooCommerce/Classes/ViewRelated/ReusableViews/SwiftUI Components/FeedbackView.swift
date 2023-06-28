@@ -8,6 +8,12 @@ struct FeedbackView: View {
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
+    @State private var vote: Vote?
+
+    enum Vote: String, Equatable {
+        case up
+        case down
+    }
 
     var body: some View {
         HStack {
@@ -17,23 +23,25 @@ struct FeedbackView: View {
             HStack(spacing: Layout.buttonSpacing) {
                 Button {
                     onUpvote()
+                    vote = .up
                 } label: {
-                    Image(systemName: "hand.thumbsup")
+                    Image(systemName: vote == .up ? "hand.thumbsup.fill" : "hand.thumbsup")
                         .resizable()
                         .frame(width: Layout.iconSize * scale,
                                height: Layout.iconSize * scale)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(vote == .up ? .accentColor : .secondary)
                 }
                 .buttonStyle(.plain)
 
                 Button {
                     onDownvote()
+                    vote = .down
                 } label: {
-                    Image(systemName: "hand.thumbsdown")
+                    Image(systemName: vote == .down ?  "hand.thumbsdown.fill" : "hand.thumbsdown")
                         .resizable()
                         .frame(width: Layout.iconSize * scale,
                                height: Layout.iconSize * scale)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(vote == .down ? .accentColor : .secondary)
                 }
                 .buttonStyle(.plain)
             }

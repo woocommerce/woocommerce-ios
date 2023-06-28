@@ -67,6 +67,6 @@ private extension FeedbackView {
 
 struct FeedbackView_Previews: PreviewProvider {
     static var previews: some View {
-        FeedbackView(title: "Test", onUpvote: {}, onDownvote: {})
+        FeedbackView(title: "Test", onVote: { _ in })
     }
 }

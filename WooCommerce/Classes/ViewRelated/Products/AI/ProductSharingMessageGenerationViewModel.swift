@@ -62,6 +62,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
 
     @MainActor
     func generateShareMessage() async {
+        shouldShowFeedbackView = false
         analytics.track(event: .ProductSharingAI.generateButtonTapped(isRetry: hasGeneratedMessage))
         errorMessage = nil
         generationInProgress = true
@@ -69,6 +70,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
             messageContent = try await requestMessageFromAI()
             hasGeneratedMessage = true
             analytics.track(event: .ProductSharingAI.messageGenerated())
+            shouldShowFeedbackView = true
         } catch {
             DDLogError("⛔️ Error generating product sharing message: \(error)")
             errorMessage = error.localizedDescription
@@ -84,6 +86,13 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
             isShareSheetPresented = true
         }
         analytics.track(event: .ProductSharingAI.shareButtonTapped(withMessage: messageContent.isNotEmpty))
+    }
+
+    func handleVote(_ vote: FeedbackView.Vote) {
+        // TODO: analytics?
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.shouldShowFeedbackView = false
+        }
     }
 }
 

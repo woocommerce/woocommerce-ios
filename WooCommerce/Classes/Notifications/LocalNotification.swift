@@ -184,5 +184,16 @@ extension LocalNotification {
                 "The placeholder is the name of the user."
             )
         }
+
+        enum TwentyFourHoursAfterFreeTrialSubscribed {
+            static let title = NSLocalizedString(
+                "🌟 Keep your business going!",
+                comment: "Title of the local notification to remind the user to purchase a plan."
+            )
+            static let body = NSLocalizedString(
+                "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best.",
+                comment: "Message on the local notification to remind the user to purchase a plan."
+            )
+        }
     }
 }

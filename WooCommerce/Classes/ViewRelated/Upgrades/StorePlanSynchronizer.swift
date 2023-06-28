@@ -130,6 +130,7 @@ private extension StorePlanSynchronizer {
         }
 
         if let subscribedDate = plan.subscribedDate,
+           // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
            Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
             schedule24HrsAfterSubscribedNotification(siteID: siteID, subcribedDate: subscribedDate)
         }

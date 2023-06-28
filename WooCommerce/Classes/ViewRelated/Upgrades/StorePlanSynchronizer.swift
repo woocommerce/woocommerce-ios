@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import Experiments
 
 /// Type that fetches and shares a `WPCom` store plan(subscription).
 /// The plan is stored on memory and not on the Storage Layer because this only relates to `WPCom` stores.
@@ -42,12 +43,16 @@ final class StorePlanSynchronizer: ObservableObject {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    private let featureFlagService: FeatureFlagService
+
     init(stores: StoresManager = ServiceLocator.stores,
          timeZone: TimeZone = .current,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
         self.timeZone = timeZone
+        self.featureFlagService = featureFlagService
 
         stores.site.sink { [weak self] site in
             guard let self else { return }

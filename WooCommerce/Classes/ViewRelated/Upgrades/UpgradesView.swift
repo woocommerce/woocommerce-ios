@@ -95,16 +95,14 @@ struct UpgradesView: View {
                     }
                     .background(Color(.systemGroupedBackground))
                 case .purchaseUpgradeError(.inAppPurchaseFailed(let plan, let iapStoreError)):
-                    ScrollView(.vertical) {
-                        PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan, iapStoreError)) {
-                            Task {
-                                await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
-                            }
-                        } secondaryAction: {
-                            dismiss()
-                        } getSupportAction: {
-                            supportHandler()
+                    PurchaseUpgradeErrorView(error: .inAppPurchaseFailed(plan, iapStoreError)) {
+                        Task {
+                            await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
                         }
+                    } secondaryAction: {
+                        dismiss()
+                    } getSupportAction: {
+                        supportHandler()
                     }
                 case .purchaseUpgradeError(let underlyingError):
                     // handles .planActivationFailed and .unknown underlyingErrors
@@ -255,58 +253,62 @@ struct PurchaseUpgradeErrorView: View {
 
     var body: some View {
         VStack {
-            VStack(alignment: .leading, spacing: Layout.spacing) {
-                Image(systemName: "exclamationmark.circle")
-                    .font(.system(size: Layout.exclamationImageSize))
-                    .foregroundColor(.withColorStudio(name: .red, shade: .shade20))
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: Layout.textSpacing) {
-                    Text(error.localizedTitle)
-                        .font(.title)
-                        .fontWeight(.bold)
-                    Text(error.localizedDescription)
-                    Text(error.localizedActionDirection)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                    if let actionHint = error.localizedActionHint {
-                        Text(actionHint)
-                            .font(.footnote)
-                    }
-                    if let errorCode = error.localizedErrorCode {
-                        Text(String(format: Localization.errorCodeFormat, errorCode))
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
-                    }
-                    Button(action: getSupportAction) {
-                        HStack {
-                            Image(systemName: "questionmark.circle")
-                                .font(.body.weight(.semibold))
-                                .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
-                            Text(Localization.getSupport)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: Layout.spacing) {
+                    Image(systemName: "exclamationmark.circle")
+                        .font(.system(size: Layout.exclamationImageSize))
+                        .foregroundColor(.withColorStudio(name: .red, shade: .shade20))
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: Layout.textSpacing) {
+                        Text(error.localizedTitle)
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Text(error.localizedDescription)
+                        Text(error.localizedActionDirection)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        if let actionHint = error.localizedActionHint {
+                            Text(actionHint)
+                                .font(.footnote)
+                        }
+                        if let errorCode = error.localizedErrorCode {
+                            Text(String(format: Localization.errorCodeFormat, errorCode))
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                        }
+                        Button(action: getSupportAction) {
+                            HStack {
+                                Image(systemName: "questionmark.circle")
+                                    .font(.body.weight(.semibold))
+                                    .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
+                                Text(Localization.getSupport)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
+                            }
                         }
                     }
-
-                    Spacer()
-
-                    if let primaryButtonTitle = error.localizedPrimaryButtonLabel {
-                        Button(primaryButtonTitle) {
-                            primaryAction?()
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-                    }
-
-                    Button(error.localizedSecondaryButtonTitle) {
-                        secondaryAction()
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
                 }
+                .padding(.top, Layout.topPadding)
+                .padding(.horizontal, Layout.horizontalPadding)
             }
+
+            Spacer()
+
+            if let primaryButtonTitle = error.localizedPrimaryButtonLabel {
+                Button(primaryButtonTitle) {
+                    primaryAction?()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, Layout.horizontalPadding)
+            }
+
+            Button(error.localizedSecondaryButtonTitle) {
+                secondaryAction()
+            }
+            .buttonStyle(SecondaryButtonStyle())
             .padding(.horizontal, Layout.horizontalPadding)
-            .padding(.top, Layout.topPadding)
-            .padding(.bottom)
         }
+        .padding(.bottom)
     }
 
     enum Layout {

@@ -159,7 +159,7 @@ private extension StorePlanSynchronizer {
         Task {
             await localNotificationScheduler.schedule(notification: notification,
                                                       trigger: trigger,
-                                                      remoteFeatureFlag: nil, // TODO: #10094 Add remote feature flag
+                                                      remoteFeatureFlag: .twentyFourHoursAfterFreeTrialSubscribed,
                                                       shouldSkipIfScheduled: true)
         }
     }

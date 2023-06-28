@@ -602,6 +602,7 @@ struct OwnerUpgradesView: View {
                     VStack(alignment: .leading) {
                         Text(upgradePlan.wooPlan.shortName)
                             .font(.largeTitle)
+                            .accessibilityAddTraits(.isHeader)
                         Text(upgradePlan.wooPlan.planDescription)
                             .font(.subheadline)
                     }
@@ -609,10 +610,12 @@ struct OwnerUpgradesView: View {
                     VStack(alignment: .leading) {
                         Text(upgradePlan.wpComPlan.displayPrice)
                             .font(.largeTitle)
+                            .accessibilityAddTraits(.isHeader)
                         Text(upgradePlan.wooPlan.planFrequency.localizedString)
                             .font(.footnote)
                     }
                 }
+                .accessibilityAddTraits(.isSummaryElement)
                 .listRowSeparator(.hidden)
 
                 if upgradePlan.hardcodedPlanDataIsValid {
@@ -763,6 +766,7 @@ private struct UpgradeTopBarView: View {
                 .fontWeight(.bold)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .center)
+                .accessibilityAddTraits(.isHeader)
 
             Spacer()
         }

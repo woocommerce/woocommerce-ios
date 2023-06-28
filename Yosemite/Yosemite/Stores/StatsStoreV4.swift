@@ -10,12 +10,14 @@ public final class StatsStoreV4: Store {
     private let leaderboardsRemote: LeaderboardsRemote
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
+    private let productsReportsRemote: ProductsReportsRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
         self.leaderboardsRemote = LeaderboardsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
+        self.productsReportsRemote = ProductsReportsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -269,24 +271,7 @@ private extension StatsStoreV4 {
                 }
                 onCompletion(.success(topEarnersStats))
             } catch {
-                guard let error = error as? DotcomError, error == .noRestRoute else {
-                    return onCompletion(.failure(error))
-                }
-
-                do {
-                    let topEarnersStats = try await loadTopEarnerStatsWithDeprecatedAPI(siteID: siteID,
-                                                                                        timeRange: timeRange,
-                                                                                        earliestDateToInclude: earliestDateToInclude,
-                                                                                        latestDateToInclude: latestDateToInclude,
-                                                                                        quantity: quantity,
-                                                                                        forceRefresh: forceRefresh)
-                    if saveInStorage {
-                        upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
-                    }
-                    onCompletion(.success(topEarnersStats))
-                } catch {
-                    onCompletion(.failure(error))
-                }
+                onCompletion(.failure(error))
             }
         }
     }
@@ -298,34 +283,15 @@ private extension StatsStoreV4 {
                             latestDateToInclude: Date,
                             quantity: Int,
                             forceRefresh: Bool) async throws -> TopEarnerStats {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<TopEarnerStats, Error>) -> Void in
-            let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
-            let earliestDate = dateFormatter.string(from: earliestDateToInclude)
-            let latestDate = dateFormatter.string(from: latestDateToInclude)
-            leaderboardsRemote.loadLeaderboards(for: siteID,
-                                                unit: timeRange.leaderboardsGranularity,
-                                                earliestDateToInclude: earliestDate,
-                                                latestDateToInclude: latestDate,
-                                                quantity: quantity,
-                                                forceRefresh: forceRefresh) { [weak self] result in
-                guard let self = self else {
-                    return
-                }
-
-                switch result {
-                case .success(let leaderboards):
-                    self.convertLeaderboardsIntoTopEarners(siteID: siteID,
-                                                           granularity: timeRange.topEarnerStatsGranularity,
-                                                           date: latestDateToInclude,
-                                                           leaderboards: leaderboards,
-                                                           quantity: quantity) { result in
-                        continuation.resume(with: result)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        let productsReport = try await productsReportsRemote.loadTopProductsReport(for: siteID,
+                                                                                   earliestDateToInclude: earliestDateToInclude,
+                                                                                   latestDateToInclude: latestDateToInclude,
+                                                                                   quantity: quantity)
+        return convertProductsReportIntoTopEarners(siteID: siteID,
+                                                   granularity: timeRange.topEarnerStatsGranularity,
+                                                   date: latestDateToInclude,
+                                                   productsReport: productsReport,
+                                                   quantity: quantity)
     }
 
     @MainActor
@@ -551,6 +517,26 @@ private extension StatsStoreV4 {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    /// Converts the `[ProductsReportItem]` list in a Products analytics report into `TopEarnerStats`
+    ///
+    func convertProductsReportIntoTopEarners(siteID: Int64,
+                                                  granularity: StatGranularity,
+                                                  date: Date,
+                                                  productsReport: [ProductsReportItem],
+                                                  quantity: Int) -> TopEarnerStats {
+        let statsDate = Self.buildDateString(from: date, with: granularity)
+        let statsItems = productsReport.map { product in
+            TopEarnerStatsItem(productID: product.productID,
+                               productName: product.productName,
+                               quantity: product.quantity,
+                               price: product.price,
+                               total: product.total,
+                               currency: "", // TODO: Remove currency https://github.com/woocommerce/woocommerce-ios/issues/2549
+                               imageUrl: product.imageUrl)
+        }
+        return TopEarnerStats(siteID: siteID, date: statsDate, granularity: granularity, limit: quantity.description, items: statsItems)
     }
 
     /// Loads product objects that relates to the top products on a `leaderboard`

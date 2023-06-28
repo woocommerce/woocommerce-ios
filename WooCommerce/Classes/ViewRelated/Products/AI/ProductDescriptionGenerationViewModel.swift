@@ -19,7 +19,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     @Published private(set) var isGenerationInProgress: Bool = false
 
     /// Whether feedback banner for the generated text should be displayed.
-    @Published var shouldShowFeedbackView = false
+    @Published private(set) var shouldShowFeedbackView = false
 
     /// Whether the text generation CTA is enabled.
     var isGenerationEnabled: Bool {

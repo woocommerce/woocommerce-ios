@@ -7,7 +7,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     @Published var isShareSheetPresented = false
 
     /// Whether feedback banner for the generated text should be displayed.
-    @Published var shouldShowFeedbackView = false
+    @Published private(set) var shouldShowFeedbackView = false
 
     let viewTitle: String
 

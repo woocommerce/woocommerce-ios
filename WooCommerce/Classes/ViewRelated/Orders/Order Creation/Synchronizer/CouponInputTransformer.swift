@@ -5,33 +5,45 @@ import Yosemite
 ///
 struct CouponInputTransformer {
 
-    /// Adds, deletes, or updates a coupon line input into an existing order.
-    /// Only the first coupon line is updated.
+    /// Adds a coupon line input into an existing order.
+    /// If the order already has that coupon line it does nothing
     ///
-    /// - If input is `nil`, then we remove the first existing coupon line.
-    /// - If there is no existing coupon lines, we insert the input one.
-    /// - If there are existing coupon lines replace the first coupon line
-    ///
-    static func update(input: OrderCouponLine?, on order: Order) -> Order {
-        // If input is `nil`, then we remove the first existing coupon line.
-        guard let input = input else {
-            let updatedLines = order.coupons.enumerated().map { index, line -> OrderCouponLine? in
-                if index == 0 {
-                    return nil
-                }
-                return OrderFactory.newOrderCouponLine(code: line.code)
-            }.compactMap({ $0 })
-            return order.copy(coupons: updatedLines)
-        }
-
-        // If there is no existing coupon lines, we insert the input one.
-        guard order.coupons.isNotEmpty else {
-            return order.copy(coupons: [input])
-        }
-
-        // If there are existing coupon lines replace the first coupon line
+    static func append(input: String, on order: Order) -> Order {
         var updatedCodes = order.coupons.map({ $0.code })
-        updatedCodes[0] = input.code
+
+        guard !updatedCodes.contains(input) else {
+            return order
+        }
+
+        updatedCodes.append(input)
+        return order.copy(coupons: updatedCodes.map({ OrderFactory.newOrderCouponLine(code: $0) }))
+    }
+
+    /// Removes a coupon line input into an existing order.
+    /// If the order does not have that coupon added it does nothing
+    ///
+    static func remove(code: String, on order: Order) -> Order {
+        var updatedCodes = order.coupons.map({ $0.code })
+
+        guard updatedCodes.contains(code) else {
+            return order
+        }
+
+        updatedCodes.removeAll(where: { $0 == code })
+        return order.copy(coupons: updatedCodes.map({ OrderFactory.newOrderCouponLine(code: $0) }))
+    }
+
+    /// Removes the last added coupon line from the order.
+    /// If the order does not have that coupon added it does nothing
+    ///
+    static func removeLastCoupon(on order: Order) -> Order {
+        var updatedCodes = order.coupons.map({ $0.code })
+
+        guard updatedCodes.isNotEmpty else {
+            return order
+        }
+
+        updatedCodes.removeLast()
         return order.copy(coupons: updatedCodes.map({ OrderFactory.newOrderCouponLine(code: $0) }))
     }
 }

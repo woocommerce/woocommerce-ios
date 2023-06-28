@@ -42,15 +42,25 @@ struct ProductSharingMessageGenerationView: View {
 
             // Generated message text field
             ZStack(alignment: .topLeading) {
-                TextEditor(text: $viewModel.messageContent)
-                    .bodyStyle()
-                    .foregroundColor(.secondary)
-                    .disabled(viewModel.generationInProgress)
-                    .opacity(viewModel.generationInProgress ? 0 : 1)
-                    .padding(insets: Constants.messageContentInsets)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
-                    )
+                VStack {
+                    TextEditor(text: $viewModel.messageContent)
+                        .bodyStyle()
+                        .foregroundColor(.secondary)
+                        .disabled(viewModel.generationInProgress)
+                        .opacity(viewModel.generationInProgress ? 0 : 1)
+
+                    FeedbackView(onUpvote: {
+                        // TODO
+                    }, onDownvote: {
+                        // TODO
+                    })
+                    .renderedIf(viewModel.messageContent.isNotEmpty &&
+                                viewModel.generationInProgress == false)
+                }
+                .padding(insets: Constants.messageContentInsets)
+                .overlay(
+                    RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
+                )
 
                 // Placeholder text
                 Text(Localization.placeholder)

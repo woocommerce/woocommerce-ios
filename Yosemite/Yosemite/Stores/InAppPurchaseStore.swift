@@ -236,7 +236,7 @@ private extension InAppPurchaseStore {
             /// We ignore transactionReasonInvalid errors, usually these are renewals that
             /// MobilePay has already handled via Apple's server to server notifications
             /// [See #10075 for details](https://github.com/woocommerce/woocommerce-ios/issues/10075)
-            logInfo("Unsupported transaction recieved: \(transaction.id) on site \(siteID), ignoring. \(reasonMessage)")
+            logInfo("Unsupported transaction received: \(transaction.id) on site \(siteID), ignoring. \(reasonMessage)")
         } catch {
             // Rethrow any other error
             throw error

@@ -66,7 +66,7 @@ extension WordPressApiError: CustomStringConvertible {
         switch self {
         case .productPurchased:
             return NSLocalizedString(
-                "An order aready exists for this receipt",
+                "An order already exists for this receipt",
                 comment: "Error message when an order already exists in the backend for a given receipt")
 
         case .transactionReasonInvalid(let message):

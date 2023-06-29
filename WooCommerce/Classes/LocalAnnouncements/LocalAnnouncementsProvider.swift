@@ -19,6 +19,10 @@ final class LocalAnnouncementsProvider {
         self.featureFlagService = featureFlagService
     }
 
+    /// Loops through the list of announcements in the order of priority from high to low, and returns the first announcement that
+    /// is eligible and hasn't been dismissed before.
+    /// - Returns: An announcement to be displayed, if it's eligible and hasn't been dismissed before. `nil` is returned if there
+    ///            is no announcement to be displayed.
     func loadAnnouncement() async -> LocalAnnouncementViewModel? {
         for announcement in announcements {
             guard isEligible(announcement: announcement), await isVisible(announcement: announcement) else {

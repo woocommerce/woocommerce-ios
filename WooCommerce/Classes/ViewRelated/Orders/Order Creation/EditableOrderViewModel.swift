@@ -1286,9 +1286,10 @@ private extension EditableOrderViewModel {
         }
     }
 
-    /// Summary of coupon lines
+    /// Coupon Line view models
     /// - Parameter couponLines: order's coupon lines
-    /// - Returns: Coupon codes comma separated to display as a summary
+    /// - Returns: View models for the coupon lines, including the view model for the details screen in case it's navigated to
+    ///
     func couponLineViewModels(from couponLines: [OrderCouponLine]) -> [CouponLineViewModel] {
         couponLines.map {
             CouponLineViewModel(title: String.localizedStringWithFormat(Localization.CouponSummary.singular, $0.code),

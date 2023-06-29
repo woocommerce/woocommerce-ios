@@ -48,7 +48,7 @@ final class UpgradesViewModelTests: XCTestCase {
         }
         assertEqual("Debug Essential Monthly", plan.wpComPlan.displayName)
         assertEqual("1 Month of Debug Essential", plan.wpComPlan.description)
-        assertEqual("debug.woocommerce.express.essential.monthly", plan.wpComPlan.id)
+        assertEqual("woocommerce.express.essential.monthly", plan.wpComPlan.id)
         assertEqual("$99.99", plan.wpComPlan.displayPrice)
     }
 
@@ -57,7 +57,7 @@ final class UpgradesViewModelTests: XCTestCase {
         let expectedPlan: WPComPlanProduct = MockInAppPurchasesForWPComPlansManager.Plan(
                 displayName: "Test awesome plan",
                 description: "All the Woo, all the time",
-                id: "debug.woocommerce.express.essential.monthly",
+                id: "woocommerce.express.essential.monthly",
                 displayPrice: "$1.50")
         let inAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: [expectedPlan])
         let sut = UpgradesViewModel(siteID: sampleSiteID,

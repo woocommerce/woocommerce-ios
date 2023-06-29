@@ -324,12 +324,6 @@ extension UpgradesViewModel {
     }
 }
 
-extension UpgradesViewModel {
-    enum AvailableInAppPurchasesWPComPlans: String {
-        case essentialMonthly = "debug.woocommerce.express.essential.monthly"
-    }
-}
-
 struct WooWPComPlan {
     let wpComPlan: WPComPlanProduct
     let wooPlan: WooPlan

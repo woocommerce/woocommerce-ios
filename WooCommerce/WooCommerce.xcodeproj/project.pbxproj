@@ -471,6 +471,7 @@
 		02D7E7C12A4CA9030003049A /* LocalAnnouncementsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D7E7C02A4CA9030003049A /* LocalAnnouncementsProvider.swift */; };
 		02D7E7C72A4CBC620003049A /* LocalAnnouncementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D7E7C62A4CBC620003049A /* LocalAnnouncementViewModel.swift */; };
 		02D7E7C92A4CBEEC0003049A /* LocalAnnouncementModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D7E7C82A4CBEEC0003049A /* LocalAnnouncementModal.swift */; };
+		02D7E7CC2A4CE5060003049A /* LocalAnnouncementsProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D7E7CB2A4CE5060003049A /* LocalAnnouncementsProviderTests.swift */; };
 		02DAE7FC291B7B8B009342B7 /* DomainSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DAE7FB291B7B8B009342B7 /* DomainSelectorViewModel.swift */; };
 		02DAE7FF291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DAE7FE291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift */; };
 		02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */; };
@@ -2815,6 +2816,7 @@
 		02D7E7C02A4CA9030003049A /* LocalAnnouncementsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAnnouncementsProvider.swift; sourceTree = "<group>"; };
 		02D7E7C62A4CBC620003049A /* LocalAnnouncementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAnnouncementViewModel.swift; sourceTree = "<group>"; };
 		02D7E7C82A4CBEEC0003049A /* LocalAnnouncementModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAnnouncementModal.swift; sourceTree = "<group>"; };
+		02D7E7CB2A4CE5060003049A /* LocalAnnouncementsProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAnnouncementsProviderTests.swift; sourceTree = "<group>"; };
 		02DAE7FB291B7B8B009342B7 /* DomainSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSelectorViewModel.swift; sourceTree = "<group>"; };
 		02DAE7FE291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeDomainSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -5832,6 +5834,14 @@
 			path = LocalAnnouncements;
 			sourceTree = "<group>";
 		};
+		02D7E7CA2A4CE4E20003049A /* LocalAnnouncements */ = {
+			isa = PBXGroup;
+			children = (
+				02D7E7CB2A4CE5060003049A /* LocalAnnouncementsProviderTests.swift */,
+			);
+			path = LocalAnnouncements;
+			sourceTree = "<group>";
+		};
 		02DAE7FD291B8C7C009342B7 /* Domains */ = {
 			isa = PBXGroup;
 			children = (
@@ -5894,6 +5904,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				02D7E7CA2A4CE4E20003049A /* LocalAnnouncements */,
 				EE3272A229A88F670015F8D0 /* Onboarding */,
 				B6440FB7292E73E50012D506 /* Analytics Hub */,
 				DEC51A9E274F990D009F3DF4 /* JetpackInstall */,
@@ -12857,6 +12868,7 @@
 				E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */,
 				0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */,
 				57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */,
+				02D7E7CC2A4CE5060003049A /* LocalAnnouncementsProviderTests.swift in Sources */,
 				020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */,
 				0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */,
 				2602A64827BDBF8000B347F1 /* ProductInputTransformerTests.swift in Sources */,

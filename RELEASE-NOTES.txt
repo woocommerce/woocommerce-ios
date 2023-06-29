@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+14.4
+-----
+- [*] Orders: Users can can now add multiple coupons to orders (not only one) [https://github.com/woocommerce/woocommerce-ios/pull/10126]
+
 14.3
 -----
 - [*] SKU Scanner: Add the SKU to the error message after a failure. [https://github.com/woocommerce/woocommerce-ios/pull/10085]

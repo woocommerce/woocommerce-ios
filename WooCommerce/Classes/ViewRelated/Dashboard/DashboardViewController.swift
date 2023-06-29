@@ -170,7 +170,7 @@ final class DashboardViewController: UIViewController {
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
         observeModalJustInTimeMessages()
-        observeLocalAnnouncements()
+        observeLocalAnnouncement()
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
@@ -606,34 +606,25 @@ private extension DashboardViewController {
         .store(in: &subscriptions)
     }
 
-    private func observeLocalAnnouncements() {
+    private func observeLocalAnnouncement() {
         viewModel.$localAnnouncementViewModel
             .compactMap { $0 }
-            .sink { [weak self] viewModel in
-                Task { @MainActor [weak self] in
-                    guard let self else { return }
-                    await self.dismissPossibleModals()
-
-                    viewModel.actionTapped = { [weak self] announcement in
-                        guard let self else { return }
-                        switch announcement {
-                            case .productDescriptionAI:
-                                self.startAddProductFlowFromProductDescriptionAIModal()
-                        }
-                    }
-
-                    let modalController = ConstraintsUpdatingHostingController(
-                        rootView: LocalAnnouncementModal_UIKit(
-                            onDismiss: {
-                                self.dismiss(animated: true)
-                            },
-                            viewModel: viewModel))
-
-                    self.localAnnouncementModalHostingController = modalController
-                    modalController.view.backgroundColor = .clear
-                    modalController.modalPresentationStyle = .overFullScreen
-                    self.present(modalController, animated: true)
-                }
+            .asyncMap { [weak self] viewModel in
+                await self?.dismissPossibleModals()
+                return ConstraintsUpdatingHostingController(
+                    rootView: LocalAnnouncementModal_UIKit(
+                        onDismiss: {
+                            self?.dismiss(animated: true)
+                        },
+                        viewModel: viewModel))
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] modalController in
+                guard let self else { return }
+                self.localAnnouncementModalHostingController = modalController
+                modalController.view.backgroundColor = .clear
+                modalController.modalPresentationStyle = .overFullScreen
+                self.present(modalController, animated: true)
             }
             .store(in: &subscriptions)
     }

@@ -182,7 +182,7 @@ final class DashboardViewModel {
         } catch {
             await syncJustInTimeMessages(for: siteID)
         }
-        await loadLocalAnnouncements()
+        await loadLocalAnnouncement()
     }
 
     /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
@@ -264,7 +264,9 @@ final class DashboardViewModel {
     }
 
     @MainActor
-    private func loadLocalAnnouncements() async {
+    /// If JITM modal isn't displayed, it loads a local announcement to be displayed modally if available.
+    /// When a local announcement is available, the view model is set. Otherwise, the view model is set to `nil`.
+    private func loadLocalAnnouncement() async {
         // Local announcement modal can only be shown when JITM modal is not shown.
         guard modalJustInTimeMessageViewModel == nil else {
             return

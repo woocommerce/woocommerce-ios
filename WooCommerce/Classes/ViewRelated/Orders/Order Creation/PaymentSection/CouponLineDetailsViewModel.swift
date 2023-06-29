@@ -87,7 +87,9 @@ final class CouponLineDetailsViewModel: ObservableObject {
 
 private extension CouponLineDetailsViewModel {
     func saveData() {
-        guard let initialCode = initialCode else {
+        guard isExistingCouponLine,
+             let initialCode = initialCode,
+             initialCode.isNotEmpty else {
             return didSelectSave(.added(newCode: code))
         }
 

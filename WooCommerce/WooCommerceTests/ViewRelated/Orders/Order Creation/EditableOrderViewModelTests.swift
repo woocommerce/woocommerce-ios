@@ -664,21 +664,21 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
-        let testCouponLine = OrderCouponLine(couponID: 0, code: "COUPONCODE", discount: "1.5", discountTax: "")
-        viewModel.saveCouponLine(testCouponLine)
+        let couponCode = "COUPONCODE"
+        viewModel.saveCouponLine(result: .added(newCode: couponCode))
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowCoupon)
-        let summary = try XCTUnwrap(viewModel.paymentDataViewModel.couponSummary)
-        XCTAssertEqual(summary, "Coupon (COUPONCODE)")
+        let couponLineViewModel = try XCTUnwrap(viewModel.paymentDataViewModel.couponLineViewModels.first)
+        XCTAssertEqual(couponLineViewModel.title, "Coupon (\(couponCode))")
         XCTAssertEqual(viewModel.paymentDataViewModel.couponCode, "COUPONCODE")
 
         // When
-        viewModel.saveCouponLine(nil)
+        viewModel.saveCouponLine(result: .removed(code: couponCode))
 
         // Then
         XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowCoupon)
-        XCTAssertNil(viewModel.paymentDataViewModel.couponSummary)
+        XCTAssertTrue(viewModel.paymentDataViewModel.couponLineViewModels.isEmpty)
     }
 
     func test_payment_section_values_correct_when_shipping_line_is_negative() {
@@ -958,11 +958,8 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_hasChanges_returns_true_when_coupon_line_is_updated() {
-        // Given
-        let couponLine = OrderCouponLine.fake()
-
         // When
-        viewModel.saveCouponLine(couponLine)
+        viewModel.saveCouponLine(result: .added(newCode: "TESTCOUPON"))
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -1155,7 +1152,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let couponLine = OrderCouponLine.fake()
 
         // When
-        viewModel.saveCouponLine(couponLine)
+        viewModel.saveCouponLine(result: .added(newCode: "TESTCOUPON"))
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCouponAdd.rawValue])
@@ -1172,7 +1169,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.saveCouponLine(nil)
+        viewModel.saveCouponLine(result: .removed(code: "TESTCOUPON"))
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCouponRemove.rawValue])

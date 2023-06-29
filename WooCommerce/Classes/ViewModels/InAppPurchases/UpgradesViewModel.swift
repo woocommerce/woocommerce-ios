@@ -37,14 +37,7 @@ final class UpgradesViewModel: ObservableObject {
         entitledWpcomPlanIDs = []
 
         observeViewStateAndTrackAnalytics()
-
-        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
-            self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
-        } else {
-            Task {
-                await fetchViewData()
-            }
-        }
+        checkForSiteOwnership()
     }
 
     /// Sync wrapper for `fetchViewData`, so can be called directly from where this
@@ -177,16 +170,10 @@ private extension UpgradesViewModel {
         }
     }
 
-    func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
-        switch upgradeViewState {
-        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
-            return plan
-        default:
-            return nil
-        }
-    }
-
     @MainActor
+    /// Checks whether the current plan details being displayed to merchants are accurate
+    /// by reaching the remote feature flag
+    ///
     func checkHardcodedPlanDataValidity() async -> Bool {
         return await withCheckedContinuation { continuation in
             stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
@@ -198,9 +185,34 @@ private extension UpgradesViewModel {
     }
 
     @MainActor
-    private func fetchViewData() async {
+    func fetchViewData() async {
         upgradeViewState = .loading
         await fetchPlans()
+    }
+
+    /// Checks whether a plan can be purchased from the current view state,
+    /// in which case the `WooWPComPlan` object is returned
+    ///
+    func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
+        switch upgradeViewState {
+        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
+            return plan
+        default:
+            return nil
+        }
+    }
+
+    /// Checks whether the current user is the site owner, as only the site owner can perform
+    /// In-App Purchases upgrades, despite their site role
+    ///
+    func checkForSiteOwnership() {
+        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
+            self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
+        } else {
+            Task {
+                await fetchViewData()
+            }
+        }
     }
 }
 

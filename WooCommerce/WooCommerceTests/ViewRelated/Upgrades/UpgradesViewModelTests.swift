@@ -11,7 +11,7 @@ final class UpgradesViewModelTests: XCTestCase {
     private var sut: UpgradesViewModel!
 
     override func setUp() {
-        let plans = MockInAppPurchasesForWPComPlansManager.Defaults.debugInAppPurchasesPlans
+        let plans = MockInAppPurchasesForWPComPlansManager.Defaults.essentialInAppPurchasesPlans
         mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: plans)
         stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
@@ -46,9 +46,9 @@ final class UpgradesViewModelTests: XCTestCase {
         guard case .loaded(let plan) = sut.upgradeViewState else {
             return XCTFail("expected `.loaded` state not found")
         }
-        assertEqual("Debug Essential Monthly", plan.wpComPlan.displayName)
-        assertEqual("1 Month of Debug Essential", plan.wpComPlan.description)
-        assertEqual("debug.woocommerce.express.essential.monthly", plan.wpComPlan.id)
+        assertEqual("Essential Monthly", plan.wpComPlan.displayName)
+        assertEqual("1 Month of Essential", plan.wpComPlan.description)
+        assertEqual("woocommerce.express.essential.monthly", plan.wpComPlan.id)
         assertEqual("$99.99", plan.wpComPlan.displayPrice)
     }
 
@@ -57,7 +57,7 @@ final class UpgradesViewModelTests: XCTestCase {
         let expectedPlan: WPComPlanProduct = MockInAppPurchasesForWPComPlansManager.Plan(
                 displayName: "Test awesome plan",
                 description: "All the Woo, all the time",
-                id: "debug.woocommerce.express.essential.monthly",
+                id: "woocommerce.express.essential.monthly",
                 displayPrice: "$1.50")
         let inAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: [expectedPlan])
         let sut = UpgradesViewModel(siteID: sampleSiteID,
@@ -73,7 +73,7 @@ final class UpgradesViewModelTests: XCTestCase {
         }
         assertEqual("Test awesome plan", plan.wpComPlan.displayName)
         assertEqual("All the Woo, all the time", plan.wpComPlan.description)
-        assertEqual("debug.woocommerce.express.essential.monthly", plan.wpComPlan.id)
+        assertEqual("woocommerce.express.essential.monthly", plan.wpComPlan.id)
         assertEqual("$1.50", plan.wpComPlan.displayPrice)
     }
 

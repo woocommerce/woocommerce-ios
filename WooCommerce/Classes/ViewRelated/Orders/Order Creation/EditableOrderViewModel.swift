@@ -1430,7 +1430,10 @@ extension EditableOrderViewModel {
 
                 return Notice(title: Localization.couponsErrorNoticeTitle,
                               message: Localization.couponsErrorNoticeMessage,
-                              feedbackType: .error)
+                              feedbackType: .error,
+                              actionTitle: Localization.dismissCouponErrorNotice) {
+                        orderSynchronizer.retryTrigger.send()
+                }
             }
 
             let errorMessage: String
@@ -1491,6 +1494,7 @@ private extension EditableOrderViewModel {
                                                                  comment: "Notice displayed when data cannot be synced for edited order")
 
         static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
+        static let dismissCouponErrorNotice = NSLocalizedString("OK", comment: "Action button to dismiss the coupon error notice")
 
         static let invalidBillingParameters =
         NSLocalizedString("Unable to set customer details.",

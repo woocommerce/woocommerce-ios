@@ -11,7 +11,7 @@ enum CouponLineDetailsResult {
     case added(newCode: String)
 }
 
-final class CouponLineDetailsViewModel: ObservableObject {
+final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
 
     /// Closure to be invoked when the coupon line is updated.
     ///

@@ -19,9 +19,9 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowAddCouponLineDetails: Bool = false
 
-    /// Indicates if the coupon line details screen should be shown with an existing coupon.
+    /// Keeps track of the selected coupon line details view model.
     ///
-    @State private var shouldShowExistingCouponLineDetails: Bool = false
+    @State private var selectedCouponLineDetailsViewModel: CouponLineDetailsViewModel? = nil
 
     ///   Environment safe areas
     ///
@@ -58,13 +58,15 @@ struct OrderPaymentSection: View {
                     FeeLineDetails(viewModel: viewModel.feeLineViewModel)
                 }
 
-            ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
-                CouponSummaryRow(couponSummary: viewModel.title,
-                                 discount: viewModel.discount,
-                                 shouldShowCouponLineDetails: $shouldShowExistingCouponLineDetails)
-                    .sheet(isPresented: $shouldShowExistingCouponLineDetails) {
-                        CouponLineDetails(viewModel: viewModel.detailsViewModel)
+            VStack {
+                ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
+                    TitleAndValueRow(title: viewModel.title, value: .content(viewModel.discount), selectionStyle: .highlight) {
+                        selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
                     }
+                }
+            }
+            .sheet(item: $selectedCouponLineDetailsViewModel) { viewModel in
+                CouponLineDetails(viewModel: viewModel)
             }
 
             addCouponRow
@@ -120,20 +122,6 @@ struct OrderPaymentSection: View {
         .padding()
         .accessibilityIdentifier("add-coupon-button")
         .disabled(viewModel.shouldDisableAddingCoupons)
-    }
-}
-
-struct CouponSummaryRow: View {
-    let couponSummary: String
-    let discount: String
-
-    @Binding var shouldShowCouponLineDetails: Bool
-
-
-    var body: some View {
-        TitleAndValueRow(title: couponSummary, value: .content(discount), selectionStyle: .highlight) {
-            shouldShowCouponLineDetails = true
-        }
     }
 }
 

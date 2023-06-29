@@ -30,7 +30,7 @@ struct BlazeHighlightBanner: View {
 
     /// Closure to be triggered when the dismiss button is tapped.
     var onDismiss: () -> Void = {}
-    
+
     var body: some View {
         VStack(spacing: Layout.spacing) {
             // Dismiss button

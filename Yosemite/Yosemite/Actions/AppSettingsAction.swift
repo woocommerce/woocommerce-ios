@@ -219,4 +219,9 @@ public enum AppSettingsAction: Action {
     ///
     case storeInPersonPaymentsTransactionIfFirst(siteID: Int64, cardReaderType: CardReaderType)
 
+    // MARK: - Local Announcement Visibility
+
+    case getLocalAnnouncementVisibility(announcement: LocalAnnouncement, onCompletion: (Bool) -> ())
+
+    case setLocalAnnouncementDismissed(announcement: LocalAnnouncement, onCompletion: (Result<Void, Error>) -> Void)
 }

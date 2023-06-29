@@ -164,7 +164,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
                                           knownCardReaders: [],
                                           featureAnnouncementCampaignSettings: [:],
                                           sitesWithAtLeastOneIPPTransactionFinished: [],
-                                          isEUShippingNoticeDismissed: false)
+                                          isEUShippingNoticeDismissed: false,
+                                          localAnnouncementDismissed: [:])
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .ordersCreation)
 
         // When
@@ -233,7 +234,8 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
-            isEUShippingNoticeDismissed: false)
+            isEUShippingNoticeDismissed: false,
+            localAnnouncementDismissed: [:])
         return settings
     }
 }

@@ -1154,6 +1154,58 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(actualValue)
     }
+
+    // MARK: Local Annoucement Dismissal
+
+    func test_setLocalAnnouncementDismissed_overwrites_stored_dismissal_value() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        let settings = createAppSettings(localAnnouncementDismissed: [.productDescriptionAI: false])
+        try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLocalAnnouncementDismissed(announcement: .productDescriptionAI) { _ in }
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+
+        XCTAssertEqual(savedSettings.localAnnouncementDismissed[.productDescriptionAI], true)
+    }
+
+    func test_getLocalAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let isVisible = waitFor { promise in
+            self.subject?.onAction(AppSettingsAction.getLocalAnnouncementVisibility(announcement: .productDescriptionAI) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(isVisible)
+    }
+
+    func test_getLocalAnnouncementVisibility_with_stored_dismissal_calls_completion_with_visibility_false() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        let settings = createAppSettings(localAnnouncementDismissed: [.productDescriptionAI: true])
+        try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let isVisible = waitFor { promise in
+            self.subject?.onAction(AppSettingsAction.getLocalAnnouncementVisibility(announcement: .productDescriptionAI) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertFalse(isVisible)
+    }
 }
 
 // MARK: - Utils
@@ -1175,12 +1227,14 @@ private extension AppSettingsStoreTests {
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
-            isEUShippingNoticeDismissed: false
+            isEUShippingNoticeDismissed: false,
+            localAnnouncementDismissed: [:]
         )
         return (settings, feedback)
     }
 
-    func createAppSettings(featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]) -> GeneralAppSettings {
+    func createAppSettings(featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings] = [:],
+                           localAnnouncementDismissed: [LocalAnnouncement: Bool] = [:]) -> GeneralAppSettings {
         let settings = GeneralAppSettings(
             installationDate: Date(),
             feedbacks: [:],
@@ -1190,7 +1244,8 @@ private extension AppSettingsStoreTests {
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],
-            isEUShippingNoticeDismissed: false
+            isEUShippingNoticeDismissed: false,
+            localAnnouncementDismissed: localAnnouncementDismissed
         )
         return settings
     }

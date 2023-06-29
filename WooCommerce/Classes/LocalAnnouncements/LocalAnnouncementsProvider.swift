@@ -20,9 +20,6 @@ final class LocalAnnouncementsProvider {
     }
 
     func loadAnnouncement() async -> LocalAnnouncementViewModel? {
-        guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
-            return nil
-        }
         for announcement in announcements {
             guard isEligible(announcement: announcement), await isVisible(announcement: announcement) else {
                 continue
@@ -46,6 +43,9 @@ private extension LocalAnnouncementsProvider {
     func isEligible(announcement: LocalAnnouncement) -> Bool {
         switch announcement {
             case .productDescriptionAI:
+                guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
+                    return false
+                }
                 return stores.sessionManager.defaultSite?.isWordPressComStore == true
         }
     }

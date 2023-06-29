@@ -82,7 +82,7 @@ final class UpgradesViewModelTests: XCTestCase {
         // see `setUp`
 
         // Then
-        XCTAssertEqual(sut.upgradeViewState, .loading)
+        assertEqual(.loading, sut.upgradeViewState)
     }
 
     func test_upgradeViewState_when_initialized_by_non_owner_then_state_is_prepurchaseError_userNotAllowedToUpgrade() {
@@ -92,6 +92,6 @@ final class UpgradesViewModelTests: XCTestCase {
          let sut = UpgradesViewModel(siteID: sampleSiteID, stores: stores)
 
          // Then
-         XCTAssertEqual(sut.upgradeViewState, .prePurchaseError(.userNotAllowedToUpgrade))
+         assertEqual(.prePurchaseError(.userNotAllowedToUpgrade), sut.upgradeViewState)
      }
 }

@@ -24,7 +24,7 @@ final class LocalAnnouncementsProvider {
             return nil
         }
         for announcement in announcements {
-            guard await isVisible(announcement: announcement) else {
+            guard isEligible(announcement: announcement), await isVisible(announcement: announcement) else {
                 continue
             }
             return .init(announcement: announcement, stores: stores, analytics: analytics)

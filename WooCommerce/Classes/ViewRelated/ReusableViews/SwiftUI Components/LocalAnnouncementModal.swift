@@ -8,14 +8,18 @@ struct LocalAnnouncementModal: View {
     var body: some View {
         VStack(spacing: Layout.spacing) {
             Image(uiImage: viewModel.image)
+                .resizable()
+                .scaledToFit()
                 .accessibilityHidden(true)
 
             Text(viewModel.title)
                 .headlineStyle()
+                .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
 
             Text(viewModel.message)
                 .bodyStyle()
+                .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
 
             if let buttonTitle = viewModel.buttonTitle {
@@ -32,7 +36,7 @@ struct LocalAnnouncementModal: View {
                 viewModel.dismissTapped()
                 isPresented = false
             }
-            .padding(.bottom, Layout.padding)
+            .buttonStyle(SecondaryButtonStyle())
         }
         .onAppear() {
             viewModel.onAppear()
@@ -42,7 +46,7 @@ struct LocalAnnouncementModal: View {
 
 private extension LocalAnnouncementModal {
     enum Layout {
-        static let padding: CGFloat = 16
+        static let padding: CGFloat = 24
         static let spacing: CGFloat = 16
     }
 }

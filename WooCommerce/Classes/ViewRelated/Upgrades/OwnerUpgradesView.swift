@@ -78,8 +78,11 @@ struct OwnerUpgradesView: View {
 
 private extension OwnerUpgradesView {
     struct Localization {
-        static let purchaseCTAButtonText = NSLocalizedString("Purchase %1$@", comment: "The title of the button to purchase a Plan." +
-                                                             "Reads as 'Purchase Essential Monthly'")
+        static let purchaseCTAButtonText = NSLocalizedString(
+            "Purchase %1$@",
+            comment: "The title of the button to purchase a Plan." +
+            "Reads as 'Purchase Essential Monthly'")
+
         static let featuresHeaderTextFormat = NSLocalizedString(
             "Get the most out of %1$@",
             comment: "Title for the section header for the list of feature categories on the Upgrade plan screen. " +

@@ -264,6 +264,8 @@ private extension UpgradesViewModel {
 // MARK: - Analytics observers, and track events
 //
 extension UpgradesViewModel {
+    /// Observes the view state and tracks events when this changes
+    ///
     private func observeViewStateAndTrackAnalytics() {
         $upgradeViewState.sink { [weak self] state in
             switch state {

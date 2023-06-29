@@ -75,15 +75,20 @@ private extension CompletedUpgradeView {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "Woo! You’re off to a great start!", comment: "Text shown when a plan upgrade has been successfully purchased.")
+            "Woo! You’re off to a great start!",
+            comment: "Text shown when a plan upgrade has been successfully purchased.")
+
         static let subtitle = NSLocalizedString(
             "Your purchase is complete and you're on the %1$@ plan.",
             comment: "Additional text shown when a plan upgrade has been successfully purchased. %1$@ is replaced by " +
             "the plan name, and should be included in the translated string.")
+
         static let hint = NSLocalizedString(
-            "You can manage your subscription in your iPhone Settings → Your Name → Subscriptions", comment: "Instructions" +
-            " guiding the merchant to manage a site's plan upgrade.")
+            "You can manage your subscription in your iPhone Settings → Your Name → Subscriptions",
+            comment: "Instructions guiding the merchant to manage a site's plan upgrade.")
+
         static let doneButtonText = NSLocalizedString(
-            "Done", comment: "Done button on the screen that is shown after a successful plan upgrade.")
+            "Done",
+            comment: "Done button on the screen that is shown after a successful plan upgrade.")
     }
 }

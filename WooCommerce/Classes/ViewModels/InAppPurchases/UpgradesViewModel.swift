@@ -3,25 +3,6 @@ import SwiftUI
 import Yosemite
 import Combine
 
-enum UpgradeViewState {
-    case loading
-    case loaded(WooWPComPlan)
-    case purchasing(WooWPComPlan)
-    case waiting(WooWPComPlan)
-    case completed(WooWPComPlan)
-    case prePurchaseError(PrePurchaseError)
-    case purchaseUpgradeError(PurchaseUpgradeError)
-
-    var shouldShowPlanDetailsView: Bool {
-        switch self {
-        case .loading, .loaded, .purchasing, .prePurchaseError:
-            return true
-        default:
-            return false
-        }
-    }
-}
-
 enum PrePurchaseError: Error {
     case fetchError
     case entitlementsError
@@ -82,7 +63,7 @@ final class UpgradesViewModel: ObservableObject {
 
         observeViewStateAndTrackAnalytics()
 
-        if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
+        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
         } else {
             Task {

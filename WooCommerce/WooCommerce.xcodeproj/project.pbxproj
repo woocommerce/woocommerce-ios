@@ -1208,6 +1208,7 @@
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
 		581D5052274AA2480089B6AD /* View+AutofocusTextModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */; };
+		680BA59A2A4C377900F5559D /* UpgradeViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680BA5992A4C377900F5559D /* UpgradeViewState.swift */; };
 		682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */; };
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
@@ -3526,6 +3527,7 @@
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AutofocusTextModifier.swift"; sourceTree = "<group>"; };
+		680BA5992A4C377900F5559D /* UpgradeViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewState.swift; sourceTree = "<group>"; };
 		682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommandTests.swift; sourceTree = "<group>"; };
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
@@ -7463,6 +7465,7 @@
 			isa = PBXGroup;
 			children = (
 				68709D3F2A2EE2DC00A7FA6C /* UpgradesViewModel.swift */,
+				680BA5992A4C377900F5559D /* UpgradeViewState.swift */,
 			);
 			path = InAppPurchases;
 			sourceTree = "<group>";
@@ -11415,6 +11418,7 @@
 				0373A12D2A1D1E6000731236 /* BadgedLeftImageTableViewCell.swift in Sources */,
 				31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */,
 				02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */,
+				680BA59A2A4C377900F5559D /* UpgradeViewState.swift in Sources */,
 				E11228BE2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift in Sources */,
 				EEC5E01129A70CC300416CAC /* StoreSetupProgressView.swift in Sources */,
 				B9C4AB2728002AF3007008B8 /* PaymentReceiptEmailParameterDeterminer.swift in Sources */,

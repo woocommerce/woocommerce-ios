@@ -5,11 +5,17 @@ enum CouponValidationError: Error {
     case couponNotFound
 }
 
+enum CouponLineDetailsResult {
+    case removed(code: String)
+    case edited(oldCode: String, newCode: String)
+    case added(newCode: String)
+}
+
 final class CouponLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the coupon line is updated.
     ///
-    var didSelectSave: ((String?, String?) -> Void)
+    var didSelectSave: ((CouponLineDetailsResult) -> Void)
 
     /// Stores the coupon code entered by the merchant.
     ///
@@ -41,7 +47,7 @@ final class CouponLineDetailsViewModel: ObservableObject {
          code: String,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         didSelectSave: @escaping ((String?, String?) -> Void)) {
+         didSelectSave: @escaping ((CouponLineDetailsResult) -> Void)) {
         self.isExistingCouponLine = isExistingCouponLine
         self.code = code
         self.siteID = siteID
@@ -51,7 +57,11 @@ final class CouponLineDetailsViewModel: ObservableObject {
     }
 
     func removeCoupon() {
-        didSelectSave(initialCode, nil)
+        guard let initialCode = initialCode else {
+            return
+        }
+
+        didSelectSave(.removed(code: initialCode))
     }
 
     func validateAndSaveData(onCompletion: @escaping (Bool) -> Void) {
@@ -77,7 +87,11 @@ final class CouponLineDetailsViewModel: ObservableObject {
 
 private extension CouponLineDetailsViewModel {
     func saveData() {
-        didSelectSave(initialCode, code)
+        guard let initialCode = initialCode else {
+            return didSelectSave(.added(newCode: code))
+        }
+
+        didSelectSave(.edited(oldCode: initialCode, newCode: code))
     }
 }
 

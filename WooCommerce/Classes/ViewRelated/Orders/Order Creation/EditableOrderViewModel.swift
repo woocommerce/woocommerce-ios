@@ -265,30 +265,20 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
-    /// Saves a coupon.
+    /// Saves a coupon line after an edition on it.
     ///
-    /// - Parameter couponLine: Optional coupon line object to save. `nil` will remove existing coupon.
-    func saveCouponLine(initialCode: String?, newCode: String?) {
-        guard let initialCode = initialCode,
-              initialCode.isNotEmpty else {
-            if let newCode = newCode {
-                addCoupon(with: newCode)
-            }
-
-            return
+    /// - Parameter result: Contains the user action on the line: remove it, add it, or edit it changing the coupon code.
+    /// 
+    func saveCouponLine(result: CouponLineDetailsResult) {
+        switch result {
+        case let .removed(removeCode):
+            removeCoupon(with: removeCode)
+        case let .added(newCode):
+            addCoupon(with: newCode)
+        case let .edited(oldCode, newCode):
+            removeCoupon(with: oldCode)
+            addCoupon(with: newCode)
         }
-
-        guard initialCode != newCode else {
-            return
-        }
-
-       removeCoupon(with: initialCode)
-
-        guard let newCode = newCode else {
-            return
-        }
-
-        addCoupon(with: newCode)
     }
 
     // MARK: -
@@ -724,7 +714,7 @@ extension EditableOrderViewModel {
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
-             saveCouponLineClosure: @escaping (String?, String?) -> Void = { _, _  in },
+             saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _  in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal

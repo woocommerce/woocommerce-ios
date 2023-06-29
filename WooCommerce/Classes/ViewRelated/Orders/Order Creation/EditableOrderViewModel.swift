@@ -267,7 +267,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Saves a coupon line after an edition on it.
     ///
-    /// - Parameter result: Contains the user action on the line: remove it, add it, or edit it changing the coupon code.
+    /// - Parameter result: Contains the user action on the line: remove, add, or edit it changing the coupon code.
     /// 
     func saveCouponLine(result: CouponLineDetailsResult) {
         switch result {

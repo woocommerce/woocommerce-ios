@@ -1,8 +1,6 @@
 import Foundation
-import WooFoundation
 import UIKit
 import Yosemite
-import Combine
 
 /// View model for `LocalAnnouncementModal` view.
 final class LocalAnnouncementViewModel {

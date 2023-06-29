@@ -620,7 +620,7 @@ private extension AppSettingsStore {
     func setLocalAnnouncementDismissed(announcement: LocalAnnouncement, onCompletion: (Result<Void, Error>) -> ()) {
         do {
             let settings = generalAppSettings.settings
-            let settingsToSave = settings.replacingAsDismissed(localAnnouncement: announcement)
+            let settingsToSave = settings.updatingAsDismissed(localAnnouncement: announcement)
             try generalAppSettings.saveSettings(settingsToSave)
             onCompletion(.success(()))
         } catch {

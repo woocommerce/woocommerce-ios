@@ -156,7 +156,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
 
     /// Returns a new instance of `GeneralAppSettings` with the provided feature announcement campaign seetings updated.
     ///
-    public func replacingAsDismissed(localAnnouncement: LocalAnnouncement) -> GeneralAppSettings {
+    public func updatingAsDismissed(localAnnouncement: LocalAnnouncement) -> GeneralAppSettings {
         let updatedSettings = localAnnouncementDismissed.merging([localAnnouncement: true]) {
             _, new in new
         }

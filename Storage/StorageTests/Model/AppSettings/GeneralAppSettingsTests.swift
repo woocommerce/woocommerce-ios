@@ -57,7 +57,7 @@ final class GeneralAppSettingsTests: XCTestCase {
         XCTAssertNil(settings.localAnnouncementDismissed[.productDescriptionAI])
 
         // When
-        let newSettings = settings.replacingAsDismissed(localAnnouncement: .productDescriptionAI)
+        let newSettings = settings.updatingAsDismissed(localAnnouncement: .productDescriptionAI)
 
         // Then
         XCTAssertEqual(newSettings.localAnnouncementDismissed[.productDescriptionAI], true)

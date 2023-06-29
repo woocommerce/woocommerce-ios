@@ -123,6 +123,22 @@ struct UpgradesView: View {
     }
 }
 
+private extension UpgradesView {
+    struct Layout {
+        static let errorViewHorizontalPadding: CGFloat = 20
+        static let errorViewTopPadding: CGFloat = 36
+        static let padding: CGFloat = 16
+        static let contentSpacing: CGFloat = 8
+        static let smallPadding: CGFloat = 8
+    }
+
+    enum Localization {
+        static let plansLoadingAccessibilityLabel = NSLocalizedString(
+            "Loading plan details",
+            comment: "Accessibility label for the initial loading state of the Upgrades view")
+    }
+}
+
 private extension WooWPComPlan {
     static func skeletonPlan() -> WooWPComPlan {
         return WooWPComPlan(
@@ -165,61 +181,9 @@ private extension WooWPComPlan {
     }
 }
 
-private struct UpgradeTopBarView: View {
-    let dismiss: () -> Void
-
-    var body: some View {
-        HStack {
-            Spacer()
-
-            Text(Localization.navigationTitle)
-                .fontWeight(.bold)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .center)
-                .accessibilityAddTraits(.isHeader)
-
-            Spacer()
-        }
-        .background(Color(.systemGroupedBackground))
-        .overlay(alignment: .leading) {
-            Button(action: dismiss) {
-                Image(systemName: "xmark")
-                    .font(.system(size: Layout.closeButtonSize))
-                    .foregroundColor(Color(.label))
-                    .padding()
-                    .frame(alignment: .leading)
-            }
-        }
-    }
-
-    private enum Localization {
-        static let navigationTitle = NSLocalizedString("Upgrade", comment: "Navigation title for the Upgrades screen")
-    }
-
-    private enum Layout {
-        static let closeButtonSize: CGFloat = 16
-    }
-}
-
 struct UpgradesView_Preview: PreviewProvider {
     static var previews: some View {
         UpgradesView(upgradesViewModel: UpgradesViewModel(siteID: 0),
                      subscriptionsViewModel: SubscriptionsViewModel())
-    }
-}
-
-private extension UpgradesView {
-    struct Layout {
-        static let errorViewHorizontalPadding: CGFloat = 20
-        static let errorViewTopPadding: CGFloat = 36
-        static let padding: CGFloat = 16
-        static let contentSpacing: CGFloat = 8
-        static let smallPadding: CGFloat = 8
-    }
-
-    enum Localization {
-        static let plansLoadingAccessibilityLabel = NSLocalizedString(
-            "Loading plan details",
-            comment: "Accessibility label for the initial loading state of the Upgrades view")
     }
 }

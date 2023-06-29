@@ -8,18 +8,18 @@ import Combine
 ///
 final class UpgradesViewModel: ObservableObject {
 
+    @Published var entitledWpcomPlanIDs: Set<String>
+    @Published var upgradeViewState: UpgradeViewState = .loading
+
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
     private let storePlanSynchronizer: StorePlanSynchronizer
     private let stores: StoresManager
-
-    @Published var entitledWpcomPlanIDs: Set<String>
-
-    @Published var upgradeViewState: UpgradeViewState = .loading
-
     private let localPlans: [WooPlan] = [.loadHardcodedPlan()]
-
     private let analytics: Analytics
+
+    private let notificationCenter: NotificationCenter = NotificationCenter.default
+    private var applicationDidBecomeActiveObservationToken: NSObjectProtocol?
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -47,39 +47,13 @@ final class UpgradesViewModel: ObservableObject {
         }
     }
 
-    private func observeViewStateAndTrackAnalytics() {
-        $upgradeViewState.sink { [weak self] state in
-            switch state {
-            case .waiting:
-                self?.analytics.track(.planUpgradeProcessingScreenLoaded)
-            case .loaded:
-                self?.analytics.track(.planUpgradeScreenLoaded)
-            case .completed:
-                self?.analytics.track(.planUpgradeCompletedScreenLoaded)
-            case .prePurchaseError(let error):
-                self?.analytics.track(event: .InAppPurchases.planUpgradePrePurchaseFailed(error: error))
-            case .purchaseUpgradeError(let error):
-                self?.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: error.analyticErrorDetail))
-            default:
-                break
-            }
-        }
-        .store(in: &cancellables)
-    }
-
     /// Sync wrapper for `fetchViewData`, so can be called directly from where this
     /// ViewModel is referenced, outside of the initializer
     ///
-    public func retryFetch() {
+    func retryFetch() {
         Task {
             await fetchViewData()
         }
-    }
-
-    @MainActor
-    private func fetchViewData() async {
-        upgradeViewState = .loading
-        await fetchPlans()
     }
 
     /// Retrieves all In-App Purchases WPCom plans
@@ -114,21 +88,6 @@ final class UpgradesViewModel: ObservableObject {
             upgradeViewState = .prePurchaseError(.fetchError)
         }
     }
-
-
-    @MainActor
-    private func checkHardcodedPlanDataValidity() async -> Bool {
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
-                .hardcodedPlanUpgradeDetailsMilestone1AreAccurate,
-                defaultValue: true) { isEnabled in
-                continuation.resume(returning: isEnabled)
-            })
-        }
-    }
-
-    private let notificationCenter: NotificationCenter = NotificationCenter.default
-    private var applicationDidBecomeActiveObservationToken: NSObjectProtocol?
 
     /// Triggers the purchase of the specified In-App Purchases WPCom plans by the passed plan ID
     /// linked to the current site ID
@@ -194,65 +153,10 @@ final class UpgradesViewModel: ObservableObject {
             }
         }
     }
-
-    private func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
-        switch upgradeViewState {
-        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
-            return plan
-        default:
-            return nil
-        }
-    }
-
-    /// Observes the `didBecomeActiveNotification` for one invocation of the notification.
-    /// Using this in the scope of `purchasePlan` tells us when Apple's IAP view has completed.
-    ///
-    /// However, it can also be triggered by other actions, e.g. a phone call ending.
-    ///
-    /// One good example test is to start an IAP, then background the app and foreground it again
-    /// before the IAP drawer is shown.  You'll see that this notification is received, even though the
-    /// IAP drawer is then shown on top. Dismissing or completing the IAP will not then trigger this
-    /// notification again.
-    ///
-    /// It's not perfect, but it's what we have.
-    private func observeInAppPurchaseDrawerDismissal(whenFired action: @escaping (() -> Void)) {
-        applicationDidBecomeActiveObservationToken = notificationCenter.addObserver(
-            forName: UIApplication.didBecomeActiveNotification,
-            object: nil,
-            queue: .main) { [weak self] notification in
-                action()
-                self?.stopObservingInAppPurchaseDrawerDismissal()
-            }
-    }
-
-    private func stopObservingInAppPurchaseDrawerDismissal() {
-        if let token = applicationDidBecomeActiveObservationToken {
-            notificationCenter.removeObserver(token)
-        }
-    }
-
-    /// Retrieves a specific In-App Purchase WPCom plan from the available products
-    ///
-    private func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans,
-                                                from wpcomPlans: [WPComPlanProduct],
-                                                hardcodedPlanDataIsValid: Bool) -> WooWPComPlan? {
-        guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == type.rawValue }),
-              let wooPlan = localPlans.first(where: { $0.id == wpcomPlanProduct.id }) else {
-            return nil
-        }
-        return WooWPComPlan(wpComPlan: wpcomPlanProduct,
-                            wooPlan: wooPlan,
-                            hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
-    }
-
-    func onDisappear() {
-        guard let stepTracked = upgradeViewState.analyticsStep else {
-            return
-        }
-        analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: stepTracked))
-    }
 }
 
+// MARK: - Helpers
+//
 private extension UpgradesViewModel {
     /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
     /// via In-App Purchases
@@ -272,10 +176,110 @@ private extension UpgradesViewModel {
             upgradeViewState = .prePurchaseError(.entitlementsError)
         }
     }
+
+    func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
+        switch upgradeViewState {
+        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
+            return plan
+        default:
+            return nil
+        }
+    }
+
+    @MainActor
+    func checkHardcodedPlanDataValidity() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
+                .hardcodedPlanUpgradeDetailsMilestone1AreAccurate,
+                defaultValue: true) { isEnabled in
+                continuation.resume(returning: isEnabled)
+            })
+        }
+    }
+
+    @MainActor
+    private func fetchViewData() async {
+        upgradeViewState = .loading
+        await fetchPlans()
+    }
 }
 
+// MARK: - Notification observers
+//
+private extension UpgradesViewModel {
+    /// Observes the `didBecomeActiveNotification` for one invocation of the notification.
+    /// Using this in the scope of `purchasePlan` tells us when Apple's IAP view has completed.
+    ///
+    /// However, it can also be triggered by other actions, e.g. a phone call ending.
+    ///
+    /// One good example test is to start an IAP, then background the app and foreground it again
+    /// before the IAP drawer is shown.  You'll see that this notification is received, even though the
+    /// IAP drawer is then shown on top. Dismissing or completing the IAP will not then trigger this
+    /// notification again.
+    ///
+    /// It's not perfect, but it's what we have.
+    func observeInAppPurchaseDrawerDismissal(whenFired action: @escaping (() -> Void)) {
+        applicationDidBecomeActiveObservationToken = notificationCenter.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main) { [weak self] notification in
+                action()
+                self?.stopObservingInAppPurchaseDrawerDismissal()
+            }
+    }
+
+    func stopObservingInAppPurchaseDrawerDismissal() {
+        if let token = applicationDidBecomeActiveObservationToken {
+            notificationCenter.removeObserver(token)
+        }
+    }
+
+    /// Retrieves a specific In-App Purchase WPCom plan from the available products
+    ///
+    func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans,
+                                                from wpcomPlans: [WPComPlanProduct],
+                                                hardcodedPlanDataIsValid: Bool) -> WooWPComPlan? {
+        guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == type.rawValue }),
+              let wooPlan = localPlans.first(where: { $0.id == wpcomPlanProduct.id }) else {
+            return nil
+        }
+        return WooWPComPlan(wpComPlan: wpcomPlanProduct,
+                            wooPlan: wooPlan,
+                            hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
+    }
+}
+
+// MARK: - Analytics observers, and track events
+//
 extension UpgradesViewModel {
+    private func observeViewStateAndTrackAnalytics() {
+        $upgradeViewState.sink { [weak self] state in
+            switch state {
+            case .waiting:
+                self?.analytics.track(.planUpgradeProcessingScreenLoaded)
+            case .loaded:
+                self?.analytics.track(.planUpgradeScreenLoaded)
+            case .completed:
+                self?.analytics.track(.planUpgradeCompletedScreenLoaded)
+            case .prePurchaseError(let error):
+                self?.analytics.track(event: .InAppPurchases.planUpgradePrePurchaseFailed(error: error))
+            case .purchaseUpgradeError(let error):
+                self?.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: error.analyticErrorDetail))
+            default:
+                break
+            }
+        }
+        .store(in: &cancellables)
+    }
+
     func track(_ stat: WooAnalyticsStat) {
         analytics.track(stat)
+    }
+
+    func onDisappear() {
+        guard let stepTracked = upgradeViewState.analyticsStep else {
+            return
+        }
+        analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: stepTracked))
     }
 }

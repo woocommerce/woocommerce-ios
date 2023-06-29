@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// View to highlight the Blaze feature.
+///
 struct BlazeHighlightBanner: View {
     var body: some View {
         VStack(spacing: Layout.spacing) {
@@ -18,11 +20,11 @@ struct BlazeHighlightBanner: View {
             Image(uiImage: .blaze)
 
             // Title
-            Text("Promote products with Blaze")
+            Text(Localization.title)
                 .headlineStyle()
 
             // Description
-            Text("Turn your products into ads that run across millions of sites on WordPress.com and Tumblr.")
+            Text(Localization.description)
                 .bodyStyle()
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, Layout.spacing)
@@ -31,8 +33,8 @@ struct BlazeHighlightBanner: View {
             Button {
                 // TODO
             } label: {
-                Text("Try Blaze now")
-                    .headlineLinkStyle()
+                Text(Localization.actionButton)
+                    .font(.body.weight(.bold))
             }
             .buttonStyle(LinkButtonStyle())
         }
@@ -43,6 +45,20 @@ struct BlazeHighlightBanner: View {
 extension BlazeHighlightBanner {
     enum Layout {
         static let spacing: CGFloat = 16
+    }
+    enum Localization {
+        static let title = NSLocalizedString(
+            "Promote products with Blaze",
+            comment: "Title on the banner to highlight Blaze feature"
+        )
+        static let description = NSLocalizedString(
+            "Turn your products into ads that run across millions of sites on WordPress.com and Tumblr.",
+            comment: "Description on the banner to highlight Blaze feature"
+        )
+        static let actionButton = NSLocalizedString(
+            "Try Blaze now",
+            comment: "Title of the button on the banner to highlight Blaze feature"
+        )
     }
 }
 

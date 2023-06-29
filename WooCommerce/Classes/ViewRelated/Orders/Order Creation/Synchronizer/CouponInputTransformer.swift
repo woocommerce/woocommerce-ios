@@ -19,7 +19,7 @@ struct CouponInputTransformer {
     /// Removes a coupon line input into an existing order.
     /// If the order does not have that coupon added it does nothing
     ///
-    static func remove(code: String, on order: Order) -> Order {
+    static func remove(code: String, from order: Order) -> Order {
         var updatedCoupons = order.coupons
         updatedCoupons.removeAll(where: { $0.code == code })
 

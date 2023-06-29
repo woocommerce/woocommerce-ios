@@ -221,7 +221,7 @@ private extension RemoteOrderSynchronizer {
             .store(in: &subscriptions)
         removeCoupon.withLatestFrom(orderPublisher)
             .map { couponCode, order -> Order in
-                let updatedOrder = CouponInputTransformer.remove(code: couponCode, on: order)
+                let updatedOrder = CouponInputTransformer.remove(code: couponCode, from: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }

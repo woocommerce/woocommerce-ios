@@ -1433,6 +1433,7 @@ extension EditableOrderViewModel {
                               message: Localization.couponsErrorNoticeMessage,
                               feedbackType: .error,
                               actionTitle: Localization.dismissCouponErrorNotice) {
+                        // Syncs the order without the failing coupon
                         orderSynchronizer.retryTrigger.send()
                 }
             }

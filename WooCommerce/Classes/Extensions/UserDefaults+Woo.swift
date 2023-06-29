@@ -34,6 +34,10 @@ extension UserDefaults {
         // Tooltip
         case hasDismissedWriteWithAITooltip
         case numberOfTimesWriteWithAITooltipIsShown
+
+        // Blaze highlight banner
+        case hasDismissedBlazeBannerInProductList
+        case hasDismissedBlazeBannerInMyStore
     }
 }
 

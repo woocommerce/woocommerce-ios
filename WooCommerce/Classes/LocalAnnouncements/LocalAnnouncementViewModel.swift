@@ -4,6 +4,9 @@ import Yosemite
 
 /// View model for `LocalAnnouncementModal` view.
 final class LocalAnnouncementViewModel {
+    // Set externally when the modal is being shown.
+    var actionTapped: (_ announcement: LocalAnnouncement) -> Void = { _ in }
+
     let title: String
     let message: String
     let buttonTitle: String?
@@ -33,6 +36,7 @@ final class LocalAnnouncementViewModel {
     // MARK: - Actions
 
     func ctaTapped() {
+        actionTapped(announcement)
         trackCtaTapped()
         Task { @MainActor in
             await markAnnouncementAsDismissed()

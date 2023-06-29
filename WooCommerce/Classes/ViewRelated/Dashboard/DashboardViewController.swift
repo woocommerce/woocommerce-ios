@@ -506,6 +506,19 @@ private extension DashboardViewController {
         coordinator.start()
     }
 
+    /// Starts the Add Product flow to showcase the product description AI feature.
+    private func startAddProductFlowFromProductDescriptionAIModal() {
+        // As the user can be on a different tab when the modal is shown, `AppDelegate.shared.tabBarController`
+        // is used to show the product form.
+        guard let navigationController = AppDelegate.shared.tabBarController?.selectedViewController as? UINavigationController else { return }
+        let coordinator = AddProductCoordinator(siteID: siteID,
+                                                source: .productDescriptionAIAnnouncementModal,
+                                                sourceView: nil,
+                                                sourceNavigationController: navigationController,
+                                                isFirstProduct: true)
+        coordinator.start()
+    }
+
     // This is used so we have a specific type for the view while applying modifiers.
     struct AnnouncementCardWrapper: View {
         let cardView: FeatureAnnouncementCardView
@@ -600,6 +613,15 @@ private extension DashboardViewController {
                 Task { @MainActor [weak self] in
                     guard let self else { return }
                     await self.dismissPossibleModals()
+
+                    viewModel.actionTapped = { [weak self] announcement in
+                        guard let self else { return }
+                        switch announcement {
+                            case .productDescriptionAI:
+                                self.startAddProductFlowFromProductDescriptionAIModal()
+                        }
+                    }
+
                     let modalController = ConstraintsUpdatingHostingController(
                         rootView: LocalAnnouncementModal_UIKit(
                             onDismiss: {

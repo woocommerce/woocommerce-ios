@@ -6,6 +6,9 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     @Published var isSharePopoverPresented = false
     @Published var isShareSheetPresented = false
 
+    /// Whether feedback banner for the generated text should be displayed.
+    @Published private(set) var shouldShowFeedbackView = false
+
     let viewTitle: String
 
     var generateButtonTitle: String {
@@ -37,6 +40,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private let stores: StoresManager
     private let isPad: Bool
     private let analytics: Analytics
+    private let delayBeforeDismissingFeedbackBanner: TimeInterval
 
     /// Whether a message has been successfully generated.
     /// This is needed to identify whether the next request is a retry.
@@ -47,6 +51,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
          productName: String,
          productDescription: String,
          isPad: Bool = UIDevice.isPad(),
+         delayBeforeDismissingFeedbackBanner: TimeInterval = 0.5,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
@@ -57,10 +62,12 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
+        self.delayBeforeDismissingFeedbackBanner = delayBeforeDismissingFeedbackBanner
     }
 
     @MainActor
     func generateShareMessage() async {
+        shouldShowFeedbackView = false
         analytics.track(event: .ProductSharingAI.generateButtonTapped(isRetry: hasGeneratedMessage))
         errorMessage = nil
         generationInProgress = true
@@ -68,6 +75,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
             messageContent = try await requestMessageFromAI()
             hasGeneratedMessage = true
             analytics.track(event: .ProductSharingAI.messageGenerated())
+            shouldShowFeedbackView = true
         } catch {
             DDLogError("⛔️ Error generating product sharing message: \(error)")
             errorMessage = error.localizedDescription
@@ -84,9 +92,20 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         }
         analytics.track(event: .ProductSharingAI.shareButtonTapped(withMessage: messageContent.isNotEmpty))
     }
+
+    /// Handles when a feedback is sent.
+    func handleFeedback(_ vote: FeedbackView.Vote) {
+        analytics.track(event: .AIFeedback.feedbackSent(source: .productSharingMessage,
+                                                        isUseful: vote == .up))
+        // Delay the disappearance of the banner for a better UX.
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeDismissingFeedbackBanner) { [weak self] in
+            self?.shouldShowFeedbackView = false
+        }
+    }
 }
 
 private extension ProductSharingMessageGenerationViewModel {
+
     @MainActor
     func requestMessageFromAI() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in

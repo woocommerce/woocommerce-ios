@@ -30,7 +30,7 @@ public struct WooPlan: Decodable {
     }
 
     public static func loadHardcodedPlan() -> WooPlan {
-        WooPlan(id: "debug.woocommerce.express.essential.monthly",
+        WooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
                 name: Localization.essentialPlanName,
                 shortName: Localization.essentialPlanShortName,
                 planFrequency: .month,
@@ -83,6 +83,10 @@ public struct WooPlan: Decodable {
             static let year = NSLocalizedString("per year", comment: "Description of the frequency of a yearly Woo plan")
         }
     }
+}
+
+public enum AvailableInAppPurchasesWPComPlans: String {
+    case essentialMonthly = "woocommerce.express.essential.monthly"
 }
 
 private extension WooPlan {

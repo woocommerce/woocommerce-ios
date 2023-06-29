@@ -16,6 +16,7 @@ struct WooPlanFeatureGroupRow: View {
                         .aspectRatio(contentMode: .fit)
                         .padding(8)
                 )
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(featureGroup.title)

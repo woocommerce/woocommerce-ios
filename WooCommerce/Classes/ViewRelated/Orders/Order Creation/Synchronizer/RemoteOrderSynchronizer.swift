@@ -39,8 +39,6 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var removeCoupon = PassthroughSubject<String, Never>()
 
-    var removeLastCoupon = PassthroughSubject<(), Never>()
-
     var setNote = PassthroughSubject<String?, Never>()
 
     var retryTrigger = PassthroughSubject<Void, Never>()
@@ -223,17 +221,6 @@ private extension RemoteOrderSynchronizer {
         removeCoupon.withLatestFrom(orderPublisher)
             .map { couponCode, order -> Order in
                 let updatedOrder = CouponInputTransformer.remove(code: couponCode, on: order)
-                return updatedOrder
-            }
-            .sink { [weak self] order in
-                self?.order = order
-                self?.orderSyncTrigger.send(order)
-            }
-            .store(in: &subscriptions)
-
-        removeLastCoupon.withLatestFrom(orderPublisher)
-            .map { _, order -> Order in
-                let updatedOrder = CouponInputTransformer.removeLastCoupon(on: order)
                 return updatedOrder
             }
             .sink { [weak self] order in

@@ -93,11 +93,7 @@ protocol OrderSynchronizer {
     /// Removes an order coupon.
     ///
     var removeCoupon: PassthroughSubject<String, Never> { get }
-
-    /// Removes the last order coupon.
-    ///
-    var removeLastCoupon: PassthroughSubject<(), Never> { get }
-
+    
     /// Sets or removes an order customer note.
     ///
     var setNote: PassthroughSubject<String?, Never> { get }

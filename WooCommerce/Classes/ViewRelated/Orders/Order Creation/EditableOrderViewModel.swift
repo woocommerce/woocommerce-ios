@@ -1434,7 +1434,10 @@ extension EditableOrderViewModel {
             }
 
             guard !isCouponsError(error) else {
-                orderSynchronizer.removeLastCoupon.send(())
+                if let errorCouponCode = orderSynchronizer.order.coupons.last?.code {
+                    orderSynchronizer.removeCoupon.send(errorCouponCode)
+                }
+
                 return Notice(title: Localization.couponsErrorNoticeTitle,
                               message: Localization.couponsErrorNoticeMessage,
                               feedbackType: .error)

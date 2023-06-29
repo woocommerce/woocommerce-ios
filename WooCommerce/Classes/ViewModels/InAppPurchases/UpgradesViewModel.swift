@@ -253,25 +253,6 @@ final class UpgradesViewModel: ObservableObject {
     }
 }
 
-private extension UpgradeViewState {
-    var analyticsStep: WooAnalyticsEvent.InAppPurchases.Step? {
-        switch self {
-        case .loading, .purchasing:
-            return nil
-        case .loaded:
-            return .planDetails
-        case .waiting:
-            return .processing
-        case .completed:
-            return .completed
-        case .prePurchaseError:
-            return .prePurchaseError
-        case .purchaseUpgradeError:
-            return .purchaseUpgradeError
-        }
-    }
-}
-
 private extension UpgradesViewModel {
     /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
     /// via In-App Purchases

@@ -3,25 +3,6 @@ import SwiftUI
 import Yosemite
 import Combine
 
-enum UpgradeViewState {
-    case loading
-    case loaded(WooWPComPlan)
-    case purchasing(WooWPComPlan)
-    case waiting(WooWPComPlan)
-    case completed(WooWPComPlan)
-    case prePurchaseError(PrePurchaseError)
-    case purchaseUpgradeError(PurchaseUpgradeError)
-
-    var shouldShowPlanDetailsView: Bool {
-        switch self {
-        case .loading, .loaded, .purchasing, .prePurchaseError:
-            return true
-        default:
-            return false
-        }
-    }
-}
-
 enum PrePurchaseError: Error {
     case fetchError
     case entitlementsError
@@ -54,13 +35,14 @@ final class UpgradesViewModel: ObservableObject {
 
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
+    private let storePlanSynchronizer: StorePlanSynchronizer
     private let stores: StoresManager
 
     @Published var entitledWpcomPlanIDs: Set<String>
 
     @Published var upgradeViewState: UpgradeViewState = .loading
 
-    private let localPlans: [WooPlan]
+    private let localPlans: [WooPlan] = [.loadHardcodedPlan()]
 
     private let analytics: Analytics
 
@@ -68,24 +50,20 @@ final class UpgradesViewModel: ObservableObject {
 
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
+         storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
+        self.storePlanSynchronizer = storePlanSynchronizer
         self.stores = stores
         self.analytics = analytics
 
         entitledWpcomPlanIDs = []
 
-        if let essentialPlan = WooPlan() {
-            self.localPlans = [essentialPlan]
-        } else {
-            self.localPlans = []
-        }
-
         observeViewStateAndTrackAnalytics()
 
-        if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
+        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
         } else {
             Task {
@@ -211,6 +189,8 @@ final class UpgradesViewModel: ObservableObject {
             case .userCancelled:
                 upgradeViewState = .loaded(wooWPComPlan)
             case .success(.verified(_)):
+                // refreshing the synchronizer removes the Upgrade Now banner by the time the flow is closed
+                storePlanSynchronizer.reloadPlan()
                 upgradeViewState = .completed(wooWPComPlan)
             default:
                 // TODO: handle `.success(.unverified(_))` here... somehow

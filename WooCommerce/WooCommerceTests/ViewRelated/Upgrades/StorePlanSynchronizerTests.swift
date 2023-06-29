@@ -162,12 +162,142 @@ final class StorePlanSynchronizerTests: XCTestCase {
         assertEqual(expectedIDs, ids)
     }
 
+    // MARK: twentyFourHoursAfterFreeTrialSubscribed
+
+    func test_twentyFourHoursAfterFreeTrialSubscribed_local_notification_is_scheduled_if_free_trial_subscribed_less_than_24_hrs_ago() throws {
+        // Given
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let pushNotesManager = MockPushNotificationsManager()
+        let subscribedDate = Date().addingTimeInterval(-Double.random(in: 0..<86400)) // Subscribed within 24 hrs ago
+        let trialPlan = WPComSitePlan(id: "1052",
+                                      hasDomainCredit: false,
+                                      expiryDate: subscribedDate.addingDays(28),
+                                      subscribedDate: subscribedDate)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(trialPlan))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+                // Remote feature flag is enabled.
+                completion(true)
+            }
+        }
+
+        // When
+        let featureFlagService = MockFeatureFlagService(isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: true)
+        _ = StorePlanSynchronizer(stores: stores,
+                                  timeZone: timeZone,
+                                  pushNotesManager: pushNotesManager,
+                                  featureFlagService: featureFlagService)
+
+        // Then
+        waitUntil(timeout: 3) {
+            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
+        }
+        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
+        let expectedID = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(sampleSiteID)"
+        XCTAssertTrue(ids.contains(expectedID))
+    }
+
+    func test_twentyFourHoursAfterFreeTrialSubscribed_local_notification_is_not_scheduled_if_free_trial_subscribed_more_than_24_hrs_ago() throws {
+        // Given
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let pushNotesManager = MockPushNotificationsManager()
+        let subscribedDate = Date().addingTimeInterval(-86401) // Subscribed more than 24 hrs ago
+        let trialPlan = WPComSitePlan(id: "1052",
+                                      hasDomainCredit: false,
+                                      expiryDate: subscribedDate.addingDays(28),
+                                      subscribedDate: subscribedDate)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(trialPlan))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+                // Remote feature flag is enabled.
+                completion(true)
+            }
+        }
+
+        // When
+        let featureFlagService = MockFeatureFlagService(isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: true)
+        _ = StorePlanSynchronizer(stores: stores,
+                                  timeZone: timeZone,
+                                  pushNotesManager: pushNotesManager,
+                                  featureFlagService: featureFlagService)
+
+        // Then
+        waitUntil(timeout: 3) {
+            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
+        }
+        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
+        let expectedID = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(sampleSiteID)"
+        XCTAssertFalse(ids.contains(expectedID))
+    }
+
+    func test_twentyFourHoursAfterFreeTrialSubscribed_local_notification_is_not_scheduled_if_local_feature_flag_is_off() throws {
+        // Given
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let pushNotesManager = MockPushNotificationsManager()
+        let subscribedDate = Date().normalizedDate().addingTimeInterval(-86400/2) // Subscribed before half a day
+        let trialPlan = WPComSitePlan(id: "1052",
+                                      hasDomainCredit: false,
+                                      expiryDate: subscribedDate.addingDays(28),
+                                      subscribedDate: subscribedDate)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(trialPlan))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+                // Remote feature flag is enabled.
+                completion(true)
+            }
+        }
+
+        // When
+        let featureFlagService = MockFeatureFlagService(isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: false)
+        _ = StorePlanSynchronizer(stores: stores,
+                                  timeZone: timeZone,
+                                  pushNotesManager: pushNotesManager,
+                                  featureFlagService: featureFlagService)
+
+        // Then
+        waitUntil(timeout: 3) {
+            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
+        }
+        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
+        let expectedID = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(sampleSiteID)"
+        XCTAssertFalse(ids.contains(expectedID))
+    }
+
+    // MARK: Cancel local notifications
+
     func test_local_notifications_are_canceled_after_the_site_is_upgraded() throws {
         // Given
         let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let pushNotesManager = MockPushNotificationsManager()
-        let expiryDate = Date().normalizedDate().addingTimeInterval(86400 * 5) // 5 days from now
-        var expectedPlan = WPComSitePlan(id: "1052", hasDomainCredit: false, expiryDate: expiryDate)
+        let subscribedDate = Date().addingTimeInterval(-86400/2) // expired for half a day
+        var expectedPlan = WPComSitePlan(id: "1052",
+                                      hasDomainCredit: false,
+                                      expiryDate: subscribedDate.addingDays(28),
+                                      subscribedDate: subscribedDate)
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
             case .loadSiteCurrentPlan(_, let completion):
@@ -185,11 +315,15 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
 
         // When
-        let synchronizer = StorePlanSynchronizer(stores: stores, timeZone: timeZone, pushNotesManager: pushNotesManager)
+        let featureFlagService = MockFeatureFlagService(isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: true)
+        let synchronizer = StorePlanSynchronizer(stores: stores,
+                                                 timeZone: timeZone,
+                                                 pushNotesManager: pushNotesManager,
+                                                 featureFlagService: featureFlagService)
 
         // Then
         waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.count == 2
+            pushNotesManager.requestedLocalNotificationsIfNeeded.count == 3
         }
 
         // When
@@ -198,7 +332,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.isEmpty && pushNotesManager.canceledLocalNotificationScenarios.count == 2
+            pushNotesManager.requestedLocalNotificationsIfNeeded.isEmpty && pushNotesManager.canceledLocalNotificationScenarios.count == 3
         }
     }
 }

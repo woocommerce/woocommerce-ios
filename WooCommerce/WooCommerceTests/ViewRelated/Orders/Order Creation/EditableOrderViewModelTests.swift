@@ -1673,12 +1673,13 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                stores: stores,
                                                storageManager: storageManager,
                                                analytics: WooAnalytics(analyticsProvider: analytics))
+        let scannedBarcode = ScannedBarcode(payloadStringValue: "nonExistingSKU",
+                                            symbology: BarcodeSymbology.ean8)
 
         // When
         var onRetryRequested = false
         let expectedError = waitFor { promise in
-            viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "nonExistingSKU",
-                                                                            symbology: BarcodeSymbology.ean8), onCompletion: { expectedError in
+            viewModel.addScannedProductToOrder(barcode: scannedBarcode, onCompletion: { expectedError in
                 switch expectedError {
                 case let .failure(error as EditableOrderViewModel.ScannerError):
                     promise(error)
@@ -1690,7 +1691,9 @@ final class EditableOrderViewModelTests: XCTestCase {
             })
         }
 
-        let expectedNotice = EditableOrderViewModel.NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: actionError, withRetryAction: {})
+        let expectedNotice = EditableOrderViewModel.NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: actionError,
+                                                                                                                   code: scannedBarcode,
+                                                                                                                   withRetryAction: {})
 
         // Then
         XCTAssertEqual(expectedError, .productNotFound)

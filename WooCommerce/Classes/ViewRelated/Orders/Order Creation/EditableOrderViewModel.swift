@@ -1346,7 +1346,9 @@ extension EditableOrderViewModel {
             case let .failure(error):
                 Task { @MainActor in
                     onCompletion(.failure(ScannerError.productNotFound))
-                    self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: error, withRetryAction: { [weak self] in
+                    self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: error,
+                                                                                                                code: barcode,
+                                                                                                                withRetryAction: { [weak self] in
                         self?.autodismissableNotice = nil
                         onRetryRequested()
                     })
@@ -1391,8 +1393,10 @@ extension EditableOrderViewModel {
             return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
         }
 
-        static func createProductNotFoundAfterSKUScanningErrorNotice(for error: Error, withRetryAction action: @escaping () -> Void) -> Notice {
-            BarcodeSKUScannerErrorNoticeFactory.notice(for: error, actionHandler: action)
+        static func createProductNotFoundAfterSKUScanningErrorNotice(for error: Error,
+                                                                     code: ScannedBarcode,
+                                                                     withRetryAction action: @escaping () -> Void) -> Notice {
+            BarcodeSKUScannerErrorNoticeFactory.notice(for: error, code: code, actionHandler: action)
         }
 
         /// Returns an order sync error notice.

@@ -109,6 +109,9 @@ struct UpgradesView: View {
             }
             .navigationBarHidden(true)
         }
+        // TODO: when we remove iOS 15 support, use NavigationStack instead.
+        // This is required to avoid a column layout on iPad, which looks strange.
+        .navigationViewStyle(.stack)
         .onDisappear {
             upgradesViewModel.onDisappear()
         }

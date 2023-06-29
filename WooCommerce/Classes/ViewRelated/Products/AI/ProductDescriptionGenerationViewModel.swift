@@ -76,6 +76,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     func handleFeedback(_ vote: FeedbackView.Vote) {
         analytics.track(event: .AIFeedback.feedbackSent(source: .productDescription,
                                                         isUseful: vote == .up))
+        // Delay the disappearance of the banner for a better UX.
         DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeDismissingFeedbackBanner) { [weak self] in
             self?.shouldShowFeedbackView = false
         }

@@ -15,6 +15,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isSupportRequestEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
     private let isFreeTrial: Bool
+    private let isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
     private let isTapToPayOnIPhoneMilestone2On: Bool
     private let isReadOnlySubscriptionsEnabled: Bool
@@ -39,6 +40,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isSupportRequestEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
          isFreeTrial: Bool = false,
+         isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isTapToPayOnIPhoneMilestone2On: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
@@ -62,6 +64,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.isFreeTrial = isFreeTrial
+        self.isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled = isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
         self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
@@ -102,6 +105,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDashboardStoreOnboardingEnabled
         case .freeTrial:
             return isFreeTrial
+        case .twentyFourHoursAfterFreeTrialSubscribedNotification:
+            return isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
         case .tapToPayOnIPhoneMilestone2:

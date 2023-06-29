@@ -1,15 +1,43 @@
 import SwiftUI
+import struct Yosemite.Site
+
+/// Hosting controller for `BlazeHighlightBanner`.
+final class BlazeHighlightBannerHostingController: UIHostingController<BlazeHighlightBanner> {
+    init(site: Site,
+         entryPoint: EntryPoint,
+         parentViewController: UIViewController) {
+        super.init(rootView: BlazeHighlightBanner())
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension BlazeHighlightBannerHostingController {
+    enum EntryPoint {
+        case myStore
+        case products
+    }
+}
 
 /// View to highlight the Blaze feature.
 ///
 struct BlazeHighlightBanner: View {
+    /// Closure to be triggered when the Try Blaze now button is tapped.
+    var onBlaze: () -> Void = {}
+
+    /// Closure to be triggered when the dismiss button is tapped.
+    var onDismiss: () -> Void = {}
+    
     var body: some View {
         VStack(spacing: Layout.spacing) {
             // Dismiss button
             HStack {
                 Spacer()
                 Button {
-                    // TODO
+                    onDismiss()
                 } label: {
                     Image(systemName: "xmark")
                 }
@@ -31,7 +59,7 @@ struct BlazeHighlightBanner: View {
 
             // CTA
             Button {
-                // TODO
+                onBlaze()
             } label: {
                 Text(Localization.actionButton)
                     .font(.body.weight(.bold))

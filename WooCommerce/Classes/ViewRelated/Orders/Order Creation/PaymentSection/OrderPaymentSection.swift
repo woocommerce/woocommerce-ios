@@ -69,7 +69,7 @@ struct OrderPaymentSection: View {
 
             addCouponRow
                 .sheet(isPresented: $shouldShowAddCouponLineDetails) {
-                    CouponLineDetails(viewModel: viewModel.couponLineViewModel)
+                    CouponLineDetails(viewModel: viewModel.addCouponLineViewModel)
                 }
 
             TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))

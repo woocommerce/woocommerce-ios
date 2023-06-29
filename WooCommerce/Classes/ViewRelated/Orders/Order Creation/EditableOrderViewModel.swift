@@ -691,7 +691,7 @@ extension EditableOrderViewModel {
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeLineDetailsViewModel
-        let couponLineViewModel: CouponLineDetailsViewModel
+        let addCouponLineViewModel: CouponLineDetailsViewModel
 
         init(siteID: Int64 = 0,
              itemsTotal: String = "0",
@@ -742,7 +742,7 @@ extension EditableOrderViewModel {
                                                             baseAmountForPercentage: feesBaseAmountForPercentage,
                                                             feesTotal: feeLineTotal,
                                                             didSelectSave: saveFeeLineClosure)
-            self.couponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
+            self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                                   code: "",
                                                                   siteID: siteID,
                                                                   didSelectSave: saveCouponLineClosure)

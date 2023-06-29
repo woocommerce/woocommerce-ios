@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import Experiments
 
 /// Type that fetches and shares a `WPCom` store plan(subscription).
 /// The plan is stored on memory and not on the Storage Layer because this only relates to `WPCom` stores.
@@ -42,12 +43,16 @@ final class StorePlanSynchronizer: ObservableObject {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    private let featureFlagService: FeatureFlagService
+
     init(stores: StoresManager = ServiceLocator.stores,
          timeZone: TimeZone = .current,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
         self.timeZone = timeZone
+        self.featureFlagService = featureFlagService
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -123,6 +128,12 @@ private extension StorePlanSynchronizer {
         if now.timeIntervalSince(normalizedDate) < Constants.oneDayTimeInterval {
             scheduleAfterExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
         }
+
+        if let subscribedDate = plan.subscribedDate,
+           // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
+           Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
+            schedule24HrsAfterSubscribedNotification(siteID: siteID, subcribedDate: subscribedDate)
+        }
     }
 
     func cancelFreeTrialExpirationNotifications(siteID: Int64) {
@@ -131,6 +142,26 @@ private extension StorePlanSynchronizer {
             siteID: siteID,
             expiryDate: Date() // placeholder date, irrelevant to the notification identifier
         ))
+        localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
+    }
+
+    func schedule24HrsAfterSubscribedNotification(siteID: Int64, subcribedDate: Date) {
+        // TODO: #10094 Remove after adding remote feature flag
+        guard featureFlagService.isFeatureFlagEnabled(.twentyFourHoursAfterFreeTrialSubscribedNotification) else {
+            return
+        }
+
+        let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
+
+        /// Scheduled 24 hrs after subcribed date
+        let triggerDateComponents = subcribedDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+        Task {
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      trigger: trigger,
+                                                      remoteFeatureFlag: nil, // TODO: #10094 Add remote feature flag
+                                                      shouldSkipIfScheduled: true)
+        }
     }
 
     func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {

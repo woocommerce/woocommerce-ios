@@ -82,7 +82,7 @@ struct WooPlanFeatureBenefitRow: View {
 }
 
 struct WooPlanFeatureBenefitsView_Previews: PreviewProvider {
-    static let featureGroup: WooPlanFeatureGroup = WooPlan()!.planFeatureGroups[0]
+    static let featureGroup: WooPlanFeatureGroup = WooPlan.loadHardcodedPlan().planFeatureGroups[0]
     static var previews: some View {
         WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)
     }

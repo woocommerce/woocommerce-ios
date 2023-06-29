@@ -12,6 +12,10 @@ public enum WordPressApiError: Error, Decodable, Equatable {
     ///
     case productPurchased
 
+    /// The transaction type for this IAP receipt is expected to be processed
+    /// via the server-to-server notification method, not sent from the app
+    case transactionReasonInvalid(message: String)
+
     /// Decodable Initializer.
     ///
     public init(from decoder: Decoder) throws {
@@ -22,6 +26,8 @@ public enum WordPressApiError: Error, Decodable, Equatable {
         switch code {
         case Constants.productPurchased:
             self = .productPurchased
+        case Constants.transactionReasonInvalid:
+            self = .transactionReasonInvalid(message: message)
         default:
             self = .unknown(code: code, message: message)
         }
@@ -32,6 +38,7 @@ public enum WordPressApiError: Error, Decodable, Equatable {
     ///
     private enum Constants {
         static let productPurchased = "product_purchased"
+        static let transactionReasonInvalid = "transaction_reason_invalid"
     }
 
     /// Coding Keys
@@ -59,8 +66,15 @@ extension WordPressApiError: CustomStringConvertible {
         switch self {
         case .productPurchased:
             return NSLocalizedString(
-                "An order aready exists for this receipt",
+                "An order already exists for this receipt",
                 comment: "Error message when an order already exists in the backend for a given receipt")
+
+        case .transactionReasonInvalid(let message):
+            let messageFormat = NSLocalizedString(
+                "This receipt's transaction type is not expected from the app [%1$@]",
+                comment: "Error message when an unsupported receipt type is sent - [%1$@] will be replaced with details")
+            return String.localizedStringWithFormat(messageFormat, message)
+
         case .unknown(let code, let message):
             let messageFormat = NSLocalizedString(
                 "WordPress API Error: [%1$@] %2$@",

@@ -25,6 +25,7 @@ final class AppCoordinator {
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
+    private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -45,7 +46,8 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) {
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
+         inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -64,7 +66,7 @@ final class AppCoordinator {
         self.featureFlagService = featureFlagService
         self.purchasesManager = purchasesManager
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
-
+        self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.

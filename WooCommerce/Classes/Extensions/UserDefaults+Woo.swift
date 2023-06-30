@@ -36,8 +36,7 @@ extension UserDefaults {
         case numberOfTimesWriteWithAITooltipIsShown
 
         // Blaze highlight banner
-        case hasDismissedBlazeBannerInProductList
-        case hasDismissedBlazeBannerInMyStore
+        case hasDismissedBlazeBanner
     }
 }
 

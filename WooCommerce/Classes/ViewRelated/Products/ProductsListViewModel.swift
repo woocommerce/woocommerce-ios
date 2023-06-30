@@ -171,7 +171,7 @@ extension ProductListViewModel {
             guard isSiteEligible else {
                 return
             }
-            guard userDefaults[.hasDismissedBlazeBannerInProductList] == nil else {
+            guard userDefaults[.hasDismissedBlazeBanner] == nil else {
                 return
             }
             shouldShowBlazeBanner = true
@@ -182,6 +182,6 @@ extension ProductListViewModel {
     ///
     func hideBlazeBanner() {
         shouldShowBlazeBanner = false
-        userDefaults[.hasDismissedBlazeBannerInProductList] = true
+        userDefaults[.hasDismissedBlazeBanner] = true
     }
 }

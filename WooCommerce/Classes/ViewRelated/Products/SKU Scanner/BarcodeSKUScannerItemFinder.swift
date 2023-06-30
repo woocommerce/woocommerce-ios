@@ -16,7 +16,7 @@ struct BarcodeSKUScannerItemFinder {
     func searchBySKU(from barcode: ScannedBarcode, siteID: Int64, source: WooAnalyticsEvent.Orders.BarcodeScanningSource) async throws -> SKUSearchResult {
         do {
             let result = try await search(by: barcode.payloadStringValue, siteID: siteID)
-            analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUSuccess(from: source))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUSuccess(from: source.rawValue))
 
             return result
         } catch {

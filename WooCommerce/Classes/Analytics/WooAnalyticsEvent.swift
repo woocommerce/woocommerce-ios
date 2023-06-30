@@ -538,8 +538,8 @@ extension WooAnalyticsEvent {
                                                                               Keys.reason: reason.rawValue])
         }
 
-        static func barcodeScanningSearchViaSKUSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source.rawValue])
+        static func orderProductSearchViaSKUSuccess(from source: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source])
         }
 
         static func barcodeScanningSearchViaSKUFailure(from source: BarcodeScanningSource, symbology: BarcodeSymbology, reason: String) -> WooAnalyticsEvent {

@@ -405,6 +405,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             switch result {
             case .success:
+                tracker.trackSearchSuccessIfNecessary()
                 self.reloadData()
             case .failure(let error):
                 self.notice = NoticeFactory.productSearchNotice() { [weak self] in

@@ -36,6 +36,14 @@ final class ProductSelectorViewModelTracker {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorSearchTriggered(searchFilter: productSearchFilter))
     }
 
+    func trackSearchSuccessIfNecessary() {
+        guard viewModel?.productSearchFilter == .sku else {
+            return
+        }
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUSuccess(from: Constants.orderProductSearchViaSKUSuccessSource))
+    }
+
     func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64) {
         guard productIDTrackingSources[productID] == nil else {
             productIDTrackingSources.removeValue(forKey: productID)
@@ -89,5 +97,11 @@ private extension ProductSelectorViewModelTracker {
         let section = viewModel.sections.first(where: { $0.type == sectionType })
 
         return section?.products.first(where: { $0.productID == productID}) != nil
+    }
+}
+
+extension ProductSelectorViewModelTracker {
+    enum Constants {
+        static let orderProductSearchViaSKUSuccessSource = "product_selector"
     }
 }

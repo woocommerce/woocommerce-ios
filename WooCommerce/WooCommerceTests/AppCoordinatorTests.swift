@@ -358,10 +358,11 @@ final class AppCoordinatorTests: XCTestCase {
 
     // MARK: - Handle local notification response
 
-    func test_plans_page_is_displayed_when_tapping_on_oneDayBeforeFreeTrialExpires_notification() throws {
+    func test_plans_page_is_displayed_when_tapping_on_oneDayBeforeFreeTrialExpires_notification_if_freeTrialIAP_is_false() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager)
+        let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: false)
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -378,10 +379,32 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_plans_page_is_displayed_when_tapping_on_oneDayAfterFreeTrialExpiresIdentifier_notification() throws {
+    func test_UpgradesHostingController_page_is_displayed_when_tapping_on_oneDayBeforeFreeTrialExpires_notification_if_freeTrialIAP_is_true() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager)
+        let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: true)
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: Date()).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            self.window.rootViewController?.topmostPresentedViewController is UpgradesHostingController
+        }
+    }
+
+    func test_plans_page_is_displayed_when_tapping_on_oneDayAfterFreeTrialExpiresIdentifier_notification_if_freeTrialIAP_is_false() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: false)
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -398,10 +421,32 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_plans_page_is_displayed_when_tapping_on_twentyFourHoursAfterFreeTrialSubscribed_notification() throws {
+    func test_UpgradesHostingController_page_is_displayed_when_tapping_on_oneDayAfterFreeTrialExpiresIdentifier_notification_if_freeTrialIAP_is_true() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager)
+        let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: true)
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            self.window.rootViewController?.topmostPresentedViewController is UpgradesHostingController
+        }
+    }
+
+    func test_plans_page_is_displayed_when_tapping_on_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_is_false() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: false)
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -415,6 +460,27 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         waitUntil {
             self.window.rootViewController?.topmostPresentedViewController is UpgradePlanCoordinatingController
+        }
+    }
+
+    func test_UpgradesHostingController_is_displayed_when_tapping_on_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_is_true() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: true)
+        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            self.window.rootViewController?.topmostPresentedViewController is UpgradesHostingController
         }
     }
 

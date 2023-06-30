@@ -3,6 +3,16 @@
     {
       "filename" : "product-description-ai-announcement.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "product-description-ai-announcement-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

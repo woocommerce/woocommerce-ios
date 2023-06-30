@@ -259,8 +259,7 @@ final class StatsStoreV4Tests: XCTestCase {
     func test_retrieveTopEarnerStats_effectively_persists_retrieved_stats() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "leaderboards/products", filename: "leaderboards-year")
-        network.simulateResponse(requestUrlSuffix: "products", filename: "leaderboards-products")
+        network.simulateResponse(requestUrlSuffix: "reports/products", filename: "reports-products")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
 
         // When
@@ -269,7 +268,7 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 3,
+                                                              quantity: 2,
                                                               forceRefresh: false,
                                                               saveInStorage: true) { result in
                 promise(result)
@@ -283,7 +282,7 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
 
         let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
-        XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStats())
+        assertEqual(sampleTopEarnerStats(), readOnlyTopEarnerStats)
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` makes a network request with the given quantity parameter.
@@ -310,31 +309,6 @@ final class StatsStoreV4Tests: XCTestCase {
         // Then
         let expectedQuantityParam = "per_page=\(quantity)"
         XCTAssertEqual(network.queryParameters?.contains(expectedQuantityParam), true)
-    }
-
-    /// Verifies that `StatsActionV4.retrieveTopEarnerStats` makes a network request with the given `force_cache_refresh` parameter.
-    ///
-    func test_retrieveTopEarnerStats_makes_network_request_with_given_force_cache_rerefresh_parameter() {
-        // Given
-        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let _: Void = waitFor { promise in
-            let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
-                                                              timeRange: .thisYear,
-                                                              earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
-                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 1,
-                                                              forceRefresh: true,
-                                                              saveInStorage: true) { result in
-                promise(())
-            }
-            store.onAction(action)
-        }
-
-        // Then
-        let expectedParam = "force_cache_refresh=1"
-        XCTAssertEqual(network.queryParameters?.contains(expectedParam), true)
     }
 
     /// Verifies that `StatsActionV4.retrieveStats` makes a network request with the given `force_cache_refresh` parameter.
@@ -366,8 +340,7 @@ final class StatsStoreV4Tests: XCTestCase {
     func test_retrieveTopEarnerStats_effectively_persists_updated_items() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "leaderboards/products", filename: "leaderboards-year-alt")
-        network.simulateResponse(requestUrlSuffix: "products", filename: "leaderboards-products")
+        network.simulateResponse(requestUrlSuffix: "reports/products", filename: "reports-products-alt")
         store.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
 
         // When
@@ -376,7 +349,7 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               timeRange: .thisYear,
                                                               earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 3,
+                                                              quantity: 2,
                                                               forceRefresh: false,
                                                               saveInStorage: true) { result in
                 promise(result)
@@ -391,37 +364,6 @@ final class StatsStoreV4Tests: XCTestCase {
 
         let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
         XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStatsMutated())
-    }
-
-    func test_retrieveTopEarnerStats_calls_deprecated_leaderboards_api_and_persits_stats_on_leaderboards_restnoroute_error() {
-        // Given
-        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateError(requestUrlSuffix: "leaderboards/products", error: DotcomError.noRestRoute)
-        network.simulateResponse(requestUrlSuffix: "leaderboards", filename: "leaderboards-year")
-        network.simulateResponse(requestUrlSuffix: "products", filename: "leaderboards-products")
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
-
-        // When
-        let result: Result<Networking.TopEarnerStats, Error> = waitFor { promise in
-            let action = StatsActionV4.retrieveTopEarnerStats(siteID: self.sampleSiteID,
-                                                              timeRange: .thisYear,
-                                                              earliestDateToInclude: DateFormatter.dateFromString(with: "2020-01-01T00:00:00"),
-                                                              latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
-                                                              quantity: 3,
-                                                              forceRefresh: false,
-                                                              saveInStorage: true) { result in
-                promise(result)
-            }
-            store.onAction(action)
-        }
-
-        // Then
-        XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
-
-        let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
-        XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStats())
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is an error response from the backend.
@@ -787,56 +729,56 @@ private extension StatsStoreV4Tests {
         return TopEarnerStats(siteID: sampleSiteID,
                               date: "2020",
                               granularity: .year,
-                              limit: "3",
+                              limit: "2",
                               items: [sampleTopEarnerStatsItem1(), sampleTopEarnerStatsItem2()])
     }
 
     func sampleTopEarnerStatsItem1() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 29,
-                                  productName: "Album",
-                                  quantity: 1,
-                                  price: 15.0,
-                                  total: 15.99,
+        return TopEarnerStatsItem(productID: 233,
+                                  productName: "Colorful Sunglasses Subscription",
+                                  quantity: 5,
+                                  price: 5,
+                                  total: 177,
                                   currency: "",
-                                  imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/album-1.jpg")
+                                  imageUrl: "https://example.com/wp-content/uploads/2023/01/sunglasses-2-600x600.jpg")
     }
 
     func sampleTopEarnerStatsItem2() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 9,
-                                  productName: "Aljafor",
-                                  quantity: 4,
-                                  price: 4000,
-                                  total: 20000,
+        return TopEarnerStatsItem(productID: 27,
+                                  productName: "Album",
+                                  quantity: 1,
+                                  price: 15,
+                                  total: 0,
                                   currency: "",
-                                  imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/07/img_7472-scaled.jpeg")
+                                  imageUrl: "https://example.com/wp-content/uploads/2023/01/album-1-600x600.jpg")
     }
 
     func sampleTopEarnerStatsMutated() -> Networking.TopEarnerStats {
         return TopEarnerStats(siteID: sampleSiteID,
                               date: "2020",
                               granularity: .year,
-                              limit: "3",
+                              limit: "2",
                               items: [sampleTopEarnerStatsMutatedItem1(), sampleTopEarnerStatsMutatedItem2()])
     }
 
     func sampleTopEarnerStatsMutatedItem1() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 29,
-                                  productName: "Album",
-                                  quantity: 2,
-                                  price: 15.0,
-                                  total: 30.99,
+        return TopEarnerStatsItem(productID: 233,
+                                  productName: "Colorful Sunglasses Subscription",
+                                  quantity: 8,
+                                  price: 5,
+                                  total: 215,
                                   currency: "",
-                                  imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/album-1.jpg")
+                                  imageUrl: "https://example.com/wp-content/uploads/2023/01/sunglasses-2-600x600.jpg")
     }
 
     func sampleTopEarnerStatsMutatedItem2() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 9,
-                                  productName: "Aljafor",
-                                  quantity: 10,
-                                  price: 4000,
-                                  total: 60000,
+        return TopEarnerStatsItem(productID: 27,
+                                  productName: "Album",
+                                  quantity: 4,
+                                  price: 15,
+                                  total: 45,
                                   currency: "",
-                                  imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/07/img_7472-scaled.jpeg")
+                                  imageUrl: "https://example.com/wp-content/uploads/2023/01/album-1-600x600.jpg")
     }
 
     // MARK: - Site Summary Stats Sample

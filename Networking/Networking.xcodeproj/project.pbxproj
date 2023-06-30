@@ -673,6 +673,7 @@
 		CE71E2332A4C3EDD00DB5376 /* ProductsReportMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71E2322A4C3EDD00DB5376 /* ProductsReportMapperTests.swift */; };
 		CE71E2372A4C3F3900DB5376 /* reports-products-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE71E2362A4C3F3900DB5376 /* reports-products-without-data.json */; };
 		CE71E2392A4C594600DB5376 /* ProductsReportsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71E2382A4C594600DB5376 /* ProductsReportsRemoteTests.swift */; };
+		CE71E23B2A4C666A00DB5376 /* reports-products-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = CE71E23A2A4C666A00DB5376 /* reports-products-alt.json */; };
 		CE831FE72A17FC1800E8BEFB /* order-with-composite-product.json in Resources */ = {isa = PBXBuildFile; fileRef = CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */; };
 		CE865A9D2A41E1480049B03C /* EntityDateModifiedMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */; };
 		CE865A9F2A41E42F0049B03C /* date-modified-gmt.json in Resources */ = {isa = PBXBuildFile; fileRef = CE865A9E2A41E42F0049B03C /* date-modified-gmt.json */; };
@@ -1629,6 +1630,7 @@
 		CE71E2322A4C3EDD00DB5376 /* ProductsReportMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportMapperTests.swift; sourceTree = "<group>"; };
 		CE71E2362A4C3F3900DB5376 /* reports-products-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reports-products-without-data.json"; sourceTree = "<group>"; };
 		CE71E2382A4C594600DB5376 /* ProductsReportsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportsRemoteTests.swift; sourceTree = "<group>"; };
+		CE71E23A2A4C666A00DB5376 /* reports-products-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reports-products-alt.json"; sourceTree = "<group>"; };
 		CE831FE62A17FC1800E8BEFB /* order-with-composite-product.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-composite-product.json"; sourceTree = "<group>"; };
 		CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDateModifiedMapper.swift; sourceTree = "<group>"; };
 		CE865A9E2A41E42F0049B03C /* date-modified-gmt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "date-modified-gmt.json"; sourceTree = "<group>"; };
@@ -2681,6 +2683,7 @@
 				CEC4BF92234E7EE0008D9195 /* refunds-all.json */,
 				7412A8EF21B6E415005D182A /* report-orders.json */,
 				CE71E2282A4C35C900DB5376 /* reports-products.json */,
+				CE71E23A2A4C666A00DB5376 /* reports-products-alt.json */,
 				CE71E2362A4C3F3900DB5376 /* reports-products-without-data.json */,
 				D88D5A40230BC5DA007B6E01 /* reviews-all.json */,
 				57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */,
@@ -3701,6 +3704,7 @@
 				451274A625276C82009911FF /* product-variation.json in Resources */,
 				CC80E3F92948C8BC00D5FF45 /* site-visits-quarter.json in Resources */,
 				020D07C223D858BB00FD9580 /* media-upload.json in Resources */,
+				CE71E23B2A4C666A00DB5376 /* reports-products-alt.json in Resources */,
 				31A451D127863A2E00FE81AA /* stripe-account-rejected-other.json in Resources */,
 				DEF13C5029629EEA0024A02B /* user-complete-without-data.json in Resources */,
 				EE57C123297EB04F00BC31E7 /* product-attribute-create-without-data.json in Resources */,

@@ -17,6 +17,8 @@ final class DashboardViewModel {
 
     @Published var modalJustInTimeMessageViewModel: JustInTimeMessageViewModel? = nil
 
+    @Published var localAnnouncementViewModel: LocalAnnouncementViewModel? = nil
+
     let storeOnboardingViewModel: StoreOnboardingViewModel
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
@@ -31,6 +33,7 @@ final class DashboardViewModel {
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
+    private let localAnnouncementsProvider: LocalAnnouncementsProvider
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -50,6 +53,7 @@ final class DashboardViewModel {
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
+        self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         setupObserverForShowOnboarding()
     }
@@ -178,6 +182,7 @@ final class DashboardViewModel {
         } catch {
             await syncJustInTimeMessages(for: siteID)
         }
+        await loadLocalAnnouncement()
     }
 
     /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
@@ -256,6 +261,21 @@ final class DashboardViewModel {
             modalJustInTimeMessageViewModel = nil
         }
 
+    }
+
+    @MainActor
+    /// If JITM modal isn't displayed, it loads a local announcement to be displayed modally if available.
+    /// When a local announcement is available, the view model is set. Otherwise, the view model is set to `nil`.
+    private func loadLocalAnnouncement() async {
+        // Local announcement modal can only be shown when JITM modal is not shown.
+        guard modalJustInTimeMessageViewModel == nil else {
+            return
+        }
+        guard let viewModel = await localAnnouncementsProvider.loadAnnouncement() else {
+            localAnnouncementViewModel = nil
+            return
+        }
+        localAnnouncementViewModel = viewModel
     }
 
     /// Sets up observer to decide store onboarding task lists visibility

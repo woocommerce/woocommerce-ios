@@ -115,6 +115,8 @@ extension LocalNotification.Scenario: Equatable {
             return lhsExpiryDate == rhsExpiryDate && lhsSiteID == rhsSiteID
         case let (.oneDayAfterFreeTrialExpires(lhsSiteID), .oneDayAfterFreeTrialExpires(rhsSiteID)):
             return lhsSiteID == rhsSiteID
+        case let (.twentyFourHoursAfterFreeTrialSubscribed(lhsSiteID), .twentyFourHoursAfterFreeTrialSubscribed(rhsSiteID)):
+            return lhsSiteID == rhsSiteID
         default:
             return false
         }

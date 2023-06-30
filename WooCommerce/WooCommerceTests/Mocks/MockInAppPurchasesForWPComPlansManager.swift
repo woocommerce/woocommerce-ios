@@ -62,10 +62,10 @@ extension MockInAppPurchasesForWPComPlansManager {
                  id: "debug.woocommerce.ecommerce.monthly",
                  displayPrice: "$69.99")
         ]
-        static let debugInAppPurchasesPlans: [WPComPlanProduct] = [
-            Plan(displayName: "Debug Essential Monthly",
-                 description: "1 Month of Debug Essential",
-                 id: "debug.woocommerce.express.essential.monthly",
+        static let essentialInAppPurchasesPlans: [WPComPlanProduct] = [
+            Plan(displayName: "Essential Monthly",
+                 description: "1 Month of Essential",
+                 id: "woocommerce.express.essential.monthly",
                  displayPrice: "$99.99")
         ]
     }

@@ -170,11 +170,7 @@ private extension InAppPurchaseStore {
         } else {
             // Provide access to the product
             logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
-            /// We ignore 422 errors for product purchased because _usually_ from this method, these are renewals
-            /// that MobilePay already knows about, and when they're not, other client side checks should
-            /// prevent the purchase in the first place.
-            /// [See #10075 for details](https://github.com/woocommerce/woocommerce-ios/issues/10075)
-            try await submitTransaction(transaction, shouldIgnoreProductPurchasedErrors: true)
+            try await submitTransaction(transaction)
         }
         pendingTransactionCompletionHandler?(.success(.success(result)))
         pendingTransactionCompletionHandler = nil
@@ -204,8 +200,7 @@ private extension InAppPurchaseStore {
         }
     }
 
-    func submitTransaction(_ transaction: StoreKit.Transaction,
-                           shouldIgnoreProductPurchasedErrors: Bool = false) async throws {
+    func submitTransaction(_ transaction: StoreKit.Transaction) async throws {
         guard useBackend else {
             return
         }
@@ -232,15 +227,17 @@ private extension InAppPurchaseStore {
                 price: priceInCents,
                 productIdentifier: product.id,
                 appStoreCountryCode: countryCode,
-                originalTransactionId: transaction.originalID
+                originalTransactionId: transaction.originalID,
+                transactionId: transaction.id
             )
             logInfo("Successfully registered purchase with Order ID \(orderID)")
         } catch WordPressApiError.productPurchased {
-            guard shouldIgnoreProductPurchasedErrors else {
-                throw Errors.transactionAlreadyAssociatedWithAnUpgrade
-            }
-            // Ignore errors for existing purchase
-            logInfo("Existing order found for transaction \(transaction.id) on site \(siteID), ignoring")
+            throw Errors.transactionAlreadyAssociatedWithAnUpgrade
+        } catch WordPressApiError.transactionReasonInvalid(let reasonMessage) {
+            /// We ignore transactionReasonInvalid errors, usually these are renewals that
+            /// MobilePay has already handled via Apple's server to server notifications
+            /// [See #10075 for details](https://github.com/woocommerce/woocommerce-ios/issues/10075)
+            logInfo("Unsupported transaction received: \(transaction.id) on site \(siteID), ignoring. \(reasonMessage)")
         } catch {
             // Rethrow any other error
             throw error

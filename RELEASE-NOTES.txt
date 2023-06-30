@@ -13,7 +13,7 @@
 - [*] Product creation: the product type row is now editable when creating a product. [https://github.com/woocommerce/woocommerce-ios/pull/10087]
 - [***] Store creation: US users can upgrade Woo Express free trial stores via In-App Purchase [https://github.com/woocommerce/woocommerce-ios/pull/10123]
 - [*] Orders: Users can can now add multiple coupons to orders (not only one) [https://github.com/woocommerce/woocommerce-ios/pull/10126]
-- [**] Product description AI: an announcement modal is shown for WPCOM stores about the feature, and the CTA is more discoverable in the product form with a tooltip. [https://github.com/woocommerce/woocommerce-ios/pull/10142]
+- [**] Product description AI: an announcement modal is shown for WPCOM stores about the feature, and a new CTA "Write with AI" is more discoverable in the product form with a tooltip. [https://github.com/woocommerce/woocommerce-ios/pull/10142]
 
 14.2
 -----

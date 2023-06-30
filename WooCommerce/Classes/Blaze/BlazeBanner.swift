@@ -2,11 +2,11 @@ import SwiftUI
 import struct Yosemite.Site
 
 /// Hosting controller for `BlazeHighlightBanner`.
-final class BlazeHighlightBannerHostingController: UIHostingController<BlazeHighlightBanner> {
+final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
     init(site: Site,
          entryPoint: EntryPoint,
          parentViewController: UIViewController) {
-        super.init(rootView: BlazeHighlightBanner())
+        super.init(rootView: BlazeBanner())
     }
 
     @available(*, unavailable)
@@ -15,7 +15,7 @@ final class BlazeHighlightBannerHostingController: UIHostingController<BlazeHigh
     }
 }
 
-extension BlazeHighlightBannerHostingController {
+extension BlazeBannerHostingController {
     enum EntryPoint {
         case myStore
         case products
@@ -24,9 +24,9 @@ extension BlazeHighlightBannerHostingController {
 
 /// View to highlight the Blaze feature.
 ///
-struct BlazeHighlightBanner: View {
+struct BlazeBanner: View {
     /// Closure to be triggered when the Try Blaze now button is tapped.
-    var onBlaze: () -> Void = {}
+    var onTryBlaze: () -> Void = {}
 
     /// Closure to be triggered when the dismiss button is tapped.
     var onDismiss: () -> Void = {}
@@ -59,7 +59,7 @@ struct BlazeHighlightBanner: View {
 
             // CTA
             Button {
-                onBlaze()
+                onTryBlaze()
             } label: {
                 Text(Localization.actionButton)
                     .font(.body.weight(.bold))
@@ -70,7 +70,7 @@ struct BlazeHighlightBanner: View {
     }
 }
 
-extension BlazeHighlightBanner {
+private extension BlazeBanner {
     enum Layout {
         static let spacing: CGFloat = 16
     }
@@ -90,8 +90,8 @@ extension BlazeHighlightBanner {
     }
 }
 
-struct BlazeHighlightBanner_Previews: PreviewProvider {
+struct BlazeBanner_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeHighlightBanner()
+        BlazeBanner()
     }
 }

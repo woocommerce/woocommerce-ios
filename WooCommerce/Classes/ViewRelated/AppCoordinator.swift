@@ -368,19 +368,19 @@ private extension AppCoordinator {
                   let siteID = Int64(identifier.replacingOccurrences(of: oneDayBeforeFreeTrialExpiresIdentifier, with: "")) else {
                 return
             }
-            openPlansPage(siteID: siteID)
+            showUpgradesView(siteID: siteID)
         case let identifier where identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: oneDayAfterFreeTrialExpiresIdentifier, with: "")) else {
                 return
             }
-            openPlansPage(siteID: siteID)
+            showUpgradesView(siteID: siteID)
         case let identifier where identifier.hasPrefix(twentyFourHoursAfterFreeTrialSubscribed):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: twentyFourHoursAfterFreeTrialSubscribed, with: "")) else {
                 return
             }
-            openPlansPage(siteID: siteID)
+            showUpgradesView(siteID: siteID)
         case LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial:
             let storeNameKey = LocalNotification.UserInfoKey.storeName
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
@@ -397,16 +397,19 @@ private extension AppCoordinator {
 
 /// Local notification handling helper methods.
 private extension AppCoordinator {
-    func openPlansPage(siteID: Int64) {
+    func showUpgradesView(siteID: Int64) {
         switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
             guard let self else { return }
 
-            if self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
-                let upgradesController = UpgradesHostingController(siteID: siteID)
-                self.window.rootViewController?.topmostPresentedViewController.present(upgradesController, animated: true)
-            } else {
-                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
-                self.window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
+            Task { @MainActor in
+                if await self.inAppPurchasesPlanManager.inAppPurchasesAreSupported() &&
+                    self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
+                    let upgradesController = UpgradesHostingController(siteID: siteID)
+                    self.window.rootViewController?.topmostPresentedViewController.present(upgradesController, animated: true)
+                } else {
+                    let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
+                    self.window.rootViewController?.topmostPresentedViewController.present(subscriptionsController, animated: true)
+                }
             }
         }
     }

@@ -31,15 +31,15 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         analytics = nil
     }
 
-    func test_findProduct_when_there_is_an_error_then_passes_it() async {
+    func test_findProduct_when_there_is_an_error_then_passes_and_tracks_it() async {
         // Given
         let source = WooAnalyticsEvent.Orders.BarcodeScanningSource.orderCreation
-        let testError = TestError.anError
+        let productNotFoundError = ProductLoadError.notFound
         let symbology = BarcodeSymbology.aztec
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case .retrieveFirstPurchasableItemMatchFromSKU(_, _, let onCompletion):
-                onCompletion(.failure(testError))
+                onCompletion(.failure(productNotFoundError))
             default:
                 XCTFail("Expected failure, got success")
             }
@@ -54,10 +54,11 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
             retrievedError = error
         }
 
-        XCTAssertEqual(retrievedError as? TestError, testError)
+        XCTAssertEqual(retrievedError as? ProductLoadError, productNotFoundError)
         XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.orderProductSearchViaSKUFailure.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["source"] as? String, source.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["barcode_format"] as? String, symbology.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["reason"] as? String, "Product not found")
     }
 
     func test_findProduct_when_sku_matches_barcode_then_returns_product() async {
@@ -156,8 +157,4 @@ final class BarcodeSKUScannerItemFinderTests: XCTestCase {
         // Then
         XCTAssertEqual(retrievedProduct, returningProduct)
     }
-}
-
-private enum TestError: Error {
-    case anError
 }

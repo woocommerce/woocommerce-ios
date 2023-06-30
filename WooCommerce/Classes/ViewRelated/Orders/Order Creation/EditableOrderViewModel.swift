@@ -5,13 +5,6 @@ import Experiments
 import WooFoundation
 import enum Networking.DotcomError
 
-struct CouponLineViewModel {
-    let title: String
-    let discount: String
-
-    let detailsViewModel: CouponLineDetailsViewModel
-}
-
 /// Encapsulates the item type an order can have, products or variations
 ///
 typealias OrderBaseItem = SKUSearchResult

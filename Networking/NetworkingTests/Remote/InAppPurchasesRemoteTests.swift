@@ -62,7 +62,8 @@ class InAppPurchasesRemoteTests: XCTestCase {
                 productIdentifier: "woocommerce_entry_monthly",
                 appStoreCountryCode: "us",
                 originalTransactionId: 1234,
-                transactionId: 12345) { aResult in
+                transactionId: 12345,
+                subscriptionGroupId: "21032734") { aResult in
                     result = aResult
                     expectation.fulfill()
                 }

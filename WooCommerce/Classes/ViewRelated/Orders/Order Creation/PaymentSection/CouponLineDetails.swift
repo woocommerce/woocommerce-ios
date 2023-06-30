@@ -49,7 +49,7 @@ struct CouponLineDetails: View {
                         Section {
                             Button(Localization.remove) {
                                 focusedField = nil
-                                viewModel.didSelectSave(nil)
+                                viewModel.removeCoupon()
                                 presentation.wrappedValue.dismiss()
                             }
                             .padding()

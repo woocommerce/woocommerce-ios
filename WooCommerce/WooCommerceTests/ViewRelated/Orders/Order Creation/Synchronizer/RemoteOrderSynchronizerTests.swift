@@ -715,7 +715,6 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
     func test_sending_coupon_input_triggers_order_creation() {
         // Given
-        let coupon = OrderCouponLine.fake().copy()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 
@@ -730,7 +729,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            synchronizer.setCoupon.send(coupon)
+            synchronizer.addCoupon.send("TESTCOUPON")
         }
 
         // Then
@@ -739,7 +738,6 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
     func test_sending_coupon_input_triggers_order_sync_in_edit_flow() {
         // Given
-        let coupon = OrderCouponLine.fake().copy()
         let order = Order.fake().copy(orderID: sampleOrderID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
@@ -757,22 +755,22 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            synchronizer.setCoupon.send(coupon)
+            synchronizer.addCoupon.send("TESTCOUPON")
         }
 
         // Then
         XCTAssertTrue(orderUpdateInvoked)
     }
 
-    func test_sending_nil_coupon_input_updates_local_order() throws {
+    func test_removing_coupon_input_updates_local_order() throws {
         // Given
-        let couponLine = OrderCouponLine.fake().copy(code: "code")
+        let couponCode = "code"
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 
         // When
-        synchronizer.setCoupon.send(couponLine)
-        synchronizer.setCoupon.send(nil)
+        synchronizer.addCoupon.send(couponCode)
+        synchronizer.removeCoupon.send(couponCode)
 
         // Then
         XCTAssertNil(synchronizer.order.coupons.first)

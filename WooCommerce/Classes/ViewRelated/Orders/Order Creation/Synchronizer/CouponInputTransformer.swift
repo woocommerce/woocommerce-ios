@@ -10,7 +10,7 @@ struct CouponInputTransformer {
     ///
     static func append(input: String, on order: Order) -> Order {
         let existingCouponCodes = order.coupons.map({ $0.code })
-    
+
         guard !existingCouponCodes.contains(input) else {
             return order
         }
@@ -18,7 +18,7 @@ struct CouponInputTransformer {
         return order.copy(coupons: order.coupons + [OrderFactory.newOrderCouponLine(code: input)])
     }
 
-    /// Removes a coupon line input into an existing order.
+    /// Removes a coupon line input from an existing order.
     /// If the order does not have that coupon added it does nothing
     ///
     static func remove(code: String, from order: Order) -> Order {

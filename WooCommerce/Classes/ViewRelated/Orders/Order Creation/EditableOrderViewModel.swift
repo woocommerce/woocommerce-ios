@@ -736,9 +736,8 @@ extension EditableOrderViewModel {
                                                             feesTotal: feeLineTotal,
                                                             didSelectSave: saveFeeLineClosure)
             self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
-                                                                  code: "",
-                                                                  siteID: siteID,
-                                                                  didSelectSave: saveCouponLineClosure)
+                                                                     siteID: siteID,
+                                                                     didSelectSave: saveCouponLineClosure)
         }
     }
 

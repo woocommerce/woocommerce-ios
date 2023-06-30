@@ -44,12 +44,12 @@ final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
     private let stores: StoresManager
 
     init(isExistingCouponLine: Bool,
-         code: String,
+         code: String? = nil,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          didSelectSave: @escaping ((CouponLineDetailsResult) -> Void)) {
         self.isExistingCouponLine = isExistingCouponLine
-        self.code = code
+        self.code = code ?? ""
         self.siteID = siteID
         self.stores = stores
         self.initialCode = code

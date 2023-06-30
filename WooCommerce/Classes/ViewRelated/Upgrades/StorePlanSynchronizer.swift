@@ -43,16 +43,12 @@ final class StorePlanSynchronizer: ObservableObject {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    private let featureFlagService: FeatureFlagService
-
     init(stores: StoresManager = ServiceLocator.stores,
          timeZone: TimeZone = .current,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.stores = stores
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
         self.timeZone = timeZone
-        self.featureFlagService = featureFlagService
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -146,11 +142,6 @@ private extension StorePlanSynchronizer {
     }
 
     func schedule24HrsAfterSubscribedNotification(siteID: Int64, subcribedDate: Date) {
-        // TODO: #10094 Remove after adding remote feature flag
-        guard featureFlagService.isFeatureFlagEnabled(.twentyFourHoursAfterFreeTrialSubscribedNotification) else {
-            return
-        }
-
         let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
 
         /// Scheduled 24 hrs after subcribed date
@@ -159,7 +150,7 @@ private extension StorePlanSynchronizer {
         Task {
             await localNotificationScheduler.schedule(notification: notification,
                                                       trigger: trigger,
-                                                      remoteFeatureFlag: nil, // TODO: #10094 Add remote feature flag
+                                                      remoteFeatureFlag: .twentyFourHoursAfterFreeTrialSubscribed,
                                                       shouldSkipIfScheduled: true)
         }
     }

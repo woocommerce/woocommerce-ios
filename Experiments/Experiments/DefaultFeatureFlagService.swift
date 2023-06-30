@@ -73,8 +73,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .freeTrialInAppPurchasesUpgradeM1:
             return true
-        case .twentyFourHoursAfterFreeTrialSubscribedNotification:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:

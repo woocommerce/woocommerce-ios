@@ -190,11 +190,9 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
 
         // When
-        let featureFlagService = MockFeatureFlagService(isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: true)
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager,
-                                  featureFlagService: featureFlagService)
+                                  pushNotesManager: pushNotesManager)
 
         // Then
         waitUntil(timeout: 3) {
@@ -231,52 +229,9 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
 
         // When
-        let featureFlagService = MockFeatureFlagService(isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: true)
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager,
-                                  featureFlagService: featureFlagService)
-
-        // Then
-        waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
-        }
-        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
-        let expectedID = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(sampleSiteID)"
-        XCTAssertFalse(ids.contains(expectedID))
-    }
-
-    func test_twentyFourHoursAfterFreeTrialSubscribed_local_notification_is_not_scheduled_if_local_feature_flag_is_off() throws {
-        // Given
-        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
-        let pushNotesManager = MockPushNotificationsManager()
-        let subscribedDate = Date().normalizedDate().addingTimeInterval(-86400/2) // Subscribed before half a day
-        let trialPlan = WPComSitePlan(id: "1052",
-                                      hasDomainCredit: false,
-                                      expiryDate: subscribedDate.addingDays(28),
-                                      subscribedDate: subscribedDate)
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                completion(.success(trialPlan))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, completion):
-                // Remote feature flag is enabled.
-                completion(true)
-            }
-        }
-
-        // When
-        let featureFlagService = MockFeatureFlagService(isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: false)
-        _ = StorePlanSynchronizer(stores: stores,
-                                  timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager,
-                                  featureFlagService: featureFlagService)
+                                  pushNotesManager: pushNotesManager)
 
         // Then
         waitUntil(timeout: 3) {
@@ -315,11 +270,9 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
 
         // When
-        let featureFlagService = MockFeatureFlagService(isTwentyFourHoursAfterFreeTrialSubscribedNotificationEnabled: true)
         let synchronizer = StorePlanSynchronizer(stores: stores,
                                                  timeZone: timeZone,
-                                                 pushNotesManager: pushNotesManager,
-                                                 featureFlagService: featureFlagService)
+                                                 pushNotesManager: pushNotesManager)
 
         // Then
         waitUntil(timeout: 3) {

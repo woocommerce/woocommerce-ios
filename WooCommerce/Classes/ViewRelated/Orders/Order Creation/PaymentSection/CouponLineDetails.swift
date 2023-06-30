@@ -120,7 +120,7 @@ struct CouponLineDetails_Previews: PreviewProvider {
         let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: true,
                                                    code: "",
                                                    siteID: 0,
-                                                   didSelectSave: { _  in })
+                                                   didSelectSave: { _ in })
         CouponLineDetails(viewModel: viewModel)
     }
 }

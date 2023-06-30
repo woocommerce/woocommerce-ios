@@ -113,7 +113,7 @@ private extension StorePlanSynchronizer {
         if let subscribedDate = plan.subscribedDate,
            // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
            Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-            schedule24HrsAfterSubscribedNotification(siteID: siteID, subcribedDate: subscribedDate)
+            schedule24HrsAfterSubscribedNotification(siteID: siteID, subscribedDate: subscribedDate)
         }
     }
 
@@ -126,11 +126,11 @@ private extension StorePlanSynchronizer {
         localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
     }
 
-    func schedule24HrsAfterSubscribedNotification(siteID: Int64, subcribedDate: Date) {
+    func schedule24HrsAfterSubscribedNotification(siteID: Int64, subscribedDate: Date) {
         let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
 
-        /// Scheduled 24 hrs after subcribed date
-        let triggerDateComponents = subcribedDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
+        /// Scheduled 24 hrs after subscribed date
+        let triggerDateComponents = subscribedDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
             await localNotificationScheduler.schedule(notification: notification,

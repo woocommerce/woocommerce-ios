@@ -2,7 +2,7 @@
 
 14.4
 -----
-- [*] Orders: Users can can now add multiple coupons to orders (not only one) [https://github.com/woocommerce/woocommerce-ios/pull/10126]
+
 
 14.3
 -----
@@ -11,6 +11,7 @@
 - [*] A feedback banner is added for product description AI and product sharing AI sheets. [https://github.com/woocommerce/woocommerce-ios/pull/10102]
 - [*] Product creation: the product type row is now editable when creating a product. [https://github.com/woocommerce/woocommerce-ios/pull/10087]
 - [***] Store creation: US users can upgrade Woo Express free trial stores via In-App Purchase [https://github.com/woocommerce/woocommerce-ios/pull/10123]
+- [*] Orders: Users can can now add multiple coupons to orders (not only one) [https://github.com/woocommerce/woocommerce-ios/pull/10126]
 
 14.2
 -----

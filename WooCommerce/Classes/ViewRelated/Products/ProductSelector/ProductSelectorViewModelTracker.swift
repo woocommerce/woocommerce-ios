@@ -44,6 +44,15 @@ final class ProductSelectorViewModelTracker {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUSuccess(from: Constants.orderProductSearchViaSKUSuccessSource))
     }
 
+    func trackSearchFailureIfNecessary(with error: Error) {
+        guard viewModel?.productSearchFilter == .sku else {
+            return
+        }
+
+        analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUFailure(from: Constants.orderProductSearchViaSKUSuccessSource,
+                                                                                        reason: error.localizedDescription))
+    }
+
     func updateTrackingSourceAfterSelectionStateChangedForProduct(with productID: Int64) {
         guard productIDTrackingSources[productID] == nil else {
             productIDTrackingSources.removeValue(forKey: productID)

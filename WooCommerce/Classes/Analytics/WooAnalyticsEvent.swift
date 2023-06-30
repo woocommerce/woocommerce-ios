@@ -542,10 +542,18 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source])
         }
 
-        static func barcodeScanningSearchViaSKUFailure(from source: BarcodeScanningSource, symbology: BarcodeSymbology, reason: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: [Keys.source: source.rawValue,
-                                                                                       Keys.barcodeFormat: symbology.rawValue,
-                                                                                       Keys.reason: reason])
+        static func orderProductSearchViaSKUFailure(from source: String,
+                                                    symbology: BarcodeSymbology? = nil,
+                                                    reason: String) -> WooAnalyticsEvent {
+
+            var properties = [Keys.source: source,
+                              Keys.reason: reason]
+
+            if let symbology = symbology {
+                properties[Keys.barcodeFormat] = symbology.rawValue
+            }
+
+            return WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: properties)
         }
 
         static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {

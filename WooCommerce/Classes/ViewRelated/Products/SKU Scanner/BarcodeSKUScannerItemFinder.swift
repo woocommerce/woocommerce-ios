@@ -20,7 +20,7 @@ struct BarcodeSKUScannerItemFinder {
 
             return result
         } catch {
-            analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUFailure(from: source,
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUFailure(from: source.rawValue,
                                                                                                symbology: barcode.symbology,
                                                                                                reason: error.localizedDescription))
 

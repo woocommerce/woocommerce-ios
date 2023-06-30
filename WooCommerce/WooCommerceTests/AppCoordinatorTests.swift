@@ -358,11 +358,15 @@ final class AppCoordinatorTests: XCTestCase {
 
     // MARK: - Handle local notification response
 
-    func test_plans_page_is_displayed_when_tapping_on_oneDayBeforeFreeTrialExpires_notification_if_freeTrialIAP_is_false() throws {
+    func test_SubscriptionsHostingController_is_shown_when_tapping_oneDayBeforeFreeTrialExpires_notification_if_freeTrialIAP_not_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: false)
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          featureFlagService: featureFlagService,
+                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -375,15 +379,19 @@ final class AppCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is UpgradePlanCoordinatingController
+            self.window.rootViewController?.topmostPresentedViewController is SubscriptionsHostingController
         }
     }
 
-    func test_UpgradesHostingController_page_is_displayed_when_tapping_on_oneDayBeforeFreeTrialExpires_notification_if_freeTrialIAP_is_true() throws {
+    func test_UpgradesHostingController_is_shown_when_tapping_oneDayBeforeFreeTrialExpires_notification_if_freeTrialIAP_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: true)
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          featureFlagService: featureFlagService,
+                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -400,11 +408,15 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_plans_page_is_displayed_when_tapping_on_oneDayAfterFreeTrialExpiresIdentifier_notification_if_freeTrialIAP_is_false() throws {
+    func test_SubscriptionsHostingController_is_shown_when_tapping_oneDayAfterFreeTrialExpiresIdentifier_notification_if_freeTrialIAP_not_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: false)
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          featureFlagService: featureFlagService,
+                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -417,15 +429,19 @@ final class AppCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is UpgradePlanCoordinatingController
+            self.window.rootViewController?.topmostPresentedViewController is SubscriptionsHostingController
         }
     }
 
-    func test_UpgradesHostingController_page_is_displayed_when_tapping_on_oneDayAfterFreeTrialExpiresIdentifier_notification_if_freeTrialIAP_is_true() throws {
+    func test_UpgradesHostingController_is_shown_when_tapping_oneDayAfterFreeTrialExpiresIdentifier_notification_if_freeTrialIAP_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: true)
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          featureFlagService: featureFlagService,
+                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -442,11 +458,15 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_plans_page_is_displayed_when_tapping_on_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_is_false() throws {
+    func test_SubscriptionsHostingController_is_shown_when_tapping_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_not_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: false)
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          featureFlagService: featureFlagService,
+                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -459,15 +479,19 @@ final class AppCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is UpgradePlanCoordinatingController
+            self.window.rootViewController?.topmostPresentedViewController is SubscriptionsHostingController
         }
     }
 
-    func test_UpgradesHostingController_is_displayed_when_tapping_on_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_is_true() throws {
+    func test_UpgradesHostingController_is_shown_when_tapping_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let featureFlagService = MockFeatureFlagService(isFreeTrialInAppPurchasesUpgradeM1: true)
-        let coordinator = makeCoordinator(window: window, pushNotesManager: pushNotesManager, featureFlagService: featureFlagService)
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          featureFlagService: featureFlagService,
+                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -636,7 +660,8 @@ private extension AppCoordinatorTests {
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
-                         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) -> AppCoordinator {
+                         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
+                         inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = MockInAppPurchasesForWPComPlansManager()) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               storageManager: storageManager ?? self.storageManager,
@@ -646,6 +671,7 @@ private extension AppCoordinatorTests {
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
-                              purchasesManager: purchasesManager ?? nil)
+                              purchasesManager: purchasesManager ?? nil,
+                              inAppPurchasesPlanManager: inAppPurchasesPlanManager)
     }
 }

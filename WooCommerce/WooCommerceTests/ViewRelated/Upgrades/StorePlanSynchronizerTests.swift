@@ -152,9 +152,6 @@ final class StorePlanSynchronizerTests: XCTestCase {
                                   pushNotesManager: pushNotesManager)
 
         // Then
-        waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
-        }
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
         let expectedID = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(sampleSiteID)"
         XCTAssertFalse(ids.contains(expectedID))
@@ -194,7 +191,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.count == 3
+            pushNotesManager.requestedLocalNotificationsIfNeeded.count == 1
         }
 
         // When
@@ -203,7 +200,10 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.isEmpty && pushNotesManager.canceledLocalNotificationScenarios.count == 3
+           pushNotesManager.canceledLocalNotificationScenarios.count == 3
         }
+
+        // No local notifications scheduling requested for a non free trial plan
+        XCTAssertTrue(pushNotesManager.requestedLocalNotificationsIfNeeded.isEmpty)
     }
 }

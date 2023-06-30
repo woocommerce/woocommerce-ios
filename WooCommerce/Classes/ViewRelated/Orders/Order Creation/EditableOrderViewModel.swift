@@ -707,7 +707,7 @@ extension EditableOrderViewModel {
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
-             saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _  in },
+             saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal

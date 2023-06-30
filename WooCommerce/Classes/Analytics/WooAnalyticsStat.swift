@@ -749,6 +749,10 @@ public enum WooAnalyticsStat: String {
     case productSharingAIMessageGenerated = "product_sharing_ai_message_generated"
     case productSharingAIMessageGenerationFailed = "product_sharing_ai_message_generation_failed"
 
+    // MARK: Product AI Feedback
+    //
+    case productAIFeedback = "product_ai_feedback"
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"

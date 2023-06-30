@@ -8,14 +8,50 @@
   ],
   "settings" : {
     "_applicationInternalID" : "1389130815",
-    "_compatibilityTimeRate" : 6,
+    "_compatibilityTimeRate" : {
+      "3" : 6
+    },
     "_developerTeamID" : "PZYM8XX95Q",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 709118083.66037405,
+    "_lastSynchronizedDate" : 709713857.71122098,
     "_storeKitError" : 0,
     "_timeRate" : 13
   },
   "subscriptionGroups" : [
+    {
+      "id" : "21032734",
+      "localizations" : [
+
+      ],
+      "name" : "Plans",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "39.0",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6450767566",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Everything you need to launch an online store",
+              "displayName" : "Essential Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "woocommerce.express.essential.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Woo Express Essential Monthly",
+          "subscriptionGroupID" : "21032734",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    },
     {
       "id" : "21032762",
       "localizations" : [

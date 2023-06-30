@@ -72,7 +72,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .freeTrial:
             return true
         case .freeTrialInAppPurchasesUpgradeM1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
@@ -82,7 +82,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productDescriptionAI:
             return true
         case .productDescriptionAIFromStoreOnboarding:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .readOnlyGiftCards:
             return true
         case .hideStoreOnboardingTaskList:

@@ -60,6 +60,7 @@ struct UpgradesView: View {
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:
                     OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
+                        .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plan):
                     OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
                         Task {
@@ -69,22 +70,26 @@ struct UpgradesView: View {
                 case .purchasing(let plan):
                     OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
                 case .waiting(let plan):
-                    UpgradeWaitingView(planName: plan.wooPlan.shortName)
+                    ScrollView(.vertical) {
+                        UpgradeWaitingView(planName: plan.wooPlan.shortName)
+                    }
                 case .completed(let plan):
                     CompletedUpgradeView(planName: plan.wooPlan.shortName,
                                          doneAction: {
                         dismiss()
                     })
                 case .prePurchaseError(let error):
-                    VStack {
-                        PrePurchaseUpgradesErrorView(error,
-                                                     onRetryButtonTapped: {
-                            upgradesViewModel.retryFetch()
-                        })
-                        .padding(.top, Layout.errorViewTopPadding)
-                        .padding(.horizontal, Layout.errorViewHorizontalPadding)
+                    ScrollView(.vertical) {
+                        VStack {
+                            PrePurchaseUpgradesErrorView(error,
+                                                         onRetryButtonTapped: {
+                                upgradesViewModel.retryFetch()
+                            })
+                            .padding(.top, Layout.errorViewTopPadding)
+                            .padding(.horizontal, Layout.errorViewHorizontalPadding)
 
-                        Spacer()
+                            Spacer()
+                        }
                     }
                     .background(Color(.systemGroupedBackground))
                 case .purchaseUpgradeError(.inAppPurchaseFailed(let plan, let iapStoreError)):
@@ -136,6 +141,7 @@ struct PrePurchaseUpgradesErrorView: View {
         VStack(alignment: .center, spacing: Layout.spacingBetweenImageAndText) {
             Image("plan-upgrade-error")
                 .frame(maxWidth: .infinity, alignment: .center)
+                .accessibilityHidden(true)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {
                 switch error {
@@ -243,57 +249,62 @@ struct PurchaseUpgradeErrorView: View {
 
     var body: some View {
         VStack {
-            VStack(alignment: .leading, spacing: Layout.spacing) {
-                Image(systemName: "exclamationmark.circle")
-                    .font(.system(size: Layout.exclamationImageSize))
-                    .foregroundColor(.withColorStudio(name: .red, shade: .shade20))
-                VStack(alignment: .leading, spacing: Layout.textSpacing) {
-                    Text(error.localizedTitle)
-                        .font(.title)
-                        .fontWeight(.bold)
-                    Text(error.localizedDescription)
-                    Text(error.localizedActionDirection)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                    if let actionHint = error.localizedActionHint {
-                        Text(actionHint)
-                            .font(.footnote)
-                    }
-                    if let errorCode = error.localizedErrorCode {
-                        Text(String(format: Localization.errorCodeFormat, errorCode))
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
-                    }
-                    Button(action: getSupportAction) {
-                        HStack {
-                            Image(systemName: "questionmark.circle")
-                                .font(.body.weight(.semibold))
-                                .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
-                            Text(Localization.getSupport)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: Layout.spacing) {
+                    Image(systemName: "exclamationmark.circle")
+                        .font(.system(size: Layout.exclamationImageSize))
+                        .foregroundColor(.withColorStudio(name: .red, shade: .shade20))
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: Layout.textSpacing) {
+                        Text(error.localizedTitle)
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Text(error.localizedDescription)
+                        Text(error.localizedActionDirection)
+                            .font(.title3)
+                            .fontWeight(.bold)
+                        if let actionHint = error.localizedActionHint {
+                            Text(actionHint)
+                                .font(.footnote)
+                        }
+                        if let errorCode = error.localizedErrorCode {
+                            Text(String(format: Localization.errorCodeFormat, errorCode))
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                        }
+                        Button(action: getSupportAction) {
+                            HStack {
+                                Image(systemName: "questionmark.circle")
+                                    .font(.body.weight(.semibold))
+                                    .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
+                                Text(Localization.getSupport)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.withColorStudio(name: .blue, shade: .shade50))
+                            }
                         }
                     }
-
-                    Spacer()
-
-                    if let primaryButtonTitle = error.localizedPrimaryButtonLabel {
-                        Button(primaryButtonTitle) {
-                            primaryAction?()
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-                    }
-
-                    Button(error.localizedSecondaryButtonTitle) {
-                        secondaryAction()
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
                 }
+                .padding(.top, Layout.topPadding)
+                .padding(.horizontal, Layout.horizontalPadding)
             }
+
+            Spacer()
+
+            if let primaryButtonTitle = error.localizedPrimaryButtonLabel {
+                Button(primaryButtonTitle) {
+                    primaryAction?()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, Layout.horizontalPadding)
+            }
+
+            Button(error.localizedSecondaryButtonTitle) {
+                secondaryAction()
+            }
+            .buttonStyle(SecondaryButtonStyle())
             .padding(.horizontal, Layout.horizontalPadding)
-            .padding(.top, Layout.topPadding)
-            .padding(.bottom)
         }
+        .padding(.bottom)
     }
 
     enum Layout {
@@ -455,7 +466,9 @@ struct UpgradeWaitingView: View {
                     Text(Localization.title)
                         .font(.largeTitle)
                         .fontWeight(.bold)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(String(format: Localization.descriptionFormatString, planName))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .padding(.horizontal, Layout.horizontalPadding)
@@ -498,27 +511,34 @@ struct CompletedUpgradeView: View {
     let doneAction: (() -> Void)
 
     var body: some View {
-        VStack(spacing: Layout.groupSpacing) {
-            Image("plan-upgrade-success-celebration")
-                .frame(maxWidth: .infinity, alignment: .center)
+        VStack {
+            ScrollView(.vertical) {
+                VStack(spacing: Layout.groupSpacing) {
+                    Image("plan-upgrade-success-celebration")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .accessibilityHidden(true)
 
-            VStack(spacing: Layout.textSpacing) {
-                Text(Localization.title)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(LocalizedString(format: Localization.subtitle, planName))
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    VStack(spacing: Layout.textSpacing) {
+                        Text(Localization.title)
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(LocalizedString(format: Localization.subtitle, planName))
+                            .font(.title3)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    Text(Localization.hint)
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.top, Layout.completedUpgradeViewTopPadding)
+                .padding(.horizontal, Layout.padding)
             }
-
-            Text(Localization.hint)
-                .font(.footnote)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
@@ -526,6 +546,7 @@ struct CompletedUpgradeView: View {
                 doneAction()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Layout.padding)
         }
         .confettiCannon(counter: $confettiTrigger,
                         num: Constants.numberOfConfettiElements,
@@ -537,8 +558,7 @@ struct CompletedUpgradeView: View {
         .onAppear {
             confettiTrigger += 1
         }
-        .padding(.top, Layout.completedUpgradeViewTopPadding)
-        .padding([.bottom, .horizontal], Layout.padding)
+        .padding(.bottom, Layout.padding)
     }
 
     private struct Layout {
@@ -582,10 +602,12 @@ struct OwnerUpgradesView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                         .listRowInsets(.zero)
                         .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
+                        .accessibilityHidden(true)
 
                     VStack(alignment: .leading) {
                         Text(upgradePlan.wooPlan.shortName)
                             .font(.largeTitle)
+                            .accessibilityAddTraits(.isHeader)
                         Text(upgradePlan.wooPlan.planDescription)
                             .font(.subheadline)
                     }
@@ -593,10 +615,12 @@ struct OwnerUpgradesView: View {
                     VStack(alignment: .leading) {
                         Text(upgradePlan.wpComPlan.displayPrice)
                             .font(.largeTitle)
+                            .accessibilityAddTraits(.isHeader)
                         Text(upgradePlan.wooPlan.planFrequency.localizedString)
                             .font(.footnote)
                     }
                 }
+                .accessibilityAddTraits(.isSummaryElement)
                 .listRowSeparator(.hidden)
 
                 if upgradePlan.hardcodedPlanDataIsValid {
@@ -747,6 +771,7 @@ private struct UpgradeTopBarView: View {
                 .fontWeight(.bold)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .center)
+                .accessibilityAddTraits(.isHeader)
 
             Spacer()
         }
@@ -800,5 +825,11 @@ private extension UpgradesView {
         static let padding: CGFloat = 16
         static let contentSpacing: CGFloat = 8
         static let smallPadding: CGFloat = 8
+    }
+
+    enum Localization {
+        static let plansLoadingAccessibilityLabel = NSLocalizedString(
+            "Loading plan details",
+            comment: "Accessibility label for the initial loading state of the Upgrades view")
     }
 }

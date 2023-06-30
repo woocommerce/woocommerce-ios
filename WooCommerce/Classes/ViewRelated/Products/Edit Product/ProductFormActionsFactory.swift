@@ -153,7 +153,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForSimpleProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
-        let canEditProductType = formType != .add && editable
+        let canEditProductType = editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowDownloadableProduct = product.downloadable
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
@@ -180,7 +180,7 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowExternalURLRow = editable || product.product.externalURL?.isNotEmpty == true
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
-        let canEditProductType = formType != .add && editable
+        let canEditProductType = editable
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
@@ -202,7 +202,7 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
-        let canEditProductType = formType != .add && editable
+        let canEditProductType = editable
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
@@ -222,7 +222,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
-        let canEditProductType = formType != .add && editable
+        let canEditProductType = editable
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
         let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowNoPriceWarningRow: Bool = {

@@ -906,6 +906,7 @@ private extension ProductsViewController {
         blazeBannerHostingController.view.removeFromSuperview()
         blazeBannerHostingController.removeFromParent()
         self.blazeBannerHostingController = nil
+        updateTableHeaderViewHeight()
     }
 }
 

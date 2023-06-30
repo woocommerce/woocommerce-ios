@@ -21,6 +21,12 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
             // TODO: analytics
             self.showBlaze(onCampaignCreated: dismissHandler)
         }
+
+        rootView.onDismiss = { [weak self] in
+            guard let self else { return }
+            // TODO: analytics
+            self.showDismissAlert(onGotIt: dismissHandler)
+        }
     }
 
     @available(*, unavailable)
@@ -32,6 +38,17 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
         let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil, onCampaignCreated: onCampaignCreated)
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         containerViewController.navigationController?.show(webViewController, sender: self)
+    }
+
+    private func showDismissAlert(onGotIt: @escaping () -> Void) {
+        let alert = UIAlertController(title: Localization.DismissAlert.title,
+                                      message: Localization.DismissAlert.message,
+                                      preferredStyle: .alert)
+        let action = UIAlertAction(title: Localization.DismissAlert.gotIt, style: .default) { _ in
+            onGotIt()
+        }
+        alert.addAction(action)
+        containerViewController.topmostPresentedViewController.present(alert, animated: true)
     }
 }
 
@@ -56,6 +73,23 @@ extension BlazeBannerHostingController {
             case .products:
                 return true
             }
+        }
+    }
+
+    private enum Localization {
+        enum DismissAlert {
+            static let title = NSLocalizedString(
+                "Blaze Ads",
+                comment: "Title on the alert presented when dismissing the banner announcing Blaze feature."
+            )
+            static let message = NSLocalizedString(
+                "No worries! Blaze ads are accessible in the Menu and product details' menu for your convenience.",
+                comment: "Message on the alert presented when dismissing the banner announcing Blaze feature."
+            )
+            static let gotIt = NSLocalizedString(
+                "Got it",
+                comment: "Button on the alert presented when dismissing the banner announcing Blaze feature."
+            )
         }
     }
 }

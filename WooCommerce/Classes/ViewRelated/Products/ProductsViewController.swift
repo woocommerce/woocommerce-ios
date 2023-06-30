@@ -95,6 +95,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var topBannerView: TopBannerView?
 
+    /// Hosting controller for the banner to highlight the Blaze feature.
+    /// 
+    private var blazeBannerHostingController: BlazeBannerHostingController?
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
@@ -724,6 +728,8 @@ private extension ProductsViewController {
         if hasErrorLoadingData {
             requestAndShowErrorTopBannerView()
         }
+
+        checkBlazeBannerVisibility()
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
@@ -853,6 +859,51 @@ private extension ProductsViewController {
                 self?.syncingCoordinator.resynchronize()
             }
         }
+    }
+
+    func checkBlazeBannerVisibility() {
+        viewModel.$shouldShowBlazeBanner
+            .removeDuplicates()
+            .sink { [weak self] shouldShow in
+                guard let self else { return }
+                guard !self.hasErrorLoadingData else {
+                    return // ignores Blaze banner if has error fetching data.
+                }
+                if shouldShow {
+                    self.showBlazeBanner()
+                } else {
+                    self.hideBlazeBanner()
+                }
+            }
+            .store(in: &subscriptions)
+
+        viewModel.updateBlazeBannerVisibility()
+    }
+
+    func showBlazeBanner() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let hostingController = BlazeBannerHostingController(site: site, entryPoint: .products, parentViewController: self)
+        guard let bannerView = hostingController.view else {
+            return
+        }
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        topBannerContainerView.updateSubview(bannerView)
+        updateTableHeaderViewHeight()
+        addChild(hostingController)
+        hostingController.didMove(toParent: self)
+        blazeBannerHostingController = hostingController
+    }
+
+    func hideBlazeBanner() {
+        guard let blazeBannerHostingController,
+              blazeBannerHostingController.parent == self else { return }
+
+        blazeBannerHostingController.willMove(toParent: nil)
+        blazeBannerHostingController.view.removeFromSuperview()
+        blazeBannerHostingController.removeFromParent()
+        self.blazeBannerHostingController = nil
     }
 }
 

@@ -19,7 +19,7 @@ class ProductListViewModel {
     private(set) var selectedProducts: Set<Product> = .init()
 
     init(siteID: Int64,
-         stores: StoresManager,
+         stores: StoresManager = ServiceLocator.stores,
          userDefaults: UserDefaults = .standard,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID

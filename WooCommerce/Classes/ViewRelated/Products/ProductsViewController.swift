@@ -877,7 +877,9 @@ private extension ProductsViewController {
             }
             .store(in: &subscriptions)
 
-        viewModel.updateBlazeBannerVisibility()
+        Task { @MainActor in
+            await viewModel.updateBlazeBannerVisibility()
+        }
     }
 
     func showBlazeBanner() {

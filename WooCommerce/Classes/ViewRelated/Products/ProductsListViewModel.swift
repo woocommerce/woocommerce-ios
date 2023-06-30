@@ -165,17 +165,16 @@ class ProductListViewModel {
 extension ProductListViewModel {
     /// Checks for Blaze eligibility and user defaults to show the banner if necessary.
     ///
-    func updateBlazeBannerVisibility() {
-        Task { @MainActor in
-            let isSiteEligible = await blazeEligibilityChecker.isSiteEligible()
-            guard isSiteEligible else {
-                return
-            }
-            guard userDefaults[.hasDismissedBlazeBanner] == nil else {
-                return
-            }
-            shouldShowBlazeBanner = true
+    @MainActor
+    func updateBlazeBannerVisibility() async {
+        let isSiteEligible = await blazeEligibilityChecker.isSiteEligible()
+        guard isSiteEligible else {
+            return
         }
+        guard userDefaults[.hasDismissedBlazeBanner] == nil else {
+            return
+        }
+        shouldShowBlazeBanner = true
     }
 
     /// Hides the banner and updates the user defaults to not show the banner again.

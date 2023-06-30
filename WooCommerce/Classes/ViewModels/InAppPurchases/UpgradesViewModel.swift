@@ -3,25 +3,6 @@ import SwiftUI
 import Yosemite
 import Combine
 
-enum UpgradeViewState {
-    case loading
-    case loaded(WooWPComPlan)
-    case purchasing(WooWPComPlan)
-    case waiting(WooWPComPlan)
-    case completed(WooWPComPlan)
-    case prePurchaseError(PrePurchaseError)
-    case purchaseUpgradeError(PurchaseUpgradeError)
-
-    var shouldShowPlanDetailsView: Bool {
-        switch self {
-        case .loading, .loaded, .purchasing, .prePurchaseError:
-            return true
-        default:
-            return false
-        }
-    }
-}
-
 enum PrePurchaseError: Error {
     case fetchError
     case entitlementsError
@@ -61,7 +42,7 @@ final class UpgradesViewModel: ObservableObject {
 
     @Published var upgradeViewState: UpgradeViewState = .loading
 
-    private let localPlans: [WooPlan]
+    private let localPlans: [WooPlan] = [.loadHardcodedPlan()]
 
     private let analytics: Analytics
 
@@ -80,15 +61,9 @@ final class UpgradesViewModel: ObservableObject {
 
         entitledWpcomPlanIDs = []
 
-        if let essentialPlan = WooPlan() {
-            self.localPlans = [essentialPlan]
-        } else {
-            self.localPlans = []
-        }
-
         observeViewStateAndTrackAnalytics()
 
-        if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
+        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
             self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
         } else {
             Task {
@@ -346,12 +321,6 @@ private extension UpgradesViewModel {
 extension UpgradesViewModel {
     func track(_ stat: WooAnalyticsStat) {
         analytics.track(stat)
-    }
-}
-
-extension UpgradesViewModel {
-    enum AvailableInAppPurchasesWPComPlans: String {
-        case essentialMonthly = "debug.woocommerce.express.essential.monthly"
     }
 }
 

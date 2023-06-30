@@ -31,6 +31,7 @@ public enum RemoteFeatureFlag: Decodable {
     case oneDayAfterStoreCreationNameWithoutFreeTrial
     case oneDayBeforeFreeTrialExpiresNotification
     case oneDayAfterFreeTrialExpiresNotification
+    case twentyFourHoursAfterFreeTrialSubscribed
     case blaze
     case hardcodedPlanUpgradeDetailsMilestone1AreAccurate
 
@@ -44,6 +45,8 @@ public enum RemoteFeatureFlag: Decodable {
             self = .oneDayBeforeFreeTrialExpiresNotification
         case "woo_notification_1d_after_free_trial_expires":
             self = .oneDayAfterFreeTrialExpiresNotification
+        case "woo_notification_24h_after_free_trial_subscribed":
+            self = .twentyFourHoursAfterFreeTrialSubscribed
         case "woo_blaze":
             self = .blaze
         case "woo_hardcoded_plan_upgrade_details_milestone_1_are_accurate":

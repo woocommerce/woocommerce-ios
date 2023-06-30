@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import Experiments
 
 /// Type that fetches and shares a `WPCom` store plan(subscription).
 /// The plan is stored on memory and not on the Storage Layer because this only relates to `WPCom` stores.
@@ -104,24 +105,15 @@ private extension StorePlanSynchronizer {
         guard let siteID = site?.siteID else {
             return
         }
-        guard plan.isFreeTrial, let expiryDate = plan.expiryDate else {
+        guard plan.isFreeTrial else {
             /// cancels any scheduled notifications
             return cancelFreeTrialExpirationNotifications(siteID: siteID)
         }
 
-        /// Normalizes expiry date to remove timezone difference
-        let timeZoneDifference = timeZone.secondsFromGMT()
-        let normalizedDate = Date(timeInterval: -Double(timeZoneDifference), since: expiryDate)
-        let now = Date().normalizedDate() // with time removed
-
-        /// Schedules pre-expiration notification if the plan is not expired in a day.
-        if normalizedDate.timeIntervalSince(now) > Constants.oneDayTimeInterval {
-            scheduleBeforeExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
-        }
-
-        /// Schedules post-expiration notification if the plan hasn't expired for a day.
-        if now.timeIntervalSince(normalizedDate) < Constants.oneDayTimeInterval {
-            scheduleAfterExpirationNotification(siteID: siteID, expiryDate: normalizedDate)
+        if let subscribedDate = plan.subscribedDate,
+           // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
+           Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
+            schedule24HrsAfterSubscribedNotification(siteID: siteID, subscribedDate: subscribedDate)
         }
     }
 
@@ -131,31 +123,19 @@ private extension StorePlanSynchronizer {
             siteID: siteID,
             expiryDate: Date() // placeholder date, irrelevant to the notification identifier
         ))
+        localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
     }
 
-    func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {
-        let notification = LocalNotification(scenario: .oneDayBeforeFreeTrialExpires(siteID: siteID,
-                                                                                     expiryDate: expiryDate))
-        /// Scheduled for 1 day before the expiry date
-        let triggerDateComponents = expiryDate.addingTimeInterval(-Constants.oneDayTimeInterval).dateAndTimeComponents()
+    func schedule24HrsAfterSubscribedNotification(siteID: Int64, subscribedDate: Date) {
+        let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
+
+        /// Scheduled 24 hrs after subscribed date
+        let triggerDateComponents = subscribedDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
             await localNotificationScheduler.schedule(notification: notification,
                                                       trigger: trigger,
-                                                      remoteFeatureFlag: .oneDayBeforeFreeTrialExpiresNotification,
-                                                      shouldSkipIfScheduled: true)
-        }
-    }
-
-    func scheduleAfterExpirationNotification(siteID: Int64, expiryDate: Date) {
-        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
-        /// Scheduled for 1 day after the expiry date
-        let triggerDateComponents = expiryDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
-        Task {
-            await localNotificationScheduler.schedule(notification: notification,
-                                                      trigger: trigger,
-                                                      remoteFeatureFlag: .oneDayAfterFreeTrialExpiresNotification,
+                                                      remoteFeatureFlag: .twentyFourHoursAfterFreeTrialSubscribed,
                                                       shouldSkipIfScheduled: true)
         }
     }

@@ -18,6 +18,9 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Whether product description generation API request is still in progress.
     @Published private(set) var isGenerationInProgress: Bool = false
 
+    /// Whether feedback banner for the generated text should be displayed.
+    @Published private(set) var shouldShowFeedbackView = false
+
     /// Whether the text generation CTA is enabled.
     var isGenerationEnabled: Bool {
         name.isNotEmpty && features.isNotEmpty
@@ -29,12 +32,14 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
     private let onApply: (_ output: ProductDescriptionGenerationOutput) -> Void
+    private let delayBeforeDismissingFeedbackBanner: TimeInterval
 
     private var task: Task<Void, Error>?
 
     init(siteID: Int64,
          name: String,
          description: String,
+         delayBeforeDismissingFeedbackBanner: TimeInterval = 0.5,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onApply: @escaping (ProductDescriptionGenerationOutput) -> Void) {
@@ -45,6 +50,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         self.analytics = analytics
         self.onApply = onApply
         self.isProductNameEditable = name.isEmpty
+        self.delayBeforeDismissingFeedbackBanner = delayBeforeDismissingFeedbackBanner
     }
 
     /// Generates product description async.
@@ -52,6 +58,7 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         analytics.track(event: .ProductFormAI.productDescriptionAIGenerateButtonTapped(isRetry: suggestedText?.isNotEmpty == true))
 
         isGenerationInProgress = true
+        shouldShowFeedbackView = false
         errorMessage = nil
         task = Task { @MainActor in
             let result = await generateProductDescription()
@@ -63,6 +70,16 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     func applyToProduct() {
         analytics.track(event: .ProductFormAI.productDescriptionAIApplyButtonTapped())
         onApply(.init(name: name, description: suggestedText ?? ""))
+    }
+
+    /// Handles when a feedback is sent.
+    func handleFeedback(_ vote: FeedbackView.Vote) {
+        analytics.track(event: .AIFeedback.feedbackSent(source: .productDescription,
+                                                        isUseful: vote == .up))
+        // Delay the disappearance of the banner for a better UX.
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeDismissingFeedbackBanner) { [weak self] in
+            self?.shouldShowFeedbackView = false
+        }
     }
 }
 
@@ -84,6 +101,7 @@ private extension ProductDescriptionGenerationViewModel {
         case let .success(text):
             suggestedText = text
             analytics.track(event: .ProductFormAI.productDescriptionAIGenerationSuccess())
+            shouldShowFeedbackView = true
         case let .failure(error):
             errorMessage = error.localizedDescription
             DDLogError("Error generating product description: \(error)")

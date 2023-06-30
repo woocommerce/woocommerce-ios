@@ -183,7 +183,7 @@ final class MainTabBarController: UITabBarController {
     /// Switches the TabBarController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
-        navigateToTabWithNavigationController(tab, animated: animated) { navigationController in
+        navigateToTabWithNavigationController(tab, animated: animated) { _ in
             completion?()
         }
     }

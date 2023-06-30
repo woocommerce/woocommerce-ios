@@ -885,6 +885,9 @@ private extension ProductsViewController {
     }
 
     func showBlazeBanner() {
+        guard blazeBannerHostingController == nil else {
+            return
+        }
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }

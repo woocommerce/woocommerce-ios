@@ -10,16 +10,22 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
     init(site: Site,
          entryPoint: EntryPoint,
          containerViewController: UIViewController,
+         analytics: Analytics = ServiceLocator.analytics,
          dismissHandler: @escaping () -> Void) {
         self.site = site
         self.containerViewController = containerViewController
         self.dismissHandler = dismissHandler
         super.init(rootView: BlazeBanner(showsTopDivider: entryPoint.shouldShowTopDivider,
                                          showsBottomSpacer: entryPoint.shouldShowBottomSpacer))
+
+        let blazeSource = entryPoint.blazeSource
+        analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: blazeSource))
+
         rootView.onTryBlaze = { [weak self] in
             guard let self else { return }
-            // TODO: analytics
-            self.showBlaze(onCampaignCreated: dismissHandler)
+            analytics.track(event: .Blaze.blazeEntryPointTapped(source: blazeSource))
+            self.showBlaze(source: blazeSource,
+                           onCampaignCreated: dismissHandler)
         }
 
         rootView.onDismiss = { [weak self] in
@@ -34,8 +40,8 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func showBlaze(onCampaignCreated: @escaping () -> Void) {
-        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil, onCampaignCreated: onCampaignCreated)
+    private func showBlaze(source: BlazeSource, onCampaignCreated: @escaping () -> Void) {
+        let viewModel = BlazeWebViewModel(source: source, site: site, productID: nil, onCampaignCreated: onCampaignCreated)
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         containerViewController.navigationController?.show(webViewController, sender: self)
     }
@@ -72,6 +78,15 @@ extension BlazeBannerHostingController {
                 return false
             case .products:
                 return true
+            }
+        }
+
+        var blazeSource: BlazeSource {
+            switch self {
+            case .myStore:
+                return .myStore
+            case .products:
+                return .productList
             }
         }
     }

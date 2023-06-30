@@ -8,6 +8,10 @@ enum BlazeSource {
     case menu
     /// From the product more menu.
     case productMoreMenu
+    /// From the product list.
+    case productList
+    /// From the My Store tab.
+    case myStore
 }
 
 /// View model for Blaze webview.

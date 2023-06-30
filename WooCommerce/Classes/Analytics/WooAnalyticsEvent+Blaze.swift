@@ -83,6 +83,10 @@ private extension BlazeSource {
             return "menu"
         case .productMoreMenu:
             return "product_more_menu"
+        case .productList:
+            return "product_list"
+        case .myStore:
+            return "my_store"
         }
     }
 }

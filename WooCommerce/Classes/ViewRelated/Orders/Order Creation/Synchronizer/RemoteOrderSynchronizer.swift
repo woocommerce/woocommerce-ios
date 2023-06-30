@@ -209,7 +209,8 @@ private extension RemoteOrderSynchronizer {
             .store(in: &subscriptions)
 
         addCoupon.withLatestFrom(orderPublisher)
-            .map { couponLineInput, order -> Order in
+            .map { [weak self] couponLineInput, order -> Order in
+                guard let self = self else { return order }
                 let updatedOrder = CouponInputTransformer.append(input: couponLineInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
@@ -220,7 +221,8 @@ private extension RemoteOrderSynchronizer {
             }
             .store(in: &subscriptions)
         removeCoupon.withLatestFrom(orderPublisher)
-            .map { couponCode, order -> Order in
+            .map { [weak self] couponCode, order -> Order in
+                guard let self = self else { return order }
                 let updatedOrder = CouponInputTransformer.remove(code: couponCode, from: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()

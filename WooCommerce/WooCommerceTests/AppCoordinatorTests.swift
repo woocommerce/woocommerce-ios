@@ -366,7 +366,7 @@ final class AppCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
                                           featureFlagService: featureFlagService,
-                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
+                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -391,7 +391,7 @@ final class AppCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
                                           featureFlagService: featureFlagService,
-                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
+                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -416,7 +416,7 @@ final class AppCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
                                           featureFlagService: featureFlagService,
-                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
+                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -441,7 +441,7 @@ final class AppCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
                                           featureFlagService: featureFlagService,
-                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
+                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -466,7 +466,7 @@ final class AppCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
                                           featureFlagService: featureFlagService,
-                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
+                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -491,7 +491,7 @@ final class AppCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
                                           featureFlagService: featureFlagService,
-                                          inAppPurchasesPlanManager: mockInAppPurchasesManager)
+                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -661,7 +661,8 @@ private extension AppCoordinatorTests {
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
                          purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
-                         inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = MockInAppPurchasesForWPComPlansManager()) -> AppCoordinator {
+                         purchasesManagerForFreeTrialUpgrade: InAppPurchasesForWPComPlansProtocol = MockInAppPurchasesForWPComPlansManager()
+    ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
                               storageManager: storageManager ?? self.storageManager,
@@ -672,6 +673,6 @@ private extension AppCoordinatorTests {
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
                               purchasesManager: purchasesManager ?? nil,
-                              inAppPurchasesPlanManager: inAppPurchasesPlanManager)
+                              purchasesManagerForFreeTrialUpgrade: purchasesManagerForFreeTrialUpgrade)
     }
 }

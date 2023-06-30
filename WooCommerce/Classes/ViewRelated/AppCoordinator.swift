@@ -25,7 +25,7 @@ final class AppCoordinator {
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
-    private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
+    private let purchasesManagerForFreeTrialUpgrade: InAppPurchasesForWPComPlansProtocol
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -47,7 +47,7 @@ final class AppCoordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
-         inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
+         purchasesManagerForFreeTrialUpgrade: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -66,7 +66,7 @@ final class AppCoordinator {
         self.featureFlagService = featureFlagService
         self.purchasesManager = purchasesManager
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
-        self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
+        self.purchasesManagerForFreeTrialUpgrade = purchasesManagerForFreeTrialUpgrade
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
@@ -402,7 +402,7 @@ private extension AppCoordinator {
             guard let self else { return }
 
             Task { @MainActor in
-                if await self.inAppPurchasesPlanManager.inAppPurchasesAreSupported() &&
+                if await self.purchasesManagerForFreeTrialUpgrade.inAppPurchasesAreSupported() &&
                     self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
                     let upgradesController = UpgradesHostingController(siteID: siteID)
                     self.window.rootViewController?.topmostPresentedViewController.present(upgradesController, animated: true)

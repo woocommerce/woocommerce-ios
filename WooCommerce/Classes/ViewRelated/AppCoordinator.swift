@@ -397,8 +397,15 @@ private extension AppCoordinator {
 private extension AppCoordinator {
     func openPlansPage(siteID: Int64) {
         switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
-            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
-            self?.window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
+            guard let self else { return }
+
+            if self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
+                let upgradesController = UpgradesHostingController(siteID: siteID)
+                self.window.rootViewController?.topmostPresentedViewController.present(upgradesController, animated: true)
+            } else {
+                let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
+                self.window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
+            }
         }
     }
 

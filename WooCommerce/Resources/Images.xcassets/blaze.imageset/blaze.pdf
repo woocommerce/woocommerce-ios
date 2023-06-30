@@ -16,7 +16,7 @@ endobj
 endobj
 
 3 0 obj
-  << /Pattern << /P1 << /Matrix [ 0.000000 -50.999996 50.999996 0.000000 -43.499996 57.500000 ]
+  << /Pattern << /P1 << /Matrix [ 0.000000 -50.999996 50.999996 0.000000 -50.999996 51.000000 ]
                         /Shading << /Coords [ 0.000000 0.000000 1.000000 0.000000 ]
                                     /ColorSpace /DeviceRGB
                                     /Function 1 0 R
@@ -35,7 +35,7 @@ stream
 /DeviceRGB CS
 /DeviceRGB cs
 q
-1.000000 0.000000 -0.000000 1.000000 7.500000 6.500000 cm
+1.000000 0.000000 -0.000000 1.000000 0.000000 0.000000 cm
 /Pattern cs
 /P1 scn
 48.500000 21.906977 m
@@ -75,7 +75,7 @@ endobj
 6 0 obj
   << /Annots []
      /Type /Page
-     /MediaBox [ 0.000000 0.000000 64.000000 64.000000 ]
+     /MediaBox [ 0.000000 0.000000 48.500000 51.000000 ]
      /Resources 3 0 R
      /Contents 4 0 R
      /Parent 7 0 R

@@ -20,6 +20,8 @@ import class Yosemite.ScreenshotStoresManager
 import Wormholy
 #endif
 
+// FIXME: Here just to test the WooCommerceShared integration
+import WooCommerceShared
 
 // MARK: - Woo's App Delegate!
 //
@@ -231,9 +233,13 @@ private extension AppDelegate {
     func setupMainWindow() {
         let window = UIWindow()
         window.makeKeyAndVisible()
+
+        // FIXME: Here to test the WooCommerce Shared integration
+        window.rootViewController = WCReactNativeViewController()
+
         self.window = window
 
-        appCoordinator = AppCoordinator(window: window)
+        appCoordinator = AppCoordinator(window: UIWindow())
     }
 
     /// Sets up all of the component(s) Appearance.

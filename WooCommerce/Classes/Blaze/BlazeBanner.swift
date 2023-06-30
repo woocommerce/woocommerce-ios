@@ -6,7 +6,8 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
     init(site: Site,
          entryPoint: EntryPoint,
          parentViewController: UIViewController) {
-        super.init(rootView: BlazeBanner())
+        super.init(rootView: BlazeBanner(showsTopDivider: entryPoint.shouldShowTopDivider,
+                                         showsBottomSpacer: entryPoint.shouldShowBottomSpacer))
     }
 
     @available(*, unavailable)
@@ -19,12 +20,33 @@ extension BlazeBannerHostingController {
     enum EntryPoint {
         case myStore
         case products
+
+        var shouldShowTopDivider: Bool {
+            switch self {
+            case .myStore:
+                return false
+            case .products:
+                return true
+            }
+        }
+
+        var shouldShowBottomSpacer: Bool {
+            switch self {
+            case .myStore:
+                return false
+            case .products:
+                return true
+            }
+        }
     }
 }
 
 /// View to highlight the Blaze feature.
 ///
 struct BlazeBanner: View {
+    var showsTopDivider: Bool = false
+    var showsBottomSpacer: Bool = false
+    
     /// Closure to be triggered when the Try Blaze now button is tapped.
     var onTryBlaze: () -> Void = {}
 
@@ -32,41 +54,52 @@ struct BlazeBanner: View {
     var onDismiss: () -> Void = {}
 
     var body: some View {
-        VStack(spacing: Layout.spacing) {
-            // Dismiss button
-            HStack {
-                Spacer()
-                Button {
-                    onDismiss()
-                } label: {
-                    Image(systemName: "xmark")
+        VStack(spacing: 0) {
+            // Optional divider on the top
+            Divider()
+                .renderedIf(showsTopDivider)
+
+            VStack(spacing: Layout.spacing) {
+                // Dismiss button
+                HStack {
+                    Spacer()
+                    Button {
+                        onDismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
+
+                // Blaze icon
+                Image(uiImage: .blaze)
+
+                // Title
+                Text(Localization.title)
+                    .headlineStyle()
+
+                // Description
+                Text(Localization.description)
+                    .bodyStyle()
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, Layout.spacing)
+
+                // CTA
+                Button {
+                    onTryBlaze()
+                } label: {
+                    Text(Localization.actionButton)
+                        .font(.body.weight(.bold))
+                }
+                .buttonStyle(LinkButtonStyle())
             }
+            .padding(Layout.spacing)
 
-            // Blaze icon
-            Image(uiImage: .blaze)
-
-            // Title
-            Text(Localization.title)
-                .headlineStyle()
-
-            // Description
-            Text(Localization.description)
-                .bodyStyle()
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, Layout.spacing)
-
-            // CTA
-            Button {
-                onTryBlaze()
-            } label: {
-                Text(Localization.actionButton)
-                    .font(.body.weight(.bold))
-            }
-            .buttonStyle(LinkButtonStyle())
+            // Optional spacing at the bottom
+            Color(.listBackground)
+                .frame(height: Layout.spacing)
+                .renderedIf(showsBottomSpacer)
         }
-        .padding(Layout.spacing)
     }
 }
 

@@ -31,15 +31,19 @@ public class InAppPurchasesRemote: Remote {
         appStoreCountryCode: String,
         originalTransactionId: UInt64,
         transactionId: UInt64,
+        subscriptionGroupId: String?,
         completion: @escaping (Swift.Result<Int, Error>) -> Void) {
-            let parameters: [String: Any] = [
+            var parameters: [String: Any] = [
                 Constants.siteIDKey: siteID,
                 Constants.priceKey: price,
                 Constants.productIDKey: productIdentifier,
                 Constants.appStoreCountryCodeKey: appStoreCountryCode,
-                Constants.originalTransactionId: originalTransactionId,
-                Constants.transactionId: transactionId
+                Constants.originalTransactionIdKey: originalTransactionId,
+                Constants.transactionIdKey: transactionId
             ]
+            if let subscriptionGroupId {
+                parameters[Constants.subscriptionGroupIdKey] = subscriptionGroupId
+            }
             let request = DotcomRequest(
                 wordpressApiVersion: .wpcomMark2,
                 method: .post,
@@ -83,7 +87,8 @@ public extension InAppPurchasesRemote {
         productIdentifier: String,
         appStoreCountryCode: String,
         originalTransactionId: UInt64,
-        transactionId: UInt64
+        transactionId: UInt64,
+        subscriptionGroupId: String?
     ) async throws -> Int {
         try await withCheckedThrowingContinuation { continuation in
             createOrder(
@@ -92,7 +97,8 @@ public extension InAppPurchasesRemote {
                 productIdentifier: productIdentifier,
                 appStoreCountryCode: appStoreCountryCode,
                 originalTransactionId: originalTransactionId,
-                transactionId: transactionId
+                transactionId: transactionId,
+                subscriptionGroupId: subscriptionGroupId
             ) { result in
                 continuation.resume(with: result)
             }
@@ -121,7 +127,8 @@ private extension InAppPurchasesRemote {
         static let priceKey = "price"
         static let productIDKey = "product_id"
         static let appStoreCountryCodeKey = "appstore_country"
-        static let originalTransactionId = "original_transaction_id"
-        static let transactionId = "transaction_id"
+        static let originalTransactionIdKey = "original_transaction_id"
+        static let transactionIdKey = "transaction_id"
+        static let subscriptionGroupIdKey = "subscription_group_id"
     }
 }

@@ -228,7 +228,8 @@ private extension InAppPurchaseStore {
                 productIdentifier: product.id,
                 appStoreCountryCode: countryCode,
                 originalTransactionId: transaction.originalID,
-                transactionId: transaction.id
+                transactionId: transaction.id,
+                subscriptionGroupId: transaction.subscriptionGroupID
             )
             logInfo("Successfully registered purchase with Order ID \(orderID)")
         } catch WordPressApiError.productPurchased {

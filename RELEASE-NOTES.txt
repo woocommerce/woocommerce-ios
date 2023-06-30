@@ -13,6 +13,7 @@
 - [*] Product creation: the product type row is now editable when creating a product. [https://github.com/woocommerce/woocommerce-ios/pull/10087]
 - [***] Store creation: US users can upgrade Woo Express free trial stores via In-App Purchase [https://github.com/woocommerce/woocommerce-ios/pull/10123]
 - [*] Orders: Users can can now add multiple coupons to orders (not only one) [https://github.com/woocommerce/woocommerce-ios/pull/10126]
+- [Internal] Free trial: Local notification after 24 hours since Free trial subscription time to remind to purchase plan. [https://github.com/woocommerce/woocommerce-ios/pull/10133, https://github.com/woocommerce/woocommerce-ios/pull/10130]
 
 14.2
 -----

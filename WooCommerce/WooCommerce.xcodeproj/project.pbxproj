@@ -1617,6 +1617,7 @@
 		B958B4DA2983E3F40010286B /* OrderDurationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
+		B991D3952A4EC0F800D886ED /* CouponLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */; };
 		B99686E02A13C8CC00D1AF62 /* ScanToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */; };
 		B99686E32A13C98200D1AF62 /* ScanToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
@@ -3970,6 +3971,7 @@
 		B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDurationRecorder.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
+		B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineViewModel.swift; sourceTree = "<group>"; };
 		B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayView.swift; sourceTree = "<group>"; };
 		B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayViewModel.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
@@ -8773,6 +8775,7 @@
 				AE7C957C27C3F187007E8E12 /* FeeLineDetailsViewModel.swift */,
 				EEB4E2D929B5F8FC00371C3C /* CouponLineDetailsViewModel.swift */,
 				EEB4E2DB29B600B800371C3C /* CouponLineDetails.swift */,
+				B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */,
 			);
 			path = PaymentSection;
 			sourceTree = "<group>";
@@ -12466,6 +12469,7 @@
 				03076D36290C162E008EE839 /* WebViewSheet.swift in Sources */,
 				039B7E6329F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift in Sources */,
 				450C2CBA24D3127500D570DD /* ProductReviewsTableViewCell.swift in Sources */,
+				B991D3952A4EC0F800D886ED /* CouponLineViewModel.swift in Sources */,
 				029D444922F13F8A00DEFA8A /* DashboardUI.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				026D4652295D763B0037F59A /* CountryCode+FlagEmoji.swift in Sources */,

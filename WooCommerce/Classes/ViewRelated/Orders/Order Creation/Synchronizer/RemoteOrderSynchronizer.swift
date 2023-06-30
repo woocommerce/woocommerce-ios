@@ -35,7 +35,9 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setFee = PassthroughSubject<OrderFeeLine?, Never>()
 
-    var setCoupon = PassthroughSubject<OrderCouponLine?, Never>()
+    var addCoupon = PassthroughSubject<String, Never>()
+
+    var removeCoupon = PassthroughSubject<String, Never>()
 
     var setNote = PassthroughSubject<String?, Never>()
 
@@ -206,10 +208,24 @@ private extension RemoteOrderSynchronizer {
             }
             .store(in: &subscriptions)
 
-        setCoupon.withLatestFrom(orderPublisher)
-            .map { couponLineInput, order -> Order in
-                let updatedOrder = CouponInputTransformer.update(input: couponLineInput, on: order)
-                return updatedOrder
+        addCoupon.withLatestFrom(orderPublisher)
+            .map { [weak self] couponLineInput, order -> Order in
+                guard let self = self else { return order }
+                let updatedOrder = CouponInputTransformer.append(input: couponLineInput, on: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
+            }
+            .sink { [weak self] order in
+                self?.order = order
+                self?.orderSyncTrigger.send(order)
+            }
+            .store(in: &subscriptions)
+        removeCoupon.withLatestFrom(orderPublisher)
+            .map { [weak self] couponCode, order -> Order in
+                guard let self = self else { return order }
+                let updatedOrder = CouponInputTransformer.remove(code: couponCode, from: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }
             .sink { [weak self] order in
                 self?.order = order

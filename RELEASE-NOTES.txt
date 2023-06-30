@@ -14,6 +14,7 @@
 - [***] Store creation: US users can upgrade Woo Express free trial stores via In-App Purchase [https://github.com/woocommerce/woocommerce-ios/pull/10123]
 - [*] Orders: Users can can now add multiple coupons to orders (not only one) [https://github.com/woocommerce/woocommerce-ios/pull/10126]
 - [*] Free trial: Local notification after 24 hours since Free trial subscription time to remind to purchase plan. [https://github.com/woocommerce/woocommerce-ios/pull/10133, https://github.com/woocommerce/woocommerce-ios/pull/10130]
+- [**] Product description AI: an announcement modal is shown for WPCOM stores about the feature, and a new CTA "Write with AI" is more discoverable in the product form with a tooltip. [https://github.com/woocommerce/woocommerce-ios/pull/10142]
 
 14.2
 -----

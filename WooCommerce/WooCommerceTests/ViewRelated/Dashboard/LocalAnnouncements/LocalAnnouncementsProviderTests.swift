@@ -4,21 +4,15 @@ import Yosemite
 
 @MainActor
 final class LocalAnnouncementsProviderTests: XCTestCase {
-    private var analytics: Analytics!
-    private var analyticsProvider: MockAnalyticsProvider!
     private var stores: MockStoresManager!
 
     override func setUp() {
         super.setUp()
-        analyticsProvider = MockAnalyticsProvider()
-        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting())
     }
 
     override func tearDown() {
         stores = nil
-        analytics = nil
-        analyticsProvider = nil
         super.tearDown()
     }
 

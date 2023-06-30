@@ -506,6 +506,27 @@ private extension DashboardViewController {
         coordinator.start()
     }
 
+    /// Invoked when the local announcement CTA is tapped.
+    private func onLocalAnnouncementAction(_ announcement: LocalAnnouncement) {
+        switch announcement {
+            case .productDescriptionAI:
+                startAddProductFlowFromProductDescriptionAIModal()
+        }
+    }
+
+    /// Starts the Add Product flow to showcase the product description AI feature.
+    private func startAddProductFlowFromProductDescriptionAIModal() {
+        AppDelegate.shared.tabBarController?.navigateToTabWithNavigationController(.products, animated: true) { [weak self] navigationController in
+            guard let self else { return }
+            let coordinator = AddProductCoordinator(siteID: self.siteID,
+                                                    source: .productDescriptionAIAnnouncementModal,
+                                                    sourceView: nil,
+                                                    sourceNavigationController: navigationController,
+                                                    isFirstProduct: true)
+            coordinator.start()
+        }
+    }
+
     // This is used so we have a specific type for the view while applying modifiers.
     struct AnnouncementCardWrapper: View {
         let cardView: FeatureAnnouncementCardView
@@ -598,6 +619,9 @@ private extension DashboardViewController {
             .compactMap { $0 }
             .asyncMap { [weak self] viewModel in
                 await self?.dismissPossibleModals()
+                viewModel.actionTapped = { [weak self] announcement in
+                    self?.onLocalAnnouncementAction(announcement)
+                }
                 return ConstraintsUpdatingHostingController(
                     rootView: LocalAnnouncementModal_UIKit(
                         onDismiss: {

@@ -55,15 +55,15 @@ final class LocalAnnouncementViewModel {
 //
 private extension LocalAnnouncementViewModel {
     func trackAnnouncementDisplayed() {
-        // TODO: 10021 - analytics
+        analytics.track(event: .LocalAnnouncementModal.localAnnouncementDisplayed(announcement: announcement))
     }
 
     func trackCtaTapped() {
-        // TODO: 10021 - analytics
+        analytics.track(event: .LocalAnnouncementModal.localAnnouncementCallToActionTapped(announcement: announcement))
     }
 
     func trackDismissTapped() {
-        // TODO: 10021 - analytics
+        analytics.track(event: .LocalAnnouncementModal.localAnnouncementDismissTapped(announcement: announcement))
     }
 }
 

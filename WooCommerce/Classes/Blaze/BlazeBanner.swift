@@ -3,16 +3,35 @@ import struct Yosemite.Site
 
 /// Hosting controller for `BlazeHighlightBanner`.
 final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
+    private let site: Site
+    private let containerViewController: UIViewController
+    private let dismissHandler: () -> Void
+
     init(site: Site,
          entryPoint: EntryPoint,
-         parentViewController: UIViewController) {
+         containerViewController: UIViewController,
+         dismissHandler: @escaping () -> Void) {
+        self.site = site
+        self.containerViewController = containerViewController
+        self.dismissHandler = dismissHandler
         super.init(rootView: BlazeBanner(showsTopDivider: entryPoint.shouldShowTopDivider,
                                          showsBottomSpacer: entryPoint.shouldShowBottomSpacer))
+        rootView.onTryBlaze = { [weak self] in
+            guard let self else { return }
+            // TODO: analytics
+            self.showBlaze(onCampaignCreated: dismissHandler)
+        }
     }
 
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func showBlaze(onCampaignCreated: @escaping () -> Void) {
+        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil, onCampaignCreated: onCampaignCreated)
+        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        containerViewController.navigationController?.show(webViewController, sender: self)
     }
 }
 
@@ -46,7 +65,7 @@ extension BlazeBannerHostingController {
 struct BlazeBanner: View {
     var showsTopDivider: Bool = false
     var showsBottomSpacer: Bool = false
-    
+
     /// Closure to be triggered when the Try Blaze now button is tapped.
     var onTryBlaze: () -> Void = {}
 

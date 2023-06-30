@@ -884,7 +884,9 @@ private extension ProductsViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let hostingController = BlazeBannerHostingController(site: site, entryPoint: .products, parentViewController: self)
+        let hostingController = BlazeBannerHostingController(site: site, entryPoint: .products, containerViewController: self, dismissHandler: { [weak self] in
+            self?.viewModel.hideBlazeBanner()
+        })
         guard let bannerView = hostingController.view else {
             return
         }

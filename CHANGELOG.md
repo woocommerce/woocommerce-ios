@@ -2,7 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 14.3
-This release includes the option to add multiple coupons when creating an order. Did you know it's possible to generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products? Try it out! US stores subscribed to the free trial can now upgrade to a paid plan using in app purchase.
+This release includes the option to add multiple coupons when creating an order. Did you know it's possible to generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products? Try it out! US stores subscribed to the free trial can now upgrade to a paid plan using in-app purchase.
 
 ## 14.2
 Did you know we’re working on a new feature for managing coupons? It's now possible to add coupons when creating an order from the app. You can also manage your coupons by heading over to the menu tab and clicking on the Coupons feature. 

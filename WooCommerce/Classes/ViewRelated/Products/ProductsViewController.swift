@@ -729,7 +729,9 @@ private extension ProductsViewController {
             requestAndShowErrorTopBannerView()
         }
 
-        checkBlazeBannerVisibility()
+        if !isEmpty {
+            checkBlazeBannerVisibility()
+        }
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions

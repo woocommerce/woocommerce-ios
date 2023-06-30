@@ -139,33 +139,6 @@ private extension StorePlanSynchronizer {
                                                       shouldSkipIfScheduled: true)
         }
     }
-
-    func scheduleBeforeExpirationNotification(siteID: Int64, expiryDate: Date) {
-        let notification = LocalNotification(scenario: .oneDayBeforeFreeTrialExpires(siteID: siteID,
-                                                                                     expiryDate: expiryDate))
-        /// Scheduled for 1 day before the expiry date
-        let triggerDateComponents = expiryDate.addingTimeInterval(-Constants.oneDayTimeInterval).dateAndTimeComponents()
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
-        Task {
-            await localNotificationScheduler.schedule(notification: notification,
-                                                      trigger: trigger,
-                                                      remoteFeatureFlag: .oneDayBeforeFreeTrialExpiresNotification,
-                                                      shouldSkipIfScheduled: true)
-        }
-    }
-
-    func scheduleAfterExpirationNotification(siteID: Int64, expiryDate: Date) {
-        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
-        /// Scheduled for 1 day after the expiry date
-        let triggerDateComponents = expiryDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
-        Task {
-            await localNotificationScheduler.schedule(notification: notification,
-                                                      trigger: trigger,
-                                                      remoteFeatureFlag: .oneDayAfterFreeTrialExpiresNotification,
-                                                      shouldSkipIfScheduled: true)
-        }
-    }
 }
 
 private extension StorePlanSynchronizer {

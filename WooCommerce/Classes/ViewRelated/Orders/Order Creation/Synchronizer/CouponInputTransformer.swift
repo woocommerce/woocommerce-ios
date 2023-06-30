@@ -9,7 +9,9 @@ struct CouponInputTransformer {
     /// If the order already has that coupon line it does nothing
     ///
     static func append(input: String, on order: Order) -> Order {
-        guard !order.coupons.map({ $0.code }).contains(input) else {
+        let existingCouponCodes = order.coupons.map({ $0.code })
+    
+        guard !existingCouponCodes.contains(input) else {
             return order
         }
 

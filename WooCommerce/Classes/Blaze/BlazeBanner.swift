@@ -70,7 +70,7 @@ struct BlazeBanner: View {
     }
 }
 
-extension BlazeBanner {
+private extension BlazeBanner {
     enum Layout {
         static let spacing: CGFloat = 16
     }
@@ -90,7 +90,7 @@ extension BlazeBanner {
     }
 }
 
-struct BlazeHighlightBanner_Previews: PreviewProvider {
+struct BlazeBanner_Previews: PreviewProvider {
     static var previews: some View {
         BlazeBanner()
     }

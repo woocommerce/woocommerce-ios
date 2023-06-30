@@ -97,6 +97,10 @@ target 'WooCommerce' do
 
   pod 'WPMediaPicker', '~> 1.8.1'
 
+  # The way we integrate WooCommerceShared is still WIP.
+  # See https://github.com/woocommerce/WooCommerce-Shared/pull/51
+  pod 'WooCommerceShared', podspec: 'https://cdn.a8c-ci.services/woocommerce-shared/376403148c39d452177120034e90795830027498/WooCommerceShared.podspec'
+
   # External Libraries
   # ==================
   #

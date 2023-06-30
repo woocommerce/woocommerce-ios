@@ -39,6 +39,7 @@ PODS:
   - StripeTerminal (2.19.1)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (2.3.0)
+  - WooCommerceShared (0.0.1)
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
@@ -85,6 +86,7 @@ DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 2.19.1)
+  - WooCommerceShared (from `https://cdn.a8c-ci.services/woocommerce-shared/376403148c39d452177120034e90795830027498/WooCommerceShared.podspec`)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `trunk`)
   - WordPressShared (~> 2.1)
@@ -132,6 +134,8 @@ SPEC REPOS:
     - ZendeskSupportSDK
 
 EXTERNAL SOURCES:
+  WooCommerceShared:
+    :podspec: https://cdn.a8c-ci.services/woocommerce-shared/376403148c39d452177120034e90795830027498/WooCommerceShared.podspec
   WordPressAuthenticator:
     :branch: trunk
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
@@ -161,6 +165,7 @@ SPEC CHECKSUMS:
   StripeTerminal: 93e18a93c6f92e51ceedc5b78ab3075327075a80
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
+  WooCommerceShared: a6b91cef8128db7255dadbd57d4cb1fdd8c1d01d
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 8a27a3c61ca0d740df66f260902aa2ca8528c61b
@@ -178,6 +183,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 33119766b8581a4e76206f345a770ca2c617f78d
+PODFILE CHECKSUM: 4866ff571951d2fcd5b2854ad436d715ac5856b0
 
 COCOAPODS: 1.12.1

@@ -82,6 +82,7 @@ struct BlazeBanner: View {
                 Text(Localization.description)
                     .bodyStyle()
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, Layout.spacing)
 
                 // CTA

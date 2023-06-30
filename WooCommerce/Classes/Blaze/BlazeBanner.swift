@@ -8,7 +8,7 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
     private let dismissHandler: () -> Void
 
     init(site: Site,
-         entryPoint: EntryPoint,
+         entryPoint: BlazeBanner.EntryPoint,
          containerViewController: UIViewController,
          analytics: Analytics = ServiceLocator.analytics,
          dismissHandler: @escaping () -> Void) {
@@ -30,7 +30,7 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
 
         rootView.onDismiss = { [weak self] in
             guard let self else { return }
-            // TODO: analytics
+            analytics.track(event: .Blaze.blazeBannerDismissed(entryPoint: entryPoint))
             self.showDismissAlert(onGotIt: dismissHandler)
         }
     }
@@ -58,40 +58,8 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
     }
 }
 
-extension BlazeBannerHostingController {
-    enum EntryPoint {
-        case myStore
-        case products
-
-        var shouldShowTopDivider: Bool {
-            switch self {
-            case .myStore:
-                return false
-            case .products:
-                return true
-            }
-        }
-
-        var shouldShowBottomSpacer: Bool {
-            switch self {
-            case .myStore:
-                return false
-            case .products:
-                return true
-            }
-        }
-
-        var blazeSource: BlazeSource {
-            switch self {
-            case .myStore:
-                return .myStore
-            case .products:
-                return .productList
-            }
-        }
-    }
-
-    private enum Localization {
+private extension BlazeBannerHostingController {
+    enum Localization {
         enum DismissAlert {
             static let title = NSLocalizedString(
                 "Blaze Ads",
@@ -195,5 +163,39 @@ private extension BlazeBanner {
 struct BlazeBanner_Previews: PreviewProvider {
     static var previews: some View {
         BlazeBanner()
+    }
+}
+
+extension BlazeBanner {
+    enum EntryPoint: String {
+        case myStore
+        case products
+
+        var shouldShowTopDivider: Bool {
+            switch self {
+            case .myStore:
+                return false
+            case .products:
+                return true
+            }
+        }
+
+        var shouldShowBottomSpacer: Bool {
+            switch self {
+            case .myStore:
+                return false
+            case .products:
+                return true
+            }
+        }
+
+        var blazeSource: BlazeSource {
+            switch self {
+            case .myStore:
+                return .myStore
+            case .products:
+                return .productList
+            }
+        }
     }
 }

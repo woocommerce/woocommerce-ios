@@ -46,6 +46,12 @@ extension WooAnalyticsEvent {
                                            Key.step: step.analyticsValue],
                               error: error)
         }
+
+        /// Tracked when the Blaze banner is dismissed.
+        static func blazeBannerDismissed(entryPoint: BlazeBanner.EntryPoint) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeBannerDismissed,
+                              properties: [Key.source: entryPoint.blazeSource.analyticsValue])
+        }
     }
 }
 

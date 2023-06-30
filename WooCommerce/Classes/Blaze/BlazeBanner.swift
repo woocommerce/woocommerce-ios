@@ -26,7 +26,7 @@ extension BlazeBannerHostingController {
 ///
 struct BlazeBanner: View {
     /// Closure to be triggered when the Try Blaze now button is tapped.
-    var onBlaze: () -> Void = {}
+    var onTryBlaze: () -> Void = {}
 
     /// Closure to be triggered when the dismiss button is tapped.
     var onDismiss: () -> Void = {}
@@ -59,7 +59,7 @@ struct BlazeBanner: View {
 
             // CTA
             Button {
-                onBlaze()
+                onTryBlaze()
             } label: {
                 Text(Localization.actionButton)
                     .font(.body.weight(.bold))

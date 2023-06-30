@@ -20,12 +20,14 @@ struct BarcodeSKUScannerItemFinder {
 
             return result
         } catch {
+            let errorIsProductNotFound = (error as? ProductLoadError) == .notFound
+            let errorTrackignReason = errorIsProductNotFound ? Constants.productNotFoundErrorTrackingDescription : error.localizedDescription
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUFailure(from: source.rawValue,
-                                                                                               symbology: barcode.symbology,
-                                                                                               reason: error.localizedDescription))
+                                                                                            symbology: barcode.symbology,
+                                                                                            reason: errorTrackignReason))
 
             // If we couldn't find the product, let's keep trying by refining the SKU search
-            guard (error as? ProductLoadError) == .notFound else {
+            guard errorIsProductNotFound else {
                 throw error
             }
 
@@ -79,5 +81,11 @@ private extension ScannedBarcode {
         }
 
         return ScannedBarcode(payloadStringValue: String(payloadStringValue.dropFirst()), symbology: symbology)
+    }
+}
+
+private extension BarcodeSKUScannerItemFinder {
+    enum Constants {
+        static let productNotFoundErrorTrackingDescription = "Product not found"
     }
 }

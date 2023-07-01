@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-27 17:54:05+0000 */
+/* Translation-Revision-Date: 2023-07-01 02:47:32+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -163,7 +163,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$d\/%2$d completed" = "Готово: %1$d из %2$d";
 
 /* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left' */
-"%1$ld day left" = "Остался %1$l день";
+"%1$ld day left" = "Остался %1$ld день";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
@@ -174,7 +174,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$ld variations" = "Варианты: %1$ld";
 
 /* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days left' */
-"%1ld days left" = "Осталось %1$@ дн.";
+"%1ld days left" = "Осталось %1ld дн.";
 
 /* 1 Item */
 "%@ Item" = "%@ элемент";

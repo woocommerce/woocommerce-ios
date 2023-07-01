@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-28 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-07-01 02:45:58+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -163,7 +163,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$d\/%2$d completed" = "%1$d\/%2$d 完了";
 
 /* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left' */
-"%1$ld day left" = "残り%1$l日";
+"%1$ld day left" = "残り%1$ld日";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */

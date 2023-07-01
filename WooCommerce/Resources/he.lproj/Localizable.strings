@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-27 20:54:05+0000 */
+/* Translation-Revision-Date: 2023-07-01 02:45:22+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -163,7 +163,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$d\/%2$d completed" = "הושלמו ⁦%1$d⁩\/%2$d";
 
 /* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left' */
-"%1$ld day left" = "נותר עוד יום ⁦%1$l⁩d";
+"%1$ld day left" = "נותר עוד יום ⁦%1$ld";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */

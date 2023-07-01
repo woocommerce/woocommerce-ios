@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-27 13:54:43+0000 */
+/* Translation-Revision-Date: 2023-07-01 02:43:15+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -163,7 +163,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$d\/%2$d completed" = "تم إكمال ⁦%1$d⁩\/%2$d";
 
 /* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left' */
-"%1$ld day left" = "يتبقى ⁦%1$l⁩d من الأيام";
+"%1$ld day left" = "يتبقى⁩%1$ld من الأيام";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */

@@ -1,1 +1,3 @@
-Ada berbagai fitur baru yang menarik minggu ini! Kini Anda bisa memindai barcode atau kode QR SKU suatu produk untuk mencari produk tersebut saat akan membuat pesanan. Berkat teknologi AI, kini Anda bisa secara otomatis membuat deskripsi menarik yang ramah SEO untuk produk di WooCommerce dan membagikannya. Cobalah dan berikan feedback Anda!
+Tahukah Anda? Kami sedang membuat fitur baru untuk mengelola kupon. Kini Anda dapat menambahkan kupon ketika membuat pesanan dari aplikasi. Anda juga dapat mengelola kupon dengan membuka tab menu dan mengeklik fitur Kupon.
+
+Terakhir, kami juga telah menyempurnakan performa aplikasi sehingga bagian pesanan kini lebih cepat. Namun, kami belum selesai. Nantikan penyempurnaan lainnya di masa mendatang.

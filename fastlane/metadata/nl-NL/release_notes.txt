@@ -1,1 +1,3 @@
-We hebben deze week verschillende spannende ontwikkelingen! Je kan nu een SKU-barcode of QR-code scannen om een product te zoeken als je een order aanmaakt. Het is ook mogelijk om automatisch conversie-vriendelijke en SEO-geoptimaliseerde productbeschrijvingen te genereren voor je WooCommerce-producten en ze te delen met gebruik van AI. Probeer het uit en laat weten wat je ervan denkt!
+Wist je dat we met een nieuwe functie voor het beheren van kortingsbonnen bezig zijn? Je kan nu kortingsbonnen toevoegen bij het aanmaken van een bestelling in de app. Je kan ook je kortingsbonnen beheren door naar het tabblad Menu te gaan en op de functie Kortingsbonnen te klikken.
+
+Als kers op de taart hebben we wat dingetjes aangepast om de prestaties van het gedeelte Bestellingen te verbeteren. Maar we zijn nog niet klaar. Houd de nieuwe verbeteringen in de gaten!

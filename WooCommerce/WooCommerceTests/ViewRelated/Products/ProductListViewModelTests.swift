@@ -309,11 +309,11 @@ final class ProductListViewModelTests: XCTestCase {
     }
 
     // MARK: - Blaze banner
-    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet() async {
+    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
-        let userDefaults = UserDefaults(suiteName: uuid)!
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
                                              userDefaults: userDefaults,
                                              blazeEligibilityChecker: checker)
@@ -326,11 +326,11 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowBlazeBanner)
     }
 
-    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_false_if_site_is_not_eligible_for_blaze() async {
+    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_false_if_site_is_not_eligible_for_blaze() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
         let uuid = UUID().uuidString
-        let userDefaults = UserDefaults(suiteName: uuid)!
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
                                              userDefaults: userDefaults,
                                              blazeEligibilityChecker: checker)
@@ -343,11 +343,11 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowBlazeBanner)
     }
 
-    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_false_if_banner_was_dismissed() async {
+    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_false_if_banner_was_dismissed() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
-        let userDefaults = UserDefaults(suiteName: uuid)!
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         userDefaults[.hasDismissedBlazeBanner] = true
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
                                              userDefaults: userDefaults,
@@ -361,11 +361,11 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowBlazeBanner)
     }
 
-    func test_hideBlazeBanner_sets_shouldShowBlazeBanner_to_false_and_updates_hasDismissedBlazeBanner() async {
+    func test_hideBlazeBanner_sets_shouldShowBlazeBanner_to_false_and_updates_hasDismissedBlazeBanner() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
-        let userDefaults = UserDefaults(suiteName: uuid)!
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
                                              userDefaults: userDefaults,
                                              blazeEligibilityChecker: checker)

@@ -102,7 +102,7 @@ private extension CouponLineDetailsViewModel {
         static let couponNotFoundNoticeTitle = NSLocalizedString("We couldn't find a coupon with that code. Please try again",
                                                                  comment: "Title for the error notice when we couldn't find" +
                                                                  "a coupon with the given code to add to an order.")
-        static let couponNotValidatedNoticeTitle = NSLocalizedString("Something when wrong when validating your coupon code. Please try again",
+        static let couponNotValidatedNoticeTitle = NSLocalizedString("Something went wrong when validating your coupon code. Please try again",
                                                                      comment: "Notice title when validating a coupon code fails.")
     }
 }

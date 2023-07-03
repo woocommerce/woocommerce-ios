@@ -17,6 +17,23 @@ enum UpgradeViewState: Equatable {
             return false
         }
     }
+
+    var analyticsStep: WooAnalyticsEvent.InAppPurchases.Step? {
+        switch self {
+        case .loading, .purchasing:
+            return nil
+        case .loaded:
+            return .planDetails
+        case .waiting:
+            return .processing
+        case .completed:
+            return .completed
+        case .prePurchaseError:
+            return .prePurchaseError
+        case .purchaseUpgradeError:
+            return .purchaseUpgradeError
+        }
+    }
 }
 
 // MARK: - Equatable conformance

@@ -34,23 +34,31 @@ final class UpgradesViewModel: ObservableObject {
         self.analytics = analytics
 
         observeViewStateAndTrackAnalytics()
-        checkForSiteOwnership()
     }
 
     /// Sync wrapper for `fetchViewData`, so can be called directly from where this
     /// ViewModel is referenced, outside of the initializer
     ///
+    @MainActor
     func retryFetch() {
         Task {
             await fetchViewData()
         }
     }
 
-    /// Retrieves all In-App Purchases WPCom plans
+    /// Sets up the view – validates whether they are eligible to upgrade and shows a plan
     ///
     @MainActor
-    func fetchPlans() async {
+    func prepareViewModel() async {
         do {
+            guard let site = stores.sessionManager.defaultSite else {
+                throw PrePurchaseError.fetchError
+            }
+
+            guard site.isSiteOwner else {
+                throw PrePurchaseError.userNotAllowedToUpgrade
+            }
+
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
                 throw PrePurchaseError.inAppPurchasesNotSupported
             }
@@ -181,7 +189,7 @@ private extension UpgradesViewModel {
     @MainActor
     func fetchViewData() async {
         upgradeViewState = .loading
-        await fetchPlans()
+        await prepareViewModel()
     }
 
     /// Checks whether a plan can be purchased from the current view state,
@@ -193,19 +201,6 @@ private extension UpgradesViewModel {
             return plan
         default:
             return nil
-        }
-    }
-
-    /// Checks whether the current user is the site owner, as only the site owner can perform
-    /// In-App Purchases upgrades, despite their site role
-    ///
-    func checkForSiteOwnership() {
-        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
-            self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
-        } else {
-            Task {
-                await fetchViewData()
-            }
         }
     }
 }

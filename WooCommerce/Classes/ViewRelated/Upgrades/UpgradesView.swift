@@ -120,6 +120,9 @@ struct UpgradesView: View {
         .onDisappear {
             upgradesViewModel.onDisappear()
         }
+        .task {
+            await upgradesViewModel.prepareViewModel()
+        }
     }
 }
 

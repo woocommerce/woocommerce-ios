@@ -102,7 +102,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
+            case let .checkIfStoreHasProducts(_, completion):
                 completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -138,7 +138,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
+            case let .checkIfStoreHasProducts(_, completion):
                 completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -180,7 +180,7 @@ final class DashboardViewModelTests: XCTestCase {
     func prepareStoresToShowJustInTimeMessage(_ response: Result<[Yosemite.JustInTimeMessage], Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
+            case let .checkIfStoreHasProducts(_, completion):
                 completion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -200,7 +200,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
+            case let .checkIfStoreHasProducts(_, completion):
                 completion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")

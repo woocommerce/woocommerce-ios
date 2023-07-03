@@ -25,14 +25,17 @@ final class UpgradesViewModelTests: XCTestCase {
         sut = UpgradesViewModel(siteID: sampleSiteID, inAppPurchasesPlanManager: mockInAppPurchasesManager, stores: stores)
     }
 
-    func test_upgrades_are_initialized_with_empty_values() async {
-        // Given, When
+    func test_if_user_has_active_in_app_purchases_then_returns_maximum_sites_upgraded_error() async {
+        // Given
         let sut = UpgradesViewModel(siteID: sampleSiteID,
-                                    inAppPurchasesPlanManager: MockInAppPurchasesForWPComPlansManager(plans: []),
+                                    inAppPurchasesPlanManager: MockInAppPurchasesForWPComPlansManager(userIsEntitledToPlan: true),
                                     stores: stores)
 
+        // When
+        await sut.fetchPlans()
+
         // Then
-        XCTAssert(sut.entitledWpcomPlanIDs.isEmpty)
+        assertEqual(.prePurchaseError(.maximumSitesUpgraded), sut.upgradeViewState)
     }
 
     func test_upgrades_when_fetchPlans_is_invoked_then_fetch_mocked_wpcom_plan() async {

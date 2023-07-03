@@ -25,15 +25,20 @@ final class DashboardViewModel {
 
     @Published private(set) var showOnboarding: Bool = false
 
+    @Published private(set) var showBlazeBanner: Bool = false
+
     /// Trigger to start the Add Product flow
     ///
     let addProductTrigger = PassthroughSubject<Void, Never>()
 
+    private let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
+    private let userDefaults: UserDefaults
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -48,10 +53,14 @@ final class DashboardViewModel {
          stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+        self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
+        self.userDefaults = userDefaults
+        self.blazeEligibilityChecker = blazeEligibilityChecker
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
@@ -287,6 +296,28 @@ final class DashboardViewModel {
 
         storeOnboardingViewModel.$shouldShowInDashboard
             .assign(to: &$showOnboarding)
+    }
+
+    /// Checks for Blaze eligibility and user defaults to show the banner if necessary.
+    ///
+    @MainActor
+    func updateBlazeBannerVisibility() async {
+        showBlazeBanner = await isBlazeBannerVisible()
+    }
+
+    private func isBlazeBannerVisible() async -> Bool {
+        let isSiteEligible = await blazeEligibilityChecker.isSiteEligible()
+        guard isSiteEligible else {
+            return false
+        }
+        return userDefaults.hasDismissedBlazeBanner(for: siteID)
+    }
+
+    /// Hides the banner and updates the user defaults to not show the banner again.
+    ///
+    func hideBlazeBanner() {
+        showBlazeBanner = false
+        userDefaults.setBlazeBannerDismissed(for: siteID)
     }
 }
 

@@ -376,6 +376,17 @@ private extension DashboardViewController {
         containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
     }
 
+    func addViewBelowOnboardingCard(_ contentView: UIView) {
+        let indexOfHeader = containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1
+        let indexAfterOnboardingCard: Int = {
+            if let onboardingView {
+                return (containerStackView.arrangedSubviews.firstIndex(of: onboardingView) ?? indexOfHeader) + 1
+            }
+            return indexOfHeader + 1
+        }()
+        containerStackView.insertArrangedSubview(contentView, at: indexAfterOnboardingCard)
+    }
+
     func configureStackView() {
         stackView.axis = .vertical
         view.addSubview(stackView)
@@ -773,12 +784,13 @@ private extension DashboardViewController {
 // MARK: - Blaze banner
 extension DashboardViewController {
     func observeBlazeBannerVisibility() {
-        Publishers.CombineLatest(viewModel.$showBlazeBanner.removeDuplicates(),
-                                 ServiceLocator.stores.site.compactMap { $0 }.removeDuplicates())
-        .sink { [weak self] showsBlazeBanner, site in
+        Publishers.CombineLatest3(viewModel.$showBlazeBanner.removeDuplicates(),
+                                  viewModel.$showOnboarding.removeDuplicates(),
+                                  ServiceLocator.stores.site.compactMap { $0 }.removeDuplicates())
+        .sink { [weak self] showsBlazeBanner, showsOnboarding, site in
             guard let self else { return }
             if showsBlazeBanner {
-                self.showBlazeBanner(for: site)
+                self.showBlazeBanner(for: site, withTopSpacer: showsOnboarding == false)
             } else {
                 self.removeBlazeBanner()
             }
@@ -789,21 +801,23 @@ extension DashboardViewController {
         }
     }
 
-    func showBlazeBanner(for site: Site) {
-        guard blazeBannerHostingController == nil else {
-            return
+    func showBlazeBanner(for site: Site, withTopSpacer: Bool) {
+        if blazeBannerHostingController != nil {
+            removeBlazeBanner()
         }
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return
-        }
-        let hostingController = BlazeBannerHostingController(site: site, entryPoint: .myStore, containerViewController: self, dismissHandler: { [weak self] in
+        let hostingController = BlazeBannerHostingController(
+            site: site,
+            entryPoint: .myStore,
+            containerViewController: self,
+            showsTopSpacer: withTopSpacer,
+            dismissHandler: { [weak self] in
             self?.viewModel.hideBlazeBanner()
         })
         guard let bannerView = hostingController.view else {
             return
         }
         bannerView.translatesAutoresizingMaskIntoConstraints = false
-        addViewBelowHeaderStackView(contentView: bannerView)
+        addViewBelowOnboardingCard(bannerView)
         addChild(hostingController)
         hostingController.didMove(toParent: self)
         blazeBannerHostingController = hostingController

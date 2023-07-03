@@ -14,6 +14,7 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
         self.site = site
         self.containerViewController = containerViewController
         super.init(rootView: BlazeBanner(showsTopDivider: entryPoint.shouldShowTopDivider,
+                                         showsTopSpacer: entryPoint.shouldShowTopSpacer,
                                          showsBottomSpacer: entryPoint.shouldShowBottomSpacer))
 
         let blazeSource = entryPoint.blazeSource
@@ -79,6 +80,7 @@ private extension BlazeBannerHostingController {
 ///
 struct BlazeBanner: View {
     private let showsTopDivider: Bool
+    private let showsTopSpacer: Bool
     private let showsBottomSpacer: Bool
 
     /// Closure to be triggered when the Try Blaze now button is tapped.
@@ -87,13 +89,21 @@ struct BlazeBanner: View {
     /// Closure to be triggered when the dismiss button is tapped.
     var onDismiss: () -> Void = {}
 
-    init(showsTopDivider: Bool = false, showsBottomSpacer: Bool = false) {
+    init(showsTopDivider: Bool = false,
+         showsTopSpacer: Bool = false,
+         showsBottomSpacer: Bool = false) {
         self.showsTopDivider = showsTopDivider
+        self.showsTopSpacer = showsTopSpacer
         self.showsBottomSpacer = showsBottomSpacer
     }
 
     var body: some View {
         VStack(spacing: 0) {
+            // Optional spacing at the top
+            Color(.listBackground)
+                .frame(height: Layout.spacing)
+                .renderedIf(showsTopSpacer)
+
             // Optional divider on the top
             Divider()
                 .renderedIf(showsTopDivider)
@@ -183,10 +193,19 @@ extension BlazeBanner {
             }
         }
 
+        var shouldShowTopSpacer: Bool {
+            switch self {
+            case .myStore:
+                return true
+            case .products:
+                return false
+            }
+        }
+
         var shouldShowBottomSpacer: Bool {
             switch self {
             case .myStore:
-                return false
+                return true
             case .products:
                 return true
             }

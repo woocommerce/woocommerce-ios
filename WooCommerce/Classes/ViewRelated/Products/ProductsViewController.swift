@@ -104,7 +104,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController, onReload: { [weak self] in
-            self?.reloadTableAndView()
+            guard let self else { return }
+            self.reloadTableAndView()
+            self.isEmpty = resultsController.isEmpty
         })
         return resultsController
     }()
@@ -130,9 +132,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Indicates if there are no results onscreen.
     ///
-    private var isEmpty: Bool {
-        return resultsController.isEmpty
-    }
+    @Published private var isEmpty: Bool = true
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -729,9 +729,7 @@ private extension ProductsViewController {
             requestAndShowErrorTopBannerView()
         }
 
-        if !isEmpty {
-            checkBlazeBannerVisibility()
-        }
+        checkBlazeBannerVisibility()
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
@@ -866,9 +864,10 @@ private extension ProductsViewController {
     func checkBlazeBannerVisibility() {
         viewModel.$shouldShowBlazeBanner
             .removeDuplicates()
-            .sink { [weak self] shouldShow in
+            .combineLatest($isEmpty.removeDuplicates())
+            .sink { [weak self] shouldShow, isEmpty in
                 guard let self else { return }
-                guard !self.hasErrorLoadingData else {
+                guard !self.hasErrorLoadingData, !isEmpty else {
                     return self.hideBlazeBanner()
                 }
                 if shouldShow {

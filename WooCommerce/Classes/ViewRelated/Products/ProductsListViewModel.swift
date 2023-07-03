@@ -167,20 +167,21 @@ extension ProductListViewModel {
     ///
     @MainActor
     func updateBlazeBannerVisibility() async {
+        shouldShowBlazeBanner = await isBlazeBannerVisible()
+    }
+
+    private func isBlazeBannerVisible() async -> Bool {
         let isSiteEligible = await blazeEligibilityChecker.isSiteEligible()
         guard isSiteEligible else {
-            return
+            return false
         }
-        guard userDefaults[.hasDismissedBlazeBanner] == nil else {
-            return
-        }
-        shouldShowBlazeBanner = true
+        return userDefaults.hasDismissedBlazeBanner(for: siteID)
     }
 
     /// Hides the banner and updates the user defaults to not show the banner again.
     ///
     func hideBlazeBanner() {
         shouldShowBlazeBanner = false
-        userDefaults[.hasDismissedBlazeBanner] = true
+        userDefaults.setBlazeBannerDismissed(for: siteID)
     }
 }

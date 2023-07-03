@@ -975,6 +975,12 @@ extension UIImage {
         return UIImage.gridicon(.plusSmall)
     }
 
+    /// Product description AI announcement image
+    ///
+    static var productDescriptionAIAnnouncementImage: UIImage {
+        .init(named: "product-description-ai-announcement")!
+    }
+
     /// Small Minus Icon
     ///
     static var minusSmallImage: UIImage {

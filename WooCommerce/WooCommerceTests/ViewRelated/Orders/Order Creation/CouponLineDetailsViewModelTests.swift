@@ -13,7 +13,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
+        viewModel = CouponLineDetailsViewModel(isExistingCouponLine: true,
                                                code: initialCode,
                                                siteID: sampleSiteID,
                                                stores: stores,
@@ -98,11 +98,11 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(parameters?.1, sampleSiteID)
     }
 
-    func test_validateAndSaveData_when_coupon_is_validated_then_completes_successfully() {
+    func test_validateAndSaveData_when_coupon_is_edited_and_validated_then_completes_successfully() {
         // Given
-        var savedCouponLine: OrderCouponLine?
-        viewModel.didSelectSave = { newCouponLine in
-            savedCouponLine = newCouponLine
+        var savedResult: CouponLineDetailsResult?
+        viewModel.didSelectSave = { result in
+            savedResult = result
         }
 
         let passedCouponCode = "COUPON"
@@ -119,15 +119,65 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         }
 
         // When
-        let result = waitFor { [weak self] promise in
+        let shouldDismiss = waitFor { [weak self] promise in
             self?.viewModel.validateAndSaveData() { shouldDismiss in
                 promise(shouldDismiss)
             }
         }
 
         // Then
-        XCTAssertTrue(result)
-        XCTAssertEqual(savedCouponLine?.code, passedCouponCode)
+        XCTAssertTrue(shouldDismiss)
+
+        switch savedResult {
+        case let .edited(oldCode, newCode):
+            XCTAssertEqual(oldCode, initialCode)
+            XCTAssertEqual(newCode, passedCouponCode)
+        default:
+            XCTFail("Result should be edited case")
+        }
+    }
+
+    func test_validateAndSaveData_when_coupon_is_new_and_validated_then_completes_successfully() {
+        // Given
+        var savedResult: CouponLineDetailsResult?
+        viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
+                                               code: "",
+                                               siteID: sampleSiteID,
+                                               stores: stores,
+                                               didSelectSave: { _ in })
+        viewModel.didSelectSave = { result in
+            savedResult = result
+        }
+
+        let passedCouponCode = "COUPON"
+        viewModel.code = passedCouponCode
+
+
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .validateCouponCode(_, _, onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        let shouldDismiss = waitFor { [weak self] promise in
+            self?.viewModel.validateAndSaveData() { shouldDismiss in
+                promise(shouldDismiss)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(shouldDismiss)
+
+        switch savedResult {
+        case let .added(newCode):
+            XCTAssertEqual(newCode, passedCouponCode)
+        default:
+            XCTFail("Result should be added case")
+        }
     }
 
     func test_validateAndSaveData_when_coupon_is_not_validated_then_fails() {

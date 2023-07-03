@@ -464,7 +464,7 @@ which should be translated separately and considered part of this sentence. */
    Product Add Category navigation title */
 "Add Category" = "Add Category";
 
-/* Title text of the button that adds a fee when creating a new coupon */
+/* Title text of the button that adds a coupon when creating a new order */
 "Add Coupon" = "Add Coupon";
 
 /* Title for the Coupon screen during order creation */
@@ -481,6 +481,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
 "Add Description (Optional)" = "Add Description (Optional)";
+
+/* Message of the product description AI local announcement. */
+"Add descriptions in a snap with AI. Try our feature today!" = "Add descriptions in a snap with AI. Try our feature today!";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Add Downloadable File";
@@ -539,6 +542,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
    Title for the screen to add a product to an order */
 "Add Product" = "Add Product";
+
+/* Title of the product description AI local announcement. */
+"Add product description with AI" = "Add product description with AI";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Add product link";
@@ -783,7 +789,7 @@ which should be translated separately and considered part of this sentence. */
 "An optional note to send the customer after purchase" = "An optional note to send the customer after purchase";
 
 /* Error message when an order already exists in the backend for a given receipt */
-"An order aready exists for this receipt" = "An order aready exists for this receipt";
+"An order already exists for this receipt" = "An order already exists for this receipt";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "An unknown error occurred.";
@@ -1255,7 +1261,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
-   Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
@@ -2225,6 +2230,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "Discounted rates";
 
+/* Message on the local notification to remind the user to purchase a plan. */
+"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best.";
+
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "Discover other payment providers and choose a payment provider.";
 
@@ -2299,6 +2307,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action title to select products to add to a grouped product from search results
    Button title to close the Scan to Pay screen
+   Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2317,6 +2326,7 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
@@ -3442,6 +3452,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
 
+/* Accessibility label for an indeterminate loading indicator */
+"In progress" = "In progress";
+
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -3646,6 +3659,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Ireland" = "Ireland";
+
+/* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
+"Is the generated description helpful?" = "Is the generated description helpful?";
+
+/* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
+"Is the generated message helpful?" = "Is the generated message helpful?";
 
 /* Country option for a site address. */
 "Isle of Man" = "Isle of Man";
@@ -3960,6 +3979,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Loading Order";
 
+/* Accessibility label for the initial loading state of the Upgrades view */
+"Loading plan details" = "Loading plan details";
+
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "Loading Product";
 
@@ -4196,7 +4218,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Maximum spend of %1$@";
 
-/* Dismiss button title for modally presented Just in Time Messages */
+/* Dismiss button title for modally presented Just in Time Messages
+   Dismiss button title for the local announcement modal. */
 "Maybe Later" = "Maybe Later";
 
 /* Country option for a site address. */
@@ -4622,7 +4645,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Message for offline banner */
 "Offline - using cached data" = "Offline - using cached data";
 
-/* Alert dismissal title
+/* Action button to dismiss the coupon error notice
+   Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
@@ -5452,12 +5476,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Product link";
 
-/* Error message when the scanner cannot find a matching product */
-"Product not found. Failed to add Product to Order." = "Product not found. Failed to add Product to Order.";
-
-/* Error message when the scanner found a product but isn't purchasable. */
-"Product not purchasable. Failed to add Product to Order." = "Product not purchasable. Failed to add Product to Order.";
-
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Product published";
 
@@ -5486,6 +5504,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "Product URL";
 
+/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
+"Product with SKU \"%@\" is not purchasable." = "Product with SKU \"%@\" is not purchasable.";
+
+/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
+"Product with SKU \"%@\" not found." = "Product with SKU \"%@\" not found.";
+
 /* Description for Top Performers left column header
    Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -5512,7 +5536,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the row showing the total cost of products in the order */
 "Products Total" = "Products Total";
 
-/* Description of the hub menu Blaze button */
+/* Description of the hub menu Blaze button
+   Title on the banner to highlight Blaze feature */
 "Promote products with Blaze" = "Promote products with Blaze";
 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
@@ -7520,6 +7545,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed when loading a specific product fails because product was deleted */
 "This product has been deleted and is no longer visible" = "This product has been deleted and is no longer visible";
 
+/* Error message when an unsupported receipt type is sent - [%1$@] will be replaced with details */
+"This receipt's transaction type is not expected from the app [%1$@]" = "This receipt's transaction type is not expected from the app [%1$@]";
+
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "This setting determines which shop pages products will be listed on.";
 
@@ -7753,6 +7781,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "Try Authorizing Again";
 
+/* Title of the button on the banner to highlight Blaze feature */
+"Try Blaze now" = "Try Blaze now";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Try Collecting Again";
 
@@ -7770,6 +7801,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Try it now";
+
+/* Button title of the product description AI local announcement. */
+"Try it Now" = "Try it Now";
 
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "Try Payment Again";
@@ -7809,6 +7843,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale.";
+
+/* Description on the banner to highlight Blaze feature */
+"Turn your products into ads that run across millions of sites on WordPress.com and Tumblr." = "Turn your products into ads that run across millions of sites on WordPress.com and Tumblr.";
 
 /* Title text in the store creation loading screen */
 "Turning on the lights" = "Turning on the lights";
@@ -8963,6 +9000,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the local notification to remind the user of the expired free trial plan. */
 "🌟 Keep your business going with our plan!" = "🌟 Keep your business going with our plan!";
+
+/* Title of the local notification to remind the user to purchase a plan. */
+"🌟 Keep your business going!" = "🌟 Keep your business going!";
 
 /* Notice text after completing a simple payment order */
 "🎉 Order completed" = "🎉 Order completed";

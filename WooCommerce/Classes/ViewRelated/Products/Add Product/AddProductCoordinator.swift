@@ -19,6 +19,8 @@ final class AddProductCoordinator: Coordinator {
         case productOnboarding
         /// Initiated from the store onboarding card in the dashboard.
         case storeOnboarding
+        /// Initiated from the product description AI announcement modal in the dashboard.
+        case productDescriptionAIAnnouncementModal
     }
 
     let navigationController: UINavigationController
@@ -90,7 +92,9 @@ final class AddProductCoordinator: Coordinator {
             break
         }
 
-        if shouldPresentProductCreationBottomSheet() {
+        if shouldSkipBottomSheet() {
+            presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
+        } else if shouldPresentProductCreationBottomSheet() {
             presentProductCreationTypeBottomSheet()
         } else {
             presentProductTypeBottomSheet(creationType: .manual)
@@ -112,6 +116,13 @@ private extension AddProductCoordinator {
     ///
     func isTemplateOptionsEligible() -> Bool {
         productsResultsController.numberOfObjects < 3
+    }
+
+    /// Defines if it should skip the bottom sheet before the product form is shown.
+    /// Currently returns `true` when the source is product description AI announcement modal.
+    ///
+    func shouldSkipBottomSheet() -> Bool {
+        source == .productDescriptionAIAnnouncementModal
     }
 
     /// Returns `true` when there are existing products.

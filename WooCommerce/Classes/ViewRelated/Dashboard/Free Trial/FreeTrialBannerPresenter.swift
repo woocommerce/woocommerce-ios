@@ -40,6 +40,8 @@ final class FreeTrialBannerPresenter {
         inAppPurchasesUpgradeEnabled ? Localization.upgradeNow : Localization.learnMore
     }
 
+    private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()
+
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
@@ -152,7 +154,7 @@ private extension FreeTrialBannerPresenter {
     func showUpgradesView() {
         guard let viewController else { return }
         Task { @MainActor in
-            if inAppPurchasesUpgradeEnabled {
+            if await inAppPurchasesManager.inAppPurchasesAreSupported() && inAppPurchasesUpgradeEnabled {
                 let upgradesController = UpgradesHostingController(siteID: siteID)
                 viewController.present(upgradesController, animated: true)
             } else {

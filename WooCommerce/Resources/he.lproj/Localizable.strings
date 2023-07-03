@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-21 12:54:04+0000 */
+/* Translation-Revision-Date: 2023-07-01 02:45:22+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -8,9 +8,6 @@
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
-
-/* Prefix for the subtitle text in the store creation loading screen */
-"#FunWooFact:" = "‎#FunWooFact –‏";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% הושלמו";
@@ -64,9 +61,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "כרטיס %1$@ שמסתיים בספרות %2$@";
-
-/* Value describing the days left on a plan before expiry. Reads as '15 days left' */
-"%1$@ days left" = "נותר %1$@ ימים";
 
 /* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 every 2 months'. */
 "%1$@ every %2$@" = "%1$@ כל %2$@";
@@ -168,6 +162,9 @@ which should be translated separately and considered part of this sentence. */
 /* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
 "%1$d\/%2$d completed" = "הושלמו ⁦%1$d⁩\/%2$d";
 
+/* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left' */
+"%1$ld day left" = "נותר עוד יום ⁦%1$ld";
+
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld סוג";
@@ -175,6 +172,9 @@ which should be translated separately and considered part of this sentence. */
 /* Format for the variations detail row in plural form. Reads, `2 variations`
    Label about number of variations shown on Products tab. Reads, `2 variations` */
 "%1$ld variations" = "%1$ld סוגים";
+
+/* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days left' */
+"%1ld days left" = "נותר %1ld ימים";
 
 /* 1 Item */
 "%@ Item" = "פריט %@";
@@ -252,6 +252,21 @@ which should be translated separately and considered part of this sentence. */
 /* Product title in Products list when there is no title */
 "(No Title)" = "(חסרה כותרת)";
 
+/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
+"**#Add and edit products with a touch:** Add new products, update details, upload images, and manage variations, all from the app. Keep your inventory up to date effortlessly." = "**#להוסיף ולערוך מוצרים בהקשה פשוטה:** ניתן להוסיף מוצרים חדשים,לעדכן פרטים, להעלות תמונות ולנהל סוגים – והכול אפשרי מתוך האפליקציה. כך אפשר לדאוג שהמלאי תמיד מעודכן ללא מאמץ.";
+
+/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
+"**#Get notified of every sale:** Never miss a beat with instant sale notifications. Receive alerts for each new sale, allowing you to celebrate your success and stay on top of your store's activity." = "**#לקבל הודעות עם כל מכירה:** הודעות מיידיות לגבי כל מכירה יבטיחו שתמיד יש לך את המידע המעודכן ביותר. ניתן לקבל התראות על כל מכירה חדשה, כדי לחגוג את ההצלחה ולהתעדכן בפעילות של החנות.";
+
+/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
+"**#Manage and create orders:** Handle orders with ease. Scroll, search, and change order status. Create new orders on the fly for in-store or phone purchases. Simplify your order management process." = "**#לנהל וליצור הזמנות:** ניתן לטפל בהזמנות בקלות. אפשר לגלול, לחפש ולשנות סטטוס של הזמנה. ניתן ליצור הזמנות חדשות במהירות עבור הזמנות המבוצעות בחנות עצמה או דרך הטלפון. תהליך פשוט יותר לניהול ההזמנות.";
+
+/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
+"**#Take payments in person:** Expand your sales opportunities by accepting payments in person. Use the app to securely process credit card transactions or even connect with compatible card readers for convenient in-person payments." = "**#לקבל תשלומים באופן אישי:** אפשר להגדיל את הזדמנויות המכירה על ידי קבלת תשלומים באופן אישי. ניתן להשתמש באפליקציה כדי לעבד בצורה מאובטחת עסקאות בכרטיסי אשראי, או אפילו כדי להתחבר לקוראי כרטיסים תואמים לגביית תשלומים באופן אישי בצורה נוחה.";
+
+/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
+"**#Track sales and popular products:** Stay updated on your store's real-time performance. Identify your top-selling products and make informed decisions for maximum profitability." = "**#לעקוב אחרי מכירות ומוצרים פופולריים:** באפשרותך לקבל עדכונים בזמן אמת לגבי הביצועים בחנות שלך. אפשר לזהות את המוצרים הנמכרים ביותר כדי לקבל החלטות מושכלות ולגרוף רווחים מקסימליים.";
+
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**עליך לוודא שהאפשרות AirPrint מופעלת** בהגדרות המדפסת שלך. אולי יהיה עליך להגדיר את האפשרות הזאת במדפסת עצמה.\n\nיש לעיין בתיעוד שצורף למדפסת לפרטים.";
 
@@ -294,6 +309,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "האפשרות 'תשלום באופן אישי' בקופה מאפשר לך לקבל תשלומים בכרטיס אשראי או במזומן במעמד האיסוף או המסירה.";
+
+/* Error message displayed when the merchant already has one store upgraded under the same Apple ID. */
+"A WooCommerce app store subscription with your Apple ID already exists" = "כבר קיים מינוי לחנות באפליקציה של WooCommerce דרך ה-Apple ID שלך";
 
 /* Instruction text to explain magic link login step. */
 "A WordPress.com account is connected to your store credentials. To continue, we will send a verification link to the email address above." = "חשבון WordPress.com מחובר לפרטי הכניסה שלך לחנות. כדי להמשיך, נשלח לך קישור לאימות אל כתובת האימייל שמצוינת למעלה.";
@@ -720,6 +738,9 @@ which should be translated separately and considered part of this sentence. */
    Title of 'Amount Paid' section in the receipt */
 "Amount Paid" = "הסכום ששולם";
 
+/* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
+"An Apple ID can only be used to upgrade one store" = "ניתן להשתמש ב-Apple ID כדי לשדרג חנות אחת בלבד";
+
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "הוחזר קוד שגיאה של HTTP %i.";
 
@@ -839,9 +860,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "אישור התגובה";
-
-/* Subtitle text in the store creation loading screen */
-"Are you Team Cat or Team Dog? The Woo team is split 50\/50!" = "אתם אנשי חתולים או אנשי כלבים? חצי מהצוות של WooCommerce בצד של החתולים, וחצי בצד של הכלבים!";
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "האם ברצונך לשנות את סוג המוצר?";
@@ -1259,11 +1277,12 @@ which should be translated separately and considered part of this sentence. */
    Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "ביטול";
 
-/* Title for the button to cancel a free trial */
-"Cancel Free Trial" = "לבטל תקופת ניסיון בחינם";
-
 /* Action button to cancel Jetpack installation. */
 "Cancel Installation" = "לבטל את ההתקנה";
+
+/* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
+   Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
+"Cancel Upgrade" = "ביטול שדרוג";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -1277,6 +1296,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when the input URL does not point to an existing site. */
 "Cannot access the site at this address. Please double-check and try again." = "לא ניתן לגשת לאתר בכתובת זו. יש לבדוק שנית ולנסות שוב.";
+
+/* Generic error when a product can't be added to an order after being scanned. */
+"Cannot add Product to Order." = "לא ניתן להוסיף את המוצר להזמנה.";
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "לא ניתן להוסיף חבילה";
@@ -1827,9 +1849,6 @@ which should be translated separately and considered part of this sentence. */
 /* Field in the view for adding or editing a coupon's expiry date. */
 "Coupon Expiry Date" = "תאריך תפוגת הקופון";
 
-/* Cell title on beta features screen to enable coupon management */
-"Coupon Management" = "ניהול קופונים";
-
 /* Title of Summary section in Coupon Details screen */
 "Coupon Summary" = "סיכום קופון";
 
@@ -1932,6 +1951,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "יוצר סוגים...";
+
+/* Title text in the store creation loading screen */
+"Creating Your Store! It'll be just a few minutes" = "יוצר את החנות שלך! כמה דקות, תכף נסיים";
 
 /* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
 "Creating your store" = "יוצר את החנות שלך";
@@ -2105,9 +2127,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "יש לתאר את המוצר שלך";
 
-/* Product features placeholder in the product description AI generator view. */
-"Describe your product features" = "יש לתאר את מאפייני המוצר";
-
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "לתאר את המוצר שלך ללקוחות עתידיים...";
 
@@ -2119,12 +2138,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "ההגדרה קובעת את המיקום של המוצרים בקטלוג. ככל שהערך המספרי נמוך יותר, הפריט יופיע במקום גבוה יותר ברשימת המוצרים. ניתן להשתמש גם בערכים שליליים";
-
-/* Subtitle text in the store creation loading screen */
-"Did you know that Woo powers more than 3.5 million stores worldwide? You’re in good company." = "ידעת ש-WooCommerce מפעילה כמעט ארבע מיליון חנויות ברחבי העולם? הצטרפת לחברה טובה.";
-
-/* Subtitle text in the store creation loading screen */
-"Did you know that Woo was founded by two South Africans and a Norwegian? Here are three alternative ways to say “store” in those countries – Winkel, ivenkile, and butikk." = "הידעת? WooCommerce הוקם על ידי שני דרום אפריקניים ונורווגי? אלו שלוש אפשרויות למילה \"חנות\" בארצות המוצא שלהם: Winkel, ‏ivenkile ו-butikk.";
 
 /* Instructions after a Magic Link was sent, but email is incorrect. */
 "Didn't mean to create a new account? Go back to re-enter your email address." = "לא התכוונת ליצור חשבון חדש? יש לחזור אחורה כדי להזין מחדש את כתובת האימייל שלך.";
@@ -2246,6 +2259,7 @@ which should be translated separately and considered part of this sentence. */
    Button to submit the product selector without any product selected.
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
+   Done button on the screen that is shown after a successful plan upgrade.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2584,9 +2598,6 @@ which should be translated separately and considered part of this sentence. */
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "יש להזין סיסמה";
 
-/* Product name placeholder in the product description AI generator view. */
-"Enter product name" = "יש להזין שם המוצר";
-
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "יש להזין את הכתובת של החנות שלך ב-WooCommerce שאליה ברצונך להתחבר.";
 
@@ -2637,6 +2648,9 @@ which should be translated separately and considered part of this sentence. */
    Title of a button. */
 "Enter your password instead." = "במקום זאת יש להזין סיסמה.";
 
+/* Product name placeholder in the product description AI generator view. */
+"Enter your product name" = "יש להזין את שם המוצר שלך";
+
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "יש להזין את פרטי הכניסה לחנות עבור %@.";
 
@@ -2655,6 +2669,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error title when Jetpack activation fails */
 "Error activating Jetpack" = "שגיאה בהפעלת Jetpack";
 
+/* Error message displayed when plan activation fails after purchasing a plan. */
+"Error activating plan" = "שגיאה בהפעלת התוכנית";
+
 /* Error title when Jetpack connection fails */
 "Error authorizing connection to Jetpack" = "אירעה שגיאה באישור החיבור אל Jetpack";
 
@@ -2664,8 +2681,17 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on the error alert displayed when checking Jetpack connection fails during the Jetpack setup flow. */
 "Error checking the Jetpack connection on your site" = "שגיאה בבדיקת החיבור של Jetpack לאתר שלך.";
 
+/* A string shown on the error screen when there's an issue purchasing a plan, to inform the user of the error code for use with Support. %1$@ will be replaced with the error code and must be included in the translations. */
+"Error code %1$@" = "קוד שגיאה  %1$@";
+
 /* Error code displayed when the Jetpack setup fails. %1$d is the code. */
 "Error code %1$d" = "קוד שגיאה ⁦%1$d⁩";
+
+/* Error message displayed when a payment fails when attempting to purchase a plan. */
+"Error confirming payment" = "שגיאה באישור התשלום";
+
+/* Title of an unknown error after purchasing a plan */
+"Error during purchase" = "שגיאה במהלך הרכישה";
 
 /* Error message when enabling analytics fails */
 "Error enabling analytics. Please try again." = "שגיאה בהפעלת הנתונים האנליטיים. יש לנסות שוב.";
@@ -2718,6 +2744,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "מי לא רוצה לקבל מבצע";
+
+/* Label for sample product features to enter in the product description AI generator view. */
+"Example: Potted, cactus, plant, decorative, easy-care" = "לדוגמה: שתיל, קקטוס, צמח, קישוט, קל לטפל";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "לא לכלול ⁦%1$d⁩ קטגוריות";
@@ -3001,9 +3030,6 @@ which should be translated separately and considered part of this sentence. */
 /* General section title in the hub menu */
 "General" = "כללי";
 
-/* Button title to generate product description with Jetpack AI. */
-"Generate" = "ליצור";
-
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "ליצור סוג חדש";
 
@@ -3063,7 +3089,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the account creation form. */
 "Get started in minutes" = "להתחיל תוך דקות ספורות";
 
-/* Button to contact support when Jetpack setup fails */
+/* Button title to allow merchants to open the support screens when there's an error with their plan purchase
+   Button to contact support when Jetpack setup fails */
 "Get support" = "לקבלת תמיכה";
 
 /* Title for the section header for the list of feature categories on the Upgrade plan screen. Reads as 'Get the most out of Essential'. %1$@ must be included in the string and will be replaced with the plan name. */
@@ -3129,7 +3156,8 @@ which should be translated separately and considered part of this sentence. */
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "הבנתי!";
 
-/* Dismiss button title in AI product description celebration screen. */
+/* Button title that dismisses the Write with AI tooltip
+   Dismiss button title in AI product description celebration screen. */
 "Got it" = "הבנתי";
 
 /* Title in AI product description celebration screen. */
@@ -3295,6 +3323,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "להסתיר את רשימת ההגדרות לחנות";
 
+/* Product features placeholder in the product description AI generator view. */
+"Highlight your product's unique features and audience with keywords for a tailored description." = "כדאי להדגיש את המאפיינים הייחודיים ואת הקהל של המוצר עם מילות מפתח כדי ליצור תיאור מותאם.";
+
 /* Industry option in the store creation category question. */
 "Home, furniture, and garden" = "בית, ריהוט וגינה";
 
@@ -3377,6 +3408,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "באזור הניהול של האתר שלך אפשר למצוא את כתובת האימייל שבה השתמשת כדי להתחבר אל WordPress.com מלוח הבקרה של Jetpack במקטע 'חשבונות מקושרים' > 'חיבור החשבון'";
+
+/* Error message displayed when In-App Purchases are not supported. */
+"In-App Purchases not supported" = "רכישות באפליקציה לא נתמכות";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} blog_id @{blog ID} Parameters: %1$@ - order number, %2$@ - store name, %3$@ - blog ID number */
 "In-Person Payment for Order #%1$@ for %2$@ blog_id %3$@" = "תשלום באופן אישי עבור הזמנה #%1$@ עבור %2$@ blog_id %3$@";
@@ -3747,9 +3781,11 @@ which should be translated separately and considered part of this sentence. */
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
+   Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
+   Title for the link to open the legal URL for AI-generated content in the product detail screen
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
    Title of button shown on the Product Reviews screen if the list is empty
@@ -4021,6 +4057,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the privacy banner */
 "Manage Privacy" = "ניהול פרטיות";
+
+/* Title for the button to manage subscriptions */
+"Manage Your Subscription" = "לנהל את המינוי שלך";
 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "לנהל ולערוך הזמנות מכל מקום";
@@ -4407,6 +4446,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "לא נבחרו הזמנות";
 
+/* Bolded message confirming that no payment has been taken when the upgrade failed. */
+"No payment has been taken" = "לא חויב תשלום";
+
 /* Display label when a subscription has no price.
    Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "טרם צוין מחיר";
@@ -4571,9 +4613,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "רק בעלי האתר יכולים לנהל את אמצעי התשלום של תוויות המשלוח. יש ליצור קשר עם %1$@ (%2$@) כדי לנהל את אמצעי התשלום.";
 
-/* Text describing that only the site owner can upgrade the site's plan. */
-"Only the site owner can manage upgrades" = "רק בעלי האתר יכולים לנהל את שהדרוגים";
-
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "אופס, אירעו כמה שגיאות לא צפויות.";
 
@@ -4724,9 +4763,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "אתרים אחרים";
-
-/* Subtitle text in the store creation loading screen */
-"Our favorite color is purple." = "הצבע האהוב עלינו הוא סגול.";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -4940,8 +4976,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "מעביר את המוצר שלך לפח...";
 
-/* Navigation title for the Upgrades screen */
-"Plans" = "תוכניות";
+/* Detail text shown after an In-App Purchase for a Woo Express plan, shown while we upgrade the site. %1$@ is replaced with the short plan name. Reads as: 'Please bear with us while we process the payment for your Essential plan.' */
+"Please bear with us while we process the payment for your %1$@ plan." = "תודה על הסבלנות, אנחנו מנסים לעבד את התשלום עבור התוכנית %1$@ שרכשת.";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "יש להטעין את הקורא";
@@ -4958,11 +4994,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "יש לחבר את החנות שלך אל Jetpack כדי לגשת אליה באפליקציה הזאת.";
 
+/* Bolded message advising the merchant to contact support when the plan activation failed.
+   Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
+"Please contact support for assistance." = "כדאי לפנות לתמיכה לעזרה.";
+
 /* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "יש לפנות לתמיכה – הייתה בעיה בהתחלת השימוש ב-Tap to Pay ב-iPhone";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "כדי להשתמש באפליקציה, יש לפנות לבעלי האתר כדי לקבל הזמנה לאתר זה כמנהל חנות או כמנהל מערכת.";
+
+/* Text describing that only the site owner can upgrade the site's plan. */
+"Please contact the store owner to upgrade your plan." = "יש ליצור קשר עם בעלי החנות כדי לשדרג את התוכנית שלך.";
 
 /* Suggestion to be displayed when the user encounters a permission error during Jetpack setup */
 "Please contact your shop manager or administrator for help." = "יש ליצור קשר עם מנהל החנות או מנהל המערכת לקבלת עזרה.";
@@ -5075,6 +5118,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
 "Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "כדי להשתמש באפשרות Tap to Pay ב-iPhone, יש לנסות שוב ולקבל את תנאי השימוש של Tap to Pay ב-iPhone";
 
+/* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
+"Please try again, or contact support for assistance" = "יש לנסות שוב או לפנות לתמיכה לעזרה";
+
 /* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
 "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "אפשר לנסות שוב או לצאת מהמסך הזה ולחזור לחנות כדי לבדוק אם בפעם הקודמת יצאת ממסך התשלום בקופה לפני שהתהליך הסתיים.";
 
@@ -5164,6 +5210,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "מופעל באמצעות";
+
+/* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
+"Powered by AI. %1$@." = "מופעל באמצעות בינה מלאכותית. %1$@.";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "מופעל על ידי Automattic";
@@ -5336,11 +5385,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "קישור למוצר";
 
-/* Error message on the Order details view when the scanner cannot find a matching product */
-"Product not found. Failed to add product to order." = "המוצר לא נמצא. אין אפשרות להוסיף את המוצר להזמנה.";
+/* Error message when the scanner cannot find a matching product */
+"Product not found. Failed to add Product to Order." = "המוצר לא נמצא. אין אפשרות להוסיף את המוצר להזמנה.";
 
-/* Error message on the Order list view when the scanner cannot find a matching product and create a new order */
-"Product not found. Failed to create a New Order" = "המוצר לא נמצא. יצירת ההזמנה החדשה נכשלה";
+/* Error message when the scanner found a product but isn't purchasable. */
+"Product not purchasable. Failed to add Product to Order." = "המוצר הזה אינו לרכישה. אין אפשרות להוסיף את המוצר להזמנה.";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "המוצר פורסם";
@@ -5564,7 +5613,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility label. Indicates that an in-person refund is being processed */
 "Refunding payment" = "הנפקת החזר כספי על תשלום";
 
-/* Action button to regenerate message on the product sharing message generation screen */
+/* Action button to regenerate message on the product sharing message generation screen
+   Button title to regenerate product description with Jetpack AI. */
 "Regenerate" = "ייצור מחדש";
 
 /* Button in the view for adding or editing a coupon code. */
@@ -5719,10 +5769,10 @@ This part is the link to the website, and forms part of a longer sentence which 
    Retry action title
    Retry button on the error notice for the upgrade view
    Retry button title for the privacy screen notices
-   Retry button title on the Order details view whenthe scanner cannot find a matching product
-   Retry button title on the Order list view when the scanner cannot finda matching product and create a new order
+   Retry button title when the scanner cannot finda matching product and create a new order
    Retry the last action
-   Retry title on the notice action button */
+   Retry title on the notice action button
+   Title of the button to attempt a retry when fetching or purchasing plans fails. */
 "Retry" = "נסה שנית";
 
 /* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages.
@@ -5734,6 +5784,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "לנסות שוב את החיבור";
+
+/* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
+"Return to My Store" = "חזרה ל'חנות שלי'";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "להחזיר לשולח אם לא ניתן לשלוח את החבילה";
@@ -5972,6 +6025,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button on the stats dashboard that navigates user to the analytics hub */
 "See more" = "להציג עוד";
+
+/* Title for a link to view Woo Express plan details on the web, as a fallback. */
+"See plan details" = "להציג את פרטי התוכנית";
 
 /* Button to submit selection on the Select Categories screen when more than 1 item is selected. Reads like: Select 10 Categories */
 "Select %1$d Categories" = "לבחור ⁦%1$d⁩ קטגוריות";
@@ -6337,6 +6393,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "כתובת אתר צריכה להכיל לפחות 4 תווים.";
 
+/* Title of the expired WPCom plan alert */
+"Site plan expired" = "פג תוקפה של תוכנית האתר";
+
 /* Site security title feature on the Free Trial Summary Screen */
 "Site security" = "אבטחת אתרים";
 
@@ -6385,6 +6444,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The text on the placeholder overlay when there is issue syncing site plugins */
 "Something went wrong" = "משהו השתבש";
 
+/* Description of an unknown error after purchasing a plan */
+"Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "משהו השתבש במהלך הרכישה, אנחנו לא יכולים להבין אם תהליך התשלום הושלם או אם התוכנית של החנות שלך שודרגה.";
+
 /* Error message in the Add Edit Coupon screen when the creation of the coupon goes in error. */
 "Something went wrong while creating the coupon." = "משהו השתבש במהלך יצירת הקופון.";
 
@@ -6397,6 +6459,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
 "Something went wrong, please try again later." = "משהו השתבש, יש לנסות שוב מאוחר יותר.";
+
+/* Notice title when validating a coupon code fails. */
+"Something when wrong when validating your coupon code. Please try again" = "משהו השתבש במהלך אימות קוד הקופון שלך. יש לנסות שוב";
 
 /* Message of the alert when the user cannot create a store because they already created one before. */
 "Sorry, but you can only create one store. Your account is already associated with an active store." = "מצטערים, אבל באפשרותך ליצור חנות אחת בלבד. החשבון שלך כבר מקושר לחנות פעילה.";
@@ -6442,6 +6507,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Sorry, that username is unavailable." = "שם המשתמש אינו זמין.";
+
+/* Info message when the user tries to add a couponthat is not applicated to the products */
+"Sorry, this coupon is not applicable to selected products." = "מצטערים, לא ניתן להחיל את הקופון הנוכחי על כל המוצרים שנבחרו.";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "אנו מתנצלים, לא ניתן היה לעבד תשלום זה";
@@ -6892,9 +6960,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on beta features screen to enable in-app purchases */
 "Test out in-app purchases as we get ready to launch" = "כדאי לבדוק את האפשרות לרכישה באפליקציה בזמן שאנחנו מתכוננים להשקה";
 
-/* Cell description on beta features screen to enable coupon management */
-"Test out managing coupons as we get ready to launch" = "כדאי לבדוק את האפשרות לניהול קופונים בזמן שאנחנו מתכוננים להשקה";
-
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "כדאי לבדוק את האפשרות להציג הרחבות בהזמנה בזמן שאנחנו מתכוננים להשקה";
 
@@ -6956,9 +7021,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "בכתובת האינטרנט חסר מארח חוקי.";
-
-/* Subtitle text in the store creation loading screen */
-"The Woo team is made up of over 350 talented individuals, distributed across 30+ countries." = "הצוות של WooCommerce בנוי מעד 350 אנשים מוכשרים שנמצאים במעל 30 ארצות.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "הסכום לא נתמך על ידי Tap to Pay ב-iPhone – יש לנסות קורא כרטיסים נפרד או אמצעי תשלום שונה.";
@@ -7180,9 +7242,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "לא ניתן היה ליצור את הסוג.";
-
-/* Subtitle text in the store creation loading screen */
-"There are more than 150 WooCommerce meetups held all over the world! A great way to meet fellow store owners." = "מעל 150 מפגשים של WooCommerce מתקיימים ברחבי העולם! דרך נהדרת לפגוש בעלי חנויות עמיתים.";
 
 /* Error message when because there are pending requirements in the merchant's In-Person Payments account. %1$d will contain the localized deadline (e.g. August 11, 2021) */
 "There are pending requirements for your account. Please complete those requirements by %1$@ to keep accepting In-Person Payments." = "יש דרישות ממתינות עבור החשבון שלך. כדי להמשיך לקבל תשלומים באופן אישי, עליך להשלים את הדרישות הללו עד %1$@.";
@@ -7535,6 +7594,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "יש לנסות להתקין שוב";
 
+/* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
+"Try Payment Again" = "לנסות את התשלום שוב";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "לנסות גביית תשלום";
 
@@ -7638,6 +7700,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when location services is not enabled for this application. */
 "Unable to access Location Services - please enable Location Services and try again" = "לא ניתן לגשת לשירותי המיקום – יש להפעיל את שירותי המיקום ולנסות שוב";
+
+/* Info message when the user tries to add a couponthat is not applicated to the products */
+"Unable to add coupon." = "לא ניתן להוסיף קופון.";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
 "Unable to add note to order #%1$d" = "אין אפשרות להוסיף פתק להזמנה ⁦%1$d⁩#";
@@ -7805,9 +7870,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "לא ניתן היה לעדכן את המחיר";
 
-/* Text describing that is not possible to upgrade the site's plan. */
-"Unable to upgrade" = "לא ניתן לשדרג";
-
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "לא ניתן לאמת תשלומים באופן אישי בחנות זו";
 
@@ -7968,6 +8030,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "מעדכן את המוצר...";
 
+/* Button to upgrade a WPCom plan on the expired WPCom plan alert
+   Navigation title for the Upgrades screen */
+"Upgrade" = "לשדרג";
+
 /* Title for the WebView when upgrading a free trial plan
    Title on the button to upgrade a free trial plan. */
 "Upgrade Now" = "זה הזמן לשדרג";
@@ -8020,6 +8086,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the Use as Shipping Address switch in the Address form */
 "Use as Shipping Address" = "להשתמש בתור כתובת משלוח";
+
+/* The message for the Write with AI tooltip */
+"Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "ניתן להשתמש בכלי שלנו, שמופעל על ידי בינה מלאכותית, כדי ליצור תיאורי מוצרים במהירות. אפשר פשוט להזין מילות מפתח ואנחנו נדאג לכל השאר!";
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "להשתמש בסיסמה כדי להתחבר";
@@ -8213,6 +8282,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
 "We couldn't connect your reader" = "לא הצלחנו לחבר את הקורא";
 
+/* Title for the error notice when we couldn't finda coupon with the given code to add to an order. */
+"We couldn't find a coupon with that code. Please try again" = "לא הצלחנו למצוא קופון עם הקוד הזה. יש לנסות שוב";
+
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "לא ניתן לטעון את הנתונים שלך";
 
@@ -8240,8 +8312,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "נתקלנו בבעיה בטעינת הנתונים האנליטיים";
 
+/* Error description displayed when a payment fails when attempting to purchase a plan. */
+"We encountered an error confirming your payment." = "נתקלנו בשגיאה בעת אישור התשלום";
+
+/* Error message displayed when we're unable to fetch In-App Purchases plans from the server. */
+"We encountered an error loading plan information" = "נתקלנו בשגיאה בעת הטעינה של פרטי התוכנית";
+
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "We found that the store has already launched." = "בדקנו וראינו שהחנות כבר הושקה.";
+
+/* Message on the expired WPCom plan alert */
+"We have paused your store, but you can continue by picking a plan that suits you best." = "השהינו את החנות שלך, אבל באפשרותך להמשיך על ידי בחירת התוכנית שמתאימה לך.";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "שינינו מעט את הכתובת שהוזנה. אם הכתובת נכונה, אנחנו מציעים להשתמש בכתובת המומלצת כדי לוודא שהיעד למשלוח מדויק.";
@@ -8407,8 +8488,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
-/* Title text in the store creation loading screen */
-"Woo! We are creating your store" = "WooCommerce! אנחנו יוצרים את החנות שלך";
+/* Text shown when a plan upgrade has been successfully purchased. */
+"Woo! You’re off to a great start!" = "WooCommerce! התחלה נהדרת!";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -8455,13 +8536,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "לעבוד איתנו";
 
-/* Product description AI row on Product form screen when the feature is available. */
-"Write it for me" = "לכתוב עבורי";
-
 /* Title in the product description AI generator view. */
-"Write product description" = "לכתוב תיאור למוצר";
+"Write a description" = "לכתוב תיאור";
 
-/* Action button to generate message on the product sharing message generation screen */
+/* Action button to generate message on the product sharing message generation screen
+   Button title to generate product description with Jetpack AI.
+   Product description AI row on Product form screen when the feature is available.
+   The title of the Write with AI tooltip */
 "Write with AI" = "לכתוב באמצעות בינה מלאכותית";
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
@@ -8525,6 +8606,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "אפשר לנהל בצורה מהירה ונוחה.";
 
+/* Instructions guiding the merchant to manage a site's plan upgrade. */
+"You can manage your subscription in your iPhone Settings → Your Name → Subscriptions" = "ניתן לנהל את המינוי דרך המקטע iPhone Settings (הגדרות iPhone) ← ‏השם שלך ← Subscriptions (מינויים)";
+
 /* The info of the shipping labels top banner in order details */
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "כעת אפשר ליצור תוויות משלוח לכל ההזמנות הפיזיות ישירות מהמכשיר שלך באמצעות התוסף החינמי WooCommerce Shipping. יש להקיש על 'ליצור תווית משלוח' כדי לנסות את אפשרות הביתא שלנו!";
 
@@ -8548,6 +8632,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "לא ניתן להשתמש בכתובת אימייל זו להרשמה. ספק זה חוסם חלק מהאימיילים שלנו. יש להשתמש בספק אימייל אחר.";
+
+/* Text describing that is not possible to upgrade the site's plan. */
+"You can’t upgrade because you are not the store owner" = "אין לך אפשרות לשדרג מאחר שאינך הבעלים של החנות";
 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "כרגע הקופונים מושבתים בחנות הזאת. יש להפעיל את הקופונים כדי להתחיל.";
@@ -8575,6 +8662,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "נראה שהתקנת תוסף למכשירים ניידים מ-DudaMobile שמונע מהאפליקציה להתחבר לבלוג שלך";
+
+/* Subtitle text in the store creation loading screen */
+"You will be notified once the store is ready! Sit back, relax, and let us work our magic while sharing helpful tips. 🔮" = "אנחנו נשלח לך הודעה כאשר החנות מוכנה! אפשר לשבת בנוח ולהמתין, אנחנו נפעיל את הקסמים שלנו ונשתף כמה עצות שימושיות. 🔮";
 
 /* Message of the alert when the user dismisses the store creation flow. */
 "You will lose all your store information." = "הפרטים של החנות שלך לא יישמרו.";
@@ -8624,6 +8714,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
 "Your plan" = "התוכנית שלך";
 
+/* Additional text shown when a plan upgrade has been successfully purchased. %1$@ is replaced by the plan name, and should be included in the translated string. */
+"Your purchase is complete and you're on the %1$@ plan." = "הרכישה הושלמה וכעת הצטרפת לתוכנית %1$@.";
+
 /* Label that displays when an optional software update is happening */
 "Your reader will automatically restart and reconnect after the update is complete." = "לאחר השלמת העדכון, קורא הכרטיסים יופעל מחדש באופן אוטומטי ויתחבר שוב";
 
@@ -8654,6 +8747,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info details for an expired plan */
 "Your subscription has ended and you have limited access to all the features." = "המינוי שלך הסתיים ולכן הגישה שלך לכל האפשרויות הוגבלה.";
 
+/* Error description displayed when plan activation fails after purchasing a plan. */
+"Your subscription is active, but there was an error activating the plan on your store." = "המינוי שלך פעיל, אבל אירעה שגיאה בהפעלת התוכנית בחנות שלך.";
+
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "בקשת התמיכה הגיעה בשלום אל תיבת הדואר שלנו. אנחנו נשלח מענה באימייל בהקדם האפשרי.";
 
@@ -8662,6 +8758,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "יש להתקין את ההרחבה בחינם WooCommerce Payments בחנות שלך כדי לקבל תשלומים באופן אישי.";
+
+/* Title for the progress screen shown after an In-App Purchase for a Woo Express plan, while we upgrade the site. */
+"You’re almost there" = "כמעט סיימת";
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name. */
 "You’re almost there! Please finish setting up %1$@ to start accepting In-Person Payments." = "כמעט סיימת! על מנת להתחיל לקבל תשלומים באופן אישי, יש לסיים את ההגדרה של %1$@.";

@@ -107,6 +107,7 @@ final class DashboardViewController: UIViewController {
     private var announcementView: UIView?
 
     private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
+    private var localAnnouncementModalHostingController: ConstraintsUpdatingHostingController<LocalAnnouncementModal_UIKit>?
 
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
@@ -169,6 +170,7 @@ final class DashboardViewController: UIViewController {
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
         observeModalJustInTimeMessages()
+        observeLocalAnnouncement()
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
@@ -445,10 +447,12 @@ private extension DashboardViewController {
 
     func observeShowWebViewSheet() {
         viewModel.$showWebViewSheet.sink { [weak self] viewModel in
-            guard let self = self else { return }
-            guard let viewModel = viewModel else { return }
-            self.dismissModalJustInTimeMessage()
-            self.openWebView(viewModel: viewModel)
+            guard let self else { return }
+            guard let viewModel else { return }
+            Task { @MainActor in
+                await self.dismissPossibleModals()
+                self.openWebView(viewModel: viewModel)
+            }
         }
         .store(in: &subscriptions)
     }
@@ -500,6 +504,27 @@ private extension DashboardViewController {
             }
         }
         coordinator.start()
+    }
+
+    /// Invoked when the local announcement CTA is tapped.
+    private func onLocalAnnouncementAction(_ announcement: LocalAnnouncement) {
+        switch announcement {
+            case .productDescriptionAI:
+                startAddProductFlowFromProductDescriptionAIModal()
+        }
+    }
+
+    /// Starts the Add Product flow to showcase the product description AI feature.
+    private func startAddProductFlowFromProductDescriptionAIModal() {
+        AppDelegate.shared.tabBarController?.navigateToTabWithNavigationController(.products, animated: true) { [weak self] navigationController in
+            guard let self else { return }
+            let coordinator = AddProductCoordinator(siteID: self.siteID,
+                                                    source: .productDescriptionAIAnnouncementModal,
+                                                    sourceView: nil,
+                                                    sourceNavigationController: navigationController,
+                                                    isFirstProduct: true)
+            coordinator.start()
+        }
     }
 
     // This is used so we have a specific type for the view while applying modifiers.
@@ -571,8 +596,8 @@ private extension DashboardViewController {
             }
 
             Task { @MainActor [weak self] in
-                guard let self = self else { return }
-                self.dismissModalJustInTimeMessage()
+                guard let self else { return }
+                await self.dismissPossibleModals()
                 let modalController = ConstraintsUpdatingHostingController(
                     rootView: JustInTimeMessageModal_UIKit(
                         onDismiss: {
@@ -589,12 +614,59 @@ private extension DashboardViewController {
         .store(in: &subscriptions)
     }
 
-    private func dismissModalJustInTimeMessage() {
+    private func observeLocalAnnouncement() {
+        viewModel.$localAnnouncementViewModel
+            .compactMap { $0 }
+            .asyncMap { [weak self] viewModel in
+                await self?.dismissPossibleModals()
+                viewModel.actionTapped = { [weak self] announcement in
+                    self?.onLocalAnnouncementAction(announcement)
+                }
+                return ConstraintsUpdatingHostingController(
+                    rootView: LocalAnnouncementModal_UIKit(
+                        onDismiss: {
+                            self?.dismiss(animated: true)
+                        },
+                        viewModel: viewModel))
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] modalController in
+                guard let self else { return }
+                self.localAnnouncementModalHostingController = modalController
+                modalController.view.backgroundColor = .clear
+                modalController.modalPresentationStyle = .overFullScreen
+                self.present(modalController, animated: true)
+            }
+            .store(in: &subscriptions)
+    }
+
+    private func dismissPossibleModals() async {
+        await dismissModalJustInTimeMessage()
+        await dismissLocalAnnouncementModal()
+    }
+
+    private func dismissModalJustInTimeMessage() async {
         guard modalJustInTimeMessageHostingController != nil else {
             return
         }
-        dismiss(animated: true)
-        self.modalJustInTimeMessageHostingController = nil
+        await withCheckedContinuation { continuation in
+            dismiss(animated: true) { [weak self] in
+                self?.modalJustInTimeMessageHostingController = nil
+                continuation.resume()
+            }
+        }
+    }
+
+    private func dismissLocalAnnouncementModal() async {
+        guard localAnnouncementModalHostingController != nil else {
+            return
+        }
+        await withCheckedContinuation { continuation in
+            dismiss(animated: true) { [weak self] in
+                self?.localAnnouncementModalHostingController = nil
+                continuation.resume()
+            }
+        }
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)

@@ -1,8 +1,24 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+14.4
+-----
+
+
+14.4
+-----
+
+
 14.3
 -----
+- [*] SKU Scanner: Add the SKU to the error message after a failure. [https://github.com/woocommerce/woocommerce-ios/pull/10085]
 - [*] Add URL route handler to open the `My Store` tab when a deeplink to `/mobile` is opened, instead of bouncing back to Safari [https://github.com/woocommerce/woocommerce-ios/pull/10077]
+- [Internal] Performance: Replaces the endpoint used to load Top Performers on the My Store tab, for faster loading. [https://github.com/woocommerce/woocommerce-ios/pull/10113]
+- [*] A feedback banner is added for product description AI and product sharing AI sheets. [https://github.com/woocommerce/woocommerce-ios/pull/10102]
+- [*] Product creation: the product type row is now editable when creating a product. [https://github.com/woocommerce/woocommerce-ios/pull/10087]
+- [***] Store creation: US users can upgrade Woo Express free trial stores via In-App Purchase [https://github.com/woocommerce/woocommerce-ios/pull/10123]
+- [*] Orders: Users can can now add multiple coupons to orders (not only one) [https://github.com/woocommerce/woocommerce-ios/pull/10126]
+- [*] Free trial: Local notification after 24 hours since Free trial subscription time to remind to purchase plan. [https://github.com/woocommerce/woocommerce-ios/pull/10133, https://github.com/woocommerce/woocommerce-ios/pull/10130]
+- [**] Product description AI: an announcement modal is shown for WPCOM stores about the feature, and a new CTA "Write with AI" is more discoverable in the product form with a tooltip. [https://github.com/woocommerce/woocommerce-ios/pull/10142]
 
 14.2
 -----

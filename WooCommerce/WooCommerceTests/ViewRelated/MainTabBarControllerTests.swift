@@ -470,6 +470,27 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual("product", analyticsProvider.receivedProperties[safe: 0]?["type"] as? String)
         assertEqual("product", analyticsProvider.receivedProperties[safe: 1]?["type"] as? String)
     }
+
+    func test_navigateToTabWithNavigationController_returns_UINavigationController_of_the_newly_selected_tab() throws {
+        // Given
+        stores.updateDefaultStore(storeID: 134)
+
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        let navigationController = waitFor { promise in
+            tabBarController.navigateToTabWithNavigationController(.products, animated: false) { navigationController in
+                promise(navigationController)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(tabBarController.selectedIndex, WooTab.products.visibleIndex())
+        XCTAssertEqual(tabBarController.selectedViewController, navigationController)
+    }
 }
 
 private extension MainTabBarController {

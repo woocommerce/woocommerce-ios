@@ -750,6 +750,10 @@ public enum WooAnalyticsStat: String {
     case productSharingAIMessageGenerated = "product_sharing_ai_message_generated"
     case productSharingAIMessageGenerationFailed = "product_sharing_ai_message_generation_failed"
 
+    // MARK: Product AI Feedback
+    //
+    case productAIFeedback = "product_ai_feedback"
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"
@@ -969,6 +973,11 @@ public enum WooAnalyticsStat: String {
     case privacyChoicesBannerPresented = "privacy_choices_banner_presented"
     case privacyChoicesSettingsButtonTapped = "privacy_choices_banner_settings_button_tapped"
     case privacyChoicesSaveButtonTapped = "privacy_choices_banner_save_button_tapped"
+
+    // MARK: Local Announcement
+    case localAnnouncementDisplayed = "local_announcement_displayed"
+    case localAnnouncementCallToActionTapped = "local_announcement_cta_tapped"
+    case localAnnouncementDismissTapped = "local_announcement_dismissed"
 }
 
 public extension WooAnalyticsStat {

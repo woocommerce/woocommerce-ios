@@ -33,6 +33,7 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
         .onDisappear() {
             arcTimer?.invalidate()
         }
+        .accessibilityLabel(Localization.inProgressAccessibilityLabel)
     }
 
     private func progressCircleView() -> some View {
@@ -85,5 +86,11 @@ private extension IndefiniteCircularProgressViewStyle {
 
         static let threeQuarterRotation: Angle = .radians((9 * Double.pi)/6)
         static let fullRotation: Angle = .radians(Double.pi * 2)
+    }
+
+    enum Localization {
+        static let inProgressAccessibilityLabel = NSLocalizedString(
+            "In progress",
+            comment: "Accessibility label for an indeterminate loading indicator")
     }
 }

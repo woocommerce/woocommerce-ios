@@ -113,6 +113,10 @@ final class DashboardViewController: UIViewController {
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
 
+    /// Hosting controller for the banner to highlight the Blaze feature.
+    ///
+    private var blazeBannerHostingController: BlazeBannerHostingController?
+
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var isJetpackBenefitsBannerShown: Bool {
@@ -786,11 +790,32 @@ extension DashboardViewController {
     }
 
     func showBlazeBanner(for site: Site) {
-        // TODO
+        guard blazeBannerHostingController == nil else {
+            return
+        }
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let hostingController = BlazeBannerHostingController(site: site, entryPoint: .myStore, containerViewController: self, dismissHandler: { [weak self] in
+            self?.viewModel.hideBlazeBanner()
+        })
+        guard let bannerView = hostingController.view else {
+            return
+        }
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        addViewBelowHeaderStackView(contentView: bannerView)
+        addChild(hostingController)
+        hostingController.didMove(toParent: self)
+        blazeBannerHostingController = hostingController
     }
 
     func removeBlazeBanner() {
-        // TODO
+        guard let blazeBannerHostingController,
+              blazeBannerHostingController.parent == self else { return }
+        blazeBannerHostingController.willMove(toParent: nil)
+        blazeBannerHostingController.view.removeFromSuperview()
+        blazeBannerHostingController.removeFromParent()
+        self.blazeBannerHostingController = nil
     }
 }
 

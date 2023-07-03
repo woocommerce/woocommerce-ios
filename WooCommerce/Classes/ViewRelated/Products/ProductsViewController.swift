@@ -869,7 +869,7 @@ private extension ProductsViewController {
             .sink { [weak self] shouldShow in
                 guard let self else { return }
                 guard !self.hasErrorLoadingData else {
-                    return // ignores Blaze banner if has error fetching data.
+                    return self.hideBlazeBanner()
                 }
                 if shouldShow {
                     self.showBlazeBanner()

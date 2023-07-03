@@ -78,14 +78,19 @@ private extension BlazeBannerHostingController {
 /// View to highlight the Blaze feature.
 ///
 struct BlazeBanner: View {
-    var showsTopDivider: Bool = false
-    var showsBottomSpacer: Bool = false
+    private let showsTopDivider: Bool
+    private let showsBottomSpacer: Bool
 
     /// Closure to be triggered when the Try Blaze now button is tapped.
     var onTryBlaze: () -> Void = {}
 
     /// Closure to be triggered when the dismiss button is tapped.
     var onDismiss: () -> Void = {}
+
+    init(showsTopDivider: Bool = false, showsBottomSpacer: Bool = false) {
+        self.showsTopDivider = showsTopDivider
+        self.showsBottomSpacer = showsBottomSpacer
+    }
 
     var body: some View {
         VStack(spacing: 0) {

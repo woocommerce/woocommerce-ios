@@ -103,7 +103,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkIfStoreHasProducts(_, completion):
-                completion(.success(true))
+                completion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -139,7 +139,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkIfStoreHasProducts(_, completion):
-                completion(.success(true))
+                completion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -181,7 +181,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkIfStoreHasProducts(_, completion):
-                completion(.success(false))
+                completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -201,7 +201,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .checkIfStoreHasProducts(_, completion):
-                completion(.success(false))
+                completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }

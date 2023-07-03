@@ -348,7 +348,7 @@ final class ProductListViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        userDefaults[.hasDismissedBlazeBanner] = true
+        userDefaults[.hasDismissedBlazeBanner] = ["\(sampleSiteID)": true]
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
                                              userDefaults: userDefaults,
                                              blazeEligibilityChecker: checker)
@@ -377,6 +377,7 @@ final class ProductListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowBlazeBanner)
-        XCTAssertEqual(userDefaults[.hasDismissedBlazeBanner] as? Bool, true)
+        let dictionary = try XCTUnwrap(userDefaults[.hasDismissedBlazeBanner] as? [String: Bool])
+        XCTAssertEqual(dictionary["\(sampleSiteID)"], true)
     }
 }

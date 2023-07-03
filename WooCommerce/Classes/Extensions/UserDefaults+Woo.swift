@@ -97,3 +97,32 @@ extension UserDefaults {
         }
     }
 }
+
+// MARK: - Check for Blaze banner visibility
+extension UserDefaults {
+    /// Checks of the Blaze banner has been dismissed for a site.
+    /// - Parameters:
+    ///     - siteID: ID of the site to be checked for the Blaze banner visibility.
+    ///
+    func hasDismissedBlazeBanner(for siteID: Int64) -> Bool {
+        let hasDismissed = self[.hasDismissedBlazeBanner] as? [String: Bool]
+        let idAsString = "\(siteID)"
+        guard hasDismissed?[idAsString] == nil else {
+            return false
+        }
+        return true
+    }
+
+    /// Set the Blaze banner to be dismissed for a site.
+    /// - Parameters:
+    ///     - siteID: ID of the site whose Blaze banner to be dismissed.
+    ///
+    func setBlazeBannerDismissed(for siteID: Int64) {
+        let idAsString = "\(siteID)"
+        if var hasDismissed = self[.hasDismissedBlazeBanner] as? [String: Bool] {
+            hasDismissed[idAsString] = true
+        } else {
+            self[.hasDismissedBlazeBanner] = [idAsString: true]
+        }
+    }
+}

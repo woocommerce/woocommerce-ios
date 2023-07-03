@@ -207,32 +207,17 @@ final class DashboardViewModel {
 
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.
     ///
+    @MainActor
     private func syncProductsOnboarding(for siteID: Int64) async throws {
-        try await withCheckedThrowingContinuation { [weak self] continuation in
-            let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
-                switch result {
-                case .success(let isEligible):
-                    if isEligible {
-                        ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
+        let storeHasProduct = try await checkIfStoreHasProducts(siteID: siteID)
+        if storeHasProduct == false {
+            analytics.track(event: .ProductsOnboarding.storeIsEligible())
 
-                        self?.setProductsOnboardingBannerIfNeeded()
-                    }
+            setProductsOnboardingBannerIfNeeded()
+        }
 
-                    if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
-                        continuation.resume(returning: (()))
-                    } else {
-                        continuation.resume(throwing: ProductsOnboardingSyncingError.noContentToShow)
-                    }
-
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
-                    continuation.resume(throwing: error)
-                }
-            }
-
-            Task { @MainActor [weak self] in
-                self?.stores.dispatch(action)
-            }
+        guard announcementViewModel is ProductsOnboardingAnnouncementCardViewModel else {
+            throw ProductsOnboardingSyncingError.noContentToShow
         }
     }
 
@@ -297,7 +282,10 @@ final class DashboardViewModel {
         storeOnboardingViewModel.$shouldShowInDashboard
             .assign(to: &$showOnboarding)
     }
+}
 
+// MARK: - Blaze banner
+extension DashboardViewModel {
     /// Checks for Blaze eligibility and user defaults to show the banner if necessary.
     ///
     @MainActor
@@ -306,11 +294,27 @@ final class DashboardViewModel {
     }
 
     private func isBlazeBannerVisible() async -> Bool {
-        let isSiteEligible = await blazeEligibilityChecker.isSiteEligible()
-        guard isSiteEligible else {
+        async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
+        async let storeHasProducts = (try? checkIfStoreHasProducts(siteID: siteID)) ?? false
+        guard (await isSiteEligible, await storeHasProducts) == (true, true) else {
             return false
         }
         return userDefaults.hasDismissedBlazeBanner(for: siteID)
+    }
+
+    @MainActor
+    private func checkIfStoreHasProducts(siteID: Int64) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .success(let hasProducts):
+                    continuation.resume(returning: hasProducts)
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard — Error fetching products to show the Blaze banner: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
     }
 
     /// Hides the banner and updates the user defaults to not show the banner again.

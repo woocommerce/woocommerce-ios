@@ -5,7 +5,6 @@ import struct Yosemite.Site
 final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
     private let site: Site
     private let containerViewController: UIViewController
-    private let dismissHandler: () -> Void
 
     init(site: Site,
          entryPoint: BlazeBanner.EntryPoint,
@@ -14,7 +13,6 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
          dismissHandler: @escaping () -> Void) {
         self.site = site
         self.containerViewController = containerViewController
-        self.dismissHandler = dismissHandler
         super.init(rootView: BlazeBanner(showsTopDivider: entryPoint.shouldShowTopDivider,
                                          showsBottomSpacer: entryPoint.shouldShowBottomSpacer))
 

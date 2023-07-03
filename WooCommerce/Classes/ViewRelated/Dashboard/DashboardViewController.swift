@@ -174,6 +174,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
+        observeBlazeBannerVisibility()
         configureFreeTrialBannerPresenter()
         presentPrivacyBannerIfNeeded()
 
@@ -762,6 +763,34 @@ private extension DashboardViewController {
     ///
     func presentPrivacyBannerIfNeeded() {
         privacyBannerPresenter.presentIfNeeded(from: self)
+    }
+}
+
+// MARK: - Blaze banner
+extension DashboardViewController {
+    func observeBlazeBannerVisibility() {
+        Publishers.CombineLatest(viewModel.$showBlazeBanner.removeDuplicates(),
+                                 ServiceLocator.stores.site.compactMap { $0 }.removeDuplicates())
+        .sink { [weak self] showsBlazeBanner, site in
+            guard let self else { return }
+            if showsBlazeBanner {
+                self.showBlazeBanner(for: site)
+            } else {
+                self.removeBlazeBanner()
+            }
+        }.store(in: &subscriptions)
+
+        Task { @MainActor in
+            await viewModel.updateBlazeBannerVisibility()
+        }
+    }
+
+    func showBlazeBanner(for site: Site) {
+        // TODO
+    }
+
+    func removeBlazeBanner() {
+        // TODO
     }
 }
 

@@ -210,11 +210,12 @@ final class DashboardViewModel {
     @MainActor
     private func syncProductsOnboarding(for siteID: Int64) async throws {
         let storeHasProduct = try await checkIfStoreHasProducts(siteID: siteID)
-        if storeHasProduct == false {
-            analytics.track(event: .ProductsOnboarding.storeIsEligible())
-
-            setProductsOnboardingBannerIfNeeded()
+        guard storeHasProduct == false else {
+            return
         }
+
+        analytics.track(event: .ProductsOnboarding.storeIsEligible())
+        setProductsOnboardingBannerIfNeeded()
 
         guard announcementViewModel is ProductsOnboardingAnnouncementCardViewModel else {
             throw ProductsOnboardingSyncingError.noContentToShow

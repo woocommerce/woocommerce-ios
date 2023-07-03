@@ -940,6 +940,9 @@ private extension DashboardViewController {
             group.addTask { [weak self] in
                 await self?.viewModel.reloadStoreOnboardingTasks()
             }
+            group.addTask { [weak self] in
+                await self?.viewModel.updateBlazeBannerVisibility()
+            }
         }
     }
 }

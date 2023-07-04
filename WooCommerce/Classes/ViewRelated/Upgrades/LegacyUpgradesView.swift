@@ -10,7 +10,7 @@ final class LegacyUpgradesHostingController: UIHostingController<LegacyUpgradesV
     private let authentication: Authentication = ServiceLocator.authenticationManager
 
     init(siteID: Int64) {
-        let upgradesViewModel = UpgradesViewModel(siteID: siteID)
+        let upgradesViewModel = LegacyUpgradesViewModel(siteID: siteID)
         let subscriptionsViewModel = SubscriptionsViewModel()
 
         super.init(rootView: LegacyUpgradesView(upgradesViewModel: upgradesViewModel, subscriptionsViewModel: subscriptionsViewModel))
@@ -32,12 +32,12 @@ final class LegacyUpgradesHostingController: UIHostingController<LegacyUpgradesV
 struct LegacyUpgradesView: View {
     @Environment(\.dismiss) var dismiss
 
-    @ObservedObject var upgradesViewModel: UpgradesViewModel
+    @ObservedObject var upgradesViewModel: LegacyUpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
     var supportHandler: () -> Void = {}
 
-    init(upgradesViewModel: UpgradesViewModel,
+    init(upgradesViewModel: LegacyUpgradesViewModel,
          subscriptionsViewModel: SubscriptionsViewModel) {
         self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
@@ -183,7 +183,7 @@ private extension WooWPComPlan {
 
 struct LegacyUpgradesView_Preview: PreviewProvider {
     static var previews: some View {
-        UpgradesView(upgradesViewModel: UpgradesViewModel(siteID: 0),
+        LegacyUpgradesView(upgradesViewModel: LegacyUpgradesViewModel(siteID: 0),
                      subscriptionsViewModel: SubscriptionsViewModel())
     }
 }

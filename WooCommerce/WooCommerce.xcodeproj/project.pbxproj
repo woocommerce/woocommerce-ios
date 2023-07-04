@@ -561,6 +561,8 @@
 		0331A7002A334982001D2C2C /* MockInAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02863F6E2925FC29006A06AA /* MockInAppPurchasesForWPComPlansManager.swift */; };
 		0331A7552A3A1A4C001D2C2C /* WooPlanFeatureGroupRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7542A3A1A4C001D2C2C /* WooPlanFeatureGroupRow.swift */; };
 		0331A7592A3A3D52001D2C2C /* WooPlanFeatureBenefitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7582A3A3D52001D2C2C /* WooPlanFeatureBenefitsView.swift */; };
+		0338454F2A54399500D50795 /* LegacyUpgradeViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0338454E2A54399400D50795 /* LegacyUpgradeViewState.swift */; };
+		033845512A5439D700D50795 /* LegacyUpgradesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033845502A5439D700D50795 /* LegacyUpgradesViewModel.swift */; };
 		03582BE2299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03582BE1299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift */; };
 		035BA3A8291000E90056F0AD /* JustInTimeMessageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BA3A7291000E90056F0AD /* JustInTimeMessageViewModelTests.swift */; };
 		035C6DEB273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */; };
@@ -2922,6 +2924,8 @@
 		032E481C2982996E00469D92 /* CardPresentModalBuiltInConnectingFailedNonRetryable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingFailedNonRetryable.swift; sourceTree = "<group>"; };
 		0331A7542A3A1A4C001D2C2C /* WooPlanFeatureGroupRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanFeatureGroupRow.swift; sourceTree = "<group>"; };
 		0331A7582A3A3D52001D2C2C /* WooPlanFeatureBenefitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanFeatureBenefitsView.swift; sourceTree = "<group>"; };
+		0338454E2A54399400D50795 /* LegacyUpgradeViewState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyUpgradeViewState.swift; sourceTree = "<group>"; };
+		033845502A5439D700D50795 /* LegacyUpgradesViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyUpgradesViewModel.swift; sourceTree = "<group>"; };
 		03582BE1299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectOrderPaymentAnalytics.swift; sourceTree = "<group>"; };
 		035BA3A7291000E90056F0AD /* JustInTimeMessageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageViewModelTests.swift; sourceTree = "<group>"; };
 		035C6DEA273EA12D00F70406 /* SoftwareUpdateTypeProperty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareUpdateTypeProperty.swift; sourceTree = "<group>"; };
@@ -7531,6 +7535,8 @@
 			children = (
 				68709D3F2A2EE2DC00A7FA6C /* UpgradesViewModel.swift */,
 				680BA5992A4C377900F5559D /* UpgradeViewState.swift */,
+				033845502A5439D700D50795 /* LegacyUpgradesViewModel.swift */,
+				0338454E2A54399400D50795 /* LegacyUpgradeViewState.swift */,
 				68E6749E2A4DA01C0034BA1E /* WooWPComPlan.swift */,
 				68E674A02A4DA0B30034BA1E /* InAppPurchasesError.swift */,
 			);
@@ -11573,6 +11579,7 @@
 				26C6E8E026E2B7BD00C7BB0F /* CountrySelectorViewModel.swift in Sources */,
 				0285BF7022FBD91C003A2525 /* TopPerformersSectionHeaderView.swift in Sources */,
 				03E471D62942222E001A58AD /* CardPresentModalBuiltInFollowReaderInstructions.swift in Sources */,
+				033845512A5439D700D50795 /* LegacyUpgradesViewModel.swift in Sources */,
 				B60B5026292D308A00178C26 /* AnalyticsTimeRangeCard.swift in Sources */,
 				E138D4FC269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift in Sources */,
 				039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */,
@@ -11901,6 +11908,7 @@
 				4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */,
 				DE4B3B5626A68DD000EEF2D8 /* View+InsetPaddings.swift in Sources */,
 				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
+				0338454F2A54399500D50795 /* LegacyUpgradeViewState.swift in Sources */,
 				CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */,
 				025B174A237AA49D00C780B4 /* Product+ProductForm.swift in Sources */,
 				DEC0293729C418FF00FD0E2F /* ApplicationPasswordAuthorizationWebViewController.swift in Sources */,

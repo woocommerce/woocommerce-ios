@@ -11,12 +11,21 @@ class ProductListViewModel {
 
     let siteID: Int64
     private let stores: StoresManager
+    private let userDefaults: UserDefaults
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+
+    @Published private(set) var shouldShowBlazeBanner = false
 
     private(set) var selectedProducts: Set<Product> = .init()
 
-    init(siteID: Int64, stores: StoresManager) {
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         userDefaults: UserDefaults = .standard,
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.stores = stores
+        self.userDefaults = userDefaults
+        self.blazeEligibilityChecker = blazeEligibilityChecker
     }
 
     var selectedProductsCount: Int {
@@ -149,5 +158,30 @@ class ProductListViewModel {
             }
         }
         stores.dispatch(batchAction)
+    }
+}
+
+// MARK: - Blaze banner visibility
+extension ProductListViewModel {
+    /// Checks for Blaze eligibility and user defaults to show the banner if necessary.
+    ///
+    @MainActor
+    func updateBlazeBannerVisibility() async {
+        shouldShowBlazeBanner = await isBlazeBannerVisible()
+    }
+
+    private func isBlazeBannerVisible() async -> Bool {
+        let isSiteEligible = await blazeEligibilityChecker.isSiteEligible()
+        guard isSiteEligible else {
+            return false
+        }
+        return userDefaults.hasDismissedBlazeBanner(for: siteID)
+    }
+
+    /// Hides the banner and updates the user defaults to not show the banner again.
+    ///
+    func hideBlazeBanner() {
+        shouldShowBlazeBanner = false
+        userDefaults.setBlazeBannerDismissed(for: siteID)
     }
 }

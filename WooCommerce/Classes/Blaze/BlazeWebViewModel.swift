@@ -8,6 +8,10 @@ enum BlazeSource {
     case menu
     /// From the product more menu.
     case productMoreMenu
+    /// From the product list.
+    case productList
+    /// From the My Store tab.
+    case myStore
 }
 
 /// View model for Blaze webview.
@@ -24,13 +28,16 @@ final class BlazeWebViewModel {
     private let source: BlazeSource
     private let site: Site
     private let productID: Int64?
+    private let onCampaignCreated: (() -> Void)?
 
     init(source: BlazeSource,
          site: Site,
-         productID: Int64?) {
+         productID: Int64?,
+         onCampaignCreated: (() -> Void)? = nil) {
         self.source = source
         self.site = site
         self.productID = productID
+        self.onCampaignCreated = onCampaignCreated
         self.initialURL = {
             let siteURL = site.url.trimHTTPScheme()
             let urlString: String = {
@@ -73,6 +80,7 @@ extension BlazeWebViewModel: AuthenticatedWebViewModel {
         if currentStep == Constants.completionStep {
             ServiceLocator.analytics.track(event: .Blaze.blazeFlowCompleted(source: source, step: currentStep))
             isCompleted = true
+            onCampaignCreated?()
         }
     }
 
@@ -115,6 +123,10 @@ private extension BlazeSource {
             return "menu"
         case .productMoreMenu:
             return "product_more_menu"
+        case .productList:
+            return "product_list"
+        case .myStore:
+            return "my_store"
         }
     }
 }

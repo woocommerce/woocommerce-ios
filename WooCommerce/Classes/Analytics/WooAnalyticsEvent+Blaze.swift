@@ -46,6 +46,12 @@ extension WooAnalyticsEvent {
                                            Key.step: step.analyticsValue],
                               error: error)
         }
+
+        /// Tracked when the Blaze banner is dismissed.
+        static func blazeBannerDismissed(entryPoint: BlazeBanner.EntryPoint) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeBannerDismissed,
+                              properties: [Key.source: entryPoint.blazeSource.analyticsValue])
+        }
     }
 }
 
@@ -83,6 +89,10 @@ private extension BlazeSource {
             return "menu"
         case .productMoreMenu:
             return "product_more_menu"
+        case .productList:
+            return "product_list"
+        case .myStore:
+            return "my_store"
         }
     }
 }

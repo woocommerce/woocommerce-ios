@@ -619,6 +619,7 @@
 		03BB9EA5292E2D0C00251E9E /* CardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */; };
 		03BB9EA7292E50B600251E9E /* CardPresentModalSelectSearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BB9EA6292E50B600251E9E /* CardPresentModalSelectSearchType.swift */; };
 		03C421122A54175400F851A1 /* LegacyUpgradesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C421112A54175400F851A1 /* LegacyUpgradesView.swift */; };
+		03C421142A54214D00F851A1 /* LegacyOwnerUpgradesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C421132A54214D00F851A1 /* LegacyOwnerUpgradesView.swift */; };
 		03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */; };
 		03E471BE29388787001A58AD /* BuiltInCardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471BD29388787001A58AD /* BuiltInCardReaderConnectionController.swift */; };
 		03E471C0293A158D001A58AD /* CardReaderConnectionAlertsProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471BF293A158C001A58AD /* CardReaderConnectionAlertsProviding.swift */; };
@@ -2980,6 +2981,7 @@
 		03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionController.swift; sourceTree = "<group>"; };
 		03BB9EA6292E50B600251E9E /* CardPresentModalSelectSearchType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalSelectSearchType.swift; sourceTree = "<group>"; };
 		03C421112A54175400F851A1 /* LegacyUpgradesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyUpgradesView.swift; sourceTree = "<group>"; };
+		03C421132A54214D00F851A1 /* LegacyOwnerUpgradesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyOwnerUpgradesView.swift; sourceTree = "<group>"; };
 		03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardBrand+IconsTests.swift"; sourceTree = "<group>"; };
 		03E471BD29388787001A58AD /* BuiltInCardReaderConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuiltInCardReaderConnectionController.swift; sourceTree = "<group>"; };
 		03E471BF293A158C001A58AD /* CardReaderConnectionAlertsProviding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionAlertsProviding.swift; sourceTree = "<group>"; };
@@ -6348,6 +6350,7 @@
 				68E674A42A4DA8510034BA1E /* PurchaseUpgradeErrorView.swift */,
 				68E674A62A4DAAA60034BA1E /* UpgradeWaitingView.swift */,
 				68E674A82A4DAB1A0034BA1E /* OwnerUpgradesView.swift */,
+				03C421132A54214D00F851A1 /* LegacyOwnerUpgradesView.swift */,
 				68E674AA2A4DAB8C0034BA1E /* CompletedUpgradeView.swift */,
 				68E674AC2A4DAC010034BA1E /* CurrentPlanDetailsView.swift */,
 				68E674AE2A4DACD50034BA1E /* UpgradeTopBarView.swift */,
@@ -11514,6 +11517,7 @@
 				02ACD25A2852E11700EC928E /* CloseAccountCoordinator.swift in Sources */,
 				036CA6F129229C9E00E4DF4F /* IndefiniteCircularProgressViewStyle.swift in Sources */,
 				451A9973260E39270059D135 /* ShippingLabelPackageNumberRow.swift in Sources */,
+				03C421142A54214D00F851A1 /* LegacyOwnerUpgradesView.swift in Sources */,
 				AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */,
 				025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,

@@ -34,12 +34,6 @@ final class FreeTrialBannerPresenter {
     ///
     private var inAppPurchasesUpgradeEnabled: Bool
 
-    /// String for the banner action button text
-    ///
-    private var bannerActionText: String {
-        inAppPurchasesUpgradeEnabled ? Localization.upgradeNow : Localization.learnMore
-    }
-
     private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()
 
     /// - Parameters:
@@ -84,7 +78,9 @@ private extension FreeTrialBannerPresenter {
             case .loaded(let plan) where plan.isFreeTrial:
                 // Only add the banner for the free trial plan
                 let bannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
-                self.addBanner(contentText: bannerViewModel.message)
+                Task { @MainActor in
+                    await self.addBanner(contentText: bannerViewModel.message)
+                }
             case .loading, .failed:
                 break // `.loading` and `.failed` should not change the banner visibility
             default:
@@ -111,13 +107,27 @@ private extension FreeTrialBannerPresenter {
         .store(in: &subscriptions)
     }
 
+    /// String for the banner action button text
+    /// Will display different CTA text depending if IAP is supported and is enabled
+    ///
+    private func setupBannerText() async -> String {
+        if await inAppPurchasesManager.inAppPurchasesAreSupported() && inAppPurchasesUpgradeEnabled {
+            return Localization.upgradeNow
+        } else {
+            return Localization.learnMore
+        }
+    }
+
     /// Adds a Free Trial bar at the bottom of the container view.
     ///
-    private func addBanner(contentText: String) {
+    @MainActor
+    private func addBanner(contentText: String) async {
         guard let containerView else { return }
 
         // Remove any previous banner.
         freeTrialBanner?.removeFromSuperview()
+
+        let bannerActionText = await setupBannerText()
 
         let freeTrialViewController = FreeTrialBannerHostingViewController(actionText: bannerActionText, mainText: contentText) { [weak self] in
             self?.showUpgradesView()

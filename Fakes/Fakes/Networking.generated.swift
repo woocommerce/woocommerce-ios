@@ -376,17 +376,6 @@ extension Networking.JustInTimeMessage.Content {
         )
     }
 }
-extension Networking.Leaderboard {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.Leaderboard {
-        .init(
-            id: .fake(),
-            label: .fake(),
-            rows: .fake()
-        )
-    }
-}
 extension Networking.Media {
     /// Returns a "ready to use" type filled with fake values.
     ///

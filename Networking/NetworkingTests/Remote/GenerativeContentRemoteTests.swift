@@ -49,4 +49,37 @@ final class GenerativeContentRemoteTests: XCTestCase {
             error as? WordPressApiError == .unknown(code: "inactive", message: "OpenAI features have been disabled")
         }
     }
+
+
+    // MARK: - `identifyLanguage`
+
+    func test_identifyLanguage_with_success_returns_generated_text() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-ai/completions", filename: "identify-language-success")
+
+        // When
+        let language = try await remote.identifyLanguage(siteID: sampleSiteID,
+                                                              string: "Woo is awesome.",
+                                                              feature: .productDescription)
+
+        // Then
+        XCTAssertEqual(language, "English")
+    }
+
+    func test_identifyLanguage_with_failure_returns_error() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-ai/completions", filename: "identify-language-failure")
+
+        // When
+        await assertThrowsError {
+            _ = try await remote.identifyLanguage(siteID: sampleSiteID,
+                                                  string: "Woo is awesome.",
+                                                  feature: .productDescription)
+        } errorAssert: { error in
+            // Then
+            error as? WordPressApiError == .unknown(code: "inactive", message: "OpenAI features have been disabled")
+        }
+    }
 }

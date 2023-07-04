@@ -1,15 +1,16 @@
 import SwiftUI
 import Yosemite
+import WooFoundation
 
 struct OwnerUpgradesView: View {
     @State var upgradePlans: [WooWPComPlan]
     @State var isPurchasing: Bool
-    let purchasePlanAction: () -> Void
+    let purchasePlanAction: (WooWPComPlan) -> Void
     @State var isLoading: Bool
 
     init(upgradePlans: [WooWPComPlan],
          isPurchasing: Bool = false,
-         purchasePlanAction: @escaping (() -> Void),
+         purchasePlanAction: @escaping ((WooWPComPlan) -> Void),
          isLoading: Bool = false) {
         _upgradePlans = .init(initialValue: upgradePlans)
         _isPurchasing = .init(initialValue: isPurchasing)
@@ -50,11 +51,11 @@ struct OwnerUpgradesView: View {
 
                                 if selectedPlan?.id == upgradePlan.id {
                                     Image(systemName: "checkmark.circle.fill")
-                                        .foregroundStyle(Color(.wooCommercePurple(.shade50)))
+                                        .foregroundStyle(Color.withColorStudio(name: .wooCommercePurple, shade: .shade50))
                                         .font(.system(size: 30))
                                 } else {
                                     Image(systemName: "circle")
-                                        .foregroundStyle(Color(.wooCommercePurple(.shade50)))
+                                        .foregroundStyle(Color(.systemGray4))
                                         .font(.system(size: 30))
                                 }
 
@@ -90,7 +91,7 @@ struct OwnerUpgradesView: View {
                 if let selectedPlan {
                     let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, selectedPlan.wpComPlan.displayName)
                     Button(buttonText) {
-                        purchasePlanAction()
+                        purchasePlanAction(selectedPlan)
                     }
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
                     .disabled(isLoading)
@@ -98,7 +99,7 @@ struct OwnerUpgradesView: View {
                     .shimmering(active: isLoading)
                 } else {
                     Button("Choose a plan") {
-                        purchasePlanAction()
+                        // no-op
                     }
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
                     .disabled(true)

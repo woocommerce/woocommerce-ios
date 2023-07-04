@@ -9,13 +9,12 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
     init(site: Site,
          entryPoint: BlazeBanner.EntryPoint,
          containerViewController: UIViewController,
-         showsTopSpacer: Bool = false,
          analytics: Analytics = ServiceLocator.analytics,
          dismissHandler: @escaping () -> Void) {
         self.site = site
         self.containerViewController = containerViewController
         super.init(rootView: BlazeBanner(showsTopDivider: entryPoint.shouldShowTopDivider,
-                                         showsTopSpacer: showsTopSpacer,
+                                         showsTopSpacer: entryPoint.shouldShowTopSpacer,
                                          showsBottomSpacer: entryPoint.shouldShowBottomSpacer))
 
         let blazeSource = entryPoint.blazeSource
@@ -100,10 +99,6 @@ struct BlazeBanner: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Optional spacing at the top
-            Color(.listBackground)
-                .frame(height: Layout.spacing)
-                .renderedIf(showsTopSpacer)
 
             // Optional divider on the top
             Divider()
@@ -197,7 +192,7 @@ extension BlazeBanner {
         var shouldShowBottomSpacer: Bool {
             switch self {
             case .myStore:
-                return true
+                return false
             case .products:
                 return true
             }

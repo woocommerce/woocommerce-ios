@@ -399,17 +399,12 @@ private extension AppCoordinator {
 private extension AppCoordinator {
     func showUpgradesView(siteID: Int64) {
         switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
-            guard let self else { return }
-
-            Task { @MainActor in
-                if await self.purchasesManagerForFreeTrialUpgrade.inAppPurchasesAreSupported() {
-                    let upgradesController = UpgradesHostingController(siteID: siteID)
-                    self.window.rootViewController?.topmostPresentedViewController.present(upgradesController, animated: true)
-                } else {
-                    let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
-                    self.window.rootViewController?.topmostPresentedViewController.present(subscriptionsController, animated: true)
-                }
+            guard let self,
+            let topViewController = self.window.rootViewController?.topmostPresentedViewController
+            else {
+                return
             }
+            UpgradesViewPresentationCoordinator().presentUpgrades(for: siteID, from: topViewController)
         }
     }
 

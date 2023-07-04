@@ -13,8 +13,12 @@ final class UpgradesViewModelTests: XCTestCase {
     @MainActor
     func createSut(alreadySubscribed: Bool = false,
                    isSiteOwner: Bool = true,
+                   isIAPSupported: Bool = true,
                    plans: [WPComPlanProduct] = MockInAppPurchasesForWPComPlansManager.Defaults.essentialInAppPurchasesPlans) {
-        mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: plans, userIsEntitledToPlan: alreadySubscribed)
+
+        mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: plans,
+                                                                           userIsEntitledToPlan: alreadySubscribed,
+                                                                           isIAPSupported: isIAPSupported)
 
         let site = Site.fake().copy(isSiteOwner: isSiteOwner)
 
@@ -100,4 +104,26 @@ final class UpgradesViewModelTests: XCTestCase {
         // Then
         assertEqual(.prePurchaseError(.userNotAllowedToUpgrade), sut.upgradeViewState)
      }
+
+    func test_upgradeViewState_when_IAP_are_not_supported_and_prepareViewModel_then_state_is_inAppPurchasesNotSupported() async {
+        // Given
+        await createSut(isIAPSupported: false)
+
+        // When
+        await sut.prepareViewModel()
+
+        // Then
+        assertEqual(.prePurchaseError(.inAppPurchasesNotSupported), sut.upgradeViewState)
+    }
+
+    func test_upgradeViewState_when_retrievePlanDetailsIfAvailable_fails_and_prepareViewModel_then_state_is_fetchError() async {
+        // Given
+        await createSut(plans: [])
+
+        // When
+        await sut.prepareViewModel()
+
+        // Then
+        assertEqual(.prePurchaseError(.fetchError), sut.upgradeViewState)
+    }
 }

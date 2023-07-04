@@ -2,16 +2,16 @@ import SwiftUI
 import Yosemite
 
 struct OwnerUpgradesView: View {
-    @State var upgradePlan: WooWPComPlan
+    @State var upgradePlans: [WooWPComPlan]
     @State var isPurchasing: Bool
     let purchasePlanAction: () -> Void
     @State var isLoading: Bool
 
-    init(upgradePlan: WooWPComPlan,
+    init(upgradePlans: [WooWPComPlan],
          isPurchasing: Bool = false,
          purchasePlanAction: @escaping (() -> Void),
          isLoading: Bool = false) {
-        _upgradePlan = .init(initialValue: upgradePlan)
+        _upgradePlans = .init(initialValue: upgradePlans)
         _isPurchasing = .init(initialValue: isPurchasing)
         self.purchasePlanAction = purchasePlanAction
         _isLoading = .init(initialValue: isLoading)
@@ -19,6 +19,8 @@ struct OwnerUpgradesView: View {
 
     @State private var paymentFrequency: WooPlan.PlanFrequency = .year
     private var paymentFrequencies: [WooPlan.PlanFrequency] = [.year, .month]
+
+    @State var selectedPlan: WooWPComPlan? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -36,67 +38,73 @@ struct OwnerUpgradesView: View {
             .redacted(reason: isLoading ? .placeholder : [])
             .shimmering(active: isLoading)
             List {
-                Section {
-                    Image(upgradePlan.wooPlan.headerImageFileName)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .listRowInsets(.zero)
-                        .listRowBackground(upgradePlan.wooPlan.headerImageCardColor)
-                        .accessibilityHidden(true)
-
-                    VStack(alignment: .leading) {
-                        Text(upgradePlan.wooPlan.shortName)
-                            .font(.largeTitle)
-                            .accessibilityAddTraits(.isHeader)
-                        Text(upgradePlan.wooPlan.planDescription)
-                            .font(.subheadline)
-                    }
-
-                    VStack(alignment: .leading) {
-                        Text(upgradePlan.wpComPlan.displayPrice)
-                            .font(.largeTitle)
-                            .accessibilityAddTraits(.isHeader)
-                        Text(upgradePlan.wooPlan.planFrequency.localizedString)
-                            .font(.footnote)
-                    }
-                }
-                .accessibilityAddTraits(.isSummaryElement)
-                .listRowSeparator(.hidden)
-
-                if upgradePlan.hardcodedPlanDataIsValid {
+                ForEach(upgradePlans.filter { $0.wooPlan.planFrequency == paymentFrequency }) { upgradePlan in
                     Section {
-                        ForEach(upgradePlan.wooPlan.planFeatureGroups, id: \.title) { featureGroup in
-                            NavigationLink(destination: WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)) {
-                                WooPlanFeatureGroupRow(featureGroup: featureGroup)
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text(upgradePlan.wooPlan.shortName)
+                                    .font(.largeTitle)
+                                    .accessibilityAddTraits(.isHeader)
+
+                                Spacer()
+
+                                if selectedPlan?.id == upgradePlan.id {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(Color(.wooCommercePurple(.shade50)))
+                                        .font(.system(size: 30))
+                                } else {
+                                    Image(systemName: "circle")
+                                        .foregroundStyle(Color(.wooCommercePurple(.shade50)))
+                                        .font(.system(size: 30))
+                                }
+
                             }
-                            .disabled(isLoading)
+                            Text(upgradePlan.wooPlan.planDescription)
+                                .font(.subheadline)
                         }
-                    } header: {
-                        Text(String.localizedStringWithFormat(Localization.featuresHeaderTextFormat, upgradePlan.wooPlan.shortName))
+                        .padding(.top)
+
+                        VStack(alignment: .leading) {
+                            Text(upgradePlan.wpComPlan.displayPrice)
+                                .font(.largeTitle)
+                                .accessibilityAddTraits(.isHeader)
+                            Text(upgradePlan.wooPlan.planFrequency.localizedString)
+                                .font(.footnote)
+                        }
+                        .padding(.bottom)
                     }
-                    .headerProminence(.increased)
-                } else {
-                    NavigationLink(destination: {
-                        /// Note that this is a fallback only, and we should remove it once we load feature details remotely.
-                        AuthenticatedWebView(isPresented: .constant(true),
-                                             url: WooConstants.URLs.fallbackWooExpressHome.asURL())
-                    }, label: {
-                        Text(Localization.featureDetailsUnavailableText)
-                    })
-                    .disabled(isLoading)
+                    .accessibilityAddTraits(.isSummaryElement)
+                    .listRowSeparator(.hidden)
+                    .gesture(TapGesture()
+                        .onEnded({ _ in
+                            if selectedPlan?.id != upgradePlan.id {
+                                selectedPlan = upgradePlan
+                            }
+                        }))
                 }
             }
             .listStyle(.insetGrouped)
             .redacted(reason: isLoading ? .placeholder : [])
             .shimmering(active: isLoading)
             VStack {
-                let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, upgradePlan.wpComPlan.displayName)
-                Button(buttonText) {
-                    purchasePlanAction()
+                if let selectedPlan {
+                    let buttonText = String.localizedStringWithFormat(Localization.purchaseCTAButtonText, selectedPlan.wpComPlan.displayName)
+                    Button(buttonText) {
+                        purchasePlanAction()
+                    }
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
+                    .disabled(isLoading)
+                    .redacted(reason: isLoading ? .placeholder : [])
+                    .shimmering(active: isLoading)
+                } else {
+                    Button("Choose a plan") {
+                        purchasePlanAction()
+                    }
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
+                    .disabled(true)
+                    .redacted(reason: isLoading ? .placeholder : [])
+                    .shimmering(active: isLoading)
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
-                .disabled(isLoading)
-                .redacted(reason: isLoading ? .placeholder : [])
-                .shimmering(active: isLoading)
             }
             .padding()
         }

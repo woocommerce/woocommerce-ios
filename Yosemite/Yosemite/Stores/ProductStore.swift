@@ -535,15 +535,20 @@ private extension ProductStore {
                                     name: String,
                                     features: String,
                                     completion: @escaping (Result<String, Error>) -> Void) {
-        let prompt = [
-            "Write a description for a product with title ```\(name)``` and features: ```\(features)```.",
-            "Identify the language used in the product title and features and use the same language in your response.",
-            "Make the description 50-60 words or less.",
-            "Use a 9th grade reading level.",
-            "Perform in-depth keyword research relating to the product in the same language of the product title, " +
-            "and use them in your sentences without listing them out."
-        ].joined(separator: "\n")
         Task {
+            let language = try await generativeContentRemote.identifyLanguage(siteID: siteID,
+                                                                              string: name + " " + features,
+                                                                              feature: .productDescription)
+
+            let prompt = [
+                "Write a description for a product with title ```\(name)``` and features: ```\(features)```.",
+                "Your response should be in language \(language).",
+                "Make the description 50-60 words or less.",
+                "Use a 9th grade reading level.",
+                "Perform in-depth keyword research relating to the product in the same language of the product title, " +
+                "and use them in your sentences without listing them out."
+            ].joined(separator: "\n")
+
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription) }
             await MainActor.run {
                 completion(result)

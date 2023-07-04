@@ -14,7 +14,6 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
         self.site = site
         self.containerViewController = containerViewController
         super.init(rootView: BlazeBanner(showsTopDivider: entryPoint.shouldShowTopDivider,
-                                         showsTopSpacer: entryPoint.shouldShowTopSpacer,
                                          showsBottomSpacer: entryPoint.shouldShowBottomSpacer))
 
         let blazeSource = entryPoint.blazeSource
@@ -80,7 +79,6 @@ private extension BlazeBannerHostingController {
 ///
 struct BlazeBanner: View {
     private let showsTopDivider: Bool
-    private let showsTopSpacer: Bool
     private let showsBottomSpacer: Bool
 
     /// Closure to be triggered when the Try Blaze now button is tapped.
@@ -90,10 +88,8 @@ struct BlazeBanner: View {
     var onDismiss: () -> Void = {}
 
     init(showsTopDivider: Bool = false,
-         showsTopSpacer: Bool = false,
          showsBottomSpacer: Bool = false) {
         self.showsTopDivider = showsTopDivider
-        self.showsTopSpacer = showsTopSpacer
         self.showsBottomSpacer = showsBottomSpacer
     }
 

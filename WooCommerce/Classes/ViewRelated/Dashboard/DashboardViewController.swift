@@ -343,6 +343,8 @@ private extension DashboardViewController {
 
     func configureContainerStackView() {
         containerStackView.axis = .vertical
+        containerStackView.spacing = Constants.containerStackViewSpacing
+        containerStackView.backgroundColor = .listBackground
         containerView.addSubview(containerStackView)
         containerStackView.translatesAutoresizingMaskIntoConstraints = false
         containerView.pinSubviewToAllEdges(containerStackView)
@@ -784,24 +786,26 @@ private extension DashboardViewController {
 // MARK: - Blaze banner
 extension DashboardViewController {
     func observeBlazeBannerVisibility() {
-        Publishers.CombineLatest3(viewModel.$showBlazeBanner.removeDuplicates(),
-                                  viewModel.$showOnboarding.removeDuplicates(),
-                                  ServiceLocator.stores.site.compactMap { $0 }.removeDuplicates())
-        .sink { [weak self] showsBlazeBanner, showsOnboarding, site in
-            guard let self else { return }
-            if showsBlazeBanner {
-                self.showBlazeBanner(for: site, withTopSpacer: showsOnboarding == false)
-            } else {
-                self.removeBlazeBanner()
+        viewModel.$showBlazeBanner.removeDuplicates()
+            .sink { [weak self] showsBlazeBanner in
+                guard let self else { return }
+                if showsBlazeBanner {
+                    self.showBlazeBanner()
+                } else {
+                    self.removeBlazeBanner()
+                }
             }
-        }.store(in: &subscriptions)
+            .store(in: &subscriptions)
 
         Task { @MainActor in
             await viewModel.updateBlazeBannerVisibility()
         }
     }
 
-    func showBlazeBanner(for site: Site, withTopSpacer: Bool) {
+    func showBlazeBanner() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
         if blazeBannerHostingController != nil {
             removeBlazeBanner()
         }
@@ -809,7 +813,6 @@ extension DashboardViewController {
             site: site,
             entryPoint: .myStore,
             containerViewController: self,
-            showsTopSpacer: withTopSpacer,
             dismissHandler: { [weak self] in
             self?.viewModel.hideBlazeBanner()
         })
@@ -969,6 +972,7 @@ private extension DashboardViewController {
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
                 await self?.reloadData(forced: true)
+                await self?.viewModel.updateBlazeBannerVisibility()
             }
         }.store(in: &subscriptions)
     }
@@ -1041,5 +1045,6 @@ private extension DashboardViewController {
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
         static let tabStripSpacing = CGFloat(12)
         static let headerStackViewSpacing = CGFloat(4)
+        static let containerStackViewSpacing = CGFloat(16)
     }
 }

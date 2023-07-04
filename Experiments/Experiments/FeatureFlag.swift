@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Enables generating share product content using AI
     ///
     case shareProductAI
+
+    /// Shows multiple plans in the IAP Upgrade view
+    ///
+    case freeTrialInAppPurchasesUpgradeM2
 }

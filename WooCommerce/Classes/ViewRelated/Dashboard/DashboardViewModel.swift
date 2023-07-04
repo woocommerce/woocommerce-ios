@@ -215,26 +215,25 @@ final class DashboardViewModel {
         }
 
         analytics.track(event: .ProductsOnboarding.storeIsEligible())
-        setProductsOnboardingBannerIfNeeded()
-
-        guard announcementViewModel is ProductsOnboardingAnnouncementCardViewModel else {
+        guard await shouldShowProductOnboarding() else {
             throw ProductsOnboardingSyncingError.noContentToShow
         }
+        announcementViewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
+            self?.addProductTrigger.send()
+        })
     }
 
-    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before.
-    ///
-    private func setProductsOnboardingBannerIfNeeded() {
-        let getVisibility = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { [weak self] result in
-            guard let self else { return }
-            if case let .success(isVisible) = result, isVisible {
-                let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
-                    self?.addProductTrigger.send()
-                })
-                self.announcementViewModel = viewModel
-            }
+    @MainActor
+    private func shouldShowProductOnboarding() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { result in
+                if case let .success(isVisible) = result, isVisible {
+                    continuation.resume(returning: true)
+                } else {
+                    continuation.resume(returning: false)
+                }
+            })
         }
-        stores.dispatch(getVisibility)
     }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.

@@ -3,8 +3,7 @@ import Yosemite
 /// Creates a top banner to be used when there is an error loading data on a screen.
 /// The banner has two action buttons: "Troubleshoot" and "Contact Support."
 struct ErrorTopBannerFactory {
-    static func createTopBanner(isExpanded: Bool,
-                                expandedStateChangeHandler: @escaping () -> Void,
+    static func createTopBanner(expandedStateChangeHandler: @escaping () -> Void,
                                 onTroubleshootButtonPressed: @escaping () -> Void,
                                 onContactSupportButtonPressed: @escaping () -> Void) -> TopBannerView {
         let troubleshootAction = TopBannerViewModel.ActionButton(title: Localization.troubleshoot, action: { _ in onTroubleshootButtonPressed() })
@@ -13,7 +12,7 @@ struct ErrorTopBannerFactory {
         let viewModel = TopBannerViewModel(title: Localization.title,
                                            infoText: Localization.info,
                                            icon: .infoOutlineImage,
-                                           isExpanded: isExpanded,
+                                           isExpanded: true,
                                            topButton: .chevron(handler: expandedStateChangeHandler),
                                            actionButtons: actions)
         let topBannerView = TopBannerView(viewModel: viewModel)

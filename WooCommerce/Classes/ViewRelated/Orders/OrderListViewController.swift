@@ -778,7 +778,7 @@ private extension OrderListViewController {
     /// Sets the `topBannerView` property to an error banner.
     ///
     func setErrorTopBanner() {
-        topBannerView = ErrorTopBannerFactory.createTopBanner(isExpanded: false, expandedStateChangeHandler: { [weak self] in
+        topBannerView = ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: { [weak self] in
             self?.tableView.updateHeaderHeight()
         },
         onTroubleshootButtonPressed: { [weak self] in

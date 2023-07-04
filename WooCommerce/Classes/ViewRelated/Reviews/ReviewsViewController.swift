@@ -99,8 +99,7 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
     /// Top banner that shows an error if there is a problem loading reviews data
     ///
     private lazy var topBannerView: TopBannerView = {
-        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                              expandedStateChangeHandler: { [weak self] in
+        ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: { [weak self] in
                                                 self?.tableView.updateHeaderHeight()
                                               },
                                               onTroubleshootButtonPressed: { [weak self] in

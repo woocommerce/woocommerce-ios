@@ -561,17 +561,23 @@ private extension ProductStore {
                                        name: String,
                                        description: String,
                                        completion: @escaping (Result<String, Error>) -> Void) {
-        let prompt = [
-            "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",
-            "- Product description: ```\(description)```",
-            "- Product URL: \(url).",
-            "Identify the language used in the product name and product description to use in your response.",
-            "The length should be up to 3 sentences.",
-            "Use a 9th grade reading level.",
-            "Add related hashtags at the end of the message.",
-            "Do not include the URL in the message.",
-        ].joined(separator: "\n")
         Task {
+            let language = try await generativeContentRemote.identifyLanguage(siteID: siteID,
+                                                                              string: name + " " + description,
+                                                                              feature: .productSharing)
+
+            let prompt = [
+                // swiftlint:disable:next line_length
+                "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",
+                "- Product description: ```\(description)```",
+                "- Product URL: \(url).",
+                "Your response should be in language \(language).",
+                "The length should be up to 3 sentences.",
+                "Use a 9th grade reading level.",
+                "Add related hashtags at the end of the message.",
+                "Do not include the URL in the message.",
+            ].joined(separator: "\n")
+
             let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
             }

@@ -1,13 +1,40 @@
 import SwiftUI
+import Yosemite
 
 struct OwnerUpgradesView: View {
     @State var upgradePlan: WooWPComPlan
-    @State var isPurchasing = false
+    @State var isPurchasing: Bool
     let purchasePlanAction: () -> Void
-    @State var isLoading: Bool = false
+    @State var isLoading: Bool
+
+    init(upgradePlan: WooWPComPlan,
+         isPurchasing: Bool = false,
+         purchasePlanAction: @escaping (() -> Void),
+         isLoading: Bool = false) {
+        _upgradePlan = .init(initialValue: upgradePlan)
+        _isPurchasing = .init(initialValue: isPurchasing)
+        self.purchasePlanAction = purchasePlanAction
+        _isLoading = .init(initialValue: isLoading)
+    }
+
+    @State private var paymentFrequency: WooPlan.PlanFrequency = .year
+    private var paymentFrequencies: [WooPlan.PlanFrequency] = [.year, .month]
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            Section {
+                Picker("How frequently would you like to pay?", selection: $paymentFrequency) {
+                    ForEach(paymentFrequencies) {
+                        Text($0.paymentFrequencyLocalizedString)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .disabled(isLoading)
+            }
+            .padding()
+            .background(Color(.systemGroupedBackground))
+            .redacted(reason: isLoading ? .placeholder : [])
+            .shimmering(active: isLoading)
             List {
                 Section {
                     Image(upgradePlan.wooPlan.headerImageFileName)
@@ -91,5 +118,26 @@ private extension OwnerUpgradesView {
 
         static let featureDetailsUnavailableText = NSLocalizedString(
             "See plan details", comment: "Title for a link to view Woo Express plan details on the web, as a fallback.")
+    }
+}
+
+private extension WooPlan.PlanFrequency {
+    var paymentFrequencyLocalizedString: String {
+        switch self {
+        case .month:
+            return Localization.payMonthly
+        case .year:
+            return Localization.payAnnually
+        }
+    }
+
+    enum Localization {
+        static let payMonthly = NSLocalizedString(
+            "Pay Monthly",
+            comment: "Title of the selector option for paying monthly on the Upgrade view, when choosing a plan")
+
+        static let payAnnually = NSLocalizedString(
+            "Pay Annually",
+            comment: "Title of the selector option for paying annually on the Upgrade view, when choosing a plan")
     }
 }

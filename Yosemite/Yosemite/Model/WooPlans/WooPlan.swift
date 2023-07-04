@@ -65,9 +65,13 @@ public struct WooPlan: Decodable {
         case planFeatureGroups = "feature_categories"
     }
 
-    public enum PlanFrequency: String, Decodable {
+    public enum PlanFrequency: String, Decodable, Identifiable, CaseIterable {
         case month
         case year
+
+        public var id: Self {
+            return self
+        }
 
         public var localizedString: String {
             switch self {

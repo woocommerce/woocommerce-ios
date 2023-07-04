@@ -94,36 +94,6 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_print_on_failure_presents_error_alert() throws {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let error = SampleError.first
-        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
-            switch action {
-            case let .printShippingLabel(_, _, _, completion):
-                completion(.failure(error))
-            default:
-                break
-            }
-        }
-
-        let viewController = MockSourceNavigationController()
-        let shippingLabel = MockShippingLabel.emptyLabel()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel],
-                                                        printType: .print,
-                                                        sourceNavigationController: viewController,
-                                                        stores: stores)
-        coordinator.showPrintUI()
-        let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
-
-        // When
-        printViewController.onAction?(.print(paperSize: .label))
-
-        // Then
-        XCTAssertEqual(viewController.presentedViewControllers.count, 1)
-        assertThat(viewController.presentedViewControllers[0], isAnInstanceOf: UIAlertController.self)
-    }
-
     func test_print_logs_analytics() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

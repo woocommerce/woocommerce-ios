@@ -82,17 +82,17 @@ private extension WooAnalyticsEvent.Blaze.Step {
     }
 }
 
-private extension BlazeSource {
+extension BlazeSource {
     var analyticsValue: String {
         switch self {
         case .menu:
             return "menu"
         case .productMoreMenu:
             return "product_more_menu"
-        case .productList:
-            return "product_list"
-        case .myStore:
-            return "my_store"
+        case .productListBanner:
+            return "product_list_banner"
+        case .myStoreBanner:
+            return "my_store_banner"
         }
     }
 }

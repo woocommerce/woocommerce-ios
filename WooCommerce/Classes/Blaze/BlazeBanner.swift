@@ -197,9 +197,9 @@ extension BlazeBanner {
         var blazeSource: BlazeSource {
             switch self {
             case .myStore:
-                return .myStore
+                return .myStoreBanner
             case .products:
-                return .productList
+                return .productListBanner
             }
         }
     }

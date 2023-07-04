@@ -182,14 +182,6 @@ final class DashboardViewController: UIViewController {
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
         }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            let blogID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? .zero
-            let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
-            let provider = TemporalAnalyticsProvider()
-            let vc = WCReactNativeViewController(analyticsProvider: provider, blogID: "\(blogID)", apiToken: token)
-            self.present(vc, animated: true)
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

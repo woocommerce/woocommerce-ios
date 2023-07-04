@@ -6,6 +6,10 @@ import AutomatticAbout
 import Yosemite
 import SwiftUI
 
+import KeychainAccess
+import WooCommerceShared
+import Networking
+
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
 }
@@ -360,11 +364,29 @@ private extension SettingsViewController {
     }
 
     func supportWasPressed() {
-        ServiceLocator.analytics.track(.settingsContactSupportTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
-            fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
-        }
-        show(viewController, sender: self)
+//        ServiceLocator.analytics.track(.settingsContactSupportTapped)
+//        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
+//            fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
+//        }
+//        show(viewController, sender: self)
+
+
+        let provider = TemporalAnalyticsProvider()
+        let viewController: WCReactNativeViewController = {
+            if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
+                let url = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
+                let appPassword = ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName)).applicationPassword
+                let loginString = "\(appPassword?.wpOrgUsername ?? ""):\(appPassword?.password.secretValue ?? "")"
+                let loginData = loginString.data(using: .utf8)!.base64EncodedString()
+                return WCReactNativeViewController(analyticsProvider: provider, siteUrl: url, appPassword: loginData)
+            } else {
+                let blogID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? .zero
+                let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
+                return WCReactNativeViewController(analyticsProvider: provider, blogID: "\(blogID)", apiToken: token)
+            }
+        }()
+
+        self.present(viewController, animated: true)
     }
 
     func domainWasPressed() {

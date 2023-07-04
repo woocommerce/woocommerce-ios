@@ -402,8 +402,7 @@ private extension AppCoordinator {
             guard let self else { return }
 
             Task { @MainActor in
-                if await self.purchasesManagerForFreeTrialUpgrade.inAppPurchasesAreSupported() &&
-                    self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
+                if await self.purchasesManagerForFreeTrialUpgrade.inAppPurchasesAreSupported() {
                     let upgradesController = UpgradesHostingController(siteID: siteID)
                     self.window.rootViewController?.topmostPresentedViewController.present(upgradesController, animated: true)
                 } else {

@@ -54,7 +54,8 @@ final class UpgradesViewModelTests: XCTestCase {
         await sut.prepareViewModel()
 
         // Then
-        guard case .loaded(let plan) = sut.upgradeViewState else {
+        guard case .loaded(let plans) = sut.upgradeViewState,
+              let plan = plans.first else {
             return XCTFail("expected `.loaded` state not found")
         }
         assertEqual("Essential Monthly", plan.wpComPlan.displayName)
@@ -77,7 +78,8 @@ final class UpgradesViewModelTests: XCTestCase {
         await sut.prepareViewModel()
 
         // Then
-        guard case .loaded(let plan) = sut.upgradeViewState else {
+        guard case .loaded(let plans) = sut.upgradeViewState,
+            let plan = plans.first else {
             return XCTFail("expected `.loaded` state not found")
         }
         assertEqual("Test awesome plan", plan.wpComPlan.displayName)

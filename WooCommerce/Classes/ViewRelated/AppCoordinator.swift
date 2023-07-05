@@ -404,7 +404,7 @@ private extension AppCoordinator {
             else {
                 return
             }
-            upgradesViewPresentationCoordinator.presentUpgrades(for: siteID, from: topViewController)
+            self.upgradesViewPresentationCoordinator.presentUpgrades(for: siteID, from: topViewController)
         }
     }
 

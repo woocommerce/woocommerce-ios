@@ -41,6 +41,7 @@ final class UpgradesViewModel: ObservableObject {
         entitledWpcomPlanIDs = []
 
         observeViewStateAndTrackAnalytics()
+        observeViewStateAndFireCompletionHandler()
         checkForSiteOwnership()
     }
 
@@ -283,6 +284,18 @@ extension UpgradesViewModel {
                 self?.analytics.track(event: .InAppPurchases.planUpgradePrePurchaseFailed(error: error))
             case .purchaseUpgradeError(let error):
                 self?.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: error.analyticErrorDetail))
+            default:
+                break
+            }
+        }
+        .store(in: &cancellables)
+    }
+
+    private func observeViewStateAndFireCompletionHandler() {
+        $upgradeViewState.sink { [weak self] state in
+            switch state {
+            case .completed:
+                self?.onPlanUpgradeCompleted?()
             default:
                 break
             }

@@ -2,6 +2,7 @@
 
 14.4
 -----
+- [*] Blaze: New banner on the My Store and Products screens. [https://github.com/woocommerce/woocommerce-ios/pull/10135, https://github.com/woocommerce/woocommerce-ios/pull/10160,  https://github.com/woocommerce/woocommerce-ios/pull/10172]
 - [*] Shipping Labels: Fixed a bug preventing label printing in orders viewed from search [https://github.com/woocommerce/woocommerce-ios/pull/10161]
 
 

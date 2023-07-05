@@ -1740,6 +1740,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDescription_returns_text_on_success() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success("Trendy product"))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
@@ -1765,7 +1766,32 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDescription_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product",
+                                                                           features: "Trendy") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+    }
+
+    func test_generateProductDescription_returns_error_on_identify_language_failure() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .failure(NetworkError.timeout))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -1789,6 +1815,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDescription_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
@@ -1814,6 +1841,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDescription_uses_correct_feature() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
@@ -1841,6 +1869,7 @@ final class ProductStoreTests: XCTestCase {
         // Given
         let expectedText = "Check out this cool product"
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success(expectedText))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
@@ -1869,6 +1898,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductSharingMessage_returns_text_after_trimming_quotation_marks() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success("\"This is \"AI\" generated message.\""))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
@@ -1897,7 +1927,35 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductSharingMessage_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductSharingMessage(
+                siteID: self.sampleSiteID,
+                url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description"
+            ) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+    }
+
+    func test_generateProductSharingMessage_returns_error_on_identify_language_failure() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .failure(NetworkError.timeout))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -1927,6 +1985,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedName = "Sample product"
         let expectedDescription = "Sample description"
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
@@ -1956,6 +2015,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductSharingMessage_uses_correct_feature() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,

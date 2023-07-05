@@ -4,8 +4,14 @@ import Yosemite
 import Experiments
 
 final class UpgradesViewPresentationCoordinator {
-    private let featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
-    private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()
+    private let featureFlagService: FeatureFlagService
+    private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
+
+    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
+        self.featureFlagService = featureFlagService
+        self.inAppPurchaseManager = inAppPurchaseManager
+    }
 
     func presentUpgrades(for siteID: Int64, from viewController: UIViewController) {
         Task { @MainActor in
@@ -142,6 +148,9 @@ struct UpgradesView: View {
         .navigationViewStyle(.stack)
         .onDisappear {
             upgradesViewModel.onDisappear()
+        }
+        .task {
+            await upgradesViewModel.prepareViewModel()
         }
     }
 }

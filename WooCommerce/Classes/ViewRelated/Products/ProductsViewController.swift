@@ -95,12 +95,18 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var topBannerView: TopBannerView?
 
+    /// Hosting controller for the banner to highlight the Blaze feature.
+    /// 
+    private var blazeBannerHostingController: BlazeBannerHostingController?
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController, onReload: { [weak self] in
-            self?.reloadTableAndView()
+            guard let self else { return }
+            self.reloadTableAndView()
+            self.isEmpty = resultsController.isEmpty
         })
         return resultsController
     }()
@@ -126,9 +132,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Indicates if there are no results onscreen.
     ///
-    private var isEmpty: Bool {
-        return resultsController.isEmpty
-    }
+    @Published private var isEmpty: Bool = true
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -724,6 +728,8 @@ private extension ProductsViewController {
         if hasErrorLoadingData {
             requestAndShowErrorTopBannerView()
         }
+
+        checkBlazeBannerVisibility()
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
@@ -853,6 +859,60 @@ private extension ProductsViewController {
                 self?.syncingCoordinator.resynchronize()
             }
         }
+    }
+
+    func checkBlazeBannerVisibility() {
+        viewModel.$shouldShowBlazeBanner
+            .removeDuplicates()
+            .combineLatest($isEmpty.removeDuplicates())
+            .sink { [weak self] shouldShow, isEmpty in
+                guard let self else { return }
+                guard !self.hasErrorLoadingData, !isEmpty else {
+                    return self.hideBlazeBanner()
+                }
+                if shouldShow {
+                    self.showBlazeBanner()
+                } else {
+                    self.hideBlazeBanner()
+                }
+            }
+            .store(in: &subscriptions)
+
+        Task { @MainActor in
+            await viewModel.updateBlazeBannerVisibility()
+        }
+    }
+
+    func showBlazeBanner() {
+        guard blazeBannerHostingController == nil else {
+            return
+        }
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let hostingController = BlazeBannerHostingController(site: site, entryPoint: .products, containerViewController: self, dismissHandler: { [weak self] in
+            self?.viewModel.hideBlazeBanner()
+        })
+        guard let bannerView = hostingController.view else {
+            return
+        }
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        topBannerContainerView.updateSubview(bannerView)
+        updateTableHeaderViewHeight()
+        addChild(hostingController)
+        hostingController.didMove(toParent: self)
+        blazeBannerHostingController = hostingController
+    }
+
+    func hideBlazeBanner() {
+        guard let blazeBannerHostingController,
+              blazeBannerHostingController.parent == self else { return }
+
+        blazeBannerHostingController.willMove(toParent: nil)
+        blazeBannerHostingController.view.removeFromSuperview()
+        blazeBannerHostingController.removeFromParent()
+        self.blazeBannerHostingController = nil
+        updateTableHeaderViewHeight()
     }
 }
 

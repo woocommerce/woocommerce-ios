@@ -363,10 +363,11 @@ final class AppCoordinatorTests: XCTestCase {
         let pushNotesManager = MockPushNotificationsManager()
         let featureFlagService = MockFeatureFlagService()
         let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
                                           featureFlagService: featureFlagService,
-                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -387,9 +388,10 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
-                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -410,9 +412,10 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
-                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -433,9 +436,10 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
-                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -456,9 +460,10 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
-                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -479,9 +484,10 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
         let coordinator = makeCoordinator(window: window,
                                           pushNotesManager: pushNotesManager,
-                                          purchasesManagerForFreeTrialUpgrade: mockInAppPurchasesManager)
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
         coordinator.start()
         let siteID: Int64 = 123
 
@@ -651,7 +657,7 @@ private extension AppCoordinatorTests {
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
                          purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
-                         purchasesManagerForFreeTrialUpgrade: InAppPurchasesForWPComPlansProtocol = MockInAppPurchasesForWPComPlansManager()
+                         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
@@ -663,6 +669,6 @@ private extension AppCoordinatorTests {
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
                               purchasesManager: purchasesManager ?? nil,
-                              purchasesManagerForFreeTrialUpgrade: purchasesManagerForFreeTrialUpgrade)
+                              upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
     }
 }

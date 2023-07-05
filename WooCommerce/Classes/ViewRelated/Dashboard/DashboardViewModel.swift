@@ -295,7 +295,7 @@ extension DashboardViewModel {
 
     private func isBlazeBannerVisible() async -> Bool {
         async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
-        async let storeHasProducts = (try? checkIfStoreHasProducts(siteID: siteID)) ?? false
+        async let storeHasProducts = (try? checkIfStoreHasProducts(siteID: siteID, status: .published)) ?? false
         guard (await isSiteEligible, await storeHasProducts) == (true, true) else {
             return false
         }
@@ -303,9 +303,9 @@ extension DashboardViewModel {
     }
 
     @MainActor
-    private func checkIfStoreHasProducts(siteID: Int64) async throws -> Bool {
+    private func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus? = nil) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, onCompletion: { result in
+            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: { result in
                 switch result {
                 case .success(let hasProducts):
                     continuation.resume(returning: hasProducts)

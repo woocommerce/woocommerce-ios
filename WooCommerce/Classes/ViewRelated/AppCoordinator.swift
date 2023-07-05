@@ -25,7 +25,7 @@ final class AppCoordinator {
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
-    private let purchasesManagerForFreeTrialUpgrade: InAppPurchasesForWPComPlansProtocol
+    private let upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -47,7 +47,7 @@ final class AppCoordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
-         purchasesManagerForFreeTrialUpgrade: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
+         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -66,7 +66,7 @@ final class AppCoordinator {
         self.featureFlagService = featureFlagService
         self.purchasesManager = purchasesManager
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
-        self.purchasesManagerForFreeTrialUpgrade = purchasesManagerForFreeTrialUpgrade
+        self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
@@ -404,7 +404,7 @@ private extension AppCoordinator {
             else {
                 return
             }
-            UpgradesViewPresentationCoordinator().presentUpgrades(for: siteID, from: topViewController)
+            upgradesViewPresentationCoordinator.presentUpgrades(for: siteID, from: topViewController)
         }
     }
 

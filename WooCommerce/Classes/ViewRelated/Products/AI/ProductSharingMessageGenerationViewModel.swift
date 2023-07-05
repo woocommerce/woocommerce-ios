@@ -112,7 +112,7 @@ private extension ProductSharingMessageGenerationViewModel {
 
     @MainActor
     func requestMessageFromAI() async throws -> String {
-        let language = try await detectLaunguage()
+        let language = try await identifyLanguage()
         return try await withCheckedThrowingContinuation { continuation in
 
             stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,
@@ -127,7 +127,7 @@ private extension ProductSharingMessageGenerationViewModel {
     }
 
     @MainActor
-    func detectLaunguage() async throws -> String {
+    func identifyLanguage() async throws -> String {
         if let languageIdentifiedUsingAI,
            languageIdentifiedUsingAI.isNotEmpty {
             return languageIdentifiedUsingAI

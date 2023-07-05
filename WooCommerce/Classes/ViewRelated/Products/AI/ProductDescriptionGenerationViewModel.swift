@@ -91,7 +91,7 @@ private extension ProductDescriptionGenerationViewModel {
     @MainActor
     func generateProductDescription() async -> Result<String, Error> {
         do {
-            let language = try await detectLaunguage()
+            let language = try await identifyLanguage()
             return await withCheckedContinuation { continuation in
                 stores.dispatch(ProductAction.generateProductDescription(siteID: siteID,
                                                                          name: name,
@@ -106,7 +106,7 @@ private extension ProductDescriptionGenerationViewModel {
     }
 
     @MainActor
-    func detectLaunguage() async throws -> String {
+    func identifyLanguage() async throws -> String {
         if let languageIdentifiedUsingAI,
            languageIdentifiedUsingAI.isNotEmpty {
             return languageIdentifiedUsingAI

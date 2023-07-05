@@ -165,7 +165,9 @@ private extension FreeTrialBannerPresenter {
         guard let viewController else { return }
         Task { @MainActor in
             if await inAppPurchasesManager.inAppPurchasesAreSupported() && inAppPurchasesUpgradeEnabled {
-                let upgradesController = UpgradesHostingController(siteID: siteID)
+                let upgradesController = UpgradesHostingController(siteID: siteID) { [weak self] in
+                    self?.reloadBannerVisibility()
+                }
                 viewController.present(upgradesController, animated: true)
             } else {
                 let subscriptionsController = SubscriptionsHostingController(siteID: siteID)

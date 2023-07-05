@@ -116,8 +116,8 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
-        case let .checkIfStoreHasProducts(siteID: siteID, onCompletion: onCompletion):
-            checkIfStoreHasProducts(siteID: siteID, onCompletion: onCompletion)
+        case let .checkIfStoreHasProducts(siteID, status, onCompletion):
+            checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: onCompletion)
         case let .createTemplateProduct(siteID, template, onCompletion):
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
         case let .generateProductDescription(siteID, name, features, completion):
@@ -495,18 +495,22 @@ private extension ProductStore {
         upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
     }
 
-    /// Checks if the store already has any products.
+    /// Checks if the store already has any products with the given status.
     /// Returns `false` if the store has no products.
     ///
-    func checkIfStoreHasProducts(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus?, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
-        if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
-            return onCompletion(.success(true))
+        if let products = storage.loadProducts(siteID: siteID) {
+            if let status, (products.filter { $0.statusKey == status.rawValue }.isEmpty) == false {
+                return onCompletion(.success(true))
+            } else if status == nil, !products.isEmpty {
+                return onCompletion(.success(true))
+            }
         }
 
         // If there are no locally stored products, then check remote.
-        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
+        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1, productStatus: status) { result in
             switch result {
             case .success(let ids):
                 onCompletion(.success(ids.isEmpty == false))

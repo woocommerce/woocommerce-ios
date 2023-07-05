@@ -107,10 +107,12 @@ public enum ProductAction: Action {
     ///
     case replaceProductLocally(product: Product, onCompletion: () -> Void)
 
-    /// Checks if the store already has any products.
+    /// Checks if the store already has any products with the given status.
     /// Returns `false` if the store has no products.
     ///
-    case checkIfStoreHasProducts(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+    case checkIfStoreHasProducts(siteID: Int64,
+                                 status: ProductStatus? = nil,
+                                 onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Creates a product using the provided template type.
     ///

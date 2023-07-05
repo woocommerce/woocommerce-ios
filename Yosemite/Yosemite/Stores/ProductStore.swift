@@ -124,10 +124,10 @@ public class ProductStore: Store {
             identifyLanguage(siteID: siteID,
                              string: string, feature: feature,
                              completion: completion)
-        case let .generateProductDescription(siteID, name, features, completion):
-            generateProductDescription(siteID: siteID, name: name, features: features, completion: completion)
-        case let .generateProductSharingMessage(siteID, url, name, description, completion):
-            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, completion: completion)
+        case let .generateProductDescription(siteID, name, features, language, completion):
+            generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
+        case let .generateProductSharingMessage(siteID, url, name, description, language, completion):
+            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
         }
     }
 }
@@ -554,13 +554,10 @@ private extension ProductStore {
     func generateProductDescription(siteID: Int64,
                                     name: String,
                                     features: String,
+                                    language: String,
                                     completion: @escaping (Result<String, Error>) -> Void) {
         Task {
             let result = await Result {
-                let language = try await generativeContentRemote.identifyLanguage(siteID: siteID,
-                                                                                  string: name + " " + features,
-                                                                                  feature: .productDescription)
-
                 let prompt = [
                     "Write a description for a product with title ```\(name)``` and features: ```\(features)```.",
                     "Your response should be in language \(language).",
@@ -583,13 +580,10 @@ private extension ProductStore {
                                        url: String,
                                        name: String,
                                        description: String,
+                                       language: String,
                                        completion: @escaping (Result<String, Error>) -> Void) {
         Task {
             let result = await Result {
-                let language = try await generativeContentRemote.identifyLanguage(siteID: siteID,
-                                                                                  string: name + " " + description,
-                                                                                  feature: .productSharing)
-
                 let prompt = [
                     // swiftlint:disable:next line_length
                     "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",

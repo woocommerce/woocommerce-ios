@@ -23,12 +23,16 @@ final class UpgradesViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    private let onPlanUpgradeCompleted: (() -> Void)?
+
     init(siteID: Int64,
+         onPlanUpgradeCompleted: (() -> Void)? = nil,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
          storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
+        self.onPlanUpgradeCompleted = onPlanUpgradeCompleted
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
         self.storePlanSynchronizer = storePlanSynchronizer
         self.stores = stores

@@ -295,8 +295,8 @@ extension DashboardViewModel {
 
     private func isBlazeBannerVisible() async -> Bool {
         async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
-        async let storeHasProducts = (try? checkIfStoreHasProducts(siteID: siteID, status: .published)) ?? false
-        guard (await isSiteEligible, await storeHasProducts) == (true, true) else {
+        async let storeHasPublishedProducts = (try? checkIfStoreHasProducts(siteID: siteID, status: .published)) ?? false
+        guard (await isSiteEligible, await storeHasPublishedProducts) == (true, true) else {
             return false
         }
         return !userDefaults.hasDismissedBlazeBanner(for: siteID)

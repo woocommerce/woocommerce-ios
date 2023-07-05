@@ -9,8 +9,10 @@ import Yosemite
 final class UpgradesHostingController: UIHostingController<UpgradesView> {
     private let authentication: Authentication = ServiceLocator.authenticationManager
 
-    init(siteID: Int64) {
-        let upgradesViewModel = UpgradesViewModel(siteID: siteID)
+    init(siteID: Int64,
+         onPlanUpgradeCompleted: (() -> Void)? = nil) {
+        let upgradesViewModel = UpgradesViewModel(siteID: siteID,
+                                                  onPlanUpgradeCompleted: onPlanUpgradeCompleted)
         let subscriptionsViewModel = SubscriptionsViewModel()
 
         super.init(rootView: UpgradesView(upgradesViewModel: upgradesViewModel, subscriptionsViewModel: subscriptionsViewModel))

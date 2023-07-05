@@ -2426,7 +2426,7 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     enum InAppPurchases {
         enum Keys: String {
-            case productID = "product_ID"
+            case productID = "product_id"
             case source
             case step
             case featureGroup = "feature_group"

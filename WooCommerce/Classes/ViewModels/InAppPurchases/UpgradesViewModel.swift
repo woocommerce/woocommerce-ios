@@ -8,7 +8,6 @@ import Combine
 ///
 final class UpgradesViewModel: ObservableObject {
 
-    @Published var entitledWpcomPlanIDs: Set<String>
     @Published var upgradeViewState: UpgradeViewState = .loading
 
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
@@ -34,48 +33,53 @@ final class UpgradesViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
 
-        entitledWpcomPlanIDs = []
-
         observeViewStateAndTrackAnalytics()
-        checkForSiteOwnership()
     }
 
     /// Sync wrapper for `fetchViewData`, so can be called directly from where this
     /// ViewModel is referenced, outside of the initializer
     ///
+    @MainActor
     func retryFetch() {
         Task {
             await fetchViewData()
         }
     }
 
-    /// Retrieves all In-App Purchases WPCom plans
+    /// Sets up the view – validates whether they are eligible to upgrade and shows a plan
     ///
     @MainActor
-    func fetchPlans() async {
+    func prepareViewModel() async {
         do {
+            guard let site = stores.sessionManager.defaultSite else {
+                throw PrePurchaseError.fetchError
+            }
+
+            guard site.isSiteOwner else {
+                throw PrePurchaseError.userNotAllowedToUpgrade
+            }
+
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
-                upgradeViewState = .prePurchaseError(.inAppPurchasesNotSupported)
-                return
+                throw PrePurchaseError.inAppPurchasesNotSupported
             }
 
             async let wpcomPlans = inAppPurchasesPlanManager.fetchPlans()
             async let hardcodedPlanDataIsValid = checkHardcodedPlanDataValidity()
 
-            try await loadUserEntitlements(for: wpcomPlans)
-            guard entitledWpcomPlanIDs.isEmpty else {
-                upgradeViewState = .prePurchaseError(.maximumSitesUpgraded)
-                return
+            guard try await hasNoActiveInAppPurchases(for: wpcomPlans) else {
+                throw PrePurchaseError.maximumSitesUpgraded
             }
 
             guard let plan = try await retrievePlanDetailsIfAvailable(.essentialMonthly,
                                                                       from: wpcomPlans,
                                                                       hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
             else {
-                upgradeViewState = .prePurchaseError(.fetchError)
-                return
+                throw PrePurchaseError.fetchError
             }
             upgradeViewState = .loaded(plan)
+        } catch let prePurchaseError as PrePurchaseError {
+            DDLogError("prePurchaseError \(prePurchaseError)")
+            upgradeViewState = .prePurchaseError(prePurchaseError)
         } catch {
             DDLogError("fetchPlans \(error)")
             upgradeViewState = .prePurchaseError(.fetchError)
@@ -154,20 +158,18 @@ private extension UpgradesViewModel {
     /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
     /// via In-App Purchases
     ///
-    @MainActor
-    func loadUserEntitlements(for plans: [WPComPlanProduct]) async {
-        do {
-            for wpcomPlan in plans {
-                if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: wpcomPlan.id) {
-                    self.entitledWpcomPlanIDs.insert(wpcomPlan.id)
-                } else {
-                    self.entitledWpcomPlanIDs.remove(wpcomPlan.id)
+    func hasNoActiveInAppPurchases(for plans: [WPComPlanProduct]) async throws -> Bool {
+        for plan in plans {
+            do {
+                if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.id) {
+                    return false
                 }
+            } catch {
+                DDLogError("There was an error when loading entitlements: \(error)")
+                throw PrePurchaseError.entitlementsError
             }
-        } catch {
-            DDLogError("loadEntitlements \(error)")
-            upgradeViewState = .prePurchaseError(.entitlementsError)
         }
+        return true
     }
 
     @MainActor
@@ -187,7 +189,7 @@ private extension UpgradesViewModel {
     @MainActor
     func fetchViewData() async {
         upgradeViewState = .loading
-        await fetchPlans()
+        await prepareViewModel()
     }
 
     /// Checks whether a plan can be purchased from the current view state,
@@ -199,19 +201,6 @@ private extension UpgradesViewModel {
             return plan
         default:
             return nil
-        }
-    }
-
-    /// Checks whether the current user is the site owner, as only the site owner can perform
-    /// In-App Purchases upgrades, despite their site role
-    ///
-    func checkForSiteOwnership() {
-        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
-            self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
-        } else {
-            Task {
-                await fetchViewData()
-            }
         }
     }
 }

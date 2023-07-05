@@ -87,13 +87,15 @@ struct BlazeBanner: View {
     /// Closure to be triggered when the dismiss button is tapped.
     var onDismiss: () -> Void = {}
 
-    init(showsTopDivider: Bool = false, showsBottomSpacer: Bool = false) {
+    init(showsTopDivider: Bool = false,
+         showsBottomSpacer: Bool = false) {
         self.showsTopDivider = showsTopDivider
         self.showsBottomSpacer = showsBottomSpacer
     }
 
     var body: some View {
         VStack(spacing: 0) {
+
             // Optional divider on the top
             Divider()
                 .renderedIf(showsTopDivider)
@@ -195,9 +197,9 @@ extension BlazeBanner {
         var blazeSource: BlazeSource {
             switch self {
             case .myStore:
-                return .myStore
+                return .myStoreBanner
             case .products:
-                return .productList
+                return .productListBanner
             }
         }
     }

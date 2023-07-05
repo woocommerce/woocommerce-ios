@@ -124,9 +124,6 @@ struct StoreOnboardingView: View {
 
     private var content: some View {
         VStack(spacing: 0) {
-            Color(uiColor: .listBackground)
-                .frame(height: Layout.VerticalSpacing.collapsedMode)
-                .renderedIf(!viewModel.isExpanded)
 
             let verticalSpacing = viewModel.isExpanded ? Layout.VerticalSpacing.expandedMode : Layout.VerticalSpacing.collapsedMode
             VStack(alignment: viewModel.isExpanded ? .center : .leading, spacing: verticalSpacing) {
@@ -163,10 +160,6 @@ struct StoreOnboardingView: View {
             .padding(insets: viewModel.shouldShowViewAllButton ?
                      Layout.insetsWithViewAllButton: Layout.insetsWithoutViewAllButton)
             .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
-
-            Color(uiColor: .listBackground)
-                .frame(height: Layout.VerticalSpacing.collapsedMode)
-                .renderedIf(!viewModel.isExpanded)
         }
     }
 }

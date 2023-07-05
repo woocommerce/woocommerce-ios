@@ -3,7 +3,8 @@
 14.4
 -----
 - [*] Shipping Labels: Fixed a bug preventing label printing in orders viewed from search [https://github.com/woocommerce/woocommerce-ios/pull/10161]
-
+- [*] Blaze: Disable the entry point in the product creation form. [https://github.com/woocommerce/woocommerce-ios/pull/10173]
+ 
 
 14.3
 -----

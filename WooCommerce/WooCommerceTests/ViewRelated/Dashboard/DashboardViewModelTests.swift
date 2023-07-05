@@ -102,8 +102,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
-                completion(.success(true))
+            case let .checkIfStoreHasProducts(_, completion):
+                completion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -138,8 +138,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
-                completion(.success(true))
+            case let .checkIfStoreHasProducts(_, completion):
+                completion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -180,8 +180,8 @@ final class DashboardViewModelTests: XCTestCase {
     func prepareStoresToShowJustInTimeMessage(_ response: Result<[Yosemite.JustInTimeMessage], Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
-                completion(.success(false))
+            case let .checkIfStoreHasProducts(_, completion):
+                completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -200,8 +200,8 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkProductsOnboardingEligibility(_, completion):
-                completion(.success(false))
+            case let .checkIfStoreHasProducts(_, completion):
+                completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -608,6 +608,142 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"))
+    }
+
+    // MARK: Blaze banner
+    // swiftlint:disable:next line_length
+    func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet_and_store_has_products() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: checker)
+        XCTAssertFalse(viewModel.showBlazeBanner)
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        await viewModel.updateBlazeBannerVisibility()
+
+        //  Then
+        XCTAssertTrue(viewModel.showBlazeBanner)
+    }
+
+    func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_false_if_site_is_not_eligible_for_blaze() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: checker)
+        XCTAssertFalse(viewModel.showBlazeBanner)
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        await viewModel.updateBlazeBannerVisibility()
+
+        //  Then
+        XCTAssertFalse(viewModel.showBlazeBanner)
+    }
+
+    func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_false_if_banner_was_dismissed() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        userDefaults[.hasDismissedBlazeBanner] = ["\(sampleSiteID)": true]
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: checker)
+        XCTAssertFalse(viewModel.showBlazeBanner)
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        await viewModel.updateBlazeBannerVisibility()
+
+        //  Then
+        XCTAssertFalse(viewModel.showBlazeBanner)
+    }
+
+    func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_false_if_store_does_not_have_any_products() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: checker)
+        XCTAssertFalse(viewModel.showBlazeBanner)
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, let onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        await viewModel.updateBlazeBannerVisibility()
+
+        //  Then
+        XCTAssertFalse(viewModel.showBlazeBanner)
+    }
+
+    func test_hideBlazeBanner_sets_showBlazeBanner_to_false_and_updates_hasDismissedBlazeBanner() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: checker)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        await viewModel.updateBlazeBannerVisibility()
+        XCTAssertTrue(viewModel.showBlazeBanner)
+
+        //  When
+        viewModel.hideBlazeBanner()
+
+        // Then
+        XCTAssertFalse(viewModel.showBlazeBanner)
+        let dictionary = try XCTUnwrap(userDefaults[.hasDismissedBlazeBanner] as? [String: Bool])
+        XCTAssertEqual(dictionary["\(sampleSiteID)"], true)
     }
 }
 

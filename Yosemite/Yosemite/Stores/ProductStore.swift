@@ -116,8 +116,8 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
-        case let .checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion):
-            checkProductsOnboardingEligibility(siteID: siteID, onCompletion: onCompletion)
+        case let .checkIfStoreHasProducts(siteID: siteID, onCompletion: onCompletion):
+            checkIfStoreHasProducts(siteID: siteID, onCompletion: onCompletion)
         case let .createTemplateProduct(siteID, template, onCompletion):
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
         case let .generateProductDescription(siteID, name, features, completion):
@@ -495,21 +495,21 @@ private extension ProductStore {
         upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
     }
 
-    /// Checks if the store is eligible for products onboarding.
-    /// Returns `true` if the store has no products.
+    /// Checks if the store already has any products.
+    /// Returns `false` if the store has no products.
     ///
-    func checkProductsOnboardingEligibility(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func checkIfStoreHasProducts(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
         if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
-            return onCompletion(.success(false))
+            return onCompletion(.success(true))
         }
 
         // If there are no locally stored products, then check remote.
         remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
             switch result {
             case .success(let ids):
-                onCompletion(.success(ids.isEmpty))
+                onCompletion(.success(ids.isEmpty == false))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

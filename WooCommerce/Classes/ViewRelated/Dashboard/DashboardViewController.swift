@@ -113,6 +113,10 @@ final class DashboardViewController: UIViewController {
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
 
+    /// Hosting controller for the banner to highlight the Blaze feature.
+    ///
+    private var blazeBannerHostingController: BlazeBannerHostingController?
+
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var isJetpackBenefitsBannerShown: Bool {
@@ -174,6 +178,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
+        observeBlazeBannerVisibility()
         configureFreeTrialBannerPresenter()
         presentPrivacyBannerIfNeeded()
 
@@ -338,6 +343,8 @@ private extension DashboardViewController {
 
     func configureContainerStackView() {
         containerStackView.axis = .vertical
+        containerStackView.spacing = Constants.containerStackViewSpacing
+        containerStackView.backgroundColor = .listBackground
         containerView.addSubview(containerStackView)
         containerStackView.translatesAutoresizingMaskIntoConstraints = false
         containerView.pinSubviewToAllEdges(containerStackView)
@@ -369,6 +376,17 @@ private extension DashboardViewController {
     func addViewBelowHeaderStackView(contentView: UIView) {
         let indexAfterHeader = (containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1) + 1
         containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
+    }
+
+    func addViewBelowOnboardingCard(_ contentView: UIView) {
+        let indexOfHeader = containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1
+        let indexAfterOnboardingCard: Int = {
+            if let onboardingView {
+                return (containerStackView.arrangedSubviews.firstIndex(of: onboardingView) ?? indexOfHeader) + 1
+            }
+            return indexOfHeader + 1
+        }()
+        containerStackView.insertArrangedSubview(contentView, at: indexAfterOnboardingCard)
     }
 
     func configureStackView() {
@@ -765,6 +783,59 @@ private extension DashboardViewController {
     }
 }
 
+// MARK: - Blaze banner
+extension DashboardViewController {
+    func observeBlazeBannerVisibility() {
+        viewModel.$showBlazeBanner.removeDuplicates()
+            .sink { [weak self] showsBlazeBanner in
+                guard let self else { return }
+                if showsBlazeBanner {
+                    self.showBlazeBanner()
+                } else {
+                    self.removeBlazeBanner()
+                }
+            }
+            .store(in: &subscriptions)
+
+        Task { @MainActor in
+            await viewModel.updateBlazeBannerVisibility()
+        }
+    }
+
+    func showBlazeBanner() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        if blazeBannerHostingController != nil {
+            removeBlazeBanner()
+        }
+        let hostingController = BlazeBannerHostingController(
+            site: site,
+            entryPoint: .myStore,
+            containerViewController: self,
+            dismissHandler: { [weak self] in
+            self?.viewModel.hideBlazeBanner()
+        })
+        guard let bannerView = hostingController.view else {
+            return
+        }
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        addViewBelowOnboardingCard(bannerView)
+        addChild(hostingController)
+        hostingController.didMove(toParent: self)
+        blazeBannerHostingController = hostingController
+    }
+
+    func removeBlazeBanner() {
+        guard let blazeBannerHostingController,
+              blazeBannerHostingController.parent == self else { return }
+        blazeBannerHostingController.willMove(toParent: nil)
+        blazeBannerHostingController.view.removeFromSuperview()
+        blazeBannerHostingController.removeFromParent()
+        self.blazeBannerHostingController = nil
+    }
+}
+
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
@@ -872,6 +943,9 @@ private extension DashboardViewController {
             group.addTask { [weak self] in
                 await self?.viewModel.reloadStoreOnboardingTasks()
             }
+            group.addTask { [weak self] in
+                await self?.viewModel.updateBlazeBannerVisibility()
+            }
         }
     }
 }
@@ -898,6 +972,7 @@ private extension DashboardViewController {
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
                 await self?.reloadData(forced: true)
+                await self?.viewModel.updateBlazeBannerVisibility()
             }
         }.store(in: &subscriptions)
     }
@@ -970,5 +1045,6 @@ private extension DashboardViewController {
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
         static let tabStripSpacing = CGFloat(12)
         static let headerStackViewSpacing = CGFloat(4)
+        static let containerStackViewSpacing = CGFloat(16)
     }
 }

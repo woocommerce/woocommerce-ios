@@ -135,13 +135,16 @@ struct AddProductFromImageView: View {
             .padding([.top], 10)
 
             Section {
-                // TODO-JC: TextEditor with a placeholder
-                TextEditor(text: $viewModel.name)
-                .fixedSize(horizontal: false, vertical: true)
-
-                TextEditor(text: $viewModel.description)
-                .fixedSize(horizontal: false, vertical: true)
-                .lineLimit(5)
+                if #available(iOS 16.0, *) {
+                    TextField("Name", text: $viewModel.name, axis: .vertical)
+                        .lineLimit(1...2)
+                        .fixedSize(horizontal: false, vertical: true)
+                    TextField("Description", text: $viewModel.description, axis: .vertical)
+                        .lineLimit(2...5)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    // TODO-JC: iOS 15 version
+                }
             }
             .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
             .shimmering(active: viewModel.isGeneratingDetails)

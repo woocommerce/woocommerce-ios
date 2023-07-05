@@ -1326,6 +1326,7 @@ private extension ProductsViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
+            hideBlazeBanner()
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
             if isFirstPage && resultsController.isEmpty {

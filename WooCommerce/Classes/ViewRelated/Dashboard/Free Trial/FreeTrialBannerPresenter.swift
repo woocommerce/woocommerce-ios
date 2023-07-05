@@ -30,10 +30,6 @@ final class FreeTrialBannerPresenter {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    /// Flag that indicates if a site can be upgraded via In-App Purchases
-    ///
-    private var inAppPurchasesUpgradeEnabled: Bool
-
     private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()
 
     /// - Parameters:
@@ -48,7 +44,6 @@ final class FreeTrialBannerPresenter {
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
-        self.inAppPurchasesUpgradeEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1)
         observeStorePlan()
         observeConnectivity()
     }
@@ -111,7 +106,7 @@ private extension FreeTrialBannerPresenter {
     /// Will display different CTA text depending if IAP is supported and is enabled
     ///
     private func setupBannerText() async -> String {
-        if await inAppPurchasesManager.inAppPurchasesAreSupported() && inAppPurchasesUpgradeEnabled {
+        if await inAppPurchasesManager.inAppPurchasesAreSupported() {
             return Localization.upgradeNow
         } else {
             return Localization.learnMore
@@ -163,15 +158,8 @@ private extension FreeTrialBannerPresenter {
     ///
     func showUpgradesView() {
         guard let viewController else { return }
-        Task { @MainActor in
-            if await inAppPurchasesManager.inAppPurchasesAreSupported() && inAppPurchasesUpgradeEnabled {
-                let upgradesController = UpgradesHostingController(siteID: siteID)
-                viewController.present(upgradesController, animated: true)
-            } else {
-                let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
-                viewController.show(subscriptionsController, sender: self)
-            }
-        }
+
+        UpgradesViewPresentationCoordinator().presentUpgrades(for: siteID, from: viewController)
     }
 }
 

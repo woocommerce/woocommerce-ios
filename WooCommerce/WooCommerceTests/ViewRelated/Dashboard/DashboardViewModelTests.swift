@@ -640,7 +640,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     // swiftlint:disable:next line_length
-    func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet_and_store_has_products() async throws {
+    func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet_and_store_has_published_products() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString

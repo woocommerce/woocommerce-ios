@@ -299,7 +299,7 @@ extension DashboardViewModel {
         guard (await isSiteEligible, await storeHasProducts) == (true, true) else {
             return false
         }
-        return userDefaults.hasDismissedBlazeBanner(for: siteID)
+        return !userDefaults.hasDismissedBlazeBanner(for: siteID)
     }
 
     @MainActor

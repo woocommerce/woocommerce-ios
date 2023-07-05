@@ -175,7 +175,7 @@ extension ProductListViewModel {
         guard isSiteEligible else {
             return false
         }
-        return userDefaults.hasDismissedBlazeBanner(for: siteID)
+        return !userDefaults.hasDismissedBlazeBanner(for: siteID)
     }
 
     /// Hides the banner and updates the user defaults to not show the banner again.

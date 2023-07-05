@@ -140,6 +140,13 @@ struct AddProductFromImageView: View {
             .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
             .shimmering(active: viewModel.isGeneratingDetails)
 
+            // Button to regenerate product details based on the selected scanned texts.
+            Button("Regenerate") {
+                viewModel.generateProductDetails()
+            }
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGeneratingDetails))
+            .renderedIf(viewModel.selectedScannedTexts.isEmpty == false)
+
             Text("Generating details with the scanned texts:")
                 .renderedIf(viewModel.isGeneratingDetails)
             List(viewModel.scannedTexts, id: \.self, selection: $viewModel.selectedScannedTexts) { scannedText in

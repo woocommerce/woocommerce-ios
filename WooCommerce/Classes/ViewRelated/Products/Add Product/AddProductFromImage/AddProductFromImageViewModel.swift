@@ -62,6 +62,14 @@ final class AddProductFromImageViewModel: ObservableObject {
         }
         imageState = .success(image)
     }
+
+    func generateProductDetails() {
+        Task { @MainActor in
+            isGeneratingDetails = true
+            await generateAndPopulateProductDetails(from: Array(selectedScannedTexts))
+            isGeneratingDetails = false
+        }
+    }
 }
 
 private extension AddProductFromImageViewModel {
@@ -98,15 +106,9 @@ private extension AddProductFromImageViewModel {
         let texts = scannedTexts(from: request)
         scannedTexts = texts
         selectedScannedTexts = .init(texts)
-        isGeneratingDetails = true
         Task { @MainActor in
-            switch await generateProductDetails(from: texts) {
-                case .success(let details):
-                    name = details.name
-                    description = details.description
-                case .failure(let error):
-                    DDLogError("⛔️ Error generating product details from scanned text \(texts): \(error)")
-            }
+            isGeneratingDetails = true
+            await generateAndPopulateProductDetails(from: texts)
             isGeneratingDetails = false
         }
     }
@@ -120,6 +122,16 @@ private extension AddProductFromImageViewModel {
             observation.topCandidates(1).first?.string
         }
         return recognizedStrings
+    }
+
+    func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
+        switch await generateProductDetails(from: scannedTexts) {
+            case .success(let details):
+                name = details.name
+                description = details.description
+            case .failure(let error):
+                DDLogError("⛔️ Error generating product details from scanned text \(scannedTexts): \(error)")
+        }
     }
 
     func generateProductDetails(from scannedTexts: [String]) async -> Result<ProductDetailsFromScannedTexts, Error> {

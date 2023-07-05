@@ -120,6 +120,10 @@ public class ProductStore: Store {
             checkIfStoreHasProducts(siteID: siteID, onCompletion: onCompletion)
         case let .createTemplateProduct(siteID, template, onCompletion):
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
+        case let .identifyLanguage(siteID, string, feature, completion):
+            identifyLanguage(siteID: siteID,
+                             string: string, feature: feature,
+                             completion: completion)
         case let .generateProductDescription(siteID, name, features, completion):
             generateProductDescription(siteID: siteID, name: name, features: features, completion: completion)
         case let .generateProductSharingMessage(siteID, url, name, description, completion):
@@ -527,6 +531,22 @@ private extension ProductStore {
 
             case .failure(let error):
                 onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func identifyLanguage(siteID: Int64,
+                          string: String,
+                          feature: GenerativeContentRemoteFeature,
+                          completion: @escaping (Result<String, Error>) -> Void) {
+        Task {
+            let result = await Result {
+                try await generativeContentRemote.identifyLanguage(siteID: siteID,
+                                                                   string: string,
+                                                                   feature: feature)
+            }
+            await MainActor.run {
+                completion(result)
             }
         }
     }

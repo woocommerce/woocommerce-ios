@@ -27,12 +27,19 @@ final class AddProductFromImageViewModel: ObservableObject {
     enum ImageState {
         case empty
         case loading(Progress)
-        case success(UIImage)
+        case success(MediaPickerImage)
         case failure(Error)
     }
 
     @Published private(set) var imageState: ImageState = .empty
-    private let onAddImage: (MediaPickingSource) async -> UIImage?
+    var image: MediaPickerImage? {
+        guard case let .success(image) = imageState else {
+            return nil
+        }
+        return image
+    }
+
+    private let onAddImage: (MediaPickingSource) async -> MediaPickerImage?
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -40,7 +47,7 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         onAddImage: @escaping (MediaPickingSource) async -> UIImage?) {
+         onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.siteID = siteID
         self.stores = stores
         self.onAddImage = onAddImage
@@ -49,7 +56,7 @@ final class AddProductFromImageViewModel: ObservableObject {
             guard case let .success(image) = state else {
                 return nil
             }
-            return image
+            return image.image
         }
         .sink { [weak self] image in
             self?.onSelectedImage(image)

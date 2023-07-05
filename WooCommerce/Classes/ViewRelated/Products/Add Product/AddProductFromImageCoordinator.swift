@@ -56,7 +56,7 @@ final class AddProductFromImageCoordinator: Coordinator {
                 guard let product = self.createProduct(name: data.name, description: data.description, sku: data.sku) else {
                     return
                 }
-                self.showProduct(product)
+                self.showProduct(product, image: data.image)
             }
         })
         let formNavigationController = UINavigationController(rootViewController: addProductFromImage)
@@ -79,7 +79,7 @@ private extension AddProductFromImageCoordinator {
     }
 
     /// Shows a product in the current navigation stack.
-    func showProduct(_ product: Product) {
+    func showProduct(_ product: Product, image: MediaPickerImage?) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
@@ -87,7 +87,15 @@ private extension AddProductFromImageCoordinator {
             .actionHandler(key: .init(siteID: product.siteID,
                                       productOrVariationID: .product(id: model.productID),
                                       isLocalID: true),
-                           originalStatuses: model.imageStatuses)
+                           originalStatuses: [])
+        if let image {
+            switch image.source {
+                case let .asset(asset):
+                    productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+                case let .media(media):
+                    productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [media])
+            }
+        }
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .add,
                                              productImageActionHandler: productImageActionHandler)
@@ -110,7 +118,7 @@ private extension AddProductFromImageCoordinator {
 //
 private extension AddProductFromImageCoordinator {
     @MainActor
-    func showImagePicker(source: MediaPickingSource) async -> UIImage? {
+    func showImagePicker(source: MediaPickingSource) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             let mediaPickingCoordinator = MediaPickingCoordinator(siteID: siteID,
                                                                   allowsMultipleImages: false,
@@ -149,7 +157,7 @@ private extension AddProductFromImageCoordinator {
 // MARK: - Action handling for camera capture
 //
 private extension AddProductFromImageCoordinator {
-    func onCameraCaptureCompletion(asset: PHAsset?, error: Error?) async -> UIImage? {
+    func onCameraCaptureCompletion(asset: PHAsset?, error: Error?) async -> MediaPickerImage? {
         guard let asset else {
             return nil
         }
@@ -165,10 +173,10 @@ private extension AddProductFromImageCoordinator {
 //
 private extension AddProductFromImageCoordinator {
     @MainActor
-    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset], navigationController: UINavigationController) async -> UIImage? {
+    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset], navigationController: UINavigationController) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-            navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            navigationController.topmostPresentedViewController.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
                 guard let self, let asset = assets.first else {
                     return continuation.resume(returning: nil)
                 }
@@ -184,16 +192,16 @@ private extension AddProductFromImageCoordinator {
 //
 private extension AddProductFromImageCoordinator {
     @MainActor
-    func onWPMediaPickerCompletion(mediaItems: [Media]) async -> UIImage? {
+    func onWPMediaPickerCompletion(mediaItems: [Media]) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             let shouldAnimateMediaLibraryDismissal = mediaItems.isEmpty
-            navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            navigationController.topmostPresentedViewController.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
                 guard let self, let media = mediaItems.first else {
                     return continuation.resume(returning: nil)
                 }
                 let productImage = media.toProductImage
                 _ = self.productImageLoader.requestImage(productImage: productImage) { image in
-                    continuation.resume(returning: image)
+                    continuation.resume(returning: .init(image: image, source: .media(media: media)))
                 }
             }
         }
@@ -201,7 +209,7 @@ private extension AddProductFromImageCoordinator {
 }
 
 private extension AddProductFromImageCoordinator {
-    func requestImage(from asset: PHAsset) async -> UIImage? {
+    func requestImage(from asset: PHAsset) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             // PHImageManager.requestImageForAsset can be called more than onoce
             var hasReceivedImage = false
@@ -209,9 +217,24 @@ private extension AddProductFromImageCoordinator {
                 guard hasReceivedImage == false else {
                     return
                 }
-                continuation.resume(returning: image)
+                continuation.resume(returning: .init(image: image, source: .asset(asset: asset)))
                 hasReceivedImage = true
             }
         }
+    }
+}
+
+struct MediaPickerImage {
+    enum Source {
+        case asset(asset: PHAsset)
+        case media(media: Media)
+    }
+
+    let image: UIImage
+    let source: Source
+
+    init(image: UIImage, source: Source) {
+        self.image = image
+        self.source = source
     }
 }

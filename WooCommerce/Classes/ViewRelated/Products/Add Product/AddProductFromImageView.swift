@@ -6,12 +6,12 @@ struct AddProductFromImageData {
     let name: String
     let description: String
     let sku: String?
-    let image: UIImage?
+    let image: MediaPickerImage?
 }
 
 final class AddProductFromImageHostingController: UIHostingController<AddProductFromImageView> {
     init(siteID: Int64,
-         addImage: @escaping (MediaPickingSource) async -> UIImage?,
+         addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          completion: @escaping (AddProductFromImageData) -> Void) {
         super.init(rootView: AddProductFromImageView(siteID: siteID, addImage: addImage, completion: completion))
     }
@@ -28,7 +28,7 @@ struct ProductLiveTextImage: View {
         switch imageState {
         case .success(let image):
             ZoomableScrollView {
-                Image(uiImage: image)
+                Image(uiImage: image.image)
                     .resizable()
                     .scaledToFit()
             }
@@ -78,6 +78,7 @@ struct EditableProductImageView: View {
                         .symbolRenderingMode(.multicolor)
                         .font(.system(size: 30))
                         .foregroundColor(.init(uiColor: .accent))
+                        .renderedIf(viewModel.image != nil)
                 }
                 // TODO-JC: only show the icon when an image is selected
                 .actionSheet(isPresented: $isShowingActionSheet) {
@@ -115,9 +116,8 @@ struct AddProductFromImageView: View {
     @StateObject private var viewModel: AddProductFromImageViewModel
 
     init(siteID: Int64,
-         addImage: @escaping (MediaPickingSource) async -> UIImage?,
+         addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          completion: @escaping (AddProductFromImageData) -> Void) {
-        self._viewModel = StateObject(wrappedValue: AddProductFromImageViewModel(siteID: siteID, onAddImage: addImage))
         self.completion = completion
         self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID, onAddImage: addImage))
     }
@@ -189,7 +189,7 @@ struct AddProductFromImageView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Continue") {
                     // TODO-JC: pass image
-                    completion(.init(name: viewModel.name, description: viewModel.description, sku: viewModel.sku, image: nil))
+                    completion(.init(name: viewModel.name, description: viewModel.description, sku: viewModel.sku, image: viewModel.image))
                 }
                 .buttonStyle(LinkButtonStyle())
             }

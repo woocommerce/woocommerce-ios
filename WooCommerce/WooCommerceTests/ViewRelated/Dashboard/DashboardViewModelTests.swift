@@ -637,7 +637,6 @@ final class DashboardViewModelTests: XCTestCase {
         //  Then
         XCTAssertTrue(viewModel.showBlazeBanner)
     }
-    // swiftlint:enable:next line_length
 
     func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_false_if_site_is_not_eligible_for_blaze() async throws {
         // Given

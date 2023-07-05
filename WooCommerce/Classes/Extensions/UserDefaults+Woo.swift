@@ -107,10 +107,7 @@ extension UserDefaults {
     func hasDismissedBlazeBanner(for siteID: Int64) -> Bool {
         let hasDismissed = self[.hasDismissedBlazeBanner] as? [String: Bool]
         let idAsString = "\(siteID)"
-        guard hasDismissed?[idAsString] == nil else {
-            return false
-        }
-        return true
+        return hasDismissed?[idAsString] == true
     }
 
     /// Set the Blaze banner to be dismissed for a site.
@@ -121,6 +118,7 @@ extension UserDefaults {
         let idAsString = "\(siteID)"
         if var hasDismissed = self[.hasDismissedBlazeBanner] as? [String: Bool] {
             hasDismissed[idAsString] = true
+            self[.hasDismissedBlazeBanner] = hasDismissed
         } else {
             self[.hasDismissedBlazeBanner] = [idAsString: true]
         }

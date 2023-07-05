@@ -1,5 +1,11 @@
 import UIKit
 
+enum MediaPickingSource {
+    case camera
+    case photoLibrary
+    case siteMediaLibrary
+}
+
 /// Prepares the alert controller that will be presented when trying to add media to a site.
 ///
 final class MediaPickingCoordinator {
@@ -50,6 +56,20 @@ final class MediaPickingCoordinator {
 
         origin.present(menuAlert, animated: true)
     }
+
+    func showMediaPicker(source: MediaPickingSource, from origin: UIViewController) {
+        switch source {
+        case .camera:
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "camera"])
+            showCameraCapture(origin: origin)
+        case .photoLibrary:
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "device"])
+            showDeviceMediaLibraryPicker(origin: origin)
+        case .siteMediaLibrary:
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "wpmedia"])
+            showSiteMediaPicker(origin: origin)
+        }
+    }
 }
 
 // MARK: Alert Actions
@@ -59,8 +79,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("Take a photo",
                                       comment: "Menu option for taking an image or video with the device's camera.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "camera"])
-            self?.showCameraCapture(origin: origin)
+            self?.showMediaPicker(source: .camera, from: origin)
         }
     }
 
@@ -68,8 +87,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("Choose from device",
                                       comment: "Menu option for selecting media from the device's photo library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "device"])
-            self?.showDeviceMediaLibraryPicker(origin: origin)
+            self?.showMediaPicker(source: .photoLibrary, from: origin)
         }
     }
 
@@ -77,8 +95,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("WordPress Media Library",
                                       comment: "Menu option for selecting media from the site's media library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "wpmedia"])
-            self?.showSiteMediaPicker(origin: origin)
+            self?.showMediaPicker(source: .siteMediaLibrary, from: origin)
         }
     }
 

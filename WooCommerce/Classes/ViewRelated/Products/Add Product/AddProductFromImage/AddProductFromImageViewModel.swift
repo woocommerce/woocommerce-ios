@@ -25,6 +25,8 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     // MARK: - Product Image
 
+    private let onAddImage: (MediaPickingSource) async -> UIImage?
+
     enum ImageState {
         case empty
         case loading(Progress)
@@ -52,36 +54,16 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published private(set) var imageState: ImageState = .empty
 
-    @Published var imageSelection: PhotosPickerItem? = nil {
-        didSet {
-            if let imageSelection {
-                let progress = loadTransferable(from: imageSelection)
-                imageState = .loading(progress)
-            } else {
-                imageState = .empty
-            }
-        }
-    }
-
     private let siteID: Int64
     private let stores: StoresManager
     private var selectedImageSubscription: AnyCancellable?
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         onAddImage: @escaping (MediaPickingSource) async -> UIImage?) {
         self.siteID = siteID
         self.stores = stores
-
-        $imageSelection.map { [weak self] selectedImage in
-            guard let self else {
-                return .empty
-            }
-            if let selectedImage {
-                let progress = loadTransferable(from: selectedImage)
-                return .loading(progress)
-            } else {
-                return .empty
-            }
-        }.assign(to: &$imageState)
+        self.onAddImage = onAddImage
 
         selectedImageSubscription = $imageState.compactMap { state -> UIImage? in
             guard case let .success(image) = state else {
@@ -92,6 +74,13 @@ final class AddProductFromImageViewModel: ObservableObject {
         .sink { [weak self] image in
             self?.onSelectedImage(image)
         }
+    }
+
+    func addImage(from source: MediaPickingSource) async {
+        guard let image = await onAddImage(source) else {
+            return
+        }
+        imageState = .success(image)
     }
 }
 
@@ -158,30 +147,6 @@ private extension AddProductFromImageViewModel {
                                                                  scannedTexts: scannedTexts) { result in
                 continuation.resume(returning: result)
             })
-        }
-    }
-}
-
-// MARK: - SwiftUI Photos Picker
-//
-@available(iOS 16.0, *)
-private extension AddProductFromImageViewModel {
-    func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
-        return imageSelection.loadTransferable(type: ProductImage.self) { result in
-            DispatchQueue.main.async {
-                guard imageSelection == self.imageSelection else {
-                    print("Failed to get the selected item.")
-                    return
-                }
-                switch result {
-                    case .success(let image?):
-                        self.imageState = .success(image.image)
-                    case .success(nil):
-                        self.imageState = .empty
-                    case .failure(let error):
-                        self.imageState = .failure(error)
-                }
-            }
         }
     }
 }

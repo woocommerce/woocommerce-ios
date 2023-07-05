@@ -45,6 +45,8 @@ final class AddProductCoordinator: Coordinator {
     ///
     var onProductCreated: (Product) -> Void = { _ in }
 
+    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+
     init(siteID: Int64,
          source: Source,
          sourceBarButtonItem: UIBarButtonItem,
@@ -84,15 +86,14 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
-        // TODO-JC: A/B experiment
-        if #available(iOS 16.0, *), ImageAnalyzer.isSupported {
-            let addProductFromImage = AddProductFromImageHostingController(siteID: siteID) { [weak self] data in
-                self?.navigationController.dismiss(animated: true) { [weak self] in
-                    self?.addProduct(name: data.name, description: data.description, sku: data.sku)
-                }
-            }
-            let navController = UINavigationController(rootViewController: addProductFromImage)
-            navigationController.present(navController, animated: true)
+        // TODO-JC: eligibility check
+        if ServiceLocator.stores.sessionManager.defaultSite?.isWordPressComStore == true {
+            // TODO-JC: A/B experiment activation event
+            let coordinator = AddProductFromImageCoordinator(siteID: siteID,
+                                                             sourceNavigationController: navigationController,
+                                                             isFirstProduct: isFirstProduct)
+            self.addProductFromImageCoordinator = coordinator
+            coordinator.start()
             return
         }
 
@@ -108,18 +109,6 @@ final class AddProductCoordinator: Coordinator {
         } else {
             presentProductTypeBottomSheet(creationType: .manual)
         }
-    }
-
-    func addProduct(name: String, description: String?, sku: String?) {
-        guard let product = ProductFactory().createNewProduct(type: .simple,
-                                                              isVirtual: false,
-                                                              siteID: siteID)?
-            .copy(name: name,
-                  fullDescription: description,
-                  sku: sku) else {
-            return
-        }
-        showProduct(product)
     }
 
     /// Presents a product onto the current navigation stack.
@@ -283,40 +272,6 @@ private extension AddProductCoordinator {
             return
         }
         presentProduct(product)
-    }
-
-    /// Presents a product onto the current navigation stack.
-    ///
-    func showProduct(_ product: Product) {
-        let model = EditableProductModel(product: product)
-        let currencyCode = ServiceLocator.currencySettings.currencyCode
-        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = productImageUploader
-            .actionHandler(key: .init(siteID: product.siteID,
-                                      productOrVariationID: .product(id: model.productID),
-                                      isLocalID: true),
-                           originalStatuses: model.imageStatuses)
-        let viewModel = ProductFormViewModel(product: model,
-                                             formType: .add,
-                                             productImageActionHandler: productImageActionHandler)
-        viewModel.onProductCreated = { [weak self] product in
-            guard let self else { return }
-            self.onProductCreated(product)
-            if self.isFirstProduct, let url = URL(string: product.permalink) {
-                self.showFirstProductCreatedView(productURL: url,
-                                                 productName: product.name,
-                                                 productDescription: product.fullDescription ?? product.shortDescription ?? "",
-                                                 showShareProductButton: viewModel.canShareProduct())
-            }
-        }
-        let viewController = ProductFormViewController(viewModel: viewModel,
-                                                       eventLogger: ProductFormEventLogger(),
-                                                       productImageActionHandler: productImageActionHandler,
-                                                       currency: currency,
-                                                       presentationStyle: .navigationStack)
-        // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-        viewController.hidesBottomBarWhenPushed = true
-        navigationController.pushViewController(viewController, animated: true)
     }
 
     /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.

@@ -11,8 +11,10 @@ struct AddProductFromImageData {
 
 @available(iOS 16.0, *)
 final class AddProductFromImageHostingController: UIHostingController<AddProductFromImageView> {
-    init(siteID: Int64, completion: @escaping (AddProductFromImageData) -> Void) {
-        super.init(rootView: AddProductFromImageView(siteID: siteID, completion: completion))
+    init(siteID: Int64,
+         addImage: @escaping (MediaPickingSource) async -> UIImage?,
+         completion: @escaping (AddProductFromImageData) -> Void) {
+        super.init(rootView: AddProductFromImageView(siteID: siteID, addImage: addImage, completion: completion))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -66,63 +68,54 @@ struct ProductImageView: View {
 @available(iOS 16.0, *)
 struct EditableProductImageView: View {
     @ObservedObject var viewModel: AddProductFromImageViewModel
+    @State private var isShowingActionSheet: Bool = false
 
     var body: some View {
-        PhotosPicker(selection: $viewModel.imageSelection,
-                     matching: .images,
-                     photoLibrary: .shared()) {
-            ProductImageView(imageState: viewModel.imageState)
-                .overlay(alignment: .bottomTrailing) {
-                    PhotosPicker(selection: $viewModel.imageSelection,
-                                 matching: .images,
-                                 photoLibrary: .shared()) {
-                        Image(systemName: "pencil.circle.fill")
-                            .symbolRenderingMode(.multicolor)
-                            .font(.system(size: 30))
-                            .foregroundColor(.init(uiColor: .accent))
-                    }
-                                 .buttonStyle(.borderless)
-                                 .renderedIf(viewModel.imageSelection != nil)
+        ProductImageView(imageState: viewModel.imageState)
+            .overlay(alignment: .topTrailing) {
+                Button {
+                    isShowingActionSheet = true
+                } label: {
+                    Image(systemName: "pencil.circle.fill")
+                        .symbolRenderingMode(.multicolor)
+                        .font(.system(size: 30))
+                        .foregroundColor(.init(uiColor: .accent))
                 }
-        }
+                .actionSheet(isPresented: $isShowingActionSheet) {
+                    ActionSheet(title: Text("SwiftUI ActionSheet"),
+                                message: nil,
+                                buttons: [
+                                    //                                    (UIImagePickerController.isSourceTypeAvailable(.camera) ?
+                                    //                                        .default(Text(NSLocalizedString("Take a photo",
+                                    //                                                                        comment: "Menu option for taking an image or video with the device's camera."))) {
+                                    //                                            Task { @MainActor in
+                                    //                                                await viewModel.addImage()
+                                    //                                            }
+                                    //                                        }) : nil),
+                                    .default(Text(NSLocalizedString("Choose from device",
+                                                                    comment: "Menu option for selecting media from the device's photo library."))) {
+                                                                        Task { @MainActor in
+                                                                            await viewModel.addImage(from: .photoLibrary)
+                                                                        }
+                                                                    },
+                                    .cancel()
+                                ].compactMap { $0 })
+                }
+            }
     }
 }
 
-/////
-//
-//struct MultiSelectionRow<RowContent: SelectableRow>: View {
-//    var content: Binding<RowContent>
-//
-//    var body: some View {
-//        Button(action: {
-//            content.value.isSelected.toggle()
-//        }) {
-//            HStack {
-//                Text(content.value.text)
-//                Spacer()
-//                Image(systemName: content.value.isSelected ? "checkmark.circle.fill" : "circle")
-//            }
-//        }
-//    }
-//}
-//
-//protocol SelectableRow {
-//    var text: String { get }
-//    var isSelected: Bool { get set }
-//}
-//
-/////
-
 @available(iOS 16.0, *)
 struct AddProductFromImageView: View {
-    private let siteID: Int64
     private let completion: (AddProductFromImageData) -> Void
     @StateObject private var viewModel: AddProductFromImageViewModel
 
-    init(siteID: Int64, completion: @escaping (AddProductFromImageData) -> Void) {
-        self.siteID = siteID
+    init(siteID: Int64,
+         addImage: @escaping (MediaPickingSource) async -> UIImage?,
+         completion: @escaping (AddProductFromImageData) -> Void) {
+        self._viewModel = StateObject(wrappedValue: AddProductFromImageViewModel(siteID: siteID, onAddImage: addImage))
         self.completion = completion
-        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID))
+        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID, onAddImage: addImage))
     }
 
     var body: some View {
@@ -199,7 +192,7 @@ struct AddProductFromImageView: View {
 struct AddProductFromImageView_Previews: PreviewProvider {
     static var previews: some View {
         if #available(iOS 16.0, *) {
-            AddProductFromImageView(siteID: 2023, completion: { _ in })
+            AddProductFromImageView(siteID: 134, addImage: { _ in nil }, completion: { _ in })
         }
     }
 }

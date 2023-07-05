@@ -405,10 +405,10 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
 
             switch result {
             case .success:
-                tracker.trackSearchSuccessIfNecessary()
+                self.tracker.trackSearchSuccessIfNecessary()
                 self.reloadData()
             case .failure(let error):
-                tracker.trackSearchFailureIfNecessary(with: error)
+                self.tracker.trackSearchFailureIfNecessary(with: error)
                 self.notice = NoticeFactory.productSearchNotice() { [weak self] in
                     self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
                 }

@@ -79,21 +79,28 @@ struct EditableProductImageView: View {
                         .font(.system(size: 30))
                         .foregroundColor(.init(uiColor: .accent))
                 }
+                // TODO-JC: only show the icon when an image is selected
                 .actionSheet(isPresented: $isShowingActionSheet) {
-                    ActionSheet(title: Text("SwiftUI ActionSheet"),
+                    ActionSheet(title: Text("Select Media Source"),
                                 message: nil,
                                 buttons: [
-                                    //                                    (UIImagePickerController.isSourceTypeAvailable(.camera) ?
-                                    //                                        .default(Text(NSLocalizedString("Take a photo",
-                                    //                                                                        comment: "Menu option for taking an image or video with the device's camera."))) {
-                                    //                                            Task { @MainActor in
-                                    //                                                await viewModel.addImage()
-                                    //                                            }
-                                    //                                        }) : nil),
+                                    (UIImagePickerController.isSourceTypeAvailable(.camera) ?
+                                        .default(Text(NSLocalizedString("Take a photo",
+                                                                        comment: "Menu option for taking an image or video with the device's camera."))) {
+                                                                            Task { @MainActor in
+                                                                                await viewModel.addImage(from: .camera)
+                                                                            }
+                                                                        } : nil),
                                     .default(Text(NSLocalizedString("Choose from device",
                                                                     comment: "Menu option for selecting media from the device's photo library."))) {
                                                                         Task { @MainActor in
                                                                             await viewModel.addImage(from: .photoLibrary)
+                                                                        }
+                                                                    },
+                                    .default(Text(NSLocalizedString("WordPress Media Library",
+                                                                    comment: "Menu option for selecting media from the device's photo library."))) {
+                                                                        Task { @MainActor in
+                                                                            await viewModel.addImage(from: .siteMediaLibrary)
                                                                         }
                                                                     },
                                     .cancel()
@@ -128,12 +135,11 @@ struct AddProductFromImageView: View {
             .padding([.top], 10)
 
             Section {
-                TextField("Name",
-                          text: $viewModel.name)
+                // TODO-JC: TextEditor with a placeholder
+                TextEditor(text: $viewModel.name)
                 .fixedSize(horizontal: false, vertical: true)
 
-                TextField("Description",
-                          text: $viewModel.description)
+                TextEditor(text: $viewModel.description)
                 .fixedSize(horizontal: false, vertical: true)
                 .lineLimit(5)
             }

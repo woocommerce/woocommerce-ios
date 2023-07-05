@@ -1,147 +1,97 @@
 import Foundation
 import SwiftUI
 import Yosemite
-
-enum UpgradeViewState {
-    case loading
-    case loaded(WooWPComPlan)
-    case purchasing(WooWPComPlan)
-    case waiting(WooWPComPlan)
-    case completed(WooWPComPlan)
-    case prePurchaseError(PrePurchaseError)
-    case purchaseUpgradeError(PurchaseUpgradeError)
-
-    var shouldShowPlanDetailsView: Bool {
-        switch self {
-        case .loading, .loaded, .purchasing, .prePurchaseError:
-            return true
-        default:
-            return false
-        }
-    }
-}
-
-enum PrePurchaseError: Error {
-    case fetchError
-    case entitlementsError
-    case inAppPurchasesNotSupported
-    case maximumSitesUpgraded
-    case userNotAllowedToUpgrade
-}
-
-enum PurchaseUpgradeError {
-    case inAppPurchaseFailed(WooWPComPlan, InAppPurchaseStore.Errors)
-    case planActivationFailed(InAppPurchaseStore.Errors)
-    case unknown
-}
+import Combine
 
 /// ViewModel for the Upgrades View
 /// Drives the site's available In-App Purchases plan upgrades
 ///
 final class UpgradesViewModel: ObservableObject {
 
-    private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
-    private let siteID: Int64
-    private let stores: StoresManager
-
-    @Published var entitledWpcomPlanIDs: Set<String>
-
     @Published var upgradeViewState: UpgradeViewState = .loading
 
-    private let localPlans: [WooPlan]
+    private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
+    private let siteID: Int64
+    private let storePlanSynchronizer: StorePlanSynchronizer
+    private let stores: StoresManager
+    private let localPlans: [WooPlan] = [.loadHardcodedPlan()]
+    private let analytics: Analytics
+
+    private let notificationCenter: NotificationCenter = NotificationCenter.default
+    private var applicationDidBecomeActiveObservationToken: NSObjectProtocol?
+
+    private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
-         stores: StoresManager = ServiceLocator.stores) {
+         storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.inAppPurchasesPlanManager = inAppPurchasesPlanManager
+        self.storePlanSynchronizer = storePlanSynchronizer
         self.stores = stores
+        self.analytics = analytics
 
-        entitledWpcomPlanIDs = []
-
-        if let essentialPlan = WooPlan() {
-            self.localPlans = [essentialPlan]
-        } else {
-            self.localPlans = []
-        }
-
-        if let site = ServiceLocator.stores.sessionManager.defaultSite, !site.isSiteOwner {
-            self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
-        } else {
-            Task {
-                await fetchViewData()
-            }
-        }
+        observeViewStateAndTrackAnalytics()
     }
 
     /// Sync wrapper for `fetchViewData`, so can be called directly from where this
     /// ViewModel is referenced, outside of the initializer
     ///
-    public func retryFetch() {
+    @MainActor
+    func retryFetch() {
         Task {
             await fetchViewData()
         }
     }
 
-    @MainActor
-    private func fetchViewData() async {
-        upgradeViewState = .loading
-        await fetchPlans()
-    }
-
-    /// Retrieves all In-App Purchases WPCom plans
+    /// Sets up the view – validates whether they are eligible to upgrade and shows a plan
     ///
     @MainActor
-    func fetchPlans() async {
+    func prepareViewModel() async {
         do {
+            guard let site = stores.sessionManager.defaultSite else {
+                throw PrePurchaseError.fetchError
+            }
+
+            guard site.isSiteOwner else {
+                throw PrePurchaseError.userNotAllowedToUpgrade
+            }
+
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
-                upgradeViewState = .prePurchaseError(.inAppPurchasesNotSupported)
-                return
+                throw PrePurchaseError.inAppPurchasesNotSupported
             }
 
             async let wpcomPlans = inAppPurchasesPlanManager.fetchPlans()
             async let hardcodedPlanDataIsValid = checkHardcodedPlanDataValidity()
 
-            try await loadUserEntitlements(for: wpcomPlans)
-            guard entitledWpcomPlanIDs.isEmpty else {
-                upgradeViewState = .prePurchaseError(.maximumSitesUpgraded)
-                return
+            guard try await hasNoActiveInAppPurchases(for: wpcomPlans) else {
+                throw PrePurchaseError.maximumSitesUpgraded
             }
 
             guard let plan = try await retrievePlanDetailsIfAvailable(.essentialMonthly,
                                                                       from: wpcomPlans,
                                                                       hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
             else {
-                upgradeViewState = .prePurchaseError(.fetchError)
-                return
+                throw PrePurchaseError.fetchError
             }
             upgradeViewState = .loaded(plan)
+        } catch let prePurchaseError as PrePurchaseError {
+            DDLogError("prePurchaseError \(prePurchaseError)")
+            upgradeViewState = .prePurchaseError(prePurchaseError)
         } catch {
             DDLogError("fetchPlans \(error)")
             upgradeViewState = .prePurchaseError(.fetchError)
         }
     }
 
-
-    @MainActor
-    private func checkHardcodedPlanDataValidity() async -> Bool {
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
-                .hardcodedPlanUpgradeDetailsMilestone1AreAccurate,
-                defaultValue: true) { isEnabled in
-                continuation.resume(returning: isEnabled)
-            })
-        }
-    }
-
-    private let notificationCenter: NotificationCenter = NotificationCenter.default
-    private var applicationDidBecomeActiveObservationToken: NSObjectProtocol?
-
     /// Triggers the purchase of the specified In-App Purchases WPCom plans by the passed plan ID
     /// linked to the current site ID
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
+        analytics.track(event: .InAppPurchases.planUpgradePurchaseButtonTapped(planID))
         guard let wooWPComPlan = planCanBePurchasedFromCurrentState() else {
             return
         }
@@ -170,9 +120,10 @@ final class UpgradesViewModel: ObservableObject {
             case .userCancelled:
                 upgradeViewState = .loaded(wooWPComPlan)
             case .success(.verified(_)):
+                // refreshing the synchronizer removes the Upgrade Now banner by the time the flow is closed
+                storePlanSynchronizer.reloadPlan()
                 upgradeViewState = .completed(wooWPComPlan)
             default:
-                // TODO: handle `pending` here... somehow – requires research
                 // TODO: handle `.success(.unverified(_))` here... somehow
                 return
             }
@@ -193,13 +144,58 @@ final class UpgradesViewModel: ObservableObject {
                 upgradeViewState = .purchaseUpgradeError(.inAppPurchaseFailed(wooWPComPlan, recognisedError))
             case .transactionMissingAppAccountToken,
                     .appAccountTokenMissingSiteIdentifier,
-                    .storefrontUnknown:
+                    .storefrontUnknown,
+                    .transactionAlreadyAssociatedWithAnUpgrade:
                 upgradeViewState = .purchaseUpgradeError(.planActivationFailed(recognisedError))
             }
         }
     }
+}
 
-    private func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
+// MARK: - Helpers
+//
+private extension UpgradesViewModel {
+    /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
+    /// via In-App Purchases
+    ///
+    func hasNoActiveInAppPurchases(for plans: [WPComPlanProduct]) async throws -> Bool {
+        for plan in plans {
+            do {
+                if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.id) {
+                    return false
+                }
+            } catch {
+                DDLogError("There was an error when loading entitlements: \(error)")
+                throw PrePurchaseError.entitlementsError
+            }
+        }
+        return true
+    }
+
+    @MainActor
+    /// Checks whether the current plan details being displayed to merchants are accurate
+    /// by reaching the remote feature flag
+    ///
+    func checkHardcodedPlanDataValidity() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
+                .hardcodedPlanUpgradeDetailsMilestone1AreAccurate,
+                defaultValue: true) { isEnabled in
+                continuation.resume(returning: isEnabled)
+            })
+        }
+    }
+
+    @MainActor
+    func fetchViewData() async {
+        upgradeViewState = .loading
+        await prepareViewModel()
+    }
+
+    /// Checks whether a plan can be purchased from the current view state,
+    /// in which case the `WooWPComPlan` object is returned
+    ///
+    func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
         switch upgradeViewState {
         case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
             return plan
@@ -207,7 +203,11 @@ final class UpgradesViewModel: ObservableObject {
             return nil
         }
     }
+}
 
+// MARK: - Notification observers
+//
+private extension UpgradesViewModel {
     /// Observes the `didBecomeActiveNotification` for one invocation of the notification.
     /// Using this in the scope of `purchasePlan` tells us when Apple's IAP view has completed.
     ///
@@ -219,7 +219,7 @@ final class UpgradesViewModel: ObservableObject {
     /// notification again.
     ///
     /// It's not perfect, but it's what we have.
-    private func observeInAppPurchaseDrawerDismissal(whenFired action: @escaping (() -> Void)) {
+    func observeInAppPurchaseDrawerDismissal(whenFired action: @escaping (() -> Void)) {
         applicationDidBecomeActiveObservationToken = notificationCenter.addObserver(
             forName: UIApplication.didBecomeActiveNotification,
             object: nil,
@@ -229,7 +229,7 @@ final class UpgradesViewModel: ObservableObject {
             }
     }
 
-    private func stopObservingInAppPurchaseDrawerDismissal() {
+    func stopObservingInAppPurchaseDrawerDismissal() {
         if let token = applicationDidBecomeActiveObservationToken {
             notificationCenter.removeObserver(token)
         }
@@ -237,7 +237,7 @@ final class UpgradesViewModel: ObservableObject {
 
     /// Retrieves a specific In-App Purchase WPCom plan from the available products
     ///
-    private func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans,
+    func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans,
                                                 from wpcomPlans: [WPComPlanProduct],
                                                 hardcodedPlanDataIsValid: Bool) -> WooWPComPlan? {
         guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == type.rawValue }),
@@ -250,35 +250,39 @@ final class UpgradesViewModel: ObservableObject {
     }
 }
 
-private extension UpgradesViewModel {
-    /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
-    /// via In-App Purchases
-    ///
-    @MainActor
-    func loadUserEntitlements(for plans: [WPComPlanProduct]) async {
-        do {
-            for wpcomPlan in plans {
-                if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: wpcomPlan.id) {
-                    self.entitledWpcomPlanIDs.insert(wpcomPlan.id)
-                } else {
-                    self.entitledWpcomPlanIDs.remove(wpcomPlan.id)
-                }
-            }
-        } catch {
-            DDLogError("loadEntitlements \(error)")
-            upgradeViewState = .prePurchaseError(.entitlementsError)
-        }
-    }
-}
-
+// MARK: - Analytics observers, and track events
+//
 extension UpgradesViewModel {
-    enum AvailableInAppPurchasesWPComPlans: String {
-        case essentialMonthly = "debug.woocommerce.express.essential.monthly"
+    /// Observes the view state and tracks events when this changes
+    ///
+    private func observeViewStateAndTrackAnalytics() {
+        $upgradeViewState.sink { [weak self] state in
+            switch state {
+            case .waiting:
+                self?.analytics.track(.planUpgradeProcessingScreenLoaded)
+            case .loaded:
+                self?.analytics.track(.planUpgradeScreenLoaded)
+            case .completed:
+                self?.analytics.track(.planUpgradeCompletedScreenLoaded)
+            case .prePurchaseError(let error):
+                self?.analytics.track(event: .InAppPurchases.planUpgradePrePurchaseFailed(error: error))
+            case .purchaseUpgradeError(let error):
+                self?.analytics.track(event: .InAppPurchases.planUpgradePurchaseFailed(error: error.analyticErrorDetail))
+            default:
+                break
+            }
+        }
+        .store(in: &cancellables)
     }
-}
 
-struct WooWPComPlan {
-    let wpComPlan: WPComPlanProduct
-    let wooPlan: WooPlan
-    let hardcodedPlanDataIsValid: Bool
+    func track(_ stat: WooAnalyticsStat) {
+        analytics.track(stat)
+    }
+
+    func onDisappear() {
+        guard let stepTracked = upgradeViewState.analyticsStep else {
+            return
+        }
+        analytics.track(event: .InAppPurchases.planUpgradeScreenDismissed(step: stepTracked))
+    }
 }

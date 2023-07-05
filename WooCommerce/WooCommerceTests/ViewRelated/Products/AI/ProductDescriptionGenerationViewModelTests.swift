@@ -8,14 +8,21 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var subscriptions: Set<AnyCancellable> = []
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
 
         stores = MockStoresManager(sessionManager: .testingInstance)
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         stores = nil
+        analytics = nil
+        analyticsProvider = nil
 
         super.tearDown()
     }
@@ -137,6 +144,77 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.isGenerationEnabled)
+    }
+
+    // MARK: - `shouldShowFeedbackView`
+    func test_shouldShowFeedbackView_is_true_after_generating_a_description() {
+        // Given
+        mockGeneratedDescription(result: .success("Must buy"))
+
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "Durable",
+                                                              stores: stores,
+                                                              onApply: { _ in })
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
+
+        // When
+        viewModel.name = "Fun"
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowFeedbackView)
+    }
+
+    func test_handleFeedback_sets_shouldShowFeedbackView_to_false() {
+        // Given
+        mockGeneratedDescription(result: .success("Must buy"))
+        let delay: TimeInterval = 0
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "Durable",
+                                                              delayBeforeDismissingFeedbackBanner: delay,
+                                                              stores: stores,
+                                                              onApply: { _ in })
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
+
+        viewModel.name = "Fun"
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+        XCTAssertTrue(viewModel.shouldShowFeedbackView)
+
+        // When
+        viewModel.handleFeedback(.up)
+
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            XCTAssertFalse(viewModel.shouldShowFeedbackView)
+        }
+    }
+
+    // MARK: - Analytics
+    func test_handleFeedback_tracks_feedback_received() throws {
+        // Given
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "Durable",
+                                                              stores: stores,
+                                                              analytics: analytics,
+                                                              onApply: { _ in })
+
+        // When
+        viewModel.handleFeedback(.down)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_ai_feedback"}))
+        let eventProperties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(eventProperties["source"] as? String, "product_description")
+        XCTAssertEqual(eventProperties["is_useful"] as? Bool, false)
     }
 }
 

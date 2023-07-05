@@ -5,11 +5,17 @@ enum CouponValidationError: Error {
     case couponNotFound
 }
 
-final class CouponLineDetailsViewModel: ObservableObject {
+enum CouponLineDetailsResult {
+    case removed(code: String)
+    case edited(oldCode: String, newCode: String)
+    case added(newCode: String)
+}
+
+final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
 
     /// Closure to be invoked when the coupon line is updated.
     ///
-    var didSelectSave: ((OrderCouponLine?) -> Void)
+    var didSelectSave: ((CouponLineDetailsResult) -> Void)
 
     /// Stores the coupon code entered by the merchant.
     ///
@@ -38,16 +44,24 @@ final class CouponLineDetailsViewModel: ObservableObject {
     private let stores: StoresManager
 
     init(isExistingCouponLine: Bool,
-         code: String,
+         code: String? = nil,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         didSelectSave: @escaping ((OrderCouponLine?) -> Void)) {
+         didSelectSave: @escaping ((CouponLineDetailsResult) -> Void)) {
         self.isExistingCouponLine = isExistingCouponLine
-        self.code = code
+        self.code = code ?? ""
         self.siteID = siteID
         self.stores = stores
         self.initialCode = code
         self.didSelectSave = didSelectSave
+    }
+
+    func removeCoupon() {
+        guard let initialCode = initialCode else {
+            return
+        }
+
+        didSelectSave(.removed(code: initialCode))
     }
 
     func validateAndSaveData(onCompletion: @escaping (Bool) -> Void) {
@@ -73,8 +87,13 @@ final class CouponLineDetailsViewModel: ObservableObject {
 
 private extension CouponLineDetailsViewModel {
     func saveData() {
-        let couponLine = OrderFactory.newOrderCouponLine(code: code)
-        didSelectSave(couponLine)
+        guard isExistingCouponLine,
+             let initialCode = initialCode,
+             initialCode.isNotEmpty else {
+            return didSelectSave(.added(newCode: code))
+        }
+
+        didSelectSave(.edited(oldCode: initialCode, newCode: code))
     }
 }
 
@@ -83,7 +102,7 @@ private extension CouponLineDetailsViewModel {
         static let couponNotFoundNoticeTitle = NSLocalizedString("We couldn't find a coupon with that code. Please try again",
                                                                  comment: "Title for the error notice when we couldn't find" +
                                                                  "a coupon with the given code to add to an order.")
-        static let couponNotValidatedNoticeTitle = NSLocalizedString("Something when wrong when validating your coupon code. Please try again",
+        static let couponNotValidatedNoticeTitle = NSLocalizedString("Something went wrong when validating your coupon code. Please try again",
                                                                      comment: "Notice title when validating a coupon code fails.")
     }
 }

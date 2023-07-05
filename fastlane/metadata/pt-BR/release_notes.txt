@@ -1,1 +1,3 @@
-Várias melhorias incríveis esta semana! Agora você pode ler um código de barras SKU ou código QR para procurar um produto quando criar um pedido. Também é possível gerar descrições automáticas de produto otimizadas para conversão e SEO para seus produtos do WooCommerce e compartilhá-las usando IA. Experimente e compartilhe seu feedback.
+Sabia que estamos trabalhando em uma nova funcionalidade para gerenciar cupons? Agora é possível adicionar cupons ao criar um pedido no aplicativo. Para gerenciar seus cupons, vá até a guia do menu e clicar na funcionalidade Cupons.
+
+Por fim, fizemos alguns ajustes no desempenho para melhorar a velocidade da seção de pedidos. E não para por aí. Fique de olho porque traremos mais melhorias.

@@ -1,1 +1,3 @@
-In dieser Woche gibt es mehrere interessante Entwicklungen! Du kannst jetzt einen SKU-Barcode oder QR-Code scannen, um beim Erstellen einer Bestellung nach Produkten zu suchen. Außerdem ist es möglich, mithilfe von KI automatisch Produktbeschreibungen für deine WooCommerce-Produkte zu erstellen, die für Conversions geeignet und SEO-optimiert sind, und diese zu teilen. Probiere es aus und teile uns dein Feedback mit!
+Wusstest du schon, dass wir an einer neuen Funktion zum Verwalten von Gutscheinen arbeiten? Du kannst jetzt Gutscheine beim Erstellen von Bestellungen in der App hinzufügen. Du kannst deine Gutscheine auch im Tab „Menü“ verwalten, wenn du auf die Gutscheinfunktion klickst.
+
+Außerdem haben wir ein paar raffinierte Performance-Änderungen vorgenommen, um die Geschwindigkeit im Bestellabschnitt zu verbessern. Aber das war noch nicht alles. Halte Ausschau nach kommenden weiteren Verbesserungen.

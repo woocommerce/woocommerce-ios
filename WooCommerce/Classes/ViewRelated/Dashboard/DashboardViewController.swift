@@ -107,10 +107,15 @@ final class DashboardViewController: UIViewController {
     private var announcementView: UIView?
 
     private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
+    private var localAnnouncementModalHostingController: ConstraintsUpdatingHostingController<LocalAnnouncementModal_UIKit>?
 
     /// Onboarding card.
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
+
+    /// Hosting controller for the banner to highlight the Blaze feature.
+    ///
+    private var blazeBannerHostingController: BlazeBannerHostingController?
 
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
@@ -169,9 +174,11 @@ final class DashboardViewController: UIViewController {
         observeStatsVersionForDashboardUIUpdates()
         observeAnnouncements()
         observeModalJustInTimeMessages()
+        observeLocalAnnouncement()
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
+        observeBlazeBannerVisibility()
         configureFreeTrialBannerPresenter()
         presentPrivacyBannerIfNeeded()
 
@@ -336,6 +343,8 @@ private extension DashboardViewController {
 
     func configureContainerStackView() {
         containerStackView.axis = .vertical
+        containerStackView.spacing = Constants.containerStackViewSpacing
+        containerStackView.backgroundColor = .listBackground
         containerView.addSubview(containerStackView)
         containerStackView.translatesAutoresizingMaskIntoConstraints = false
         containerView.pinSubviewToAllEdges(containerStackView)
@@ -367,6 +376,17 @@ private extension DashboardViewController {
     func addViewBelowHeaderStackView(contentView: UIView) {
         let indexAfterHeader = (containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1) + 1
         containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
+    }
+
+    func addViewBelowOnboardingCard(_ contentView: UIView) {
+        let indexOfHeader = containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1
+        let indexAfterOnboardingCard: Int = {
+            if let onboardingView {
+                return (containerStackView.arrangedSubviews.firstIndex(of: onboardingView) ?? indexOfHeader) + 1
+            }
+            return indexOfHeader + 1
+        }()
+        containerStackView.insertArrangedSubview(contentView, at: indexAfterOnboardingCard)
     }
 
     func configureStackView() {
@@ -445,10 +465,12 @@ private extension DashboardViewController {
 
     func observeShowWebViewSheet() {
         viewModel.$showWebViewSheet.sink { [weak self] viewModel in
-            guard let self = self else { return }
-            guard let viewModel = viewModel else { return }
-            self.dismissModalJustInTimeMessage()
-            self.openWebView(viewModel: viewModel)
+            guard let self else { return }
+            guard let viewModel else { return }
+            Task { @MainActor in
+                await self.dismissPossibleModals()
+                self.openWebView(viewModel: viewModel)
+            }
         }
         .store(in: &subscriptions)
     }
@@ -500,6 +522,27 @@ private extension DashboardViewController {
             }
         }
         coordinator.start()
+    }
+
+    /// Invoked when the local announcement CTA is tapped.
+    private func onLocalAnnouncementAction(_ announcement: LocalAnnouncement) {
+        switch announcement {
+            case .productDescriptionAI:
+                startAddProductFlowFromProductDescriptionAIModal()
+        }
+    }
+
+    /// Starts the Add Product flow to showcase the product description AI feature.
+    private func startAddProductFlowFromProductDescriptionAIModal() {
+        AppDelegate.shared.tabBarController?.navigateToTabWithNavigationController(.products, animated: true) { [weak self] navigationController in
+            guard let self else { return }
+            let coordinator = AddProductCoordinator(siteID: self.siteID,
+                                                    source: .productDescriptionAIAnnouncementModal,
+                                                    sourceView: nil,
+                                                    sourceNavigationController: navigationController,
+                                                    isFirstProduct: true)
+            coordinator.start()
+        }
     }
 
     // This is used so we have a specific type for the view while applying modifiers.
@@ -571,8 +614,8 @@ private extension DashboardViewController {
             }
 
             Task { @MainActor [weak self] in
-                guard let self = self else { return }
-                self.dismissModalJustInTimeMessage()
+                guard let self else { return }
+                await self.dismissPossibleModals()
                 let modalController = ConstraintsUpdatingHostingController(
                     rootView: JustInTimeMessageModal_UIKit(
                         onDismiss: {
@@ -589,12 +632,59 @@ private extension DashboardViewController {
         .store(in: &subscriptions)
     }
 
-    private func dismissModalJustInTimeMessage() {
+    private func observeLocalAnnouncement() {
+        viewModel.$localAnnouncementViewModel
+            .compactMap { $0 }
+            .asyncMap { [weak self] viewModel in
+                await self?.dismissPossibleModals()
+                viewModel.actionTapped = { [weak self] announcement in
+                    self?.onLocalAnnouncementAction(announcement)
+                }
+                return ConstraintsUpdatingHostingController(
+                    rootView: LocalAnnouncementModal_UIKit(
+                        onDismiss: {
+                            self?.dismiss(animated: true)
+                        },
+                        viewModel: viewModel))
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] modalController in
+                guard let self else { return }
+                self.localAnnouncementModalHostingController = modalController
+                modalController.view.backgroundColor = .clear
+                modalController.modalPresentationStyle = .overFullScreen
+                self.present(modalController, animated: true)
+            }
+            .store(in: &subscriptions)
+    }
+
+    private func dismissPossibleModals() async {
+        await dismissModalJustInTimeMessage()
+        await dismissLocalAnnouncementModal()
+    }
+
+    private func dismissModalJustInTimeMessage() async {
         guard modalJustInTimeMessageHostingController != nil else {
             return
         }
-        dismiss(animated: true)
-        self.modalJustInTimeMessageHostingController = nil
+        await withCheckedContinuation { continuation in
+            dismiss(animated: true) { [weak self] in
+                self?.modalJustInTimeMessageHostingController = nil
+                continuation.resume()
+            }
+        }
+    }
+
+    private func dismissLocalAnnouncementModal() async {
+        guard localAnnouncementModalHostingController != nil else {
+            return
+        }
+        await withCheckedContinuation { continuation in
+            dismiss(animated: true) { [weak self] in
+                self?.localAnnouncementModalHostingController = nil
+                continuation.resume()
+            }
+        }
     }
 
     /// Display the error banner at the top of the dashboard content (below the site title)
@@ -690,6 +780,59 @@ private extension DashboardViewController {
     ///
     func presentPrivacyBannerIfNeeded() {
         privacyBannerPresenter.presentIfNeeded(from: self)
+    }
+}
+
+// MARK: - Blaze banner
+extension DashboardViewController {
+    func observeBlazeBannerVisibility() {
+        viewModel.$showBlazeBanner.removeDuplicates()
+            .sink { [weak self] showsBlazeBanner in
+                guard let self else { return }
+                if showsBlazeBanner {
+                    self.showBlazeBanner()
+                } else {
+                    self.removeBlazeBanner()
+                }
+            }
+            .store(in: &subscriptions)
+
+        Task { @MainActor in
+            await viewModel.updateBlazeBannerVisibility()
+        }
+    }
+
+    func showBlazeBanner() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        if blazeBannerHostingController != nil {
+            removeBlazeBanner()
+        }
+        let hostingController = BlazeBannerHostingController(
+            site: site,
+            entryPoint: .myStore,
+            containerViewController: self,
+            dismissHandler: { [weak self] in
+            self?.viewModel.hideBlazeBanner()
+        })
+        guard let bannerView = hostingController.view else {
+            return
+        }
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        addViewBelowOnboardingCard(bannerView)
+        addChild(hostingController)
+        hostingController.didMove(toParent: self)
+        blazeBannerHostingController = hostingController
+    }
+
+    func removeBlazeBanner() {
+        guard let blazeBannerHostingController,
+              blazeBannerHostingController.parent == self else { return }
+        blazeBannerHostingController.willMove(toParent: nil)
+        blazeBannerHostingController.view.removeFromSuperview()
+        blazeBannerHostingController.removeFromParent()
+        self.blazeBannerHostingController = nil
     }
 }
 
@@ -800,6 +943,9 @@ private extension DashboardViewController {
             group.addTask { [weak self] in
                 await self?.viewModel.reloadStoreOnboardingTasks()
             }
+            group.addTask { [weak self] in
+                await self?.viewModel.updateBlazeBannerVisibility()
+            }
         }
     }
 }
@@ -826,6 +972,7 @@ private extension DashboardViewController {
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
                 await self?.reloadData(forced: true)
+                await self?.viewModel.updateBlazeBannerVisibility()
             }
         }.store(in: &subscriptions)
     }
@@ -898,5 +1045,6 @@ private extension DashboardViewController {
         static let iPadCollapsedNavigationBarHeight = CGFloat(50)
         static let tabStripSpacing = CGFloat(12)
         static let headerStackViewSpacing = CGFloat(4)
+        static let containerStackViewSpacing = CGFloat(16)
     }
 }

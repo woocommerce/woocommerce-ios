@@ -1,0 +1,3 @@
+Sapevi che stiamo lavorando a una nuova funzionalità per la gestione dei codici promozionali? Ora è possibile aggiungere codici promozionali durante la creazione di un ordine dall'app. Puoi anche gestire i tuoi codici promozionali andando alla scheda del menu e facendo clic sulla funzionalità Codici promozionali.
+
+Infine, abbiamo effettuato alcune piccole modifiche alle prestazioni per velocizzare la sezione dedicata agli ordini. Ma non è tutto. Introdurremo altre ottimizzazioni in futuro.

@@ -1,1 +1,3 @@
-Bu hafta çeşitli heyecan verici gelişmeler var! Artık sipariş oluştururken herhangi bir ürünü aramak için SKU barkodunu veya QR kodunu taratabilirsiniz. Ayrıca yapay zeka kullanarak WooCommerce ürünleriniz için dönüştürülebilir ve SEO için optimize edilmiş ürün açıklamalarını otomatik olarak oluşturabilir ve paylaşabilirsiniz. Deneyin ve geri bildiriminizi paylaşın!
+Kuponları yönetme ile ilgili yeni bir özellik üzerinde çalıştığımızı biliyor muydunuz? Artık uygulamadan sipariş oluştururken kupon eklemek mümkün. Ayrıca menü sekmesine gidip Kuponlar özelliğine tıklayarak da kuponlarınızı yönetebilirsiniz.
+
+Son olarak, siparişler bölümünün hızını artırmak için bazı ince ayarlar yaptık. Ama işimiz daha bitmedi. Gelecekteki geliştirmelerimiz için bizi takip edin.

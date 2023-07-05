@@ -17,20 +17,28 @@ final class DashboardViewModel {
 
     @Published var modalJustInTimeMessageViewModel: JustInTimeMessageViewModel? = nil
 
+    @Published var localAnnouncementViewModel: LocalAnnouncementViewModel? = nil
+
     let storeOnboardingViewModel: StoreOnboardingViewModel
 
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
 
+    @Published private(set) var showBlazeBanner: Bool = false
+
     /// Trigger to start the Add Product flow
     ///
     let addProductTrigger = PassthroughSubject<Void, Never>()
 
+    private let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
+    private let localAnnouncementsProvider: LocalAnnouncementsProvider
+    private let userDefaults: UserDefaults
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -45,11 +53,16 @@ final class DashboardViewModel {
          stores: StoresManager = ServiceLocator.stores,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+        self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
+        self.userDefaults = userDefaults
+        self.blazeEligibilityChecker = blazeEligibilityChecker
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
+        self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         setupObserverForShowOnboarding()
     }
@@ -178,6 +191,7 @@ final class DashboardViewModel {
         } catch {
             await syncJustInTimeMessages(for: siteID)
         }
+        await loadLocalAnnouncement()
     }
 
     /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
@@ -193,48 +207,33 @@ final class DashboardViewModel {
 
     /// Checks if a store is eligible for products onboarding -returning error otherwise- and prepares the onboarding announcement if needed.
     ///
+    @MainActor
     private func syncProductsOnboarding(for siteID: Int64) async throws {
-        try await withCheckedThrowingContinuation { [weak self] continuation in
-            let action = ProductAction.checkProductsOnboardingEligibility(siteID: siteID) { [weak self] result in
-                switch result {
-                case .success(let isEligible):
-                    if isEligible {
-                        ServiceLocator.analytics.track(event: .ProductsOnboarding.storeIsEligible())
-
-                        self?.setProductsOnboardingBannerIfNeeded()
-                    }
-
-                    if self?.announcementViewModel is ProductsOnboardingAnnouncementCardViewModel {
-                        continuation.resume(returning: (()))
-                    } else {
-                        continuation.resume(throwing: ProductsOnboardingSyncingError.noContentToShow)
-                    }
-
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error checking products onboarding eligibility: \(error)")
-                    continuation.resume(throwing: error)
-                }
-            }
-
-            Task { @MainActor [weak self] in
-                self?.stores.dispatch(action)
-            }
+        let storeHasProduct = try await checkIfStoreHasProducts(siteID: siteID)
+        guard storeHasProduct == false else {
+            throw ProductsOnboardingSyncingError.noContentToShow
         }
+
+        analytics.track(event: .ProductsOnboarding.storeIsEligible())
+        guard await shouldShowProductOnboarding() else {
+            throw ProductsOnboardingSyncingError.noContentToShow
+        }
+        announcementViewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
+            self?.addProductTrigger.send()
+        })
     }
 
-    /// Sets the view model for the products onboarding banner if the user hasn't dismissed it before.
-    ///
-    private func setProductsOnboardingBannerIfNeeded() {
-        let getVisibility = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { [weak self] result in
-            guard let self else { return }
-            if case let .success(isVisible) = result, isVisible {
-                let viewModel = ProductsOnboardingAnnouncementCardViewModel(onCTATapped: { [weak self] in
-                    self?.addProductTrigger.send()
-                })
-                self.announcementViewModel = viewModel
-            }
+    @MainActor
+    private func shouldShowProductOnboarding() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.getFeatureAnnouncementVisibility(campaign: .productsOnboarding) { result in
+                if case let .success(isVisible) = result, isVisible {
+                    continuation.resume(returning: true)
+                } else {
+                    continuation.resume(returning: false)
+                }
+            })
         }
-        stores.dispatch(getVisibility)
     }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.
@@ -258,6 +257,21 @@ final class DashboardViewModel {
 
     }
 
+    @MainActor
+    /// If JITM modal isn't displayed, it loads a local announcement to be displayed modally if available.
+    /// When a local announcement is available, the view model is set. Otherwise, the view model is set to `nil`.
+    private func loadLocalAnnouncement() async {
+        // Local announcement modal can only be shown when JITM modal is not shown.
+        guard modalJustInTimeMessageViewModel == nil else {
+            return
+        }
+        guard let viewModel = await localAnnouncementsProvider.loadAnnouncement() else {
+            localAnnouncementViewModel = nil
+            return
+        }
+        localAnnouncementViewModel = viewModel
+    }
+
     /// Sets up observer to decide store onboarding task lists visibility
     ///
     private func setupObserverForShowOnboarding() {
@@ -267,6 +281,47 @@ final class DashboardViewModel {
 
         storeOnboardingViewModel.$shouldShowInDashboard
             .assign(to: &$showOnboarding)
+    }
+}
+
+// MARK: - Blaze banner
+extension DashboardViewModel {
+    /// Checks for Blaze eligibility and user defaults to show the banner if necessary.
+    ///
+    @MainActor
+    func updateBlazeBannerVisibility() async {
+        showBlazeBanner = await isBlazeBannerVisible()
+    }
+
+    private func isBlazeBannerVisible() async -> Bool {
+        async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
+        async let storeHasProducts = (try? checkIfStoreHasProducts(siteID: siteID)) ?? false
+        guard (await isSiteEligible, await storeHasProducts) == (true, true) else {
+            return false
+        }
+        return !userDefaults.hasDismissedBlazeBanner(for: siteID)
+    }
+
+    @MainActor
+    private func checkIfStoreHasProducts(siteID: Int64) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .success(let hasProducts):
+                    continuation.resume(returning: hasProducts)
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard — Error fetching products to show the Blaze banner: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+
+    /// Hides the banner and updates the user defaults to not show the banner again.
+    ///
+    func hideBlazeBanner() {
+        showBlazeBanner = false
+        userDefaults.setBlazeBannerDismissed(for: siteID)
     }
 }
 

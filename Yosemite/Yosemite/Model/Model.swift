@@ -35,9 +35,6 @@ public typealias InboxNote = Networking.InboxNote
 public typealias InboxAction = Networking.InboxAction
 public typealias JetpackUser = Networking.JetpackUser
 public typealias JustInTimeMessageHook = Networking.JustInTimeMessagesRemote.MessagePath.Hook
-public typealias Leaderboard = Networking.Leaderboard
-public typealias LeaderboardRow = Networking.LeaderboardRow
-public typealias LeaderboardRowContent = Networking.LeaderboardRowContent
 public typealias Media = Networking.Media
 public typealias MetaContainer = Networking.MetaContainer
 public typealias Note = Networking.Note
@@ -260,6 +257,7 @@ public typealias StorageTaxClass = Storage.TaxClass
 public typealias StorageWCPayCharge = Storage.WCPayCharge
 public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampaign
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
+public typealias LocalAnnouncement = Storage.LocalAnnouncement
 
 // MARK: - Internal ReadOnly Models
 

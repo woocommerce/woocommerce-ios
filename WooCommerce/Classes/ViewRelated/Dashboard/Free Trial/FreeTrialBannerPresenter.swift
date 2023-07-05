@@ -30,15 +30,7 @@ final class FreeTrialBannerPresenter {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    /// Flag that indicates if a site can be upgraded via In-App Purchases
-    ///
-    private var inAppPurchasesUpgradeEnabled: Bool
-
-    /// String for the banner action button text
-    ///
-    private var bannerActionText: String {
-        inAppPurchasesUpgradeEnabled ? Localization.upgradeNow : Localization.learnMore
-    }
+    private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()
 
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
@@ -52,7 +44,6 @@ final class FreeTrialBannerPresenter {
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
-        self.inAppPurchasesUpgradeEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1)
         observeStorePlan()
         observeConnectivity()
     }
@@ -82,7 +73,9 @@ private extension FreeTrialBannerPresenter {
             case .loaded(let plan) where plan.isFreeTrial:
                 // Only add the banner for the free trial plan
                 let bannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
-                self.addBanner(contentText: bannerViewModel.message)
+                Task { @MainActor in
+                    await self.addBanner(contentText: bannerViewModel.message)
+                }
             case .loading, .failed:
                 break // `.loading` and `.failed` should not change the banner visibility
             default:
@@ -109,13 +102,27 @@ private extension FreeTrialBannerPresenter {
         .store(in: &subscriptions)
     }
 
+    /// String for the banner action button text
+    /// Will display different CTA text depending if IAP is supported and is enabled
+    ///
+    private func setupBannerText() async -> String {
+        if await inAppPurchasesManager.inAppPurchasesAreSupported() {
+            return Localization.upgradeNow
+        } else {
+            return Localization.learnMore
+        }
+    }
+
     /// Adds a Free Trial bar at the bottom of the container view.
     ///
-    private func addBanner(contentText: String) {
+    @MainActor
+    private func addBanner(contentText: String) async {
         guard let containerView else { return }
 
         // Remove any previous banner.
         freeTrialBanner?.removeFromSuperview()
+
+        let bannerActionText = await setupBannerText()
 
         let freeTrialViewController = FreeTrialBannerHostingViewController(actionText: bannerActionText, mainText: contentText) { [weak self] in
             self?.showUpgradesView()
@@ -151,15 +158,8 @@ private extension FreeTrialBannerPresenter {
     ///
     func showUpgradesView() {
         guard let viewController else { return }
-        Task { @MainActor in
-            if inAppPurchasesUpgradeEnabled {
-                let upgradesController = UpgradesHostingController(siteID: siteID)
-                viewController.present(upgradesController, animated: true)
-            } else {
-                let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
-                viewController.show(subscriptionsController, sender: self)
-            }
-        }
+
+        UpgradesViewPresentationCoordinator().presentUpgrades(for: siteID, from: viewController)
     }
 }
 

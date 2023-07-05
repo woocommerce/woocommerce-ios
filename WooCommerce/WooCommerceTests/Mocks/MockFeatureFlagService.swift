@@ -17,7 +17,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isFreeTrial: Bool
     private let jetpackSetupWithApplicationPassword: Bool
     private let isTapToPayOnIPhoneMilestone2On: Bool
-    private let isIPPUKExpansionEnabled: Bool
     private let isReadOnlySubscriptionsEnabled: Bool
     private let isProductDescriptionAIEnabled: Bool
     private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
@@ -26,6 +25,8 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isAddProductToOrderViaSKUScannerEnabled: Bool
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
+    private let isJustInTimeMessagesOnDashboardEnabled: Bool
+    private let isFreeTrialInAppPurchasesUpgradeM2: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -42,7 +43,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isFreeTrial: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isTapToPayOnIPhoneMilestone2On: Bool = false,
-         isIPPUKExpansionEnabled: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
          isProductDescriptionAIEnabled: Bool = false,
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
@@ -50,7 +50,9 @@ struct MockFeatureFlagService: FeatureFlagService {
          isHideStoreOnboardingTaskListFeatureEnabled: Bool = false,
          isAddProductToOrderViaSKUScannerEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
-         isShareProductAIEnabled: Bool = false) {
+         isShareProductAIEnabled: Bool = false,
+         isJustInTimeMessagesOnDashboardEnabled: Bool = false,
+         isFreeTrialInAppPurchasesUpgradeM2: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -64,9 +66,9 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.isFreeTrial = isFreeTrial
+        self.isFreeTrialInAppPurchasesUpgradeM2 = isFreeTrialInAppPurchasesUpgradeM2
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
-        self.isIPPUKExpansionEnabled = isIPPUKExpansionEnabled
         self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
         self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
         self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
@@ -75,6 +77,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isAddProductToOrderViaSKUScannerEnabled = isAddProductToOrderViaSKUScannerEnabled
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
+        self.isJustInTimeMessagesOnDashboardEnabled = isJustInTimeMessagesOnDashboardEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -109,8 +112,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return jetpackSetupWithApplicationPassword
         case .tapToPayOnIPhoneMilestone2:
             return isTapToPayOnIPhoneMilestone2On
-        case .IPPUKExpansion:
-            return isIPPUKExpansionEnabled
         case .readOnlySubscriptions:
             return isReadOnlySubscriptionsEnabled
         case .productDescriptionAI:
@@ -125,6 +126,10 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isAddProductToOrderViaSKUScannerEnabled
         case .shareProductAI:
             return isShareProductAIEnabled
+        case .justInTimeMessagesOnDashboard:
+            return isJustInTimeMessagesOnDashboardEnabled
+        case .freeTrialInAppPurchasesUpgradeM2:
+            return isFreeTrialInAppPurchasesUpgradeM2
         default:
             return false
         }

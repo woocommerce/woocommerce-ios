@@ -42,15 +42,25 @@ struct ProductSharingMessageGenerationView: View {
 
             // Generated message text field
             ZStack(alignment: .topLeading) {
-                TextEditor(text: $viewModel.messageContent)
-                    .bodyStyle()
-                    .foregroundColor(.secondary)
-                    .disabled(viewModel.generationInProgress)
-                    .opacity(viewModel.generationInProgress ? 0 : 1)
-                    .padding(insets: Constants.messageContentInsets)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
-                    )
+                VStack {
+                    TextEditor(text: $viewModel.messageContent)
+                        .bodyStyle()
+                        .foregroundColor(.secondary)
+                        .disabled(viewModel.generationInProgress)
+                        .opacity(viewModel.generationInProgress ? 0 : 1)
+                        .padding(insets: Constants.messageContentInsets)
+
+                    FeedbackView(title: Localization.feedbackQuestion,
+                                 backgroundColor: .init(uiColor: .systemGray6),
+                                 onVote: { vote in
+                        viewModel.handleFeedback(vote)
+                    })
+                    .padding(insets: Constants.feedbackViewInsets)
+                    .renderedIf(viewModel.shouldShowFeedbackView)
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
+                )
 
                 // Placeholder text
                 Text(Localization.placeholder)
@@ -129,6 +139,7 @@ private extension ProductSharingMessageGenerationView {
         static let cornerRadius: CGFloat = 8
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
+        static let feedbackViewInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let placeholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
         static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
         "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam," +
@@ -153,6 +164,10 @@ private extension ProductSharingMessageGenerationView {
         static let learnMore = NSLocalizedString(
             "Learn more",
             comment: "Button to open the legal page for AI-generated contents on the product sharing message generation screen"
+        )
+        static let feedbackQuestion = NSLocalizedString(
+            "Is the generated message helpful?",
+            comment: "Question to ask for feedback for the AI-generated content on the product sharing message generation screen"
         )
     }
 }

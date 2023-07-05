@@ -177,6 +177,7 @@ public enum WooAnalyticsStat: String {
     case blazeFlowCanceled = "blaze_flow_canceled"
     case blazeFlowCompleted = "blaze_flow_completed"
     case blazeFlowError = "blaze_flow_error"
+    case blazeBannerDismissed = "blaze_banner_dismissed"
 
     // MARK: Products Onboarding Events
     //
@@ -749,6 +750,10 @@ public enum WooAnalyticsStat: String {
     case productSharingAIMessageGenerated = "product_sharing_ai_message_generated"
     case productSharingAIMessageGenerationFailed = "product_sharing_ai_message_generation_failed"
 
+    // MARK: Product AI Feedback
+    //
+    case productAIFeedback = "product_ai_feedback"
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"
@@ -936,6 +941,16 @@ public enum WooAnalyticsStat: String {
     case planUpgradeSuccess = "plan_upgrade_success"
     case planUpgradeAbandoned = "plan_upgrade_abandoned"
 
+    // MARK: In-App Purchases
+    case planUpgradePurchaseButtonTapped = "plan_upgrade_purchase_button_tapped"
+    case planUpgradeScreenLoaded = "plan_upgrade_screen_loaded"
+    case planUpgradeScreenDismissed = "plan_upgrade_screen_dismissed"
+    case planUpgradeFeatureScreenLoaded = "plan_upgrade_feature_screen_loaded"
+    case planUpgradeProcessingScreenLoaded = "plan_upgrade_processing_screen_loaded"
+    case planUpgradeCompletedScreenLoaded = "plan_upgrade_completed_screen_loaded"
+    case planUpgradePurchaseFailed = "plan_upgrade_purchase_failed"
+
+
     // MARK: Application password authorization in web view
     case applicationPasswordAuthorizationButtonTapped = "application_password_authorization_button_tapped"
     case applicationPasswordAuthorizationWebViewShown = "application_password_authorization_web_view_shown"
@@ -958,6 +973,11 @@ public enum WooAnalyticsStat: String {
     case privacyChoicesBannerPresented = "privacy_choices_banner_presented"
     case privacyChoicesSettingsButtonTapped = "privacy_choices_banner_settings_button_tapped"
     case privacyChoicesSaveButtonTapped = "privacy_choices_banner_save_button_tapped"
+
+    // MARK: Local Announcement
+    case localAnnouncementDisplayed = "local_announcement_displayed"
+    case localAnnouncementCallToActionTapped = "local_announcement_cta_tapped"
+    case localAnnouncementDismissTapped = "local_announcement_dismissed"
 }
 
 public extension WooAnalyticsStat {

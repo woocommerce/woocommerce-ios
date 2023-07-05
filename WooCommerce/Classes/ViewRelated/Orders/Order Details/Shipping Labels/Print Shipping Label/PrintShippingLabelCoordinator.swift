@@ -80,14 +80,16 @@ private extension PrintShippingLabelCoordinator {
 
     func printShippingLabel(paperSize: ShippingLabelPaperSize) {
         presentPrintInProgressUI()
-        requestDocumentForPrinting(paperSize: paperSize) { result in
-            self.dismissPrintInProgressUI()
-            switch result {
-            case .success(let printData):
-                self.presentAirPrint(printData: printData)
-            case .failure(let error):
-                DDLogError("Error generating shipping label document for printing: \(error)")
-                self.presentErrorAlert(title: Localization.printErrorAlertTitle)
+        requestDocumentForPrinting(paperSize: paperSize) { [weak self] result in
+            self?.dismissPrintInProgressUI() {
+                guard let self else { return }
+                switch result {
+                case .success(let printData):
+                    self.presentAirPrint(printData: printData)
+                case .failure(let error):
+                    DDLogError("Error generating shipping label document for printing: \(error)")
+                    self.presentErrorAlert(title: Localization.printErrorAlertTitle)
+                }
             }
         }
     }
@@ -100,8 +102,8 @@ private extension PrintShippingLabelCoordinator {
         sourceNavigationController.present(inProgressViewController, animated: true, completion: nil)
     }
 
-    func dismissPrintInProgressUI() {
-        sourceNavigationController.dismiss(animated: true)
+    func dismissPrintInProgressUI(completion: @escaping(() -> Void)) {
+        sourceNavigationController.dismiss(animated: true, completion: completion)
     }
 
     func presentAirPrint(printData: ShippingLabelPrintData) {

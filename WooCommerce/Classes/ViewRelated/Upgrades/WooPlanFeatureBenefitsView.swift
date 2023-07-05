@@ -16,12 +16,14 @@ struct WooPlanFeatureBenefitsView: View {
                             .aspectRatio(contentMode: .fit)
                             .padding(.vertical, Layout.imageCardImageVerticalPadding)
                     )
+                    .accessibilityHidden(true)
 
                 Text(wooPlanFeatureGroup.title)
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityAddTraits(.isHeader)
 
                 ForEach(wooPlanFeatureGroup.features, id: \.title) { feature in
                     WooPlanFeatureBenefitRow(feature: feature)
@@ -35,6 +37,10 @@ struct WooPlanFeatureBenefitsView: View {
         }
         .navigationTitle(wooPlanFeatureGroup.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            ServiceLocator.analytics.track(event:
+                    .InAppPurchases.planUpgradeFeatureScreenLoaded(featureGroup: wooPlanFeatureGroup.title))
+        }
     }
 
     private enum Layout {
@@ -55,10 +61,12 @@ struct WooPlanFeatureBenefitRow: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Layout.checkmarkWidth)
                 .foregroundColor(.withColorStudio(name: .green, shade: .shade40))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: Layout.titleDescriptionVerticalSpacing) {
                 Text(feature.title)
                     .font(.body)
+                    .accessibilityAddTraits(.isHeader)
 
                 Text(feature.description)
                     .font(.footnote)
@@ -78,7 +86,7 @@ struct WooPlanFeatureBenefitRow: View {
 }
 
 struct WooPlanFeatureBenefitsView_Previews: PreviewProvider {
-    static let featureGroup: WooPlanFeatureGroup = WooPlan()!.planFeatureGroups[0]
+    static let featureGroup: WooPlanFeatureGroup = WooPlan.loadHardcodedPlan().planFeatureGroups[0]
     static var previews: some View {
         WooPlanFeatureBenefitsView(wooPlanFeatureGroup: featureGroup)
     }

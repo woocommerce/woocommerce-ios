@@ -5,12 +5,24 @@ import StoreKit
 import Networking
 
 public class InAppPurchaseStore: Store {
+    public typealias PurchaseCompletionHandler = (Result<StoreKit.Product.PurchaseResult, Error>) -> Void
     // ISO 3166-1 Alpha-3 country code representation.
     private let supportedCountriesCodes = ["USA"]
     private var listenTask: Task<Void, Error>?
     private let remote: InAppPurchasesRemote
     private var useBackend = true
     private var pauseTransactionListener = CurrentValueSubject<Bool, Never>(false)
+
+    /// When an IAP transaction requires further action, e.g. Strong Customer Auth in a banking app
+    /// or parental approval, it will be returned as a `.pending` transaction.
+    /// In those cases, we handle the transaction when it comes up in the `.updates` stream of
+    /// Transactions, which we listen to for handling unfinished transactions on app strat.
+    /// `pendingTransactionCompletionHandler`, holds the completion handler so that we
+    /// can update the original purchase flow, if it's still on screen.
+    /// N.B. Apple do not notify us about declined pending transactions, so we cannot handle them –
+    /// the user must dismiss the waiting screen and try again.
+    /// https://developer.apple.com/forums/thread/685183?answerId=682554022#682554022
+    private var pendingTransactionCompletionHandler: PurchaseCompletionHandler? = nil
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         remote = InAppPurchasesRemote(network: network)
@@ -77,7 +89,7 @@ private extension InAppPurchaseStore {
         }
     }
 
-    func purchaseProduct(siteID: Int64, productID: String, completion: @escaping (Result<StoreKit.Product.PurchaseResult, Error>) -> Void) {
+    func purchaseProduct(siteID: Int64, productID: String, completion: @escaping PurchaseCompletionHandler) {
         Task {
             do {
                 try await assertInAppPurchasesAreSupported()
@@ -113,14 +125,16 @@ private extension InAppPurchaseStore {
 
                     try await submitTransaction(transaction)
                     await transaction.finish()
+                    completion(.success(purchaseResult))
                 case .userCancelled:
                     logInfo("User cancelled the purchase flow")
+                    completion(.success(purchaseResult))
                 case .pending:
-                    logError("Purchase returned in a pending state, it might succeed in the future")
+                    logInfo("Purchase returned in a pending state, it might succeed in the future")
+                    pendingTransactionCompletionHandler = completion
                 @unknown default:
                     logError("Unknown result for purchase: \(purchaseResult)")
                 }
-                completion(.success(purchaseResult))
             } catch {
                 logError("Error purchasing product \(productID) for site \(siteID): \(error)")
                 if let purchaseError = error as? StoreKit.Product.PurchaseError {
@@ -158,6 +172,8 @@ private extension InAppPurchaseStore {
             logInfo("Verified transaction \(transaction.id) (Original ID: \(transaction.originalID)) for product \(transaction.productID)")
             try await submitTransaction(transaction)
         }
+        pendingTransactionCompletionHandler?(.success(.success(result)))
+        pendingTransactionCompletionHandler = nil
         logInfo("Marking transaction \(transaction.id) as finished")
         await transaction.finish()
     }
@@ -211,12 +227,18 @@ private extension InAppPurchaseStore {
                 price: priceInCents,
                 productIdentifier: product.id,
                 appStoreCountryCode: countryCode,
-                originalTransactionId: transaction.originalID
+                originalTransactionId: transaction.originalID,
+                transactionId: transaction.id,
+                subscriptionGroupId: transaction.subscriptionGroupID
             )
             logInfo("Successfully registered purchase with Order ID \(orderID)")
         } catch WordPressApiError.productPurchased {
-            // Ignore errors for existing purchase
-            logInfo("Existing order found for transaction \(transaction.id) on site \(siteID), ignoring")
+            throw Errors.transactionAlreadyAssociatedWithAnUpgrade
+        } catch WordPressApiError.transactionReasonInvalid(let reasonMessage) {
+            /// We ignore transactionReasonInvalid errors, usually these are renewals that
+            /// MobilePay has already handled via Apple's server to server notifications
+            /// [See #10075 for details](https://github.com/woocommerce/woocommerce-ios/issues/10075)
+            logInfo("Unsupported transaction received: \(transaction.id) on site \(siteID), ignoring. \(reasonMessage)")
         } catch {
             // Rethrow any other error
             throw error
@@ -317,6 +339,8 @@ public extension InAppPurchaseStore {
 
         case inAppPurchaseStoreKitFailed(StoreKitError)
 
+        case transactionAlreadyAssociatedWithAnUpgrade
+
         public var errorDescription: String? {
             switch self {
             case .unverifiedTransaction:
@@ -351,6 +375,12 @@ public extension InAppPurchaseStore {
                 return NSLocalizedString(
                     "The In-App Purchase failed, with StoreKit error: \(storeKitError)",
                     comment: "Error message used when a purchase failed with a store kit error")
+            case .transactionAlreadyAssociatedWithAnUpgrade:
+                return NSLocalizedString(
+                    "This In-App purchase was successful, but has already been used to upgrade a site. " +
+                    "Please contact support for more help.",
+                    comment: "Error message shown when the In-App Purchase transaction was already used " +
+                    "for another upgrade – their money was taken, but this site is not upgraded.")
             }
         }
 
@@ -406,6 +436,8 @@ public extension InAppPurchaseStore {
                 return "iap.A.105"
             case .storefrontUnknown:
                 return "iap.A.110"
+            case .transactionAlreadyAssociatedWithAnUpgrade:
+                return "iap.A.115"
             }
         }
     }

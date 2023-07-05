@@ -25,6 +25,7 @@ final class AppCoordinator {
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
+    private let upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -45,7 +46,8 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil) {
+         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
+         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -64,7 +66,7 @@ final class AppCoordinator {
         self.featureFlagService = featureFlagService
         self.purchasesManager = purchasesManager
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
-
+        self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
@@ -347,6 +349,7 @@ private extension AppCoordinator {
         let identifier = response.notification.request.identifier
         let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayBeforeFreeTrialExpires
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires
+        let twentyFourHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
 
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
             analytics.track(.localNotificationDismissed, withProperties: [
@@ -365,13 +368,19 @@ private extension AppCoordinator {
                   let siteID = Int64(identifier.replacingOccurrences(of: oneDayBeforeFreeTrialExpiresIdentifier, with: "")) else {
                 return
             }
-            openPlansPage(siteID: siteID)
+            showUpgradesView(siteID: siteID)
         case let identifier where identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: oneDayAfterFreeTrialExpiresIdentifier, with: "")) else {
                 return
             }
-            openPlansPage(siteID: siteID)
+            showUpgradesView(siteID: siteID)
+        case let identifier where identifier.hasPrefix(twentyFourHoursAfterFreeTrialSubscribed):
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let siteID = Int64(identifier.replacingOccurrences(of: twentyFourHoursAfterFreeTrialSubscribed, with: "")) else {
+                return
+            }
+            showUpgradesView(siteID: siteID)
         case LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial:
             let storeNameKey = LocalNotification.UserInfoKey.storeName
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
@@ -388,10 +397,14 @@ private extension AppCoordinator {
 
 /// Local notification handling helper methods.
 private extension AppCoordinator {
-    func openPlansPage(siteID: Int64) {
+    func showUpgradesView(siteID: Int64) {
         switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
-            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .localNotification)
-            self?.window.rootViewController?.topmostPresentedViewController.present(controller, animated: true)
+            guard let self,
+            let topViewController = self.window.rootViewController?.topmostPresentedViewController
+            else {
+                return
+            }
+            self.upgradesViewPresentationCoordinator.presentUpgrades(for: siteID, from: topViewController)
         }
     }
 

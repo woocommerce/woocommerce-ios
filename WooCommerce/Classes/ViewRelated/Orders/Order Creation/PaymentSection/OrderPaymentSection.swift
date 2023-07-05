@@ -17,7 +17,11 @@ struct OrderPaymentSection: View {
 
     /// Indicates if the coupon line details screen should be shown or not.
     ///
-    @State private var shouldShowCouponLineDetails: Bool = false
+    @State private var shouldShowAddCouponLineDetails: Bool = false
+
+    /// Keeps track of the selected coupon line details view model.
+    ///
+    @State private var selectedCouponLineDetailsViewModel: CouponLineDetailsViewModel? = nil
 
     ///   Environment safe areas
     ///
@@ -54,9 +58,20 @@ struct OrderPaymentSection: View {
                     FeeLineDetails(viewModel: viewModel.feeLineViewModel)
                 }
 
-            couponRow
-                .sheet(isPresented: $shouldShowCouponLineDetails) {
-                    CouponLineDetails(viewModel: viewModel.couponLineViewModel)
+            VStack {
+                ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
+                    TitleAndValueRow(title: viewModel.title, value: .content(viewModel.discount), selectionStyle: .highlight) {
+                        selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
+                    }
+                }
+            }
+            .sheet(item: $selectedCouponLineDetailsViewModel) { viewModel in
+                CouponLineDetails(viewModel: viewModel)
+            }
+
+            addCouponRow
+                .sheet(isPresented: $shouldShowAddCouponLineDetails) {
+                    CouponLineDetails(viewModel: viewModel.addCouponLineViewModel)
                 }
 
             TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
@@ -99,21 +114,14 @@ struct OrderPaymentSection: View {
         }
     }
 
-    @ViewBuilder private var couponRow: some View {
-        if viewModel.shouldShowCoupon {
-            TitleAndValueRow(title: viewModel.couponSummary ?? Localization.coupon, value: .content(viewModel.discountTotal), selectionStyle: .highlight) {
-                shouldShowCouponLineDetails = true
-            }
-            .disabled(viewModel.shouldDisableAddingCoupons)
-        } else {
-            Button(Localization.addCoupon) {
-                shouldShowCouponLineDetails = true
-            }
-            .buttonStyle(PlusButtonStyle())
-            .padding()
-            .accessibilityIdentifier("add-coupon-button")
-            .disabled(viewModel.shouldDisableAddingCoupons)
+    @ViewBuilder private var addCouponRow: some View {
+        Button(Localization.addCoupon) {
+            shouldShowAddCouponLineDetails = true
         }
+        .buttonStyle(PlusButtonStyle())
+        .padding()
+        .accessibilityIdentifier("add-coupon-button")
+        .disabled(viewModel.shouldDisableAddingCoupons)
     }
 }
 
@@ -129,7 +137,7 @@ private extension OrderPaymentSection {
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
         static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
-        static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title text of the button that adds a fee when creating a new coupon")
+        static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title text of the button that adds a coupon when creating a new order")
     }
 }
 

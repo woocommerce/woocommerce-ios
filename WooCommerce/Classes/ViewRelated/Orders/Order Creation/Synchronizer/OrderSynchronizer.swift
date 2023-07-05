@@ -86,9 +86,13 @@ protocol OrderSynchronizer {
     ///
     var setFee: PassthroughSubject<OrderFeeLine?, Never> { get }
 
-    /// Sets or removes an order coupon.
+    /// Adds an order coupon.
     ///
-    var setCoupon: PassthroughSubject<OrderCouponLine?, Never> { get }
+    var addCoupon: PassthroughSubject<String, Never> { get }
+
+    /// Removes an order coupon.
+    ///
+    var removeCoupon: PassthroughSubject<String, Never> { get }
 
     /// Sets or removes an order customer note.
     ///

@@ -834,6 +834,7 @@ private extension ProductsViewController {
     func reloadTableAndView() {
         showOrHideToolbar()
         addOrRemoveOverlay()
+        updateBlazeBannerVisibility()
         tableView.reloadData()
     }
 
@@ -878,6 +879,10 @@ private extension ProductsViewController {
             }
             .store(in: &subscriptions)
 
+        updateBlazeBannerVisibility()
+    }
+
+    func updateBlazeBannerVisibility() {
         Task { @MainActor in
             await viewModel.updateBlazeBannerVisibility()
         }
@@ -1326,7 +1331,6 @@ private extension ProductsViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
-            hideBlazeBanner()
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
             if isFirstPage && resultsController.isEmpty {

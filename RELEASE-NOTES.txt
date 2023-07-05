@@ -2,10 +2,7 @@
 
 14.4
 -----
-
-
-14.4
------
+- [*] Shipping Labels: Fixed a bug preventing label printing in orders viewed from search [https://github.com/woocommerce/woocommerce-ios/pull/10161]
 
 
 14.3

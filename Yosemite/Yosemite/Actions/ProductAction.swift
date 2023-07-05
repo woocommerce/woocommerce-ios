@@ -108,7 +108,7 @@ public enum ProductAction: Action {
     case replaceProductLocally(product: Product, onCompletion: () -> Void)
 
     /// Checks if the store already has any products.
-    /// Returns `true` if the store has no products.
+    /// Returns `false` if the store has no products.
     ///
     case checkIfStoreHasProducts(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
 

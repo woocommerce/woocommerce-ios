@@ -496,7 +496,7 @@ private extension ProductStore {
     }
 
     /// Checks if the store already has any products.
-    /// Returns `true` if the store has no products.
+    /// Returns `false` if the store has no products.
     ///
     func checkIfStoreHasProducts(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.

@@ -47,9 +47,6 @@ final class AddProductFromImageCoordinator: Coordinator {
     }
 
     func start() {
-        guard #available(iOS 16.0, *) else {
-            return
-        }
         let addProductFromImage = AddProductFromImageHostingController(siteID: siteID, addImage: { [weak self] source in
             guard let self else { return nil }
             return await self.showImagePicker(source: source)

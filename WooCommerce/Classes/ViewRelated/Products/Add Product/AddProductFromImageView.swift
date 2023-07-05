@@ -9,7 +9,6 @@ struct AddProductFromImageData {
     let image: UIImage?
 }
 
-@available(iOS 16.0, *)
 final class AddProductFromImageHostingController: UIHostingController<AddProductFromImageView> {
     init(siteID: Int64,
          addImage: @escaping (MediaPickingSource) async -> UIImage?,
@@ -22,7 +21,6 @@ final class AddProductFromImageHostingController: UIHostingController<AddProduct
     }
 }
 
-@available(iOS 16.0, *)
 struct ProductLiveTextImage: View {
     let imageState: AddProductFromImageViewModel.ImageState
 
@@ -30,7 +28,9 @@ struct ProductLiveTextImage: View {
         switch imageState {
         case .success(let image):
             ZoomableScrollView {
-                LiveTextInteractionView(image: image)
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
             }
         case .loading:
             ProgressView()
@@ -54,7 +54,6 @@ struct ProductLiveTextImage: View {
     }
 }
 
-@available(iOS 16.0, *)
 struct ProductImageView: View {
     let imageState: AddProductFromImageViewModel.ImageState
 
@@ -65,7 +64,6 @@ struct ProductImageView: View {
     }
 }
 
-@available(iOS 16.0, *)
 struct EditableProductImageView: View {
     @ObservedObject var viewModel: AddProductFromImageViewModel
     @State private var isShowingActionSheet: Bool = false
@@ -105,7 +103,6 @@ struct EditableProductImageView: View {
     }
 }
 
-@available(iOS 16.0, *)
 struct AddProductFromImageView: View {
     private let completion: (AddProductFromImageData) -> Void
     @StateObject private var viewModel: AddProductFromImageViewModel
@@ -132,15 +129,13 @@ struct AddProductFromImageView: View {
 
             Section {
                 TextField("Name",
-                          text: $viewModel.name,
-                          axis: .vertical)
+                          text: $viewModel.name)
                 .fixedSize(horizontal: false, vertical: true)
 
                 TextField("Description",
-                          text: $viewModel.description,
-                          axis: .vertical)
-                .lineLimit(2...5)
+                          text: $viewModel.description)
                 .fixedSize(horizontal: false, vertical: true)
+                .lineLimit(5)
             }
             .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
             .shimmering(active: viewModel.isGeneratingDetails)
@@ -191,8 +186,6 @@ struct AddProductFromImageView: View {
 
 struct AddProductFromImageView_Previews: PreviewProvider {
     static var previews: some View {
-        if #available(iOS 16.0, *) {
-            AddProductFromImageView(siteID: 134, addImage: { _ in nil }, completion: { _ in })
-        }
+        AddProductFromImageView(siteID: 134, addImage: { _ in nil }, completion: { _ in })
     }
 }

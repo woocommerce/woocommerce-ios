@@ -6,7 +6,6 @@ import UIKit
 import Vision
 import Yosemite
 
-@available(iOS 16.0, *)
 @MainActor
 final class AddProductFromImageViewModel: ObservableObject {
 
@@ -25,8 +24,6 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     // MARK: - Product Image
 
-    private let onAddImage: (MediaPickingSource) async -> UIImage?
-
     enum ImageState {
         case empty
         case loading(Progress)
@@ -34,25 +31,8 @@ final class AddProductFromImageViewModel: ObservableObject {
         case failure(Error)
     }
 
-    enum TransferError: Error {
-        case importFailed
-    }
-
-    @available(iOS 16.0, *)
-    struct ProductImage: Transferable {
-        let image: UIImage
-
-        static var transferRepresentation: some TransferRepresentation {
-            DataRepresentation(importedContentType: .image) { data in
-                guard let uiImage = UIImage(data: data) else {
-                    throw TransferError.importFailed
-                }
-                return ProductImage(image: uiImage)
-            }
-        }
-    }
-
     @Published private(set) var imageState: ImageState = .empty
+    private let onAddImage: (MediaPickingSource) async -> UIImage?
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -84,7 +64,6 @@ final class AddProductFromImageViewModel: ObservableObject {
     }
 }
 
-@available(iOS 16.0, *)
 private extension AddProductFromImageViewModel {
     func onSelectedImage(_ image: UIImage) {
         // Gets the CGImage on which to perform requests.
@@ -101,8 +80,10 @@ private extension AddProductFromImageViewModel {
         }
 
         // TODO-JC: iOS version check
-        request.revision = VNRecognizeTextRequestRevision3
-        request.automaticallyDetectsLanguage = true
+        if #available(iOS 16.0, *) {
+            request.revision = VNRecognizeTextRequestRevision3
+            request.automaticallyDetectsLanguage = true
+        }
         print("langs: \(try? request.supportedRecognitionLanguages())")
 
         do {

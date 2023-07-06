@@ -42,7 +42,11 @@ public protocol ProductsRemoteProtocol {
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
     func updateProductImages(siteID: Int64, productID: Int64, images: [ProductImage], completion: @escaping (Result<Product, Error>) -> Void)
     func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void)
-    func loadProductIDs(for siteID: Int64, pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Int64], Error>) -> Void)
+    func loadProductIDs(for siteID: Int64,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        productStatus: ProductStatus?,
+                        completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
 }
 
@@ -365,11 +369,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func loadProductIDs(for siteID: Int64,
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize,
+                               productStatus: ProductStatus? = nil,
                                completion: @escaping (Result<[Int64], Error>) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.fields: ParameterKey.id
+            ParameterKey.fields: ParameterKey.id,
+            ParameterKey.productStatus: productStatus?.rawValue ?? ""
         ]
 
         let path = Path.products

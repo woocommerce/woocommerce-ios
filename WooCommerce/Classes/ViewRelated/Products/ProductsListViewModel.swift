@@ -171,11 +171,27 @@ extension ProductListViewModel {
     }
 
     private func isBlazeBannerVisible() async -> Bool {
-        let isSiteEligible = await blazeEligibilityChecker.isSiteEligible()
-        guard isSiteEligible else {
+        async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
+        async let storeHasPublishedProducts = (try? checkIfStoreHasProducts(siteID: siteID, status: .published)) ?? false
+        guard (await isSiteEligible, await storeHasPublishedProducts) == (true, true) else {
             return false
         }
         return !userDefaults.hasDismissedBlazeBanner(for: siteID)
+    }
+
+    @MainActor
+    private func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus? = nil) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: { result in
+                switch result {
+                case .success(let hasProducts):
+                    continuation.resume(returning: hasProducts)
+                case .failure(let error):
+                    DDLogError("⛔️ Product list — Error fetching products to show the Blaze banner: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
     }
 
     /// Hides the banner and updates the user defaults to not show the banner again.

@@ -1716,6 +1716,26 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertFalse(hasProducts)
     }
 
+    func test_checkIfStoreHasProducts_returns_expected_result_when_local_storage_has_no_product_of_given_stautus_and_remote_returns_empty_array() throws {
+        // Given
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: sampleSiteID, statusKey: "draft"))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-ids-only-empty")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ProductAction.checkIfStoreHasProducts(siteID: self.sampleSiteID, status: .published) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let hasPublishedProducts = try XCTUnwrap(result.get())
+        XCTAssertFalse(hasPublishedProducts)
+    }
+
     func test_create_template_product_invokes_correct_network_calls() {
         // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

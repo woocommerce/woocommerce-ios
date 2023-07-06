@@ -3,6 +3,7 @@ import Yosemite
 import Fakes
 @testable import WooCommerce
 
+@MainActor
 final class ProductListViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
     private var storesManager: MockStoresManager!
@@ -309,17 +310,28 @@ final class ProductListViewModelTests: XCTestCase {
     }
 
     // MARK: - Blaze banner
-    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet() async throws {
+    // swiftlint:disable:next line_length
+    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet_and_site_has_published_products() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: stores,
                                              userDefaults: userDefaults,
                                              blazeEligibilityChecker: checker)
         XCTAssertFalse(viewModel.shouldShowBlazeBanner)
 
         // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
         await viewModel.updateBlazeBannerVisibility()
 
         //  Then
@@ -331,12 +343,22 @@ final class ProductListViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: stores,
                                              userDefaults: userDefaults,
                                              blazeEligibilityChecker: checker)
         XCTAssertFalse(viewModel.shouldShowBlazeBanner)
 
         // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
         await viewModel.updateBlazeBannerVisibility()
 
         //  Then
@@ -347,14 +369,51 @@ final class ProductListViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         userDefaults[.hasDismissedBlazeBanner] = ["\(sampleSiteID)": true]
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: stores,
                                              userDefaults: userDefaults,
                                              blazeEligibilityChecker: checker)
         XCTAssertFalse(viewModel.shouldShowBlazeBanner)
 
         // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        await viewModel.updateBlazeBannerVisibility()
+
+        //  Then
+        XCTAssertFalse(viewModel.shouldShowBlazeBanner)
+    }
+
+    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_false_if_store_has_no_published_products() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let uuid = UUID().uuidString
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: stores,
+                                             userDefaults: userDefaults,
+                                             blazeEligibilityChecker: checker)
+        XCTAssertFalse(viewModel.shouldShowBlazeBanner)
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
         await viewModel.updateBlazeBannerVisibility()
 
         //  Then
@@ -366,9 +425,19 @@ final class ProductListViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: stores,
                                              userDefaults: userDefaults,
                                              blazeEligibilityChecker: checker)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
         await viewModel.updateBlazeBannerVisibility()
         XCTAssertTrue(viewModel.shouldShowBlazeBanner)
 

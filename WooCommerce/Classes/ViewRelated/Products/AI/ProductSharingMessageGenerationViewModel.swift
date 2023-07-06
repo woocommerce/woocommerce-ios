@@ -46,6 +46,10 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     /// This is needed to identify whether the next request is a retry.
     private var hasGeneratedMessage = false
 
+    /// Language used in product identified by AI
+    ///
+    private var languageIdentifiedUsingAI: String?
+
     init(siteID: Int64,
          url: String,
          productName: String,
@@ -97,6 +101,13 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     func handleFeedback(_ vote: FeedbackView.Vote) {
         analytics.track(event: .AIFeedback.feedbackSent(source: .productSharingMessage,
                                                         isUseful: vote == .up))
+        if vote == .down {
+            // User down voting could be because the identified language is incorrect.
+            // Setting it as `nil` to identify language again during next generation attempt.
+            // pe5sF9-1GF-p2
+            languageIdentifiedUsingAI = nil
+        }
+
         // Delay the disappearance of the banner for a better UX.
         DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeDismissingFeedbackBanner) { [weak self] in
             self?.shouldShowFeedbackView = false
@@ -108,15 +119,37 @@ private extension ProductSharingMessageGenerationViewModel {
 
     @MainActor
     func requestMessageFromAI() async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
+        let language = try await identifyLanguage()
+        return try await withCheckedThrowingContinuation { continuation in
+
             stores.dispatch(ProductAction.generateProductSharingMessage(siteID: siteID,
                                                                         url: url,
                                                                         name: productName,
                                                                         description: productDescription,
+                                                                        language: language,
                                                                         completion: { result in
                 continuation.resume(with: result)
             }))
         }
+    }
+
+    @MainActor
+    func identifyLanguage() async throws -> String {
+        if let languageIdentifiedUsingAI,
+           languageIdentifiedUsingAI.isNotEmpty {
+            return languageIdentifiedUsingAI
+        }
+
+        let language = try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
+                                                           string: productName + " " + productDescription,
+                                                           feature: .productSharing,
+                                                           completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+        self.languageIdentifiedUsingAI = language
+        return language
     }
 }
 

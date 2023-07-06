@@ -911,6 +911,8 @@
 		EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */ = {isa = PBXBuildFile; fileRef = EECB7EE7286555180028C888 /* media-update-product-id.json */; };
 		EECDBEDE296845F400293C4E /* RESTRequestConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDBEDD296845F400293C4E /* RESTRequestConvertible.swift */; };
 		EECDBEE029684AC500293C4E /* WordPressAPIVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECDBEDF29684AC500293C4E /* WordPressAPIVersionTests.swift */; };
+		EEE846A22A54745F005239B6 /* identify-language-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EEE846A02A54745F005239B6 /* identify-language-success.json */; };
+		EEE846A32A54745F005239B6 /* identify-language-failure.json in Resources */ = {isa = PBXBuildFile; fileRef = EEE846A12A54745F005239B6 /* identify-language-failure.json */; };
 		EEFAA579295D2FC7003583BE /* RESTRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA578295D2FC7003583BE /* RESTRequestTests.swift */; };
 		EEFAA57B295D7793003583BE /* AuthenticatedDotcomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57A295D7793003583BE /* AuthenticatedDotcomRequest.swift */; };
 		EEFAA57D295D77F0003583BE /* AuthenticatedRESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57C295D77F0003583BE /* AuthenticatedRESTRequest.swift */; };
@@ -1857,6 +1859,8 @@
 		EECB7EE7286555180028C888 /* media-update-product-id.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id.json"; sourceTree = "<group>"; };
 		EECDBEDD296845F400293C4E /* RESTRequestConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequestConvertible.swift; sourceTree = "<group>"; };
 		EECDBEDF29684AC500293C4E /* WordPressAPIVersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAPIVersionTests.swift; sourceTree = "<group>"; };
+		EEE846A02A54745F005239B6 /* identify-language-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "identify-language-success.json"; sourceTree = "<group>"; };
+		EEE846A12A54745F005239B6 /* identify-language-failure.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "identify-language-failure.json"; sourceTree = "<group>"; };
 		EEFAA578295D2FC7003583BE /* RESTRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequestTests.swift; sourceTree = "<group>"; };
 		EEFAA57A295D7793003583BE /* AuthenticatedDotcomRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedDotcomRequest.swift; sourceTree = "<group>"; };
 		EEFAA57C295D77F0003583BE /* AuthenticatedRESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRESTRequest.swift; sourceTree = "<group>"; };
@@ -2415,6 +2419,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				EEE846A12A54745F005239B6 /* identify-language-failure.json */,
+				EEE846A02A54745F005239B6 /* identify-language-success.json */,
 				DE4D23BD29B6E10F003A4B5D /* announcements.json */,
 				021D741B2987B1550035687E /* checkout-doman-cart-with-domain-credit-success.json */,
 				DEC2B092297AA60D003923FB /* category-without-data.json */,
@@ -3462,6 +3468,7 @@
 				DE66C559297799D000DAA978 /* add-on-groups-without-data.json in Resources */,
 				265BCA02243056E3004E53EE /* categories-all.json in Resources */,
 				D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */,
+				EEE846A22A54745F005239B6 /* identify-language-success.json in Resources */,
 				CEC4BF91234E40B5008D9195 /* refund-single.json in Resources */,
 				2683D70E24456DB8002A1589 /* categories-empty.json in Resources */,
 				D865CE67278CA225002C8520 /* stripe-payment-intent-succeeded.json in Resources */,
@@ -3553,6 +3560,7 @@
 				EE57C127297F8E5E00BC31E7 /* product-attribute-terms-without-data.json in Resources */,
 				CCEC5E9129E9BF1400912D6B /* product-variation-subscription.json in Resources */,
 				027EB57429C07524003CE551 /* site-launch-error-unauthorized.json in Resources */,
+				EEE846A32A54745F005239B6 /* identify-language-failure.json in Resources */,
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				31054718262E2F5E00C5C02B /* wcpay-payment-intent-requires-confirmation.json in Resources */,
 				DE66C5672977CEB800DAA978 /* shipping-label-status-success-without-data.json in Resources */,

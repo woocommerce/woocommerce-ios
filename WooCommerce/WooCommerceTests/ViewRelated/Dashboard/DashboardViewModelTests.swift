@@ -7,6 +7,7 @@ import enum Yosemite.JustInTimeMessageAction
 import struct Yosemite.JustInTimeMessage
 import struct Yosemite.StoreOnboardingTask
 import enum Yosemite.StoreOnboardingTasksAction
+import enum Yosemite.ProductStatus
 import struct Yosemite.Site
 @testable import WooCommerce
 
@@ -102,7 +103,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkIfStoreHasProducts(_, completion):
+            case let .checkIfStoreHasProducts(_, _, completion):
                 completion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -138,7 +139,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkIfStoreHasProducts(_, completion):
+            case let .checkIfStoreHasProducts(_, _, completion):
                 completion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -180,7 +181,7 @@ final class DashboardViewModelTests: XCTestCase {
     func prepareStoresToShowJustInTimeMessage(_ response: Result<[Yosemite.JustInTimeMessage], Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkIfStoreHasProducts(_, completion):
+            case let .checkIfStoreHasProducts(_, _, completion):
                 completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -200,7 +201,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .checkIfStoreHasProducts(_, completion):
+            case let .checkIfStoreHasProducts(_, _, completion):
                 completion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -611,8 +612,35 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     // MARK: Blaze banner
+    func test_updateBlazeBannerVisibility_triggers_loading_product_ids_with_published_status() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: checker)
+        var productStatusToCheck: ProductStatus?
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, let productStatus, let completion):
+                productStatusToCheck = productStatus
+                completion(.success(false))
+            default:
+                break
+            }
+        }
+        await viewModel.updateBlazeBannerVisibility()
+
+        //  Then
+        XCTAssertEqual(productStatusToCheck?.rawValue, "publish")
+    }
+
     // swiftlint:disable:next line_length
-    func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet_and_store_has_products() async throws {
+    func test_updateBlazeBannerVisibility_updates_showBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet_and_store_has_published_products() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
@@ -626,7 +654,7 @@ final class DashboardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, let onCompletion):
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -652,7 +680,7 @@ final class DashboardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, let onCompletion):
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -679,7 +707,7 @@ final class DashboardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, let onCompletion):
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -705,7 +733,7 @@ final class DashboardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, let onCompletion):
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
                 onCompletion(.success(false))
             default:
                 break
@@ -728,7 +756,7 @@ final class DashboardViewModelTests: XCTestCase {
                                            blazeEligibilityChecker: checker)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, let onCompletion):
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break

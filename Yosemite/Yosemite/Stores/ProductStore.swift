@@ -116,14 +116,18 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
-        case let .checkIfStoreHasProducts(siteID: siteID, onCompletion: onCompletion):
-            checkIfStoreHasProducts(siteID: siteID, onCompletion: onCompletion)
+        case let .checkIfStoreHasProducts(siteID, status, onCompletion):
+            checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: onCompletion)
         case let .createTemplateProduct(siteID, template, onCompletion):
             createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
-        case let .generateProductDescription(siteID, name, features, completion):
-            generateProductDescription(siteID: siteID, name: name, features: features, completion: completion)
-        case let .generateProductSharingMessage(siteID, url, name, description, completion):
-            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, completion: completion)
+        case let .identifyLanguage(siteID, string, feature, completion):
+            identifyLanguage(siteID: siteID,
+                             string: string, feature: feature,
+                             completion: completion)
+        case let .generateProductDescription(siteID, name, features, language, completion):
+            generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
+        case let .generateProductSharingMessage(siteID, url, name, description, language, completion):
+            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
         case let .generateProductDetails(siteID, scannedTexts, completion):
             generateProductDetails(siteID: siteID, scannedTexts: scannedTexts, completion: completion)
         }
@@ -368,8 +372,8 @@ private extension ProductStore {
                         onCompletion(.success(.product(product)))
                     })
                 }
-            case .failure:
-                onCompletion(.failure(ProductLoadError.notFound))
+            case let .failure(error):
+                onCompletion(.failure(error))
             }
         })
     }
@@ -497,18 +501,22 @@ private extension ProductStore {
         upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: product.siteID, onCompletion: onCompletion)
     }
 
-    /// Checks if the store already has any products.
+    /// Checks if the store already has any products with the given status.
     /// Returns `false` if the store has no products.
     ///
-    func checkIfStoreHasProducts(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus?, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
         if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
-            return onCompletion(.success(true))
+            if let status, (products.filter { $0.statusKey == status.rawValue }.isEmpty) == false {
+                return onCompletion(.success(true))
+            } else if status == nil {
+                return onCompletion(.success(true))
+            }
         }
 
         // If there are no locally stored products, then check remote.
-        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1) { result in
+        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1, productStatus: status) { result in
             switch result {
             case .success(let ids):
                 onCompletion(.success(ids.isEmpty == false))
@@ -533,23 +541,40 @@ private extension ProductStore {
         }
     }
 
+    func identifyLanguage(siteID: Int64,
+                          string: String,
+                          feature: GenerativeContentRemoteFeature,
+                          completion: @escaping (Result<String, Error>) -> Void) {
+        Task { @MainActor in
+            let result = await Result {
+                try await generativeContentRemote.identifyLanguage(siteID: siteID,
+                                                                   string: string,
+                                                                   feature: feature)
+            }
+            completion(result)
+        }
+    }
+
     func generateProductDescription(siteID: Int64,
                                     name: String,
                                     features: String,
+                                    language: String,
                                     completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
             "Write a description for a product with title ```\(name)``` and features: ```\(features)```.",
-            "Identify the language used in the product title and features and use the same language in your response.",
+            "Your response should be in language \(language).",
             "Make the description 50-60 words or less.",
             "Use a 9th grade reading level.",
             "Perform in-depth keyword research relating to the product in the same language of the product title, " +
             "and use them in your sentences without listing them out."
         ].joined(separator: "\n")
-        Task {
-            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription) }
-            await MainActor.run {
-                completion(result)
+
+        Task { @MainActor in
+            let result = await Result {
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription)
+                return description
             }
+            completion(result)
         }
     }
 
@@ -557,24 +582,27 @@ private extension ProductStore {
                                        url: String,
                                        name: String,
                                        description: String,
+                                       language: String,
                                        completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
+            // swiftlint:disable:next line_length
             "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",
             "- Product description: ```\(description)```",
             "- Product URL: \(url).",
-            "Identify the language used in the product name and product description to use in your response.",
+            "Your response should be in language \(language).",
             "The length should be up to 3 sentences.",
             "Use a 9th grade reading level.",
             "Add related hashtags at the end of the message.",
             "Do not include the URL in the message.",
         ].joined(separator: "\n")
-        Task {
-            let result = await Result { try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
+
+        Task { @MainActor in
+            let result = await Result {
+                let message = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
+                return message
             }
-            await MainActor.run {
-                completion(result)
-            }
+            completion(result)
         }
     }
 

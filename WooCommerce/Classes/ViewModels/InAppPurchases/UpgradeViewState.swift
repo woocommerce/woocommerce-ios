@@ -2,8 +2,8 @@ import Foundation
 
 enum UpgradeViewState: Equatable {
     case loading
-    case loaded(WooWPComPlan)
-    case purchasing(WooWPComPlan)
+    case loaded([WooWPComPlan])
+    case purchasing(WooWPComPlan, [WooWPComPlan])
     case waiting(WooWPComPlan)
     case completed(WooWPComPlan)
     case prePurchaseError(PrePurchaseError)

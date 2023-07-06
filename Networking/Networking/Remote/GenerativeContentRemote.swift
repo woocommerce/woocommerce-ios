@@ -18,6 +18,16 @@ public protocol GenerativeContentRemoteProtocol {
     func generateText(siteID: Int64,
                       base: String,
                       feature: GenerativeContentRemoteFeature) async throws -> String
+
+    /// Identifies the language from the given string
+    /// - Parameters:
+    ///   - siteID: WPCOM ID of the site.
+    ///   - string: String from which we should identify the language
+    ///   - feature: Used by backend to track AI-generation usage and measure costs
+    /// - Returns: Name of the language
+    func identifyLanguage(siteID: Int64,
+                          string: String,
+                          feature: GenerativeContentRemoteFeature) async throws -> String
 }
 
 /// Product: Remote Endpoints
@@ -29,6 +39,23 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         let path = "sites/\(siteID)/\(Path.text)"
         /// We are skipping cache entirely to avoid showing outdated/duplicated text.
         let parameters = [ParameterKey.textContent: base,
+                          ParameterKey.skipCache: "true",
+                          ParameterKey.feature: feature.rawValue]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
+        return try await enqueue(request)
+    }
+
+    public func identifyLanguage(siteID: Int64,
+                                 string: String,
+                                 feature: GenerativeContentRemoteFeature) async throws -> String {
+        let path = "sites/\(siteID)/\(Path.text)"
+        let prompt = [
+            "What is the name of the language used in the following text? Just give me only the language name in your response.",
+            "Text: ```\(string)```"
+        ].joined(separator: "\n")
+
+        /// We are skipping cache entirely to avoid showing outdated/duplicated text.
+        let parameters = [ParameterKey.textContent: prompt,
                           ParameterKey.skipCache: "true",
                           ParameterKey.feature: feature.rawValue]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)

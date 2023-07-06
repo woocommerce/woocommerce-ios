@@ -106,7 +106,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureResultsController(resultsController, onReload: { [weak self] in
             guard let self else { return }
             self.reloadTableAndView()
-            self.isEmpty = resultsController.isEmpty
         })
         return resultsController
     }()
@@ -132,7 +131,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Indicates if there are no results onscreen.
     ///
-    @Published private var isEmpty: Bool = true
+    private var isEmpty: Bool {
+        resultsController.isEmpty
+    }
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -179,7 +180,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Set when sync fails, and used to display an error loading data banner
     ///
-    private var hasErrorLoadingData: Bool = false
+    @Published private var hasErrorLoadingData: Bool = false
 
     /// Free trial banner presentation handler.
     ///
@@ -225,6 +226,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureFreeTrialBannerPresenter()
         registerTableViewCells()
 
+        observeBlazeBannerVisibility()
         showTopBannerViewIfNeeded()
         syncProductsSettings()
     }
@@ -729,7 +731,7 @@ private extension ProductsViewController {
             requestAndShowErrorTopBannerView()
         }
 
-        checkBlazeBannerVisibility()
+        updateBlazeBannerVisibility()
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
@@ -833,6 +835,7 @@ private extension ProductsViewController {
     func reloadTableAndView() {
         showOrHideToolbar()
         addOrRemoveOverlay()
+        updateBlazeBannerVisibility()
         tableView.reloadData()
     }
 
@@ -861,23 +864,22 @@ private extension ProductsViewController {
         }
     }
 
-    func checkBlazeBannerVisibility() {
+    func observeBlazeBannerVisibility() {
         viewModel.$shouldShowBlazeBanner
             .removeDuplicates()
-            .combineLatest($isEmpty.removeDuplicates())
-            .sink { [weak self] shouldShow, isEmpty in
+            .combineLatest($hasErrorLoadingData.removeDuplicates())
+            .sink { [weak self] shouldShow, hasErrorLoadingData in
                 guard let self else { return }
-                guard !self.hasErrorLoadingData, !isEmpty else {
-                    return self.hideBlazeBanner()
-                }
-                if shouldShow {
+                if shouldShow, !hasErrorLoadingData {
                     self.showBlazeBanner()
                 } else {
                     self.hideBlazeBanner()
                 }
             }
             .store(in: &subscriptions)
+    }
 
+    func updateBlazeBannerVisibility() {
         Task { @MainActor in
             await viewModel.updateBlazeBannerVisibility()
         }

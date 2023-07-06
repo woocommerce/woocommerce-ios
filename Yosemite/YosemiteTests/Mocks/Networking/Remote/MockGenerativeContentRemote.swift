@@ -14,6 +14,17 @@ final class MockGenerativeContentRemote {
     func whenGeneratingText(thenReturn result: Result<String, Error>) {
         generateTextResult = result
     }
+
+    private(set) var identifyLanguageString: String?
+    private(set) var identifyLanguageFeature: GenerativeContentRemoteFeature?
+
+    /// The results to return in `identifyLanguage`.
+    private var identifyLanguageResult: Result<String, Error>?
+
+    /// Returns the value when `identifyLanguage` is called.
+    func whenIdentifyingLanguage(thenReturn result: Result<String, Error>) {
+        identifyLanguageResult = result
+    }
 }
 
 extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
@@ -23,6 +34,18 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
         generateTextBase = base
         generateTextFeature = feature
         guard let result = generateTextResult else {
+            XCTFail("Could not find result for generating text.")
+            throw NetworkError.notFound
+        }
+        return try result.get()
+    }
+
+    func identifyLanguage(siteID: Int64,
+                          string: String,
+                          feature: GenerativeContentRemoteFeature) async throws -> String {
+        identifyLanguageString = string
+        identifyLanguageFeature = feature
+        guard let result = identifyLanguageResult else {
             XCTFail("Could not find result for generating text.")
             throw NetworkError.notFound
         }

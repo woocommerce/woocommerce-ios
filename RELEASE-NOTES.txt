@@ -2,8 +2,10 @@
 
 14.4
 -----
+- [*] Blaze: New banner on the My Store and Products screens for admins of eligible stores. [https://github.com/woocommerce/woocommerce-ios/pull/10135, https://github.com/woocommerce/woocommerce-ios/pull/10160, https://github.com/woocommerce/woocommerce-ios/pull/10172]
 - [*] Shipping Labels: Fixed a bug preventing label printing in orders viewed from search [https://github.com/woocommerce/woocommerce-ios/pull/10161]
-
+- [*] Blaze: Disable the entry point in the product creation form. [https://github.com/woocommerce/woocommerce-ios/pull/10173]
+- [*] Product description and sharing message AI: Fixed incorrect language issue by using a separate prompt for identifying language. [https://github.com/woocommerce/woocommerce-ios/pull/10169]
 
 14.3
 -----

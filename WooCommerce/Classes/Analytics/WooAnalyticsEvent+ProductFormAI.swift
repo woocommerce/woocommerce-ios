@@ -4,6 +4,7 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let source = "source"
             static let isRetry = "is_retry"
+            static let identifiedLanguage = "identified_language"
         }
 
         /// Tracked when the user taps on the button to start the product description AI flow.
@@ -35,8 +36,9 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the product description AI generation succeeds.
-        static func productDescriptionAIGenerationSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDescriptionAIGenerationSuccess, properties: [:])
+        static func productDescriptionAIGenerationSuccess(identifiedLanguage: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDescriptionAIGenerationSuccess,
+                              properties: [Key.identifiedLanguage: identifiedLanguage].compactMapValues { $0 })
         }
 
         /// Tracked when the product description AI generation fails.

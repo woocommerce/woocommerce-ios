@@ -319,6 +319,33 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["source"] as? String, "product_description")
         XCTAssertEqual(eventProperties["is_useful"] as? Bool, false)
     }
+
+    func test_generateDescription_tracks_event_on_successful_generation() throws {
+        // Given
+        let expectedLanguage = "en"
+        mock(generatedDescription: .success("Must buy"),
+             identifyLaunguage: .success(expectedLanguage))
+
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "Durable",
+                                                              stores: stores,
+                                                              analytics: analytics,
+                                                              onApply: { _ in })
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
+
+        // When
+        viewModel.name = "Fun"
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_description_ai_generation_success"}))
+        let eventProperties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(eventProperties["identified_language"] as? String, expectedLanguage)
+    }
 }
 
 private extension ProductDescriptionGenerationViewModelTests {

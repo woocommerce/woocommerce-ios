@@ -136,7 +136,7 @@ private extension ProductDescriptionGenerationViewModel {
         switch result {
         case let .success(text):
             suggestedText = text
-            analytics.track(event: .ProductFormAI.productDescriptionAIGenerationSuccess())
+            analytics.track(event: .ProductFormAI.productDescriptionAIGenerationSuccess(identifiedLanguage: languageIdentifiedUsingAI))
             shouldShowFeedbackView = true
         case let .failure(error):
             errorMessage = error.localizedDescription

@@ -5314,15 +5314,6 @@
 			path = Containers;
 			sourceTree = "<group>";
 		};
-		02580BE92A4A7472002AC61C /* AddProductFromImage */ = {
-			isa = PBXGroup;
-			children = (
-				02580BEA2A4A748C002AC61C /* AddProductFromImageViewModel.swift */,
-				023F6ECC2A56407E004BA9FC /* AddProductFromImageScannedTextView.swift */,
-			);
-			path = AddProductFromImage;
-			sourceTree = "<group>";
-		};
 		025C00572550DDDD00FAC222 /* SKU Scanner */ = {
 			isa = PBXGroup;
 			children = (
@@ -6007,7 +5998,6 @@
 		02ECD1E224FF5DDD00735BE5 /* Add Product */ = {
 			isa = PBXGroup;
 			children = (
-				02580BE92A4A7472002AC61C /* AddProductFromImage */,
 				EEBDF7E32A317BBB00EFEF47 /* FirstProductCreated */,
 				02ECD1E324FF5E0B00735BE5 /* AddProductCoordinator.swift */,
 				02ECD1E524FFB4E900735BE5 /* ProductFactory.swift */,
@@ -6015,6 +6005,8 @@
 				02251B8C2A3DBECA003CCD9A /* LiveTextInteractionView.swift */,
 				02C3472E2A4649910055D0D3 /* ZoomableScrollView.swift */,
 				02C347302A466E2F0055D0D3 /* AddProductFromImageCoordinator.swift */,
+				02580BEA2A4A748C002AC61C /* AddProductFromImageViewModel.swift */,
+				023F6ECC2A56407E004BA9FC /* AddProductFromImageScannedTextView.swift */,
 			);
 			path = "Add Product";
 			sourceTree = "<group>";

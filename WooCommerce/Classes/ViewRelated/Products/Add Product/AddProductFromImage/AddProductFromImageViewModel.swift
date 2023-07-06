@@ -8,6 +8,19 @@ import Yosemite
 
 @MainActor
 final class AddProductFromImageViewModel: ObservableObject {
+    final class ScannedTextViewModel: ObservableObject, Identifiable {
+        var id: String {
+            UUID().uuidString
+        }
+        @Published var text: String
+        @Published var isSelected: Bool
+
+        init(text: String,
+             isSelected: Bool) {
+            self.text = text
+            self.isSelected = isSelected
+        }
+    }
 
     // MARK: - Product Details
 
@@ -17,10 +30,13 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     // MARK: - Scanned Texts
 
-    @Published var scannedTexts: [String] = []
-    @Published var selectedScannedTexts: Set<String> = []
+    @Published var scannedTexts: [ScannedTextViewModel] = []
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var showsRegenerateButton: Bool = false
+
+    private var selectedScannedTexts: [String] {
+        scannedTexts.filter { $0.isSelected }.map { $0.text }
+    }
 
     // MARK: - Product Image
 
@@ -111,8 +127,7 @@ private extension AddProductFromImageViewModel {
 
     func onScannedTextRequestCompletion(request: VNRequest, error: Error?) {
         let texts = scannedTexts(from: request)
-        scannedTexts = texts
-        selectedScannedTexts = .init(texts)
+        scannedTexts = texts.map { .init(text: $0, isSelected: true) }
         Task { @MainActor in
             isGeneratingDetails = true
             await generateAndPopulateProductDetails(from: texts)

@@ -123,78 +123,67 @@ struct AddProductFromImageView: View {
     }
 
     var body: some View {
-        Form {
-            Section {
-                HStack {
-                    Spacer()
-                    EditableProductImageView(viewModel: viewModel)
-                    Spacer()
-                }
-            }
-            .listRowBackground(Color.clear)
-            .padding([.top], 10)
-
-            Section {
-                if #available(iOS 16.0, *) {
-                    TextField("Name", text: $viewModel.name, axis: .vertical)
-                        .lineLimit(1...2)
-                        .fixedSize(horizontal: false, vertical: true)
-                    TextField("Description", text: $viewModel.description, axis: .vertical)
-                        .lineLimit(2...5)
-                        .fixedSize(horizontal: false, vertical: true)
-                } else {
-                    // TODO-JC: iOS 15 version
-                }
-            }
-            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
-            .shimmering(active: viewModel.isGeneratingDetails)
-
-            // Button to regenerate product details based on the selected scanned texts.
-            Button("Regenerate") {
-                viewModel.generateProductDetails()
-            }
-            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGeneratingDetails))
-            .renderedIf(viewModel.selectedScannedTexts.isEmpty == false)
-
-            Text("Generating details with the scanned texts:")
-                .renderedIf(viewModel.isGeneratingDetails)
-            List(viewModel.scannedTexts, id: \.self, selection: $viewModel.selectedScannedTexts) { scannedText in
-//                Text(scannedText)
-                Button(action: {
-                    if viewModel.selectedScannedTexts.contains(scannedText) {
-                        viewModel.selectedScannedTexts.remove(scannedText)
-                    } else {
-                        viewModel.selectedScannedTexts.insert(scannedText)
-                    }
-                }) {
+        if #available(iOS 16.0, *) {
+            Form {
+                Section {
                     HStack {
-                        Text(scannedText)
                         Spacer()
-                        Image(systemName: viewModel.selectedScannedTexts.contains(scannedText) ? "checkmark.circle.fill" : "circle")
+                        EditableProductImageView(viewModel: viewModel)
+                        Spacer()
                     }
                 }
-            }
-            .environment(\.editMode, .constant(EditMode.active))
-            .renderedIf(viewModel.scannedTexts.isNotEmpty)
+                .listRowBackground(Color.clear)
+                .padding([.top], 10)
 
-            // TODO-JC: language picker
-//            Section {
-//                Picker(selection: $selectedSiteIDSourceType, label: EmptyView()) {
-//                    ForEach(SiteIDSourceType.allCases, id: \.self) { option in
-//                        Text(option.title)
-//                    }
-//                }
-//                .pickerStyle(.segmented)
-//            }
-        }
-        .navigationTitle("Add product")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Continue") {
-                    // TODO-JC: pass image
-                    completion(.init(name: viewModel.name, description: viewModel.description, sku: viewModel.sku, image: viewModel.image))
+                Section {
+                    if #available(iOS 16.0, *) {
+                        TextField("Name", text: $viewModel.name, axis: .vertical)
+                            .lineLimit(1...2)
+                            .fixedSize(horizontal: false, vertical: true)
+                        TextField("Description", text: $viewModel.description, axis: .vertical)
+                            .lineLimit(2...5)
+                            .fixedSize(horizontal: false, vertical: true)
+                    } else {
+                        // TODO-JC: iOS 15 version
+                    }
                 }
-                .buttonStyle(LinkButtonStyle())
+                .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
+                .shimmering(active: viewModel.isGeneratingDetails)
+
+                // Button to regenerate product details based on the selected scanned texts.
+                Button("Regenerate") {
+                    viewModel.generateProductDetails()
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGeneratingDetails))
+                .renderedIf(viewModel.scannedTexts.isEmpty == false && viewModel.name.isNotEmpty)
+
+                Text("Generating details with the scanned texts:")
+                    .renderedIf(viewModel.isGeneratingDetails)
+                List(viewModel.scannedTexts) { scannedText in
+                    AddProductFromImageScannedTextView(viewModel: scannedText)
+                }
+                .renderedIf(viewModel.scannedTexts.isNotEmpty)
+
+                // TODO-JC: language picker
+                //            Section {
+                //                Picker(selection: $selectedSiteIDSourceType, label: EmptyView()) {
+                //                    ForEach(SiteIDSourceType.allCases, id: \.self) { option in
+                //                        Text(option.title)
+                //                    }
+                //                }
+                //                .pickerStyle(.segmented)
+                //            }
+            }
+            .scrollDismissesKeyboard(.immediately)
+            .navigationTitle("Add product")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Continue") {
+                        // TODO-JC: pass image
+                        completion(.init(name: viewModel.name, description: viewModel.description, sku: viewModel.sku, image: viewModel.image))
+                    }
+                    .buttonStyle(LinkButtonStyle())
+                }
             }
         }
     }

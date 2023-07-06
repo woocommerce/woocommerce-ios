@@ -1751,7 +1751,8 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product",
-                                                                           features: "Trendy") { result in
+                                                                           features: "Trendy",
+                                                                           language: "English") { result in
                 promise(result)
             })
         }
@@ -1776,7 +1777,8 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product",
-                                                                           features: "Trendy") { result in
+                                                                           features: "Trendy",
+                                                                           language: "English") { result in
                 promise(result)
             })
         }
@@ -1800,7 +1802,8 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product name",
-                                                                           features: "Trendy, cool, fun") { _ in
+                                                                           features: "Trendy, cool, fun",
+                                                                           language: "English") { _ in
                 promise(())
             })
         }
@@ -1809,6 +1812,7 @@ final class ProductStoreTests: XCTestCase {
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         XCTAssertTrue(base.contains("```A product name```"))
         XCTAssertTrue(base.contains("```Trendy, cool, fun```"))
+        XCTAssertTrue(base.contains("English"))
     }
 
     func test_generateProductDescription_uses_correct_feature() throws {
@@ -1825,7 +1829,8 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product name",
-                                                                           features: "Trendy, cool, fun") { _ in
+                                                                           features: "Trendy, cool, fun",
+                                                                           language: "English") { _ in
                 promise(())
             })
         }
@@ -1854,7 +1859,8 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
                 name: "Sample product",
-                description: "Sample description"
+                description: "Sample description",
+                language: "English"
             ) { result in
                 promise(result)
             })
@@ -1882,7 +1888,8 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
                 name: "Sample product",
-                description: "Sample description"
+                description: "Sample description",
+                language: "English"
             ) { result in
                 promise(result)
             })
@@ -1910,7 +1917,8 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
                 name: "Sample product",
-                description: "Sample description"
+                description: "Sample description",
+                language: "English"
             ) { result in
                 promise(result)
             })
@@ -1926,7 +1934,9 @@ final class ProductStoreTests: XCTestCase {
         let expectedURL = "https://example.com"
         let expectedName = "Sample product"
         let expectedDescription = "Sample description"
+        let expectedLangugae = "English"
         let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
@@ -1940,7 +1950,8 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: expectedURL,
                 name: expectedName,
-                description: expectedDescription
+                description: expectedDescription,
+                language: expectedLangugae
             ) { result in
                 promise(())
             })
@@ -1951,6 +1962,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains(expectedURL))
         XCTAssertTrue(base.contains(expectedName))
         XCTAssertTrue(base.contains(expectedDescription))
+        XCTAssertTrue(base.contains(expectedLangugae))
     }
 
     func test_generateProductSharingMessage_uses_correct_feature() throws {
@@ -1969,7 +1981,8 @@ final class ProductStoreTests: XCTestCase {
                 siteID: self.sampleSiteID,
                 url: "https://example.com",
                 name: "Sample product",
-                description: "Sample description"
+                description: "Sample description",
+                language: "English"
             ) { result in
                 promise(())
             })
@@ -1979,6 +1992,59 @@ final class ProductStoreTests: XCTestCase {
         let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productSharing)
     }
+
+    // MARK: - ProductAction.identifyLanguage
+
+    func test_identifyLanguage_returns_language_on_success() throws {
+        // Given
+        let expectedLanguage = "English"
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(expectedLanguage))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.identifyLanguage(siteID: self.sampleSiteID,
+                                                                 string: "Woo is awesome",
+                                                                 feature: .productSharing) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let generatedText = try XCTUnwrap(result.get())
+        XCTAssertEqual(generatedText, expectedLanguage)
+    }
+
+    func test_identifyLanguage_returns_error_on_identify_language_failure() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .failure(NetworkError.timeout))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.identifyLanguage(siteID: self.sampleSiteID,
+                                                                 string: "Woo is awesome",
+                                                                 feature: .productSharing) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+    }
+
 
     // MARK: - ProductAction.retrieveFirstPurchasableItemMatchFromSKU
 

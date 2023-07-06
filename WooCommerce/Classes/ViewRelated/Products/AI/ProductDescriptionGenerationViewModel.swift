@@ -36,6 +36,10 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
 
     private var task: Task<Void, Error>?
 
+    /// Language used in product identified by AI
+    ///
+    private var languageIdentifiedUsingAI: String?
+
     init(siteID: Int64,
          name: String,
          description: String,
@@ -86,13 +90,38 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
 private extension ProductDescriptionGenerationViewModel {
     @MainActor
     func generateProductDescription() async -> Result<String, Error> {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(ProductAction.generateProductDescription(siteID: siteID,
-                                                                     name: name,
-                                                                     features: features) { result in
-                continuation.resume(returning: result)
-            })
+        do {
+            let language = try await identifyLanguage()
+            return await withCheckedContinuation { continuation in
+                stores.dispatch(ProductAction.generateProductDescription(siteID: siteID,
+                                                                         name: name,
+                                                                         features: features,
+                                                                         language: language) { result in
+                    continuation.resume(returning: result)
+                })
+            }
+        } catch {
+            return .failure(error)
         }
+    }
+
+    @MainActor
+    func identifyLanguage() async throws -> String {
+        if let languageIdentifiedUsingAI,
+           languageIdentifiedUsingAI.isNotEmpty {
+            return languageIdentifiedUsingAI
+        }
+
+        let language = try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
+                                                           string: name + " " + features,
+                                                           feature: .productSharing,
+                                                           completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+        self.languageIdentifiedUsingAI = language
+        return language
     }
 
     @MainActor

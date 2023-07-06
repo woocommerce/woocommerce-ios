@@ -501,10 +501,10 @@ private extension ProductStore {
     func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus?, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
-        if let products = storage.loadProducts(siteID: siteID) {
+        if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
             if let status, (products.filter { $0.statusKey == status.rawValue }.isEmpty) == false {
                 return onCompletion(.success(true))
-            } else if status == nil, !products.isEmpty {
+            } else if status == nil {
                 return onCompletion(.success(true))
             }
         }

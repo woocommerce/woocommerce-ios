@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Experiments.FeatureFlagService
 
 /// Protocol for checking "add product from image" eligibility for easier unit testing.
 protocol AddProductFromImageEligibilityCheckerProtocol {
@@ -13,9 +14,12 @@ protocol AddProductFromImageEligibilityCheckerProtocol {
 /// Checks the eligibility for the "add product from image" feature.
 final class AddProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol {
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
+        self.featureFlagService = featureFlagService
     }
 
     func isEligibleToParticipateInABTest() -> Bool {
@@ -23,7 +27,11 @@ final class AddProductFromImageEligibilityChecker: AddProductFromImageEligibilit
     }
 
     func isEligible() -> Bool {
+        guard isEligibleToParticipateInABTest() else {
+            return false
+        }
+
         // TODO: 10180 - A/B experiment check
-        true
+        return featureFlagService.isFeatureFlagEnabled(.addProductFromImage)
     }
 }

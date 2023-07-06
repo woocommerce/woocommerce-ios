@@ -2108,7 +2108,6 @@ final class ProductStoreTests: XCTestCase {
         // The product that is expected to be in the search results
         let expectedProductID: Int64 = 2783
         let expectedParentID: Int64 = 846
-        let expectedProductName = "Chocolate bars"
         let expectedProductSKU = "chocobars"
 
         // When

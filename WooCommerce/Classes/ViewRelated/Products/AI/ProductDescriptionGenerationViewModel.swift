@@ -81,6 +81,9 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         analytics.track(event: .AIFeedback.feedbackSent(source: .productDescription,
                                                         isUseful: vote == .up))
         if vote == .down {
+            // User down voting could be because the identified language is incorrect.
+            // Setting it as `nil` to identify language again during next generation attempt.
+            // pe5sF9-1GF-p2
             languageIdentifiedUsingAI = nil
         }
 

@@ -82,7 +82,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
             shouldShowFeedbackView = true
         } catch {
             if case let IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: underlyingError) = error {
-                DDLogError("⛔️ Error identifing language: \(error)")
+                DDLogError("⛔️ Error identifying language: \(error)")
                 errorMessage = underlyingError.localizedDescription
                 analytics.track(event: .ProductSharingAI.identifyLanguageFailed(error: underlyingError))
             } else {

@@ -145,7 +145,7 @@ private extension ProductDescriptionGenerationViewModel {
             shouldShowFeedbackView = true
         case let .failure(error):
             if case let IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: underlyingError) = error {
-                DDLogError("⛔️ Error identifing language: \(error)")
+                DDLogError("⛔️ Error identifying language: \(error)")
                 errorMessage = underlyingError.localizedDescription
                 analytics.track(event: .ProductFormAI.identifyLanguageFailed(error: underlyingError))
             } else {

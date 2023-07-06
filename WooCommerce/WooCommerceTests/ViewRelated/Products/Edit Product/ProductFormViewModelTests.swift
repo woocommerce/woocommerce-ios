@@ -204,6 +204,24 @@ final class ProductFormViewModelTests: XCTestCase {
         }
     }
 
+    func test_canPromoteWithBlaze_is_false_for_product_creation_when_product_is_eligible_for_blaze() {
+            // Given
+            let product = Product.fake()
+            let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: true)
+            let nonEditableFormTypes: [ProductFormType] = [.add, .readonly]
+
+            // When
+            nonEditableFormTypes.forEach { nonEditableFormType in
+                // When
+                let viewModel = createViewModel(product: product, formType: nonEditableFormType, blazeEligibilityChecker: blazeEligibilityChecker)
+
+                waitUntil {
+                    // Then
+                    viewModel.canPromoteWithBlaze() == false
+                }
+            }
+        }
+
     // MARK: `canDeleteProduct`
 
     func test_edit_product_form_with_published_status_can_delete_product() {

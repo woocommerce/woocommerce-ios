@@ -25,7 +25,7 @@ final class AppCoordinator {
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
-    private let purchasesManagerForFreeTrialUpgrade: InAppPurchasesForWPComPlansProtocol
+    private let upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -47,7 +47,7 @@ final class AppCoordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
-         purchasesManagerForFreeTrialUpgrade: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
+         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -66,7 +66,7 @@ final class AppCoordinator {
         self.featureFlagService = featureFlagService
         self.purchasesManager = purchasesManager
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
-        self.purchasesManagerForFreeTrialUpgrade = purchasesManagerForFreeTrialUpgrade
+        self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
@@ -399,18 +399,12 @@ private extension AppCoordinator {
 private extension AppCoordinator {
     func showUpgradesView(siteID: Int64) {
         switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
-            guard let self else { return }
-
-            Task { @MainActor in
-                if await self.purchasesManagerForFreeTrialUpgrade.inAppPurchasesAreSupported() &&
-                    self.featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM1) {
-                    let upgradesController = UpgradesHostingController(siteID: siteID)
-                    self.window.rootViewController?.topmostPresentedViewController.present(upgradesController, animated: true)
-                } else {
-                    let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
-                    self.window.rootViewController?.topmostPresentedViewController.present(subscriptionsController, animated: true)
-                }
+            guard let self,
+            let topViewController = self.window.rootViewController?.topmostPresentedViewController
+            else {
+                return
             }
+            self.upgradesViewPresentationCoordinator.presentUpgrades(for: siteID, from: topViewController)
         }
     }
 

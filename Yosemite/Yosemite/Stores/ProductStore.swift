@@ -370,8 +370,8 @@ private extension ProductStore {
                         onCompletion(.success(.product(product)))
                     })
                 }
-            case .failure:
-                onCompletion(.failure(ProductLoadError.notFound))
+            case let .failure(error):
+                onCompletion(.failure(error))
             }
         })
     }

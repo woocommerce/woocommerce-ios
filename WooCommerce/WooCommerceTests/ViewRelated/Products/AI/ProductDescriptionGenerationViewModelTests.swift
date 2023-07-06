@@ -230,7 +230,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
             case let .generateProductDescription(_, _, _, _, completion):
                 completion(.success("Must buy"))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
                 identifyLanguageRequestCounter += 1
             default:
                 return XCTFail("Unexpected action: \(action)")
@@ -272,7 +272,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
             case let .generateProductDescription(_, _, _, _, completion):
                 completion(.success("Must buy"))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
                 identifyLanguageRequestCounter += 1
             default:
                 return XCTFail("Unexpected action: \(action)")
@@ -323,7 +323,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
 
 private extension ProductDescriptionGenerationViewModelTests {
     func mock(generatedDescription: Result<String, Error>,
-              identifyLaunguage: Result<String, Error> = .success("English")) {
+              identifyLaunguage: Result<String, Error> = .success("en")) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateProductDescription(_, _, _, _, completion):

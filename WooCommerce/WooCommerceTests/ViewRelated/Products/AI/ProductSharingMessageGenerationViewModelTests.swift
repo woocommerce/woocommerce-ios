@@ -48,7 +48,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
                 XCTAssertTrue(viewModel.generationInProgress)
                 completion(.success("Check this out!"))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
             default:
                 return
             }
@@ -75,7 +75,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success(expectedString))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
             default:
                 return
             }
@@ -102,7 +102,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
             default:
                 return
             }
@@ -156,7 +156,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success("Test"))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
             default:
                 return
             }
@@ -200,7 +200,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
             default:
                 return
             }
@@ -251,7 +251,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success(expectedString))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
             default:
                 return
             }
@@ -350,7 +350,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success(expectedString))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
             default:
                 return
             }
@@ -380,7 +380,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success(expectedString))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
             default:
                 return
             }
@@ -415,7 +415,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success("Must buy"))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
                 identifyLanguageRequestCounter += 1
             default:
                 return XCTFail("Unexpected action: \(action)")
@@ -453,7 +453,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success("Must buy"))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("English"))
+                completion(.success("en"))
                 identifyLanguageRequestCounter += 1
             default:
                 return XCTFail("Unexpected action: \(action)")

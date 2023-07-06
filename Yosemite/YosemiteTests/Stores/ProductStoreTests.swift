@@ -2266,7 +2266,106 @@ final class ProductStoreTests: XCTestCase {
          XCTAssertTrue(onSuccess)
          XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
          XCTAssertEqual(storedProduct?.sku, expectedProductSKU)
-     }
+    }
+
+    // MARK: - `generateProductDetails`
+
+    func test_generateProductDetails_returns_product_details_on_success() throws {
+        // Given
+        // swiftlint:disable:next line_length
+        let text = "{\n  \"name\": \"Cheese and Garlic Croutons\",\n  \"description\": \"Enhance your salads.\",\n  \"language\": \"en\"\n}"
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(text))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       scannedTexts: [""]) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let productDetails = try XCTUnwrap(result.get())
+        XCTAssertEqual(productDetails, .init(name: "Cheese and Garlic Croutons",
+                                             description: "Enhance your salads.",
+                                             language: "en"))
+    }
+
+    func test_generateProductDetails_returns_error_on_failure() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       scannedTexts: [""]) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+    }
+
+    func test_generateProductDetails_includes_parameters_in_remote_base_parameter() throws {
+        // Given
+        let scannedTexts = ["onion", "chives"]
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       scannedTexts: scannedTexts) { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
+        XCTAssertTrue(base.contains("\(scannedTexts)"))
+    }
+
+    func test_generateProductDetails_uses_correct_feature() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       scannedTexts: [""]) { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
+        XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDetailsFromScannedTexts)
+    }
 }
 
 // MARK: - Private Helpers

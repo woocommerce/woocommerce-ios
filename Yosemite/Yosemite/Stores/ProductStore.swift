@@ -556,17 +556,17 @@ private extension ProductStore {
                                     features: String,
                                     language: String,
                                     completion: @escaping (Result<String, Error>) -> Void) {
+        let prompt = [
+            "Write a description for a product with title ```\(name)``` and features: ```\(features)```.",
+            "Your response should be in language \(language).",
+            "Make the description 50-60 words or less.",
+            "Use a 9th grade reading level.",
+            "Perform in-depth keyword research relating to the product in the same language of the product title, " +
+            "and use them in your sentences without listing them out."
+        ].joined(separator: "\n")
+
         Task {
             let result = await Result {
-                let prompt = [
-                    "Write a description for a product with title ```\(name)``` and features: ```\(features)```.",
-                    "Your response should be in language \(language).",
-                    "Make the description 50-60 words or less.",
-                    "Use a 9th grade reading level.",
-                    "Perform in-depth keyword research relating to the product in the same language of the product title, " +
-                    "and use them in your sentences without listing them out."
-                ].joined(separator: "\n")
-
                 let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription)
                 return description
             }
@@ -582,20 +582,20 @@ private extension ProductStore {
                                        description: String,
                                        language: String,
                                        completion: @escaping (Result<String, Error>) -> Void) {
+        let prompt = [
+            // swiftlint:disable:next line_length
+            "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",
+            "- Product description: ```\(description)```",
+            "- Product URL: \(url).",
+            "Your response should be in language \(language).",
+            "The length should be up to 3 sentences.",
+            "Use a 9th grade reading level.",
+            "Add related hashtags at the end of the message.",
+            "Do not include the URL in the message.",
+        ].joined(separator: "\n")
+
         Task {
             let result = await Result {
-                let prompt = [
-                    // swiftlint:disable:next line_length
-                    "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",
-                    "- Product description: ```\(description)```",
-                    "- Product URL: \(url).",
-                    "Your response should be in language \(language).",
-                    "The length should be up to 3 sentences.",
-                    "Use a 9th grade reading level.",
-                    "Add related hashtags at the end of the message.",
-                    "Do not include the URL in the message.",
-                ].joined(separator: "\n")
-
                 let message = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
                 return message

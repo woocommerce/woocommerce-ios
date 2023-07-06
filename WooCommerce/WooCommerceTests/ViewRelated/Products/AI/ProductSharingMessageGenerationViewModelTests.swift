@@ -167,11 +167,13 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         await viewModel.generateShareMessage()
 
         // Then
-        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_sharing_ai_generate_tapped", "product_sharing_ai_message_generated"])
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_sharing_ai_generate_tapped",
+                                                          "product_sharing_ai_identify_language_success",
+                                                          "product_sharing_ai_message_generated"])
 
-        let generatedEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_sharing_ai_message_generated"}))
-        let generatedEventProperties = analyticsProvider.receivedProperties[generatedEventIndex]
-        XCTAssertEqual(generatedEventProperties["identified_language"] as? String, expectedLanguage)
+        let identifyEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_sharing_ai_identify_language_success"}))
+        let identifyEventProperties = analyticsProvider.receivedProperties[identifyEventIndex]
+        XCTAssertEqual(identifyEventProperties["language"] as? String, expectedLanguage)
 
         let firstEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_sharing_ai_generate_tapped"}))
         let firstEventProperties = analyticsProvider.receivedProperties[firstEventIndex]
@@ -183,6 +185,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, [
             "product_sharing_ai_generate_tapped",
+            "product_sharing_ai_identify_language_success",
             "product_sharing_ai_message_generated",
             "product_sharing_ai_generate_tapped",
             "product_sharing_ai_message_generated"
@@ -216,8 +219,42 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         await viewModel.generateShareMessage()
 
         // Then
-        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_sharing_ai_generate_tapped", "product_sharing_ai_message_generation_failed"])
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_sharing_ai_generate_tapped",
+                                                          "product_sharing_ai_identify_language_success",
+                                                          "product_sharing_ai_message_generation_failed"])
         let failureEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "product_sharing_ai_message_generation_failed"}))
+        let failureEventProperties = analyticsProvider.receivedProperties[failureEventIndex]
+        XCTAssertEqual(failureEventProperties["error_code"] as? String, "500")
+        XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")
+    }
+
+    func test_identify_language_failure_event_is_tracked() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores,
+                                                                 analytics: analytics)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+                completion(.success("Test"))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 500)))
+            default:
+                return
+            }
+        }
+
+        // When
+        await viewModel.generateShareMessage()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_sharing_ai_generate_tapped",
+                                                          "product_sharing_ai_identify_language_failed"])
+        let failureEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "product_sharing_ai_identify_language_failed"}))
         let failureEventProperties = analyticsProvider.receivedProperties[failureEventIndex]
         XCTAssertEqual(failureEventProperties["error_code"] as? String, "500")
         XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")

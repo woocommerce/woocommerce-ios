@@ -213,6 +213,93 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: - Language identification request
+
+    func test_identify_language_request_is_sent_only_during_first_generation_attempt() {
+        // Given
+        var identifyLanguageRequestCounter = 0
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "Durable",
+                                                              stores: stores,
+                                                              onApply: { _ in })
+
+        viewModel.name = "Fun"
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductDescription(_, _, _, _, completion):
+                completion(.success("Must buy"))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("English"))
+                identifyLanguageRequestCounter += 1
+            default:
+                return XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+
+        // When
+        // Regeneration attempt
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+    }
+
+    func test_identify_language_request_is_sent_again_upon_down_vote() {
+        // Given
+        var identifyLanguageRequestCounter = 0
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "Durable",
+                                                              stores: stores,
+                                                              onApply: { _ in })
+
+        viewModel.name = "Fun"
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductDescription(_, _, _, _, completion):
+                completion(.success("Must buy"))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("English"))
+                identifyLanguageRequestCounter += 1
+            default:
+                return XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+
+        // When
+        viewModel.handleFeedback(.down)
+
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 2)
+    }
+
     // MARK: - Analytics
     func test_handleFeedback_tracks_feedback_received() throws {
         // Given

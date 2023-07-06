@@ -6,9 +6,10 @@ import Combine
 /// ViewModel for the Upgrades View
 /// Drives the site's available In-App Purchases plan upgrades
 ///
-final class UpgradesViewModel: ObservableObject {
+final class LegacyUpgradesViewModel: ObservableObject {
 
-    @Published var upgradeViewState: UpgradeViewState = .loading
+    @Published var entitledWpcomPlanIDs: Set<String>
+    @Published var upgradeViewState: LegacyUpgradeViewState = .loading
 
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
@@ -33,53 +34,48 @@ final class UpgradesViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
 
+        entitledWpcomPlanIDs = []
+
         observeViewStateAndTrackAnalytics()
+        checkForSiteOwnership()
     }
 
     /// Sync wrapper for `fetchViewData`, so can be called directly from where this
     /// ViewModel is referenced, outside of the initializer
     ///
-    @MainActor
     func retryFetch() {
         Task {
             await fetchViewData()
         }
     }
 
-    /// Sets up the view – validates whether they are eligible to upgrade and shows a plan
+    /// Retrieves all In-App Purchases WPCom plans
     ///
     @MainActor
-    func prepareViewModel() async {
+    func fetchPlans() async {
         do {
-            guard let site = stores.sessionManager.defaultSite else {
-                throw PrePurchaseError.fetchError
-            }
-
-            guard site.isSiteOwner else {
-                throw PrePurchaseError.userNotAllowedToUpgrade
-            }
-
             guard await inAppPurchasesPlanManager.inAppPurchasesAreSupported() else {
-                throw PrePurchaseError.inAppPurchasesNotSupported
+                upgradeViewState = .prePurchaseError(.inAppPurchasesNotSupported)
+                return
             }
 
             async let wpcomPlans = inAppPurchasesPlanManager.fetchPlans()
             async let hardcodedPlanDataIsValid = checkHardcodedPlanDataValidity()
 
-            guard try await hasNoActiveInAppPurchases(for: wpcomPlans) else {
-                throw PrePurchaseError.maximumSitesUpgraded
+            try await loadUserEntitlements(for: wpcomPlans)
+            guard entitledWpcomPlanIDs.isEmpty else {
+                upgradeViewState = .prePurchaseError(.maximumSitesUpgraded)
+                return
             }
 
             guard let plan = try await retrievePlanDetailsIfAvailable(.essentialMonthly,
                                                                       from: wpcomPlans,
                                                                       hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
             else {
-                throw PrePurchaseError.fetchError
+                upgradeViewState = .prePurchaseError(.fetchError)
+                return
             }
             upgradeViewState = .loaded(plan)
-        } catch let prePurchaseError as PrePurchaseError {
-            DDLogError("prePurchaseError \(prePurchaseError)")
-            upgradeViewState = .prePurchaseError(prePurchaseError)
         } catch {
             DDLogError("fetchPlans \(error)")
             upgradeViewState = .prePurchaseError(.fetchError)
@@ -154,22 +150,24 @@ final class UpgradesViewModel: ObservableObject {
 
 // MARK: - Helpers
 //
-private extension UpgradesViewModel {
+private extension LegacyUpgradesViewModel {
     /// Iterates through all available WPCom plans and checks whether the merchant is entitled to purchase them
     /// via In-App Purchases
     ///
-    func hasNoActiveInAppPurchases(for plans: [WPComPlanProduct]) async throws -> Bool {
-        for plan in plans {
-            do {
-                if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.id) {
-                    return false
+    @MainActor
+    func loadUserEntitlements(for plans: [WPComPlanProduct]) async {
+        do {
+            for wpcomPlan in plans {
+                if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: wpcomPlan.id) {
+                    self.entitledWpcomPlanIDs.insert(wpcomPlan.id)
+                } else {
+                    self.entitledWpcomPlanIDs.remove(wpcomPlan.id)
                 }
-            } catch {
-                DDLogError("There was an error when loading entitlements: \(error)")
-                throw PrePurchaseError.entitlementsError
             }
+        } catch {
+            DDLogError("loadEntitlements \(error)")
+            upgradeViewState = .prePurchaseError(.entitlementsError)
         }
-        return true
     }
 
     @MainActor
@@ -189,7 +187,7 @@ private extension UpgradesViewModel {
     @MainActor
     func fetchViewData() async {
         upgradeViewState = .loading
-        await prepareViewModel()
+        await fetchPlans()
     }
 
     /// Checks whether a plan can be purchased from the current view state,
@@ -203,11 +201,24 @@ private extension UpgradesViewModel {
             return nil
         }
     }
+
+    /// Checks whether the current user is the site owner, as only the site owner can perform
+    /// In-App Purchases upgrades, despite their site role
+    ///
+    func checkForSiteOwnership() {
+        if let site = stores.sessionManager.defaultSite, !site.isSiteOwner {
+            self.upgradeViewState = .prePurchaseError(.userNotAllowedToUpgrade)
+        } else {
+            Task {
+                await fetchViewData()
+            }
+        }
+    }
 }
 
 // MARK: - Notification observers
 //
-private extension UpgradesViewModel {
+private extension LegacyUpgradesViewModel {
     /// Observes the `didBecomeActiveNotification` for one invocation of the notification.
     /// Using this in the scope of `purchasePlan` tells us when Apple's IAP view has completed.
     ///
@@ -252,7 +263,7 @@ private extension UpgradesViewModel {
 
 // MARK: - Analytics observers, and track events
 //
-extension UpgradesViewModel {
+extension LegacyUpgradesViewModel {
     /// Observes the view state and tracks events when this changes
     ///
     private func observeViewStateAndTrackAnalytics() {

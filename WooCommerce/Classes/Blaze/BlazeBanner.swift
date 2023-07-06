@@ -110,6 +110,7 @@ struct BlazeBanner: View {
                         Image(systemName: "xmark")
                     }
                     .buttonStyle(.plain)
+                    .foregroundColor(Color(.textSubtle))
                 }
 
                 // Blaze icon
@@ -142,6 +143,7 @@ struct BlazeBanner: View {
                 .frame(height: Layout.spacing)
                 .renderedIf(showsBottomSpacer)
         }
+        .background(Color(.listForeground(modal: false)))
     }
 }
 

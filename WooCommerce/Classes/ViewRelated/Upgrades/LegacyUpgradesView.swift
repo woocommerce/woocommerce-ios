@@ -1,48 +1,19 @@
 import Foundation
 import SwiftUI
 import Yosemite
-import Experiments
-
-final class UpgradesViewPresentationCoordinator {
-    private let featureFlagService: FeatureFlagService
-    private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
-
-    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
-        self.featureFlagService = featureFlagService
-        self.inAppPurchaseManager = inAppPurchaseManager
-    }
-
-    func presentUpgrades(for siteID: Int64, from viewController: UIViewController) {
-        Task { @MainActor in
-            if await inAppPurchaseManager.inAppPurchasesAreSupported() {
-                if featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM2) {
-                    let upgradesController = UpgradesHostingController(siteID: siteID)
-                    viewController.present(upgradesController, animated: true)
-                } else {
-                    let legacyUpgradesController = LegacyUpgradesHostingController(siteID: siteID)
-                    viewController.present(legacyUpgradesController, animated: true)
-                }
-            } else {
-                let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
-                viewController.present(subscriptionsController, animated: true)
-            }
-        }
-    }
-}
 
 /// Hosting controller for `UpgradesView`
 /// To be used to display available current plan Subscriptions, available plan Upgrades,
 /// and the CTA to upgrade
 ///
-final class UpgradesHostingController: UIHostingController<UpgradesView> {
+final class LegacyUpgradesHostingController: UIHostingController<LegacyUpgradesView> {
     private let authentication: Authentication = ServiceLocator.authenticationManager
 
     init(siteID: Int64) {
-        let upgradesViewModel = UpgradesViewModel(siteID: siteID)
+        let upgradesViewModel = LegacyUpgradesViewModel(siteID: siteID)
         let subscriptionsViewModel = SubscriptionsViewModel()
 
-        super.init(rootView: UpgradesView(upgradesViewModel: upgradesViewModel, subscriptionsViewModel: subscriptionsViewModel))
+        super.init(rootView: LegacyUpgradesView(upgradesViewModel: upgradesViewModel, subscriptionsViewModel: subscriptionsViewModel))
 
         rootView.supportHandler = { [weak self] in
             self?.openSupport()
@@ -58,15 +29,15 @@ final class UpgradesHostingController: UIHostingController<UpgradesView> {
     }
 }
 
-struct UpgradesView: View {
+struct LegacyUpgradesView: View {
     @Environment(\.dismiss) var dismiss
 
-    @ObservedObject var upgradesViewModel: UpgradesViewModel
+    @ObservedObject var upgradesViewModel: LegacyUpgradesViewModel
     @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
     var supportHandler: () -> Void = {}
 
-    init(upgradesViewModel: UpgradesViewModel,
+    init(upgradesViewModel: LegacyUpgradesViewModel,
          subscriptionsViewModel: SubscriptionsViewModel) {
         self.upgradesViewModel = upgradesViewModel
         self.subscriptionsViewModel = subscriptionsViewModel
@@ -75,7 +46,6 @@ struct UpgradesView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("M2 Upgrades")
                 VStack {
                     // TODO: Once we remove iOS 15 support, we can do this with .toolbar instead.
                     UpgradeTopBarView(dismiss: {
@@ -89,16 +59,16 @@ struct UpgradesView: View {
 
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:
-                    OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
+                    LegacyOwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
                         .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plan):
-                    OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
+                    LegacyOwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
                         Task {
                             await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
                         }
                     })
                 case .purchasing(let plan):
-                    OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
+                    LegacyOwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
                 case .waiting(let plan):
                     ScrollView(.vertical) {
                         UpgradeWaitingView(planName: plan.wooPlan.shortName)
@@ -150,13 +120,10 @@ struct UpgradesView: View {
         .onDisappear {
             upgradesViewModel.onDisappear()
         }
-        .task {
-            await upgradesViewModel.prepareViewModel()
-        }
     }
 }
 
-private extension UpgradesView {
+private extension LegacyUpgradesView {
     struct Layout {
         static let errorViewHorizontalPadding: CGFloat = 20
         static let errorViewTopPadding: CGFloat = 36
@@ -214,9 +181,9 @@ private extension WooWPComPlan {
     }
 }
 
-struct UpgradesView_Preview: PreviewProvider {
+struct LegacyUpgradesView_Preview: PreviewProvider {
     static var previews: some View {
-        UpgradesView(upgradesViewModel: UpgradesViewModel(siteID: 0),
+        LegacyUpgradesView(upgradesViewModel: LegacyUpgradesViewModel(siteID: 0),
                      subscriptionsViewModel: SubscriptionsViewModel())
     }
 }

@@ -71,8 +71,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .freeTrial:
             return true
-        case .freeTrialInAppPurchasesUpgradeM1:
-            return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
@@ -97,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shareProductAI:
             return true
+        case .freeTrialInAppPurchasesUpgradeM2:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

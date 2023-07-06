@@ -16,13 +16,13 @@ struct BarcodeSKUScannerItemFinder {
     func searchBySKU(from barcode: ScannedBarcode, siteID: Int64, source: WooAnalyticsEvent.Orders.BarcodeScanningSource) async throws -> SKUSearchResult {
         do {
             let result = try await search(by: barcode.payloadStringValue, siteID: siteID)
-            analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUSuccess(from: source))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUSuccess(from: source.rawValue))
 
             return result
         } catch {
-            analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSearchViaSKUFailure(from: source,
-                                                                                               symbology: barcode.symbology,
-                                                                                               reason: error.localizedDescription))
+            analytics.track(event: WooAnalyticsEvent.Orders.orderProductSearchViaSKUFailure(from: source.rawValue,
+                                                                                            symbology: barcode.symbology,
+                                                                                            reason: trackingReason(for: error)))
 
             // If we couldn't find the product, let's keep trying by refining the SKU search
             guard (error as? ProductLoadError) == .notFound else {
@@ -57,6 +57,14 @@ struct BarcodeSKUScannerItemFinder {
             }
         }
     }
+
+    private func trackingReason(for error: Error) -> String {
+        guard let productLoadError = error as? ProductLoadError else {
+            return error.localizedDescription
+        }
+
+        return productLoadError.trackingReason
+    }
 }
 
 private extension ScannedBarcode {
@@ -79,5 +87,18 @@ private extension ScannedBarcode {
         }
 
         return ScannedBarcode(payloadStringValue: String(payloadStringValue.dropFirst()), symbology: symbology)
+    }
+}
+
+private extension ProductLoadError {
+    var trackingReason: String {
+        switch self {
+        case .notFound:
+            return "Product not found"
+        case .notPurchasable:
+            return "Product not purchasable"
+        default:
+            return localizedDescription
+        }
     }
 }

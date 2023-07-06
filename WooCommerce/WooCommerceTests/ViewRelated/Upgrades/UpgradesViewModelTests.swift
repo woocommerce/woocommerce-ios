@@ -10,10 +10,19 @@ final class UpgradesViewModelTests: XCTestCase {
 
     private var sut: UpgradesViewModel!
 
-    override func setUp() {
-        let plans = MockInAppPurchasesForWPComPlansManager.Defaults.essentialInAppPurchasesPlans
-        mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: plans)
-        stores = MockStoresManager(sessionManager: .makeForTesting())
+    @MainActor
+    func createSut(alreadySubscribed: Bool = false,
+                   isSiteOwner: Bool = true,
+                   isIAPSupported: Bool = true,
+                   plans: [WPComPlanProduct] = MockInAppPurchasesForWPComPlansManager.Defaults.essentialInAppPurchasesPlans) {
+
+        mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: plans,
+                                                                           userIsEntitledToPlan: alreadySubscribed,
+                                                                           isIAPSupported: isIAPSupported)
+
+        let site = Site.fake().copy(isSiteOwner: isSiteOwner)
+
+        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
             case .isRemoteFeatureFlagEnabled(.hardcodedPlanUpgradeDetailsMilestone1AreAccurate, defaultValue: _, let completion):
@@ -22,25 +31,27 @@ final class UpgradesViewModelTests: XCTestCase {
                 break
             }
         }
+
         sut = UpgradesViewModel(siteID: sampleSiteID, inAppPurchasesPlanManager: mockInAppPurchasesManager, stores: stores)
     }
 
-    func test_upgrades_are_initialized_with_empty_values() async {
-        // Given, When
-        let sut = UpgradesViewModel(siteID: sampleSiteID,
-                                    inAppPurchasesPlanManager: MockInAppPurchasesForWPComPlansManager(plans: []),
-                                    stores: stores)
+    func test_if_user_has_active_in_app_purchases_then_returns_maximum_sites_upgraded_error() async {
+        // Given
+        await createSut(alreadySubscribed: true)
+
+        // When
+        await sut.prepareViewModel()
 
         // Then
-        XCTAssert(sut.entitledWpcomPlanIDs.isEmpty)
+        assertEqual(.prePurchaseError(.maximumSitesUpgraded), sut.upgradeViewState)
     }
 
     func test_upgrades_when_fetchPlans_is_invoked_then_fetch_mocked_wpcom_plan() async {
         // Given
-        // see `setUp`
+        await createSut()
 
         // When
-        await sut.fetchPlans()
+        await sut.prepareViewModel()
 
         // Then
         guard case .loaded(let plan) = sut.upgradeViewState else {
@@ -59,13 +70,11 @@ final class UpgradesViewModelTests: XCTestCase {
                 description: "All the Woo, all the time",
                 id: "woocommerce.express.essential.monthly",
                 displayPrice: "$1.50")
-        let inAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(plans: [expectedPlan])
-        let sut = UpgradesViewModel(siteID: sampleSiteID,
-                                    inAppPurchasesPlanManager: inAppPurchasesManager,
-                                    stores: stores)
+
+        await createSut(plans: [expectedPlan])
 
         // When
-        await sut.fetchPlans()
+        await sut.prepareViewModel()
 
         // Then
         guard case .loaded(let plan) = sut.upgradeViewState else {
@@ -77,21 +86,44 @@ final class UpgradesViewModelTests: XCTestCase {
         assertEqual("$1.50", plan.wpComPlan.displayPrice)
     }
 
-    func test_upgradeViewState_when_initialized_is_loading_state() {
+    func test_upgradeViewState_when_initialized_is_loading_state() async {
         // Given, When
-        // see `setUp`
+        await createSut()
 
         // Then
         assertEqual(.loading, sut.upgradeViewState)
     }
 
-    func test_upgradeViewState_when_initialized_by_non_owner_then_state_is_prepurchaseError_userNotAllowedToUpgrade() {
-         // Given
-         let site = Site.fake().copy(isSiteOwner: false)
-         let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
-         let sut = UpgradesViewModel(siteID: sampleSiteID, stores: stores)
+    func test_upgradeViewState_when_prepareViewModel_by_non_owner_then_state_is_prepurchaseError_userNotAllowedToUpgrade() async {
+        // Given
+        await createSut(isSiteOwner: false)
 
-         // Then
-         assertEqual(.prePurchaseError(.userNotAllowedToUpgrade), sut.upgradeViewState)
+        // When
+        await sut.prepareViewModel()
+
+        // Then
+        assertEqual(.prePurchaseError(.userNotAllowedToUpgrade), sut.upgradeViewState)
      }
+
+    func test_upgradeViewState_when_IAP_are_not_supported_and_prepareViewModel_then_state_is_inAppPurchasesNotSupported() async {
+        // Given
+        await createSut(isIAPSupported: false)
+
+        // When
+        await sut.prepareViewModel()
+
+        // Then
+        assertEqual(.prePurchaseError(.inAppPurchasesNotSupported), sut.upgradeViewState)
+    }
+
+    func test_upgradeViewState_when_retrievePlanDetailsIfAvailable_fails_and_prepareViewModel_then_state_is_fetchError() async {
+        // Given
+        await createSut(plans: [])
+
+        // When
+        await sut.prepareViewModel()
+
+        // Then
+        assertEqual(.prePurchaseError(.fetchError), sut.upgradeViewState)
+    }
 }

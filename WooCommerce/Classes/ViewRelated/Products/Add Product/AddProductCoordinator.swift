@@ -46,6 +46,8 @@ final class AddProductCoordinator: Coordinator {
     ///
     var onProductCreated: (Product) -> Void = { _ in }
 
+    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+
     init(siteID: Int64,
          source: Source,
          sourceBarButtonItem: UIBarButtonItem,
@@ -90,6 +92,19 @@ final class AddProductCoordinator: Coordinator {
             ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
         default:
             break
+        }
+
+        // TODO-JC: eligibility check
+        if ServiceLocator.stores.sessionManager.defaultSite?.isWordPressComStore == true {
+            // TODO: 10180 - A/B experiment exposure event
+            let coordinator = AddProductFromImageCoordinator(siteID: siteID,
+                                                             sourceNavigationController: navigationController,
+                                                             onProductCreated: { [weak self] product in
+                self?.onProductCreated(product)
+            })
+            self.addProductFromImageCoordinator = coordinator
+            coordinator.start()
+            return
         }
 
         if shouldSkipBottomSheet() {

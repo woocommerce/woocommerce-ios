@@ -114,40 +114,6 @@ final class AddProductCoordinator: Coordinator {
             presentProductTypeBottomSheet(creationType: .manual)
         }
     }
-
-    /// Presents a product onto the current navigation stack.
-    ///
-    func presentProduct(_ product: Product) {
-        let model = EditableProductModel(product: product)
-        let currencyCode = ServiceLocator.currencySettings.currencyCode
-        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        let productImageActionHandler = productImageUploader
-            .actionHandler(key: .init(siteID: product.siteID,
-                                      productOrVariationID: .product(id: model.productID),
-                                      isLocalID: true),
-                           originalStatuses: model.imageStatuses)
-        let viewModel = ProductFormViewModel(product: model,
-                                             formType: .add,
-                                             productImageActionHandler: productImageActionHandler)
-        viewModel.onProductCreated = { [weak self] product in
-            guard let self else { return }
-            self.onProductCreated(product)
-            if self.isFirstProduct, let url = URL(string: product.permalink) {
-                self.showFirstProductCreatedView(productURL: url,
-                                                 productName: product.name,
-                                                 productDescription: product.fullDescription ?? product.shortDescription ?? "",
-                                                 showShareProductButton: viewModel.canShareProduct())
-            }
-        }
-        let viewController = ProductFormViewController(viewModel: viewModel,
-                                                       eventLogger: ProductFormEventLogger(),
-                                                       productImageActionHandler: productImageActionHandler,
-                                                       currency: currency,
-                                                       presentationStyle: .navigationStack)
-        // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-        viewController.hidesBottomBarWhenPushed = true
-        navigationController.pushViewController(viewController, animated: true)
-    }
 }
 
 // MARK: Navigation
@@ -283,6 +249,40 @@ private extension AddProductCoordinator {
             return
         }
         presentProduct(product)
+    }
+
+    /// Presents a product onto the current navigation stack.
+    ///
+    func presentProduct(_ product: Product) {
+        let model = EditableProductModel(product: product)
+        let currencyCode = ServiceLocator.currencySettings.currencyCode
+        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let productImageActionHandler = productImageUploader
+            .actionHandler(key: .init(siteID: product.siteID,
+                                      productOrVariationID: .product(id: model.productID),
+                                      isLocalID: true),
+                           originalStatuses: model.imageStatuses)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .add,
+                                             productImageActionHandler: productImageActionHandler)
+        viewModel.onProductCreated = { [weak self] product in
+            guard let self else { return }
+            self.onProductCreated(product)
+            if self.isFirstProduct, let url = URL(string: product.permalink) {
+                self.showFirstProductCreatedView(productURL: url,
+                                                 productName: product.name,
+                                                 productDescription: product.fullDescription ?? product.shortDescription ?? "",
+                                                 showShareProductButton: viewModel.canShareProduct())
+            }
+        }
+        let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       eventLogger: ProductFormEventLogger(),
+                                                       productImageActionHandler: productImageActionHandler,
+                                                       currency: currency,
+                                                       presentationStyle: .navigationStack)
+        // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+        viewController.hidesBottomBarWhenPushed = true
+        navigationController.pushViewController(viewController, animated: true)
     }
 
     /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.

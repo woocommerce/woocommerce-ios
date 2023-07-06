@@ -398,4 +398,80 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             XCTAssertFalse(viewModel.shouldShowFeedbackView)
         }
     }
+
+    // MARK: - Language identification request
+
+    func test_identify_language_request_is_sent_only_during_first_generation_attempt() async {
+        // Given
+        var identifyLanguageRequestCounter = 0
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+                completion(.success("Must buy"))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("English"))
+                identifyLanguageRequestCounter += 1
+            default:
+                return XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.generateShareMessage()
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+
+        // When
+        // Regeneration attempt
+        await viewModel.generateShareMessage()
+        waitUntil {
+            viewModel.generationInProgress == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+    }
+
+    func test_identify_language_request_is_sent_again_upon_down_vote() async {
+        // Given
+        var identifyLanguageRequestCounter = 0
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
+                                                                 url: "https://example.com",
+                                                                 productName: "Test",
+                                                                 productDescription: "Test description",
+                                                                 stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductSharingMessage(_, _, _, _, _, completion):
+                completion(.success("Must buy"))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("English"))
+                identifyLanguageRequestCounter += 1
+            default:
+                return XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.generateShareMessage()
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+
+        // When
+        viewModel.handleFeedback(.down)
+
+        await viewModel.generateShareMessage()
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 2)
+    }
 }

@@ -320,7 +320,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["is_useful"] as? Bool, false)
     }
 
-    func test_generateDescription_tracks_event_on_successful_generation() throws {
+    func test_generateDescription_tracks_events_correctly_on_successful_generation() throws {
         // Given
         let expectedLanguage = "en"
         mock(generatedDescription: .success("Must buy"),
@@ -342,9 +342,71 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         }
 
         // Then
-        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_description_ai_generation_success"}))
-        let eventProperties = analyticsProvider.receivedProperties[index]
-        XCTAssertEqual(eventProperties["identified_language"] as? String, expectedLanguage)
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_description_ai_generate_button_tapped",
+                                                          "product_description_ai_identify_language_success",
+                                                          "product_description_ai_generation_success"])
+        let identifyEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_description_ai_identify_language_success"}))
+        let identifyEventProperties = analyticsProvider.receivedProperties[identifyEventIndex]
+        XCTAssertEqual(identifyEventProperties["language"] as? String, expectedLanguage)
+    }
+
+    func test_generateDescription_tracks_events_correctly_when_identify_language_fails() throws {
+        // Given
+        mock(generatedDescription: .success("Must buy"),
+             identifyLaunguage: .failure(NSError(domain: "Test", code: 500)))
+
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "Durable",
+                                                              stores: stores,
+                                                              analytics: analytics,
+                                                              onApply: { _ in })
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
+
+        // When
+        viewModel.name = "Fun"
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_description_ai_generate_button_tapped",
+                                                          "product_description_ai_identify_language_failed"])
+        let failureEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "product_description_ai_identify_language_failed"}))
+        let failureEventProperties = analyticsProvider.receivedProperties[failureEventIndex]
+        XCTAssertEqual(failureEventProperties["error_code"] as? String, "500")
+        XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")
+    }
+
+    func test_generateDescription_tracks_events_correctly_when_text_generation_fails() throws {
+        // Given
+        mock(generatedDescription: .failure(NSError(domain: "Test", code: 500)),
+             identifyLaunguage: .success("en"))
+
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "Durable",
+                                                              stores: stores,
+                                                              analytics: analytics,
+                                                              onApply: { _ in })
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
+
+        // When
+        viewModel.name = "Fun"
+        viewModel.generateDescription()
+        waitUntil {
+            viewModel.isGenerationInProgress == false
+        }
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["product_description_ai_generate_button_tapped",
+                                                          "product_description_ai_identify_language_success",
+                                                          "product_description_ai_generation_failed"])
+        let failureEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "product_description_ai_generation_failed"}))
+        let failureEventProperties = analyticsProvider.receivedProperties[failureEventIndex]
+        XCTAssertEqual(failureEventProperties["error_code"] as? String, "500")
+        XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")
     }
 }
 

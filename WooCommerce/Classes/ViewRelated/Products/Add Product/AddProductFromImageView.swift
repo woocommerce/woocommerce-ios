@@ -81,32 +81,32 @@ struct EditableProductImageView: View {
                         .renderedIf(viewModel.image != nil)
                 }
                 // TODO-JC: only show the icon when an image is selected
-                .actionSheet(isPresented: $isShowingActionSheet) {
-                    ActionSheet(title: Text("Select Media Source"),
-                                message: nil,
-                                buttons: [
-                                    (UIImagePickerController.isSourceTypeAvailable(.camera) ?
-                                        .default(Text(NSLocalizedString("Take a photo",
-                                                                        comment: "Menu option for taking an image or video with the device's camera."))) {
-                                                                            Task { @MainActor in
-                                                                                await viewModel.addImage(from: .camera)
-                                                                            }
-                                                                        } : nil),
-                                    .default(Text(NSLocalizedString("Choose from device",
-                                                                    comment: "Menu option for selecting media from the device's photo library."))) {
+            }
+            .actionSheet(isPresented: $isShowingActionSheet) {
+                ActionSheet(title: Text("Select Media Source"),
+                            message: nil,
+                            buttons: [
+                                (UIImagePickerController.isSourceTypeAvailable(.camera) ?
+                                    .default(Text(NSLocalizedString("Take a photo",
+                                                                    comment: "Menu option for taking an image or video with the device's camera."))) {
                                                                         Task { @MainActor in
-                                                                            await viewModel.addImage(from: .photoLibrary)
+                                                                            await viewModel.addImage(from: .camera)
                                                                         }
-                                                                    },
-                                    .default(Text(NSLocalizedString("WordPress Media Library",
-                                                                    comment: "Menu option for selecting media from the device's photo library."))) {
-                                                                        Task { @MainActor in
-                                                                            await viewModel.addImage(from: .siteMediaLibrary)
-                                                                        }
-                                                                    },
-                                    .cancel()
-                                ].compactMap { $0 })
-                }
+                                                                    } : nil),
+                                .default(Text(NSLocalizedString("Choose from device",
+                                                                comment: "Menu option for selecting media from the device's photo library."))) {
+                                                                    Task { @MainActor in
+                                                                        await viewModel.addImage(from: .photoLibrary)
+                                                                    }
+                                                                },
+                                .default(Text(NSLocalizedString("WordPress Media Library",
+                                                                comment: "Menu option for selecting media from the device's photo library."))) {
+                                                                    Task { @MainActor in
+                                                                        await viewModel.addImage(from: .siteMediaLibrary)
+                                                                    }
+                                                                },
+                                .cancel()
+                            ].compactMap { $0 })
             }
     }
 }

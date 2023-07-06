@@ -627,7 +627,7 @@ private extension ProductStore {
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTextsResponse.self, from: jsonData)
                 await MainActor.run {
-                    completion(.success(.init(name: details.name, description: details.description)))
+                    completion(.success(.init(name: details.name, description: details.description, language: details.language)))
                 }
             } catch {
                 completion(.failure(error))
@@ -1134,4 +1134,5 @@ public enum ProductLoadError: Error, Equatable {
 private struct ProductDetailsFromScannedTextsResponse: Decodable {
     let name: String
     let description: String
+    let language: String
 }

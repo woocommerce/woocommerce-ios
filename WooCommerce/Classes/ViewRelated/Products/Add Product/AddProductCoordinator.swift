@@ -46,6 +46,7 @@ final class AddProductCoordinator: Coordinator {
     ///
     var onProductCreated: (Product) -> Void = { _ in }
 
+    private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
 
     init(siteID: Int64,
@@ -53,6 +54,7 @@ final class AddProductCoordinator: Coordinator {
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -62,6 +64,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -70,6 +73,7 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -79,6 +83,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -94,17 +99,19 @@ final class AddProductCoordinator: Coordinator {
             break
         }
 
-        // TODO-JC: eligibility check
-        if ServiceLocator.stores.sessionManager.defaultSite?.isWordPressComStore == true {
+        if addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
             // TODO: 10180 - A/B experiment exposure event
-            let coordinator = AddProductFromImageCoordinator(siteID: siteID,
-                                                             sourceNavigationController: navigationController,
-                                                             onProductCreated: { [weak self] product in
-                self?.onProductCreated(product)
-            })
-            self.addProductFromImageCoordinator = coordinator
-            coordinator.start()
-            return
+
+            if addProductFromImageEligibilityChecker.isEligible() {
+                let coordinator = AddProductFromImageCoordinator(siteID: siteID,
+                                                                 sourceNavigationController: navigationController,
+                                                                 onProductCreated: { [weak self] product in
+                    self?.onProductCreated(product)
+                })
+                self.addProductFromImageCoordinator = coordinator
+                coordinator.start()
+                return
+            }
         }
 
         if shouldSkipBottomSheet() {

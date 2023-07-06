@@ -180,7 +180,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Set when sync fails, and used to display an error loading data banner
     ///
-    private var hasErrorLoadingData: Bool = false
+    @Published private var hasErrorLoadingData: Bool = false
 
     /// Free trial banner presentation handler.
     ///
@@ -226,6 +226,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureFreeTrialBannerPresenter()
         registerTableViewCells()
 
+        observeBlazeBannerVisibility()
         showTopBannerViewIfNeeded()
         syncProductsSettings()
     }
@@ -730,7 +731,7 @@ private extension ProductsViewController {
             requestAndShowErrorTopBannerView()
         }
 
-        checkBlazeBannerVisibility()
+        updateBlazeBannerVisibility()
     }
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
@@ -863,23 +864,19 @@ private extension ProductsViewController {
         }
     }
 
-    func checkBlazeBannerVisibility() {
+    func observeBlazeBannerVisibility() {
         viewModel.$shouldShowBlazeBanner
             .removeDuplicates()
-            .sink { [weak self] shouldShow in
+            .combineLatest($hasErrorLoadingData.removeDuplicates())
+            .sink { [weak self] shouldShow, hasErrorLoadingData in
                 guard let self else { return }
-                guard !self.hasErrorLoadingData else {
-                    return self.hideBlazeBanner()
-                }
-                if shouldShow {
+                if shouldShow, !hasErrorLoadingData {
                     self.showBlazeBanner()
                 } else {
                     self.hideBlazeBanner()
                 }
             }
             .store(in: &subscriptions)
-
-        updateBlazeBannerVisibility()
     }
 
     func updateBlazeBannerVisibility() {

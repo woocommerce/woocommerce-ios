@@ -349,6 +349,7 @@
 		028B68BC2A57419700FE03A8 /* AddProductFromImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */; };
 		028B68BE2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */; };
 		028B68C02A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */; };
+		028B68C32A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */; };
 		028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */; };
 		028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */; };
 		028CB70F290138EF00331C09 /* Publisher+Concurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028CB70E290138EF00331C09 /* Publisher+Concurrency.swift */; };
@@ -2717,6 +2718,7 @@
 		028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageViewModel.swift; sourceTree = "<group>"; };
 		028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageEligibilityChecker.swift; sourceTree = "<group>"; };
 		028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAddProductFromImageEligibilityChecker.swift; sourceTree = "<group>"; };
+		028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageViewModelTests.swift; sourceTree = "<group>"; };
 		028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersViewController.swift; sourceTree = "<group>"; };
 		028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsTimeRangeV4+UI.swift"; sourceTree = "<group>"; };
 		028CB70E290138EF00331C09 /* Publisher+Concurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Concurrency.swift"; sourceTree = "<group>"; };
@@ -5287,6 +5289,7 @@
 		024F1450250B658F0003030A /* Add Product */ = {
 			isa = PBXGroup;
 			children = (
+				028B68C12A574DA100FE03A8 /* AddProductFromImage */,
 				024F1451250B65A40003030A /* AddProductCoordinatorTests.swift */,
 				02C3FDE9251091CE009569EE /* ProductFactoryTests.swift */,
 				EEBDF7E62A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift */,
@@ -5634,6 +5637,14 @@
 				028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */,
 				028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */,
 				028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */,
+			);
+			path = AddProductFromImage;
+			sourceTree = "<group>";
+		};
+		028B68C12A574DA100FE03A8 /* AddProductFromImage */ = {
+			isa = PBXGroup;
+			children = (
+				028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */,
 			);
 			path = AddProductFromImage;
 			sourceTree = "<group>";
@@ -13074,6 +13085,7 @@
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,
 				0277AEA5256CAA4200F45C4A /* MockShippingLabel.swift in Sources */,
 				02BAB02324D0250300F8B06E /* ProductVariation+ProductFormTests.swift in Sources */,
+				028B68C32A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift in Sources */,
 				B90C65D129AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift in Sources */,
 				AE4CCCEB29365CFD00B47EE8 /* AnalyticsHubViewModelTests.swift in Sources */,
 				025C00CC2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift in Sources */,

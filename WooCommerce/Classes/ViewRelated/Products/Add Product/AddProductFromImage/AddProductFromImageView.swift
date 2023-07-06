@@ -29,7 +29,7 @@ struct AddProductFromImageView: View {
          stores: StoresManager = ServiceLocator.stores,
          completion: @escaping (AddProductFromImageData) -> Void) {
         self.completion = completion
-        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID, stores: stores))
+        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel())
     }
 
     var body: some View {

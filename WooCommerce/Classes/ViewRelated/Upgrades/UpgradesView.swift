@@ -75,7 +75,6 @@ struct UpgradesView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("M2 Upgrades")
                 VStack {
                     // TODO: Once we remove iOS 15 support, we can do this with .toolbar instead.
                     UpgradeTopBarView(dismiss: {
@@ -89,16 +88,16 @@ struct UpgradesView: View {
 
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:
-                    OwnerUpgradesView(upgradePlan: .skeletonPlan(), purchasePlanAction: {}, isLoading: true)
+                    OwnerUpgradesView(upgradePlans: [.skeletonPlan()], purchasePlanAction: { _ in }, isLoading: true)
                         .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
-                case .loaded(let plan):
-                    OwnerUpgradesView(upgradePlan: plan, purchasePlanAction: {
+                case .loaded(let plans):
+                    OwnerUpgradesView(upgradePlans: plans, purchasePlanAction: { selectedPlan in
                         Task {
-                            await upgradesViewModel.purchasePlan(with: plan.wpComPlan.id)
+                            await upgradesViewModel.purchasePlan(with: selectedPlan.wpComPlan.id)
                         }
                     })
-                case .purchasing(let plan):
-                    OwnerUpgradesView(upgradePlan: plan, isPurchasing: true, purchasePlanAction: {})
+                case .purchasing(_, let plans):
+                    OwnerUpgradesView(upgradePlans: plans, isPurchasing: true, purchasePlanAction: { _ in })
                 case .waiting(let plan):
                     ScrollView(.vertical) {
                         UpgradeWaitingView(planName: plan.wooPlan.shortName)

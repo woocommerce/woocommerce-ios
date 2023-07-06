@@ -14,13 +14,15 @@ final class UpgradesViewModel: ObservableObject {
     private let siteID: Int64
     private let storePlanSynchronizer: StorePlanSynchronizer
     private let stores: StoresManager
-    private let localPlans: [WooPlan] = [.loadHardcodedPlan()]
+    private let localPlans: [WooPlan] = WooPlan.loadM2HardcodedPlans()
     private let analytics: Analytics
 
     private let notificationCenter: NotificationCenter = NotificationCenter.default
     private var applicationDidBecomeActiveObservationToken: NSObjectProtocol?
 
     private var cancellables: Set<AnyCancellable> = []
+
+    private var plans: [WooWPComPlan] = []
 
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
@@ -70,13 +72,13 @@ final class UpgradesViewModel: ObservableObject {
                 throw PrePurchaseError.maximumSitesUpgraded
             }
 
-            guard let plan = try await retrievePlanDetailsIfAvailable(.essentialMonthly,
-                                                                      from: wpcomPlans,
-                                                                      hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
-            else {
+            plans = try await retrievePlanDetailsIfAvailable([.essentialMonthly, .essentialYearly, .performanceMonthly, .performanceYearly],
+                                                                 from: wpcomPlans,
+                                                                 hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
+            guard plans.count > 0 else {
                 throw PrePurchaseError.fetchError
             }
-            upgradeViewState = .loaded(plan)
+            upgradeViewState = .loaded(plans)
         } catch let prePurchaseError as PrePurchaseError {
             DDLogError("prePurchaseError \(prePurchaseError)")
             upgradeViewState = .prePurchaseError(prePurchaseError)
@@ -92,11 +94,11 @@ final class UpgradesViewModel: ObservableObject {
     @MainActor
     func purchasePlan(with planID: String) async {
         analytics.track(event: .InAppPurchases.planUpgradePurchaseButtonTapped(planID))
-        guard let wooWPComPlan = planCanBePurchasedFromCurrentState() else {
+        guard let wooWPComPlan = planCanBePurchasedFromCurrentState(with: planID) else {
             return
         }
 
-        upgradeViewState = .purchasing(wooWPComPlan)
+        upgradeViewState = .purchasing(wooWPComPlan, plans)
 
         observeInAppPurchaseDrawerDismissal { [weak self] in
             /// The drawer gets dismissed when the IAP is cancelled too. That gets dealt with in the `do-catch`
@@ -106,7 +108,7 @@ final class UpgradesViewModel: ObservableObject {
                 guard let self else { return }
                 /// If the user cancelled, the state will be `.loaded(_)` by now, so we don't advance to waiting.
                 /// Likewise, errors will have moved us to `.error(_)`, so we won't advance then either.
-                if case .purchasing(_) = self.upgradeViewState {
+                if case .purchasing = self.upgradeViewState {
                     self.upgradeViewState = .waiting(wooWPComPlan)
                 }
             }
@@ -118,7 +120,7 @@ final class UpgradesViewModel: ObservableObject {
             stopObservingInAppPurchaseDrawerDismissal()
             switch result {
             case .userCancelled:
-                upgradeViewState = .loaded(wooWPComPlan)
+                upgradeViewState = .loaded(plans)
             case .success(.verified(_)):
                 // refreshing the synchronizer removes the Upgrade Now banner by the time the flow is closed
                 storePlanSynchronizer.reloadPlan()
@@ -195,9 +197,11 @@ private extension UpgradesViewModel {
     /// Checks whether a plan can be purchased from the current view state,
     /// in which case the `WooWPComPlan` object is returned
     ///
-    func planCanBePurchasedFromCurrentState() -> WooWPComPlan? {
+    func planCanBePurchasedFromCurrentState(with planID: String) -> WooWPComPlan? {
         switch upgradeViewState {
-        case .loaded(let plan), .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
+        case .loaded(let plans):
+            return plans.first(where: { $0.wpComPlan.id == planID })
+        case .purchaseUpgradeError(.inAppPurchaseFailed(let plan, _)):
             return plan
         default:
             return nil
@@ -237,16 +241,20 @@ private extension UpgradesViewModel {
 
     /// Retrieves a specific In-App Purchase WPCom plan from the available products
     ///
-    func retrievePlanDetailsIfAvailable(_ type: AvailableInAppPurchasesWPComPlans,
-                                                from wpcomPlans: [WPComPlanProduct],
-                                                hardcodedPlanDataIsValid: Bool) -> WooWPComPlan? {
-        guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == type.rawValue }),
-              let wooPlan = localPlans.first(where: { $0.id == wpcomPlanProduct.id }) else {
-            return nil
-        }
-        return WooWPComPlan(wpComPlan: wpcomPlanProduct,
-                            wooPlan: wooPlan,
-                            hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
+    func retrievePlanDetailsIfAvailable(_ types: [AvailableInAppPurchasesWPComPlans],
+                                        from wpcomPlans: [WPComPlanProduct],
+                                        hardcodedPlanDataIsValid: Bool) -> [WooWPComPlan] {
+        let plans: [WooWPComPlan] = types.map { type in
+            guard let wpcomPlanProduct = wpcomPlans.first(where: { $0.id == type.rawValue }),
+                  let wooPlan = localPlans.first(where: { $0.id == wpcomPlanProduct.id }) else {
+                return nil
+            }
+            return WooWPComPlan(wpComPlan: wpcomPlanProduct,
+                                wooPlan: wooPlan,
+                                hardcodedPlanDataIsValid: hardcodedPlanDataIsValid)
+        }.compactMap { $0 }
+
+        return plans
     }
 }
 

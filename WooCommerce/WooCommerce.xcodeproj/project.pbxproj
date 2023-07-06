@@ -348,6 +348,7 @@
 		028B68BA2A57410500FE03A8 /* AddProductFromImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */; };
 		028B68BC2A57419700FE03A8 /* AddProductFromImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */; };
 		028B68BE2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */; };
+		028B68C02A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */; };
 		028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */; };
 		028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */; };
 		028CB70F290138EF00331C09 /* Publisher+Concurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028CB70E290138EF00331C09 /* Publisher+Concurrency.swift */; };
@@ -2715,6 +2716,7 @@
 		028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageView.swift; sourceTree = "<group>"; };
 		028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageViewModel.swift; sourceTree = "<group>"; };
 		028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageEligibilityChecker.swift; sourceTree = "<group>"; };
+		028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAddProductFromImageEligibilityChecker.swift; sourceTree = "<group>"; };
 		028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersViewController.swift; sourceTree = "<group>"; };
 		028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsTimeRangeV4+UI.swift"; sourceTree = "<group>"; };
 		028CB70E290138EF00331C09 /* Publisher+Concurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Concurrency.swift"; sourceTree = "<group>"; };
@@ -7670,6 +7672,7 @@
 				B9DC770629F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift */,
 				026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */,
 				02863F6E2925FC29006A06AA /* MockInAppPurchasesForWPComPlansManager.swift */,
+				028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -12980,6 +12983,7 @@
 				0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */,
 				7E6A01A12725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift in Sources */,
 				02BF9BAF2851E7EA008CE2DD /* MockAppleIDCredentialChecker.swift in Sources */,
+				028B68C02A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift in Sources */,
 				E17E3BFB266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift in Sources */,
 				CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */,
 				EEB221A729B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift in Sources */,

@@ -539,15 +539,13 @@ private extension ProductStore {
                           string: String,
                           feature: GenerativeContentRemoteFeature,
                           completion: @escaping (Result<String, Error>) -> Void) {
-        Task {
+        Task { @MainActor in
             let result = await Result {
                 try await generativeContentRemote.identifyLanguage(siteID: siteID,
                                                                    string: string,
                                                                    feature: feature)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            completion(result)
         }
     }
 
@@ -565,14 +563,12 @@ private extension ProductStore {
             "and use them in your sentences without listing them out."
         ].joined(separator: "\n")
 
-        Task {
+        Task { @MainActor in
             let result = await Result {
                 let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription)
                 return description
             }
-            await MainActor.run {
-                completion(result)
-            }
+            completion(result)
         }
     }
 
@@ -594,15 +590,13 @@ private extension ProductStore {
             "Do not include the URL in the message.",
         ].joined(separator: "\n")
 
-        Task {
+        Task { @MainActor in
             let result = await Result {
                 let message = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
                 return message
             }
-            await MainActor.run {
-                completion(result)
-            }
+            completion(result)
         }
     }
 }

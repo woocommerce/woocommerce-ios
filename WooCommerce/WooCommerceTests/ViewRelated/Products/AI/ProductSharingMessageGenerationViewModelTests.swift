@@ -144,6 +144,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     // MARK: - Analytics
     func test_generate_button_tapped_is_tracked_correctly() async throws {
         // Given
+        let expectedLanguage = "en"
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductSharingMessageGenerationViewModel(siteID: 123,
                                                                  url: "https://example.com",
@@ -156,7 +157,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
             case let .generateProductSharingMessage(_, _, _, _, _, completion):
                 completion(.success("Test"))
             case let .identifyLanguage(_, _, _, completion):
-                completion(.success("en"))
+                completion(.success(expectedLanguage))
             default:
                 return
             }
@@ -167,6 +168,11 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["product_sharing_ai_generate_tapped", "product_sharing_ai_message_generated"])
+
+        let generatedEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_sharing_ai_message_generated"}))
+        let generatedEventProperties = analyticsProvider.receivedProperties[generatedEventIndex]
+        XCTAssertEqual(generatedEventProperties["identified_language"] as? String, expectedLanguage)
+
         let firstEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_sharing_ai_generate_tapped"}))
         let firstEventProperties = analyticsProvider.receivedProperties[firstEventIndex]
         XCTAssertEqual(firstEventProperties["is_retry"] as? Bool, false)

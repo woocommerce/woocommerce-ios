@@ -5,6 +5,7 @@ extension WooAnalyticsEvent {
         private enum Key: String {
             case isRetry = "is_retry"
             case withMessage = "with_message"
+            case identifiedLanguage = "identified_language"
         }
 
         static func sheetDisplayed() -> WooAnalyticsEvent {
@@ -27,9 +28,9 @@ extension WooAnalyticsEvent {
                               properties: [:])
         }
 
-        static func messageGenerated() -> WooAnalyticsEvent {
+        static func messageGenerated(identifiedLanguage: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productSharingAIMessageGenerated,
-                              properties: [:])
+                              properties: [Key.identifiedLanguage.rawValue: identifiedLanguage].compactMapValues { $0 })
         }
 
         static func messageGenerationFailed(error: Error) -> WooAnalyticsEvent {

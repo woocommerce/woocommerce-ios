@@ -78,7 +78,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         do {
             messageContent = try await requestMessageFromAI()
             hasGeneratedMessage = true
-            analytics.track(event: .ProductSharingAI.messageGenerated())
+            analytics.track(event: .ProductSharingAI.messageGenerated(identifiedLanguage: languageIdentifiedUsingAI))
             shouldShowFeedbackView = true
         } catch {
             DDLogError("⛔️ Error generating product sharing message: \(error)")

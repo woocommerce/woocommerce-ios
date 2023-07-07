@@ -35,14 +35,14 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDescriptionAICopyButtonTapped, properties: [:])
         }
 
-        /// Tracked when the product description AI identifies language
+        /// Tracked when AI identifies language
         static func identifiedLanguage(_ identifiedLanguage: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .identifyLanguageSuccess,
                               properties: [Key.language: identifiedLanguage,
                                            Key.source: Constants.productDescriptionSource])
         }
 
-        /// Tracked when the product description AI fails to identify language
+        /// Tracked when AI fails to identify language
         static func identifyLanguageFailed(error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .identifyLanguageFailed,
                               properties: [Key.source: Constants.productDescriptionSource],

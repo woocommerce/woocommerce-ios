@@ -81,9 +81,15 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
             analytics.track(event: .ProductSharingAI.messageGenerated())
             shouldShowFeedbackView = true
         } catch {
-            DDLogError("⛔️ Error generating product sharing message: \(error)")
-            errorMessage = error.localizedDescription
-            analytics.track(event: .ProductSharingAI.messageGenerationFailed(error: error))
+            if case let IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: underlyingError) = error {
+                DDLogError("⛔️ Error identifying language: \(error)")
+                errorMessage = underlyingError.localizedDescription
+                analytics.track(event: .ProductSharingAI.identifyLanguageFailed(error: underlyingError))
+            } else {
+                DDLogError("⛔️ Error generating product sharing message: \(error)")
+                errorMessage = error.localizedDescription
+                analytics.track(event: .ProductSharingAI.messageGenerationFailed(error: error))
+            }
         }
         generationInProgress = false
     }
@@ -140,17 +146,26 @@ private extension ProductSharingMessageGenerationViewModel {
             return languageIdentifiedUsingAI
         }
 
-        let language = try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
-                                                           string: productName + " " + productDescription,
-                                                           feature: .productSharing,
-                                                           completion: { result in
-                continuation.resume(with: result)
-            }))
+        do {
+            let language = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
+                                                               string: productName + " " + productDescription,
+                                                               feature: .productSharing,
+                                                               completion: { result in
+                    continuation.resume(with: result)
+                }))
+            }
+            analytics.track(event: .ProductSharingAI.identifiedLanguage(language))
+            self.languageIdentifiedUsingAI = language
+            return language
+        } catch {
+            throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)
         }
-        self.languageIdentifiedUsingAI = language
-        return language
     }
+}
+
+private enum IdentifyLanguageError: Error {
+    case failedToIdentifyLanguage(underlyingError: Error)
 }
 
 extension ProductSharingMessageGenerationViewModel {

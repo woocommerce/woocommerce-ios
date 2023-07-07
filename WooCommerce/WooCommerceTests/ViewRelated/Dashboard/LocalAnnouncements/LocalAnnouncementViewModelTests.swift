@@ -21,6 +21,8 @@ final class LocalAnnouncementViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: Analytics
+
     func test_localAnnouncementDisplayed_is_tracked_when_the_view_appears() throws {
         // Given
         let viewModel = LocalAnnouncementViewModel(announcement: .productDescriptionAI, analytics: analytics)
@@ -58,5 +60,41 @@ final class LocalAnnouncementViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents, ["local_announcement_dismissed"])
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
         XCTAssertEqual(eventProperties["announcement"] as? String, "product_description_ai")
+    }
+
+    // MARK: Store actions
+
+    func test_ctaTapped_dispatches_setLocalAnnouncementDismissed_action() throws {
+        // Given
+        let viewModel = LocalAnnouncementViewModel(announcement: .productDescriptionAI, stores: stores, analytics: analytics)
+
+        // When
+        waitFor { promise in
+            self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+                guard case .setLocalAnnouncementDismissed(_, _) = action else {
+                    return XCTFail("Unexpected action: \(action)")
+                }
+                // Then
+                promise(())
+            }
+            viewModel.ctaTapped()
+        }
+    }
+
+    func test_dismissTapped_dispatches_setLocalAnnouncementDismissed_action() throws {
+        // Given
+        let viewModel = LocalAnnouncementViewModel(announcement: .productDescriptionAI, stores: stores, analytics: analytics)
+
+        // When
+        waitFor { promise in
+            self.stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+                guard case .setLocalAnnouncementDismissed(_, _) = action else {
+                    return XCTFail("Unexpected action: \(action)")
+                }
+                // Then
+                promise(())
+            }
+            viewModel.dismissTapped()
+        }
     }
 }

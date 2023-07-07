@@ -3,8 +3,10 @@ import Foundation
 extension WooAnalyticsEvent {
     enum ProductSharingAI {
         private enum Key: String {
+            case source = "source"
             case isRetry = "is_retry"
             case withMessage = "with_message"
+            case language = "language"
         }
 
         static func sheetDisplayed() -> WooAnalyticsEvent {
@@ -27,6 +29,18 @@ extension WooAnalyticsEvent {
                               properties: [:])
         }
 
+        static func identifiedLanguage(_ identifiedLanguage: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .identifyLanguageSuccess,
+                              properties: [Key.language.rawValue: identifiedLanguage,
+                                           Key.source.rawValue: Constants.productSharingSource])
+        }
+
+        static func identifyLanguageFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .identifyLanguageFailed,
+                              properties: [Key.source.rawValue: Constants.productSharingSource],
+                              error: error)
+        }
+
         static func messageGenerated() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productSharingAIMessageGenerated,
                               properties: [:])
@@ -37,5 +51,11 @@ extension WooAnalyticsEvent {
                               properties: [:],
                               error: error)
         }
+    }
+}
+
+private extension WooAnalyticsEvent.ProductSharingAI {
+    enum Constants {
+        static let productSharingSource = "product_sharing"
     }
 }

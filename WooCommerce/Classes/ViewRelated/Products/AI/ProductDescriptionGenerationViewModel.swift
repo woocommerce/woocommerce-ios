@@ -119,16 +119,21 @@ private extension ProductDescriptionGenerationViewModel {
             return languageIdentifiedUsingAI
         }
 
-        let language = try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
-                                                           string: name + " " + features,
-                                                           feature: .productSharing,
-                                                           completion: { result in
-                continuation.resume(with: result)
-            }))
+        do {
+            let language = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
+                                                               string: name + " " + features,
+                                                               feature: .productSharing,
+                                                               completion: { result in
+                    continuation.resume(with: result)
+                }))
+            }
+            analytics.track(event: .ProductFormAI.identifiedLanguage(language))
+            self.languageIdentifiedUsingAI = language
+            return language
+        } catch {
+            throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)
         }
-        self.languageIdentifiedUsingAI = language
-        return language
     }
 
     @MainActor
@@ -139,10 +144,20 @@ private extension ProductDescriptionGenerationViewModel {
             analytics.track(event: .ProductFormAI.productDescriptionAIGenerationSuccess())
             shouldShowFeedbackView = true
         case let .failure(error):
-            errorMessage = error.localizedDescription
-            DDLogError("Error generating product description: \(error)")
-            analytics.track(event: .ProductFormAI.productDescriptionAIGenerationFailed(error: error))
+            if case let IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: underlyingError) = error {
+                DDLogError("⛔️ Error identifying language: \(error)")
+                errorMessage = underlyingError.localizedDescription
+                analytics.track(event: .ProductFormAI.identifyLanguageFailed(error: underlyingError))
+            } else {
+                DDLogError("⛔️ Error generating product description: \(error)")
+                errorMessage = error.localizedDescription
+                analytics.track(event: .ProductFormAI.productDescriptionAIGenerationFailed(error: error))
+            }
         }
         isGenerationInProgress = false
     }
+}
+
+private enum IdentifyLanguageError: Error {
+    case failedToIdentifyLanguage(underlyingError: Error)
 }

@@ -1772,7 +1772,7 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product",
                                                                            features: "Trendy",
-                                                                           language: "English") { result in
+                                                                           language: "en") { result in
                 promise(result)
             })
         }
@@ -1798,7 +1798,7 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product",
                                                                            features: "Trendy",
-                                                                           language: "English") { result in
+                                                                           language: "en") { result in
                 promise(result)
             })
         }
@@ -1823,7 +1823,7 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product name",
                                                                            features: "Trendy, cool, fun",
-                                                                           language: "English") { _ in
+                                                                           language: "en") { _ in
                 promise(())
             })
         }
@@ -1832,7 +1832,7 @@ final class ProductStoreTests: XCTestCase {
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         XCTAssertTrue(base.contains("```A product name```"))
         XCTAssertTrue(base.contains("```Trendy, cool, fun```"))
-        XCTAssertTrue(base.contains("English"))
+        XCTAssertTrue(base.contains("en"))
     }
 
     func test_generateProductDescription_uses_correct_feature() throws {
@@ -1850,7 +1850,7 @@ final class ProductStoreTests: XCTestCase {
             productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
                                                                            name: "A product name",
                                                                            features: "Trendy, cool, fun",
-                                                                           language: "English") { _ in
+                                                                           language: "en") { _ in
                 promise(())
             })
         }
@@ -1880,7 +1880,7 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "English"
+                language: "en"
             ) { result in
                 promise(result)
             })
@@ -1909,7 +1909,7 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "English"
+                language: "en"
             ) { result in
                 promise(result)
             })
@@ -1938,7 +1938,7 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "English"
+                language: "en"
             ) { result in
                 promise(result)
             })
@@ -1954,7 +1954,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedURL = "https://example.com"
         let expectedName = "Sample product"
         let expectedDescription = "Sample description"
-        let expectedLangugae = "English"
+        let expectedLangugae = "en"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(""))
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
@@ -2002,7 +2002,7 @@ final class ProductStoreTests: XCTestCase {
                 url: "https://example.com",
                 name: "Sample product",
                 description: "Sample description",
-                language: "English"
+                language: "en"
             ) { result in
                 promise(())
             })
@@ -2017,7 +2017,7 @@ final class ProductStoreTests: XCTestCase {
 
     func test_identifyLanguage_returns_language_on_success() throws {
         // Given
-        let expectedLanguage = "English"
+        let expectedLanguage = "en"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenIdentifyingLanguage(thenReturn: .success(expectedLanguage))
         let productStore = ProductStore(dispatcher: dispatcher,

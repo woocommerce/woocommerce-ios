@@ -25,7 +25,7 @@ public protocol GenerativeContentRemoteProtocol {
     ///   - siteID: WPCOM ID of the site.
     ///   - string: String from which we should identify the language
     ///   - feature: Used by backend to track AI-generation usage and measure costs
-    /// - Returns: Name of the language
+    /// - Returns: ISO code of the language
     func identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature) async throws -> String
@@ -51,7 +51,8 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                  feature: GenerativeContentRemoteFeature) async throws -> String {
         let path = "sites/\(siteID)/\(Path.text)"
         let prompt = [
-            "What is the name of the language used in the following text? Just give me only the language name in your response.",
+            "What is the ISO language code of the language used in the below text?" +
+            "Do not include any explanations and only provide the ISO language code in your response.",
             "Text: ```\(string)```"
         ].joined(separator: "\n")
 

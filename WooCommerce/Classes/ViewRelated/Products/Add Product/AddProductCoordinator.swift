@@ -1,5 +1,4 @@
 import UIKit
-import VisionKit
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType

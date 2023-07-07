@@ -30,15 +30,9 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     private let onAddImage: (MediaPickingSource) async -> MediaPickerImage?
 
-    private let siteID: Int64
-    private let stores: StoresManager
     private var selectedImageSubscription: AnyCancellable?
 
-    init(siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores,
-         onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
-        self.siteID = siteID
-        self.stores = stores
+    init(onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.onAddImage = onAddImage
 
         selectedImageSubscription = $imageState.compactMap { state -> UIImage? in

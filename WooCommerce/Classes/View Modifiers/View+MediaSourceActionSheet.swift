@@ -63,7 +63,7 @@ extension View {
     func mediaSourceActionSheet(showsActionSheet: Binding<Bool>,
                                 selectMedia: @escaping (MediaPickingSource) -> Void) -> some View {
         self.modifier(MediaSourceActionSheet(showsActionSheet: showsActionSheet,
-                                                   selectMedia: selectMedia))
+                                             selectMedia: selectMedia))
     }
 }
 

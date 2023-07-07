@@ -539,6 +539,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Add Price";
 
+/* Navigation bar title of the add product from image form. */
+"Add product" = "Add product";
+
 /* Action to add product on the placeholder overlay when there are no products on the Products tab
    Title for the screen to add a product to an order */
 "Add Product" = "Add Product";
@@ -1059,6 +1062,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze view.
    Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
+
+/* Title on the alert presented when dismissing the banner announcing Blaze feature. */
+"Blaze Ads" = "Blaze Ads";
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Block Quote";
@@ -1757,6 +1763,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the Store Picker screen to select a store
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
+   Continue button on the add product from image form.
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -2178,7 +2185,8 @@ which should be translated separately and considered part of this sentence. */
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "Describe your product to your future customers...";
 
-/* The navigation bar title of the Aztec editor screen.
+/* Product description placeholder on the add product from image form.
+   The navigation bar title of the Aztec editor screen.
    Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
@@ -3219,7 +3227,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google sign up failed.";
 
-/* Button title that dismisses the Write with AI tooltip
+/* Button on the alert presented when dismissing the banner announcing Blaze feature.
+   Button title that dismisses the Write with AI tooltip
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Got it";
 
@@ -4365,6 +4374,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Myanmar" = "Myanmar";
 
 /* Name text field placeholder
+   Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title for the name field on the Shipping Line Details screen during order creation */
 "Name" = "Name";
@@ -4590,6 +4600,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "No variations to generate";
+
+/* Message on the alert presented when dismissing the banner announcing Blaze feature. */
+"No worries! Blaze ads are accessible in the Menu and product details' menu for your convenience." = "No worries! Blaze ads are accessible in the Menu and product details' menu for your convenience.";
 
 /* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
 "No worries! You can always go to Settings in the Menu to send us feedback." = "No worries! You can always go to Settings in the Menu to send us feedback.";
@@ -4947,6 +4960,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Paste without Formatting";
 
+/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
+"Pay Annually" = "Pay Annually";
+
 /* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "Pay by card or another accepted payment method";
@@ -4954,6 +4970,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
    Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "Pay in Person";
+
+/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
+"Pay Monthly" = "Pay Monthly";
 
 /* Payment section title
    Title text of the row that shows the payment headline when creating a simple payment
@@ -6568,6 +6587,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of an unknown error after purchasing a plan */
 "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded.";
 
+/* Notice title when validating a coupon code fails. */
+"Something went wrong when validating your coupon code. Please try again" = "Something went wrong when validating your coupon code. Please try again";
+
 /* Error message in the Add Edit Coupon screen when the creation of the coupon goes in error. */
 "Something went wrong while creating the coupon." = "Something went wrong while creating the coupon.";
 
@@ -6580,9 +6602,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
 "Something went wrong, please try again later." = "Something went wrong, please try again later.";
-
-/* Notice title when validating a coupon code fails. */
-"Something when wrong when validating your coupon code. Please try again" = "Something when wrong when validating your coupon code. Please try again";
 
 /* Message of the alert when the user cannot create a store because they already created one before. */
 "Sorry, but you can only create one store. Your account is already associated with an active store." = "Sorry, but you can only create one store. Your account is already associated with an active store.";

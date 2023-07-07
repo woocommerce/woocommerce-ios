@@ -3,17 +3,8 @@ import UIKit
 import Yosemite
 import WooFoundation
 
-/// Controls navigation for the flow to add a product given a navigation controller.
-/// This class is not meant to be retained so that its life cycle is throughout the navigation. Example usage:
-///
-/// let coordinator = AddProductCoordinator(...)
-/// coordinator.start()
-///
+/// Controls navigation for the flow to add a product from an image.
 final class AddProductFromImageCoordinator: Coordinator {
-    /// Assign this closure to be notified when a new product is saved remotely
-    ///
-    var onProductCreated: (Product) -> Void = { _ in }
-
     let navigationController: UINavigationController
 
     /// Navigation controller for the product creation form.
@@ -24,6 +15,9 @@ final class AddProductFromImageCoordinator: Coordinator {
     private let siteID: Int64
     private let productImageUploader: ProductImageUploaderProtocol
     private let productImageLoader: ProductUIImageLoader
+
+    /// Invoked when a new product is saved remotely.
+    private let onProductCreated: (Product) -> Void
 
     init(siteID: Int64,
          sourceNavigationController: UINavigationController,

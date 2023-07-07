@@ -343,11 +343,12 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["product_description_ai_generate_button_tapped",
-                                                          "product_description_ai_identify_language_success",
+                                                          "ai_identify_language_success",
                                                           "product_description_ai_generation_success"])
-        let identifyEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_description_ai_identify_language_success"}))
+        let identifyEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "ai_identify_language_success"}))
         let identifyEventProperties = analyticsProvider.receivedProperties[identifyEventIndex]
         XCTAssertEqual(identifyEventProperties["language"] as? String, expectedLanguage)
+        XCTAssertEqual(identifyEventProperties["source"] as? String, "product_description")
     }
 
     func test_generateDescription_tracks_events_correctly_when_identify_language_fails() throws {
@@ -372,11 +373,12 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["product_description_ai_generate_button_tapped",
-                                                          "product_description_ai_identify_language_failed"])
-        let failureEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "product_description_ai_identify_language_failed"}))
+                                                          "ai_identify_language_failed"])
+        let failureEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "ai_identify_language_failed"}))
         let failureEventProperties = analyticsProvider.receivedProperties[failureEventIndex]
         XCTAssertEqual(failureEventProperties["error_code"] as? String, "500")
         XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")
+        XCTAssertEqual(failureEventProperties["source"] as? String, "product_description")
     }
 
     func test_generateDescription_tracks_events_correctly_when_text_generation_fails() throws {
@@ -401,7 +403,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["product_description_ai_generate_button_tapped",
-                                                          "product_description_ai_identify_language_success",
+                                                          "ai_identify_language_success",
                                                           "product_description_ai_generation_failed"])
         let failureEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "product_description_ai_generation_failed"}))
         let failureEventProperties = analyticsProvider.receivedProperties[failureEventIndex]

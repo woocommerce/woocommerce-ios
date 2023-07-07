@@ -53,7 +53,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
     // MARK: - `identifyLanguage`
 
-    func test_identifyLanguage_with_success_returns_generated_text() async throws {
+    func test_identifyLanguage_with_success_returns_language_code() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-ai/completions", filename: "identify-language-success")
@@ -64,7 +64,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                                               feature: .productDescription)
 
         // Then
-        XCTAssertEqual(language, "English")
+        XCTAssertEqual(language, "en")
     }
 
     func test_identifyLanguage_with_failure_returns_error() async throws {

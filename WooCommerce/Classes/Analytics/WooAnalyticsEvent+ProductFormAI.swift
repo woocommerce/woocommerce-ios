@@ -4,6 +4,7 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let source = "source"
             static let isRetry = "is_retry"
+            static let language = "language"
         }
 
         /// Tracked when the user taps on the button to start the product description AI flow.
@@ -34,6 +35,20 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDescriptionAICopyButtonTapped, properties: [:])
         }
 
+        /// Tracked when AI identifies language
+        static func identifiedLanguage(_ identifiedLanguage: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .identifyLanguageSuccess,
+                              properties: [Key.language: identifiedLanguage,
+                                           Key.source: Constants.productDescriptionSource])
+        }
+
+        /// Tracked when AI fails to identify language
+        static func identifyLanguageFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .identifyLanguageFailed,
+                              properties: [Key.source: Constants.productDescriptionSource],
+                              error: error)
+        }
+
         /// Tracked when the product description AI generation succeeds.
         static func productDescriptionAIGenerationSuccess() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDescriptionAIGenerationSuccess, properties: [:])
@@ -53,5 +68,11 @@ extension WooAnalyticsEvent.ProductFormAI {
         case aztecEditor = "aztec_editor"
         /// From the product form below the description row.
         case productForm = "product_form"
+    }
+}
+
+private extension WooAnalyticsEvent.ProductFormAI {
+    enum Constants {
+        static let productDescriptionSource = "product_description"
     }
 }

@@ -88,7 +88,12 @@ struct UpgradesView: View {
 
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:
-                    OwnerUpgradesView(upgradePlans: [.skeletonPlan()], purchasePlanAction: { _ in }, isLoading: true)
+                    OwnerUpgradesView(upgradePlans: [
+                        .skeletonPlan(frequency: .year, shortName: "Essential"),
+                        .skeletonPlan(frequency: .year, shortName: "Performance"),
+                        .skeletonPlan(frequency: .month, shortName: "Essential"),
+                        .skeletonPlan(frequency: .month, shortName: "Performance")],
+                                      purchasePlanAction: { _ in }, isLoading: true)
                         .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plans):
                     OwnerUpgradesView(upgradePlans: plans, purchasePlanAction: { selectedPlan in
@@ -172,44 +177,38 @@ private extension UpgradesView {
 }
 
 private extension WooWPComPlan {
-    static func skeletonPlan() -> WooWPComPlan {
+    static func skeletonPlan(frequency: WooPlan.PlanFrequency, shortName: String) -> WooWPComPlan {
+        let planProduct = SkeletonWPComPlanProduct(displayName: "\(frequency.localizedPlanName) \(shortName) Plan",
+                                                   id: "skeleton.wpcom.plan.product.monthly",
+                                                   price: "$100")
         return WooWPComPlan(
-            wpComPlan: SkeletonWPComPlanProduct(),
-            wooPlan: WooPlan(id: "skeleton.plan.monthly",
-                             name: "Skeleton Plan Monthly",
+            wpComPlan: planProduct,
+            wooPlan: WooPlan(id: "skeleton.plan.\(shortName).\(frequency.rawValue)",
+                             name: "Skeleton \(shortName) Plan \(frequency.localizedPlanName)",
                              shortName: "Skeleton",
-                             planFrequency: .month,
+                             planFrequency: frequency,
                              planDescription: "A skeleton plan to show (redacted) while we're loading",
                              headerImageFileName: "express-essential-header",
                              headerImageCardColor: .withColorStudio(name: .orange, shade: .shade5),
-                             planFeatureGroups: [
-                                WooPlanFeatureGroup(title: "Feature group 1",
-                                                    description: "A feature description with a realistic length to " +
-                                                    "ensure the cell looks correct when redacted",
-                                                    imageFilename: "",
-                                                    imageCardColor: .withColorStudio(name: .blue, shade: .shade5),
-                                                    features: []),
-                                WooPlanFeatureGroup(title: "Feature group 2",
-                                                    description: "A feature description with a realistic length to " +
-                                                    "ensure the cell looks correct when redacted",
-                                                    imageFilename: "",
-                                                    imageCardColor: .withColorStudio(name: .green, shade: .shade5),
-                                                    features: []),
-                                WooPlanFeatureGroup(title: "Feature group 3",
-                                                    description: "A feature description with a realistic length to " +
-                                                    "ensure the cell looks correct when redacted",
-                                                    imageFilename: "",
-                                                    imageCardColor: .withColorStudio(name: .pink, shade: .shade5),
-                                                    features: []),
-                             ]),
+                             planFeatureGroups: []),
             hardcodedPlanDataIsValid: true)
     }
 
     private struct SkeletonWPComPlanProduct: WPComPlanProduct {
-        let displayName: String = "Skeleton Plan Monthly"
+        let displayName: String
         let description: String = "A skeleton plan to show (redacted) while we're loading"
-        let id: String = "skeleton.wpcom.plan.product"
-        let displayPrice: String = "$39"
+        let id: String
+        let displayPrice: String
+
+        init(displayName: String,
+             id: String,
+             price: String) {
+            self.displayName = displayName
+            self.id = id
+            self.displayPrice = price
+        }
+
+
     }
 }
 

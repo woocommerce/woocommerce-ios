@@ -7,7 +7,6 @@ enum EditableImageViewState {
     case empty
     case loading
     case success(MediaPickerImage)
-    case failure(Error)
 }
 
 /// Image selected from the media picker.
@@ -49,11 +48,6 @@ struct EditableImageView<Content: View>: View {
                 ProgressView()
             case .empty:
                 emptyContent()
-            case .failure(let error):
-                HStack {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                    Text(error.localizedDescription)
-                }
         }
     }
 }
@@ -81,9 +75,6 @@ struct EditableImageView_Previews: PreviewProvider {
                 Text("Empty")
             })
             .previewDisplayName("Empty state")
-
-            EditableImageView(imageState: .failure(ProductDownloadFileError.emptyFileName), emptyContent: {})
-                .previewDisplayName("Error state")
 
             EditableImageView(imageState: .loading, emptyContent: {})
                 .previewDisplayName("Loading state")

@@ -37,13 +37,16 @@ extension WooAnalyticsEvent {
 
         /// Tracked when the product description AI identifies language
         static func identifiedLanguage(_ identifiedLanguage: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDescriptionIdentifyLanguageSuccess,
-                              properties: [Key.language: identifiedLanguage])
+            WooAnalyticsEvent(statName: .identifyLanguageSuccess,
+                              properties: [Key.language: identifiedLanguage,
+                                           Key.source: Constants.productDescriptionSource])
         }
 
         /// Tracked when the product description AI fails to identify language
         static func identifyLanguageFailed(error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDescriptionIdentifyLanguageFailed, properties: [:], error: error)
+            WooAnalyticsEvent(statName: .identifyLanguageFailed,
+                              properties: [Key.source: Constants.productDescriptionSource],
+                              error: error)
         }
 
         /// Tracked when the product description AI generation succeeds.
@@ -65,5 +68,11 @@ extension WooAnalyticsEvent.ProductFormAI {
         case aztecEditor = "aztec_editor"
         /// From the product form below the description row.
         case productForm = "product_form"
+    }
+}
+
+private extension WooAnalyticsEvent.ProductFormAI {
+    enum Constants {
+        static let productDescriptionSource = "product_description"
     }
 }

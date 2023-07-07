@@ -46,7 +46,7 @@ struct AddProductFromImageView: View {
         }
         .navigationTitle(Localization.title)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.continueButtonTitle) {
                     // TODO: 10180 - pass the image from media picker
                     completion(.init(name: viewModel.name, description: viewModel.description))

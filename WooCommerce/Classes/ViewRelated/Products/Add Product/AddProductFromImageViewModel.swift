@@ -9,9 +9,7 @@ import Yosemite
 @MainActor
 final class AddProductFromImageViewModel: ObservableObject {
     final class ScannedTextViewModel: ObservableObject, Identifiable {
-        var id: String {
-            UUID().uuidString
-        }
+        let id: String = UUID().uuidString
         @Published var text: String
         @Published var isSelected: Bool
 
@@ -26,7 +24,6 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published var name: String = ""
     @Published var description: String = ""
-    @Published var sku: String = ""
 
     // MARK: - Scanned Texts
 

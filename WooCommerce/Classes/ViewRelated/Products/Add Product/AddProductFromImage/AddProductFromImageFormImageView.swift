@@ -12,7 +12,7 @@ struct AddProductFromImageFormImageView: View {
     var body: some View {
         EditableImageView(imageState: viewModel.imageState,
                           emptyContent: {
-            VStack(spacing: 16) {
+            VStack(spacing: Layout.verticalSpacing) {
                 Image(systemName: "photo")
                     .font(.system(size: Layout.emptyStateImageSize))
                 Label {
@@ -24,6 +24,7 @@ struct AddProductFromImageFormImageView: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
         })
+        .padding(Layout.padding)
         .overlay(alignment: .topTrailing) {
             Button {
                 isShowingActionSheet = true
@@ -45,6 +46,8 @@ private extension AddProductFromImageFormImageView {
     enum Layout {
         static let emptyStateImageSize: CGFloat = 40
         static let editImageSize: CGFloat = 30
+        static let verticalSpacing: CGFloat = 16
+        static let padding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     }
 
     enum Localization {

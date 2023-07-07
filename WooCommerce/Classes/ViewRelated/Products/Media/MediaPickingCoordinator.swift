@@ -1,5 +1,15 @@
 import UIKit
 
+/// The source of the media to pick from.
+enum MediaPickingSource {
+    /// Device camera.
+    case camera
+    /// Device photo library.
+    case photoLibrary
+    /// Site's media library.
+    case siteMediaLibrary
+}
+
 /// Prepares the alert controller that will be presented when trying to add media to a site.
 ///
 final class MediaPickingCoordinator {
@@ -13,17 +23,20 @@ final class MediaPickingCoordinator {
 
     private let siteID: Int64
     private let allowsMultipleImages: Bool
+    private let analytics: Analytics
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
     private let onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion
     private let onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion
 
     init(siteID: Int64,
          allowsMultipleImages: Bool,
+         analytics: Analytics = ServiceLocator.analytics,
          onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
          onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
          onWPMediaPickerCompletion: @escaping WordPressMediaLibraryImagePickerViewController.Completion) {
         self.siteID = siteID
         self.allowsMultipleImages = allowsMultipleImages
+        self.analytics = analytics
         self.onCameraCaptureCompletion = onCameraCaptureCompletion
         self.onDeviceMediaLibraryPickerCompletion = onDeviceMediaLibraryPickerCompletion
         self.onWPMediaPickerCompletion = onWPMediaPickerCompletion
@@ -50,6 +63,18 @@ final class MediaPickingCoordinator {
 
         origin.present(menuAlert, animated: true)
     }
+
+    func showMediaPicker(source: MediaPickingSource, from origin: UIViewController) {
+        analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": source.analyticsValue])
+        switch source {
+        case .camera:
+            showCameraCapture(origin: origin)
+        case .photoLibrary:
+            showDeviceMediaLibraryPicker(origin: origin)
+        case .siteMediaLibrary:
+            showSiteMediaPicker(origin: origin)
+        }
+    }
 }
 
 // MARK: Alert Actions
@@ -59,8 +84,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("Take a photo",
                                       comment: "Menu option for taking an image or video with the device's camera.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "camera"])
-            self?.showCameraCapture(origin: origin)
+            self?.showMediaPicker(source: .camera, from: origin)
         }
     }
 
@@ -68,8 +92,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("Choose from device",
                                       comment: "Menu option for selecting media from the device's photo library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "device"])
-            self?.showDeviceMediaLibraryPicker(origin: origin)
+            self?.showMediaPicker(source: .photoLibrary, from: origin)
         }
     }
 
@@ -77,8 +100,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("WordPress Media Library",
                                       comment: "Menu option for selecting media from the site's media library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "wpmedia"])
-            self?.showSiteMediaPicker(origin: origin)
+            self?.showMediaPicker(source: .siteMediaLibrary, from: origin)
         }
     }
 
@@ -103,5 +125,18 @@ private extension MediaPickingCoordinator {
                                                                                                 allowsMultipleImages: allowsMultipleImages,
                                                                                                 onCompletion: onWPMediaPickerCompletion)
         origin.present(wordPressMediaPickerViewController, animated: true)
+    }
+}
+
+private extension MediaPickingSource {
+    var analyticsValue: String {
+        switch self {
+            case .camera:
+                return "camera"
+            case .photoLibrary:
+                return "device"
+            case .siteMediaLibrary:
+                return "wpmedia"
+        }
     }
 }

@@ -180,7 +180,7 @@ struct AddProductFromImageView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Continue") {
                         // TODO-JC: pass image
-                        completion(.init(name: viewModel.name, description: viewModel.description, sku: viewModel.sku, image: viewModel.image))
+                        completion(.init(name: viewModel.name, description: viewModel.description, image: viewModel.image))
                     }
                     .buttonStyle(LinkButtonStyle())
                 }

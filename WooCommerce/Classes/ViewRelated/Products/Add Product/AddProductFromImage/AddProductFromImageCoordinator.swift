@@ -29,10 +29,6 @@ final class AddProductFromImageCoordinator: Coordinator {
         self.onProductCreated = onProductCreated
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     func start() {
         let addProductFromImage = AddProductFromImageHostingController(siteID: siteID,
                                                                        completion: { [weak self] data in

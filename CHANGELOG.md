@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 14.4
+Hot news—It's possible to automatically generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products and share them using AI. Try it now!
+
 ## 14.3
 This release includes the option to add multiple coupons when creating an order. Did you know it's possible to generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products? Try it out! US stores subscribed to the free trial can now upgrade to a paid plan using in-app purchase.
 

@@ -734,8 +734,6 @@ public enum WooAnalyticsStat: String {
     case productDescriptionAIPauseButtonTapped = "product_description_ai_pause_button_tapped"
     case productDescriptionAIApplyButtonTapped = "product_description_ai_apply_button_tapped"
     case productDescriptionAICopyButtonTapped = "product_description_ai_copy_button_tapped"
-    case productDescriptionIdentifyLanguageSuccess = "product_description_ai_identify_language_success"
-    case productDescriptionIdentifyLanguageFailed = "product_description_ai_identify_language_failed"
     case productDescriptionAIGenerationSuccess = "product_description_ai_generation_success"
     case productDescriptionAIGenerationFailed = "product_description_ai_generation_failed"
 
@@ -749,8 +747,6 @@ public enum WooAnalyticsStat: String {
     case productSharingAIGenerateTapped = "product_sharing_ai_generate_tapped"
     case productSharingAIShareTapped = "product_sharing_ai_share_tapped"
     case productSharingAIDismissed = "product_sharing_ai_dismissed"
-    case productSharingAIIdentifyLanguageSuccess = "product_sharing_ai_identify_language_success"
-    case productSharingAIIdentifyLanguageFailed = "product_sharing_ai_identify_language_failed"
     case productSharingAIMessageGenerated = "product_sharing_ai_message_generated"
     case productSharingAIMessageGenerationFailed = "product_sharing_ai_message_generation_failed"
 

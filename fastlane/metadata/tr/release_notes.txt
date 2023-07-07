@@ -1,3 +1,1 @@
-Kuponları yönetme ile ilgili yeni bir özellik üzerinde çalıştığımızı biliyor muydunuz? Artık uygulamadan sipariş oluştururken kupon eklemek mümkün. Ayrıca menü sekmesine gidip Kuponlar özelliğine tıklayarak da kuponlarınızı yönetebilirsiniz.
-
-Son olarak, siparişler bölümünün hızını artırmak için bazı ince ayarlar yaptık. Ama işimiz daha bitmedi. Gelecekteki geliştirmelerimiz için bizi takip edin.
+Bu sürüm, bir sipariş oluştururken birden fazla kupon ekleme seçeneğini içerir. WooCommerce ürünleriniz için dönüştürülebilir ve SEO için optimize edilmiş ürün açıklamaları oluşturabileceğinizi biliyor muydunuz? Deneyin! Ücretsiz deneme sürümüne abone olan ABD mağazaları, artık uygulama içi satın alma işlemiyle ücretli pakete yükseltme yapabilirler.

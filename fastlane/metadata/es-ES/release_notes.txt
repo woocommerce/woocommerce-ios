@@ -1,3 +1,1 @@
-¿Sabías que estamos trabajando en una nueva función para gestionar cupones? Ahora es posible añadir cupones al crear un pedido desde la aplicación. También puedes gestionar tus cupones si vas a la pestaña de menú y haces clic en la función Cupones.
-
-Por último, hemos hecho algunos ajustes de rendimiento para mejorar la velocidad de la sección de pedidos. Pero hay más. No te pierdas las mejoras que están por venir.
+En esta versión, encontrarás la opción de añadir varios cupones al crear un pedido. ¿Sabes que puedes generar descripciones de producto aptas para conversiones y optimizadas para SEO en tus productos de WooCommerce? ¡Pruébalo! Ahora, las tiendas de EE. UU. que se hayan suscrito a la versión de prueba gratuita pueden mejorar a un plan de pago mediante la compra en la aplicación.

@@ -1,3 +1,1 @@
-Visste du att vi arbetar på en ny funktion för att hantera rabattkoder? Det är nu möjligt att lägga till rabattkoder när du skapar en beställning från appen. Du kan också hantera rabattkoder genom att gå till menyfliken och klicka på funktionen Rabattkoder.
-
-Slutligen har vi även gjort några prestandajusteringar för att förbättra hastigheten för beställningssektionen. Men vi är inte klara. Håll utkik efter fler förbättringar framöver.
+Den här versionen inkluderar möjligheten att lägga till flera rabattkoder vid skapande av en beställning. Visste du att det är möjligt att generera konverteringsvänliga och SEO-optimerade produktbeskrivningar för dina WooCommerce-produkter? Prova det. Amerikanska butiker med en kostnadsfri provperiodsprenumeration kan nu uppgradera till ett betalpaket genom köp i appen.

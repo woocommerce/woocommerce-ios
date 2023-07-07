@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-06-27 13:54:42+0000 */
+/* Translation-Revision-Date: 2023-07-04 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -421,7 +421,7 @@ which should be translated separately and considered part of this sentence. */
    Product Add Category navigation title */
 "Add Category" = "Categorie toevoegen";
 
-/* Title text of the button that adds a fee when creating a new coupon */
+/* Title text of the button that adds a coupon when creating a new order */
 "Add Coupon" = "Coupon toevoegen";
 
 /* Title text of the button that adds customer data when creating a new order */
@@ -550,6 +550,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Creditcard toevoegen";
 
+/* Message of the product description AI local announcement. */
+"Add descriptions in a snap with AI. Try our feature today!" = "Voeg in mum van tijd beschrijvingen toe met behulp van AI. Bekijk deze functie vandaag nog!";
+
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Voeg elke optie toe en druk op terug";
 
@@ -565,6 +568,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the option to generate just one variation */
 "Add new variation" = "Nieuwe variatie toevoegen";
+
+/* Title of the product description AI local announcement. */
+"Add product description with AI" = "AI-productbeschrijving toevoegen";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Productlink toevoegen";
@@ -781,7 +787,7 @@ which should be translated separately and considered part of this sentence. */
 "An optional note to send the customer after purchase" = "Een optionele opmerking om naar de klant te sturen na aankoop";
 
 /* Error message when an order already exists in the backend for a given receipt */
-"An order aready exists for this receipt" = "Er bestaat al een bestelling voor deze bon";
+"An order already exists for this receipt" = "Er bestaat al een bestelling voor deze bon";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Er is een onbekende fout opgetreden.";
@@ -1256,7 +1262,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
-   Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
@@ -2179,6 +2184,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "Korting op kosten";
 
+/* Message on the local notification to remind the user to purchase a plan. */
+"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Ontdek geavanceerde functies en gepersonaliseerde aanbevelingen voor jouw winkel! Tik op het abonnement dat het beste bij je past.";
+
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "Ontdek andere betalingsproviders en kies een betalingsprovider.";
 
@@ -2253,6 +2261,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action title to select products to add to a grouped product from search results
    Button title to close the Scan to Pay screen
+   Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2271,6 +2280,7 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
@@ -3398,6 +3408,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Als je doorgaat met Google of Apple en nog geen WordPress.com-account hebt, maak je een account aan en ga je akkoord met onze _Servicevoorwaarden_.";
 
+/* Accessibility label for an indeterminate loading indicator */
+"In progress" = "Bezig";
+
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -3602,6 +3615,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Ireland" = "Ierland";
+
+/* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
+"Is the generated description helpful?" = "Is de gegenereerde beschrijving nuttig?";
+
+/* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
+"Is the generated message helpful?" = "Is het gegenereerde bericht nuttig?";
 
 /* Country option for a site address. */
 "Isle of Man" = "Man (eiland)";
@@ -3904,6 +3923,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the loading banner in Order Detail when loaded for the first time */
 "Loading content" = "Content laden";
 
+/* Accessibility label for the initial loading state of the Upgrades view */
+"Loading plan details" = "Abonnementsgegevens laden";
+
 /* Accessibility label for placeholder rows while product variations are loading */
 "Loading product variations" = "Productvariaties worden geladen";
 
@@ -4134,7 +4156,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "Maximaal bestelbedrag van %1$@";
 
-/* Dismiss button title for modally presented Just in Time Messages */
+/* Dismiss button title for modally presented Just in Time Messages
+   Dismiss button title for the local announcement modal. */
 "Maybe Later" = "Misschien later";
 
 /* Country option for a site address. */
@@ -4544,7 +4567,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "Nu je eigenschappen hebt toegevoegd, kun je je eerste variatie aanmaken!";
 
-/* Alert dismissal title
+/* Action button to dismiss the coupon error notice
+   Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
@@ -5385,12 +5409,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Productlink";
 
-/* Error message when the scanner cannot find a matching product */
-"Product not found. Failed to add Product to Order." = "Product niet gevonden. Kon product niet toevoegen aan bestelling.";
-
-/* Error message when the scanner found a product but isn't purchasable. */
-"Product not purchasable. Failed to add Product to Order." = "Product is niet te koop. Product aan bestelling toevoegen mislukt.";
-
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Product gepubliceerd";
 
@@ -5399,6 +5417,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "Producttype";
+
+/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
+"Product with SKU \"%@\" is not purchasable." = "Product met SKU %@ is niet te koop.";
+
+/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
+"Product with SKU \"%@\" not found." = "Product met SKU %@ niet gevonden.";
 
 /* Description for Top Performers left column header
    Display label for the composite product's component option type
@@ -5426,7 +5450,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Gepromote producten in plaats van de momenteel weergegeven producten (ofwel winstgevendere producten)";
 
-/* Description of the hub menu Blaze button */
+/* Description of the hub menu Blaze button
+   Title on the banner to highlight Blaze feature */
 "Promote products with Blaze" = "Producten promoten met Blaze";
 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
@@ -7384,6 +7409,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed when loading a specific product fails because product was deleted */
 "This product has been deleted and is no longer visible" = "Dit product is verwijderd en is niet meer zichtbaar";
 
+/* Error message when an unsupported receipt type is sent - [%1$@] will be replaced with details */
+"This receipt's transaction type is not expected from the app [%1$@]" = "Het transactietype van deze factuur wordt niet door de app [%1$@] verwacht";
+
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "Deze instelling bepaalt op welke winkelpagina's producten worden vermeld.";
 
@@ -7585,6 +7613,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "Probeer opnieuw te autoriseren";
 
+/* Title of the button on the banner to highlight Blaze feature */
+"Try Blaze now" = "Probeer Blaze nu";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Probeer opnieuw te ontvangen";
 
@@ -7620,6 +7651,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Probeer opnieuw verbinding te maken om toegang te krijgen tot je winkel.";
+
+/* Button title of the product description AI local announcement. */
+"Try it Now" = "Probeer het nu";
 
 /* Title for the features list in the free trial Summary Screen */
 "Try it free for 14 days." = "Probeer het 14 dagen gratis of";
@@ -7662,6 +7696,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Schakel deze optie in als de coupon niet van toepassing is op afgeprijsde artikelen. Artikel-specifieke coupons werken alleen als het artikel niet is afgeprijsd. Winkelwagen-specifieke coupons werken alleen wanneer er geen afgeprijsde artikelen in de winkelwagen staan.";
+
+/* Description on the banner to highlight Blaze feature */
+"Turn your products into ads that run across millions of sites on WordPress.com and Tumblr." = "Tover je producten om in advertenties die op miljoenen sites op WordPress.com en Tumblr vertoond worden.";
 
 /* Title text in the store creation loading screen */
 "Turning on the lights" = "De lichten aandoen";
@@ -8979,6 +9016,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind the user of the expired free trial plan. */
 "🌟 Keep your business going with our plan!" = "🌟 Houd je bedrijf draaiende met ons abonnement!";
+
+/* Title of the local notification to remind the user to purchase a plan. */
+"🌟 Keep your business going!" = "🌟 Blijf aan de slag!";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Bestelling voltooid";

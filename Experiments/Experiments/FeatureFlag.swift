@@ -207,4 +207,8 @@ public enum FeatureFlag: Int {
     /// Shows multiple plans in the IAP Upgrade view
     ///
     case freeTrialInAppPurchasesUpgradeM2
+
+    /// A new flow to add product from an image.
+    ///
+    case addProductFromImage
 }

@@ -36,15 +36,34 @@ final class AddProductCoordinatorTests: XCTestCase {
         // Assert
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
+
+    func test_it_presents_AddProductFromImageHostingController_on_start_when_eligible() throws {
+        // Given
+        let coordinator = makeAddProductCoordinator(
+            addProductFromImageEligibilityChecker: MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true, isEligible: true)
+        )
+
+        // When
+        coordinator.start()
+        waitUntil {
+            coordinator.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        let navigationController = try XCTUnwrap(coordinator.navigationController.presentedViewController as? UINavigationController)
+        assertThat(navigationController.topViewController, isAnInstanceOf: AddProductFromImageHostingController.self)
+    }
 }
 
 private extension AddProductCoordinatorTests {
-    func makeAddProductCoordinator() -> AddProductCoordinator {
+    func makeAddProductCoordinator(addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol =
+                                   MockAddProductFromImageEligibilityChecker()) -> AddProductCoordinator {
         let view = UIView()
         return AddProductCoordinator(siteID: 100,
                                      source: .productsTab,
                                      sourceView: view,
                                      sourceNavigationController: navigationController,
+                                     addProductFromImageEligibilityChecker: addProductFromImageEligibilityChecker,
                                      isFirstProduct: false)
     }
 }

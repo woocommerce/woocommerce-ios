@@ -46,11 +46,15 @@ final class AddProductCoordinator: Coordinator {
     ///
     var onProductCreated: (Product) -> Void = { _ in }
 
+    private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
+    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+
     init(siteID: Int64,
          source: Source,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -60,6 +64,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -68,6 +73,7 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -77,11 +83,8 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
         self.isFirstProduct = isFirstProduct
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     func start() {
@@ -90,6 +93,21 @@ final class AddProductCoordinator: Coordinator {
             ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
         default:
             break
+        }
+
+        if addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
+            // TODO: 10180 - A/B experiment exposure event
+
+            if addProductFromImageEligibilityChecker.isEligible() {
+                let coordinator = AddProductFromImageCoordinator(siteID: siteID,
+                                                                 sourceNavigationController: navigationController,
+                                                                 onProductCreated: { [weak self] product in
+                    self?.onProductCreated(product)
+                })
+                self.addProductFromImageCoordinator = coordinator
+                coordinator.start()
+                return
+            }
         }
 
         if shouldSkipBottomSheet() {

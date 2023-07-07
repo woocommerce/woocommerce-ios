@@ -35,6 +35,7 @@ final class AddProductFromImageViewModel: ObservableObject {
     /// - Parameter source: Source of the image.
     func addImage(from source: MediaPickingSource) {
         Task { @MainActor in
+            imageState = .loading
             guard let image = await onAddImage(source) else {
                 return
             }

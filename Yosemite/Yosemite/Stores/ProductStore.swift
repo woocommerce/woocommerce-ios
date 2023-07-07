@@ -619,16 +619,14 @@ private extension ProductStore {
             "and use them in your sentences without listing them out." +
             "\(scannedTexts)"
         ].joined(separator: "\n")
-        Task {
+        Task { @MainActor in
             do {
                 let jsonString = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDetailsFromScannedTexts)
                 guard let jsonData = jsonString.data(using: .utf8) else {
                     return completion(.failure(DotcomError.resourceDoesNotExist))
                 }
-                let details = try JSONDecoder().decode(ProductDetailsFromScannedTextsResponse.self, from: jsonData)
-                await MainActor.run {
-                    completion(.success(.init(name: details.name, description: details.description, language: details.language)))
-                }
+                let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
+                completion(.success(.init(name: details.name, description: details.description, language: details.language)))
             } catch {
                 completion(.failure(error))
             }

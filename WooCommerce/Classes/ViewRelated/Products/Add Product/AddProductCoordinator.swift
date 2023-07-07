@@ -48,6 +48,7 @@ final class AddProductCoordinator: Coordinator {
     var onProductCreated: (Product) -> Void = { _ in }
 
     private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
+    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
 
     init(siteID: Int64,
          source: Source,
@@ -88,17 +89,6 @@ final class AddProductCoordinator: Coordinator {
     }
 
     func start() {
-        // TODO-JC: eligibility check
-        if ServiceLocator.stores.sessionManager.defaultSite?.isWordPressComStore == true {
-            // TODO-JC: A/B experiment activation event
-            let coordinator = AddProductFromImageCoordinator(siteID: siteID,
-                                                             sourceNavigationController: navigationController,
-                                                             isFirstProduct: isFirstProduct)
-            self.addProductFromImageCoordinator = coordinator
-            coordinator.start()
-            return
-        }
-
         switch source {
         case .productsTab, .productOnboarding:
             ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))

@@ -141,4 +141,8 @@ public enum ProductAction: Action {
                                        description: String,
                                        language: String,
                                        completion: (Result<String, Error>) -> Void)
+
+    /// Generates product details (e.g. name and description) with Jetpack AI given the scanned texts from an image.
+    ///
+    case generateProductDetails(siteID: Int64, scannedTexts: [String], completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
 }

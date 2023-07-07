@@ -754,6 +754,11 @@ public enum WooAnalyticsStat: String {
     case productSharingAIMessageGenerated = "product_sharing_ai_message_generated"
     case productSharingAIMessageGenerationFailed = "product_sharing_ai_message_generation_failed"
 
+    // MARK: AI Language detection
+    //
+    case identifyLanguageSuccess = "ai_identify_language_success"
+    case identifyLanguageFailed = "ai_identify_language_failed"
+
     // MARK: Product AI Feedback
     //
     case productAIFeedback = "product_ai_feedback"

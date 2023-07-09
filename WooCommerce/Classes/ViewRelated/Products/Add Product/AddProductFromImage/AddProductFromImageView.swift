@@ -39,12 +39,10 @@ struct AddProductFromImageView: View {
             Section {
                 HStack {
                     Spacer()
-                    EditableProductImageView(viewModel: viewModel)
+                    AddProductFromImageFormImageView(viewModel: viewModel)
                     Spacer()
                 }
             }
-            .listRowBackground(Color.clear)
-            .padding([.top], 10)
 
             Section {
                 // TODO: 10180 - use `TextEditor` with a placeholder overlay
@@ -60,7 +58,6 @@ struct AddProductFromImageView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.continueButtonTitle) {
-                    // TODO: 10180 - pass the image from media picker
                     completion(.init(name: viewModel.name, description: viewModel.description, image: viewModel.image))
                 }
                 .buttonStyle(LinkButtonStyle())

@@ -46,10 +46,6 @@ struct ProductLiveTextImage: View {
                     .foregroundColor(.init(uiColor: .accent))
                     .fixedSize(horizontal: false, vertical: true)
             }
-        case .failure:
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 40))
-                .foregroundColor(.white)
         }
     }
 }

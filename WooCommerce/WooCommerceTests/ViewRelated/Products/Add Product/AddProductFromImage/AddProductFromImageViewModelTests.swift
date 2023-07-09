@@ -7,7 +7,7 @@ import XCTest
 final class AddProductFromImageViewModelTests: XCTestCase {
     func test_initial_name_is_empty() throws {
         // Given
-        let viewModel = AddProductFromImageViewModel()
+        let viewModel = AddProductFromImageViewModel(onAddImage: { _ in nil })
 
         // Then
         XCTAssertEqual(viewModel.name, "")
@@ -15,7 +15,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_initial_description_is_empty() throws {
         // Given
-        let viewModel = AddProductFromImageViewModel()
+        let viewModel = AddProductFromImageViewModel(onAddImage: { _ in nil })
 
         // Then
         XCTAssertEqual(viewModel.description, "")

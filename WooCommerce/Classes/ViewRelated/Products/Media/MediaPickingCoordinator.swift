@@ -1,8 +1,12 @@
 import UIKit
 
+/// The source of the media to pick from.
 enum MediaPickingSource {
+    /// Device camera.
     case camera
+    /// Device photo library.
     case photoLibrary
+    /// Site's media library.
     case siteMediaLibrary
 }
 
@@ -19,17 +23,20 @@ final class MediaPickingCoordinator {
 
     private let siteID: Int64
     private let allowsMultipleImages: Bool
+    private let analytics: Analytics
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
     private let onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion
     private let onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion
 
     init(siteID: Int64,
          allowsMultipleImages: Bool,
+         analytics: Analytics = ServiceLocator.analytics,
          onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
          onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
          onWPMediaPickerCompletion: @escaping WordPressMediaLibraryImagePickerViewController.Completion) {
         self.siteID = siteID
         self.allowsMultipleImages = allowsMultipleImages
+        self.analytics = analytics
         self.onCameraCaptureCompletion = onCameraCaptureCompletion
         self.onDeviceMediaLibraryPickerCompletion = onDeviceMediaLibraryPickerCompletion
         self.onWPMediaPickerCompletion = onWPMediaPickerCompletion
@@ -58,15 +65,13 @@ final class MediaPickingCoordinator {
     }
 
     func showMediaPicker(source: MediaPickingSource, from origin: UIViewController) {
+        analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": source.analyticsValue])
         switch source {
         case .camera:
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "camera"])
             showCameraCapture(origin: origin)
         case .photoLibrary:
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "device"])
             showDeviceMediaLibraryPicker(origin: origin)
         case .siteMediaLibrary:
-            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "wpmedia"])
             showSiteMediaPicker(origin: origin)
         }
     }
@@ -120,5 +125,18 @@ private extension MediaPickingCoordinator {
                                                                                                 allowsMultipleImages: allowsMultipleImages,
                                                                                                 onCompletion: onWPMediaPickerCompletion)
         origin.present(wordPressMediaPickerViewController, animated: true)
+    }
+}
+
+private extension MediaPickingSource {
+    var analyticsValue: String {
+        switch self {
+            case .camera:
+                return "camera"
+            case .photoLibrary:
+                return "device"
+            case .siteMediaLibrary:
+                return "wpmedia"
+        }
     }
 }

@@ -79,9 +79,15 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {
+        requestImage(asset: asset, targetSize: targetSize, skipsDegradedImage: false, completion: completion)
+    }
+
+    func requestImage(asset: PHAsset, targetSize: CGSize, skipsDegradedImage: Bool, completion: @escaping (UIImage) -> Void) {
         phAssetImageLoader.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: nil) { (image, info) in
-            // TODO-JC: make isDegraded check a parameter
-            guard let image, let isDegraded = info?[PHImageResultIsDegradedKey] as? Bool, isDegraded == false else {
+            guard let image else {
+                return
+            }
+            if let isDegraded = info?[PHImageResultIsDegradedKey] as? Bool, isDegraded && skipsDegradedImage {
                 return
             }
             completion(image)

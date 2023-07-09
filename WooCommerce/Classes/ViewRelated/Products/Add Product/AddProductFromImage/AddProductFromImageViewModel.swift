@@ -6,6 +6,8 @@ import Yosemite
 /// View model for `AddProductFromImageView` to handle user actions from the view and provide data for the view.
 @MainActor
 final class AddProductFromImageViewModel: ObservableObject {
+    typealias ImageState = EditableImageViewState
+
     // MARK: - Product Details
 
     @Published var name: String = ""
@@ -13,44 +15,33 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     // MARK: - Product Image
 
-    enum ImageState {
-        case empty
-        case loading(Progress)
-        case success(MediaPickerImage)
-        case failure(Error)
-    }
-
     @Published private(set) var imageState: ImageState = .empty
     var image: MediaPickerImage? {
-        guard case let .success(image) = imageState else {
-            return nil
-        }
-        return image
+        imageState.image
     }
 
     private let onAddImage: (MediaPickingSource) async -> MediaPickerImage?
-
     private var selectedImageSubscription: AnyCancellable?
 
     init(onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.onAddImage = onAddImage
 
-        selectedImageSubscription = $imageState.compactMap { state -> UIImage? in
-            guard case let .success(image) = state else {
-                return nil
-            }
-            return image.image
-        }
+        selectedImageSubscription = $imageState.compactMap { $0.image?.image }
         .sink { [weak self] image in
             self?.onSelectedImage(image)
         }
     }
 
-    func addImage(from source: MediaPickingSource) async {
-        guard let image = await onAddImage(source) else {
-            return
+    /// Invoked after the user selects a media source to add an image.
+    /// - Parameter source: Source of the image.
+    func addImage(from source: MediaPickingSource) {
+        Task { @MainActor in
+            imageState = .loading
+            guard let image = await onAddImage(source) else {
+                return
+            }
+            imageState = .success(image)
         }
-        imageState = .success(image)
     }
 }
 

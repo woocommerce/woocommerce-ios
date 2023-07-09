@@ -34,8 +34,7 @@ final class AddProductFromImageCoordinator: Coordinator {
     func start() {
         let addProductFromImage = AddProductFromImageHostingController(siteID: siteID,
                                                                        addImage: { [weak self] source in
-            guard let self else { return nil }
-            return await self.showImagePicker(source: source)
+            await self?.showImagePicker(source: source)
         }, completion: { [weak self] data in
             self?.navigationController.dismiss(animated: true) { [weak self] in
                 guard let self else { return }
@@ -104,7 +103,10 @@ private extension AddProductFromImageCoordinator {
 private extension AddProductFromImageCoordinator {
     @MainActor
     func showImagePicker(source: MediaPickingSource) async -> MediaPickerImage? {
-        await withCheckedContinuation { continuation in
+        guard let formNavigationController else {
+            return nil
+        }
+        return await withCheckedContinuation { continuation in
             let mediaPickingCoordinator = MediaPickingCoordinator(siteID: siteID,
                                                                   allowsMultipleImages: false,
                                                                   onCameraCaptureCompletion: { [weak self] asset, error in
@@ -116,7 +118,7 @@ private extension AddProductFromImageCoordinator {
                     continuation.resume(returning: image)
                 }
             }, onDeviceMediaLibraryPickerCompletion: { [weak self] assets in
-                guard let self, let formNavigationController = self.formNavigationController else {
+                guard let self else {
                     return continuation.resume(returning: nil)
                 }
                 Task { @MainActor in
@@ -128,13 +130,12 @@ private extension AddProductFromImageCoordinator {
                     return continuation.resume(returning: nil)
                 }
                 Task { @MainActor in
-                    let image = await self.onWPMediaPickerCompletion(mediaItems: mediaItems)
+                    let image = await self.onWPMediaPickerCompletion(mediaItems: mediaItems, navigationController: formNavigationController)
                     continuation.resume(returning: image)
                 }
             })
             self.mediaPickingCoordinator = mediaPickingCoordinator
-            let topViewController = navigationController.topmostPresentedViewController
-            mediaPickingCoordinator.showMediaPicker(source: source, from: topViewController)
+            mediaPickingCoordinator.showMediaPicker(source: source, from: formNavigationController)
         }
     }
 }
@@ -142,13 +143,14 @@ private extension AddProductFromImageCoordinator {
 // MARK: - Action handling for camera capture
 //
 private extension AddProductFromImageCoordinator {
+    @MainActor
     func onCameraCaptureCompletion(asset: PHAsset?, error: Error?) async -> MediaPickerImage? {
         guard let asset else {
             return nil
         }
         return await withCheckedContinuation { continuation in
             Task { @MainActor in
-                continuation.resume(returning: await self.requestImage(from: asset))
+                continuation.resume(returning: await requestImage(from: asset))
             }
         }
     }
@@ -161,7 +163,7 @@ private extension AddProductFromImageCoordinator {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset], navigationController: UINavigationController) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-            navigationController.topmostPresentedViewController.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
                 guard let self, let asset = assets.first else {
                     return continuation.resume(returning: nil)
                 }
@@ -177,10 +179,10 @@ private extension AddProductFromImageCoordinator {
 //
 private extension AddProductFromImageCoordinator {
     @MainActor
-    func onWPMediaPickerCompletion(mediaItems: [Media]) async -> MediaPickerImage? {
+    func onWPMediaPickerCompletion(mediaItems: [Media], navigationController: UINavigationController) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             let shouldAnimateMediaLibraryDismissal = mediaItems.isEmpty
-            navigationController.topmostPresentedViewController.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
                 guard let self, let media = mediaItems.first else {
                     return continuation.resume(returning: nil)
                 }
@@ -196,9 +198,9 @@ private extension AddProductFromImageCoordinator {
 private extension AddProductFromImageCoordinator {
     func requestImage(from asset: PHAsset) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
-            // PHImageManager.requestImageForAsset can be called more than onoce
+            // PHImageManager.requestImageForAsset can be called more than once.
             var hasReceivedImage = false
-            productImageLoader.requestImage(asset: asset, targetSize: PHImageManagerMaximumSize) { image in
+            productImageLoader.requestImage(asset: asset, targetSize: PHImageManagerMaximumSize, skipsDegradedImage: true) { image in
                 guard hasReceivedImage == false else {
                     return
                 }
@@ -206,20 +208,5 @@ private extension AddProductFromImageCoordinator {
                 hasReceivedImage = true
             }
         }
-    }
-}
-
-struct MediaPickerImage {
-    enum Source {
-        case asset(asset: PHAsset)
-        case media(media: Media)
-    }
-
-    let image: UIImage
-    let source: Source
-
-    init(image: UIImage, source: Source) {
-        self.image = image
-        self.source = source
     }
 }

@@ -31,7 +31,8 @@ struct AddProductFromImageView: View {
          stores: StoresManager = ServiceLocator.stores,
          completion: @escaping (AddProductFromImageData) -> Void) {
         self.completion = completion
-        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(onAddImage: addImage))
+        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID,
+                                                                           onAddImage: addImage))
     }
 
     var body: some View {

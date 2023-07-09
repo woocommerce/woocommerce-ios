@@ -6,6 +6,18 @@ import Yosemite
 /// View model for `AddProductFromImageView` to handle user actions from the view and provide data for the view.
 @MainActor
 final class AddProductFromImageViewModel: ObservableObject {
+    final class ScannedTextViewModel: ObservableObject, Identifiable {
+        let id: String = UUID().uuidString
+        @Published var text: String
+        @Published var isSelected: Bool
+
+        init(text: String,
+             isSelected: Bool) {
+            self.text = text
+            self.isSelected = isSelected
+        }
+    }
+
     typealias ImageState = EditableImageViewState
 
     // MARK: - Product Details
@@ -23,7 +35,24 @@ final class AddProductFromImageViewModel: ObservableObject {
     private let onAddImage: (MediaPickingSource) async -> MediaPickerImage?
     private var selectedImageSubscription: AnyCancellable?
 
-    init(onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
+    // MARK: - Scanned Texts
+
+    @Published var scannedTexts: [ScannedTextViewModel] = []
+    @Published private(set) var isGeneratingDetails: Bool = false
+    @Published private(set) var showsRegenerateButton: Bool = false
+
+    private var selectedScannedTexts: [String] {
+        scannedTexts.filter { $0.isSelected }.map { $0.text }
+    }
+
+    private let siteID: Int64
+    private let stores: StoresManager
+
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
+        self.siteID = siteID
+        self.stores = stores
         self.onAddImage = onAddImage
 
         selectedImageSubscription = $imageState.compactMap { $0.image?.image }
@@ -77,7 +106,12 @@ private extension AddProductFromImageViewModel {
 
     func onScannedTextRequestCompletion(request: VNRequest, error: Error?) {
         let texts = scannedTexts(from: request)
-        // TODO: 10180 - show the list of scanned texts and generate product details
+        scannedTexts = texts.map { .init(text: $0, isSelected: true) }
+        Task { @MainActor in
+            isGeneratingDetails = true
+            await generateAndPopulateProductDetails(from: texts)
+            isGeneratingDetails = false
+        }
     }
 
     func scannedTexts(from request: VNRequest) -> [String] {
@@ -89,5 +123,24 @@ private extension AddProductFromImageViewModel {
             observation.topCandidates(1).first?.string
         }
         return recognizedStrings
+    }
+
+    func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
+        switch await generateProductDetails(from: scannedTexts) {
+            case .success(let details):
+                name = details.name
+                description = details.description
+            case .failure(let error):
+                DDLogError("⛔️ Error generating product details from scanned text \(scannedTexts): \(error)")
+        }
+    }
+
+    func generateProductDetails(from scannedTexts: [String]) async -> Result<ProductDetailsFromScannedTexts, Error> {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(ProductAction.generateProductDetails(siteID: siteID,
+                                                                 scannedTexts: scannedTexts) { result in
+                continuation.resume(returning: result)
+            })
+        }
     }
 }

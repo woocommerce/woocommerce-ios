@@ -1,3 +1,1 @@
-Wusstest du schon, dass wir an einer neuen Funktion zum Verwalten von Gutscheinen arbeiten? Du kannst jetzt Gutscheine beim Erstellen von Bestellungen in der App hinzufügen. Du kannst deine Gutscheine auch im Tab „Menü“ verwalten, wenn du auf die Gutscheinfunktion klickst.
-
-Außerdem haben wir ein paar raffinierte Performance-Änderungen vorgenommen, um die Geschwindigkeit im Bestellabschnitt zu verbessern. Aber das war noch nicht alles. Halte Ausschau nach kommenden weiteren Verbesserungen.
+Diese Version enthält die Option zum Hinzufügen mehrere Gutscheine beim Erstellen einer Bestellung. Wusstest du, dass du Produktbeschreibungen für deine WooCommerce-Produkte erstellen kannst, die für Conversions geeignet und SEO-optimiert sind? Probiere es aus! Shops in den USA, die den Gratis-Test abonniert haben, können ab sofort per In-App-Kauf auf einen kostenpflichtigen Tarif upgraden.

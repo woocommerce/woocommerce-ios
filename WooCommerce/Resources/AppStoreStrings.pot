@@ -57,9 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v14.3-whats-new"
+msgctxt "v14.4-whats-new"
 msgid ""
-"This release includes the option to add multiple coupons when creating an order. Did you know it's possible to generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products? Try it out! US stores subscribed to the free trial can now upgrade to a paid plan using in-app purchase.\n"
+"Hot news—It's possible to automatically generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products and share them using AI. Try it now!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

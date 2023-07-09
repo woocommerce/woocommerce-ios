@@ -1,3 +1,1 @@
-Wist je dat we met een nieuwe functie voor het beheren van kortingsbonnen bezig zijn? Je kan nu kortingsbonnen toevoegen bij het aanmaken van een bestelling in de app. Je kan ook je kortingsbonnen beheren door naar het tabblad Menu te gaan en op de functie Kortingsbonnen te klikken.
-
-Als kers op de taart hebben we wat dingetjes aangepast om de prestaties van het gedeelte Bestellingen te verbeteren. Maar we zijn nog niet klaar. Houd de nieuwe verbeteringen in de gaten!
+Deze release bevat de optie om meerdere kortingsbonnen toe te voegen bij het aanmaken van een bestelling. Wist je dat het ook mogelijk is om automatisch conversievriendelijke en SEO-geoptimaliseerde productbeschrijvingen met AI te genereren voor je WooCommerce-producten en ze te delen? Probeer het eens! Winkels in de VS die zich aangemeld hebben voor het gratis proefabonnement, kunnen nu upgraden naar een betaald abonnement met behulp van aankopen in de app.

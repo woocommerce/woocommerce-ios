@@ -1,3 +1,1 @@
-Tahukah Anda? Kami sedang membuat fitur baru untuk mengelola kupon. Kini Anda dapat menambahkan kupon ketika membuat pesanan dari aplikasi. Anda juga dapat mengelola kupon dengan membuka tab menu dan mengeklik fitur Kupon.
-
-Terakhir, kami juga telah menyempurnakan performa aplikasi sehingga bagian pesanan kini lebih cepat. Namun, kami belum selesai. Nantikan penyempurnaan lainnya di masa mendatang.
+Rilis ini menghadirkan pilihan untuk menambahkan beberapa kupon ketika membuat pesanan. Tahukah Anda bahwa kini Anda bisa membuat deskripsi menarik yang ramah SEO untuk produk di WooCommerce? Cobalah! Toko AS yang berlangganan percobaan gratis kini dapat mengupgrade ke paket berbayar dengan pembelian dalam aplikasi.

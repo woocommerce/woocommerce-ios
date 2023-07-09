@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-01 02:43:15+0000 */
+/* Translation-Revision-Date: 2023-07-03 15:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -421,7 +421,7 @@ which should be translated separately and considered part of this sentence. */
    Product Add Category navigation title */
 "Add Category" = "إضافة فئة";
 
-/* Title text of the button that adds a fee when creating a new coupon */
+/* Title text of the button that adds a coupon when creating a new order */
 "Add Coupon" = "إضافة قسيمة";
 
 /* Title text of the button that adds customer data when creating a new order */
@@ -550,6 +550,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "إضافة بطاقة ائتمان";
 
+/* Message of the product description AI local announcement. */
+"Add descriptions in a snap with AI. Try our feature today!" = "أضف أوصاف في لمح البصر باستخدام الذكاء الاصطناعي. جرّب الميزة التي نطرحها الآن!";
+
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "إضافة كل خيار والضغط على عودة";
 
@@ -565,6 +568,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the option to generate just one variation */
 "Add new variation" = "إضافة تباين جديد";
+
+/* Title of the product description AI local announcement. */
+"Add product description with AI" = "إضافة وصف المنتج باستخدام الذكاء الاصطناعي";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "إضافة رابط المنتج";
@@ -781,7 +787,7 @@ which should be translated separately and considered part of this sentence. */
 "An optional note to send the customer after purchase" = "ملحوظة اختيارية يتم إرسالها إلى العميل بعد الشراء";
 
 /* Error message when an order already exists in the backend for a given receipt */
-"An order aready exists for this receipt" = "هناك طلب موجود بالفعل لهذا الإيصال";
+"An order already exists for this receipt" = "هناك طلب موجود بالفعل لهذا الإيصال";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "حدث خطأ غير متوقع.";
@@ -1256,7 +1262,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
-   Navigation bar button on the domain settings screen to leave the flow.
    Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
@@ -2179,6 +2184,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "الأسعار المُخفَّضة";
 
+/* Message on the local notification to remind the user to purchase a plan. */
+"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "اكتشف ميزات متقدمة وتوصيات مخصصة لمتجرك! اضغط على اختيار خطة تناسبك على نحو ملائم.";
+
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "اكتشف مزوّدين آخرين للدفع، واختر مزوّد الدفع.";
 
@@ -2253,6 +2261,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action title to select products to add to a grouped product from search results
    Button title to close the Scan to Pay screen
+   Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
@@ -2271,6 +2280,7 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
+   Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
@@ -3398,6 +3408,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "إذا استمررت في استخدام Apple أو غوغل وليس لديك حساب على ووردبريس.كوم بالفعل، فستنشئ حسابًا جديدًا، وتوافق على شروط الخدمة التي نقرها.";
 
+/* Accessibility label for an indeterminate loading indicator */
+"In progress" = "قيد التقدم";
+
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -3602,6 +3615,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Ireland" = "أيرلندا";
+
+/* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
+"Is the generated description helpful?" = "هل الوصف المنشأ مفيد؟";
+
+/* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
+"Is the generated message helpful?" = "هل الرسالة المنشأة مفيدة؟";
 
 /* Country option for a site address. */
 "Isle of Man" = "جزيرة مان";
@@ -3904,6 +3923,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the loading banner in Order Detail when loaded for the first time */
 "Loading content" = "تحميل المحتوى";
 
+/* Accessibility label for the initial loading state of the Upgrades view */
+"Loading plan details" = "تحميل تفاصيل الخطة";
+
 /* Accessibility label for placeholder rows while product variations are loading */
 "Loading product variations" = "تحميل أنواع المنتج";
 
@@ -4134,7 +4156,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The maximum limit of spending allowed for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Maximum spend of %1$@" = "الحد الأقصى للإنفاق لـ %1$@";
 
-/* Dismiss button title for modally presented Just in Time Messages */
+/* Dismiss button title for modally presented Just in Time Messages
+   Dismiss button title for the local announcement modal. */
 "Maybe Later" = "ربما لاحقًا";
 
 /* Country option for a site address. */
@@ -4544,7 +4567,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Info text for the generate first variation screen */
 "Now that you’ve added attributes, you can create your first variation!" = "لقد قمت الآن بإضافة السمات، يمكنك إنشاء مجموعتك الأولى!";
 
-/* Alert dismissal title
+/* Action button to dismiss the coupon error notice
+   Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
@@ -5385,12 +5409,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "رابط المنتج";
 
-/* Error message when the scanner cannot find a matching product */
-"Product not found. Failed to add Product to Order." = "المنتج غير موجود. فشلت إضافة المنتج إلى الطلب.";
-
-/* Error message when the scanner found a product but isn't purchasable. */
-"Product not purchasable. Failed to add Product to Order." = "المنتج غير قابل للشراء.  فشلت إضافة المنتج إلى الطلب.";
-
 /* Title of the alert when a user is publishing a product */
 "Product published" = "تم نشر منتج";
 
@@ -5399,6 +5417,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "نوع المنتج";
+
+/* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
+"Product with SKU \"%@\" is not purchasable." = "لا يمكن شراء منتج يحمل وحدة SKU \"%@\".";
+
+/* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
+"Product with SKU \"%@\" not found." = "لم يتم العثور على منتج يحمل وحدة SKU \"%@\".";
 
 /* Description for Top Performers left column header
    Display label for the composite product's component option type
@@ -5426,7 +5450,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "المنتجات التي يتم الترويج لها بدلاً من المنتج المعروض حاليًا (على سبيل المثال: المنتجات الأكثر ربحية)";
 
-/* Description of the hub menu Blaze button */
+/* Description of the hub menu Blaze button
+   Title on the banner to highlight Blaze feature */
 "Promote products with Blaze" = "ترويج المنتجات باستخدام Blaze";
 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
@@ -7384,6 +7409,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message displayed when loading a specific product fails because product was deleted */
 "This product has been deleted and is no longer visible" = "تم حذف هذا المنتج ولم يعد مرئيًا بعد";
 
+/* Error message when an unsupported receipt type is sent - [%1$@] will be replaced with details */
+"This receipt's transaction type is not expected from the app [%1$@]" = "هذا النوع من المعاملات الخاصة بالإيصال غير متوقعة من التطبيق [%1$@]";
+
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "يحدد هذا الإعداد المنتجات التي ستعرضها الصفحات.";
 
@@ -7585,6 +7613,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "محاولة التخويل مجددًا";
 
+/* Title of the button on the banner to highlight Blaze feature */
+"Try Blaze now" = "تجربة Blaze الآن";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "محاولة الجمع مجددًا";
 
@@ -7620,6 +7651,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "حاول الاتصال مجددًا للوصول إلى متجرك.";
+
+/* Button title of the product description AI local announcement. */
+"Try it Now" = "تجربته الآن";
 
 /* Title for the features list in the free trial Summary Screen */
 "Try it free for 14 days." = "جرِّبه مجانًا لمدة 14 يومًا.";
@@ -7662,6 +7696,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "قم بتشغيل هذا الخيار إذا كان ينبغي عدم تطبيق القسيمة على العناصر المعروضة للبيع بسعر مُخفَّض. لن تعمل القسائم لكل عنصر إلا في حالة أن العنصر ليس معروضًا للبيع بسعر مُخفَّض. لن تعمل القسائم لكل عربة تسوق إلا في حالة وجود عناصر في عربة التسوق ليست معروضة للبيع بسعر مُخفَّض.";
+
+/* Description on the banner to highlight Blaze feature */
+"Turn your products into ads that run across millions of sites on WordPress.com and Tumblr." = "حوّل منتجاتك إلى إعلانات تعمل عبر ملايين المواقع على ووردبريس.كوم وTumblr.";
 
 /* Title text in the store creation loading screen */
 "Turning on the lights" = "تشغيل المصابيح";
@@ -8979,6 +9016,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind the user of the expired free trial plan. */
 "🌟 Keep your business going with our plan!" = "🌟 واصل أعمالك مع خطتنا!";
+
+/* Title of the local notification to remind the user to purchase a plan. */
+"🌟 Keep your business going!" = "🌟 واصل القيام بأعمالك!";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 تم اكتمال الطلب";

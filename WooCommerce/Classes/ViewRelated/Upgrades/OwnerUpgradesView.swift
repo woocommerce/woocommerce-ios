@@ -100,7 +100,7 @@ private struct WooPlanCardView: View {
             VStack(alignment: .leading, spacing: Layout.spacing) {
                 HStack {
                     Text(upgradePlan.wooPlan.shortName)
-                        .font(.title)
+                        .font(.title2)
                         .bold()
                         .accessibilityAddTraits(.isHeader)
 
@@ -118,7 +118,8 @@ private struct WooPlanCardView: View {
 
             VStack(alignment: .leading, spacing: Layout.textSpacing) {
                 Text(upgradePlan.wpComPlan.displayPrice)
-                    .font(.largeTitle)
+                    .font(.title)
+                    .bold()
                     .accessibilityAddTraits(.isHeader)
                 Text(upgradePlan.wooPlan.planFrequency.localizedString)
                     .font(.footnote)

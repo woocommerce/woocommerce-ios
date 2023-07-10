@@ -2,11 +2,11 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
-class FeeLineDetailsViewModel: ObservableObject {
+class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
-    /// Closure to be invoked when the fee line is updated.
+    /// Closure to be invoked when the line is updated.
     ///
-    var didSelectSave: ((OrderFeeLine?) -> Void)
+    var didSelectSave: ((String?) -> Void)
 
     /// Helper to format price field input.
     ///
@@ -30,15 +30,15 @@ class FeeLineDetailsViewModel: ObservableObject {
         }
     }
 
-    /// Decimal value of currently entered fee. For percentage type it is calculated final amount.
+    /// Decimal value of currently entered fee or discount. For percentage type it is calculated final amount.
     ///
     private var finalAmountDecimal: Decimal {
-        let inputString = feeType == .fixed ? amount : percentage
+        let inputString = feeOrDiscountType == .fixed ? amount : percentage
         guard let decimalInput = currencyFormatter.convertToDecimal(inputString) else {
             return .zero
         }
 
-        switch feeType {
+        switch feeOrDiscountType {
         case .fixed:
             return decimalInput as Decimal
         case .percentage:
@@ -46,28 +46,28 @@ class FeeLineDetailsViewModel: ObservableObject {
         }
     }
 
-    /// Formatted string value of currently entered fee. For percentage type it is calculated final amount.
+    /// Formatted string value of currently entered fee or discount. For percentage type it is calculated final amount.
     ///
     var finalAmountString: String? {
         currencyFormatter.formatAmount(finalAmountDecimal)
     }
 
-    /// The base amount (items + shipping) to apply percentage fee on.
+    /// The base amount to apply percentage fee or discount on.
     ///
     private let baseAmountForPercentage: Decimal
 
-    /// The initial fee amount.
+    /// The initial fee or discount amount.
     ///
     private let initialAmount: Decimal
 
-    /// Returns true when existing fee line is edited.
+    /// Returns true when existing line is edited.
     ///
-    let isExistingFeeLine: Bool
+    let isExistingLine: Bool
 
     /// Returns true when base amount for percentage > 0.
     ///
     var isPercentageOptionAvailable: Bool {
-        !isExistingFeeLine && baseAmountForPercentage > 0
+        !isExistingLine && baseAmountForPercentage > 0
     }
 
     /// Returns true when there are no valid pending changes.
@@ -102,19 +102,19 @@ class FeeLineDetailsViewModel: ObservableObject {
     ///
     let amountPlaceholder: String
 
-    enum FeeType {
+    enum FeeOrDiscountType {
         case fixed
         case percentage
     }
 
-    @Published var feeType: FeeType = .fixed
+    @Published var feeOrDiscountType: FeeOrDiscountType = .fixed
 
-    init(isExistingFeeLine: Bool,
+    init(isExistingLine: Bool,
          baseAmountForPercentage: Decimal,
-         feesTotal: String,
+         total: String,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         didSelectSave: @escaping ((OrderFeeLine?) -> Void)) {
+         didSelectSave: @escaping ((String?) -> Void)) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: true)
         self.percentSymbol = NumberFormatter().percentSymbol
         self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
@@ -122,10 +122,10 @@ class FeeLineDetailsViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.amountPlaceholder = priceFieldFormatter.formatAmount("0")
 
-        self.isExistingFeeLine = isExistingFeeLine
+        self.isExistingLine = isExistingLine
         self.baseAmountForPercentage = baseAmountForPercentage
 
-        if let initialAmount = currencyFormatter.convertToDecimal(feesTotal) {
+        if let initialAmount = currencyFormatter.convertToDecimal(total) {
             self.initialAmount = initialAmount as Decimal
         } else {
             self.initialAmount = .zero
@@ -144,12 +144,12 @@ class FeeLineDetailsViewModel: ObservableObject {
             return
         }
 
-        let feeLine = OrderFactory.newOrderFee(total: priceFieldFormatter.formatAmount(finalAmountString))
-        didSelectSave(feeLine)
+        //let feeLine = OrderFactory.newOrderFee(total: priceFieldFormatter.formatAmount(finalAmountString))
+        didSelectSave(priceFieldFormatter.formatAmount(finalAmountString))
     }
 }
 
-private extension FeeLineDetailsViewModel {
+private extension FeeOrDiscountLineDetailsViewModel {
 
     /// Formats a received value by sanitizing the input and trimming content to two decimal places.
     ///

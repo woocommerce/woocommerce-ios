@@ -37,9 +37,9 @@ struct ProductInOrder: View {
                     }
                     .background(Color(.listForeground(modal: false)))
                     .sheet(isPresented: $shouldShowDiscountLineDetails) {
-                        FeeLineDetails(viewModel: FeeLineDetailsViewModel(isExistingFeeLine: false,
+                        FeeLineDetails(viewModel: FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                                           baseAmountForPercentage: 50,
-                                                                          feesTotal: "0.00",
+                                                                          total: "0.00",
                                                                           didSelectSave: { _ in }))
                     }
                     Spacer(minLength: Layout.sectionSpacing)

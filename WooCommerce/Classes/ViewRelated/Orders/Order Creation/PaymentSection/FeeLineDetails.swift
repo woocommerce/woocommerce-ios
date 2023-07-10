@@ -6,7 +6,7 @@ struct FeeLineDetails: View {
 
     /// View model to drive the view content
     ///
-    @ObservedObject private var viewModel: FeeLineDetailsViewModel
+    @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel
 
     /// Defines if the fixed amount input text field should be focused. Defaults to `true`
     ///
@@ -20,7 +20,7 @@ struct FeeLineDetails: View {
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
-    init(viewModel: FeeLineDetailsViewModel) {
+    init(viewModel: FeeOrDiscountLineDetailsViewModel) {
         self.viewModel = viewModel
     }
 
@@ -30,11 +30,11 @@ struct FeeLineDetails: View {
                 VStack(spacing: .zero) {
                     Section {
                         if viewModel.isPercentageOptionAvailable {
-                            Picker("", selection: $viewModel.feeType) {
-                                Text(viewModel.percentSymbol).tag(FeeLineDetailsViewModel.FeeType.percentage)
-                                Text(viewModel.currencySymbol).tag(FeeLineDetailsViewModel.FeeType.fixed)
+                            Picker("", selection: $viewModel.feeOrDiscountType) {
+                                Text(viewModel.percentSymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
+                                Text(viewModel.currencySymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
                             }
-                            .onChange(of: viewModel.feeType, perform: { feeType in
+                            .onChange(of: viewModel.feeOrDiscountType, perform: { feeType in
                                 switch feeType {
                                 case .fixed:
                                     focusFixedAmountInput = true
@@ -47,7 +47,7 @@ struct FeeLineDetails: View {
                         }
 
                         Group {
-                            switch viewModel.feeType {
+                            switch viewModel.feeOrDiscountType {
                             case .fixed:
                                 inputFixedField
                             case .percentage:
@@ -67,7 +67,7 @@ struct FeeLineDetails: View {
 
                     Spacer(minLength: Layout.sectionSpacing)
 
-                    if viewModel.isExistingFeeLine {
+                    if viewModel.isExistingLine {
                         Section {
                             Button(Localization.remove) {
                                 viewModel.didSelectSave(nil)
@@ -85,7 +85,7 @@ struct FeeLineDetails: View {
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-            .navigationTitle(viewModel.isExistingFeeLine ? Localization.fee : Localization.addFee)
+            .navigationTitle(viewModel.isExistingLine ? Localization.fee : Localization.addFee)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -181,9 +181,9 @@ private extension FeeLineDetails {
 
 struct FeeLineDetails_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: true,
+        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 200,
-                                                feesTotal: "10",
+                                                total: "10",
                                                 didSelectSave: { _ in })
         FeeLineDetails(viewModel: viewModel)
     }

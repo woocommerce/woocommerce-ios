@@ -247,15 +247,17 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Saves a fee.
     ///
-    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
-    func saveFeeLine(_ feeLine: OrderFeeLine?) {
-        orderSynchronizer.setFee.send(feeLine)
-
-        if feeLine != nil {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
-        } else {
+    /// - Parameter formattedFeeLine: Optional shipping line object to save. `nil` will remove existing shipping line.
+    /// 
+    func saveFeeLine(_ formattedFeeLine: String?) {
+        guard let formattedFeeLine = formattedFeeLine else {
+            orderSynchronizer.setFee.send(nil)
             analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
+            return
         }
+
+        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
+        orderSynchronizer.setFee.send(feeLine)
     }
 
     /// Saves a coupon line after an edition on it.
@@ -683,7 +685,7 @@ extension EditableOrderViewModel {
         let showNonEditableIndicators: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
-        let feeLineViewModel: FeeLineDetailsViewModel
+        let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
         let addCouponLineViewModel: CouponLineDetailsViewModel
 
         init(siteID: Int64 = 0,
@@ -706,7 +708,7 @@ extension EditableOrderViewModel {
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
-             saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
+             saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
@@ -731,9 +733,9 @@ extension EditableOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
-            self.feeLineViewModel = FeeLineDetailsViewModel(isExistingFeeLine: shouldShowFees,
+            self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
                                                             baseAmountForPercentage: feesBaseAmountForPercentage,
-                                                            feesTotal: feeLineTotal,
+                                                            total: feeLineTotal,
                                                             didSelectSave: saveFeeLineClosure)
             self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                                      siteID: siteID,

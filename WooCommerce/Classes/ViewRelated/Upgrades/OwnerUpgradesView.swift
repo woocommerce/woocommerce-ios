@@ -25,7 +25,7 @@ struct OwnerUpgradesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("How frequently would you like to pay?", selection: $paymentFrequency) {
+            Picker(selection: $paymentFrequency, label: EmptyView()) {
                 ForEach(paymentFrequencies) {
                     Text($0.paymentFrequencyLocalizedString)
                 }

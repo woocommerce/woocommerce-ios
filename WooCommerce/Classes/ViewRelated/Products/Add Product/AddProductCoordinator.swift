@@ -164,7 +164,8 @@ private extension AddProductCoordinator {
             ServiceLocator.analytics.track(.addProductTypeSelected,
                                            withProperties: [
                                             "product_type": selectedBottomSheetProductType.productType.rawValue,
-                                            "is_virtual": selectedBottomSheetProductType.isVirtual])
+                                            "is_virtual": selectedBottomSheetProductType.isVirtual
+                                           ])
             self.navigationController.dismiss(animated: true) {
                 switch creationType {
                 case .manual:

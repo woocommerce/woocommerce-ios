@@ -100,7 +100,8 @@ private struct WooPlanCardView: View {
             VStack(alignment: .leading, spacing: Layout.spacing) {
                 HStack {
                     Text(upgradePlan.wooPlan.shortName)
-                        .font(.largeTitle)
+                        .font(.title)
+                        .bold()
                         .accessibilityAddTraits(.isHeader)
 
                     Spacer()
@@ -204,11 +205,11 @@ private extension WooPlan.PlanFrequency {
 
     enum Localization {
         static let payMonthly = NSLocalizedString(
-            "Pay Monthly",
+            "Monthly",
             comment: "Title of the selector option for paying monthly on the Upgrade view, when choosing a plan")
 
         static let payAnnually = NSLocalizedString(
-            "Pay Annually (Save 35%)",
+            "Annually (Save 35%)",
             comment: "Title of the selector option for paying annually on the Upgrade view, when choosing a plan")
     }
 }

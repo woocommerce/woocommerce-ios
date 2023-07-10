@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// View to add/edit a single fee line in an order, with the option to remove it.
+/// View to add/edit a single fee or discount line in an order, with the option to remove it.
 ///
-struct FeeLineDetails: View {
+struct FeeOrDiscountLineDetails: View {
 
     /// View model to drive the view content
     ///
@@ -34,8 +34,8 @@ struct FeeLineDetails: View {
                                 Text(viewModel.percentSymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
                                 Text(viewModel.currencySymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
                             }
-                            .onChange(of: viewModel.feeOrDiscountType, perform: { feeType in
-                                switch feeType {
+                            .onChange(of: viewModel.feeOrDiscountType, perform: { type in
+                                switch type {
                                 case .fixed:
                                     focusFixedAmountInput = true
                                 case .percentage:
@@ -85,7 +85,7 @@ struct FeeLineDetails: View {
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-            .navigationTitle(viewModel.isExistingLine ? Localization.fee : Localization.addFee)
+            .navigationTitle(viewModel.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -151,7 +151,7 @@ struct FeeLineDetails: View {
 }
 
 // MARK: Constants
-private extension FeeLineDetails {
+private extension FeeOrDiscountLineDetails {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let dividerPadding: CGFloat = 16.0
@@ -160,9 +160,6 @@ private extension FeeLineDetails {
     }
 
     enum Localization {
-        static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
-        static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
-
         static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Fee Details screen during order creation"
                                                    + "Parameters: %1$@ - currency symbol")
 
@@ -179,12 +176,13 @@ private extension FeeLineDetails {
     }
 }
 
-struct FeeLineDetails_Previews: PreviewProvider {
+struct FeeOrDiscountLineDetails_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
-                                                baseAmountForPercentage: 200,
-                                                total: "10",
-                                                didSelectSave: { _ in })
-        FeeLineDetails(viewModel: viewModel)
+                                                          baseAmountForPercentage: 200,
+                                                          total: "10",
+                                                          lineType: .fee,
+                                                          didSelectSave: { _ in })
+        FeeOrDiscountLineDetails(viewModel: viewModel)
     }
 }

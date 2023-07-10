@@ -80,6 +80,19 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         return finalAmountDecimal == initialAmount
     }
 
+    var navigationTitle: String {
+        switch (lineType, isExistingLine) {
+        case (.discount, false):
+            return Localization.addDiscount
+        case (.discount, true):
+            return Localization.discount
+        case (.fee, false):
+            return Localization.addFee
+        case (.fee, true):
+            return Localization.fee
+        }
+    }
+
     /// Localized percent symbol.
     ///
     let percentSymbol: String
@@ -102,6 +115,13 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     ///
     let amountPlaceholder: String
 
+    enum LineType {
+        case fee
+        case discount
+    }
+
+    private let lineType: LineType
+
     enum FeeOrDiscountType {
         case fixed
         case percentage
@@ -112,6 +132,7 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     init(isExistingLine: Bool,
          baseAmountForPercentage: Decimal,
          total: String,
+         lineType: LineType,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((String?) -> Void)) {
@@ -137,6 +158,7 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
 
         self.didSelectSave = didSelectSave
+        self.lineType = lineType
     }
 
     func saveData() {
@@ -144,7 +166,6 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
             return
         }
 
-        //let feeLine = OrderFactory.newOrderFee(total: priceFieldFormatter.formatAmount(finalAmountString))
         didSelectSave(priceFieldFormatter.formatAmount(finalAmountString))
     }
 }
@@ -177,5 +198,14 @@ private extension FeeOrDiscountLineDetailsViewModel {
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
+    }
+}
+
+private extension FeeOrDiscountLineDetailsViewModel {
+    enum Localization {
+        static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
+        static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
+        static let addDiscount = NSLocalizedString("Add Discount", comment: "Title for the Discount screen during order creation")
+        static let discount = NSLocalizedString("Discount", comment: "Title for the Discount Details screen during order creation")
     }
 }

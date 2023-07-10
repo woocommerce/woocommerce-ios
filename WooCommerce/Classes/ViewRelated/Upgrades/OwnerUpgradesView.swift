@@ -85,6 +85,14 @@ private struct WooPlanCardView: View {
         selectedPlan?.id == upgradePlan.id
     }
 
+    private var isPopular: Bool {
+        let popularPlans =  [
+            AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
+            AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue
+        ]
+
+        return popularPlans.contains(where: {$0 == upgradePlan.id})
+    }
     @State private var isExpanded = false
 
     var body: some View {
@@ -97,6 +105,7 @@ private struct WooPlanCardView: View {
 
                     Spacer()
 
+                    BadgeView(text: Localization.isPopularBadgeText.uppercased()).renderedIf(isPopular)
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                         .foregroundStyle(isSelected ? Color.withColorStudio(name: .wooCommercePurple, shade: .shade50) : Color(.systemGray4))
                         .font(.system(size: Layout.checkImageSize))
@@ -155,6 +164,10 @@ private extension WooPlanCardView {
             comment: "Title for the button to expand plan details on the Upgrade plan screen. " +
             "Reads as 'View Essential features'. %1$@ must be included in the string and will be replaced with " +
             "the plan name.")
+
+        static let isPopularBadgeText = NSLocalizedString(
+            "Popular",
+            comment: "The text of the badge that indicates the most popular choice when purchasing a Plan")
     }
 }
 

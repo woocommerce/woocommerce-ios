@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-public struct WooPlan: Decodable {
+public struct LegacyWooPlan: Decodable {
     public let id: String
     public let name: String
     public let shortName: String
@@ -29,8 +29,8 @@ public struct WooPlan: Decodable {
         self.planFeatureGroups = planFeatureGroups
     }
 
-    public static func loadHardcodedPlan() -> WooPlan {
-        WooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
+    public static func loadHardcodedPlan() -> LegacyWooPlan {
+        LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
                 name: Localization.essentialPlanName(frequency: .month),
                 shortName: Localization.essentialPlanShortName,
                 planFrequency: .month,
@@ -40,8 +40,8 @@ public struct WooPlan: Decodable {
                 planFeatureGroups: hardcodedFeatureGroups())
     }
 
-    public static func loadM2HardcodedPlans() -> [WooPlan] {
-        [WooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
+    public static func loadM2HardcodedPlans() -> [LegacyWooPlan] {
+        [LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
                  name: Localization.essentialPlanName(frequency: .month),
                 shortName: Localization.essentialPlanShortName,
                 planFrequency: .month,
@@ -49,7 +49,7 @@ public struct WooPlan: Decodable {
                 headerImageFileName: "express-essential-header",
                 headerImageCardColor: (try? Color(rgbString: "rgba(238, 226, 211, 1)")) ?? .white,
                 planFeatureGroups: hardcodedFeatureGroups()),
-        WooPlan(id: AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue,
+        LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue,
                 name: Localization.essentialPlanName(frequency: .year),
                 shortName: Localization.essentialPlanShortName,
                 planFrequency: .year,
@@ -57,7 +57,7 @@ public struct WooPlan: Decodable {
                 headerImageFileName: "express-essential-header",
                 headerImageCardColor: (try? Color(rgbString: "rgba(238, 226, 211, 1)")) ?? .white,
                 planFeatureGroups: hardcodedFeatureGroups()),
-        WooPlan(id: AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
+        LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
                 name: Localization.performancePlanName(frequency: .month),
                 shortName: Localization.performancePlanShortName,
                 planFrequency: .month,
@@ -65,7 +65,7 @@ public struct WooPlan: Decodable {
                 headerImageFileName: "express-essential-header",
                 headerImageCardColor: (try? Color(rgbString: "rgba(238, 226, 211, 1)")) ?? .white,
                 planFeatureGroups: []),
-        WooPlan(id: AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue,
+        LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue,
                 name: Localization.performancePlanName(frequency: .year),
                 shortName: Localization.performancePlanShortName,
                 planFrequency: .year,
@@ -143,7 +143,7 @@ public enum AvailableInAppPurchasesWPComPlans: String {
     case performanceYearly = "debug.woocommerce.express.performance.yearly"
 }
 
-private extension WooPlan {
+private extension LegacyWooPlan {
     static func hardcodedFeatureGroups() -> [WooPlanFeatureGroup] {
         [
             WooPlanFeatureGroup(

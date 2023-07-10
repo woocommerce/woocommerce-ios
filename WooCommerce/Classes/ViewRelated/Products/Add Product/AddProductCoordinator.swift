@@ -161,7 +161,10 @@ private extension AddProductCoordinator {
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
-            ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
+            ServiceLocator.analytics.track(.addProductTypeSelected,
+                                           withProperties: [
+                                            "product_type": selectedBottomSheetProductType.productType.rawValue,
+                                            "is_virtual": selectedBottomSheetProductType.isVirtual])
             self.navigationController.dismiss(animated: true) {
                 switch creationType {
                 case .manual:

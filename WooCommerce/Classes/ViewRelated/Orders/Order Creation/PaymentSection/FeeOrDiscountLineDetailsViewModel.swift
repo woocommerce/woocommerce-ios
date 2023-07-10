@@ -2,6 +2,77 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
+protocol FeeOrDiscountLineDetailsStringsProvider {
+    var navigationTitle: String { get }
+    var removeButtonTitle: String { get }
+    var doneButtonAccessibilityIdentifier: String { get }
+    var fixedAmountFieldAccessibilityIdentifier: String { get }
+}
+
+private struct StringsProviderFactory {
+    static func stringsProvider(from type: FeeOrDiscountLineDetailsViewModel.LineType, isExistingLine: Bool) -> FeeOrDiscountLineDetailsStringsProvider {
+        switch type {
+        case .discount:
+            return DiscountStringsProvider(isExistingLine: isExistingLine)
+        case .fee:
+            return FeeStringsProvider(isExistingLine: isExistingLine)
+        }
+    }
+}
+
+private struct DiscountStringsProvider: FeeOrDiscountLineDetailsStringsProvider {
+    let isExistingLine: Bool
+
+    var navigationTitle: String {
+        isExistingLine ? Localization.discount : Localization.addDiscount
+    }
+
+    var removeButtonTitle: String {
+        Localization.remove
+    }
+
+    var doneButtonAccessibilityIdentifier: String {
+        "add-discount-done-button"
+    }
+
+    var fixedAmountFieldAccessibilityIdentifier: String {
+        "add-discount-fixed-amount-field"
+    }
+
+    enum Localization {
+        static let addDiscount = NSLocalizedString("Add Discount", comment: "Title for the Discount screen during order creation")
+        static let discount = NSLocalizedString("Discount", comment: "Title for the Discount Details screen during order creation")
+        static let remove = NSLocalizedString("Remove Discount", comment: "Title for the Remove button in Details screen during order creation")
+    }
+}
+
+private struct FeeStringsProvider: FeeOrDiscountLineDetailsStringsProvider {
+    let isExistingLine: Bool
+
+    var navigationTitle: String {
+        isExistingLine ? Localization.fee : Localization.addFee
+    }
+
+    var removeButtonTitle: String {
+        Localization.remove
+    }
+
+    var doneButtonAccessibilityIdentifier: String {
+        "add-fee-done-button"
+    }
+
+    var fixedAmountFieldAccessibilityIdentifier: String {
+        "add-fee-fixed-amount-field"
+    }
+
+    enum Localization {
+        static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
+        static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
+        static let remove = NSLocalizedString("Remove Fee from Order",
+                                              comment: "Text for the button to remove a fee from the order during order creation")
+    }
+}
+
 class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the line is updated.
@@ -80,18 +151,7 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         return finalAmountDecimal == initialAmount
     }
 
-    var navigationTitle: String {
-        switch (lineType, isExistingLine) {
-        case (.discount, false):
-            return Localization.addDiscount
-        case (.discount, true):
-            return Localization.discount
-        case (.fee, false):
-            return Localization.addFee
-        case (.fee, true):
-            return Localization.fee
-        }
-    }
+    let stringsProvider: FeeOrDiscountLineDetailsStringsProvider
 
     /// Localized percent symbol.
     ///
@@ -119,8 +179,6 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         case fee
         case discount
     }
-
-    private let lineType: LineType
 
     enum FeeOrDiscountType {
         case fixed
@@ -158,7 +216,7 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
 
         self.didSelectSave = didSelectSave
-        self.lineType = lineType
+        self.stringsProvider = StringsProviderFactory.stringsProvider(from: lineType, isExistingLine: isExistingLine)
     }
 
     func saveData() {
@@ -205,7 +263,5 @@ private extension FeeOrDiscountLineDetailsViewModel {
     enum Localization {
         static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
         static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
-        static let addDiscount = NSLocalizedString("Add Discount", comment: "Title for the Discount screen during order creation")
-        static let discount = NSLocalizedString("Discount", comment: "Title for the Discount Details screen during order creation")
     }
 }

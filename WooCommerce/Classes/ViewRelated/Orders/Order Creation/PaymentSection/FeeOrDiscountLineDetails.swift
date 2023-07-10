@@ -69,7 +69,7 @@ struct FeeOrDiscountLineDetails: View {
 
                     if viewModel.isExistingLine {
                         Section {
-                            Button(Localization.remove) {
+                            Button(viewModel.stringsProvider.removeButtonTitle) {
                                 viewModel.didSelectSave(nil)
                                 presentation.wrappedValue.dismiss()
                             }
@@ -85,7 +85,7 @@ struct FeeOrDiscountLineDetails: View {
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-            .navigationTitle(viewModel.navigationTitle)
+            .navigationTitle(viewModel.stringsProvider.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -99,7 +99,7 @@ struct FeeOrDiscountLineDetails: View {
                         presentation.wrappedValue.dismiss()
                     }
                     .disabled(viewModel.shouldDisableDoneButton)
-                    .accessibilityIdentifier("add-fee-done-button")
+                    .accessibilityIdentifier(viewModel.stringsProvider.doneButtonAccessibilityIdentifier)
                 }
             }
         }
@@ -121,7 +121,7 @@ struct FeeOrDiscountLineDetails: View {
                     .onTapGesture {
                         focusFixedAmountInput = true
                     }
-                    .accessibilityIdentifier("add-fee-fixed-amount-field")
+                    .accessibilityIdentifier(viewModel.stringsProvider.fixedAmountFieldAccessibilityIdentifier)
             }
         }
         .frame(minHeight: Layout.rowHeight)
@@ -160,19 +160,17 @@ private extension FeeOrDiscountLineDetails {
     }
 
     enum Localization {
-        static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Fee Details screen during order creation"
-                                                   + "Parameters: %1$@ - currency symbol")
+        static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Fee/Discounts Details screen"
+                                                   + "during order creation Parameters: %1$@ - currency symbol")
 
         static let percentageField = NSLocalizedString("Percentage (%1$@)",
-                                                       comment: "Title for the amount field on the Fee Details screen during order creation"
+                                                       comment: "Title for the amount field on the Fee/Discounts Details screen during order creation"
                                                        + "Parameters: %1$@ - percent sign")
         static let calculatedAmount = NSLocalizedString("Calculated amount",
                                                         comment: "Title for the helper field describing calculated amount for given percentage")
 
-        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Fee Details screen")
-        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Fee Details screen")
-        static let remove = NSLocalizedString("Remove Fee from Order",
-                                              comment: "Text for the button to remove a fee from the order during order creation")
+        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Fee/Discounts Details screen")
+        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Fee/Discounts Details screen")
     }
 }
 

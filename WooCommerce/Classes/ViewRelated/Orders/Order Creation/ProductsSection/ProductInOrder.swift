@@ -11,6 +11,10 @@ struct ProductInOrder: View {
     ///
     let viewModel: ProductInOrderViewModel
 
+    /// Indicates if the discount line details screen should be shown or not.
+    ///
+    @State private var shouldShowDiscountLineDetails: Bool = false
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -21,7 +25,9 @@ struct ProductInOrder: View {
                             .padding()
                         Divider()
                         VStack(spacing: Layout.noSpacing) {
-                            Button(Localization.addDiscount) {}
+                            Button(Localization.addDiscount) {
+                                shouldShowDiscountLineDetails = true
+                            }
                                 .buttonStyle(PlusButtonStyle())
                                 .padding()
                                 .accessibilityIdentifier("add-discount-button")
@@ -30,8 +36,13 @@ struct ProductInOrder: View {
                         .renderedIf(viewModel.isAddingDiscountToProductEnabled)
                     }
                     .background(Color(.listForeground(modal: false)))
+                    .sheet(isPresented: $shouldShowDiscountLineDetails) {
+                        FeeLineDetails(viewModel: FeeLineDetailsViewModel(isExistingFeeLine: false,
+                                                                          baseAmountForPercentage: 50,
+                                                                          feesTotal: "0.00",
+                                                                          didSelectSave: { _ in }))
+                    }
                     Spacer(minLength: Layout.sectionSpacing)
-
                     Section {
                         Divider()
                         Button(Localization.remove) {

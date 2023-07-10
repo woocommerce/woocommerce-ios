@@ -950,7 +950,7 @@ public enum WooAnalyticsStat: String {
     case planUpgradePurchaseButtonTapped = "plan_upgrade_purchase_button_tapped"
     case planUpgradeScreenLoaded = "plan_upgrade_screen_loaded"
     case planUpgradeScreenDismissed = "plan_upgrade_screen_dismissed"
-    case planUpgradeFeatureScreenLoaded = "plan_upgrade_feature_screen_loaded"
+    case planUpgradeDetailsScreenLoaded = "plan_upgrade_details_screen_loaded"
     case planUpgradeProcessingScreenLoaded = "plan_upgrade_processing_screen_loaded"
     case planUpgradeCompletedScreenLoaded = "plan_upgrade_completed_screen_loaded"
     case planUpgradePurchaseFailed = "plan_upgrade_purchase_failed"

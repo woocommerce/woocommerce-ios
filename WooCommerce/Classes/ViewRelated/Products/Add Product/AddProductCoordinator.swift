@@ -95,21 +95,6 @@ final class AddProductCoordinator: Coordinator {
             break
         }
 
-        if addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
-            // TODO: 10180 - A/B experiment exposure event
-
-            if addProductFromImageEligibilityChecker.isEligible() {
-                let coordinator = AddProductFromImageCoordinator(siteID: siteID,
-                                                                 sourceNavigationController: navigationController,
-                                                                 onProductCreated: { [weak self] product in
-                    self?.onProductCreated(product)
-                })
-                self.addProductFromImageCoordinator = coordinator
-                coordinator.start()
-                return
-            }
-        }
-
         if shouldSkipBottomSheet() {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
         } else if shouldPresentProductCreationBottomSheet() {
@@ -246,6 +231,23 @@ private extension AddProductCoordinator {
     /// Presents a new product based on the provided bottom sheet type.
     ///
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
+        if bottomSheetProductType.productType == .simple,
+           bottomSheetProductType.isVirtual == false,
+           addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
+            // TODO: 10180 - track A/B experiment exposure event for all variants
+
+            if addProductFromImageEligibilityChecker.isEligible() {
+                let coordinator = AddProductFromImageCoordinator(siteID: siteID,
+                                                                 sourceNavigationController: navigationController,
+                                                                 onProductCreated: { [weak self] product in
+                    self?.onProductCreated(product)
+                })
+                self.addProductFromImageCoordinator = coordinator
+                coordinator.start()
+                return
+            }
+        }
+
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
                                                               siteID: siteID) else {

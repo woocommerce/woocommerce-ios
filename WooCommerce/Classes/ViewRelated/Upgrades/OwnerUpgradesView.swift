@@ -63,7 +63,7 @@ struct OwnerUpgradesView: View {
                     .redacted(reason: isLoading ? .placeholder : [])
                     .shimmering(active: isLoading)
                 } else {
-                    Button("Choose a plan") {
+                    Button(Localization.selectPlanButtonText) {
                         // no-op
                     }
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPurchasing))
@@ -116,8 +116,9 @@ private struct WooPlanCardView: View {
 
             let buttonText = String.localizedStringWithFormat(Localization.viewPlanFeaturesFormat, upgradePlan.wooPlan.shortName)
             Button("\(buttonText) \(Image(systemName: isExpanded ? "chevron.up" : "chevron.down"))") {
-                isExpanded.toggle() // needs using to actually expand!
+                isExpanded.toggle()
             }
+            Text("Expanded").renderedIf(isExpanded)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal)
@@ -172,6 +173,9 @@ private extension OwnerUpgradesView {
 
         static let featureDetailsUnavailableText = NSLocalizedString(
             "See plan details", comment: "Title for a link to view Woo Express plan details on the web, as a fallback.")
+
+        static let selectPlanButtonText = NSLocalizedString(
+            "Select a plan", comment: "The title of the button to purchase a Plan when no plan is selected yet.")
     }
 }
 
@@ -191,7 +195,7 @@ private extension WooPlan.PlanFrequency {
             comment: "Title of the selector option for paying monthly on the Upgrade view, when choosing a plan")
 
         static let payAnnually = NSLocalizedString(
-            "Pay Annually",
+            "Pay Annually (Save 35%)",
             comment: "Title of the selector option for paying annually on the Upgrade view, when choosing a plan")
     }
 }

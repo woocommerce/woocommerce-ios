@@ -233,6 +233,7 @@ private extension AddProductCoordinator {
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
         if bottomSheetProductType.productType == .simple,
            bottomSheetProductType.isVirtual == false,
+           shouldSkipBottomSheet() == false,
            addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
             // TODO: 10180 - track A/B experiment exposure event for all variants
 

@@ -25,6 +25,8 @@ final class AddProductFromImageHostingController: UIHostingController<AddProduct
 struct AddProductFromImageView: View {
     private let completion: (AddProductFromImageData) -> Void
     @StateObject private var viewModel: AddProductFromImageViewModel
+    @FocusState private var isNameFieldInFocus: Bool
+    @FocusState private var isDescriptionFieldInFocus: Bool
 
     init(siteID: Int64,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
@@ -45,15 +47,69 @@ struct AddProductFromImageView: View {
                 }
             }
 
-            Section {
-                // TODO: 10180 - use `TextEditor` with a placeholder overlay
-                TextField(Localization.nameFieldPlaceholder, text: $viewModel.name)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                TextField(Localization.descriptionFieldPlaceholder, text: $viewModel.description)
-                    .lineLimit(5)
-                    .fixedSize(horizontal: false, vertical: true)
+            Section(header: Text(Localization.nameFieldPlaceholder)) {
+                TextEditor(text: $viewModel.name)
+                    .bodyStyle()
+                    .foregroundColor(.secondary)
+
+                if let suggestedName = viewModel.suggestedName, suggestedName.isNotEmpty {
+                    VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
+                        Text("Suggestion from photo")
+                            .captionStyle()
+                        Text(suggestedName)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .textSelection(.enabled)
+
+                        HStack {
+                            Spacer()
+                            // CTA to copy the generated text.
+                            Button {
+                                UIPasteboard.general.string = suggestedName
+    //                                copyTextNotice = .init(title: Localization.textCopiedNotice)
+    //                                ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
+                            } label: {
+                                Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
+                                    .secondaryBodyStyle()
+                            }
+                            .buttonStyle(.plain)
+                            .fixedSize(horizontal: true, vertical: false)
+
+                            // CTA to replace with the generated text.
+                            Button {
+                                viewModel.applySuggestedName()
+                            } label: {
+                                Image(systemName: "checkmark")
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                            .fixedSize(horizontal: true, vertical: false)
+
+                            // CTA to copy the generated text.
+                            Button {
+//                                UIPasteboard.general.string = suggestedName
+    //                                copyTextNotice = .init(title: Localization.textCopiedNotice)
+    //                                ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
+                            } label: {
+                                Image(systemName: "xmark")
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                    .padding(Layout.suggestedTextInsets)
+                    .background(
+                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                            .foregroundColor(.init(uiColor: .tertiarySystemBackground))
+                    )
+                }
             }
+
+            Section(header: Text(Localization.descriptionFieldPlaceholder)) {
+                TextEditor(text: $viewModel.description)
+                    .bodyStyle()
+                    .foregroundColor(.secondary)
+            }
+            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
+            // TODO-JC: placeholder UI when loading image
+            .shimmering(active: viewModel.isGeneratingDetails)
         }
         .navigationTitle(Localization.title)
         .toolbar {
@@ -85,6 +141,22 @@ private extension AddProductFromImageView {
             "Continue",
             comment: "Continue button on the add product from image form."
         )
+        static let copyGeneratedText = NSLocalizedString(
+            "Copy",
+            comment: "Button title to copy generated text in the product description AI generator view."
+        )
+    }
+
+    enum Layout {
+        static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
+        static let defaultSpacing: CGFloat = 16
+        static let titleAndProductNameSpacing: CGFloat = 2
+        static let minimuNameEditorSize: CGFloat = 30
+        static let minimuEditorSize: CGFloat = 76
+        static let cornerRadius: CGFloat = 8
+        static let productFeaturesInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
+        static let productFeaturesPlaceholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
+        static let suggestedTextInsets: EdgeInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
     }
 }
 

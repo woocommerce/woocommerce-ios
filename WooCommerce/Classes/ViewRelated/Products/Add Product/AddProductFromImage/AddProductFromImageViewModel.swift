@@ -23,6 +23,7 @@ final class AddProductFromImageViewModel: ObservableObject {
     // MARK: - Product Details
 
     @Published var name: String = ""
+    @Published var suggestedName: String? = "testing"
     @Published var description: String = ""
 
     // MARK: - Product Image
@@ -71,6 +72,11 @@ final class AddProductFromImageViewModel: ObservableObject {
             }
             imageState = .success(image)
         }
+    }
+
+    func applySuggestedName() {
+        name = suggestedName ?? ""
+        suggestedName = nil
     }
 }
 
@@ -128,7 +134,11 @@ private extension AddProductFromImageViewModel {
     func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
         switch await generateProductDetails(from: scannedTexts) {
             case .success(let details):
-                name = details.name
+                if name.isEmpty {
+                    name = details.name
+                } else {
+                    suggestedName = details.name
+                }
                 description = details.description
             case .failure(let error):
                 DDLogError("⛔️ Error generating product details from scanned text \(scannedTexts): \(error)")

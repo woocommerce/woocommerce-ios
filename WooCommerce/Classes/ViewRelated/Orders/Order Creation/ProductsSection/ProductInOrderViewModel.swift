@@ -28,7 +28,7 @@ final class ProductInOrderViewModel: Identifiable {
     lazy var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel = {
         FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                           baseAmountForPercentage: 50,
-                                          total: "0.00",
+                                          initialTotal: "0.00",
                                           lineType: .discount,
                                           didSelectSave: onSaveFormattedDiscount)
     }()

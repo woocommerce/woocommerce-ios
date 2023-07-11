@@ -189,7 +189,7 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     init(isExistingLine: Bool,
          baseAmountForPercentage: Decimal,
-         total: String,
+         initialTotal: String,
          lineType: LineType,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -204,7 +204,7 @@ class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         self.isExistingLine = isExistingLine
         self.baseAmountForPercentage = baseAmountForPercentage
 
-        if let initialAmount = currencyFormatter.convertToDecimal(total) {
+        if let initialAmount = currencyFormatter.convertToDecimal(initialTotal) {
             self.initialAmount = initialAmount as Decimal
         } else {
             self.initialAmount = .zero

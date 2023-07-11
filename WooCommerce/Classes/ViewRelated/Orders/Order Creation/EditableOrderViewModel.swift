@@ -736,7 +736,7 @@ extension EditableOrderViewModel {
                                                                       didSelectSave: saveShippingLineClosure)
             self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
                                                                       baseAmountForPercentage: feesBaseAmountForPercentage,
-                                                                      total: feeLineTotal,
+                                                                      initialTotal: feeLineTotal,
                                                                       lineType: .fee,
                                                             didSelectSave: saveFeeLineClosure)
             self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,

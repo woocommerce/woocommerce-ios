@@ -95,6 +95,9 @@ final class AddProductCoordinator: Coordinator {
             break
         }
 
+        ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
+                                                                                 storeHasProducts: storeHasProducts()))
+
         if shouldSkipBottomSheet() {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
         } else if shouldPresentProductCreationBottomSheet() {
@@ -131,6 +134,10 @@ private extension AddProductCoordinator {
     /// Returns `true` when there are existing products.
     ///
     func shouldShowGroupedProductType() -> Bool {
+        storeHasProducts()
+    }
+
+    func storeHasProducts() -> Bool {
         !productsResultsController.isEmpty
     }
 
@@ -161,11 +168,9 @@ private extension AddProductCoordinator {
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
-            ServiceLocator.analytics.track(.addProductTypeSelected,
-                                           withProperties: [
-                                            "product_type": selectedBottomSheetProductType.productType.rawValue,
-                                            "is_virtual": selectedBottomSheetProductType.isVirtual
-                                           ])
+            ServiceLocator.analytics.track(event: .ProductCreation
+                .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
+                                        creationType: creationType))
             self.navigationController.dismiss(animated: true) {
                 switch creationType {
                 case .manual:
@@ -239,7 +244,8 @@ private extension AddProductCoordinator {
            bottomSheetProductType.isVirtual == false,
            shouldSkipBottomSheet() == false,
            addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
-            // TODO: 10180 - track A/B experiment exposure event for all variants
+            // Exposure event of the A/B experiment.
+            ServiceLocator.analytics.track(.addProductFromImageEligible)
 
             if addProductFromImageEligibilityChecker.isEligible() {
                 let coordinator = AddProductFromImageCoordinator(siteID: siteID,

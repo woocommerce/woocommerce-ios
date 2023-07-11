@@ -444,8 +444,12 @@ final class EditableOrderViewModel: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 
-    func addDiscountToOrderItem(item: OrderItem, formattedDiscount: String) {
-        debugPrint("Add discount \(formattedDiscount) to item \(item)")
+    func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {
+        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, discount: discount) else {
+            return
+        }
+
+        orderSynchronizer.setProduct.send(productInput)
     }
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
@@ -838,14 +842,14 @@ private extension EditableOrderViewModel {
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productID == product.productID }) {
-                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0))
             }
         }
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productOrVariationID == variation.productVariationID }) {
-                productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
+                productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1, discount: 0))
             }
         }
 
@@ -976,11 +980,11 @@ private extension EditableOrderViewModel {
             case let .product(product):
                 allProducts.insert(product)
                 selectedProducts.append(product)
-                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
+                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1, discount: 0))
             case let .variation(productVariation):
                 allProductVariations.insert(productVariation)
                 selectedProductVariations.append(productVariation)
-                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
+                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1, discount: 0))
             }
 
             return
@@ -1171,7 +1175,7 @@ private extension EditableOrderViewModel {
     /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
     /// If the referenced product can't be found, `nil` is returned.
     ///
-    private func createUpdateProductInput(item: OrderItem, quantity: Decimal) -> OrderSyncProductInput? {
+    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal = 0) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.
         let product: OrderSyncProductInput.ProductType? = {
             if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -1191,7 +1195,7 @@ private extension EditableOrderViewModel {
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity)
+        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount)
     }
 
     /// Creates a `ProductInOrderViewModel` based on the provided order item id.
@@ -1208,12 +1212,14 @@ private extension EditableOrderViewModel {
         return ProductInOrderViewModel(productRowViewModel: rowViewModel,
                                        baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
                                        onRemoveProduct: { [weak self] in
-            self?.removeItemFromOrder(orderItem)
-        }, onSaveFormattedDiscount: { [weak self] formattedDiscount in
-            guard let formattedDiscount = formattedDiscount else {
-                return
-            }
-            self?.addDiscountToOrderItem(item: orderItem, formattedDiscount: formattedDiscount)
+                                            self?.removeItemFromOrder(orderItem)
+                                       },
+                                       onSaveFormattedDiscount: { [weak self] formattedDiscount in
+                                            guard let formattedDiscount = formattedDiscount,
+                                                  let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
+                                                return
+                                            }
+                                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
         })
     }
 

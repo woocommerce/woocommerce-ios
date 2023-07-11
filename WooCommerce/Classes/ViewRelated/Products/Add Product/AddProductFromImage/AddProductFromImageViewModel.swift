@@ -34,10 +34,11 @@ final class AddProductFromImageViewModel: ObservableObject {
     /// Invoked after the user selects a media source to add an image.
     /// - Parameter source: Source of the image.
     func addImage(from source: MediaPickingSource) {
+        let previousState = imageState
+        imageState = .loading
         Task { @MainActor in
-            imageState = .loading
             guard let image = await onAddImage(source) else {
-                return
+                return imageState = previousState
             }
             imageState = .success(image)
         }

@@ -138,7 +138,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(update2.items.count, 2)
     }
 
-    func test_sending_an_update_product_input_updates_item_on_order() throws {
+    func test_sending_an_update_product_with_new_quantity_input_updates_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
@@ -156,6 +156,28 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.price, 9.99)
         XCTAssertEqual(item.subtotal, "19.98")
         XCTAssertEqual(item.total, "19.98")
+    }
+
+    func test_sending_an_product_with_a_discount_input_updates_item_on_order() throws {
+        // Given
+        let price: Decimal = 9.99
+        let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let discount: Decimal = 1
+
+        // When
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 1)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // Then
+        let item = try XCTUnwrap(update2.items.first)
+        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.price as Decimal, price)
+        XCTAssertEqual(item.subtotal, "\(item.price)")
+        XCTAssertEqual(item.total, "\(price - discount)")
     }
 
     func test_updatedOrder_when_updateMultipleItems_sends_an_updated_product_input_then_updates_item_on_order() throws {

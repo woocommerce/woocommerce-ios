@@ -33,13 +33,37 @@ struct ProductInOrder: View {
                                 .accessibilityIdentifier("add-discount-button")
                             Divider()
                         }
-                        .renderedIf(viewModel.isAddingDiscountToProductEnabled)
+                        .renderedIf(viewModel.showAddDiscountRow)
                     }
                     .background(Color(.listForeground(modal: false)))
                     .sheet(isPresented: $shouldShowDiscountLineDetails) {
                         FeeOrDiscountLineDetails(viewModel: viewModel.discountDetailsViewModel)
                     }
                     Spacer(minLength: Layout.sectionSpacing)
+
+                    Section {
+                        Divider()
+                        VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                            HStack() {
+                                Text("Discount")
+                                    .headlineStyle()
+                                Spacer()
+                                Button("Edit") {}
+                            }
+
+                            Spacer()
+                            Text("Amount")
+                                .subheadlineStyle()
+                            Text("$10")
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        Divider()
+                    }
+                    .background(Color(.listForeground(modal: false)))
+
+                    Spacer(minLength: Layout.sectionSpacing)
+
                     Section {
                         Divider()
                         Button(Localization.remove) {
@@ -98,7 +122,7 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             manageStock: true,
                                             canChangeQuantity: false,
                                             imageURL: nil)
-        let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
+        let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,                                                addedDiscount: 0,
                                                 baseAmountForDiscountPercentage: 0,
                                                 onRemoveProduct: {},
                                                 onSaveFormattedDiscount: {_ in })

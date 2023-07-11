@@ -1209,7 +1209,11 @@ private extension EditableOrderViewModel {
             return nil
         }
 
+        let totalDecimal = currencyFormatter.convertToDecimal(orderItem.total) ?? subTotalDecimal
+        let productAddedDiscount = subTotalDecimal.subtracting(totalDecimal)
+
         return ProductInOrderViewModel(productRowViewModel: rowViewModel,
+                                       addedDiscount: productAddedDiscount as Decimal,
                                        baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
                                        onRemoveProduct: { [weak self] in
                                             self?.removeItemFromOrder(orderItem)

@@ -2437,7 +2437,6 @@ extension WooAnalyticsEvent {
             case productID = "product_id"
             case source
             case step
-            case featureGroup = "feature_group"
             case error
         }
 
@@ -2466,11 +2465,6 @@ extension WooAnalyticsEvent {
         static func planUpgradeScreenDismissed(step: Step) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .planUpgradeScreenDismissed,
                               properties: [Keys.step.rawValue: step.rawValue])
-        }
-
-        static func planUpgradeFeatureScreenLoaded(featureGroup: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .planUpgradeFeatureScreenLoaded,
-                              properties: [Keys.featureGroup.rawValue: featureGroup])
         }
 
         static func planUpgradePrePurchaseFailed(error: Error) -> WooAnalyticsEvent {

@@ -3,15 +3,15 @@ import SwiftUI
 import Yosemite
 
 /// State of the `EditableImageView`.
-enum EditableImageViewState {
+enum EditableImageViewState: Equatable {
     case empty
     case loading
     case success(MediaPickerImage)
 }
 
 /// Image selected from the media picker.
-struct MediaPickerImage {
-    enum Source {
+struct MediaPickerImage: Equatable {
+    enum Source: Equatable {
         /// From device camera or photo library.
         case asset(asset: PHAsset)
         /// From site media library.

@@ -342,7 +342,7 @@ private extension WooPlan {
             "Essential",
             comment: "Short name for the plan on a screen showing the Woo Express Essential plan upgrade benefits")
         static let essentialPlanDescription = NSLocalizedString(
-            "Everything you need to launch an online store.",
+            "Everything you need to set up your store and start selling your products.",
             comment: "Description of the plan on a screen showing the Woo Express Essential plan upgrade benefits")
 
         static let performancePlanNameFormat = NSLocalizedString(
@@ -356,7 +356,7 @@ private extension WooPlan {
             "Performance",
             comment: "Short name for the plan on a screen showing the Woo Express Performance plan upgrade benefits")
         static let performancePlanDescription = NSLocalizedString(
-            "Activate your growth with advanced features.",
+            "Accelerate your growth with advanced features.",
             comment: "Description of the plan on a screen showing the Woo Express Performance plan upgrade benefits")
 
 

@@ -148,11 +148,7 @@ private extension AddProductFromImageCoordinator {
         guard let asset else {
             return nil
         }
-        return await withCheckedContinuation { continuation in
-            Task { @MainActor in
-                continuation.resume(returning: await requestImage(from: asset))
-            }
-        }
+        return await requestImage(from: asset)
     }
 }
 
@@ -196,6 +192,7 @@ private extension AddProductFromImageCoordinator {
 }
 
 private extension AddProductFromImageCoordinator {
+    @MainActor
     func requestImage(from asset: PHAsset) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             // PHImageManager.requestImageForAsset can be called more than once.

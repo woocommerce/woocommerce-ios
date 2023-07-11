@@ -48,7 +48,9 @@ struct ProductInOrder: View {
                                 Text("Discount")
                                     .headlineStyle()
                                 Spacer()
-                                Button("Edit") {}
+                                Button("Edit") {
+                                    shouldShowDiscountLineDetails = true
+                                }
                             }
 
                             Spacer()
@@ -61,6 +63,7 @@ struct ProductInOrder: View {
                         Divider()
                     }
                     .background(Color(.listForeground(modal: false)))
+                    .renderedIf(viewModel.addedDiscount > 0)
 
                     Spacer(minLength: Layout.sectionSpacing)
 

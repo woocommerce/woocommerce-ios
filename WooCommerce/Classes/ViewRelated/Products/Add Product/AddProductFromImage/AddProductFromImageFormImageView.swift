@@ -52,7 +52,7 @@ private extension AddProductFromImageFormImageView {
 
     enum Localization {
         static let packagingImageTip = NSLocalizedString(
-            "Take a packaging photo to create product details with AI",
+            "Take a photo of the product packaging to generate details with AI",
             comment: "Tip in the add product from image form to add a packaging image for AI-generated product details."
         )
     }

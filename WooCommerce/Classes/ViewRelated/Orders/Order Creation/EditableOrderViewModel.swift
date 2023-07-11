@@ -1199,14 +1199,15 @@ private extension EditableOrderViewModel {
     func createSelectedProductViewModel(itemID: Int64) -> ProductInOrderViewModel? {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
-        guard
-            let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-            let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false)
-        else {
+        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
+              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal),
+              let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false) else {
             return nil
         }
 
-        return ProductInOrderViewModel(productRowViewModel: rowViewModel, onRemoveProduct: { [weak self] in
+        return ProductInOrderViewModel(productRowViewModel: rowViewModel,
+                                       baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                                       onRemoveProduct: { [weak self] in
             self?.removeItemFromOrder(orderItem)
         }, onSaveFormattedDiscount: { [weak self] formattedDiscount in
             guard let formattedDiscount = formattedDiscount else {

@@ -247,17 +247,14 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Saves a fee.
     ///
-    /// - Parameter formattedFeeLine: Optional shipping line object to save. `nil` will remove existing shipping line.
+    /// - Parameter formattedFeeLine: Optional shipping line object to save. `nil` will remove existing fee line.
     /// 
     func saveFeeLine(_ formattedFeeLine: String?) {
         guard let formattedFeeLine = formattedFeeLine else {
-            orderSynchronizer.setFee.send(nil)
-            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
-            return
+            return removeFee()
         }
 
-        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
-        orderSynchronizer.setFee.send(feeLine)
+        addFee(formattedFeeLine)
     }
 
     /// Saves a coupon line after an edition on it.
@@ -1305,6 +1302,17 @@ private extension EditableOrderViewModel {
     func removeCoupon(with code: String) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCouponRemove(flow: flow.analyticsFlow))
         orderSynchronizer.removeCoupon.send(code)
+    }
+
+    func addFee(_ formattedFeeLine: String) {
+        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
+        orderSynchronizer.setFee.send(feeLine)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func removeFee() {
+        orderSynchronizer.setFee.send(nil)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
     }
 }
 

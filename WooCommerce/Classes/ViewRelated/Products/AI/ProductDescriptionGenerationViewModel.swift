@@ -98,12 +98,13 @@ private extension ProductDescriptionGenerationViewModel {
     @MainActor
     func generateProductDescription() async -> Result<String, Error> {
         do {
-            let language = try await identifyLanguage()
+            // TODO: update `identifyLanguage` to use the new endpoint, potentially sharing the same token
+//            let language = try await identifyLanguage()
             return await withCheckedContinuation { continuation in
                 stores.dispatch(ProductAction.generateProductDescription(siteID: siteID,
                                                                          name: name,
                                                                          features: features,
-                                                                         language: language) { result in
+                                                                         language: "English") { result in
                     continuation.resume(returning: result)
                 })
             }

@@ -37,13 +37,15 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
     public func generateText(siteID: Int64,
                              base: String,
                              feature: GenerativeContentRemoteFeature) async throws -> String {
-        let path = "sites/\(siteID)/\(Path.text)"
+        let token = try await generateJetpackAIToken(siteID: siteID)
+
         /// We are skipping cache entirely to avoid showing outdated/duplicated text.
-        let parameters = [ParameterKey.textContent: base,
-                          ParameterKey.skipCache: "true",
+        let parameters = ["prompt": base,
+                          "token": token, // completion
                           ParameterKey.feature: feature.rawValue]
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
-        return try await enqueue(request)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: Path.wooAIText, parameters: parameters)
+        let response: TextCompletionResponse = try await enqueue(request)
+        return response.completion
     }
 
     public func identifyLanguage(siteID: Int64,
@@ -65,11 +67,27 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
     }
 }
 
+private extension GenerativeContentRemote {
+    func generateJetpackAIToken(siteID: Int64) async throws -> String {
+        let path = Path.token(siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
+        let response: TokenResponse = try await enqueue(request)
+        guard response.success else {
+            throw GenerateTokenError.unsuccessful
+        }
+        return response.token
+    }
+}
+
 // MARK: - Constants
 //
 private extension GenerativeContentRemote {
     enum Path {
         static let text = "jetpack-ai/completions"
+        static let wooAIText = "text-completion"
+        static func token(siteID: Int64) -> String {
+            "sites/\(siteID)/jetpack-openai-query/jwt"
+        }
     }
 
     enum ParameterKey {
@@ -77,4 +95,17 @@ private extension GenerativeContentRemote {
         static let skipCache = "skip_cache"
         static let feature = "feature"
     }
+}
+
+private enum GenerateTokenError: Error {
+    case unsuccessful
+}
+
+private struct TextCompletionResponse: Decodable {
+    let completion: String
+}
+
+private struct TokenResponse: Decodable {
+    let success: Bool
+    let token: String
 }

@@ -444,6 +444,10 @@ final class EditableOrderViewModel: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 
+    func addDiscountToOrderItem(item: OrderItem, formattedDiscount: String) {
+        debugPrint("Add discount \(formattedDiscount) to item \(item)")
+    }
+
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
@@ -1202,9 +1206,14 @@ private extension EditableOrderViewModel {
             return nil
         }
 
-        return ProductInOrderViewModel(productRowViewModel: rowViewModel) { [weak self] in
+        return ProductInOrderViewModel(productRowViewModel: rowViewModel, onRemoveProduct: { [weak self] in
             self?.removeItemFromOrder(orderItem)
-        }
+        }, onSaveFormattedDiscount: { [weak self] formattedDiscount in
+            guard let formattedDiscount = formattedDiscount else {
+                return
+            }
+            self?.addDiscountToOrderItem(item: orderItem, formattedDiscount: formattedDiscount)
+        })
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.

@@ -15,6 +15,8 @@ struct ProductInOrder: View {
     ///
     @State private var shouldShowDiscountLineDetails: Bool = false
 
+    @Environment(\.presentationMode) private var presentationMode
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -56,7 +58,7 @@ struct ProductInOrder: View {
                             Spacer()
                             Text("Amount")
                                 .subheadlineStyle()
-                            Text("$10")
+                            Text(viewModel.formattedDiscount ?? "")
                         }
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -94,6 +96,9 @@ struct ProductInOrder: View {
             }
         }
         .wooNavigationBarStyle()
+        .onReceive(viewModel.viewDismissPublisher) {
+            presentationMode.wrappedValue.dismiss()
+        }
     }
 }
 

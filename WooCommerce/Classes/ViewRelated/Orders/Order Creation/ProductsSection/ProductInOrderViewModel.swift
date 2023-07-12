@@ -1,4 +1,6 @@
 import Yosemite
+import Combine
+import WooFoundation
 
 /// View model for `ProductInOrder`.
 ///
@@ -8,6 +10,10 @@ final class ProductInOrderViewModel: Identifiable {
     let productRowViewModel: ProductRowViewModel
 
     let addedDiscount: Decimal
+
+    var formattedDiscount: String? {
+        currencyFormatter.formatAmount(addedDiscount)
+    }
 
     let baseAmountForDiscountPercentage: Decimal
 
@@ -23,9 +29,14 @@ final class ProductInOrderViewModel: Identifiable {
 
     let onSaveFormattedDiscount: (String?) -> Void
 
+    var viewDismissPublisher = PassthroughSubject<(), Never>()
+
+    private let currencyFormatter: CurrencyFormatter
+
     init(productRowViewModel: ProductRowViewModel,
          addedDiscount: Decimal,
          baseAmountForDiscountPercentage: Decimal,
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          onRemoveProduct: @escaping () -> Void,
          onSaveFormattedDiscount: @escaping (String?) -> Void,
          isAddingDiscountToProductEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4)) {
@@ -35,13 +46,17 @@ final class ProductInOrderViewModel: Identifiable {
         self.onRemoveProduct = onRemoveProduct
         self.onSaveFormattedDiscount = onSaveFormattedDiscount
         self.isAddingDiscountToProductEnabled = isAddingDiscountToProductEnabled
+        self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
     }
 
     lazy var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel = {
-        FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        FeeOrDiscountLineDetailsViewModel(isExistingLine: addedDiscount > 0,
                                           baseAmountForPercentage: baseAmountForDiscountPercentage,
-                                          initialTotal: "0.00",
+                                          initialTotal: formattedDiscount ?? "0",
                                           lineType: .discount,
-                                          didSelectSave: onSaveFormattedDiscount)
+                                          didSelectSave: { [weak self] formattedAmount in
+            self?.onSaveFormattedDiscount(formattedAmount)
+            self?.viewDismissPublisher.send(())
+        })
     }()
 }

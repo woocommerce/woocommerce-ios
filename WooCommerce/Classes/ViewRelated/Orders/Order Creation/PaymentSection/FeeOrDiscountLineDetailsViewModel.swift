@@ -73,7 +73,7 @@ private struct FeeStringsProvider: FeeOrDiscountLineDetailsStringsProvider {
     }
 }
 
-class FeeOrDiscountLineDetailsViewModel: ObservableObject {
+final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the line is updated.
     ///

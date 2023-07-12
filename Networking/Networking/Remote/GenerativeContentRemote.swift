@@ -65,16 +65,39 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
     }
 }
 
+private extension GenerativeContentRemote {
+    func fetchToken(siteID: Int64) async throws -> String {
+        let path = "sites/\(siteID)/\(Path.jwtToken)"
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
+        let mapper = JWTTokenResponseMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+}
+
 // MARK: - Constants
 //
 private extension GenerativeContentRemote {
     enum Path {
         static let text = "jetpack-ai/completions"
+        static let jwtToken = "jetpack-openai-query/jwt"
     }
 
     enum ParameterKey {
         static let textContent = "content"
         static let skipCache = "skip_cache"
         static let feature = "feature"
+    }
+}
+
+// MARK: - Mapper to parse the JWT token
+//
+private struct JWTTokenResponseMapper: Mapper {
+    func map(response: Data) throws -> String {
+        let decoder = JSONDecoder()
+        return try decoder.decode(JWTTokenResponse.self, from: response).token
+    }
+
+    struct JWTTokenResponse: Decodable {
+        let token: String
     }
 }

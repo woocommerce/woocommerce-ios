@@ -128,7 +128,6 @@ private extension ProductInputTransformer {
     ///
     private static func createOrderItem(using input: OrderSyncProductInput) -> OrderItem {
         let parameters: OrderItemParameters = {
-            // Prefer the item price as it should have been properly sanitized by the remote source.
             switch input.product {
             case .product(let product):
                 let price: Decimal = Decimal(string: product.price) ?? .zero

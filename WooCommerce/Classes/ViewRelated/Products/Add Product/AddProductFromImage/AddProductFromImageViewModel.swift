@@ -23,7 +23,7 @@ final class AddProductFromImageViewModel: ObservableObject {
     // MARK: - Product Details
 
     @Published var name: String = ""
-    @Published var suggestedName: String? = "testing"
+    @Published var suggestedName: String?
     @Published var description: String = ""
 
     // MARK: - Product Image
@@ -96,18 +96,16 @@ private extension AddProductFromImageViewModel {
             self?.onScannedTextRequestCompletion(request: request, error: error)
         }
 
-        // TODO-JC: iOS version check
         if #available(iOS 16.0, *) {
             request.revision = VNRecognizeTextRequestRevision3
             request.automaticallyDetectsLanguage = true
         }
-        print("langs: \(try? request.supportedRecognitionLanguages())")
 
         do {
             // Performs the text-recognition request.
             try requestHandler.perform([request])
         } catch {
-            print("Unable to perform the requests: \(error).")
+            DDLogError("⛔️ Unable to perform image text generation request: \(error)")
         }
     }
 
@@ -142,7 +140,7 @@ private extension AddProductFromImageViewModel {
                 }
                 description = details.description
             case .failure(let error):
-                DDLogError("⛔️ Error generating product details from scanned text \(scannedTexts): \(error)")
+                DDLogError("⛔️ Error generating product details from scanned text: \(error)")
         }
     }
 

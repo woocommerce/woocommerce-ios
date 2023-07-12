@@ -53,7 +53,7 @@ struct WooPlanCardView: View {
             Button("\(buttonText) \(Image(systemName: isExpanded ? "chevron.up" : "chevron.down"))") {
                 isExpanded.toggle()
             }
-            WooPlanCardFeaturesView(upgradePlan.wooPlan.shortName).renderedIf(isExpanded)
+            WooPlanCardFeaturesView(upgradePlan.id).renderedIf(isExpanded)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal)
@@ -76,14 +76,18 @@ struct WooPlanCardView: View {
 
 private struct WooPlanCardFeaturesView: View {
 
-    private let selectedPlan: String
+    private let selectedPlanID: String
 
-    init(_ selectedPlan: String) {
-        self.selectedPlan = selectedPlan
+    init(_ selectedPlanID: String) {
+        self.selectedPlanID = selectedPlanID
     }
 
     var planFeatures: [String] {
-        WooPlan.loadHardcodedPlan(selectedPlan).planFeatures
+        WooPlan.loadHardcodedPlan(selectedPlanID).planFeatures
+    }
+
+    var isEssentialPlan: Bool {
+        WooPlan.isEssential(selectedPlanID)
     }
 
     var body: some View {
@@ -91,7 +95,7 @@ private struct WooPlanCardFeaturesView: View {
             Text(Localization.upsellFeatureTitleText)
                 .bold()
                 .font(.footnote)
-                .renderedIf(selectedPlan != "Essential")
+                .renderedIf(!isEssentialPlan)
             ForEach(planFeatures, id: \.self) { feature in
                 Text(feature)
                     .font(.footnote)

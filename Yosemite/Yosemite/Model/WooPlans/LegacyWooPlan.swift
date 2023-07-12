@@ -8,8 +8,20 @@ public struct WooPlan: Identifiable {
     public let planDescription: String
     public let planFeatures: [String]
 
-    public static func loadHardcodedPlan(_ selectedPlan: String) -> WooPlan {
-        if selectedPlan == "Essential" {
+    public static func isEssential(_ plan: String) -> Bool {
+        let essentialMonthly = AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue
+        let essentialYearly = AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue
+
+        if plan == essentialMonthly || plan == essentialYearly {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    public static func loadHardcodedPlan(_ selectedPlanID: String) -> WooPlan {
+
+        if isEssential(selectedPlanID) {
             return WooPlan(id: "",
                            name: "Essential",
                            shortName: "",

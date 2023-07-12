@@ -211,4 +211,7 @@ public enum FeatureFlag: Int {
     /// A new flow to add product from an image.
     ///
     case addProductFromImage
+
+    /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
+    case ordersWithCouponsM4
 }

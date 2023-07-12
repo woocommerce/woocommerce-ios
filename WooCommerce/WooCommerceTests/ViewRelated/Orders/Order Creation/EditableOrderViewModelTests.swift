@@ -192,8 +192,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_view_model_fires_error_notice_when_order_sync_fails_because_of_coupons() {
         // Given
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
-        let error = NSError(domain: "Error", code: 0)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
@@ -624,15 +622,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
-        let testFeeLine = OrderFeeLine(feeID: 0,
-                                       name: "Fee",
-                                       taxClass: "",
-                                       taxStatus: .none,
-                                       total: "10",
-                                       totalTax: "",
-                                       taxes: [],
-                                       attributes: [])
-        viewModel.saveFeeLine(testFeeLine)
+        viewModel.saveFeeLine("10")
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
@@ -732,15 +722,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
-        let testFeeLine = OrderFeeLine(feeID: 0,
-                                       name: "Fee",
-                                       taxClass: "",
-                                       taxStatus: .none,
-                                       total: "-5",
-                                       totalTax: "",
-                                       taxes: [],
-                                       attributes: [])
-        viewModel.saveFeeLine(testFeeLine)
+        viewModel.saveFeeLine( "-5")
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
@@ -782,16 +764,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                             totalTax: "",
                                             taxes: [])
         viewModel.saveShippingLine(testShippingLine)
-
-        let testFeeLine = OrderFeeLine(feeID: 0,
-                                       name: "Fee",
-                                       taxClass: "",
-                                       taxStatus: .none,
-                                       total: "10",
-                                       totalTax: "",
-                                       taxes: [],
-                                       attributes: [])
-        viewModel.saveFeeLine(testFeeLine)
+        viewModel.saveFeeLine("10")
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
@@ -947,11 +920,8 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_hasChanges_returns_true_when_fee_line_is_updated() {
-        // Given
-        let feeLine = OrderFeeLine.fake()
-
         // When
-        viewModel.saveFeeLine(feeLine)
+        viewModel.saveFeeLine("10")
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -1116,10 +1086,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        let feeLine = OrderFeeLine.fake()
 
         // When
-        viewModel.saveFeeLine(feeLine)
+        viewModel.saveFeeLine("10")
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderFeeAdd.rawValue])
@@ -1149,7 +1118,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        let couponLine = OrderCouponLine.fake()
 
         // When
         viewModel.saveCouponLine(result: .added(newCode: "TESTCOUPON"))

@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// View to add/edit a single fee line in an order, with the option to remove it.
+/// View to add/edit a single fee or discount line in an order, with the option to remove it.
 ///
-struct FeeLineDetails: View {
+struct FeeOrDiscountLineDetailsView: View {
 
     /// View model to drive the view content
     ///
-    @ObservedObject private var viewModel: FeeLineDetailsViewModel
+    @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel
 
     /// Defines if the fixed amount input text field should be focused. Defaults to `true`
     ///
@@ -20,7 +20,7 @@ struct FeeLineDetails: View {
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
-    init(viewModel: FeeLineDetailsViewModel) {
+    init(viewModel: FeeOrDiscountLineDetailsViewModel) {
         self.viewModel = viewModel
     }
 
@@ -30,12 +30,12 @@ struct FeeLineDetails: View {
                 VStack(spacing: .zero) {
                     Section {
                         if viewModel.isPercentageOptionAvailable {
-                            Picker("", selection: $viewModel.feeType) {
-                                Text(viewModel.percentSymbol).tag(FeeLineDetailsViewModel.FeeType.percentage)
-                                Text(viewModel.currencySymbol).tag(FeeLineDetailsViewModel.FeeType.fixed)
+                            Picker("", selection: $viewModel.feeOrDiscountType) {
+                                Text(viewModel.percentSymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
+                                Text(viewModel.currencySymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
                             }
-                            .onChange(of: viewModel.feeType, perform: { feeType in
-                                switch feeType {
+                            .onChange(of: viewModel.feeOrDiscountType, perform: { type in
+                                switch type {
                                 case .fixed:
                                     focusFixedAmountInput = true
                                 case .percentage:
@@ -47,7 +47,7 @@ struct FeeLineDetails: View {
                         }
 
                         Group {
-                            switch viewModel.feeType {
+                            switch viewModel.feeOrDiscountType {
                             case .fixed:
                                 inputFixedField
                             case .percentage:
@@ -67,9 +67,9 @@ struct FeeLineDetails: View {
 
                     Spacer(minLength: Layout.sectionSpacing)
 
-                    if viewModel.isExistingFeeLine {
+                    if viewModel.isExistingLine {
                         Section {
-                            Button(Localization.remove) {
+                            Button(viewModel.stringsProvider.removeButtonTitle) {
                                 viewModel.didSelectSave(nil)
                                 presentation.wrappedValue.dismiss()
                             }
@@ -85,7 +85,7 @@ struct FeeLineDetails: View {
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-            .navigationTitle(viewModel.isExistingFeeLine ? Localization.fee : Localization.addFee)
+            .navigationTitle(viewModel.stringsProvider.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -99,7 +99,7 @@ struct FeeLineDetails: View {
                         presentation.wrappedValue.dismiss()
                     }
                     .disabled(viewModel.shouldDisableDoneButton)
-                    .accessibilityIdentifier("add-fee-done-button")
+                    .accessibilityIdentifier(viewModel.stringsProvider.doneButtonAccessibilityIdentifier)
                 }
             }
         }
@@ -121,7 +121,7 @@ struct FeeLineDetails: View {
                     .onTapGesture {
                         focusFixedAmountInput = true
                     }
-                    .accessibilityIdentifier("add-fee-fixed-amount-field")
+                    .accessibilityIdentifier(viewModel.stringsProvider.fixedAmountFieldAccessibilityIdentifier)
             }
         }
         .frame(minHeight: Layout.rowHeight)
@@ -151,7 +151,7 @@ struct FeeLineDetails: View {
 }
 
 // MARK: Constants
-private extension FeeLineDetails {
+private extension FeeOrDiscountLineDetailsView {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let dividerPadding: CGFloat = 16.0
@@ -160,31 +160,27 @@ private extension FeeLineDetails {
     }
 
     enum Localization {
-        static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
-        static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
-
-        static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Fee Details screen during order creation"
-                                                   + "Parameters: %1$@ - currency symbol")
+        static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Fee/Discounts Details screen"
+                                                   + "during order creation Parameters: %1$@ - currency symbol")
 
         static let percentageField = NSLocalizedString("Percentage (%1$@)",
-                                                       comment: "Title for the amount field on the Fee Details screen during order creation"
+                                                       comment: "Title for the amount field on the Fee/Discounts Details screen during order creation"
                                                        + "Parameters: %1$@ - percent sign")
         static let calculatedAmount = NSLocalizedString("Calculated amount",
                                                         comment: "Title for the helper field describing calculated amount for given percentage")
 
-        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Fee Details screen")
-        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Fee Details screen")
-        static let remove = NSLocalizedString("Remove Fee from Order",
-                                              comment: "Text for the button to remove a fee from the order during order creation")
+        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Fee/Discounts Details screen")
+        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Fee/Discounts Details screen")
     }
 }
 
-struct FeeLineDetails_Previews: PreviewProvider {
+struct FeeOrDiscountLineDetails_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = FeeLineDetailsViewModel(isExistingFeeLine: true,
-                                                baseAmountForPercentage: 200,
-                                                feesTotal: "10",
-                                                didSelectSave: { _ in })
-        FeeLineDetails(viewModel: viewModel)
+        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
+                                                          baseAmountForPercentage: 200,
+                                                          initialTotal: "10",
+                                                          lineType: .fee,
+                                                          didSelectSave: { _ in })
+        FeeOrDiscountLineDetailsView(viewModel: viewModel)
     }
 }

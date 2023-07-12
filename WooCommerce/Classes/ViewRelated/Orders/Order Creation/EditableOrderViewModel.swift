@@ -247,15 +247,14 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Saves a fee.
     ///
-    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
-    func saveFeeLine(_ feeLine: OrderFeeLine?) {
-        orderSynchronizer.setFee.send(feeLine)
-
-        if feeLine != nil {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
-        } else {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
+    /// - Parameter formattedFeeLine: Optional fee line object to save. `nil` will remove existing fee line.
+    /// 
+    func saveFeeLine(_ formattedFeeLine: String?) {
+        guard let formattedFeeLine = formattedFeeLine else {
+            return removeFee()
         }
+
+        addFee(formattedFeeLine)
     }
 
     /// Saves a coupon line after an edition on it.
@@ -443,6 +442,14 @@ final class EditableOrderViewModel: ObservableObject {
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+    }
+
+    func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {
+        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, discount: discount) else {
+            return
+        }
+
+        orderSynchronizer.setProduct.send(productInput)
     }
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
@@ -683,7 +690,7 @@ extension EditableOrderViewModel {
         let showNonEditableIndicators: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
-        let feeLineViewModel: FeeLineDetailsViewModel
+        let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
         let addCouponLineViewModel: CouponLineDetailsViewModel
 
         init(siteID: Int64 = 0,
@@ -706,7 +713,7 @@ extension EditableOrderViewModel {
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
-             saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
+             saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
@@ -731,9 +738,10 @@ extension EditableOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
-            self.feeLineViewModel = FeeLineDetailsViewModel(isExistingFeeLine: shouldShowFees,
-                                                            baseAmountForPercentage: feesBaseAmountForPercentage,
-                                                            feesTotal: feeLineTotal,
+            self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
+                                                                      baseAmountForPercentage: feesBaseAmountForPercentage,
+                                                                      initialTotal: feeLineTotal,
+                                                                      lineType: .fee,
                                                             didSelectSave: saveFeeLineClosure)
             self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                                      siteID: siteID,
@@ -1167,7 +1175,7 @@ private extension EditableOrderViewModel {
     /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
     /// If the referenced product can't be found, `nil` is returned.
     ///
-    private func createUpdateProductInput(item: OrderItem, quantity: Decimal) -> OrderSyncProductInput? {
+    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal = 0) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.
         let product: OrderSyncProductInput.ProductType? = {
             if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -1187,7 +1195,7 @@ private extension EditableOrderViewModel {
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity)
+        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount)
     }
 
     /// Creates a `ProductInOrderViewModel` based on the provided order item id.
@@ -1195,16 +1203,24 @@ private extension EditableOrderViewModel {
     func createSelectedProductViewModel(itemID: Int64) -> ProductInOrderViewModel? {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
-        guard
-            let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-            let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false)
-        else {
+        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
+              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal),
+              let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false) else {
             return nil
         }
 
-        return ProductInOrderViewModel(productRowViewModel: rowViewModel) { [weak self] in
-            self?.removeItemFromOrder(orderItem)
-        }
+        return ProductInOrderViewModel(productRowViewModel: rowViewModel,
+                                       baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                                       onRemoveProduct: { [weak self] in
+                                            self?.removeItemFromOrder(orderItem)
+                                       },
+                                       onSaveFormattedDiscount: { [weak self] formattedDiscount in
+                                            guard let formattedDiscount = formattedDiscount,
+                                                  let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
+                                                return
+                                            }
+                                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
+        })
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.
@@ -1302,6 +1318,17 @@ private extension EditableOrderViewModel {
     func removeCoupon(with code: String) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCouponRemove(flow: flow.analyticsFlow))
         orderSynchronizer.removeCoupon.send(code)
+    }
+
+    func addFee(_ formattedFeeLine: String) {
+        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
+        orderSynchronizer.setFee.send(feeLine)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func removeFee() {
+        orderSynchronizer.setFee.send(nil)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
     }
 }
 

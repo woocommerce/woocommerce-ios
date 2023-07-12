@@ -55,7 +55,7 @@ struct OrderPaymentSection: View {
                 }
             feesRow
                 .sheet(isPresented: $shouldShowFeeLineDetails) {
-                    FeeLineDetails(viewModel: viewModel.feeLineViewModel)
+                    FeeOrDiscountLineDetailsView(viewModel: viewModel.feeLineViewModel)
                 }
 
             VStack {

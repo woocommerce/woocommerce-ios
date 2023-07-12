@@ -16,7 +16,7 @@ class ProductInputTransformerTests: XCTestCase {
     func test_sending_a_new_product_input_adds_an_item_to_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
         let originalOrder = OrderFactory.emptyNewOrder
 
         // When
@@ -38,8 +38,8 @@ class ProductInputTransformerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let anotherProduct = Product.fake().copy(productID: anotherSampleProductID, price: "9.99")
         let input = [
-            OrderSyncProductInput(product: .product(product), quantity: 1),
-            OrderSyncProductInput(product: .product(anotherProduct), quantity: 1)
+            OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0),
+            OrderSyncProductInput(product: .product(anotherProduct), quantity: 1, discount: 0)
         ]
         let originalOrder = OrderFactory.emptyNewOrder
 
@@ -69,7 +69,7 @@ class ProductInputTransformerTests: XCTestCase {
     func test_sending_a_new_product_variation_input_adds_an_item_to_order() throws {
         // Given
         let productVariation = ProductVariation.fake().copy(productID: sampleProductID, productVariationID: sampleProductVariationID, price: "9.99")
-        let input = OrderSyncProductInput(product: .variation(productVariation), quantity: 1)
+        let input = OrderSyncProductInput(product: .variation(productVariation), quantity: 1, discount: 0)
         let originalOrder = OrderFactory.emptyNewOrder
 
         // When
@@ -95,8 +95,8 @@ class ProductInputTransformerTests: XCTestCase {
                                                                    productVariationID: anotherSampleProductVariationID,
                                                                    price: "9.99")
         let input = [
-            OrderSyncProductInput(product: .variation(productVariation), quantity: 1),
-            OrderSyncProductInput(product: .variation(anotherProductVariation), quantity: 1)
+            OrderSyncProductInput(product: .variation(productVariation), quantity: 1, discount: 0),
+            OrderSyncProductInput(product: .variation(anotherProductVariation), quantity: 1, discount: 0)
         ]
         let originalOrder = OrderFactory.emptyNewOrder
 
@@ -127,25 +127,25 @@ class ProductInputTransformerTests: XCTestCase {
     func test_sending_a_new_product_input_twice_adds_adds_two_items_to_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let input1 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        let input1 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
         let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
-        let input2 = OrderSyncProductInput(id: sampleInputID + 1, product: .product(product), quantity: 1)
+        let input2 = OrderSyncProductInput(id: sampleInputID + 1, product: .product(product), quantity: 1, discount: 0)
         let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // Then
         XCTAssertEqual(update2.items.count, 2)
     }
 
-    func test_sending_an_update_product_input_updates_item_on_order() throws {
+    func test_sending_an_update_product_with_new_quantity_input_updates_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
-        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
-        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2)
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2, discount: 0)
         let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // Then
@@ -158,16 +158,38 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.total, "19.98")
     }
 
+    func test_sending_a_product_with_a_discount_input_updates_item_on_order() throws {
+        // Given
+        let price: Decimal = 9.99
+        let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let discount: Decimal = 1
+
+        // When
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 1)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // Then
+        let item = try XCTUnwrap(update2.items.first)
+        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.price as Decimal, price)
+        XCTAssertEqual(item.subtotal, "\(item.price)")
+        XCTAssertEqual(item.total, "\(price - discount)")
+    }
+
     func test_updatedOrder_when_updateMultipleItems_sends_an_updated_product_input_then_updates_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
-        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
+        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let initialOrder = ProductInputTransformer.updateMultipleItems(with: [productInput],
                                                                        on: OrderFactory.emptyNewOrder,
                                                                        shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
-        let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2)
+        let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 2, discount: 0)
         let updatedOrder = ProductInputTransformer.updateMultipleItems(with: [productInput2], on: initialOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // Then
@@ -191,7 +213,7 @@ class ProductInputTransformerTests: XCTestCase {
         let order = Order.fake().copy(items: [item])
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
+        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2, discount: 0)
         let updatedOrder = ProductInputTransformer.update(input: input, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
 
         // Then
@@ -208,7 +230,7 @@ class ProductInputTransformerTests: XCTestCase {
         let order = Order.fake().copy(items: [item])
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
+        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2, discount: 0)
         let updatedOrder = ProductInputTransformer.updateMultipleItems(with: [input], on: order, shouldUpdateOrDeleteZeroQuantities: .update)
 
         // Then
@@ -221,11 +243,11 @@ class ProductInputTransformerTests: XCTestCase {
     func test_sending_a_zero_quantity_update_product_input_deletes_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
-        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0)
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0, discount: 0)
         let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // Then
@@ -235,13 +257,13 @@ class ProductInputTransformerTests: XCTestCase {
     func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_deletes_zero_quantities_then_deletes_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
+        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let initialOrderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput],
                                                                              on: OrderFactory.emptyNewOrder,
                                                                              shouldUpdateOrDeleteZeroQuantities: .delete)
 
         // When
-        let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0)
+        let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0, discount: 0)
         let orderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput2],
                                                                       on: initialOrderUpdate,
                                                                       shouldUpdateOrDeleteZeroQuantities: .delete)
@@ -252,11 +274,11 @@ class ProductInputTransformerTests: XCTestCase {
     func test_sending_a_zero_quantity_update_product_input_does_not_delete_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .update)
 
         // When
-        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0)
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0, discount: 0)
         let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .update)
 
         // Then
@@ -267,13 +289,13 @@ class ProductInputTransformerTests: XCTestCase {
     func test_order_when_updateMultipleItems_with_zero_quantity_product_input_and_updates_zero_quantities_then_updates_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
-        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1)
+        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
         let initialOrderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput],
                                                                              on: OrderFactory.emptyNewOrder,
                                                                              shouldUpdateOrDeleteZeroQuantities: .update)
 
         // When
-        let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0)
+        let productInput2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 0, discount: 0)
         let orderUpdate = ProductInputTransformer.updateMultipleItems(with: [productInput2],
                                                                       on: initialOrderUpdate,
                                                                       shouldUpdateOrDeleteZeroQuantities: .update)

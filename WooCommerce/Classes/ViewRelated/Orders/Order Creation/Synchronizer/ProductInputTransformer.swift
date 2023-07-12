@@ -9,13 +9,18 @@ struct ProductInputTransformer {
     struct OrderItemParameters {
         let quantity: Decimal
         let price: Decimal
+        let discount: Decimal
         let productID: Int64
         let variationID: Int64?
+        private var subTotalDecimal: Decimal {
+            price * quantity
+        }
+
         var subtotal: String {
-            "\(price * quantity)"
+            "\(subTotalDecimal)"
         }
         var total: String {
-            subtotal
+            "\(subTotalDecimal - discount)"
         }
     }
 
@@ -128,13 +133,17 @@ private extension ProductInputTransformer {
             switch input.product {
             case .product(let product):
                 let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: product.price) ?? .zero
-                return OrderItemParameters(quantity: input.quantity, price: price, productID: product.productID, variationID: nil)
+                return OrderItemParameters(quantity: input.quantity, price: price, discount: input.discount, productID: product.productID, variationID: nil)
             case .productID(let productID):
                 let price: Decimal = existingItem?.price.decimalValue ?? .zero
-                return OrderItemParameters(quantity: input.quantity, price: price, productID: productID, variationID: nil)
+                return OrderItemParameters(quantity: input.quantity, price: price, discount: input.discount, productID: productID, variationID: nil)
             case .variation(let variation):
                 let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: variation.price) ?? .zero
-                return OrderItemParameters(quantity: input.quantity, price: price, productID: variation.productID, variationID: variation.productVariationID)
+                return OrderItemParameters(quantity: input.quantity,
+                                           price: price,
+                                           discount: input.discount,
+                                           productID: variation.productID,
+                                           variationID: variation.productVariationID)
             }
         }()
 

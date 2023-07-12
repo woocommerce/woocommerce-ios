@@ -65,7 +65,7 @@ struct ProductInOrder: View {
                         Divider()
                     }
                     .background(Color(.listForeground(modal: false)))
-                    .renderedIf(viewModel.addedDiscount > 0)
+                    .renderedIf(viewModel.showCurrentDiscountSection)
 
                     Spacer(minLength: Layout.sectionSpacing)
 

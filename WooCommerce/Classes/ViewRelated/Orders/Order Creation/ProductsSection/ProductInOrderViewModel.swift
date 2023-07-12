@@ -27,6 +27,10 @@ final class ProductInOrderViewModel: Identifiable {
         isAddingDiscountToProductEnabled && addedDiscount == 0
     }
 
+    var showCurrentDiscountSection: Bool {
+        isAddingDiscountToProductEnabled && addedDiscount != 0
+    }
+
     let onSaveFormattedDiscount: (String?) -> Void
 
     var viewDismissPublisher = PassthroughSubject<(), Never>()

@@ -5,6 +5,14 @@ import WooFoundation
 /// View model for `ProductInOrder`.
 ///
 final class ProductInOrderViewModel: Identifiable {
+    /// Encapsulates the necessary information to execute adding discounts to products
+    /// 
+    struct DiscountConfiguration {
+        let addedDiscount: Decimal
+        let baseAmountForDiscountPercentage: Decimal
+        let onSaveFormattedDiscount: (String?) -> Void
+    }
+
     /// The product being edited.
     ///
     let productRowViewModel: ProductRowViewModel
@@ -38,18 +46,15 @@ final class ProductInOrderViewModel: Identifiable {
     private let currencyFormatter: CurrencyFormatter
 
     init(productRowViewModel: ProductRowViewModel,
-         addedDiscount: Decimal,
-         baseAmountForDiscountPercentage: Decimal,
+         productDiscountConfiguration: DiscountConfiguration?,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         onRemoveProduct: @escaping () -> Void,
-         onSaveFormattedDiscount: @escaping (String?) -> Void,
-         isAddingDiscountToProductEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4)) {
+         onRemoveProduct: @escaping () -> Void) {
         self.productRowViewModel = productRowViewModel
-        self.addedDiscount = addedDiscount
-        self.baseAmountForDiscountPercentage = baseAmountForDiscountPercentage
+        self.addedDiscount = productDiscountConfiguration?.addedDiscount ?? .zero
+        self.baseAmountForDiscountPercentage = productDiscountConfiguration?.baseAmountForDiscountPercentage  ?? .zero
         self.onRemoveProduct = onRemoveProduct
-        self.onSaveFormattedDiscount = onSaveFormattedDiscount
-        self.isAddingDiscountToProductEnabled = isAddingDiscountToProductEnabled
+        self.onSaveFormattedDiscount = productDiscountConfiguration?.onSaveFormattedDiscount ?? { _ in }
+        self.isAddingDiscountToProductEnabled = productDiscountConfiguration != nil
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
     }
 

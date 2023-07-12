@@ -1208,25 +1208,37 @@ private extension EditableOrderViewModel {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
         guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal),
               let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false) else {
             return nil
         }
 
         return ProductInOrderViewModel(productRowViewModel: rowViewModel,
-                                       addedDiscount: currentDiscount(on: orderItem),
-                                       baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                                       productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
                                        onRemoveProduct: { [weak self] in
                                             self?.removeItemFromOrder(orderItem)
-                                       },
-                                       onSaveFormattedDiscount: { [weak self] formattedDiscount in
-                                            guard let formattedDiscount = formattedDiscount,
-                                                  let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
-                                                self?.addDiscountToOrderItem(item: orderItem, discount: 0)
-                                                return
-                                            }
-                                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
-        })
+                                       })
+    }
+
+    /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
+    ///
+    func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductInOrderViewModel.DiscountConfiguration? {
+        guard featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4),
+              orderSynchronizer.order.coupons.isEmpty,
+              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal) else {
+            return nil
+        }
+
+        return .init(addedDiscount: currentDiscount(on: orderItem),
+                     baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                     onSaveFormattedDiscount: { [weak self] formattedDiscount in
+                        guard let formattedDiscount = formattedDiscount,
+                              let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
+                            self?.addDiscountToOrderItem(item: orderItem, discount: 0)
+                            return
+                        }
+
+                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
+                    })
     }
 
     /// Calculates the discount on an order item, that is, subtotal minus total

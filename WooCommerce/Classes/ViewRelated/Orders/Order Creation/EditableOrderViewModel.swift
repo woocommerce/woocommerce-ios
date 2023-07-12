@@ -679,7 +679,8 @@ extension EditableOrderViewModel {
 
         let couponLineViewModels: [CouponLineViewModel]
         let couponCode: String
-        let discountTotal: String
+        var discountTotal: String
+        let shouldShowDiscountTotal: Bool
         let shouldShowCoupon: Bool
         let shouldDisableAddingCoupons: Bool
 
@@ -710,6 +711,7 @@ extension EditableOrderViewModel {
              couponLineViewModels: [CouponLineViewModel] = [],
              couponCode: String = "",
              discountTotal: String = "",
+             shouldShowDiscountTotal: Bool = false,
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
@@ -734,6 +736,7 @@ extension EditableOrderViewModel {
             self.couponLineViewModels = couponLineViewModels
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
+            self.shouldShowDiscountTotal = shouldShowDiscountTotal
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
@@ -1054,6 +1057,7 @@ private extension EditableOrderViewModel {
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: order.discountTotal,
+                                            shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,

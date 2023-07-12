@@ -33,7 +33,8 @@ struct AddProductFromImageScannedTextView_Previews: PreviewProvider {
     static var previews: some View {
         List {
             AddProductFromImageScannedTextView(viewModel: .init(text: "Parmesan", isSelected: true))
-            AddProductFromImageScannedTextView(viewModel: .init(text: "Looking for a healthy snack option that's both delicious and convenient? Look no further than our downloadable variety nuts!", isSelected: false))
+            AddProductFromImageScannedTextView(viewModel: .init(text: "Looking for a healthy snack option that's both delicious and convenient?",
+                                                                isSelected: false))
         }
     }
 }

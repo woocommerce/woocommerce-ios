@@ -37,7 +37,7 @@ struct ProductInOrder: View {
                     }
                     .background(Color(.listForeground(modal: false)))
                     .sheet(isPresented: $shouldShowDiscountLineDetails) {
-                        FeeOrDiscountLineDetails(viewModel: FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+                        FeeOrDiscountLineDetailsView(viewModel: FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                                                               baseAmountForPercentage: 50,
                                                                                               total: "0.00",
                                                                                               lineType: .discount,

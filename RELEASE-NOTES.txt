@@ -2,6 +2,7 @@
 
 14.5
 -----
+- [*] Product details: The share button is displayed with text instead of icon for better discoverability. [https://github.com/woocommerce/woocommerce-ios/pull/10216]
 
 
 14.4

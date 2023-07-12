@@ -17,7 +17,6 @@ struct OrderSyncProductInput {
     ///
     enum ProductType {
         case product(Product)
-        case productID(Int64)
         case variation(ProductVariation)
     }
     var id: Int64 = .zero

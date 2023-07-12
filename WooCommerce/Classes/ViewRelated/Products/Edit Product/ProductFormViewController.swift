@@ -54,7 +54,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         presentationStyle.createExitForm(viewController: self)
     }()
 
-    private lazy var shareBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action,
+    private lazy var shareBarButtonItem = UIBarButtonItem(title: Localization.share,
+                                                          style: .plain,
                                                           target: self,
                                                           action: #selector(shareProduct))
 
@@ -1843,6 +1844,7 @@ private extension ProductFormViewController {
 // MARK: Constants
 //
 private enum Localization {
+    static let share = NSLocalizedString("Share", comment: "Action for sharing a product from the product details screen")
     static let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new product remotely with a published status")
     static let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
     static let previewTitle = NSLocalizedString("Preview", comment: "Action for previewing draft Product changes in the webview")

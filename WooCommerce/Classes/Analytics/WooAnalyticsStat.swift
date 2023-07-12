@@ -565,12 +565,15 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Add Product Events
     //
+    case addProductStarted = "add_product_started"
     case addProductCreationTypeSelected = "add_product_creation_type_selected"
     case addProductTypeSelected = "add_product_product_type_selected"
     case addProductPublishTapped = "add_product_publish_tapped"
     case addProductSaveAsDraftTapped = "add_product_save_as_draft_tapped"
     case addProductSuccess = "add_product_success"
     case addProductFailed = "add_product_failed"
+    // Exposure event for the A/B experiment.
+    case addProductFromImageEligible = "add_product_from_image_eligible"
 
     // MARK: Duplicate Product events
     case duplicateProductSuccess = "duplicate_product_success"

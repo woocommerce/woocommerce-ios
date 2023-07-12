@@ -845,14 +845,14 @@ private extension EditableOrderViewModel {
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productID == product.productID }) {
-                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0))
+                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
             }
         }
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productOrVariationID == variation.productVariationID }) {
-                productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1, discount: 0))
+                productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
             }
         }
 
@@ -983,11 +983,11 @@ private extension EditableOrderViewModel {
             case let .product(product):
                 allProducts.insert(product)
                 selectedProducts.append(product)
-                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1, discount: 0))
+                orderSynchronizer.setProduct.send(.init(product: .product(product), quantity: 1))
             case let .variation(productVariation):
                 allProductVariations.insert(productVariation)
                 selectedProductVariations.append(productVariation)
-                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1, discount: 0))
+                orderSynchronizer.setProduct.send(.init(product: .variation(productVariation), quantity: 1))
             }
 
             return

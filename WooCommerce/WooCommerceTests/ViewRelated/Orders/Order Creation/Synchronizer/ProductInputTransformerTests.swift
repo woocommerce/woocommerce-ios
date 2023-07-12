@@ -158,7 +158,7 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.total, "19.98")
     }
 
-    func test_sending_an_product_with_a_discount_input_updates_item_on_order() throws {
+    func test_sending_a_product_with_a_discount_input_updates_item_on_order() throws {
         // Given
         let price: Decimal = 9.99
         let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")

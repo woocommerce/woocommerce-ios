@@ -27,6 +27,9 @@ final class AddProductFromImageEligibilityChecker: AddProductFromImageEligibilit
     }
 
     func isEligible() -> Bool {
+        // `isEligibleToParticipateInABTest` isn't necessary here since `isEligibleToParticipateInABTest` is
+        // checked before this in its use case, but it's still included here so that it remains a condition when
+        // removing the A/B experiment.
         guard isEligibleToParticipateInABTest() else {
             return false
         }

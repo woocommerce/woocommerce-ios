@@ -1056,7 +1056,7 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
-                                            discountTotal: order.discountTotal,
+                                            discountTotal: orderTotals.discountTotal.stringValue,
                                             shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,

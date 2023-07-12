@@ -444,6 +444,14 @@ final class EditableOrderViewModel: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 
+    func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {
+        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, discount: discount) else {
+            return
+        }
+
+        orderSynchronizer.setProduct.send(productInput)
+    }
+
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
@@ -732,7 +740,7 @@ extension EditableOrderViewModel {
                                                                       didSelectSave: saveShippingLineClosure)
             self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
                                                                       baseAmountForPercentage: feesBaseAmountForPercentage,
-                                                                      total: feeLineTotal,
+                                                                      initialTotal: feeLineTotal,
                                                                       lineType: .fee,
                                                             didSelectSave: saveFeeLineClosure)
             self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
@@ -1167,7 +1175,7 @@ private extension EditableOrderViewModel {
     /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
     /// If the referenced product can't be found, `nil` is returned.
     ///
-    private func createUpdateProductInput(item: OrderItem, quantity: Decimal) -> OrderSyncProductInput? {
+    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal = 0) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.
         let product: OrderSyncProductInput.ProductType? = {
             if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -1187,7 +1195,7 @@ private extension EditableOrderViewModel {
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity)
+        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount)
     }
 
     /// Creates a `ProductInOrderViewModel` based on the provided order item id.
@@ -1195,16 +1203,24 @@ private extension EditableOrderViewModel {
     func createSelectedProductViewModel(itemID: Int64) -> ProductInOrderViewModel? {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
-        guard
-            let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-            let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false)
-        else {
+        guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
+              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal),
+              let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false) else {
             return nil
         }
 
-        return ProductInOrderViewModel(productRowViewModel: rowViewModel) { [weak self] in
-            self?.removeItemFromOrder(orderItem)
-        }
+        return ProductInOrderViewModel(productRowViewModel: rowViewModel,
+                                       baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                                       onRemoveProduct: { [weak self] in
+                                            self?.removeItemFromOrder(orderItem)
+                                       },
+                                       onSaveFormattedDiscount: { [weak self] formattedDiscount in
+                                            guard let formattedDiscount = formattedDiscount,
+                                                  let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
+                                                return
+                                            }
+                                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
+        })
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.

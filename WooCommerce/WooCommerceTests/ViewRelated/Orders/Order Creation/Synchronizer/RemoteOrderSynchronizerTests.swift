@@ -51,7 +51,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
         synchronizer.setProduct.send(input)
 
         // Then
@@ -67,7 +67,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 
         // When
-        let input = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
+        let input = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1, discount: 0)
         synchronizer.setProduct.send(input)
 
         // Then
@@ -86,7 +86,8 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let productInput = OrderSyncProductInput(
             id: sampleInputID,
             product: .product(product),
-            quantity: 1)
+            quantity: 1,
+            discount: 0)
 
         // Confidence check
         XCTAssertEqual(synchronizer.order.items.count, 0)
@@ -111,7 +112,8 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let productInput = OrderSyncProductInput(
             id: sampleInputID,
             product: .productID(sampleProductID),
-            quantity: 1)
+            quantity: 1,
+            discount: 0)
 
         // Confidence check
         XCTAssertEqual(synchronizer.order.items.count, 0)
@@ -139,11 +141,13 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let productInput = OrderSyncProductInput(
             id: sampleInputID,
             product: .product(product),
-            quantity: 1)
+            quantity: 1,
+            discount: 0)
         let anotherProductInput = OrderSyncProductInput(
             id: anotherSampleInputID,
             product: .product(anotherProduct),
-            quantity: 1)
+            quantity: 1,
+            discount: 0)
 
         // Confidence check
         XCTAssertEqual(synchronizer.order.items.count, 0)
@@ -173,11 +177,13 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let productInput = OrderSyncProductInput(
             id: sampleInputID,
             product: .productID(12345),
-            quantity: 1)
+            quantity: 1,
+            discount: 0)
         let anotherProductInput = OrderSyncProductInput(
             id: anotherSampleInputID,
             product: .productID(67890),
-            quantity: 1)
+            quantity: 1,
+            discount: 0)
 
         // Confidence check
         XCTAssertEqual(synchronizer.order.items.count, 0)
@@ -207,11 +213,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
-        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
         synchronizer.setProduct.send(initialInput)
 
         // When
-        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2, discount: 0)
         synchronizer.setProduct.send(updatedInput)
 
         // Then
@@ -225,11 +231,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
-        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1, discount: 0)
         synchronizer.setProduct.send(initialInput)
 
         // When
-        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 2)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 2, discount: 0)
         synchronizer.setProduct.send(updatedInput)
 
         // Then
@@ -245,11 +251,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         let product = Product.fake().copy(productID: sampleProductID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
-        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
         synchronizer.setProduct.send(initialInput)
 
         // When
-        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 0)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 0, discount: 0)
         synchronizer.setProduct.send(updatedInput)
 
         // Then
@@ -261,11 +267,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
-        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1)
+        let initialInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 1, discount: 0)
         synchronizer.setProduct.send(initialInput)
 
         // When
-        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 0)
+        let updatedInput = OrderSyncProductInput(id: sampleInputID, product: .productID(sampleProductID), quantity: 0, discount: 0)
         synchronizer.setProduct.send(updatedInput)
 
         // Then
@@ -350,7 +356,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -374,7 +380,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -399,7 +405,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -427,7 +433,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -456,7 +462,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -483,7 +489,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -513,10 +519,10 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1, discount: 0)
             self.createOrder(on: synchronizer, input: initialInput)
 
-            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2)
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -546,10 +552,10 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 1)
+            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 1, discount: 0)
             self.createOrder(on: synchronizer, input: initialInput)
 
-            let input = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2)
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -580,11 +586,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            let initialInput = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1, discount: 0)
             self.createOrder(on: synchronizer, input: initialInput)
 
             // Update the same input, using productID ProductType
-            let updatedInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2)
+            let updatedInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2, discount: 0)
             synchronizer.setProduct.send(updatedInput)
         }
 
@@ -836,10 +842,10 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         synchronizer.setNote.send(firstNote)
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
-        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2, discount: 0)
         synchronizer.setProduct.send(input2)
         synchronizer.setNote.send(expectedNote)
 
@@ -903,7 +909,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
                 .store(in: &self.subscriptions)
 
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -934,7 +940,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
                 .store(in: &self.subscriptions)
 
-            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -959,7 +965,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Wait for order creation
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
         let states: [OrderSyncState] = waitFor { promise in
@@ -972,7 +978,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 .store(in: &self.subscriptions)
 
             // Trigger order update
-            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2, discount: 0)
             synchronizer.setProduct.send(input2)
         }
 
@@ -996,7 +1002,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Wait for order creation
-        let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+        let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
         let states: [OrderSyncState] = waitFor { promise in
@@ -1009,7 +1015,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 .store(in: &self.subscriptions)
 
             // Trigger order update
-            let updatedInput = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 2)
+            let updatedInput = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 2, discount: 0)
             synchronizer.setProduct.send(updatedInput)
         }
 
@@ -1035,7 +1041,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Wait for order creation
-        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
         let states: [OrderSyncState] = waitFor { promise in
@@ -1048,7 +1054,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 .store(in: &self.subscriptions)
 
             // Trigger order update
-            let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2)
+            let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2, discount: 0)
             synchronizer.setProduct.send(input2)
         }
 
@@ -1073,7 +1079,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Wait for order creation
-        let input = OrderSyncProductInput(id: sampleInputID, product: .productID(self.sampleProductID), quantity: 1)
+        let input = OrderSyncProductInput(id: sampleInputID, product: .productID(self.sampleProductID), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
         let states: [OrderSyncState] = waitFor { promise in
@@ -1086,7 +1092,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 .store(in: &self.subscriptions)
 
             // Trigger order update
-            let updatedInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2)
+            let updatedInput = OrderSyncProductInput(id: self.sampleInputID, product: .productID(self.sampleProductID), quantity: 2, discount: 0)
             synchronizer.setProduct.send(updatedInput)
         }
 
@@ -1113,7 +1119,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
         XCTAssertTrue(receivedError)
@@ -1128,7 +1134,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -1154,7 +1160,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
         XCTAssertTrue(receivedError)
@@ -1169,7 +1175,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -1202,7 +1208,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
                 .store(in: &self.subscriptions)
 
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -1234,7 +1240,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
                 .store(in: &self.subscriptions)
 
-            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+            let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -1260,7 +1266,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Wait for order creation
-        let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+        let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
         let states: [OrderSyncState] = waitFor { promise in
@@ -1273,7 +1279,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 .store(in: &self.subscriptions)
 
             // Trigger order update
-            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2, discount: 0)
             synchronizer.setProduct.send(input2)
         }
 
@@ -1298,7 +1304,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Wait for order creation
-        let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1)
+        let input = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
         let states: [OrderSyncState] = waitFor { promise in
@@ -1311,7 +1317,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 .store(in: &self.subscriptions)
 
             // Trigger order update
-            let updatedInput = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 2)
+            let updatedInput = OrderSyncProductInput(product: .productID(self.sampleProductID), quantity: 2, discount: 0)
             synchronizer.setProduct.send(updatedInput)
         }
 
@@ -1339,10 +1345,10 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
-        let input1 = OrderSyncProductInput(product: .product(product), quantity: 1)
+        let input1 = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
         synchronizer.setProduct.send(input1)
 
-        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+        let input2 = OrderSyncProductInput(product: .product(product), quantity: 2, discount: 0)
         synchronizer.setProduct.send(input2)
 
         // Then
@@ -1362,7 +1368,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 switch action {
                 case .createOrder(_, _, let completion):
                     // Send update request before order is created
-                    let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+                    let input2 = OrderSyncProductInput(product: .product(product), quantity: 2, discount: 0)
                     synchronizer.setProduct.send(input2)
 
                     // Complete order creation
@@ -1378,7 +1384,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             }
 
             // Send creation request
-            let input1 = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input1 = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input1)
         }
     }
@@ -1463,11 +1469,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             }
 
             // Wait for order creation
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             self.createOrder(on: synchronizer, input: input)
 
             // Send order update
-            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2)
+            let input2 = OrderSyncProductInput(product: .product(product), quantity: 2, discount: 0)
             synchronizer.setProduct.send(input2)
         }
 
@@ -1499,7 +1505,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             }
 
             // Send order update
-            let input = OrderSyncProductInput(product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
 
@@ -1526,7 +1532,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1, discount: 0)
             synchronizer.setProduct.send(input)
         }
         XCTAssertTrue(orderCreationFailed)
@@ -1572,11 +1578,11 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             }
 
             // Wait for order creation
-            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1)
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1, discount: 0)
             self.createOrder(on: synchronizer, input: input)
 
             // Trigger order update
-            let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2)
+            let input2 = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 2, discount: 0)
             synchronizer.setProduct.send(input2)
         }
         XCTAssertTrue(orderUpdateFailed)
@@ -1664,7 +1670,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
             }
         }
 
-        let input = OrderSyncProductInput.init(product: .product(.fake()), quantity: 1)
+        let input = OrderSyncProductInput.init(product: .product(.fake()), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input)
 
         // When
@@ -1701,12 +1707,12 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Wait for order creation
-        let input1 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1)
+        let input1 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
         createOrder(on: synchronizer, input: input1)
 
         // Trigger product quantity updates
-        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2)
-        let input3 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 3)
+        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2, discount: 0)
+        let input3 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 3, discount: 0)
         synchronizer.setProduct.send(input2)
         synchronizer.setProduct.send(input3)
 

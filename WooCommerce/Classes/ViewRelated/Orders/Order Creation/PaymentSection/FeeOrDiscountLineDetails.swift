@@ -178,7 +178,7 @@ struct FeeOrDiscountLineDetails_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                           baseAmountForPercentage: 200,
-                                                          total: "10",
+                                                          initialTotal: "10",
                                                           lineType: .fee,
                                                           didSelectSave: { _ in })
         FeeOrDiscountLineDetailsView(viewModel: viewModel)

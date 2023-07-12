@@ -23,9 +23,10 @@ struct OrderSyncProductInput {
     var id: Int64 = .zero
     let product: ProductType
     let quantity: Decimal
+    var discount: Decimal = .zero
 
     func updating(id: Int64) -> OrderSyncProductInput {
-        .init(id: id, product: self.product, quantity: self.quantity)
+        .init(id: id, product: self.product, quantity: self.quantity, discount: discount)
     }
 }
 

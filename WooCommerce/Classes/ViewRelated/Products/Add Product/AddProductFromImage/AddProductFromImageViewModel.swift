@@ -25,6 +25,7 @@ final class AddProductFromImageViewModel: ObservableObject {
     @Published var name: String = ""
     @Published var suggestedName: String?
     @Published var description: String = ""
+    @Published var suggestedDescription: String?
 
     // MARK: - Product Image
 
@@ -78,6 +79,11 @@ final class AddProductFromImageViewModel: ObservableObject {
     func applySuggestedName() {
         name = suggestedName ?? ""
         suggestedName = nil
+    }
+
+    func applySuggestedDescription() {
+        description = suggestedDescription ?? ""
+        suggestedDescription = nil
     }
 }
 
@@ -137,6 +143,11 @@ private extension AddProductFromImageViewModel {
                     name = details.name
                 } else {
                     suggestedName = details.name
+                }
+                if description.isEmpty {
+                    description = details.description
+                } else {
+                    suggestedDescription = details.description
                 }
                 description = details.description
             case .failure(let error):

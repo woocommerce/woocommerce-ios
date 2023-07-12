@@ -67,7 +67,7 @@ struct AddProductFromImageView: View {
     //                                copyTextNotice = .init(title: Localization.textCopiedNotice)
     //                                ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
                             } label: {
-                                Label(Localization.copyGeneratedText, systemImage: "doc.on.doc")
+                                Text(Localization.copyGeneratedText)
                                     .secondaryBodyStyle()
                             }
                             .buttonStyle(.plain)
@@ -96,7 +96,7 @@ struct AddProductFromImageView: View {
                     .padding(Layout.suggestedTextInsets)
                     .background(
                         RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                            .foregroundColor(.init(uiColor: .tertiarySystemBackground))
+                            .foregroundColor(.init(uiColor: .systemGray6))
                     )
                 }
             }
@@ -105,10 +105,62 @@ struct AddProductFromImageView: View {
                 TextEditor(text: $viewModel.description)
                     .bodyStyle()
                     .foregroundColor(.secondary)
+                    .overlay(alignment: .topLeading) {
+                        Text("             ")
+                            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
+                            // TODO-JC: placeholder UI when loading image
+                            .shimmering(active: viewModel.isGeneratingDetails)
+                    }
+
+                if let suggestedDescription = viewModel.suggestedDescription, suggestedDescription.isNotEmpty {
+                    VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
+                        Text("Suggestion from photo")
+                            .captionStyle()
+                        Text(suggestedDescription)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .textSelection(.enabled)
+
+                        HStack {
+                            Spacer()
+                            // CTA to copy the generated text.
+                            Button {
+                                UIPasteboard.general.string = suggestedDescription
+                                //                                copyTextNotice = .init(title: Localization.textCopiedNotice)
+                                //                                ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
+                            } label: {
+                                Text(Localization.copyGeneratedText)
+                                    .secondaryBodyStyle()
+                            }
+                            .buttonStyle(LinkButtonStyle())
+                            .fixedSize(horizontal: true, vertical: false)
+
+                            // CTA to replace with the generated text.
+                            Button {
+                                viewModel.applySuggestedDescription()
+                            } label: {
+                                Image(systemName: "checkmark")
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                            .fixedSize(horizontal: true, vertical: false)
+
+                            // CTA to copy the generated text.
+                            Button {
+                                //                                UIPasteboard.general.string = suggestedName
+                                //                                copyTextNotice = .init(title: Localization.textCopiedNotice)
+                                //                                ServiceLocator.analytics.track(event: .ProductFormAI.productDescriptionAICopyButtonTapped())
+                            } label: {
+                                Image(systemName: "xmark")
+                            }
+                            .buttonStyle(LinkButtonStyle())
+                        }
+                    }
+                    .padding(Layout.suggestedTextInsets)
+                    .background(
+                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                            .foregroundColor(.init(uiColor: .tertiarySystemBackground))
+                    )
+                }
             }
-            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
-            // TODO-JC: placeholder UI when loading image
-            .shimmering(active: viewModel.isGeneratingDetails)
         }
         .navigationTitle(Localization.title)
         .toolbar {
@@ -155,7 +207,7 @@ private extension AddProductFromImageView {
         static let cornerRadius: CGFloat = 8
         static let productFeaturesInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let productFeaturesPlaceholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
-        static let suggestedTextInsets: EdgeInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
+        static let suggestedTextInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
     }
 }
 

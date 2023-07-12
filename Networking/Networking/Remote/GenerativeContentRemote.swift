@@ -34,34 +34,42 @@ public protocol GenerativeContentRemoteProtocol {
 /// Product: Remote Endpoints
 ///
 public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol {
+    private enum GenerativeContentRemoteError: Error {
+        case tokenNil
+    }
+
+    private var token: String?
+
     public func generateText(siteID: Int64,
                              base: String,
                              feature: GenerativeContentRemoteFeature) async throws -> String {
-        let path = "sites/\(siteID)/\(Path.text)"
-        /// We are skipping cache entirely to avoid showing outdated/duplicated text.
-        let parameters = [ParameterKey.textContent: base,
-                          ParameterKey.skipCache: "true",
-                          ParameterKey.feature: feature.rawValue]
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
-        return try await enqueue(request)
+        do {
+            guard let token else {
+                throw GenerativeContentRemoteError.tokenNil
+            }
+            return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
+        } catch GenerativeContentRemoteError.tokenNil,
+                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+            let token = try await fetchToken(siteID: siteID)
+            self.token = token
+            return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
+        }
     }
 
     public func identifyLanguage(siteID: Int64,
                                  string: String,
                                  feature: GenerativeContentRemoteFeature) async throws -> String {
-        let path = "sites/\(siteID)/\(Path.text)"
-        let prompt = [
-            "What is the ISO language code of the language used in the below text?" +
-            "Do not include any explanations and only provide the ISO language code in your response.",
-            "Text: ```\(string)```"
-        ].joined(separator: "\n")
-
-        /// We are skipping cache entirely to avoid showing outdated/duplicated text.
-        let parameters = [ParameterKey.textContent: prompt,
-                          ParameterKey.skipCache: "true",
-                          ParameterKey.feature: feature.rawValue]
-        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path, parameters: parameters)
-        return try await enqueue(request)
+        do {
+            guard let token else {
+                throw GenerativeContentRemoteError.tokenNil
+            }
+            return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
+        } catch GenerativeContentRemoteError.tokenNil,
+                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+            let token = try await fetchToken(siteID: siteID)
+            self.token = token
+            return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
+        }
     }
 }
 
@@ -72,20 +80,60 @@ private extension GenerativeContentRemote {
         let mapper = JWTTokenResponseMapper()
         return try await enqueue(request, mapper: mapper)
     }
+
+    func generateText(siteID: Int64,
+                      base: String,
+                      feature: GenerativeContentRemoteFeature,
+                      token: String) async throws -> String {
+        let parameters = [ParameterKey.token: token,
+                          ParameterKey.prompt: base,
+                          ParameterKey.feature: feature.rawValue]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: Path.textCompletion,
+                                    parameters: parameters)
+        let mapper = TextCompletionResponseMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    func identifyLanguage(siteID: Int64,
+                          string: String,
+                          feature: GenerativeContentRemoteFeature,
+                          token: String) async throws -> String {
+        let prompt = [
+            "What is the ISO language code of the language used in the below text?" +
+            "Do not include any explanations and only provide the ISO language code in your response.",
+            "Text: ```\(string)```"
+        ].joined(separator: "\n")
+        let parameters = [ParameterKey.token: token,
+                          ParameterKey.prompt: prompt,
+                          ParameterKey.feature: feature.rawValue]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: Path.textCompletion,
+                                    parameters: parameters)
+        let mapper = TextCompletionResponseMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 // MARK: - Constants
 //
 private extension GenerativeContentRemote {
     enum Path {
-        static let text = "jetpack-ai/completions"
+        static let textCompletion = "text-completion"
         static let jwtToken = "jetpack-openai-query/jwt"
     }
 
     enum ParameterKey {
-        static let textContent = "content"
-        static let skipCache = "skip_cache"
+        static let token = "token"
+        static let prompt = "prompt"
         static let feature = "feature"
+    }
+
+    enum TokenExpiredError {
+        static let code = "rest_forbidden"
+        static let message = "Sorry, you are not allowed to do that."
     }
 }
 
@@ -99,5 +147,18 @@ private struct JWTTokenResponseMapper: Mapper {
 
     struct JWTTokenResponse: Decodable {
         let token: String
+    }
+}
+
+// MARK: - Mapper to parse the `text-completion` endpoint response
+//
+private struct TextCompletionResponseMapper: Mapper {
+    func map(response: Data) throws -> String {
+        let decoder = JSONDecoder()
+        return try decoder.decode(TextCompletionResponse.self, from: response).completion
+    }
+
+    struct TextCompletionResponse: Decodable {
+        let completion: String
     }
 }

@@ -45,16 +45,21 @@ struct AddProductFromImageView: View {
                 }
             }
 
-            // Name & description fields.
+            // Name field.
             Section {
-                // TODO: 10180 - use `TextEditor` with a placeholder overlay
-                TextField(Localization.nameFieldPlaceholder, text: $viewModel.name)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                TextField(Localization.descriptionFieldPlaceholder, text: $viewModel.description)
-                    .lineLimit(5)
-                    .fixedSize(horizontal: false, vertical: true)
+                AddProductFromImageTextFieldView(viewModel: viewModel.nameViewModel,
+                                                 customizations: .init(lineLimit: 1...2))
             }
+            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder: [])
+            .shimmering(active: viewModel.isGeneratingDetails)
+
+            // Description field.
+            Section {
+                AddProductFromImageTextFieldView(viewModel: viewModel.descriptionViewModel,
+                                                 customizations: .init(lineLimit: 2...5))
+            }
+            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder: [])
+            .shimmering(active: viewModel.isGeneratingDetails)
 
             // Scanned text list.
             Section {
@@ -93,14 +98,6 @@ private extension AddProductFromImageView {
         static let title = NSLocalizedString(
             "Add product",
             comment: "Navigation bar title of the add product from image form."
-        )
-        static let nameFieldPlaceholder = NSLocalizedString(
-            "Name",
-            comment: "Product name placeholder on the add product from image form."
-        )
-        static let descriptionFieldPlaceholder = NSLocalizedString(
-            "Description",
-            comment: "Product description placeholder on the add product from image form."
         )
         static let continueButtonTitle = NSLocalizedString(
             "Continue",

@@ -18,12 +18,20 @@ final class AddProductFromImageViewModel: ObservableObject {
         }
     }
 
+    typealias TextFieldViewModel = AddProductFromImageTextFieldView.ViewModel
     typealias ImageState = EditableImageViewState
 
     // MARK: - Product Details
 
-    @Published var name: String = ""
-    @Published var description: String = ""
+    @Published var nameViewModel: TextFieldViewModel
+    @Published var descriptionViewModel: TextFieldViewModel
+
+    var name: String {
+        nameViewModel.text
+    }
+    var description: String {
+        descriptionViewModel.text
+    }
 
     // MARK: - Product Image
 
@@ -53,6 +61,8 @@ final class AddProductFromImageViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.onAddImage = onAddImage
+        self.nameViewModel = .init(text: "", placeholder: Localization.nameFieldPlaceholder)
+        self.descriptionViewModel = .init(text: "", placeholder: Localization.descriptionFieldPlaceholder)
 
         selectedImageSubscription = $imageState.compactMap { $0.image?.image }
         .sink { [weak self] image in
@@ -135,8 +145,8 @@ private extension AddProductFromImageViewModel {
     func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
         switch await generateProductDetails(from: scannedTexts) {
             case .success(let details):
-                name = details.name
-                description = details.description
+                nameViewModel.text = details.name
+                descriptionViewModel.text = details.description
             case .failure(let error):
                 DDLogError("⛔️ Error generating product details from scanned text: \(error)")
         }
@@ -149,5 +159,18 @@ private extension AddProductFromImageViewModel {
                 continuation.resume(returning: result)
             })
         }
+    }
+}
+
+private extension AddProductFromImageViewModel {
+    enum Localization {
+        static let nameFieldPlaceholder = NSLocalizedString(
+            "Name",
+            comment: "Product name placeholder on the add product from image form."
+        )
+        static let descriptionFieldPlaceholder = NSLocalizedString(
+            "Description",
+            comment: "Product description placeholder on the add product from image form."
+        )
     }
 }

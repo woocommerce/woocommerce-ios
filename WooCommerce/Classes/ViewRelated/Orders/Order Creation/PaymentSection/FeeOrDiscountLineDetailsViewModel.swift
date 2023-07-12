@@ -39,7 +39,7 @@ private struct DiscountStringsProvider: FeeOrDiscountLineDetailsStringsProvider 
         "add-discount-fixed-amount-field"
     }
 
-    enum Localization {
+    private enum Localization {
         static let addDiscount = NSLocalizedString("Add Discount", comment: "Title for the Discount screen during order creation")
         static let discount = NSLocalizedString("Discount", comment: "Title for the Discount Details screen during order creation")
         static let remove = NSLocalizedString("Remove Discount", comment: "Title for the Remove button in Details screen during order creation")
@@ -65,7 +65,7 @@ private struct FeeStringsProvider: FeeOrDiscountLineDetailsStringsProvider {
         "add-fee-fixed-amount-field"
     }
 
-    enum Localization {
+    private enum Localization {
         static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
         static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
         static let remove = NSLocalizedString("Remove Fee from Order",
@@ -256,12 +256,5 @@ private extension FeeOrDiscountLineDetailsViewModel {
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
-    }
-}
-
-private extension FeeOrDiscountLineDetailsViewModel {
-    enum Localization {
-        static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
-        static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
     }
 }

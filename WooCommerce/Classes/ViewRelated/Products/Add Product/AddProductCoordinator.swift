@@ -46,6 +46,10 @@ final class AddProductCoordinator: Coordinator {
     ///
     var onProductCreated: (Product) -> Void = { _ in }
 
+    private var storeHasProducts: Bool {
+        !productsResultsController.isEmpty
+    }
+
     private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
 
@@ -96,7 +100,7 @@ final class AddProductCoordinator: Coordinator {
         }
 
         ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
-                                                                                 storeHasProducts: storeHasProducts()))
+                                                                                 storeHasProducts: storeHasProducts))
 
         if shouldSkipBottomSheet() {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
@@ -134,11 +138,7 @@ private extension AddProductCoordinator {
     /// Returns `true` when there are existing products.
     ///
     func shouldShowGroupedProductType() -> Bool {
-        storeHasProducts()
-    }
-
-    func storeHasProducts() -> Bool {
-        !productsResultsController.isEmpty
+        storeHasProducts
     }
 
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.

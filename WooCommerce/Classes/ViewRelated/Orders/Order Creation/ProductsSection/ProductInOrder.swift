@@ -101,7 +101,7 @@ struct ProductInOrder_Previews: PreviewProvider {
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
                                                 baseAmountForDiscountPercentage: 0,
                                                 onRemoveProduct: {},
-                                                onSaveFormattedDiscount: {_ in })
+                                                onSaveFormattedDiscount: { _ in })
         ProductInOrder(viewModel: viewModel)
     }
 }

@@ -6,13 +6,13 @@ import Yosemite
 /// View model for `AddProductFromImageView` to handle user actions from the view and provide data for the view.
 @MainActor
 final class AddProductFromImageViewModel: ObservableObject {
+    /// View model for `AddProductFromImageScannedTextView`.
     final class ScannedTextViewModel: ObservableObject, Identifiable {
         let id: String = UUID().uuidString
         @Published var text: String
         @Published var isSelected: Bool
 
-        init(text: String,
-             isSelected: Bool) {
+        init(text: String, isSelected: Bool) {
             self.text = text
             self.isSelected = isSelected
         }

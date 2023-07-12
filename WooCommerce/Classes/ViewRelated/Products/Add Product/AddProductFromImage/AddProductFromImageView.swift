@@ -67,6 +67,7 @@ struct AddProductFromImageView: View {
 
                     // Info text about selecting/editing the scanned text list.
                     Text(Localization.scannedTextListInfo)
+                        .foregroundColor(.init(uiColor: .secondaryLabel))
                         .captionStyle()
                 }
                 List(viewModel.scannedTexts) { scannedText in

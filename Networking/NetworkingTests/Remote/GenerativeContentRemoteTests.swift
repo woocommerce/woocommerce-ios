@@ -1,5 +1,6 @@
 import TestKit
 import XCTest
+import protocol Alamofire.URLRequestConvertible
 @testable import Networking
 
 final class GenerativeContentRemoteTests: XCTestCase {
@@ -23,7 +24,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
     func test_generateText_with_success_returns_generated_text() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-ai/completions", filename: "generative-text-success")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-success")
 
         // When
         let generatedText = try await remote.generateText(siteID: sampleSiteID,
@@ -37,7 +39,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
     func test_generateText_with_failure_returns_error() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-ai/completions", filename: "generative-text-failure")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-failure")
 
         // When
         await assertThrowsError {
@@ -56,7 +59,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
     func test_identifyLanguage_with_success_returns_language_code() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-ai/completions", filename: "identify-language-success")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "identify-language-success")
 
         // When
         let language = try await remote.identifyLanguage(siteID: sampleSiteID,
@@ -70,7 +74,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
     func test_identifyLanguage_with_failure_returns_error() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-ai/completions", filename: "identify-language-failure")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "identify-language-failure")
 
         // When
         await assertThrowsError {

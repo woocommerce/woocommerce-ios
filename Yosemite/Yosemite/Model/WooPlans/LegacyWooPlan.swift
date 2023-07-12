@@ -1,6 +1,57 @@
 import Foundation
 import SwiftUI
 
+public struct WooPlan: Identifiable {
+    public let id: String
+    public let name: String
+    public let shortName: String
+    public let planDescription: String
+    public let planFeatures: [String]
+
+    public static func loadHardcodedPlan(_ selectedPlan: String) -> WooPlan {
+        if selectedPlan == "Essential" {
+            return WooPlan(id: "",
+                           name: "Essential",
+                           shortName: "",
+                           planDescription: "Everything you need to set up your store and start selling your products.",
+                           planFeatures: [
+                            "Free custom domain for 1 year",
+                            "Support via live chat and email",
+                            "Unlimited admin accounts",
+                            "Create unlimited products",
+                            "Premium themes",
+                            "Sell internationally",
+                            "Automatic sales tax",
+                            "Automated backups and security scans",
+                            "Integrated shipment tracking",
+                            "Analytics dashboard",
+                            "Sell and accept e-gift vouchers",
+                            "Email marketing built-in",
+                            "Marketplace sync and social media integrations",
+                            "Advanced SEO tools"
+                           ])
+        } else {
+            return WooPlan(id: "",
+                           name: "Performance",
+                           shortName: "",
+                           planDescription: "Accelerate your growth with advanced features.",
+                           planFeatures: [
+                            "Back in stock notifications",
+                            "Marketing automation",
+                            "Automated email triggers",
+                            "Cart abandonment emails",
+                            "Referral programs",
+                            "Customer birthday emails",
+                            "Loyalty points programs",
+                            "Offer bulk discounts",
+                            "Recommend add-ons",
+                            "Assembled products and kits",
+                            "Minimum/maximum order quantity"
+                           ])
+        }
+    }
+}
+
 public struct LegacyWooPlan: Decodable {
     public let id: String
     public let name: String

@@ -129,7 +129,7 @@ private struct WooPlanCardView: View {
             Button("\(buttonText) \(Image(systemName: isExpanded ? "chevron.up" : "chevron.down"))") {
                 isExpanded.toggle()
             }
-            Text("Expanded").renderedIf(isExpanded)
+            WooPlanCardFeaturesView(upgradePlan.wooPlan.shortName).renderedIf(isExpanded)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal)
@@ -146,6 +146,32 @@ private struct WooPlanCardView: View {
             if selectedPlan?.id != upgradePlan.id {
                 selectedPlan = upgradePlan
             }
+        }
+    }
+}
+
+private struct WooPlanCardFeaturesView: View {
+
+    private let selectedPlan: String
+
+    init(_ selectedPlan: String) {
+        self.selectedPlan = selectedPlan
+    }
+
+    var planFeatures: [String] {
+        WooPlan.loadHardcodedPlan(selectedPlan).planFeatures
+    }
+
+    var body: some View {
+        VStack {
+            ForEach(planFeatures, id: \.self) { feature in
+                Text(feature)
+            }
+            Text("Storage".uppercased())
+                .bold()
+                .multilineTextAlignment(.leading)
+            BadgeView(text: "50 GB")
+                .multilineTextAlignment(.leading)
         }
     }
 }

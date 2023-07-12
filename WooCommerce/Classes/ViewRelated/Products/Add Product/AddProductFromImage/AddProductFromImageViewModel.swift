@@ -39,7 +39,6 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published var scannedTexts: [ScannedTextViewModel] = []
     @Published private(set) var isGeneratingDetails: Bool = false
-    @Published private(set) var showsRegenerateButton: Bool = false
 
     private var selectedScannedTexts: [String] {
         scannedTexts.filter { $0.isSelected }.map { $0.text }

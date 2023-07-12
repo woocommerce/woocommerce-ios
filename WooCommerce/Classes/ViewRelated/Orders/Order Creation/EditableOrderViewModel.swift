@@ -247,15 +247,14 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Saves a fee.
     ///
-    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
-    func saveFeeLine(_ feeLine: OrderFeeLine?) {
-        orderSynchronizer.setFee.send(feeLine)
-
-        if feeLine != nil {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
-        } else {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
+    /// - Parameter formattedFeeLine: Optional fee line object to save. `nil` will remove existing fee line.
+    /// 
+    func saveFeeLine(_ formattedFeeLine: String?) {
+        guard let formattedFeeLine = formattedFeeLine else {
+            return removeFee()
         }
+
+        addFee(formattedFeeLine)
     }
 
     /// Saves a coupon line after an edition on it.
@@ -683,7 +682,7 @@ extension EditableOrderViewModel {
         let showNonEditableIndicators: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
-        let feeLineViewModel: FeeLineDetailsViewModel
+        let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
         let addCouponLineViewModel: CouponLineDetailsViewModel
 
         init(siteID: Int64 = 0,
@@ -706,7 +705,7 @@ extension EditableOrderViewModel {
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
-             saveFeeLineClosure: @escaping (OrderFeeLine?) -> Void = { _ in },
+             saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
@@ -731,9 +730,10 @@ extension EditableOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
-            self.feeLineViewModel = FeeLineDetailsViewModel(isExistingFeeLine: shouldShowFees,
-                                                            baseAmountForPercentage: feesBaseAmountForPercentage,
-                                                            feesTotal: feeLineTotal,
+            self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
+                                                                      baseAmountForPercentage: feesBaseAmountForPercentage,
+                                                                      total: feeLineTotal,
+                                                                      lineType: .fee,
                                                             didSelectSave: saveFeeLineClosure)
             self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
                                                                      siteID: siteID,
@@ -1302,6 +1302,17 @@ private extension EditableOrderViewModel {
     func removeCoupon(with code: String) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCouponRemove(flow: flow.analyticsFlow))
         orderSynchronizer.removeCoupon.send(code)
+    }
+
+    func addFee(_ formattedFeeLine: String) {
+        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
+        orderSynchronizer.setFee.send(feeLine)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func removeFee() {
+        orderSynchronizer.setFee.send(nil)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
     }
 }
 

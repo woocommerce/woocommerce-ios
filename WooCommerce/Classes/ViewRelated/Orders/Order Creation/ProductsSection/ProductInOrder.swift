@@ -11,6 +11,10 @@ struct ProductInOrder: View {
     ///
     let viewModel: ProductInOrderViewModel
 
+    /// Indicates if the discount line details screen should be shown or not.
+    ///
+    @State private var shouldShowDiscountLineDetails: Bool = false
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -20,11 +24,26 @@ struct ProductInOrder: View {
                         ProductRow(viewModel: viewModel.productRowViewModel)
                             .padding()
                         Divider()
+                        VStack(spacing: Layout.noSpacing) {
+                            Button(Localization.addDiscount) {
+                                shouldShowDiscountLineDetails = true
+                            }
+                                .buttonStyle(PlusButtonStyle())
+                                .padding()
+                                .accessibilityIdentifier("add-discount-button")
+                            Divider()
+                        }
+                        .renderedIf(viewModel.isAddingDiscountToProductEnabled)
                     }
                     .background(Color(.listForeground(modal: false)))
-
+                    .sheet(isPresented: $shouldShowDiscountLineDetails) {
+                        FeeOrDiscountLineDetailsView(viewModel: FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+                                                                                              baseAmountForPercentage: 50,
+                                                                                              total: "0.00",
+                                                                                              lineType: .discount,
+                                                                                              didSelectSave: { _ in }))
+                    }
                     Spacer(minLength: Layout.sectionSpacing)
-
                     Section {
                         Divider()
                         Button(Localization.remove) {
@@ -65,6 +84,8 @@ private extension ProductInOrder {
     enum Localization {
         static let title = NSLocalizedString("Product", comment: "Title for the Product screen during order creation")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Product screen")
+        static let addDiscount = NSLocalizedString("Add discount",
+                                              comment: "Text for the button to add a discount to a product during order creation")
         static let remove = NSLocalizedString("Remove Product from Order",
                                               comment: "Text for the button to remove a product from the order during order creation")
     }

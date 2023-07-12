@@ -11,9 +11,13 @@ final class ProductInOrderViewModel: Identifiable {
     ///
     let onRemoveProduct: () -> Void
 
+    let isAddingDiscountToProductEnabled: Bool
+
     init(productRowViewModel: ProductRowViewModel,
-         onRemoveProduct: @escaping () -> Void) {
+         onRemoveProduct: @escaping () -> Void,
+         isAddingDiscountToProductEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4)) {
         self.productRowViewModel = productRowViewModel
         self.onRemoveProduct = onRemoveProduct
+        self.isAddingDiscountToProductEnabled = isAddingDiscountToProductEnabled
     }
 }

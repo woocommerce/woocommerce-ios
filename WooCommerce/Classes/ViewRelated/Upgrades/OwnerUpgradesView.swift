@@ -163,16 +163,27 @@ private struct WooPlanCardFeaturesView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 8.0) {
+            Text("Everything in Essential, plus:")
+                .bold()
+                .font(.footnote)
+                .multilineTextAlignment(.leading)
+                .renderedIf(selectedPlan != "Essential")
             ForEach(planFeatures, id: \.self) { feature in
                 Text(feature)
+                    .font(.footnote)
+                    .multilineTextAlignment(.leading)
             }
+            .multilineTextAlignment(.leading)
             Text("Storage".uppercased())
                 .bold()
+                .font(.footnote)
                 .multilineTextAlignment(.leading)
-            BadgeView(text: "50 GB")
+            BadgeView(text: "50 GB", customizations: .init(textColor: Color(.text), backgroundColor: Color(.systemGray4)))
+                .font(.footnote)
                 .multilineTextAlignment(.leading)
         }
+        .multilineTextAlignment(.leading)
     }
 }
 

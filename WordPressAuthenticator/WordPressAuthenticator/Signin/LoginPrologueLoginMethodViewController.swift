@@ -60,7 +60,9 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
             self.emailTapped?()
         }
 
-        buttonViewController.setupButtomButtonFor(socialService: .google, onTap: handleGoogleButtonTapped)
+        buttonViewController.setupButtomButtonFor(socialService: .google) { [weak self] in
+            self?.handleGoogleButtonTapped()
+        }
 
         if !LoginFields().restrictToWPCom && selfHostedTapped != nil {
             let selfHostedLoginButton = WPStyleGuide.selfHostedLoginButton(alignment: .center)
@@ -69,7 +71,9 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         }
 
         if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
-            buttonViewController.setupTertiaryButtonFor(socialService: .apple, onTap: handleAppleButtonTapped)
+            buttonViewController.setupTertiaryButtonFor(socialService: .apple) { [weak self] in
+                self?.handleAppleButtonTapped()
+            }
         }
 
         buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.buttonViewBackgroundColor

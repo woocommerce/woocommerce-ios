@@ -2,6 +2,7 @@
 
 14.5
 -----
+- [*] Product description and sharing message AI: Now, these features are also available for self-hosted stores with a connected Jetpack plugin or Jetpack Connection Package. [https://github.com/woocommerce/woocommerce-ios/pull/10218]
 
 
 14.4

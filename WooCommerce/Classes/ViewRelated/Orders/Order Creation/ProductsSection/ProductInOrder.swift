@@ -54,7 +54,7 @@ struct ProductInOrder: View {
                             }
 
                             Spacer()
-                            Text(String.localizedStringWithFormat(Localization.amountField, viewModel.currencySymbol))
+                            Text("Amount")
                                 .subheadlineStyle()
                             Text("$10")
                         }
@@ -111,8 +111,6 @@ private extension ProductInOrder {
                                               comment: "Text for the button to add a discount to a product during order creation")
         static let remove = NSLocalizedString("Remove Product from Order",
                                               comment: "Text for the button to remove a product from the order during order creation")
-        static let amountField = NSLocalizedString("Amount (%1$@)", comment: "Title for the amount field on the Product in Order screen during order creation"
-                                                   + "Parameters: %1$@ - currency symbol")
     }
 }
 

@@ -1,5 +1,4 @@
 import Yosemite
-import WooFoundation
 
 /// View model for `ProductInOrder`.
 ///
@@ -11,10 +10,6 @@ final class ProductInOrderViewModel: Identifiable {
     let addedDiscount: Decimal
 
     let baseAmountForDiscountPercentage: Decimal
-
-    /// Currency symbol to display with amount text field
-    ///
-    let currencySymbol: String
 
     /// Closure invoked when the product is removed.
     ///
@@ -33,10 +28,8 @@ final class ProductInOrderViewModel: Identifiable {
          baseAmountForDiscountPercentage: Decimal,
          onRemoveProduct: @escaping () -> Void,
          onSaveFormattedDiscount: @escaping (String?) -> Void,
-         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          isAddingDiscountToProductEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4)) {
         self.productRowViewModel = productRowViewModel
-        self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.addedDiscount = addedDiscount
         self.baseAmountForDiscountPercentage = baseAmountForDiscountPercentage
         self.onRemoveProduct = onRemoveProduct

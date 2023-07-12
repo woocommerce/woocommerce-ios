@@ -5,14 +5,15 @@ import Yosemite
 struct AddProductFromImageData {
     let name: String
     let description: String
-    // TODO: 10180 - image from media picker
+    let image: MediaPickerImage?
 }
 
 /// Hosting controller for `AddProductFromImageView`.
 final class AddProductFromImageHostingController: UIHostingController<AddProductFromImageView> {
     init(siteID: Int64,
+         addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          completion: @escaping (AddProductFromImageData) -> Void) {
-        super.init(rootView: AddProductFromImageView(siteID: siteID, completion: completion))
+        super.init(rootView: AddProductFromImageView(siteID: siteID, addImage: addImage, completion: completion))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -26,14 +27,23 @@ struct AddProductFromImageView: View {
     @StateObject private var viewModel: AddProductFromImageViewModel
 
     init(siteID: Int64,
+         addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          stores: StoresManager = ServiceLocator.stores,
          completion: @escaping (AddProductFromImageData) -> Void) {
         self.completion = completion
-        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel())
+        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(onAddImage: addImage))
     }
 
     var body: some View {
         Form {
+            Section {
+                HStack {
+                    Spacer()
+                    AddProductFromImageFormImageView(viewModel: viewModel)
+                    Spacer()
+                }
+            }
+
             Section {
                 // TODO: 10180 - use `TextEditor` with a placeholder overlay
                 TextField(Localization.nameFieldPlaceholder, text: $viewModel.name)
@@ -48,8 +58,7 @@ struct AddProductFromImageView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.continueButtonTitle) {
-                    // TODO: 10180 - pass the image from media picker
-                    completion(.init(name: viewModel.name, description: viewModel.description))
+                    completion(.init(name: viewModel.name, description: viewModel.description, image: viewModel.image))
                 }
                 .buttonStyle(LinkButtonStyle())
             }
@@ -80,6 +89,6 @@ private extension AddProductFromImageView {
 
 struct AddProductFromImageView_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductFromImageView(siteID: 134, completion: { _ in })
+        AddProductFromImageView(siteID: 134, addImage: { _ in nil }, completion: { _ in })
     }
 }

@@ -8,4 +8,15 @@ extension UIViewController {
     var isBeingDismissedInAnyWay: Bool {
         isMovingFromParent || isBeingDismissed || navigationController?.isBeingDismissed == true
     }
+
+    /// Async/await version of the UIKit `dismiss(animated:)`.
+    /// - Parameter animated: Whether the dismissal is animated.
+    @MainActor
+    func dismiss(animated: Bool) async {
+        await withCheckedContinuation { continuation in
+            dismiss(animated: animated) {
+                continuation.resume()
+            }
+        }
+    }
 }

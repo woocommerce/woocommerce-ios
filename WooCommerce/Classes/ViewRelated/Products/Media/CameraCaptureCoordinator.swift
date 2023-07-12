@@ -35,6 +35,8 @@ final class CameraCaptureCoordinator {
         capturePresenter.completionBlock = { [weak self] mediaInfo in
             if let mediaInfo = mediaInfo as NSDictionary? {
                 self?.processMediaCaptured(mediaInfo)
+            } else {
+                self?.onCompletion(nil, nil)
             }
             self?.capturePresenter = nil
         }

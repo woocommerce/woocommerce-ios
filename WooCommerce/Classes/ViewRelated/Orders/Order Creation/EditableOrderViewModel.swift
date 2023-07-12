@@ -247,7 +247,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Saves a fee.
     ///
-    /// - Parameter formattedFeeLine: Optional shipping line object to save. `nil` will remove existing fee line.
+    /// - Parameter formattedFeeLine: Optional fee line object to save. `nil` will remove existing fee line.
     /// 
     func saveFeeLine(_ formattedFeeLine: String?) {
         guard let formattedFeeLine = formattedFeeLine else {

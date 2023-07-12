@@ -162,7 +162,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         let textCompletionPath = "text-completion"
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generative-text-success")
+        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "identify-language-success")
 
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
@@ -181,7 +181,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
 
         // When
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generative-text-invalid-token")
+        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "identify-language-invalid-token")
         _ = try? await remote.identifyLanguage(siteID: sampleSiteID,
                                                string: "Woo is awesome.",
                                                feature: .productDescription)

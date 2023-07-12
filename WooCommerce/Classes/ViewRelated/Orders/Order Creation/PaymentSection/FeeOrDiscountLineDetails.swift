@@ -2,7 +2,7 @@ import SwiftUI
 
 /// View to add/edit a single fee or discount line in an order, with the option to remove it.
 ///
-struct FeeOrDiscountLineDetails: View {
+struct FeeOrDiscountLineDetailsView: View {
 
     /// View model to drive the view content
     ///
@@ -151,7 +151,7 @@ struct FeeOrDiscountLineDetails: View {
 }
 
 // MARK: Constants
-private extension FeeOrDiscountLineDetails {
+private extension FeeOrDiscountLineDetailsView {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let dividerPadding: CGFloat = 16.0
@@ -181,6 +181,6 @@ struct FeeOrDiscountLineDetails_Previews: PreviewProvider {
                                                           initialTotal: "10",
                                                           lineType: .fee,
                                                           didSelectSave: { _ in })
-        FeeOrDiscountLineDetails(viewModel: viewModel)
+        FeeOrDiscountLineDetailsView(viewModel: viewModel)
     }
 }

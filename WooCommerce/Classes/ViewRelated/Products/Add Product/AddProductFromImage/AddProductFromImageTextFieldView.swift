@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Text field in the "add product from image" form.
 struct AddProductFromImageTextFieldView: View {
+    /// View model for `AddProductFromImageTextFieldView`.
     final class ViewModel: ObservableObject {
         @Published var text: String
         @Published private(set) var suggestedText: String?
@@ -22,8 +23,8 @@ struct AddProductFromImageTextFieldView: View {
         /// Invoked when a suggestion for the text field is available.
         /// - Parameter suggestion: Suggested text for the text field.
         func onSuggestion(_ suggestion: String) {
-            guard suggestion != text else {
-                return
+            guard suggestion.isNotEmpty, suggestion != text else {
+                return suggestedText = nil
             }
             if text.isNotEmpty {
                 suggestedText = suggestion
@@ -57,7 +58,9 @@ struct AddProductFromImageTextFieldView: View {
     /// - Parameters:
     ///   - viewModel: Provides text field view data.
     ///   - customizations: Customizations on the layout.
-    ///   - isGeneratingSuggestion: Whether a suggestion is being generated. This is separate from the view model since its value is shared for the main view from `AddProductFromImageViewModel` while the view model is initialized as a separate instance.
+    ///   - isGeneratingSuggestion: Whether a suggestion is being generated.
+    ///     This is separate from the view model since its value is shared for the main view from
+    ///     `AddProductFromImageViewModel` while the view model is initialized as a separate instance.
     init(viewModel: ViewModel,
          customizations: Customizations,
          isGeneratingSuggestion: Bool) {

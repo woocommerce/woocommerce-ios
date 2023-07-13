@@ -554,6 +554,7 @@
 		02F843DA273646A30017FE12 /* JetpackBenefitsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */; };
 		02FADA9D2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADA9C2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift */; };
 		02FADA9F2A5F34BD00FE8683 /* AddProductFromImageTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADA9E2A5F34BD00FE8683 /* AddProductFromImageTextFieldView.swift */; };
+		02FADAA12A6052BF00FE8683 /* AddProductFromImageTextFieldViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADAA02A6052BF00FE8683 /* AddProductFromImageTextFieldViewModelTests.swift */; };
 		02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */; };
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
 		02FFDDC62A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FFDDC52A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift */; };
@@ -2930,6 +2931,7 @@
 		02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsBanner.swift; sourceTree = "<group>"; };
 		02FADA9C2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageScannedTextView.swift; sourceTree = "<group>"; };
 		02FADA9E2A5F34BD00FE8683 /* AddProductFromImageTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageTextFieldView.swift; sourceTree = "<group>"; };
+		02FADAA02A6052BF00FE8683 /* AddProductFromImageTextFieldViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageTextFieldViewModelTests.swift; sourceTree = "<group>"; };
 		02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingViewController.swift; sourceTree = "<group>"; };
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarControllerTests.swift; sourceTree = "<group>"; };
 		02FFDDC52A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Blaze.swift"; sourceTree = "<group>"; };
@@ -5665,6 +5667,7 @@
 			children = (
 				028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */,
 				028B68C42A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift */,
+				02FADAA02A6052BF00FE8683 /* AddProductFromImageTextFieldViewModelTests.swift */,
 			);
 			path = AddProductFromImage;
 			sourceTree = "<group>";
@@ -13142,6 +13145,7 @@
 				2631D4FA29ED108400F13F20 /* WPComPlanNameSanitizer.swift in Sources */,
 				D83F5937225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift in Sources */,
 				773077F3251E954300178696 /* ProductDownloadFileViewModelTests.swift in Sources */,
+				02FADAA12A6052BF00FE8683 /* AddProductFromImageTextFieldViewModelTests.swift in Sources */,
 				2602A64A27BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift in Sources */,
 				DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */,
 				0246405F258B122100C10A7D /* PrintShippingLabelCoordinatorTests.swift in Sources */,

@@ -507,6 +507,7 @@ extension WooAnalyticsEvent {
             static let barcodeFormat = "barcode_format"
             static let reason = "reason"
             static let couponsCount = "coupons_count"
+            static let type = "type"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {

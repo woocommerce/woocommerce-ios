@@ -771,6 +771,7 @@ private extension StoreCreationCoordinator {
         guard let site else {
             return showJetpackSiteTimeoutView { [weak self] in
                 guard let self else { return }
+                self.analytics.track(event: .StoreCreation.siteCreationTimeoutRetried())
                 await self.waitForSiteToBecomeJetpackSite(from: self.navigationController, siteID: siteID, expectedStoreName: expectedStoreName)
             }
         }

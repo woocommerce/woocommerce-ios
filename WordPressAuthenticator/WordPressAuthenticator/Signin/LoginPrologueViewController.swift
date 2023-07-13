@@ -30,9 +30,9 @@ class LoginPrologueViewController: LoginViewController {
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
 
-    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator(onCancel: {
+    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator(onCancel: { [weak self] in
         // Since the authenticator has its own flow
-        self.tracker.resetState()
+        self?.tracker.resetState()
     })
 
     /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step

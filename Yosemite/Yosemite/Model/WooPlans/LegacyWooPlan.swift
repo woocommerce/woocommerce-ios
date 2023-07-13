@@ -17,7 +17,6 @@ public struct WooPlan: Identifiable {
     }
 
     public static func loadHardcodedPlan(_ selectedPlanID: String) -> WooPlan {
-
         if isEssential(selectedPlanID) {
             return WooPlan(id: selectedPlanID,
                            planFeatures: [

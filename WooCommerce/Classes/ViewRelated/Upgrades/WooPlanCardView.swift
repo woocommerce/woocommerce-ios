@@ -75,7 +75,6 @@ struct WooPlanCardView: View {
 }
 
 private struct WooPlanCardFeaturesView: View {
-
     private let selectedPlanID: String
 
     init(_ selectedPlanID: String) {

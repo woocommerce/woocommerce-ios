@@ -112,9 +112,14 @@ private struct WooPlanCardFeaturesView: View {
 
 private extension WooPlanCardFeaturesView {
     enum Localization {
-        static let upsellFeatureTitleText = NSLocalizedString("Everything in Essential, plus:", comment: "")
-        static let storageText = NSLocalizedString("Storage", comment: "")
-        static let storageAmountText = NSLocalizedString("50 GB", comment: "")
+        static let upsellFeatureTitleText = NSLocalizedString("Everything in Essential, plus:",
+                                                              comment: "Title for the Performance plan features list, is followed by a list of the plan features.")
+
+        static let storageText = NSLocalizedString("Storage",
+                                                   comment: "Title of one of the features of the Paid plans, regarding site storage.")
+
+        static let storageAmountText = NSLocalizedString("50 GB",
+                                                         comment: "Content of one of the features of the Paid plans, pointing to gigabytes of site storage.")
     }
 
     enum Layout {

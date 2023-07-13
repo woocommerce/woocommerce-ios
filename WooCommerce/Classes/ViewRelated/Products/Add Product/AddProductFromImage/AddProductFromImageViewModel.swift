@@ -41,7 +41,7 @@ final class AddProductFromImageViewModel: ObservableObject {
     @Published private(set) var isGeneratingDetails: Bool = false
 
     private var selectedScannedTexts: [String] {
-        scannedTexts.filter { $0.isSelected }.map { $0.text }
+        scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
     }
 
     private let siteID: Int64

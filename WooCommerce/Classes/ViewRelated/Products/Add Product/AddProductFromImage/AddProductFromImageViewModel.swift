@@ -100,6 +100,9 @@ private extension AddProductFromImageViewModel {
     }
 
     func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
+        guard scannedTexts.isNotEmpty else {
+            return
+        }
         switch await generateProductDetails(from: scannedTexts) {
             case .success(let details):
                 name = details.name

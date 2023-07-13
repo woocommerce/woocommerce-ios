@@ -2,7 +2,7 @@
 /// Based on the configuration, it could automatically send a magic link and proceed the magic link requested screen on success and fall back to password.
 @MainActor
 final class PasswordCoordinator {
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private let source: SignInSource?
     private let loginFields: LoginFields
     private let tracker: AuthenticatorAnalyticsTracker
@@ -50,7 +50,7 @@ private extension PasswordCoordinator {
         let vc = MagicLinkRequestedViewController(email: loginFields.username) { [weak self] in
             self?.showPassword()
         }
-        navigationController.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     /// Navigates the user to enter WP.com password.
@@ -63,6 +63,6 @@ private extension PasswordCoordinator {
         vc.loginFields = loginFields
         vc.trackAsPasswordChallenge = false
 
-        navigationController.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

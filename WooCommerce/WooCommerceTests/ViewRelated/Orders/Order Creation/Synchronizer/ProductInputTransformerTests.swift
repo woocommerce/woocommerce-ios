@@ -206,7 +206,7 @@ class ProductInputTransformerTests: XCTestCase {
 
     }
 
-    func test_sending_an_update_product_input_uses_item_price_from_order() throws {
+    func test_sending_an_update_product_input_uses_price_from_product() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")
         let item = OrderItem.fake().copy(itemID: sampleInputID, price: 8.00)
@@ -218,9 +218,9 @@ class ProductInputTransformerTests: XCTestCase {
 
         // Then
         let updatedItem = try XCTUnwrap(updatedOrder.items.first)
-        XCTAssertEqual(updatedItem.price, 8.00) // Existing item price from order.
-        XCTAssertEqual(updatedItem.subtotal, "16")
-        XCTAssertEqual(updatedItem.total, "16")
+        XCTAssertEqual(updatedItem.price, 9.99) // Existing item price from product.
+        XCTAssertEqual(updatedItem.subtotal, "19.98")
+        XCTAssertEqual(updatedItem.total, "19.98")
     }
 
     func test_updatedOrder_when_updateMultipleItems_sends_an_updated_product_input_then_updates_price_on_order() throws {
@@ -235,9 +235,9 @@ class ProductInputTransformerTests: XCTestCase {
 
         // Then
         let updatedItem = try XCTUnwrap(updatedOrder.items.first)
-        XCTAssertEqual(updatedItem.price, 8.00) // Existing item price from order.
-        XCTAssertEqual(updatedItem.subtotal, "16")
-        XCTAssertEqual(updatedItem.total, "16")
+        XCTAssertEqual(updatedItem.price, 9.99) // Existing item price from product.
+        XCTAssertEqual(updatedItem.subtotal, "19.98")
+        XCTAssertEqual(updatedItem.total, "19.98")
     }
 
     func test_sending_a_zero_quantity_update_product_input_deletes_item_on_order() throws {

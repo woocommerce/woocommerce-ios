@@ -97,17 +97,14 @@ struct AddProductFromImageTextFieldView: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .textSelection(.enabled)
 
-                    AdaptiveStack(spacing: 0) {
+                    AdaptiveStack(spacing: Layout.defaultSpacing) {
                         Spacer()
                         // CTA to copy the generated text.
-                        Button {
+                        Button(Localization.copyGeneratedText) {
                             UIPasteboard.general.string = suggestedText
                             // TODO: 10180 - show a notice when the text is copied
-                        } label: {
-                            Text(Localization.copyGeneratedText)
-                                .secondaryBodyStyle()
                         }
-                        .buttonStyle(LinkButtonStyle())
+                        .buttonStyle(TextButtonStyle())
                         .fixedSize(horizontal: true, vertical: false)
 
                         // CTA to replace with the generated text.
@@ -125,14 +122,14 @@ struct AddProductFromImageTextFieldView: View {
                         } label: {
                             Image(systemName: "xmark")
                         }
-                        .buttonStyle(LinkButtonStyle())
+                        .buttonStyle(TextButtonStyle())
                         .fixedSize(horizontal: true, vertical: false)
                     }
                 }
                 .padding(Layout.suggestedTextInsets)
                 .background(
                     RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                        .foregroundColor(.init(uiColor: .tertiarySystemBackground))
+                        .foregroundColor(.init(uiColor: .tertiarySystemGroupedBackground))
                 )
             }
         }

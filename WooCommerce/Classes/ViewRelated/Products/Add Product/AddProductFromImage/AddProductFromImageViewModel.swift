@@ -23,8 +23,8 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     // MARK: - Product Details
 
-    @Published var nameViewModel: TextFieldViewModel
-    @Published var descriptionViewModel: TextFieldViewModel
+    let nameViewModel: TextFieldViewModel
+    let descriptionViewModel: TextFieldViewModel
 
     var name: String {
         nameViewModel.text

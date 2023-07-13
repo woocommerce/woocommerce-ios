@@ -55,7 +55,7 @@ struct AddProductFromImageView: View {
             // Description field.
             Section {
                 AddProductFromImageTextFieldView(viewModel: viewModel.descriptionViewModel,
-                                                 customizations: .init(lineLimit: 2...5),
+                                                 customizations: .init(lineLimit: 2...10),
                                                  isGeneratingSuggestion: viewModel.isGeneratingDetails)
             }
 

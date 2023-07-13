@@ -50,7 +50,7 @@ class OrderTotalsCalculatorTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let order = Order.fake().copy(shippingTotal: "5.00",
                                       totalTax: "3.00",
-                                      items: [OrderItem.fake().copy(subtotal: "2.00"), OrderItem.fake().copy(subtotal: "8.00")],
+                                      items: [OrderItem.fake().copy(subtotal: "2.00", total: "2.00"), OrderItem.fake().copy(subtotal: "8.00", total: "8.00")],
                                       fees: [OrderFeeLine.fake().copy(total: "2.00"), OrderFeeLine.fake().copy(total: "8.00")])
 
         // When

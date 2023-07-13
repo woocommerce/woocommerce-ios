@@ -19,13 +19,13 @@ struct AddProductFromImageScannedTextView: View {
                 Image(systemName: viewModel.isSelected ? "checkmark.circle.fill" : "circle")
             }
         }
-        .padding(.vertical, insets: Layout.verticalPadding)
+        .padding(.vertical, Layout.verticalPadding)
     }
 }
 
 private extension AddProductFromImageScannedTextView {
     enum Layout {
-        static let verticalPadding: EdgeInsets = .init(top: 6, leading: 0, bottom: 6, trailing: 0)
+        static let verticalPadding: CGFloat = 6
     }
 }
 

@@ -22,6 +22,9 @@ struct AddProductFromImageTextFieldView: View {
         /// Invoked when a suggestion for the text field is available.
         /// - Parameter suggestion: Suggested text for the text field.
         func onSuggestion(_ suggestion: String) {
+            guard suggestion != text else {
+                return
+            }
             if text.isNotEmpty {
                 suggestedText = suggestion
             } else {

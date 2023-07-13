@@ -105,7 +105,8 @@ private struct WooPlanCardFeaturesView: View {
 private extension WooPlanCardFeaturesView {
     enum Localization {
         static let upsellFeatureTitleText = NSLocalizedString("Everything in Essential, plus:",
-                                                              comment: "Title for the Performance plan features list, is followed by a list of the plan features.")
+                                                              comment: "Title for the Performance plan features list." +
+                                                              " Is followed by a list of the plan features.")
 
         static let storageText = NSLocalizedString("Storage",
                                                    comment: "Title of one of the features of the Paid plans, regarding site storage.")

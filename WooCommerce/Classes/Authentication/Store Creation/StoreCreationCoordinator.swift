@@ -769,11 +769,10 @@ private extension StoreCreationCoordinator {
     func handleCompletionStatus(siteID: Int64, site: Site?, waitingTimeStart: Date, expectedStoreName: String) {
         cancelLocalNotificationWhenStoreIsReady()
         guard let site else {
-            showJetpackSiteTimeoutView { [weak self] in
+            return showJetpackSiteTimeoutView { [weak self] in
                 guard let self else { return }
                 await self.waitForSiteToBecomeJetpackSite(from: self.navigationController, siteID: siteID, expectedStoreName: expectedStoreName)
             }
-            return
         }
 
         // Sometimes, as soon as the jetpack installation is done some properties like `name` and `isWordPressComStore` are outdated.

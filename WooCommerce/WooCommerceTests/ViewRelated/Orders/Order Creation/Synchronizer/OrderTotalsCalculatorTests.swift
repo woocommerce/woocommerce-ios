@@ -60,4 +60,20 @@ class OrderTotalsCalculatorTests: XCTestCase {
         // Then
         XCTAssertEqual(updatedOrder.total, "28")
     }
+
+    func test_updateOrderTotal_when_there_are_discounts_then_returns_order_with_expected_total() {
+        // Given
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let order = Order.fake().copy(shippingTotal: "5.00",
+                                      totalTax: "3.00",
+                                      items: [OrderItem.fake().copy(subtotal: "2.00", total: "1.00"), OrderItem.fake().copy(subtotal: "8.00", total: "5.00")],
+                                      fees: [OrderFeeLine.fake().copy(total: "2.00"), OrderFeeLine.fake().copy(total: "8.00")])
+
+        // When
+        let orderTotalsCalculator = OrderTotalsCalculator(for: order, using: currencyFormatter)
+        let updatedOrder = orderTotalsCalculator.updateOrderTotal()
+
+        // Then
+        XCTAssertEqual(updatedOrder.total, "24")
+    }
 }

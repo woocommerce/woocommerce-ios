@@ -143,7 +143,7 @@ private extension WooWPComPlan {
     static func skeletonPlan() -> WooWPComPlan {
         return WooWPComPlan(
             wpComPlan: SkeletonWPComPlanProduct(),
-            wooPlan: WooPlan(id: "skeleton.plan.monthly",
+            wooPlan: LegacyWooPlan(id: "skeleton.plan.monthly",
                              name: "Skeleton Plan Monthly",
                              shortName: "Skeleton",
                              planFrequency: .month,

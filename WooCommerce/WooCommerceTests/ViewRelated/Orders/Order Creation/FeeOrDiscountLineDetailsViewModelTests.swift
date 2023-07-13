@@ -14,7 +14,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -33,7 +33,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -59,7 +59,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: customSettings,
@@ -79,7 +79,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 100,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -99,7 +99,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 100,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -118,7 +118,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 200,
-                                                total: "10",
+                                                initialTotal: "10",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -136,7 +136,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 200,
-                                                total: "-10",
+                                                initialTotal: "-10",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -154,7 +154,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 200,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -190,7 +190,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 100,
-                                                total: "11.30",
+                                                initialTotal: "11.30",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -215,7 +215,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Initial fee is $10/5%
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 200,
-                                                total: "10",
+                                                initialTotal: "10",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -239,7 +239,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         var savedFeeLine: String?
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -260,7 +260,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         var savedFeeLine: String?
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 200,
-                                                total: "0",
+                                                initialTotal: "0",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -282,7 +282,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         var savedFeeLine: String?
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -302,7 +302,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,
@@ -316,7 +316,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
-                                                total: "",
+                                                initialTotal: "",
                                                 lineType: .fee,
                                                 locale: usLocale,
                                                 storeCurrencySettings: usStoreSettings,

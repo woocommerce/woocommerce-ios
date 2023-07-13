@@ -46,6 +46,10 @@ final class AddProductCoordinator: Coordinator {
     ///
     var onProductCreated: (Product) -> Void = { _ in }
 
+    private var storeHasProducts: Bool {
+        !productsResultsController.isEmpty
+    }
+
     private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
 
@@ -95,20 +99,8 @@ final class AddProductCoordinator: Coordinator {
             break
         }
 
-        if addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
-            // TODO: 10180 - A/B experiment exposure event
-
-            if addProductFromImageEligibilityChecker.isEligible() {
-                let coordinator = AddProductFromImageCoordinator(siteID: siteID,
-                                                                 sourceNavigationController: navigationController,
-                                                                 onProductCreated: { [weak self] product in
-                    self?.onProductCreated(product)
-                })
-                self.addProductFromImageCoordinator = coordinator
-                coordinator.start()
-                return
-            }
-        }
+        ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
+                                                                                 storeHasProducts: storeHasProducts))
 
         if shouldSkipBottomSheet() {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
@@ -146,7 +138,7 @@ private extension AddProductCoordinator {
     /// Returns `true` when there are existing products.
     ///
     func shouldShowGroupedProductType() -> Bool {
-        !productsResultsController.isEmpty
+        storeHasProducts
     }
 
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.
@@ -176,7 +168,9 @@ private extension AddProductCoordinator {
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
-            ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
+            ServiceLocator.analytics.track(event: .ProductCreation
+                .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
+                                        creationType: creationType))
             self.navigationController.dismiss(animated: true) {
                 switch creationType {
                 case .manual:
@@ -246,6 +240,25 @@ private extension AddProductCoordinator {
     /// Presents a new product based on the provided bottom sheet type.
     ///
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
+        if bottomSheetProductType.productType == .simple,
+           bottomSheetProductType.isVirtual == false,
+           shouldSkipBottomSheet() == false,
+           addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
+            // Exposure event of the A/B experiment.
+            ServiceLocator.analytics.track(.addProductFromImageEligible)
+
+            if addProductFromImageEligibilityChecker.isEligible() {
+                let coordinator = AddProductFromImageCoordinator(siteID: siteID,
+                                                                 sourceNavigationController: navigationController,
+                                                                 onProductCreated: { [weak self] product in
+                    self?.onProductCreated(product)
+                })
+                self.addProductFromImageCoordinator = coordinator
+                coordinator.start()
+                return
+            }
+        }
+
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
                                                               siteID: siteID) else {

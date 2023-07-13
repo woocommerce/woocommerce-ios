@@ -37,11 +37,7 @@ struct ProductInOrder: View {
                     }
                     .background(Color(.listForeground(modal: false)))
                     .sheet(isPresented: $shouldShowDiscountLineDetails) {
-                        FeeOrDiscountLineDetailsView(viewModel: FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                                                              baseAmountForPercentage: 50,
-                                                                                              total: "0.00",
-                                                                                              lineType: .discount,
-                                                                                              didSelectSave: { _ in }))
+                        FeeOrDiscountLineDetailsView(viewModel: viewModel.discountDetailsViewModel)
                     }
                     Spacer(minLength: Layout.sectionSpacing)
                     Section {
@@ -103,7 +99,9 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             canChangeQuantity: false,
                                             imageURL: nil)
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
-                                                onRemoveProduct: {})
+                                                baseAmountForDiscountPercentage: 0,
+                                                onRemoveProduct: {},
+                                                onSaveFormattedDiscount: { _ in })
         ProductInOrder(viewModel: viewModel)
     }
 }

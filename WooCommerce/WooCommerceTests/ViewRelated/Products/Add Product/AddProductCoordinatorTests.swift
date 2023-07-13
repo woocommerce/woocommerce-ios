@@ -37,7 +37,7 @@ final class AddProductCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
 
-    func test_it_presents_AddProductFromImageHostingController_on_start_when_eligible() throws {
+    func test_it_presents_bottom_sheet_on_start_when_eligible_for_AddProductFromImage() throws {
         // Given
         let coordinator = makeAddProductCoordinator(
             addProductFromImageEligibilityChecker: MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true, isEligible: true)
@@ -50,8 +50,7 @@ final class AddProductCoordinatorTests: XCTestCase {
         }
 
         // Then
-        let navigationController = try XCTUnwrap(coordinator.navigationController.presentedViewController as? UINavigationController)
-        assertThat(navigationController.topViewController, isAnInstanceOf: AddProductFromImageHostingController.self)
+        assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
 }
 

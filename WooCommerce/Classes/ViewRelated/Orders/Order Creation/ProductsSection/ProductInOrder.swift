@@ -28,6 +28,7 @@ struct ProductInOrder: View {
                         Divider()
                         VStack(spacing: Layout.noSpacing) {
                             Button(Localization.addDiscount) {
+                                viewModel.onAddDiscountTapped()
                                 shouldShowDiscountLineDetails = true
                             }
                                 .buttonStyle(PlusButtonStyle())
@@ -51,6 +52,7 @@ struct ProductInOrder: View {
                                     .headlineStyle()
                                 Spacer()
                                 Button(Localization.editDiscount) {
+                                    viewModel.onEditDiscountTapped()
                                     shouldShowDiscountLineDetails = true
                                 }
                             }

@@ -612,6 +612,14 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountRemove, properties: [:])
         }
 
+        static func productDiscountAddButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductDiscountAddButtonTapped, properties: [:])
+        }
+
+        static func productDiscountEditButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductDiscountEditButtonTapped, properties: [:])
+        }
+
         static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
         }

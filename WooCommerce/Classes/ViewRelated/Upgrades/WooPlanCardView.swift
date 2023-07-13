@@ -9,14 +9,6 @@ struct WooPlanCardView: View {
         selectedPlan?.id == upgradePlan.id
     }
 
-    private var isPopular: Bool {
-        let popularPlans =  [
-            AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
-            AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue
-        ]
-
-        return popularPlans.contains(where: {$0 == upgradePlan.id})
-    }
     @State private var isExpanded = false
 
     var body: some View {
@@ -30,7 +22,8 @@ struct WooPlanCardView: View {
 
                     Spacer()
 
-                    BadgeView(text: Localization.isPopularBadgeText.uppercased()).renderedIf(isPopular)
+                    BadgeView(text: Localization.isPopularBadgeText.uppercased())
+                        .renderedIf(upgradePlan.shouldDisplayIsPopularBadge)
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                         .foregroundStyle(isSelected ? Color.withColorStudio(name: .wooCommercePurple, shade: .shade50) : Color(.systemGray4))
                         .font(.system(size: Layout.checkImageSize))

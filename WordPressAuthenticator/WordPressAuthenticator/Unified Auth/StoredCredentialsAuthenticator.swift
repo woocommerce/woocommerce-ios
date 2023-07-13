@@ -41,7 +41,7 @@ class StoredCredentialsAuthenticator: NSObject {
     // MARK: - UI
 
     private let picker = StoredCredentialsPicker()
-    private var navigationController: UINavigationController?
+    private weak var navigationController: UINavigationController?
 
     // MARK: - Tracking Support
 

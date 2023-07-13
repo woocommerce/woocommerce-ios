@@ -9,7 +9,7 @@ struct AddProductFromImageScannedTextView: View {
     }
 
     var body: some View {
-        HStack {
+        HStack(spacing: Layout.horizontalPadding) {
             TextField("", text: $viewModel.text)
                 .font(.body)
             Spacer()
@@ -18,6 +18,7 @@ struct AddProductFromImageScannedTextView: View {
             }) {
                 Image(systemName: viewModel.isSelected ? "checkmark.circle.fill" : "circle")
             }
+            .buttonStyle(TextButtonStyle())
         }
         .padding(.vertical, Layout.verticalPadding)
     }
@@ -25,7 +26,8 @@ struct AddProductFromImageScannedTextView: View {
 
 private extension AddProductFromImageScannedTextView {
     enum Layout {
-        static let verticalPadding: CGFloat = 6
+        static let verticalPadding: CGFloat = 8
+        static let horizontalPadding: CGFloat = 6
     }
 }
 

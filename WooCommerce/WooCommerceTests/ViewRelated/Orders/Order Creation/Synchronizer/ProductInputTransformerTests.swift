@@ -180,6 +180,49 @@ class ProductInputTransformerTests: XCTestCase {
         XCTAssertEqual(item.total, "\(price - discount)")
     }
 
+    func test_updating_a_product_with_a_removed_discount_input_updates_item_on_order() throws {
+        // Given
+        let price: Decimal = 9.99
+        let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 1)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // When
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // Then
+        let item = try XCTUnwrap(update2.items.first)
+        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.price as Decimal, price)
+        XCTAssertEqual(item.subtotal, "\(item.price)")
+        XCTAssertEqual(item.total, "\(item.price)")
+    }
+
+    func test_updating_a_product_with_a_different_discount_input_updates_item_on_order() throws {
+        // Given
+        let price: Decimal = 9.99
+        let product = Product.fake().copy(productID: sampleProductID, price: "\(price)")
+        let input1 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 4)
+        let update1 = ProductInputTransformer.update(input: input1, on: OrderFactory.emptyNewOrder, shouldUpdateOrDeleteZeroQuantities: .delete)
+        let newDiscount: Decimal = 3
+
+        // When
+        let input2 = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: newDiscount)
+        let update2 = ProductInputTransformer.update(input: input2, on: update1, shouldUpdateOrDeleteZeroQuantities: .delete)
+
+        // Then
+        let item = try XCTUnwrap(update2.items.first)
+        XCTAssertEqual(item.itemID, input2.id)
+        XCTAssertEqual(item.quantity, input2.quantity)
+        XCTAssertEqual(item.productID, product.productID)
+        XCTAssertEqual(item.price as Decimal, price)
+        XCTAssertEqual(item.subtotal, "\(item.price)")
+        XCTAssertEqual(item.total, "\(price - newDiscount)")
+    }
+
     func test_updatedOrder_when_updateMultipleItems_sends_an_updated_product_input_then_updates_item_on_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "9.99")

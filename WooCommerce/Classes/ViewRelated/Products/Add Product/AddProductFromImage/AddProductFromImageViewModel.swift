@@ -145,8 +145,8 @@ private extension AddProductFromImageViewModel {
     func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
         switch await generateProductDetails(from: scannedTexts) {
             case .success(let details):
-                nameViewModel.text = details.name
-                descriptionViewModel.text = details.description
+                nameViewModel.onSuggestion(details.name)
+                descriptionViewModel.onSuggestion(details.description)
             case .failure(let error):
                 DDLogError("⛔️ Error generating product details from scanned text: \(error)")
         }

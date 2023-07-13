@@ -48,18 +48,16 @@ struct AddProductFromImageView: View {
             // Name field.
             Section {
                 AddProductFromImageTextFieldView(viewModel: viewModel.nameViewModel,
-                                                 customizations: .init(lineLimit: 1...2))
+                                                 customizations: .init(lineLimit: 1...2),
+                                                 isGeneratingSuggestion: viewModel.isGeneratingDetails)
             }
-            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder: [])
-            .shimmering(active: viewModel.isGeneratingDetails)
 
             // Description field.
             Section {
                 AddProductFromImageTextFieldView(viewModel: viewModel.descriptionViewModel,
-                                                 customizations: .init(lineLimit: 2...5))
+                                                 customizations: .init(lineLimit: 2...5),
+                                                 isGeneratingSuggestion: viewModel.isGeneratingDetails)
             }
-            .redacted(reason: viewModel.isGeneratingDetails ? .placeholder: [])
-            .shimmering(active: viewModel.isGeneratingDetails)
 
             // Scanned text list.
             Section {

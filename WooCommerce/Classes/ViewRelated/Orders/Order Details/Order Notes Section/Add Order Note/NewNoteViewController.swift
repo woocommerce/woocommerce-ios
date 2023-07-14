@@ -139,7 +139,6 @@ private extension NewNoteViewController {
         let cellViewModel = TextViewTableViewCell.ViewModel(icon: .asideImage,
                                                             iconAccessibilityLabel: iconAccessibilityLabel,
                                                             iconTint: isCustomerNote ? .primary : .textSubtle,
-                                                            isSelectable: true,
                                                             onTextChange: { [weak self] (text) in
                                                                 self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
                                                                 self?.noteText = text

@@ -14,6 +14,7 @@ final class ProductInOrderViewModelTests: XCTestCase {
         let productRowViewModel = ProductRowViewModel(product: product, quantity: 0, canChangeQuantity: true)
         viewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel,
                                             productDiscountConfiguration: nil,
+                                            showCouponsAndDiscountsAlert: false,
                                             analytics: WooAnalytics(analyticsProvider: analytics),
                                             onRemoveProduct: {})
     }

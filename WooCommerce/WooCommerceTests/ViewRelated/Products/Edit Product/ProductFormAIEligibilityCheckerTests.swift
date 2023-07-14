@@ -16,39 +16,11 @@ final class ProductFormAIEligibilityCheckerTests: XCTestCase {
         XCTAssertTrue(isDescriptionAIEnabled)
     }
 
-    func test_description_feature_is_enabled_when_site_is_jetpack_connected() {
+    func test_description_feature_is_disabled_when_site_is_not_wpcom() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true)
-        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isJetpackThePluginInstalled: true,
-                                                                         isJetpackConnected: true,
-                                                                         isWordPressComStore: false), featureFlagService: featureFlagService)
+        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isWordPressComStore: false), featureFlagService: featureFlagService)
 
-        // When
-        let isDescriptionAIEnabled = checker.isFeatureEnabled(.description)
-
-        // Then
-        XCTAssertTrue(isDescriptionAIEnabled)
-    }
-
-    func test_description_feature_is_enabled_when_site_is_jcp() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true)
-        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isJetpackThePluginInstalled: false,
-                                                                         isJetpackConnected: true,
-                                                                         isWordPressComStore: false), featureFlagService: featureFlagService)
-
-        // When
-        let isDescriptionAIEnabled = checker.isFeatureEnabled(.description)
-
-        // Then
-        XCTAssertTrue(isDescriptionAIEnabled)
-    }
-
-    func test_description_feature_is_disabled_when_logged_in_using_wporg_credentials() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true)
-        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(siteID: WooConstants.placeholderStoreID),
-                                                              featureFlagService: featureFlagService)
         // When
         let isDescriptionAIEnabled = checker.isFeatureEnabled(.description)
 

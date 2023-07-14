@@ -20,6 +20,6 @@ final class ProductFormAIEligibilityChecker {
     /// - Parameter feature: AI-assisted feature.
     /// - Returns: Whether the feature is supported.
     func isFeatureEnabled(_ feature: ProductFormAIFeature) -> Bool {
-        site?.isNonJetpackSite == false && featureFlagService.isFeatureFlagEnabled(.productDescriptionAI)
+        site?.isWordPressComStore == true && featureFlagService.isFeatureFlagEnabled(.productDescriptionAI)
     }
 }

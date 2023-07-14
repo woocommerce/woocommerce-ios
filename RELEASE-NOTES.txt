@@ -4,7 +4,7 @@
 -----
 - [*] Product details: The share button is displayed with text instead of icon for better discoverability. [https://github.com/woocommerce/woocommerce-ios/pull/10216]
 - [*] Store creation: Update the timeout view with the option to retry the site check. [https://github.com/woocommerce/woocommerce-ios/pull/10221]
-
+- [*] Fixed issue showing the expired alert for sites that got reverted to simple sites after their plan expired. [https://github.com/woocommerce/woocommerce-ios/pull/10228]
 
 14.4
 -----

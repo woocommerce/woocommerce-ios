@@ -314,7 +314,6 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
-        let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
         guard mediaItems.isNotEmpty else {
             return
         }

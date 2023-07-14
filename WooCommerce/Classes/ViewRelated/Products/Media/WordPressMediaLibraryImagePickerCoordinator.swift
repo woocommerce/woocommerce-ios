@@ -3,7 +3,8 @@ import WPMediaPicker
 import struct Yosemite.Media
 
 /// Coordinates navigation for picking media from the site's WordPress media library.
-final class WordPressMediaLibraryImagePickerCoordinator {
+/// `NSObject` is required for `UIAdaptivePresentationControllerDelegate` conformance.
+final class WordPressMediaLibraryImagePickerCoordinator: NSObject {
     typealias Completion = WordPressMediaLibraryImagePickerViewController.Completion
 
     private var origin: UIViewController?
@@ -27,7 +28,15 @@ final class WordPressMediaLibraryImagePickerCoordinator {
                 self?.dismissAndComplete(with: selectedMediaItems)
             }
         self.origin = origin
-        origin.present(wordPressMediaPickerViewController, animated: true)
+        origin.present(wordPressMediaPickerViewController, animated: true) { [weak self] in
+            wordPressMediaPickerViewController.presentationController?.delegate = self
+        }
+    }
+}
+
+extension WordPressMediaLibraryImagePickerCoordinator: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        onCompletion([])
     }
 }
 

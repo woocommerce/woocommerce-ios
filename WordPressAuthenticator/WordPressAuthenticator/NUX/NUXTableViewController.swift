@@ -23,6 +23,10 @@ open class NUXTableViewController: UITableViewController, NUXViewControllerBase,
         setupHelpButtonIfNeeded()
         setupCancelButtonIfNeeded()
     }
+    
+    deinit {
+        removeNotificationObservers()
+    }
 
     public func shouldShowCancelButton() -> Bool {
         return shouldShowCancelButtonBase()

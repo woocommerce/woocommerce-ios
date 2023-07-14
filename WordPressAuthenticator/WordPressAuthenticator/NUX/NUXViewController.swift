@@ -27,6 +27,10 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         setupCancelButtonIfNeeded()
         setupBackgroundTapGestureRecognizer()
     }
+    
+    deinit {
+        removeNotificationObservers()
+    }
 
     // properties specific to NUXViewController
     @IBOutlet var submitButton: NUXButton?

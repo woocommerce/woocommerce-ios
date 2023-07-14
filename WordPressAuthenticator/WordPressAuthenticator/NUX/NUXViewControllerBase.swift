@@ -296,7 +296,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
 
     private var wordpressSupportNotificationReceivedObserver: NSObjectProtocol? {
         get {
-            
+
             objc_getAssociatedObject(self, &wordpressSupportNotificationReceivedKey) as? NSObjectProtocol
         }
         set {

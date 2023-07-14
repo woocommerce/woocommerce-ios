@@ -23,7 +23,7 @@ open class NUXTableViewController: UITableViewController, NUXViewControllerBase,
         setupHelpButtonIfNeeded()
         setupCancelButtonIfNeeded()
     }
-    
+
     deinit {
         removeNotificationObservers()
     }

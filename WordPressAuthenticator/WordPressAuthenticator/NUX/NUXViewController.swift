@@ -27,7 +27,7 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         setupCancelButtonIfNeeded()
         setupBackgroundTapGestureRecognizer()
     }
-    
+
     deinit {
         removeNotificationObservers()
     }

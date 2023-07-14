@@ -59,7 +59,7 @@ final class ProductInOrderViewModel: Identifiable {
     }
 
     lazy var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel = {
-        FeeOrDiscountLineDetailsViewModel(isExistingLine: addedDiscount > 0,
+        FeeOrDiscountLineDetailsViewModel(isExistingLine: addedDiscount != 0,
                                           baseAmountForPercentage: baseAmountForDiscountPercentage,
                                           initialTotal: formattedDiscount ?? "0",
                                           lineType: .discount,

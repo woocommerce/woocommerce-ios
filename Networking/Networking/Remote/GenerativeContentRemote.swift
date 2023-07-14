@@ -35,7 +35,7 @@ public protocol GenerativeContentRemoteProtocol {
 ///
 public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol {
     private enum GenerativeContentRemoteError: Error {
-        case tokenNil
+        case tokenNotFound
     }
 
     private var token: String?
@@ -45,10 +45,10 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                              feature: GenerativeContentRemoteFeature) async throws -> String {
         do {
             guard let token else {
-                throw GenerativeContentRemoteError.tokenNil
+                throw GenerativeContentRemoteError.tokenNotFound
             }
             return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
-        } catch GenerativeContentRemoteError.tokenNil,
+        } catch GenerativeContentRemoteError.tokenNotFound,
                     WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
@@ -61,10 +61,10 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                  feature: GenerativeContentRemoteFeature) async throws -> String {
         do {
             guard let token else {
-                throw GenerativeContentRemoteError.tokenNil
+                throw GenerativeContentRemoteError.tokenNotFound
             }
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
-        } catch GenerativeContentRemoteError.tokenNil,
+        } catch GenerativeContentRemoteError.tokenNotFound,
                     WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token

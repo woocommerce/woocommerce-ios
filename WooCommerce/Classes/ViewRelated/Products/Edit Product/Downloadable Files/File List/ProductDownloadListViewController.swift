@@ -319,14 +319,11 @@ private extension ProductDownloadListViewController {
 //
 private extension ProductDownloadListViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
-        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
-            guard let self = self, let asset = assets.first else {
-                return
-            }
-            self.productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: asset)
-            self.loadingView.showLoader(in: self.view)
+        guard let asset = assets.first else {
+            return
         }
+        productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        loadingView.showLoader(in: view)
     }
 }
 

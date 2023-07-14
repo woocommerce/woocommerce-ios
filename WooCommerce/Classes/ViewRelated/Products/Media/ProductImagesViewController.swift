@@ -298,18 +298,15 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
-        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
-            guard let self = self, assets.isNotEmpty else {
-                return
-            }
-
-            self.deleteExistingImageIfOnlyOneImageIsAllowed()
-            assets.forEach { asset in
-                self.uploadMediaAssetToSiteMediaLibrary(asset: asset)
-            }
-            self.commitAndDismiss(true)
+        guard assets.isNotEmpty else {
+            return
         }
+
+        deleteExistingImageIfOnlyOneImageIsAllowed()
+        assets.forEach { asset in
+            uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        }
+        commitAndDismiss(true)
     }
 }
 

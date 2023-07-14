@@ -158,8 +158,6 @@ private extension AddProductFromImageCoordinator {
 private extension AddProductFromImageCoordinator {
     @MainActor
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset], navigationController: UINavigationController) async -> MediaPickerImage? {
-        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        await navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal)
         guard let asset = assets.first else {
             return nil
         }

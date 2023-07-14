@@ -1137,4 +1137,10 @@ public struct ProductDetailsFromScannedTexts: Equatable, Decodable {
     public let description: String
     /// The language code detected for the product.
     public let language: String
+
+    public init(name: String, description: String, language: String) {
+        self.name = name
+        self.description = description
+        self.language = language
+    }
 }

@@ -553,6 +553,9 @@
 		02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6800825807CD300C3BAD2 /* GridStackView.swift */; };
 		02F843DA273646A30017FE12 /* JetpackBenefitsBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */; };
 		02FADA9D2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADA9C2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift */; };
+		02FADAA32A60759200FE8683 /* ImageTextScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADAA22A60759200FE8683 /* ImageTextScanner.swift */; };
+		02FADAA52A607CEE00FE8683 /* MockImageTextScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */; };
+		02FADAA72A608F6B00FE8683 /* ImageTextScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FADAA62A608F6B00FE8683 /* ImageTextScannerTests.swift */; };
 		02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */; };
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
 		02FFDDC62A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FFDDC52A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift */; };
@@ -2929,6 +2932,9 @@
 		02F6800825807CD300C3BAD2 /* GridStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridStackView.swift; sourceTree = "<group>"; };
 		02F843D9273646A30017FE12 /* JetpackBenefitsBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsBanner.swift; sourceTree = "<group>"; };
 		02FADA9C2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageScannedTextView.swift; sourceTree = "<group>"; };
+		02FADAA22A60759200FE8683 /* ImageTextScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTextScanner.swift; sourceTree = "<group>"; };
+		02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageTextScanner.swift; sourceTree = "<group>"; };
+		02FADAA62A608F6B00FE8683 /* ImageTextScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTextScannerTests.swift; sourceTree = "<group>"; };
 		02FE1B9E287F51F400EC03B3 /* LoginOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingViewController.swift; sourceTree = "<group>"; };
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarControllerTests.swift; sourceTree = "<group>"; };
 		02FFDDC52A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Blaze.swift"; sourceTree = "<group>"; };
@@ -5656,6 +5662,7 @@
 				028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */,
 				02B60DF62A586C7F004C47FF /* AddProductFromImageFormImageView.swift */,
 				02FADA9C2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift */,
+				02FADAA22A60759200FE8683 /* ImageTextScanner.swift */,
 			);
 			path = AddProductFromImage;
 			sourceTree = "<group>";
@@ -5665,6 +5672,7 @@
 			children = (
 				028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */,
 				028B68C42A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift */,
+				02FADAA62A608F6B00FE8683 /* ImageTextScannerTests.swift */,
 			);
 			path = AddProductFromImage;
 			sourceTree = "<group>";
@@ -7707,6 +7715,7 @@
 				026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */,
 				02863F6E2925FC29006A06AA /* MockInAppPurchasesForWPComPlansManager.swift */,
 				028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */,
+				02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -12517,6 +12526,7 @@
 				2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */,
 				DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */,
 				B6C78B90293BAF37008934A1 /* AnalyticsHubLastYearRangeData.swift in Sources */,
+				02FADAA32A60759200FE8683 /* ImageTextScanner.swift in Sources */,
 				314265B12645A07800500598 /* CardReaderSettingsConnectedViewController.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
 				0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */,
@@ -12904,6 +12914,7 @@
 				265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */,
 				03FBDAFD263EE4E800ACE257 /* CouponListViewModelTests.swift in Sources */,
 				02DAE7FF291B8C8A009342B7 /* FreeDomainSelectorViewModelTests.swift in Sources */,
+				02FADAA72A608F6B00FE8683 /* ImageTextScannerTests.swift in Sources */,
 				036F6EA6281847D5006D84F8 /* LegacyPaymentCaptureOrchestratorTests.swift in Sources */,
 				B555531321B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift in Sources */,
 				682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */,
@@ -12935,6 +12946,7 @@
 				022F2FAA295E8241003A0A46 /* StoreCreationCountryQuestionViewModelTests.swift in Sources */,
 				DE279BAF26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift in Sources */,
 				DEEDA23D298A22180088256B /* SiteCredentialLoginUseCaseTests.swift in Sources */,
+				02FADAA52A607CEE00FE8683 /* MockImageTextScanner.swift in Sources */,
 				CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */,
 				DE61979528A25842005E4362 /* StorePickerViewModelTests.swift in Sources */,
 				027385B02A17093C00835889 /* StoreCreationStatusCheckerTests.swift in Sources */,

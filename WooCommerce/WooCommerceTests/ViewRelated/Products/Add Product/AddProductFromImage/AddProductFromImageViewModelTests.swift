@@ -1,10 +1,23 @@
 import TestKit
 import XCTest
+import Yosemite
 
 @testable import WooCommerce
 
 @MainActor
 final class AddProductFromImageViewModelTests: XCTestCase {
+    private var stores: MockStoresManager!
+
+    override func setUp() {
+        super.setUp()
+        stores = MockStoresManager(sessionManager: .makeForTesting())
+    }
+
+    override func tearDown() {
+        stores = nil
+        super.tearDown()
+    }
+
     func test_initial_name_is_empty() throws {
         // Given
         let viewModel = AddProductFromImageViewModel(siteID: 6, onAddImage: { _ in nil })
@@ -25,7 +38,6 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_imageState_is_reverted_to_empty_when_addImage_returns_nil() {
         // Given
-        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let viewModel = AddProductFromImageViewModel(siteID: 6, onAddImage: { _ in
             nil
         })
@@ -67,6 +79,83 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Then imageState stays success
         waitUntil {
             viewModel.imageState == .success(image)
+        }
+    }
+
+    func test_imageState_success_generates_details_with_scanned_texts() {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+        XCTAssertEqual(viewModel.name, "Name")
+        XCTAssertEqual(viewModel.description, "Desc")
+    }
+
+    func test_generateProductDetails_without_scanned_text_does_not_dispatch_product_action() {
+        // Given
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     stores: stores,
+                                                     onAddImage: { _ in nil })
+
+        // When
+        viewModel.generateProductDetails()
+    }
+
+    func test_generateProductDetails_filters_empty_scanned_texts() {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success(["", "Product", ""]))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .generateProductDetails(_, scannedTexts, _) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            // Then
+            XCTAssertEqual(scannedTexts, ["Product"])
+        }
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+    }
+}
+
+private extension AddProductFromImageViewModelTests {
+    func mockGenerateProductDetails(result: Result<ProductDetailsFromScannedTexts, Error>) {
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .generateProductDetails(_, _, completion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            completion(result)
         }
     }
 }

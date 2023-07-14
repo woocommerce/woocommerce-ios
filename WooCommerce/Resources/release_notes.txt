@@ -1,5 +1,7 @@
-- [*] Product details: The share button is displayed with text instead of icon for better discoverability. [https://github.com/woocommerce/woocommerce-ios/pull/10216]
-- [*] Resolved an issue where users were unable to add a new note to an order. Previously, upon opening an order detail and selecting the "Add a new note" option, the text field was non-selectable, preventing users from writing down the note. This issue has now been addressed and users should be able to add notes to their orders without any issues. [https://github.com/woocommerce/woocommerce-ios/pull/10222]
-- [*] Store creation: Update the timeout view with the option to retry the site check. [https://github.com/woocommerce/woocommerce-ios/pull/10221]
-- [*] Fixed issue showing the expired alert for sites that got reverted to simple sites after their plan expired. [https://github.com/woocommerce/woocommerce-ios/pull/10228]
+We're back with some new updates to improve your experience with our app!
 
+Firstly, we've made the share button more user-friendly. Instead of an icon, it's now displayed as text for better discoverability.
+We've also fixed a pesky bug that was stopping you from adding new notes to an order. You should now be able to jot down your notes without any issues.
+Lastly, in our store creation process, we've updated the timeout view. If the site check is taking longer than expected, you now have the option to retry.
+
+As always, we're here to make your app journey smoother and more enjoyable. Thanks for sticking with us!

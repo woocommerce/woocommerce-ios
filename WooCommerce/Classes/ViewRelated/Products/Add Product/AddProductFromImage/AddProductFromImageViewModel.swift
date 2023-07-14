@@ -18,7 +18,7 @@ final class AddProductFromImageViewModel: ObservableObject {
         }
     }
 
-    typealias TextFieldViewModel = AddProductFromImageTextFieldView.ViewModel
+    typealias TextFieldViewModel = AddProductFromImageTextFieldViewModel
     typealias ImageState = EditableImageViewState
 
     // MARK: - Product Details

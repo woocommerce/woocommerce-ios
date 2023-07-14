@@ -29,7 +29,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     func test_checkSiteEligibility_returns_expiredWPComPlan_if_plan_expired() {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake().copy(siteID: 123)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let checker = RequirementsChecker(stores: stores)
 
@@ -72,7 +72,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     func test_checkSiteEligibility_returns_expiredWPComPlan_if_plan_check_fails_with_noCurrentPlan() {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake().copy(siteID: 123)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let checker = RequirementsChecker(stores: stores)
 
@@ -114,7 +114,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     func test_checkSiteEligibility_fails_if_plan_check_fails_with_error_other_than_noCurrentPlan() throws {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake().copy(siteID: 123)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let checker = RequirementsChecker(stores: stores)
 
@@ -142,7 +142,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     func test_checkSiteEligibility_returns_validWCVersion_if_highest_Woo_version_is_3() {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake().copy(siteID: 123)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let checker = RequirementsChecker(stores: stores)
 
@@ -175,7 +175,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     func test_checkSiteEligibility_returns_invalidWCVersion_if_highest_Woo_version_is_not_3() {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: false)
+        let site = Site.fake().copy(siteID: 123)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let checker = RequirementsChecker(stores: stores)
 
@@ -183,6 +183,14 @@ final class RequirementsCheckerTests: XCTestCase {
             switch action {
             case .retrieveSiteAPI(_, let onCompletion):
                 onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v2"])))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.failure(NSError(domain: "test", code: 404, userInfo: nil)))
             default:
                 break
             }
@@ -208,7 +216,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     func test_checkSiteEligibility_returns_failure_if_site_setting_check_fails() {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake().copy(siteID: 123)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let checker = RequirementsChecker(stores: stores)
 
@@ -238,7 +246,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     func test_checkEligibilityForDefaultStore_presents_wc_version_alert_when_highest_Woo_version_is_not_3() {
         // Given
-        let site = Site.fake().copy(siteID: 123, isWordPressComStore: false)
+        let site = Site.fake().copy(siteID: 123)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         let checker = RequirementsChecker(stores: stores, baseViewController: viewController)
 
@@ -246,6 +254,15 @@ final class RequirementsCheckerTests: XCTestCase {
             switch action {
             case .retrieveSiteAPI(_, let onCompletion):
                 onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: [])))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.failure(NSError(domain: "test", code: 404, userInfo: nil)))
             default:
                 break
             }
@@ -262,7 +279,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     func test_checkEligibilityForDefaultStore_presents_plan_upgrade_alert_for_wpcom_store_with_expired_free_trial_plan() {
         // Given
-        let site = Site.fake().copy(siteID: 123, isWordPressComStore: true)
+        let site = Site.fake().copy(siteID: 123)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         let checker = RequirementsChecker(stores: stores, baseViewController: viewController)
 

@@ -37,6 +37,11 @@ struct ProductInOrder: View {
                             Divider()
                         }
                         .renderedIf(viewModel.showAddDiscountRow)
+
+                        Text(Localization.couponsAndDiscountAlert)
+                            .subheadlineStyle()
+                            .padding()
+                            .renderedIf(viewModel.showCouponsAndDiscountsAlert)
                     }
                     .background(Color(.listForeground(modal: false)))
                     .sheet(isPresented: $shouldShowDiscountLineDetails) {
@@ -116,6 +121,9 @@ private extension ProductInOrder {
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Product screen")
         static let addDiscount = NSLocalizedString("Add discount",
                                               comment: "Text for the button to add a discount to a product during order creation")
+        static let couponsAndDiscountAlert = NSLocalizedString("Adding discount is currently not available. Remove coupons first.",
+                                              comment: "Alert on the Product Details screen during order creation when" +
+                                                               "we cannot add a discount because we have coupons")
         static let remove = NSLocalizedString("Remove Product from Order",
                                               comment: "Text for the button to remove a product from the order during order creation")
         static let discountTitle = NSLocalizedString("Discount", comment: "Title for the Discount section on the Product Details screen during order creation")
@@ -136,7 +144,7 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             canChangeQuantity: false,
                                             imageURL: nil)
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
-                                                productDiscountConfiguration: nil,
+                                                productDiscountConfiguration: nil, showCouponsAndDiscountsAlert: false,
                                                 onRemoveProduct: {})
         ProductInOrder(viewModel: viewModel)
     }

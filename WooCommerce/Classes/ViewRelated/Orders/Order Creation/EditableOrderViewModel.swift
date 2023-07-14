@@ -1214,6 +1214,7 @@ private extension EditableOrderViewModel {
 
         return ProductInOrderViewModel(productRowViewModel: rowViewModel,
                                        productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
+                                       showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty,
                                        onRemoveProduct: { [weak self] in
                                             self?.removeItemFromOrder(orderItem)
                                        })
@@ -1224,6 +1225,7 @@ private extension EditableOrderViewModel {
     func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductInOrderViewModel.DiscountConfiguration? {
         guard featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4),
               orderSynchronizer.order.coupons.isEmpty,
+              case OrderSyncState.synced = orderSynchronizer.state,
               let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal) else {
             return nil
         }

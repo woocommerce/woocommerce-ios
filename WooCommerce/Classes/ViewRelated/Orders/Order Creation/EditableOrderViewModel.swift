@@ -1214,7 +1214,8 @@ private extension EditableOrderViewModel {
 
         return ProductInOrderViewModel(productRowViewModel: rowViewModel,
                                        productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
-                                       showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty,
+                                       showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty &&
+                                                                     featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4),
                                        onRemoveProduct: { [weak self] in
                                             self?.removeItemFromOrder(orderItem)
                                        })

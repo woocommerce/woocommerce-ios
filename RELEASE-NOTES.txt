@@ -4,6 +4,7 @@
 -----
 - [*] Product details: The share button is displayed with text instead of icon for better discoverability. [https://github.com/woocommerce/woocommerce-ios/pull/10216]
 - [*] Resolved an issue where users were unable to add a new note to an order. Previously, upon opening an order detail and selecting the "Add a new note" option, the text field was non-selectable, preventing users from writing down the note. This issue has now been addressed and users should be able to add notes to their orders without any issues. [https://github.com/woocommerce/woocommerce-ios/pull/10222]
+- [*] Store creation: Update the timeout view with the option to retry the site check. [https://github.com/woocommerce/woocommerce-ios/pull/10221]
 
 
 14.4

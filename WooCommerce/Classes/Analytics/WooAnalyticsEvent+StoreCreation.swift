@@ -114,6 +114,12 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationTimedOut, properties: [:])
         }
 
+        /// Tracked when the Retry button on the timeout screen is tapped.
+        /// 
+        static func siteCreationTimeoutRetried() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationTimeoutRetried, properties: [:])
+        }
+
         /// Tracked when the store is jetpack ready, but other store properties are not in sync yet.
         ///
         static func siteCreationPropertiesOutOfSync() -> WooAnalyticsEvent {

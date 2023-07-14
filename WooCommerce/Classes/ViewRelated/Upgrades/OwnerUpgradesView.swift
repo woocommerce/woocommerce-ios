@@ -18,8 +18,8 @@ struct OwnerUpgradesView: View {
         _isLoading = .init(initialValue: isLoading)
     }
 
-    @State private var paymentFrequency: WooPlan.PlanFrequency = .year
-    private var paymentFrequencies: [WooPlan.PlanFrequency] = [.year, .month]
+    @State private var paymentFrequency: LegacyWooPlan.PlanFrequency = .year
+    private var paymentFrequencies: [LegacyWooPlan.PlanFrequency] = [.year, .month]
 
     @State var selectedPlan: WooWPComPlan? = nil
 
@@ -77,102 +77,6 @@ struct OwnerUpgradesView: View {
     }
 }
 
-private struct WooPlanCardView: View {
-    let upgradePlan: WooWPComPlan
-    @Binding var selectedPlan: WooWPComPlan?
-
-    private var isSelected: Bool {
-        selectedPlan?.id == upgradePlan.id
-    }
-
-    private var isPopular: Bool {
-        let popularPlans =  [
-            AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
-            AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue
-        ]
-
-        return popularPlans.contains(where: {$0 == upgradePlan.id})
-    }
-    @State private var isExpanded = false
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Layout.spacing) {
-            VStack(alignment: .leading, spacing: Layout.spacing) {
-                HStack {
-                    Text(upgradePlan.wooPlan.shortName)
-                        .font(.title2)
-                        .bold()
-                        .accessibilityAddTraits(.isHeader)
-
-                    Spacer()
-
-                    BadgeView(text: Localization.isPopularBadgeText.uppercased()).renderedIf(isPopular)
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(isSelected ? Color.withColorStudio(name: .wooCommercePurple, shade: .shade50) : Color(.systemGray4))
-                        .font(.system(size: Layout.checkImageSize))
-
-                }
-                Text(upgradePlan.wooPlan.planDescription)
-                    .font(.subheadline)
-            }
-
-            VStack(alignment: .leading, spacing: Layout.textSpacing) {
-                Text(upgradePlan.wpComPlan.displayPrice)
-                    .font(.title)
-                    .bold()
-                    .accessibilityAddTraits(.isHeader)
-                Text(upgradePlan.wooPlan.planFrequency.localizedString)
-                    .font(.footnote)
-            }
-
-            let buttonText = String.localizedStringWithFormat(Localization.viewPlanFeaturesFormat, upgradePlan.wooPlan.shortName)
-            Button("\(buttonText) \(Image(systemName: isExpanded ? "chevron.up" : "chevron.down"))") {
-                isExpanded.toggle()
-            }
-            Text("Expanded").renderedIf(isExpanded)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal)
-        .padding(.vertical)
-        .background(Color(.systemGroupedBackground))
-        .cornerRadius(Layout.cornerRadius)
-        .overlay(
-            RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .stroke(isSelected ? .withColorStudio(name: .wooCommercePurple, shade: .shade50) : Color(.systemGray4),
-                        lineWidth: isSelected ? Layout.selectedBorder : Layout.unselectedBorder)
-        )
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if selectedPlan?.id != upgradePlan.id {
-                selectedPlan = upgradePlan
-            }
-        }
-    }
-}
-
-private extension WooPlanCardView {
-    enum Layout {
-        static let cornerRadius: CGFloat = 8.0
-        static let selectedBorder: CGFloat = 2
-        static let unselectedBorder: CGFloat = 0.5
-        static let checkImageSize: CGFloat = 24
-        static let spacing: CGFloat = 16
-        static let textSpacing: CGFloat = 4
-    }
-
-    enum Localization {
-        static let viewPlanFeaturesFormat = NSLocalizedString(
-            "View %1$@ features",
-            comment: "Title for the button to expand plan details on the Upgrade plan screen. " +
-            "Reads as 'View Essential features'. %1$@ must be included in the string and will be replaced with " +
-            "the plan name.")
-
-        static let isPopularBadgeText = NSLocalizedString(
-            "Popular",
-            comment: "The text of the badge that indicates the most popular choice when purchasing a Plan")
-    }
-}
-
 private extension OwnerUpgradesView {
     struct Localization {
         static let purchaseCTAButtonText = NSLocalizedString(
@@ -194,7 +98,7 @@ private extension OwnerUpgradesView {
     }
 }
 
-private extension WooPlan.PlanFrequency {
+private extension LegacyWooPlan.PlanFrequency {
     var paymentFrequencyLocalizedString: String {
         switch self {
         case .month:

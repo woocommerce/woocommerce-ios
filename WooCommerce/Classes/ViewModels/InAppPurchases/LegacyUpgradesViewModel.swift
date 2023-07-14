@@ -15,7 +15,7 @@ final class LegacyUpgradesViewModel: ObservableObject {
     private let siteID: Int64
     private let storePlanSynchronizer: StorePlanSynchronizer
     private let stores: StoresManager
-    private let localPlans: [WooPlan] = [.loadHardcodedPlan()]
+    private let localPlans: [LegacyWooPlan] = [.loadHardcodedPlan()]
     private let analytics: Analytics
 
     private let notificationCenter: NotificationCenter = NotificationCenter.default

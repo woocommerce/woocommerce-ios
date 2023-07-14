@@ -36,6 +36,7 @@ struct AddProductFromImageView: View {
 
     var body: some View {
         Form {
+            // Image header view.
             Section {
                 HStack {
                     Spacer()
@@ -44,6 +45,7 @@ struct AddProductFromImageView: View {
                 }
             }
 
+            // Name & description fields.
             Section {
                 // TODO: 10180 - use `TextEditor` with a placeholder overlay
                 TextField(Localization.nameFieldPlaceholder, text: $viewModel.name)
@@ -53,6 +55,26 @@ struct AddProductFromImageView: View {
                     .lineLimit(5)
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            // Scanned text list.
+            Section {
+                VStack(alignment: .leading) {
+                    // Button to regenerate product details based on the selected scanned texts.
+                    Button(Localization.regenerateButtonTitle) {
+                        viewModel.generateProductDetails()
+                    }
+                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGeneratingDetails))
+
+                    // Info text about selecting/editing the scanned text list.
+                    Text(Localization.scannedTextListInfo)
+                        .foregroundColor(.init(uiColor: .secondaryLabel))
+                        .captionStyle()
+                }
+                List(viewModel.scannedTexts) { scannedText in
+                    AddProductFromImageScannedTextView(viewModel: scannedText)
+                }
+            }
+            .renderedIf(viewModel.scannedTexts.isNotEmpty)
         }
         .navigationTitle(Localization.title)
         .toolbar {
@@ -83,6 +105,14 @@ private extension AddProductFromImageView {
         static let continueButtonTitle = NSLocalizedString(
             "Continue",
             comment: "Continue button on the add product from image form."
+        )
+        static let regenerateButtonTitle = NSLocalizedString(
+            "Regenerate",
+            comment: "Regenerate button on the add product from image form to regenerate product details."
+        )
+        static let scannedTextListInfo = NSLocalizedString(
+            "Tweak your text: Unselect scans you don't need or tap to edit",
+            comment: "Info text about the scanned text list on the add product from image form."
         )
     }
 }

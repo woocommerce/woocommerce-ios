@@ -91,6 +91,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                           feature: .productDescription)
 
         // Then
+        // Ensures that JWT is not requested again
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
 
 
@@ -177,6 +178,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
                                               feature: .productDescription)
 
         // Then
+        // Ensures that JWT is not requested again
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
 
 

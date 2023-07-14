@@ -4,6 +4,7 @@
 -----
 - [*] Product description and sharing message AI: Now, these features are also available for self-hosted stores with a connected Jetpack plugin or Jetpack Connection Package. [https://github.com/woocommerce/woocommerce-ios/pull/10218]
 - [*] Product details: The share button is displayed with text instead of icon for better discoverability. [https://github.com/woocommerce/woocommerce-ios/pull/10216]
+- [*] Store creation: Update the timeout view with the option to retry the site check. [https://github.com/woocommerce/woocommerce-ios/pull/10221]
 
 
 14.4

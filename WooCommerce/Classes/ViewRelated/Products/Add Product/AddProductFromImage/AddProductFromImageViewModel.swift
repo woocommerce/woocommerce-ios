@@ -6,6 +6,18 @@ import Yosemite
 /// View model for `AddProductFromImageView` to handle user actions from the view and provide data for the view.
 @MainActor
 final class AddProductFromImageViewModel: ObservableObject {
+    /// View model for `AddProductFromImageScannedTextView`.
+    final class ScannedTextViewModel: ObservableObject, Identifiable {
+        let id: String = UUID().uuidString
+        @Published var text: String
+        @Published var isSelected: Bool
+
+        init(text: String, isSelected: Bool) {
+            self.text = text
+            self.isSelected = isSelected
+        }
+    }
+
     typealias ImageState = EditableImageViewState
 
     // MARK: - Product Details
@@ -25,7 +37,12 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     // MARK: - Scanned Texts
 
+    @Published var scannedTexts: [ScannedTextViewModel] = []
     @Published private(set) var isGeneratingDetails: Bool = false
+
+    private var selectedScannedTexts: [String] {
+        scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
+    }
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -53,6 +70,15 @@ final class AddProductFromImageViewModel: ObservableObject {
                 return imageState = previousState
             }
             imageState = .success(image)
+        }
+    }
+
+    /// Generates product details with the currently selected scanned texts.
+    func generateProductDetails() {
+        Task { @MainActor in
+            isGeneratingDetails = true
+            await generateAndPopulateProductDetails(from: Array(selectedScannedTexts))
+            isGeneratingDetails = false
         }
     }
 }
@@ -87,6 +113,7 @@ private extension AddProductFromImageViewModel {
 
     func onScannedTextRequestCompletion(request: VNRequest, error: Error?) {
         let texts = scannedTexts(from: request)
+        scannedTexts = texts.map { .init(text: $0, isSelected: true) }
         Task { @MainActor in
             isGeneratingDetails = true
             await generateAndPopulateProductDetails(from: texts)

@@ -217,6 +217,7 @@ public enum WooAnalyticsStat: String {
     case siteCreationProfilerQuestionSkipped = "site_creation_profiler_question_skipped"
     case siteCreationTryForFreeTapped = "site_creation_try_for_free_tapped"
     case siteCreationTimedOut = "site_creation_timed_out"
+    case siteCreationTimeoutRetried = "site_creation_timeout_retried"
     case siteCreationPropertiesOutOfSync = "site_creation_properties_out_of_sync"
     case siteCreationFreeTrialCreatedSuccess = "site_creation_free_trial_created_success"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"

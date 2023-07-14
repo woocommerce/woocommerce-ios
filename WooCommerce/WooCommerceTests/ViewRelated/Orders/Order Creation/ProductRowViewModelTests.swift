@@ -116,6 +116,22 @@ class ProductRowViewModelTests: XCTestCase {
                       "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
+    func test_view_model_creates_expected_label_for_product_with_price_and_discount() {
+        // Given
+        let price = "2.50"
+        let discount: Decimal = 0.50
+        let product = Product.fake().copy(price: price)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, discount: discount, canChangeQuantity: false, currencyFormatter: currencyFormatter)
+
+        // Then
+        let expectedPriceLabel = "2.50" + " - " + (currencyFormatter.formatAmount(discount) ?? "")
+        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
+                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
     func test_view_model_creates_expected_label_for_product_with_no_price() {
         // Given
         let price = ""

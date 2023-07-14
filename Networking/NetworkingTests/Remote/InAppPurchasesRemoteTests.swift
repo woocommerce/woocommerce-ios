@@ -73,4 +73,30 @@ class InAppPurchasesRemoteTests: XCTestCase {
         let orderId = try XCTUnwrap(result?.get())
         XCTAssertEqual(sampleOrderId, orderId)
     }
+
+    func test_checkTransaction_when_fails_to_retrieve_response_then_returns_network_error() throws {
+        // Given
+        let remote = InAppPurchasesRemote(network: network)
+        let transactionID: UInt64 = 12345
+
+        network.simulateResponse(requestUrlSuffix: "iap/transactions", filename: "")
+
+        // When
+        var expectedResult: Result<Int64, Error>?
+        waitForExpectation { expectation in
+            remote.checkTransaction(for: self.sampleSiteID, with: transactionID) { result in
+                switch result {
+                case .success(let siteID):
+                    XCTFail("Expected failure, but found existing handled transaction for associated site ID: \(siteID)")
+                case .failure:
+                    expectedResult = result
+                    expectation.fulfill()
+                }
+            }
+        }
+
+        // Then
+        let expectedError = try XCTUnwrap(expectedResult?.failure)
+        XCTAssertEqual(expectedError as? NetworkError, Networking.NetworkError.notFound)
+    }
 }

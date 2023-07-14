@@ -15,6 +15,23 @@ public class InAppPurchasesRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Checks the WPCOM billing system for whether or not an IAP transaction has been handled
+    /// - Parameters:
+    ///     - siteID: Site the purchase is for
+    ///     - transactionID: The transactionID of the specific transaction (not originalTransactionID)
+    ///     - completion: Closure to be executed upon completion. Returns the siteID of the transaction if success, or an error otherwise.
+    ///
+    public func checkTransaction(for siteID: Int64,
+                                 with transactionID: UInt64,
+                                 completion: @escaping (Swift.Result<Int64, Error>) -> Void ) {
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .get,
+                                    path: Constants.transactionsPath + "/\(transactionID)",
+                                    headers: headersWithAppId)
+        let mapper = InAppPurchasesTransactionMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Creates a new order for a new In-app Purchase
     /// - Parameters:
     ///     - siteID: Site the purchase is for
@@ -122,6 +139,7 @@ private extension InAppPurchasesRemote {
     enum Constants {
         static let productsPath = "iap/products"
         static let ordersPath = "iap/orders"
+        static let transactionsPath = "iap/transactions"
 
         static let siteIDKey = "site_id"
         static let priceKey = "price"

@@ -315,15 +315,13 @@ private extension ProductImagesViewController {
 private extension ProductImagesViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
         let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
-        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { [weak self] in
-            guard let self = self, mediaItems.isNotEmpty else {
-                return
-            }
-
-            self.deleteExistingImageIfOnlyOneImageIsAllowed()
-            self.productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
-            self.commitAndDismiss(true)
+        guard mediaItems.isNotEmpty else {
+            return
         }
+
+        deleteExistingImageIfOnlyOneImageIsAllowed()
+        productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
+        commitAndDismiss(true)
     }
 }
 

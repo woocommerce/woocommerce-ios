@@ -43,8 +43,7 @@ final class RequirementsChecker {
         Task { @MainActor in
             do {
                 let result = try await checkMinimumWooVersion(for: site)
-                /// skips checking site plan for non-wpcom stores.
-                guard case .invalidWCVersion = result, site.isWordPressComStore else {
+                guard case .invalidWCVersion = result else {
                     onCompletion?(.success(result))
                     return
                 }

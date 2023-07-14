@@ -16,6 +16,6 @@ struct DefaultShareProductAIEligibilityChecker: ShareProductAIEligibilityChecker
     }
 
     var canGenerateShareProductMessageUsingAI: Bool {
-        site?.isNonJetpackSite == false && featureFlagService.isFeatureFlagEnabled(.shareProductAI)
+        site?.isWordPressComStore == true && featureFlagService.isFeatureFlagEnabled(.shareProductAI)
     }
 }

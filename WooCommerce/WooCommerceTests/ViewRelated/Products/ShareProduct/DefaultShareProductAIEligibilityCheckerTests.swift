@@ -11,33 +11,11 @@ final class DefaultShareProductAIEligibilityCheckerTests: XCTestCase {
         XCTAssertTrue(checker.canGenerateShareProductMessageUsingAI)
     }
 
-    func test_canGenerateShareProductMessageUsingAI_is_enabled_when_site_is_jetpack_connected() {
+    func test_canGenerateShareProductMessageUsingAI_is_disabled_when_site_is_not_wpcom() {
         // Given
         let featureFlagService = MockFeatureFlagService(isShareProductAIEnabled: true)
-        let checker = DefaultShareProductAIEligibilityChecker(site: .fake().copy(isJetpackThePluginInstalled: true,
-                                                                                 isJetpackConnected: true,
-                                                                                 isWordPressComStore: false), featureFlagService: featureFlagService)
+        let checker = DefaultShareProductAIEligibilityChecker(site: .fake().copy(isWordPressComStore: false), featureFlagService: featureFlagService)
 
-        // Then
-        XCTAssertTrue(checker.canGenerateShareProductMessageUsingAI)
-    }
-
-    func test_canGenerateShareProductMessageUsingAI_is_enabled_when_site_is_jcp() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isShareProductAIEnabled: true)
-        let checker = DefaultShareProductAIEligibilityChecker(site: .fake().copy(isJetpackThePluginInstalled: false,
-                                                                                 isJetpackConnected: true,
-                                                                                 isWordPressComStore: false), featureFlagService: featureFlagService)
-
-        // Then
-        XCTAssertTrue(checker.canGenerateShareProductMessageUsingAI)
-    }
-
-    func test_canGenerateShareProductMessageUsingAI_is_disabled_when_logged_in_using_wporg_credentials() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isShareProductAIEnabled: true)
-        let checker = DefaultShareProductAIEligibilityChecker(site: .fake().copy(siteID: WooConstants.placeholderStoreID),
-                                                              featureFlagService: featureFlagService)
         // Then
         XCTAssertFalse(checker.canGenerateShareProductMessageUsingAI)
     }

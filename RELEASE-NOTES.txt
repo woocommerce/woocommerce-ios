@@ -1,11 +1,13 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
-14.5
+14.6
 -----
 - [Internal] Switched AI endpoint to be able to track and measure costs. [https://github.com/woocommerce/woocommerce-ios/pull/10218]
+
+14.5
+-----
 - [*] Product details: The share button is displayed with text instead of icon for better discoverability. [https://github.com/woocommerce/woocommerce-ios/pull/10216]
 - [*] Store creation: Update the timeout view with the option to retry the site check. [https://github.com/woocommerce/woocommerce-ios/pull/10221]
-
 
 14.4
 -----

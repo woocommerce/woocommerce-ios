@@ -303,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
+/* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
+"50 GB" = "50 GB";
+
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
@@ -484,6 +487,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "Add descriptions in a snap with AI. Try our feature today!";
+
+/* Title for the Discount screen during order creation */
+"Add Discount" = "Add Discount";
+
+/* Text for the button to add a discount to a product during order creation */
+"Add discount" = "Add discount";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Add Downloadable File";
@@ -735,7 +744,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "Amount (%)";
 
-/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - currency symbol
+/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol
    Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "Amount (%1$@)";
 
@@ -814,6 +823,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Anguilla" = "Anguilla";
+
+/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
+"Annually (Save 35%)" = "Annually (Save 35%)";
 
 /* Country option for a site address. */
 "Antarctica" = "Antarctica";
@@ -1544,7 +1556,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
-   Text for the close button in the Fee Details screen
+   Text for the close button in the Fee/Discounts Details screen
    Text for the close button in the Product screen
    Text for the close button in the Shipping Line Details screen
    Title of the Close action on the Jetpack Install view */
@@ -1812,7 +1824,8 @@ which should be translated separately and considered part of this sentence. */
 /* Text in the notice after copying the generated text in the product description AI generator view. */
 "Copied!" = "Copied!";
 
-/* Button title to copy generated text in the product description AI generator view.
+/* Button title to copy generated text in the add product from image form.
+   Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copy";
 
@@ -2222,7 +2235,8 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "Disconnect Reader";
 
-/* Discount label for payment view */
+/* Discount label for payment view
+   Title for the Discount Details screen during order creation */
 "Discount" = "Discount";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
@@ -2341,7 +2355,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   Text for the done button in the Fee Details screen
+   Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
@@ -2815,6 +2829,9 @@ which should be translated separately and considered part of this sentence. */
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "Everyone loves a deal";
 
+/* Title for the Performance plan features list. Is followed by a list of the plan features. */
+"Everything in Essential, plus:" = "Everything in Essential, plus:";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -3118,6 +3135,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the action to generate the first variation */
 "Generate Variation" = "Generate Variation";
+
+/* Loading state for the suggested text in the add product from image form. */
+"Generating suggestion from photo..." = "Generating suggestion from photo...";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Generating Variation";
@@ -4308,6 +4328,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "Month to Date";
 
+/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
+"Monthly" = "Monthly";
+
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "months";
 
@@ -4662,7 +4685,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
-   Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
@@ -4960,9 +4982,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Paste without Formatting";
 
-/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
-"Pay Annually" = "Pay Annually";
-
 /* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "Pay by card or another accepted payment method";
@@ -4970,9 +4989,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
    Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "Pay in Person";
-
-/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
-"Pay Monthly" = "Pay Monthly";
 
 /* Payment section title
    Title text of the row that shows the payment headline when creating a simple payment
@@ -5041,7 +5057,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "Pending review";
 
-/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - percent sign */
+/* Title for the amount field on the Fee/Discounts Details screen during order creationParameters: %1$@ - percent sign */
 "Percentage (%1$@)" = "Percentage (%1$@)";
 
 /* Name of percentage discount type */
@@ -5314,7 +5330,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Poland" = "Poland";
 
-/* Section title for popular products on the Select Product screen. */
+/* Section title for popular products on the Select Product screen.
+   The text of the badge that indicates the most popular choice when purchasing a Plan */
 "Popular" = "Popular";
 
 /* Country option for a site address. */
@@ -5747,7 +5764,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunding payment" = "Refunding payment";
 
 /* Action button to regenerate message on the product sharing message generation screen
-   Button title to regenerate product description with Jetpack AI. */
+   Button title to regenerate product description with Jetpack AI.
+   Regenerate button on the add product from image form to regenerate product details. */
 "Regenerate" = "Regenerate";
 
 /* Button in the view for adding or editing a coupon code. */
@@ -5786,6 +5804,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text for the button to remove a Coupon from the order during order creation */
 "Remove Coupon from Order" = "Remove Coupon from Order";
+
+/* Title for the Remove button in Details screen during order creation */
+"Remove Discount" = "Remove Discount";
 
 /* Label action for removing a link from the editor */
 "Remove end date" = "Remove end date";
@@ -5891,6 +5912,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button title to retry checking for store details after store creation.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
@@ -6153,6 +6175,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "Select a package";
 
+/* The title of the button to purchase a Plan when no plan is selected yet. */
+"Select a plan" = "Select a plan";
+
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Select a product type";
 
@@ -6176,6 +6201,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "Select items";
+
+/* Title of the media picker action sheet to select a source. */
+"Select Media Source" = "Select Media Source";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Select paragraph style";
@@ -6282,6 +6310,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Seychelles" = "Seychelles";
 
 /* Action button to share the generated message on the product sharing message generation screen
+   Action for sharing a product from the product details screen
    Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "Share";
@@ -6772,7 +6801,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for filtering products by stock status. */
 "Stock Status" = "Stock Status";
 
-/* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
+/* Title of one of the features of the Paid plans, regarding site storage. */
+"Storage" = "Storage";
+
+/* Title of the screen when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "Store creation still in progress";
 
 /* Title of the webview for Store details task from onboarding. */
@@ -6905,6 +6937,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sudan" = "Sudan";
 
+/* Header of the suggested text in the add product from image form. */
+"Suggestion from photo" = "Suggestion from photo";
+
 /* Header label of the domain suggestions on the domain selector. */
 "SUGGESTIONS" = "SUGGESTIONS";
 
@@ -6988,6 +7023,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Tajikistan" = "Tajikistan";
+
+/* Tip in the add product from image form to add a packaging image for AI-generated product details. */
+"Take a packaging photo to create product details with AI" = "Take a packaging photo to create product details with AI";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Take a photo";
@@ -7300,8 +7338,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The message of the alert when another service package has the same name */
 "The new service package name is not unique." = "The new service package name is not unique.";
 
-/* Message of the alert when the created store never becomes a Jetpack site in the store creation flow. */
-"The new store will be available soon in the store picker. If you have any issues, please contact support." = "The new store will be available soon in the store picker. If you have any issues, please contact support.";
+/* Message of the screen when the created store never becomes a Jetpack site in the store creation flow. */
+"The new store will be available soon in the store picker. Please wait a bit and try again." = "The new store will be available soon in the store picker. Please wait a bit and try again.";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "The Order couldn't be loaded!";
@@ -7872,6 +7910,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Tuvalu" = "Tuvalu";
 
+/* Info text about the scanned text list on the add product from image form. */
+"Tweak your text: Unselect scans you don't need or tap to edit" = "Tweak your text: Unselect scans you don't need or tap to edit";
+
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
 
@@ -8385,6 +8426,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "View";
 
+/* Title for the button to expand plan details on the Upgrade plan screen. Reads as 'View Essential features'. %1$@ must be included in the string and will be replaced with the plan name. */
+"View %1$@ features" = "View %1$@ features";
+
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons
    Title of the button on the order details product list item to navigate to add-ons */
@@ -8750,7 +8794,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "WordPress API Error: [%1$@] %2$@";
 
-/* Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the device's photo library.
+   Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress Media Library";
 

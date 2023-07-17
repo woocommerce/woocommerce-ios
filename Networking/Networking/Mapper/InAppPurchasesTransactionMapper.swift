@@ -21,7 +21,7 @@ private struct InAppPurchasesTransactionContainer: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         guard let siteID = try container.decodeIfPresent(Int64.self, forKey: .siteID) else {
-            throw InAppPurchasesTransactionDecodingError.transactionNotHandled
+            throw InAppPurchasesTransactionError.transactionNotHandled
         }
 
         self.init(siteID: siteID)
@@ -32,6 +32,6 @@ private struct InAppPurchasesTransactionContainer: Decodable {
     }
 }
 
-enum InAppPurchasesTransactionDecodingError: Error {
+enum InAppPurchasesTransactionError: Error {
     case transactionNotHandled
 }

@@ -74,7 +74,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         XCTAssertEqual(sampleOrderId, orderId)
     }
 
-    func test_checkTransaction_when_success_to_retrieve_response_and_transaction_is_handled_then_returns_siteID() throws {
+    func test_checkTransactionHandled_when_success_to_retrieve_response_and_transaction_is_handled_then_returns_siteID() throws {
         // Given
         let remote = InAppPurchasesRemote(network: network)
         let transactionID: UInt64 = 1234
@@ -84,7 +84,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         // When
         var expectedResult: Result<Int64, Error>?
         waitForExpectation { expectation in
-            remote.checkTransaction(with: transactionID) { aResult in
+            remote.checkTransactionHandled(with: transactionID) { aResult in
                 expectedResult = aResult
                 expectation.fulfill()
             }
@@ -95,7 +95,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         XCTAssertEqual(expectedSiteID, sampleSiteID)
     }
 
-    func test_checkTransaction_when_success_to_retrieve_response_and_transaction_is_not_handled_then_returns_transactionNotHandled_error() throws {
+    func test_checkTransactionHandled_when_success_to_retrieve_response_and_transaction_is_not_handled_then_returns_transactionNotHandled_error() throws {
         // Given
         let remote = InAppPurchasesRemote(network: network)
         let transactionID: UInt64 = 0
@@ -105,7 +105,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         // When
         var expectedResult: Result<Int64, Error>?
         waitForExpectation { expectation in
-            remote.checkTransaction(with: transactionID) { aResult in
+            remote.checkTransactionHandled(with: transactionID) { aResult in
                 expectedResult = aResult
                 expectation.fulfill()
             }
@@ -113,10 +113,10 @@ class InAppPurchasesRemoteTests: XCTestCase {
 
         // Then
         let expectedError = try XCTUnwrap(expectedResult?.failure)
-        XCTAssertEqual(expectedError as? InAppPurchasesTransactionDecodingError, .transactionNotHandled)
+        XCTAssertEqual(expectedError as? InAppPurchasesTransactionError, .transactionNotHandled)
     }
 
-    func test_checkTransaction_when_fails_to_retrieve_response_then_returns_network_error() throws {
+    func test_checkTransactionHandled_when_fails_to_retrieve_response_then_returns_network_error() throws {
         // Given
         let remote = InAppPurchasesRemote(network: network)
         let transactionID: UInt64 = 1234
@@ -126,7 +126,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         // When
         var expectedResult: Result<Int64, Error>?
         waitForExpectation { expectation in
-            remote.checkTransaction(with: transactionID) { result in
+            remote.checkTransactionHandled(with: transactionID) { result in
                 switch result {
                 case .success(let siteID):
                     XCTFail("Expected failure, but found existing handled transaction for associated site ID: \(siteID)")

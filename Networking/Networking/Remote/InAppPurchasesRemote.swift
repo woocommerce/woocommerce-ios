@@ -15,13 +15,16 @@ public class InAppPurchasesRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Checks the WPCOM billing system for whether or not an IAP transaction has been handled
+    /// Checks the WPCOM billing system for whether or not an In-app Purchase transaction has been handled
+    /// Unhandled transactions are those which have not yet marked as finished, in the Transactions.updates queue
+    /// We'll return the Site ID the transaction has been handled for, or an error if hasn't been handled yet
+    ///
     /// - Parameters:
-    ///     - siteID: Site the purchase is for
+    ///     - siteID: Site which the transaction has been handled for
     ///     - transactionID: The transactionID of the specific transaction (not originalTransactionID)
     ///     - completion: Closure to be executed upon completion. Returns the siteID of the transaction if success, or an error otherwise.
     ///
-    public func checkTransaction(with transactionID: UInt64,
+    public func checkTransactionHandled(with transactionID: UInt64,
                                  completion: @escaping (Swift.Result<Int64, Error>) -> Void ) {
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,

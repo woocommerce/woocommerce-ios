@@ -20,7 +20,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_initial_name_is_empty() throws {
         // Given
-        let viewModel = AddProductFromImageViewModel(siteID: 6, onAddImage: { _ in nil })
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in nil })
 
         // Then
         XCTAssertEqual(viewModel.name, "")
@@ -28,7 +28,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_initial_description_is_empty() throws {
         // Given
-        let viewModel = AddProductFromImageViewModel(siteID: 6, onAddImage: { _ in nil })
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in nil })
 
         // Then
         XCTAssertEqual(viewModel.description, "")
@@ -38,7 +38,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_imageState_is_reverted_to_empty_when_addImage_returns_nil() {
         // Given
-        let viewModel = AddProductFromImageViewModel(siteID: 6, onAddImage: { _ in
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in
             nil
         })
         XCTAssertEqual(viewModel.imageState, .empty)
@@ -57,7 +57,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         var imageToReturn: MediaPickerImage? = image
-        let viewModel = AddProductFromImageViewModel(siteID: 6, onAddImage: { _ in
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in
             imageToReturn
         })
         XCTAssertEqual(viewModel.imageState, .empty)
@@ -88,6 +88,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
         mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      onAddImage: { _ in
@@ -115,6 +116,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
             XCTFail("Unexpected action: \(action)")
         }
         let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
                                                      stores: stores,
                                                      onAddImage: { _ in nil })
 
@@ -127,6 +129,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let imageTextScanner = MockImageTextScanner(result: .success(["", "Product", ""]))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      onAddImage: { _ in

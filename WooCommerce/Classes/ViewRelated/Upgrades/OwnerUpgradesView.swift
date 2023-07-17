@@ -2,6 +2,57 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
+struct FullFeatureListGroups {
+    public let title: String
+    public let essentialFeatures: [String]
+    public let performanceFeatures: [String]
+}
+
+struct FullFeatureListViewModel {
+    static func hardcodedFullFeatureList() -> [FullFeatureListGroups] {
+        return [
+            FullFeatureListGroups(title: "Your Store",
+                                  essentialFeatures: [
+                                    "WooCommerce store",
+                                    "WooCommerce mobile app",
+                                    "WordPress CMS",
+                                    "WordPress mobile app"
+                                  ], performanceFeatures: []
+                                 ),
+            FullFeatureListGroups(title: "Products",
+                                  essentialFeatures: [
+                                    "List unlimited products",
+                                    "Gift cards",
+                                  ], performanceFeatures: [
+                                    "Min/Max order quantity"
+                                  ])
+        ]
+    }
+}
+
+struct FullFeatureListView: View {
+    var featureListGroups = FullFeatureListViewModel.hardcodedFullFeatureList()
+    var body: some View {
+        ScrollView() {
+            ForEach(featureListGroups, id: \.title) { featureList in
+                Text(featureList.title)
+                    .font(.title)
+                    .bold()
+                ForEach(featureList.essentialFeatures, id: \.self) { feature in
+                    Text(feature)
+                        .font(.body)
+                }
+                ForEach(featureList.performanceFeatures, id: \.self) { feature in
+                    Text(feature)
+                        .font(.body)
+                        .underline(color: .red)
+                }
+                Divider()
+            }
+        }
+    }
+}
+
 struct OwnerUpgradesView: View {
     @State var upgradePlans: [WooWPComPlan]
     @State var isPurchasing: Bool
@@ -22,6 +73,7 @@ struct OwnerUpgradesView: View {
     private var paymentFrequencies: [LegacyWooPlan.PlanFrequency] = [.year, .month]
 
     @State var selectedPlan: WooWPComPlan? = nil
+    @State private var showingFullFeatureList = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -46,6 +98,11 @@ struct OwnerUpgradesView: View {
                         .redacted(reason: isLoading ? .placeholder : [])
                         .shimmering(active: isLoading)
                         .padding(.bottom, 8)
+                    }
+                    Button(Localization.allFeaturesListText) {
+                        showingFullFeatureList.toggle()
+                    }.sheet(isPresented: $showingFullFeatureList) {
+                        FullFeatureListView()
                     }
                 }
                 .padding()
@@ -95,6 +152,10 @@ private extension OwnerUpgradesView {
 
         static let selectPlanButtonText = NSLocalizedString(
             "Select a plan", comment: "The title of the button to purchase a Plan when no plan is selected yet.")
+
+        static let allFeaturesListText = NSLocalizedString(
+            "View Full Feature List",
+            comment: "The title of the button to view a list of all features that plans offer.")
     }
 }
 

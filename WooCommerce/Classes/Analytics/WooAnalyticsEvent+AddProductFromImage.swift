@@ -13,7 +13,7 @@ extension WooAnalyticsEvent {
             static let hasScannedText = "has_scanned_text"
             static let hasGeneratedDetails = "has_generated_details"
         }
-        
+
         /// Tracked when the user launches the screen to add a product from an image.
         /// - Parameters:
         ///   - source: Entry point to product creation.
@@ -21,7 +21,7 @@ extension WooAnalyticsEvent {
         static func formDisplayed(source: AddProductCoordinator.Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductFromImageDisplayed, properties: [Key.source: source.analyticsValue])
         }
-        
+
         /// Tracked when the image scanning completes.
         /// - Parameters:
         ///   - source: Entry point to product creation.

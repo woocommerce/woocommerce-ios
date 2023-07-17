@@ -84,7 +84,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         // When
         var expectedResult: Result<Int64, Error>?
         waitForExpectation { expectation in
-            remote.checkTransactionHandled(with: transactionID) { aResult in
+            remote.retrieveHandledTransactionSiteID(for: transactionID) { aResult in
                 expectedResult = aResult
                 expectation.fulfill()
             }
@@ -105,7 +105,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         // When
         var expectedResult: Result<Int64, Error>?
         waitForExpectation { expectation in
-            remote.checkTransactionHandled(with: transactionID) { aResult in
+            remote.retrieveHandledTransactionSiteID(for: transactionID) { aResult in
                 expectedResult = aResult
                 expectation.fulfill()
             }
@@ -126,7 +126,7 @@ class InAppPurchasesRemoteTests: XCTestCase {
         // When
         var expectedResult: Result<Int64, Error>?
         waitForExpectation { expectation in
-            remote.checkTransactionHandled(with: transactionID) { result in
+            remote.retrieveHandledTransactionSiteID(for: transactionID) { result in
                 switch result {
                 case .success(let siteID):
                     XCTFail("Expected failure, but found existing handled transaction for associated site ID: \(siteID)")

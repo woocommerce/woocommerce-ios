@@ -55,17 +55,24 @@ final class AddProductFromImageViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
     private let imageTextScanner: ImageTextScannerProtocol
+    private let analytics: Analytics
 
     init(siteID: Int64,
+         source: AddProductCoordinator.Source,
          stores: StoresManager = ServiceLocator.stores,
          imageTextScanner: ImageTextScannerProtocol = ImageTextScanner(),
+         analytics: Analytics = ServiceLocator.analytics,
          onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.siteID = siteID
         self.stores = stores
         self.imageTextScanner = imageTextScanner
+        self.analytics = analytics
         self.onAddImage = onAddImage
         self.nameViewModel = .init(text: "", placeholder: Localization.nameFieldPlaceholder)
         self.descriptionViewModel = .init(text: "", placeholder: Localization.descriptionFieldPlaceholder)
+
+        // Track display event
+        analytics.track(event: .AddProductFromImage.formDisplayed(source: source))
 
         selectedImageSubscription = $imageState.compactMap { $0.image?.image }
         .sink { [weak self] image in

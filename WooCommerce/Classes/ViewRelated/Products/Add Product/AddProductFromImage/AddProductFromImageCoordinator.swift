@@ -13,6 +13,7 @@ final class AddProductFromImageCoordinator: Coordinator {
     private var mediaPickingCoordinator: MediaPickingCoordinator?
 
     private let siteID: Int64
+    private let source: AddProductCoordinator.Source
     private let productImageUploader: ProductImageUploaderProtocol
     private let productImageLoader: ProductUIImageLoader
 
@@ -20,11 +21,13 @@ final class AddProductFromImageCoordinator: Coordinator {
     private let onProductCreated: (Product) -> Void
 
     init(siteID: Int64,
+         source: AddProductCoordinator.Source,
          sourceNavigationController: UINavigationController,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
+        self.source = source
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.productImageLoader = productImageLoader
@@ -33,6 +36,7 @@ final class AddProductFromImageCoordinator: Coordinator {
 
     func start() {
         let addProductFromImage = AddProductFromImageHostingController(siteID: siteID,
+                                                                       source: source,
                                                                        addImage: { [weak self] source in
             await self?.showImagePicker(source: source)
         }, completion: { [weak self] data in

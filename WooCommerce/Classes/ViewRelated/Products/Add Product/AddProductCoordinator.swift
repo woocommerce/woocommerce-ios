@@ -249,6 +249,7 @@ private extension AddProductCoordinator {
 
             if addProductFromImageEligibilityChecker.isEligible() {
                 let coordinator = AddProductFromImageCoordinator(siteID: siteID,
+                                                                 source: source,
                                                                  sourceNavigationController: navigationController,
                                                                  onProductCreated: { [weak self] product in
                     self?.onProductCreated(product)

@@ -42,9 +42,9 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     var noResultConfig: EmptyStateViewController.Config?
     var onCouponSelected: ((Coupon) -> Void)?
 
-    init(siteID: Int64) {
+    init(siteID: Int64, showFeedbackBannerIfAppropriate: Bool) {
         self.siteID = siteID
-        self.viewModel = CouponListViewModel(siteID: siteID)
+        self.viewModel = CouponListViewModel(siteID: siteID, showFeedbackBannerIfAppropriate: showFeedbackBannerIfAppropriate)
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

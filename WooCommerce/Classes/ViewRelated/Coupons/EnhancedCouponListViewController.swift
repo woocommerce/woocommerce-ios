@@ -15,7 +15,7 @@ final class EnhancedCouponListViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
-        couponListViewController = CouponListViewController(siteID: siteID)
+        couponListViewController = CouponListViewController(siteID: siteID, showFeedbackBannerIfAppropriate: true)
 
         super.init(nibName: nil, bundle: nil)
 

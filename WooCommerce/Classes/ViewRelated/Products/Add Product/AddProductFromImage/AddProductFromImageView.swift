@@ -88,11 +88,9 @@ struct AddProductFromImageView: View {
                 .buttonStyle(LinkButtonStyle())
             }
             ToolbarItem(placement: .cancellationAction) {
-                Button(action: {
+                Button(Localization.cancelButtonTitle) {
                     completion(nil)
-                }, label: {
-                    Image(systemName: "xmark")
-                })
+                }
                 .buttonStyle(TextButtonStyle())
             }
         }
@@ -108,6 +106,10 @@ private extension AddProductFromImageView {
         static let continueButtonTitle = NSLocalizedString(
             "Continue",
             comment: "Continue button on the add product from image form."
+        )
+        static let cancelButtonTitle = NSLocalizedString(
+            "Cancel",
+            comment: "Cancel button on the add product from image form."
         )
         static let regenerateButtonTitle = NSLocalizedString(
             "Regenerate",

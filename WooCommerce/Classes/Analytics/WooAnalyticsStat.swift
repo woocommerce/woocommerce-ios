@@ -581,7 +581,7 @@ public enum WooAnalyticsStat: String {
     case addProductFromImageScanCompleted = "add_product_from_image_scan_completed"
     case addProductFromImageScanFailed = "add_product_from_image_scan_failed"
     case addProductFromImageDetailsGenerated = "add_product_from_image_details_generated"
-    case addProductFromImageDetailsGenerationFailed = "add_product_from_image_detail_generation_failed"
+    case addProductFromImageDetailGenerationFailed = "add_product_from_image_detail_generation_failed"
     case addProductFromImageContinueButtonTapped = "add_product_from_image_continue_button_tapped"
 
     // MARK: Duplicate Product events

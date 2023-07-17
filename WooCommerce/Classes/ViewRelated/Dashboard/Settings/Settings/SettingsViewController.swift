@@ -152,6 +152,8 @@ private extension SettingsViewController {
             configureInstallJetpack(cell: cell)
         case let cell as SwitchTableViewCell where row == .storeSetupList:
             configureStoreSetupList(cell: cell)
+        case let cell as BasicTableViewCell where row == .shippingZones:
+            configureShippingZones(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -225,6 +227,12 @@ private extension SettingsViewController {
                 await self?.viewModel.updateStoreSetupListVisibility(value)
             }
         }
+    }
+
+    func configureShippingZones(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.shippingZones
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -364,28 +372,11 @@ private extension SettingsViewController {
     }
 
     func supportWasPressed() {
-//        ServiceLocator.analytics.track(.settingsContactSupportTapped)
-//        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
-//            fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
-//        }
-//        show(viewController, sender: self)
-
-
-        let provider = TemporalAnalyticsProvider()
-        let viewController: WCReactNativeViewController = {
-            if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
-                let url = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
-                let appPassword = ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName)).applicationPassword
-                let loginString = "\(appPassword?.wpOrgUsername ?? ""):\(appPassword?.password.secretValue ?? "")"
-                let loginData = loginString.data(using: .utf8)!.base64EncodedString()
-                return WCReactNativeViewController(analyticsProvider: provider, siteUrl: url, appPassword: loginData)
-            } else {
-                let blogID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? .zero
-                let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
-                return WCReactNativeViewController(analyticsProvider: provider, blogID: "\(blogID)", apiToken: token)
-            }
-        }()
-
+        ServiceLocator.analytics.track(.settingsContactSupportTapped)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
+            fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
         self.present(viewController, animated: true)
     }
 
@@ -421,6 +412,10 @@ private extension SettingsViewController {
             self?.viewModel.onJetpackInstallDismiss()
         }
         present(installJetpackController, animated: true, completion: nil)
+    }
+
+    func shippingZonesWasPressed() {
+        // Launch shipping zones here
     }
 
     func privacyWasPressed() {
@@ -611,6 +606,8 @@ extension SettingsViewController: UITableViewDelegate {
             domainWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
+        case .shippingZones:
+            shippingZonesWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -687,6 +684,7 @@ extension SettingsViewController {
         case domain
         case installJetpack
         case storeSetupList
+        case shippingZones
 
         // Help & Feedback
         case support
@@ -737,6 +735,8 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .storeSetupList:
                 return SwitchTableViewCell.self
+            case .shippingZones:
+                return BasicTableViewCell.self
             case .logout, .closeAccount:
                 return BasicTableViewCell.self
             case .privacy:
@@ -813,6 +813,11 @@ private extension SettingsViewController {
         static let storeSetupList = NSLocalizedString(
             "Store Setup List",
             comment: "Controls store onboarding setup list visibility."
+        )
+
+        static let shippingZones = NSLocalizedString(
+            "Shipping Zones",
+            comment: "Access the store shipping zones."
         )
 
         static let privacySettings = NSLocalizedString(

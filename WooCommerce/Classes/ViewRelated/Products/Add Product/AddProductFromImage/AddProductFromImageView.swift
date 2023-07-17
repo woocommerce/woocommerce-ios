@@ -85,6 +85,7 @@ struct AddProductFromImageView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.continueButtonTitle) {
+                    viewModel.trackContinueButtonTapped()
                     completion(.init(name: viewModel.name, description: viewModel.description, image: viewModel.image))
                 }
                 .buttonStyle(LinkButtonStyle())

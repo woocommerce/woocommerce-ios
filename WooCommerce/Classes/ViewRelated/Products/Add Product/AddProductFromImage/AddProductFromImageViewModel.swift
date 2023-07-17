@@ -40,6 +40,7 @@ final class AddProductFromImageViewModel: ObservableObject {
         imageState.image
     }
 
+    private let addProductSource: AddProductCoordinator.Source
     private let onAddImage: (MediaPickingSource) async -> MediaPickerImage?
     private var selectedImageSubscription: AnyCancellable?
 
@@ -65,6 +66,7 @@ final class AddProductFromImageViewModel: ObservableObject {
          onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.siteID = siteID
         self.stores = stores
+        self.addProductSource = source
         self.imageTextScanner = imageTextScanner
         self.analytics = analytics
         self.onAddImage = onAddImage
@@ -101,6 +103,16 @@ final class AddProductFromImageViewModel: ObservableObject {
             isGeneratingDetails = false
         }
     }
+
+    /// Tracks when the continue button is tapped
+    func trackContinueButtonTapped() {
+        analytics.track(event: .AddProductFromImage.continueButtonTapped(
+            source: addProductSource,
+            isNameEmpty: name.isEmpty,
+            isDescriptionEmpty: description.isEmpty,
+            hasScannedText: selectedScannedTexts.isNotEmpty,
+            hasGeneratedDetails: nameViewModel.hasAppliedGeneratedContent || descriptionViewModel.hasAppliedGeneratedContent))
+    }
 }
 
 private extension AddProductFromImageViewModel {
@@ -108,9 +120,11 @@ private extension AddProductFromImageViewModel {
         Task { @MainActor in
             do {
                 let texts = try await imageTextScanner.scanText(from: image)
+                analytics.track(event: .AddProductFromImage.scanCompleted(source: addProductSource, scannedTextCount: texts.count))
                 scannedTexts = texts.map { .init(text: $0, isSelected: true) }
                 generateProductDetails()
             } catch {
+                analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))
                 DDLogError("⛔️ Error scanning text from image: \(error)")
             }
         }
@@ -121,11 +135,17 @@ private extension AddProductFromImageViewModel {
             return
         }
         switch await generateProductDetails(from: scannedTexts) {
-            case .success(let details):
-                nameViewModel.onSuggestion(details.name)
-                descriptionViewModel.onSuggestion(details.description)
-            case .failure(let error):
-                DDLogError("⛔️ Error generating product details from scanned text: \(error)")
+        case .success(let details):
+            nameViewModel.onSuggestion(details.name)
+            descriptionViewModel.onSuggestion(details.description)
+            analytics.track(event: .AddProductFromImage.detailsGenerated(
+                source: addProductSource,
+                language: details.language,
+                selectedTextCount: selectedScannedTexts.count
+            ))
+        case .failure(let error):
+            analytics.track(event: .AddProductFromImage.detailGenerationFailed(source: addProductSource, error: error))
+            DDLogError("⛔️ Error generating product details from scanned text: \(error)")
         }
     }
 

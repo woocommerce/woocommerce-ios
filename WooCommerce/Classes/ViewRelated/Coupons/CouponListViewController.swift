@@ -45,6 +45,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     }()
 
     var onDataHasLoaded: ((Bool) -> Void)?
+    var noResultConfig: EmptyStateViewController.Config?
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -301,20 +302,12 @@ private extension CouponListViewController {
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         displayEmptyStateViewController(emptyStateViewController)
-        //emptyStateViewController.configure(buildNoResultConfig())
+
+        if let noResultConfig = noResultConfig {
+            emptyStateViewController.configure(noResultConfig)
+        }
     }
 
-//    func buildNoResultConfig() -> EmptyStateViewController.Config {
-//        return .withButton(
-//            message: .init(string: Localization.couponCreationSuggestionMessage),
-//            image: .emptyCouponsImage,
-//            details: Localization.emptyStateDetails,
-//            buttonTitle: Localization.createCouponAction
-//        ) { [weak self] button in
-//            guard let self = self else { return }
-//            self.displayCouponTypeBottomSheet()
-//        }
-//    }
 
     /// Displays the overlay when coupons are disabled for the store.
     ///
@@ -383,12 +376,6 @@ private extension CouponListViewController {
         static let emptyStateMessage = NSLocalizedString(
                 "No coupons found",
                 comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
-        static let couponCreationSuggestionMessage = NSLocalizedString(
-            "Everyone loves a deal",
-            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible.")
-        static let emptyStateDetails = NSLocalizedString(
-            "Boost your business by sending customers special offers and discounts.",
-            comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
 
         static let couponsDisabledMessage = NSLocalizedString(
             "Everyone loves a deal",

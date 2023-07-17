@@ -14,6 +14,7 @@ final class EnhancedCouponListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         couponListViewController.onDataHasLoaded = configureNavigationBarItems
+        couponListViewController.noResultConfig = buildNoResultConfig()
     }
 
     required init?(coder: NSCoder) {
@@ -80,6 +81,18 @@ private extension EnhancedCouponListViewController {
         }
     }
 
+    func buildNoResultConfig() -> EmptyStateViewController.Config {
+        return .withButton(
+            message: .init(string: Localization.couponCreationSuggestionMessage),
+            image: .emptyCouponsImage,
+            details: Localization.emptyStateDetails,
+            buttonTitle: Localization.createCouponAction
+        ) { [weak self] button in
+            guard let self = self else { return }
+            self.displayCouponTypeBottomSheet()
+        }
+    }
+
     /// Shows `SearchViewController`.
     ///
     @objc private func displaySearchCoupons() {
@@ -141,5 +154,11 @@ private extension EnhancedCouponListViewController {
             "Retrieves a list of coupons that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search coupons."
         )
+        static let couponCreationSuggestionMessage = NSLocalizedString(
+            "Everyone loves a deal",
+            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible.")
+        static let emptyStateDetails = NSLocalizedString(
+            "Boost your business by sending customers special offers and discounts.",
+            comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
     }
 }

@@ -460,12 +460,16 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
+        let itemDiscount = currentDiscount(on: item)
+        let passingDiscountValue = itemDiscount > 0 ? itemDiscount : nil
+
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let parent = allProducts.first(where: { $0.productID == item.parent })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
             return ProductRowViewModel(id: item.itemID,
                                        productVariation: variation,
+                                       discount: passingDiscountValue,
                                        name: item.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
@@ -479,6 +483,7 @@ final class EditableOrderViewModel: ObservableObject {
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
+                                       discount: passingDiscountValue,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        quantityUpdatedCallback: { [weak self] _ in

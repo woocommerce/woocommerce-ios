@@ -100,7 +100,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .addProductFromImage:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .ordersWithCouponsM4:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

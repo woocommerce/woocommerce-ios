@@ -1,1 +1,1 @@
-Esta versão inclui a opção de adicionar vários cupons ao criar um pedido. Sabia que é possível gerar descrições de produto otimizadas para conversão e SEO para seus produtos do WooCommerce? Experimente! Agora as lojas estadunidenses inscritas no teste gratuito podem fazer upgrade para um plano pago pelo aplicativo.
+Novidade: é possível gerar descrições automáticas de produto otimizadas para conversão e SEO para seus produtos do WooCommerce e compartilhá-las usando IA. Experimente já!

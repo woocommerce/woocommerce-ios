@@ -21,6 +21,11 @@ final class MediaPickingCoordinator {
         return DeviceMediaLibraryPicker(allowsMultipleImages: allowsMultipleImages, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
+    private lazy var wpMediaLibraryPicker: WordPressMediaLibraryImagePickerCoordinator =
+        .init(siteID: siteID,
+              allowsMultipleImages: allowsMultipleImages,
+              onCompletion: onWPMediaPickerCompletion)
+
     private let siteID: Int64
     private let allowsMultipleImages: Bool
     private let analytics: Analytics
@@ -121,10 +126,7 @@ private extension MediaPickingCoordinator {
     }
 
     func showSiteMediaPicker(origin: UIViewController) {
-        let wordPressMediaPickerViewController = WordPressMediaLibraryImagePickerViewController(siteID: siteID,
-                                                                                                allowsMultipleImages: allowsMultipleImages,
-                                                                                                onCompletion: onWPMediaPickerCompletion)
-        origin.present(wordPressMediaPickerViewController, animated: true)
+        wpMediaLibraryPicker.start(from: origin)
     }
 }
 

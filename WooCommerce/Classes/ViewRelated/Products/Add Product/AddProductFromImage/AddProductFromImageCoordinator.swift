@@ -39,6 +39,9 @@ final class AddProductFromImageCoordinator: Coordinator {
             guard let self else { return }
             Task { @MainActor in
                 await self.navigationController.dismiss(animated: true)
+                guard let data else {
+                    return
+                }
                 guard let product = self.createProduct(name: data.name, description: data.description) else {
                     return
                 }
@@ -123,7 +126,7 @@ private extension AddProductFromImageCoordinator {
                     return continuation.resume(returning: nil)
                 }
                 Task { @MainActor in
-                    let image = await self.onDeviceMediaLibraryPickerCompletion(assets: assets, navigationController: formNavigationController)
+                    let image = await self.onDeviceMediaLibraryPickerCompletion(assets: assets)
                     continuation.resume(returning: image)
                 }
             }, onWPMediaPickerCompletion: { [weak self] mediaItems in
@@ -131,7 +134,7 @@ private extension AddProductFromImageCoordinator {
                     return continuation.resume(returning: nil)
                 }
                 Task { @MainActor in
-                    let image = await self.onWPMediaPickerCompletion(mediaItems: mediaItems, navigationController: formNavigationController)
+                    let image = await self.onWPMediaPickerCompletion(mediaItems: mediaItems)
                     continuation.resume(returning: image)
                 }
             })
@@ -157,9 +160,7 @@ private extension AddProductFromImageCoordinator {
 //
 private extension AddProductFromImageCoordinator {
     @MainActor
-    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset], navigationController: UINavigationController) async -> MediaPickerImage? {
-        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        await navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal)
+    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) async -> MediaPickerImage? {
         guard let asset = assets.first else {
             return nil
         }
@@ -171,9 +172,7 @@ private extension AddProductFromImageCoordinator {
 //
 private extension AddProductFromImageCoordinator {
     @MainActor
-    func onWPMediaPickerCompletion(mediaItems: [Media], navigationController: UINavigationController) async -> MediaPickerImage? {
-        let shouldAnimateMediaLibraryDismissal = mediaItems.isEmpty
-        await navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal)
+    func onWPMediaPickerCompletion(mediaItems: [Media]) async -> MediaPickerImage? {
         guard let media = mediaItems.first else {
             return nil
         }

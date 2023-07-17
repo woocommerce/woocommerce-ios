@@ -15,6 +15,8 @@ struct ProductInOrder: View {
     ///
     @State private var shouldShowDiscountLineDetails: Bool = false
 
+    @Environment(\.presentationMode) private var presentationMode
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -26,6 +28,7 @@ struct ProductInOrder: View {
                         Divider()
                         VStack(spacing: Layout.noSpacing) {
                             Button(Localization.addDiscount) {
+                                viewModel.onAddDiscountTapped()
                                 shouldShowDiscountLineDetails = true
                             }
                                 .buttonStyle(PlusButtonStyle())
@@ -33,13 +36,46 @@ struct ProductInOrder: View {
                                 .accessibilityIdentifier("add-discount-button")
                             Divider()
                         }
-                        .renderedIf(viewModel.isAddingDiscountToProductEnabled)
+                        .renderedIf(viewModel.showAddDiscountRow)
+
+                        Text(Localization.couponsAndDiscountAlert)
+                            .subheadlineStyle()
+                            .padding()
+                            .renderedIf(viewModel.showCouponsAndDiscountsAlert)
                     }
                     .background(Color(.listForeground(modal: false)))
                     .sheet(isPresented: $shouldShowDiscountLineDetails) {
                         FeeOrDiscountLineDetailsView(viewModel: viewModel.discountDetailsViewModel)
                     }
                     Spacer(minLength: Layout.sectionSpacing)
+
+                    Section {
+                        Divider()
+                        VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                            HStack() {
+                                Text(Localization.discountTitle)
+                                    .headlineStyle()
+                                Spacer()
+                                Button(Localization.editDiscount) {
+                                    viewModel.onEditDiscountTapped()
+                                    shouldShowDiscountLineDetails = true
+                                }
+                            }
+
+                            Spacer()
+                            Text(Localization.discountAmount)
+                                .subheadlineStyle()
+                            Text(viewModel.formattedDiscount ?? "")
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        Divider()
+                    }
+                    .background(Color(.listForeground(modal: false)))
+                    .renderedIf(viewModel.showCurrentDiscountSection && viewModel.formattedDiscount != nil)
+
+                    Spacer(minLength: Layout.sectionSpacing)
+
                     Section {
                         Divider()
                         Button(Localization.remove) {
@@ -67,6 +103,9 @@ struct ProductInOrder: View {
             }
         }
         .wooNavigationBarStyle()
+        .onReceive(viewModel.viewDismissPublisher) {
+            presentationMode.wrappedValue.dismiss()
+        }
     }
 }
 
@@ -82,8 +121,14 @@ private extension ProductInOrder {
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Product screen")
         static let addDiscount = NSLocalizedString("Add discount",
                                               comment: "Text for the button to add a discount to a product during order creation")
+        static let couponsAndDiscountAlert = NSLocalizedString("Adding discount is currently not available. Remove coupons first.",
+                                              comment: "Alert on the Product Details screen during order creation when" +
+                                                               "we cannot add a discount because we have coupons")
         static let remove = NSLocalizedString("Remove Product from Order",
                                               comment: "Text for the button to remove a product from the order during order creation")
+        static let discountTitle = NSLocalizedString("Discount", comment: "Title for the Discount section on the Product Details screen during order creation")
+        static let editDiscount = NSLocalizedString("Edit", comment: "Text for the button to edit a discount to a product during order creation")
+        static let discountAmount = NSLocalizedString("Amount", comment: "Title for the discount amount of a product during order creation")
     }
 }
 
@@ -99,9 +144,8 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             canChangeQuantity: false,
                                             imageURL: nil)
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
-                                                baseAmountForDiscountPercentage: 0,
-                                                onRemoveProduct: {},
-                                                onSaveFormattedDiscount: { _ in })
+                                                productDiscountConfiguration: nil, showCouponsAndDiscountsAlert: false,
+                                                onRemoveProduct: {})
         ProductInOrder(viewModel: viewModel)
     }
 }

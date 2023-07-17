@@ -1,1 +1,1 @@
-Bu sürüm, bir sipariş oluştururken birden fazla kupon ekleme seçeneğini içerir. WooCommerce ürünleriniz için dönüştürülebilir ve SEO için optimize edilmiş ürün açıklamaları oluşturabileceğinizi biliyor muydunuz? Deneyin! Ücretsiz deneme sürümüne abone olan ABD mağazaları, artık uygulama içi satın alma işlemiyle ücretli pakete yükseltme yapabilirler.
+Flaş Haber—Yapay zeka kullanarak WooCommerce ürünleriniz için dönüştürülebilir ve SEO için optimize edilmiş ürün açıklamalarını otomatik olarak oluşturabilir ve paylaşabilirsiniz. Şimdi deneyin!

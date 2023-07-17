@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-04 09:54:29+0000 */
+/* Translation-Revision-Date: 2023-07-11 14:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -569,6 +569,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the option to generate just one variation */
 "Add new variation" = "新しいバリエーションを追加";
 
+/* Navigation bar title of the add product from image form. */
+"Add product" = "商品を追加";
+
 /* Title of the product description AI local announcement. */
 "Add product description with AI" = "AI で商品説明を追加する";
 
@@ -1048,6 +1051,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze view.
    Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
+
+/* Title on the alert presented when dismissing the banner announcing Blaze feature. */
+"Blaze Ads" = "Blaze 広告";
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "ブロック引用";
@@ -1726,6 +1732,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the Store Picker screen to select a store
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
+   Continue button on the add product from image form.
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -2135,7 +2142,8 @@ which should be translated separately and considered part of this sentence. */
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "将来の顧客に商品を説明してください...";
 
-/* The navigation bar title of the Aztec editor screen.
+/* Product description placeholder on the add product from image form.
+   The navigation bar title of the Aztec editor screen.
    Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
@@ -3166,7 +3174,8 @@ which should be translated separately and considered part of this sentence. */
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "承知しました !";
 
-/* Button title that dismisses the Write with AI tooltip
+/* Button on the alert presented when dismissing the banner announcing Blaze feature.
+   Button title that dismisses the Write with AI tooltip
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "理解しました";
 
@@ -4297,6 +4306,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Myanmar" = "ミャンマー";
 
 /* Name text field placeholder
+   Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title for the name field on the Shipping Line Details screen during order creation */
 "Name" = "名前";
@@ -4519,6 +4529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "生成するバリエーションはありません";
+
+/* Message on the alert presented when dismissing the banner announcing Blaze feature. */
+"No worries! Blaze ads are accessible in the Menu and product details' menu for your convenience." = "心配はご無用です。 Blaze 広告はご都合に合わせてメニューと商品詳細メニューから利用できるようになっています。";
 
 /* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
 "No worries! You can always go to Settings in the Menu to send us feedback." = "心配はご無用です。 いつでも「メニュー」の「設定」からフィードバックを送信できます。";
@@ -4875,6 +4888,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "書式を解除して貼り付け";
+
+/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
+"Pay Annually" = "年額支払い";
+
+/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
+"Pay Monthly" = "月額支払い";
 
 /* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
@@ -6472,6 +6491,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of an unknown error after purchasing a plan */
 "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "購入時にエラーが発生したため、お支払いが完了したか、ストアプランがアップグレードされたかお知らせできません。";
 
+/* Notice title when validating a coupon code fails. */
+"Something went wrong when validating your coupon code. Please try again" = "クーポンコードを検証する際にエラーが発生しました。 もう一度お試しください";
+
 /* Error message in the Add Edit Coupon screen when the creation of the coupon goes in error. */
 "Something went wrong while creating the coupon." = "クーポンの作成中にエラーが発生しました。";
 
@@ -6484,9 +6506,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
 "Something went wrong, please try again later." = "エラーが発生しました。後ほどもう一度お試しください。";
-
-/* Notice title when validating a coupon code fails. */
-"Something when wrong when validating your coupon code. Please try again" = "クーポンコードを検証する際にエラーが発生しました。 もう一度お試しください";
 
 /* Message of the alert when the user cannot create a store because they already created one before. */
 "Sorry, but you can only create one store. Your account is already associated with an active store." = "申し訳ございませんが、ストアは1店舗しか作成できません。 お使いのアカウントにはすでに有効なストアに関連付けられています。";

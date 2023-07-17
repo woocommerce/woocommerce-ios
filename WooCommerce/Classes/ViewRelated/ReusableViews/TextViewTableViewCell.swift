@@ -13,7 +13,7 @@ final class TextViewTableViewCell: UITableViewCell {
         var placeholder: String? = nil
         var textViewMinimumHeight: CGFloat? = nil
         var isEditable: Bool = true
-        var isSelectable: Bool = false
+        var isSelectable: Bool = true
         var isScrollEnabled: Bool = true
         var onTextChange: ((_ text: String) -> Void)? = nil
         var onTextDidBeginEditing: (() -> Void)? = nil

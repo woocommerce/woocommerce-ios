@@ -18,12 +18,20 @@ final class AddProductFromImageViewModel: ObservableObject {
         }
     }
 
+    typealias TextFieldViewModel = AddProductFromImageTextFieldViewModel
     typealias ImageState = EditableImageViewState
 
     // MARK: - Product Details
 
-    @Published var name: String = ""
-    @Published var description: String = ""
+    let nameViewModel: TextFieldViewModel
+    let descriptionViewModel: TextFieldViewModel
+
+    var name: String {
+        nameViewModel.text
+    }
+    var description: String {
+        descriptionViewModel.text
+    }
 
     // MARK: - Product Image
 
@@ -39,6 +47,7 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published var scannedTexts: [ScannedTextViewModel] = []
     @Published private(set) var isGeneratingDetails: Bool = false
+    @Published private(set) var errorMessage: String? = Localization.defaultError
 
     private var selectedScannedTexts: [String] {
         scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
@@ -46,13 +55,18 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let imageTextScanner: ImageTextScannerProtocol
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         imageTextScanner: ImageTextScannerProtocol = ImageTextScanner(),
          onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.siteID = siteID
         self.stores = stores
+        self.imageTextScanner = imageTextScanner
         self.onAddImage = onAddImage
+        self.nameViewModel = .init(text: "", placeholder: Localization.nameFieldPlaceholder)
+        self.descriptionViewModel = .init(text: "", placeholder: Localization.descriptionFieldPlaceholder)
 
         selectedImageSubscription = $imageState.compactMap { $0.image?.image }
         .sink { [weak self] image in
@@ -85,59 +99,28 @@ final class AddProductFromImageViewModel: ObservableObject {
 
 private extension AddProductFromImageViewModel {
     func onSelectedImage(_ image: UIImage) {
-        // Gets the CGImage on which to perform requests.
-        guard let cgImage = image.cgImage else {
-            return
-        }
-
-        // Creates a new image-request handler.
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage)
-
-        // Creates a new request to recognize text.
-        let request = VNRecognizeTextRequest { [weak self] request, error in
-            self?.onScannedTextRequestCompletion(request: request, error: error)
-        }
-
-        if #available(iOS 16.0, *) {
-            request.revision = VNRecognizeTextRequestRevision3
-            request.automaticallyDetectsLanguage = true
-        }
-
-        do {
-            // Performs the text-recognition request.
-            try requestHandler.perform([request])
-        } catch {
-            DDLogError("⛔️ Unable to perform image text generation request: \(error)")
-        }
-    }
-
-    func onScannedTextRequestCompletion(request: VNRequest, error: Error?) {
-        let texts = scannedTexts(from: request)
-        scannedTexts = texts.map { .init(text: $0, isSelected: true) }
         Task { @MainActor in
-            isGeneratingDetails = true
-            await generateAndPopulateProductDetails(from: texts)
-            isGeneratingDetails = false
+            do {
+                let texts = try await imageTextScanner.scanText(from: image)
+                scannedTexts = texts.map { .init(text: $0, isSelected: true) }
+                generateProductDetails()
+            } catch {
+                DDLogError("⛔️ Error scanning text from image: \(error)")
+            }
         }
-    }
-
-    func scannedTexts(from request: VNRequest) -> [String] {
-        guard let observations = request.results as? [VNRecognizedTextObservation] else {
-            return []
-        }
-        let recognizedStrings = observations.compactMap { observation in
-            // Returns the string of the top VNRecognizedText instance.
-            observation.topCandidates(1).first?.string
-        }
-        return recognizedStrings
     }
 
     func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
+        errorMessage = nil
+        guard scannedTexts.isNotEmpty else {
+            return
+        }
         switch await generateProductDetails(from: scannedTexts) {
             case .success(let details):
-                name = details.name
-                description = details.description
+                nameViewModel.onSuggestion(details.name)
+                descriptionViewModel.onSuggestion(details.description)
             case .failure(let error):
+                errorMessage = Localization.defaultError
                 DDLogError("⛔️ Error generating product details from scanned text: \(error)")
         }
     }
@@ -149,5 +132,22 @@ private extension AddProductFromImageViewModel {
                 continuation.resume(returning: result)
             })
         }
+    }
+}
+
+private extension AddProductFromImageViewModel {
+    enum Localization {
+        static let nameFieldPlaceholder = NSLocalizedString(
+            "Name",
+            comment: "Product name placeholder on the add product from image form."
+        )
+        static let descriptionFieldPlaceholder = NSLocalizedString(
+            "Description",
+            comment: "Product description placeholder on the add product from image form."
+        )
+        static let defaultError = NSLocalizedString(
+            "Error generating product details. Please try again.",
+            comment: "Default error message on the add product from image form."
+        )
     }
 }

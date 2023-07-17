@@ -12,7 +12,7 @@ struct AddProductFromImageData {
 final class AddProductFromImageHostingController: UIHostingController<AddProductFromImageView> {
     init(siteID: Int64,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
-         completion: @escaping (AddProductFromImageData) -> Void) {
+         completion: @escaping (AddProductFromImageData?) -> Void) {
         super.init(rootView: AddProductFromImageView(siteID: siteID, addImage: addImage, completion: completion))
     }
 
@@ -23,13 +23,13 @@ final class AddProductFromImageHostingController: UIHostingController<AddProduct
 
 /// A form to create a product from an image, where any texts in the image can be scanned to generate product details with Jetpack AI.
 struct AddProductFromImageView: View {
-    private let completion: (AddProductFromImageData) -> Void
+    private let completion: (AddProductFromImageData?) -> Void
     @StateObject private var viewModel: AddProductFromImageViewModel
 
     init(siteID: Int64,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          stores: StoresManager = ServiceLocator.stores,
-         completion: @escaping (AddProductFromImageData) -> Void) {
+         completion: @escaping (AddProductFromImageData?) -> Void) {
         self.completion = completion
         self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID, stores: stores, onAddImage: addImage))
     }
@@ -45,25 +45,36 @@ struct AddProductFromImageView: View {
                 }
             }
 
-            // Name & description fields.
+            // Name field.
             Section {
-                // TODO: 10180 - use `TextEditor` with a placeholder overlay
-                TextField(Localization.nameFieldPlaceholder, text: $viewModel.name)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                TextField(Localization.descriptionFieldPlaceholder, text: $viewModel.description)
-                    .lineLimit(5)
-                    .fixedSize(horizontal: false, vertical: true)
+                AddProductFromImageTextFieldView(viewModel: viewModel.nameViewModel,
+                                                 customizations: .init(lineLimit: 1...2),
+                                                 isGeneratingSuggestion: viewModel.isGeneratingDetails)
+            }
+
+            // Description field.
+            Section {
+                AddProductFromImageTextFieldView(viewModel: viewModel.descriptionViewModel,
+                                                 customizations: .init(lineLimit: 2...10),
+                                                 isGeneratingSuggestion: viewModel.isGeneratingDetails)
             }
 
             // Scanned text list.
             Section {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
                     // Button to regenerate product details based on the selected scanned texts.
                     Button(Localization.regenerateButtonTitle) {
                         viewModel.generateProductDetails()
                     }
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGeneratingDetails))
+
+                    // Error message.
+                    if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .font(.footnote)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color(uiColor: .error))
+                    }
 
                     // Info text about selecting/editing the scanned text list.
                     Text(Localization.scannedTextListInfo)
@@ -84,6 +95,12 @@ struct AddProductFromImageView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
             }
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancelButtonTitle) {
+                    completion(nil)
+                }
+                .buttonStyle(TextButtonStyle())
+            }
         }
     }
 }
@@ -94,17 +111,13 @@ private extension AddProductFromImageView {
             "Add product",
             comment: "Navigation bar title of the add product from image form."
         )
-        static let nameFieldPlaceholder = NSLocalizedString(
-            "Name",
-            comment: "Product name placeholder on the add product from image form."
-        )
-        static let descriptionFieldPlaceholder = NSLocalizedString(
-            "Description",
-            comment: "Product description placeholder on the add product from image form."
-        )
         static let continueButtonTitle = NSLocalizedString(
             "Continue",
             comment: "Continue button on the add product from image form."
+        )
+        static let cancelButtonTitle = NSLocalizedString(
+            "Cancel",
+            comment: "Cancel button on the add product from image form."
         )
         static let regenerateButtonTitle = NSLocalizedString(
             "Regenerate",
@@ -114,6 +127,10 @@ private extension AddProductFromImageView {
             "Tweak your text: Unselect scans you don't need or tap to edit",
             comment: "Info text about the scanned text list on the add product from image form."
         )
+    }
+
+    enum Layout {
+        static let defaultSpacing: CGFloat = 16
     }
 }
 

@@ -507,6 +507,7 @@ extension WooAnalyticsEvent {
             static let barcodeFormat = "barcode_format"
             static let reason = "reason"
             static let couponsCount = "coupons_count"
+            static let type = "type"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -601,6 +602,22 @@ extension WooAnalyticsEvent {
 
         static func orderCouponRemove(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCouponRemove, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func productDiscountAdd(type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductDiscountAdd, properties: [Keys.type: type.rawValue])
+        }
+
+        static func productDiscountRemove() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductDiscountRemove, properties: [:])
+        }
+
+        static func productDiscountAddButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductDiscountAddButtonTapped, properties: [:])
+        }
+
+        static func productDiscountEditButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductDiscountEditButtonTapped, properties: [:])
         }
 
         static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {

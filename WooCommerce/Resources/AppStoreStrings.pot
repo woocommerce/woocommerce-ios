@@ -57,9 +57,15 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v14.4-whats-new"
+msgctxt "v14.5-whats-new"
 msgid ""
-"Hot news—It's possible to automatically generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products and share them using AI. Try it now!\n"
+"We're back with some new updates to improve your experience with our app!\n"
+"\n"
+"Firstly, we've made the share button more user-friendly. Instead of an icon, it's now displayed as text for better discoverability.\n"
+"We've also fixed a pesky bug that was stopping you from adding new notes to an order. You should now be able to jot down your notes without any issues.\n"
+"Lastly, in our store creation process, we've updated the timeout view. If the site check is taking longer than expected, you now have the option to retry.\n"
+"\n"
+"As always, we're here to make your app journey smoother and more enjoyable. Thanks for sticking with us!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -45,12 +45,15 @@ final class ProductInOrderViewModel: Identifiable {
 
     let onSaveFormattedDiscount: (String?) -> Void
 
+    let showCouponsAndDiscountsAlert: Bool
+
     var viewDismissPublisher = PassthroughSubject<(), Never>()
 
     private let currencyFormatter: CurrencyFormatter
 
     init(productRowViewModel: ProductRowViewModel,
          productDiscountConfiguration: DiscountConfiguration?,
+         showCouponsAndDiscountsAlert: Bool,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          onRemoveProduct: @escaping () -> Void) {
@@ -60,6 +63,7 @@ final class ProductInOrderViewModel: Identifiable {
         self.onRemoveProduct = onRemoveProduct
         self.onSaveFormattedDiscount = productDiscountConfiguration?.onSaveFormattedDiscount ?? { _ in }
         self.isAddingDiscountToProductEnabled = productDiscountConfiguration != nil
+        self.showCouponsAndDiscountsAlert = showCouponsAndDiscountsAlert
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.analytics = analytics
     }

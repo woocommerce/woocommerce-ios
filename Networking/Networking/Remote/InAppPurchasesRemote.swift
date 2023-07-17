@@ -16,11 +16,10 @@ public class InAppPurchasesRemote: Remote {
     }
 
     /// Checks the WPCOM billing system for whether or not an In-app Purchase transaction has been handled
-    /// Unhandled transactions are those which have not yet marked as finished, in the Transactions.updates queue
-    /// We'll return the Site ID the transaction has been handled for, or an error if hasn't been handled yet
+    /// Handled transactions are those which can be found in the WPCOM billing system. Unhandled transactions are those which couldn't be found.
+    /// We return the Site ID associated with the handled transaction, or an error if is not handled yet.
     ///
     /// - Parameters:
-    ///     - siteID: Site which the transaction has been handled for
     ///     - transactionID: The transactionID of the specific transaction (not originalTransactionID)
     ///     - completion: Closure to be executed upon completion. Returns the siteID of the transaction if success, or an error otherwise.
     ///

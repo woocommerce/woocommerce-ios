@@ -28,6 +28,9 @@ public protocol NUXViewControllerBase {
     ///
     func shouldShowCancelButton() -> Bool
     func setupCancelButtonIfNeeded()
+
+    /// Notification observers that can be tied to the lifecycle of the entities implementing the protocol
+    func addNotificationObserver(_ observer: NSObjectProtocol)
 }
 
 /// extension for NUXViewControllerBase where the base class is UIViewController (and thus also NUXTableViewController)
@@ -286,44 +289,17 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     private func setupNotificationsIndicator() {
         helpNotificationIndicator.isHidden = true
 
-        wordpressSupportNotificationReceivedObserver = NotificationCenter.default.addObserver(forName: .wordpressSupportNotificationReceived, object: nil, queue: nil) { [weak self] _ in
-            self?.refreshSupportNotificationIndicator()
-        }
-        wordpressSupportNotificationClearedObserver = NotificationCenter.default.addObserver(forName: .wordpressSupportNotificationCleared, object: nil, queue: nil) { [weak self] _ in
-            self?.refreshSupportNotificationIndicator()
-        }
-    }
+        addNotificationObserver(
+            NotificationCenter.default.addObserver(forName: .wordpressSupportNotificationReceived, object: nil, queue: nil) { [weak self] _ in
+                self?.refreshSupportNotificationIndicator()
+            }
+        )
 
-    private var wordpressSupportNotificationReceivedObserver: NSObjectProtocol? {
-        get {
-
-            objc_getAssociatedObject(self, &wordpressSupportNotificationReceivedKey) as? NSObjectProtocol
-        }
-        set {
-            objc_setAssociatedObject(self, &wordpressSupportNotificationReceivedKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-
-    private var wordpressSupportNotificationClearedObserver: NSObjectProtocol? {
-        get {
-            objc_getAssociatedObject(self, &wordpressSupportNotificationClearedKey) as? NSObjectProtocol
-        }
-        set {
-            objc_setAssociatedObject(self, &wordpressSupportNotificationClearedKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
-
-    func removeNotificationObservers() {
-        if let wordpressSupportNotificationReceivedObserver {
-            NotificationCenter.default.removeObserver(wordpressSupportNotificationReceivedObserver)
-        }
-
-        if let wordpressSupportNotificationClearedObserver {
-            NotificationCenter.default.removeObserver(wordpressSupportNotificationClearedObserver)
-        }
-
-        wordpressSupportNotificationReceivedObserver = nil
-        wordpressSupportNotificationClearedObserver = nil
+        addNotificationObserver(
+            NotificationCenter.default.addObserver(forName: .wordpressSupportNotificationCleared, object: nil, queue: nil) { [weak self] _ in
+                self?.refreshSupportNotificationIndicator()
+            }
+        )
     }
 
     private func layoutNotificationIndicatorView(_ view: UIView, to superView: UIView) {
@@ -355,6 +331,3 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         WordPressAuthenticator.shared.delegate?.presentSupport(from: navigationController, sourceTag: source, lastStep: state.lastStep, lastFlow: state.lastFlow)
     }
 }
-
-private var wordpressSupportNotificationReceivedKey = 0
-private var wordpressSupportNotificationClearedKey = 0

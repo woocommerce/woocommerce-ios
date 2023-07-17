@@ -17,6 +17,9 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         }
     }
 
+    // MARK: - Private
+    private var notificationObservers: [NSObjectProtocol] = []
+
     override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIDevice.isPad() ? .all : .portrait
     }
@@ -26,10 +29,6 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         setupHelpButtonIfNeeded()
         setupCancelButtonIfNeeded()
         setupBackgroundTapGestureRecognizer()
-    }
-
-    deinit {
-        removeNotificationObservers()
     }
 
     // properties specific to NUXViewController
@@ -56,6 +55,19 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
 
     public func shouldShowCancelButton() -> Bool {
         return shouldShowCancelButtonBase()
+    }
+
+    // MARK: - Notification Observers
+
+    public func addNotificationObserver(_ observer: NSObjectProtocol) {
+        notificationObservers.append(observer)
+    }
+
+    deinit {
+        for observer in notificationObservers {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        notificationObservers.removeAll()
     }
 }
 

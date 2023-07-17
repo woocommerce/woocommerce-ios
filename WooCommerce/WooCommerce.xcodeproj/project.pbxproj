@@ -1638,6 +1638,8 @@
 		B946881829B8DDC2000646B0 /* ProductsViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */; };
 		B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */; };
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
+		B95864082A657D2F002C4C6E /* EnhancedCouponsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95864072A657D2F002C4C6E /* EnhancedCouponsListViewController.swift */; };
+		B958640A2A657F44002C4C6E /* EnhancedCouponsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95864092A657F44002C4C6E /* EnhancedCouponsListView.swift */; };
 		B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */; };
 		B958A7C928B3D47B00823EEF /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C828B3D47B00823EEF /* Route.swift */; };
 		B958A7CB28B3D4A100823EEF /* RouteMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */; };
@@ -4027,6 +4029,8 @@
 		B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsViewController+Activity.swift"; sourceTree = "<group>"; };
 		B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Spotlight.swift"; sourceTree = "<group>"; };
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
+		B95864072A657D2F002C4C6E /* EnhancedCouponsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCouponsListViewController.swift; sourceTree = "<group>"; };
+		B95864092A657F44002C4C6E /* EnhancedCouponsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCouponsListView.swift; sourceTree = "<group>"; };
 		B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouter.swift; sourceTree = "<group>"; };
 		B958A7C828B3D47B00823EEF /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteMatcher.swift; sourceTree = "<group>"; };
@@ -6201,6 +6205,8 @@
 				03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */,
 				DE26B52B277DA11800A2EA0A /* CouponListView.swift */,
 				DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */,
+				B95864072A657D2F002C4C6E /* EnhancedCouponsListViewController.swift */,
+				B95864092A657F44002C4C6E /* EnhancedCouponsListView.swift */,
 			);
 			path = Coupons;
 			sourceTree = "<group>";
@@ -12693,6 +12699,7 @@
 				4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */,
 				45BBFBC3274FDA6400213001 /* HubMenuViewController.swift in Sources */,
 				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,
+				B958640A2A657F44002C4C6E /* EnhancedCouponsListView.swift in Sources */,
 				B9E4364E287589E200883CFA /* BadgeView.swift in Sources */,
 				CC254F3826C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift in Sources */,
 				02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */,
@@ -12801,6 +12808,7 @@
 				CC200BB127847DE300EC5884 /* OrderPaymentSection.swift in Sources */,
 				68E674A12A4DA0B30034BA1E /* InAppPurchasesError.swift in Sources */,
 				743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */,
+				B95864082A657D2F002C4C6E /* EnhancedCouponsListViewController.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */,
 				0282DD98233CA093006A5FDB /* OrderSearchUICommand.swift in Sources */,

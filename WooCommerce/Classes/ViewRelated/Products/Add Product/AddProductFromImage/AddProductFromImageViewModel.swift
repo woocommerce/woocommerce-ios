@@ -47,6 +47,7 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published var scannedTexts: [ScannedTextViewModel] = []
     @Published private(set) var isGeneratingDetails: Bool = false
+    @Published private(set) var errorMessage: String? = Localization.defaultError
 
     private var selectedScannedTexts: [String] {
         scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
@@ -110,6 +111,7 @@ private extension AddProductFromImageViewModel {
     }
 
     func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
+        errorMessage = nil
         guard scannedTexts.isNotEmpty else {
             return
         }
@@ -118,6 +120,7 @@ private extension AddProductFromImageViewModel {
                 nameViewModel.onSuggestion(details.name)
                 descriptionViewModel.onSuggestion(details.description)
             case .failure(let error):
+                errorMessage = Localization.defaultError
                 DDLogError("⛔️ Error generating product details from scanned text: \(error)")
         }
     }
@@ -141,6 +144,10 @@ private extension AddProductFromImageViewModel {
         static let descriptionFieldPlaceholder = NSLocalizedString(
             "Description",
             comment: "Product description placeholder on the add product from image form."
+        )
+        static let defaultError = NSLocalizedString(
+            "Error generating product details. Please try again.",
+            comment: "Default error message on the add product from image form."
         )
     }
 }

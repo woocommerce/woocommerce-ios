@@ -377,16 +377,17 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_storing_error_shows_error_banner() {
         // Given
+        let expectedError = MockError()
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
         viewModel.activate()
 
         // When
         viewModel.updateBannerVisibility()
-        viewModel.hasErrorLoadingData = true
+        viewModel.dataLoadingError = expectedError
 
         // Then
         waitUntil {
-            viewModel.topBanner == .error
+            viewModel.topBanner == .error(expectedError)
         }
     }
 
@@ -408,17 +409,18 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_hiding_orders_banners_still_shows_error_banner() {
         // Given
+        let expectedError = MockError()
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
         viewModel.activate()
 
         // When
         viewModel.updateBannerVisibility()
-        viewModel.hasErrorLoadingData = true
+        viewModel.dataLoadingError = expectedError
         viewModel.hideOrdersBanners = true
 
         // Then
         waitUntil {
-            viewModel.topBanner == .error
+            viewModel.topBanner == .error(expectedError)
         }
     }
 
@@ -793,7 +795,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         viewModel.IPPFeedbackBannerWasSubmitted()
-        viewModel.hasErrorLoadingData = false
+        viewModel.dataLoadingError = nil
         viewModel.hideOrdersBanners = true
 
         // Then
@@ -981,4 +983,6 @@ private extension OrderListViewModelTests {
         let storageGateway = storage.insertNewObject(ofType: StoragePaymentGateway.self)
         storageGateway.update(with: codGateway)
     }
+
+    final class MockError: Error { }
 }

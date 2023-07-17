@@ -326,4 +326,67 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertFalse(viewModel.isExistingLine)
     }
+
+    func test_saveData_when_type_line_discount_with_fixed_amount_then_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+                                                baseAmountForPercentage: 0,
+                                                initialTotal: "",
+                                                lineType: .discount,
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                          analytics: WooAnalytics(analyticsProvider: analytics),
+                                                didSelectSave: { _ in })
+
+        // When
+        viewModel.amount = "$11.30"
+        viewModel.feeOrDiscountType = .fixed
+        viewModel.saveData()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAdd.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed.rawValue)
+    }
+
+    func test_saveData_when_type_line_discount_with_percentage_then_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+                                                baseAmountForPercentage: 0,
+                                                initialTotal: "",
+                                                lineType: .discount,
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                          analytics: WooAnalytics(analyticsProvider: analytics),
+                                                didSelectSave: { _ in })
+
+        // When
+        viewModel.percentage = "10"
+        viewModel.feeOrDiscountType = .percentage
+        viewModel.saveData()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAdd.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage.rawValue)
+    }
+
+    func test_removeValue_when_type_line_discount_then_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+                                                baseAmountForPercentage: 0,
+                                                initialTotal: "",
+                                                lineType: .discount,
+                                                locale: usLocale,
+                                                storeCurrencySettings: usStoreSettings,
+                                                          analytics: WooAnalytics(analyticsProvider: analytics),
+                                                didSelectSave: { _ in })
+
+        // When
+        viewModel.removeValue()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountRemove.rawValue)
+    }
 }

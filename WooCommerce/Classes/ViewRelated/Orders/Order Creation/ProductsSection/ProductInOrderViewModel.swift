@@ -29,6 +29,10 @@ final class ProductInOrderViewModel: Identifiable {
     ///
     let onRemoveProduct: () -> Void
 
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
     private let isAddingDiscountToProductEnabled: Bool
 
     var showAddDiscountRow: Bool {
@@ -48,6 +52,7 @@ final class ProductInOrderViewModel: Identifiable {
     init(productRowViewModel: ProductRowViewModel,
          productDiscountConfiguration: DiscountConfiguration?,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
          onRemoveProduct: @escaping () -> Void) {
         self.productRowViewModel = productRowViewModel
         self.addedDiscount = productDiscountConfiguration?.addedDiscount ?? .zero
@@ -56,6 +61,7 @@ final class ProductInOrderViewModel: Identifiable {
         self.onSaveFormattedDiscount = productDiscountConfiguration?.onSaveFormattedDiscount ?? { _ in }
         self.isAddingDiscountToProductEnabled = productDiscountConfiguration != nil
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
+        self.analytics = analytics
     }
 
     lazy var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel = {
@@ -68,4 +74,12 @@ final class ProductInOrderViewModel: Identifiable {
             self?.viewDismissPublisher.send(())
         })
     }()
+
+    func onAddDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountAddButtonTapped())
+    }
+
+    func onEditDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountEditButtonTapped())
+    }
 }

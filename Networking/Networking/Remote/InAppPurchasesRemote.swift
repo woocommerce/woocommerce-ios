@@ -21,14 +21,13 @@ public class InAppPurchasesRemote: Remote {
     ///     - transactionID: The transactionID of the specific transaction (not originalTransactionID)
     ///     - completion: Closure to be executed upon completion. Returns the siteID of the transaction if success, or an error otherwise.
     ///
-    public func checkTransaction(for siteID: Int64,
-                                 with transactionID: UInt64,
+    public func checkTransaction(with transactionID: UInt64,
                                  completion: @escaping (Swift.Result<Int64, Error>) -> Void ) {
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
                                     path: Constants.transactionsPath + "/\(transactionID)",
                                     headers: headersWithAppId)
-        let mapper = InAppPurchasesTransactionMapper(siteID: siteID)
+        let mapper = InAppPurchasesTransactionMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 

@@ -22,6 +22,7 @@ final class AddProductFromImageTextFieldViewModel: ObservableObject {
     /// Invoked when a suggestion for the text field is available.
     /// - Parameter suggestion: Suggested text for the text field.
     func onSuggestion(_ suggestion: String) {
+        hasAppliedGeneratedContent = false
         guard suggestion.isNotEmpty, suggestion != text else {
             return suggestedText = nil
         }
@@ -29,6 +30,7 @@ final class AddProductFromImageTextFieldViewModel: ObservableObject {
             suggestedText = suggestion
         } else {
             text = suggestion
+            hasAppliedGeneratedContent = true
         }
     }
 

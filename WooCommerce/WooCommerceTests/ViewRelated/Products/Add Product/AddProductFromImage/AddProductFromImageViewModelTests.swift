@@ -7,14 +7,20 @@ import Yosemite
 @MainActor
 final class AddProductFromImageViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting())
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         stores = nil
+        analytics = nil
+        analyticsProvider = nil
         super.tearDown()
     }
 
@@ -115,6 +121,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
         mockGenerateProductDetails(result: .failure(SampleError.first))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      onAddImage: { _ in
@@ -183,6 +190,172 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         waitUntil {
             viewModel.imageState == .success(image)
         }
+    }
+
+    // MARK: Analytics
+
+    func test_displayed_event_is_tracked_when_the_view_model_is_init() throws {
+        // When
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in nil })
+
+        // Then
+        let eventName = "add_product_from_image_displayed"
+        XCTAssertEqual(analyticsProvider.receivedEvents, [eventName])
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("products_tab", eventProperties["source"] as? String)
+    }
+
+    func test_image_text_scan_success_is_tracked() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        let eventName = "add_product_from_image_scan_completed"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("products_tab", eventProperties["source"] as? String)
+        assertEqual(1, eventProperties["scanned_text_count"] as? Int)
+    }
+
+    func test_image_text_scan_failure_is_tracked() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let error = NSError(domain: "test", code: 10000)
+        let imageTextScanner = MockImageTextScanner(result: .failure(error))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        let eventName = "add_product_from_image_scan_failed"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("products_tab", eventProperties["source"] as? String)
+        assertEqual("test", eventProperties["error_domain"] as? String)
+        assertEqual("10000", eventProperties["error_code"] as? String)
+    }
+
+    func test_product_detail_generation_success_is_tracked() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        let eventName = "add_product_from_image_details_generated"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("products_tab", eventProperties["source"] as? String)
+        assertEqual("en", eventProperties["language"] as? String)
+        assertEqual(1, eventProperties["selected_text_count"] as? Int)
+    }
+
+    func test_product_detail_generation_failure_is_tracked() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        let error = NSError(domain: "Server", code: 500)
+        mockGenerateProductDetails(result: .failure(error))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        let eventName = "add_product_from_image_detail_generation_failed"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("products_tab", eventProperties["source"] as? String)
+        assertEqual("Server", eventProperties["error_domain"] as? String)
+        assertEqual("500", eventProperties["error_code"] as? String)
+    }
+
+    func test_trackContinueButtonTapped_tracks_correct_event_and_properties() throws {
+        // Given
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in nil })
+
+        // When
+        viewModel.trackContinueButtonTapped()
+
+        // Then
+        let eventName = "add_product_from_image_continue_button_tapped"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("products_tab", eventProperties["source"] as? String)
+        assertEqual(true, eventProperties["is_name_empty"] as? Bool)
+        assertEqual(true, eventProperties["is_description_empty"] as? Bool)
+        assertEqual(false, eventProperties["has_scanned_text"] as? Bool)
+        assertEqual(false, eventProperties["has_generated_details"] as? Bool)
     }
 }
 

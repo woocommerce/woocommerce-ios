@@ -38,14 +38,9 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private lazy var dataSource: UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> = makeDataSource()
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
-    private lazy var noticePresenter: DefaultNoticePresenter = {
-        let noticePresenter = DefaultNoticePresenter()
-        noticePresenter.presentingViewController = self
-        return noticePresenter
-    }()
-
     var onDataHasLoaded: ((Bool) -> Void)?
     var noResultConfig: EmptyStateViewController.Config?
+    var onCouponSelected: ((Coupon) -> Void)?
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -197,20 +192,10 @@ extension CouponListViewController: UITableViewDelegate {
         guard let coupon = viewModel.coupon(at: indexPath) else {
             return
         }
-        let detailsViewModel = CouponDetailsViewModel(coupon: coupon, onUpdate: { [weak self] in
-            guard let self = self else { return }
-            self.viewModel.refreshCoupons()
-        }, onDeletion: { [weak self] in
-            guard let self = self else { return }
-            self.navigationController?.popViewController(animated: true)
-            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
-            self.noticePresenter.enqueue(notice: notice)
-        })
-        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel)
-        navigationController?.pushViewController(hostingController, animated: true)
+
+        onCouponSelected?(coupon)
     }
 }
-
 
 // MARK: - View Configuration
 //
@@ -398,6 +383,5 @@ private extension CouponListViewController {
 
         static let giveFeedbackAction = NSLocalizedString("Give feedback", comment: "Title of the feedback action button on the coupon list screen")
         static let dismissAction = NSLocalizedString("Dismiss", comment: "Title of the dismiss action button on the coupon list screen")
-        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
     }
 }

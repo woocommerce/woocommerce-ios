@@ -7,6 +7,12 @@ final class EnhancedCouponListViewController: UIViewController {
     private let couponListViewController: CouponListViewController
     private let siteID: Int64
 
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     init(siteID: Int64) {
         self.siteID = siteID
         couponListViewController = CouponListViewController(siteID: siteID)
@@ -15,6 +21,7 @@ final class EnhancedCouponListViewController: UIViewController {
 
         couponListViewController.onDataHasLoaded = configureNavigationBarItems
         couponListViewController.noResultConfig = buildNoResultConfig()
+        couponListViewController.onCouponSelected = showDetails
     }
 
     required init?(coder: NSCoder) {
@@ -135,6 +142,20 @@ private extension EnhancedCouponListViewController {
         let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet)
         bottomSheetViewController.show(from: self)
     }
+
+    func showDetails(from coupon: Coupon) {
+        let detailsViewModel = CouponDetailsViewModel(coupon: coupon, onUpdate: { [weak self] in
+            guard let self = self else { return }
+            self.couponListViewController.refreshCouponList()
+        }, onDeletion: { [weak self] in
+            guard let self = self else { return }
+            self.navigationController?.popViewController(animated: true)
+            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
+            self.noticePresenter.enqueue(notice: notice)
+        })
+        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel)
+        navigationController?.pushViewController(hostingController, animated: true)
+    }
 }
 
 // MARK: - Localization
@@ -160,5 +181,6 @@ private extension EnhancedCouponListViewController {
         static let emptyStateDetails = NSLocalizedString(
             "Boost your business by sending customers special offers and discounts.",
             comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
+        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
     }
 }

@@ -2042,7 +2042,6 @@
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
 		DE23CFFA27462D8F003BE54E /* JCPJetpackInstallIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE23CFF927462D8F003BE54E /* JCPJetpackInstallIntroView.swift */; };
 		DE26B5292775C76C00A2EA0A /* MockSyncingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */; };
-		DE26B52C277DA11800A2EA0A /* CouponListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B52B277DA11800A2EA0A /* CouponListView.swift */; };
 		DE279BA426E9C4DC002BA963 /* ShippingLabelPackagesForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */; };
 		DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA526E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift */; };
 		DE279BA826E9C8E3002BA963 /* ShippingLabelSinglePackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA726E9C8E3002BA963 /* ShippingLabelSinglePackage.swift */; };
@@ -4445,7 +4444,6 @@
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
 		DE23CFF927462D8F003BE54E /* JCPJetpackInstallIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCPJetpackInstallIntroView.swift; sourceTree = "<group>"; };
 		DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSyncingCoordinator.swift; sourceTree = "<group>"; };
-		DE26B52B277DA11800A2EA0A /* CouponListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListView.swift; sourceTree = "<group>"; };
 		DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesForm.swift; sourceTree = "<group>"; };
 		DE279BA526E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesFormViewModel.swift; sourceTree = "<group>"; };
 		DE279BA726E9C8E3002BA963 /* ShippingLabelSinglePackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSinglePackage.swift; sourceTree = "<group>"; };
@@ -6203,7 +6201,6 @@
 				03FBDA9C263AD49100ACE257 /* CouponListViewController.swift */,
 				03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */,
 				03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */,
-				DE26B52B277DA11800A2EA0A /* CouponListView.swift */,
 				DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */,
 				B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */,
 				B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */,
@@ -12602,7 +12599,6 @@
 				DE2FE597292737630018040A /* JetpackSetupViewModel.swift in Sources */,
 				4572641727F1EB0D004E1F95 /* AddEditCoupon.swift in Sources */,
 				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
-				DE26B52C277DA11800A2EA0A /* CouponListView.swift in Sources */,
 				B932847429A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift in Sources */,
 				AE3AA889290C303B00BE422D /* WebKitViewController.swift in Sources */,
 				4535EE7A281ADD56004212B4 /* CouponCodeInputFormatter.swift in Sources */,

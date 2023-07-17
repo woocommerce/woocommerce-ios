@@ -61,12 +61,20 @@ struct AddProductFromImageView: View {
 
             // Scanned text list.
             Section {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
                     // Button to regenerate product details based on the selected scanned texts.
                     Button(Localization.regenerateButtonTitle) {
                         viewModel.generateProductDetails()
                     }
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGeneratingDetails))
+
+                    // Error message.
+                    if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .font(.footnote)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color(uiColor: .error))
+                    }
 
                     // Info text about selecting/editing the scanned text list.
                     Text(Localization.scannedTextListInfo)
@@ -109,6 +117,10 @@ private extension AddProductFromImageView {
             "Tweak your text: Unselect scans you don't need or tap to edit",
             comment: "Info text about the scanned text list on the add product from image form."
         )
+    }
+
+    enum Layout {
+        static let defaultSpacing: CGFloat = 16
     }
 }
 

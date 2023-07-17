@@ -2,25 +2,28 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
-protocol FeeOrDiscountLineDetailsStringsProvider {
+protocol FeeOrDiscountLineTypeViewModel {
     var navigationTitle: String { get }
     var removeButtonTitle: String { get }
     var doneButtonAccessibilityIdentifier: String { get }
     var fixedAmountFieldAccessibilityIdentifier: String { get }
+
+    func removeEvent() -> WooAnalyticsEvent?
+    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent?
 }
 
 private struct StringsProviderFactory {
-    static func stringsProvider(from type: FeeOrDiscountLineDetailsViewModel.LineType, isExistingLine: Bool) -> FeeOrDiscountLineDetailsStringsProvider {
+    static func typeViewModel(from type: FeeOrDiscountLineDetailsViewModel.LineType, isExistingLine: Bool) -> FeeOrDiscountLineTypeViewModel {
         switch type {
         case .discount:
-            return DiscountStringsProvider(isExistingLine: isExistingLine)
+            return DiscountLineTypeViewModel(isExistingLine: isExistingLine)
         case .fee:
-            return FeeStringsProvider(isExistingLine: isExistingLine)
+            return FeeLineTypeViewModel(isExistingLine: isExistingLine)
         }
     }
 }
 
-private struct DiscountStringsProvider: FeeOrDiscountLineDetailsStringsProvider {
+private struct DiscountLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
     let isExistingLine: Bool
 
     var navigationTitle: String {
@@ -39,6 +42,14 @@ private struct DiscountStringsProvider: FeeOrDiscountLineDetailsStringsProvider 
         "add-discount-fixed-amount-field"
     }
 
+    func removeEvent() -> WooAnalyticsEvent? {
+        WooAnalyticsEvent.Orders.productDiscountRemove()
+    }
+
+    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent? {
+        WooAnalyticsEvent.Orders.productDiscountAdd(type: type)
+    }
+
     private enum Localization {
         static let addDiscount = NSLocalizedString("Add Discount", comment: "Title for the Discount screen during order creation")
         static let discount = NSLocalizedString("Discount", comment: "Title for the Discount Details screen during order creation")
@@ -46,7 +57,7 @@ private struct DiscountStringsProvider: FeeOrDiscountLineDetailsStringsProvider 
     }
 }
 
-private struct FeeStringsProvider: FeeOrDiscountLineDetailsStringsProvider {
+private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
     let isExistingLine: Bool
 
     var navigationTitle: String {
@@ -65,6 +76,14 @@ private struct FeeStringsProvider: FeeOrDiscountLineDetailsStringsProvider {
         "add-fee-fixed-amount-field"
     }
 
+    func removeEvent() -> WooAnalyticsEvent? {
+        nil
+    }
+
+    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent? {
+        nil
+    }
+
     private enum Localization {
         static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
         static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
@@ -77,7 +96,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the line is updated.
     ///
-    var didSelectSave: ((String?) -> Void)
+    private let didSelectSave: ((String?) -> Void)
 
     /// Helper to format price field input.
     ///
@@ -151,7 +170,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         return finalAmountDecimal == initialAmount
     }
 
-    let stringsProvider: FeeOrDiscountLineDetailsStringsProvider
+    let lineTypeViewModel: FeeOrDiscountLineTypeViewModel
 
     /// Localized percent symbol.
     ///
@@ -171,6 +190,10 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     private let minusSign: String = NumberFormatter().minusSign
 
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
     /// Placeholder for amount text field.
     ///
     let amountPlaceholder: String
@@ -180,7 +203,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         case discount
     }
 
-    enum FeeOrDiscountType {
+    enum FeeOrDiscountType: String {
         case fixed
         case percentage
     }
@@ -193,6 +216,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
          lineType: LineType,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
          didSelectSave: @escaping ((String?) -> Void)) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: true)
         self.percentSymbol = NumberFormatter().percentSymbol
@@ -200,6 +224,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         self.currencyPosition = storeCurrencySettings.currencyPosition
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.amountPlaceholder = priceFieldFormatter.formatAmount("0")
+        self.analytics = analytics
 
         self.isExistingLine = isExistingLine
         self.baseAmountForPercentage = baseAmountForPercentage
@@ -216,12 +241,24 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
 
         self.didSelectSave = didSelectSave
-        self.stringsProvider = StringsProviderFactory.stringsProvider(from: lineType, isExistingLine: isExistingLine)
+        self.lineTypeViewModel = StringsProviderFactory.typeViewModel(from: lineType, isExistingLine: isExistingLine)
+    }
+
+    func removeValue() {
+        if let event = lineTypeViewModel.removeEvent() {
+            analytics.track(event: event)
+        }
+
+        didSelectSave(nil)
     }
 
     func saveData() {
         guard let finalAmountString = finalAmountString else {
             return
+        }
+
+        if let event = lineTypeViewModel.addValueEvent(with: feeOrDiscountType) {
+            analytics.track(event: event)
         }
 
         didSelectSave(priceFieldFormatter.formatAmount(finalAmountString))

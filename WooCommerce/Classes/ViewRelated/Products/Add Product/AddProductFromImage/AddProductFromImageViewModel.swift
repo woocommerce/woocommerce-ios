@@ -48,6 +48,7 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published var scannedTexts: [ScannedTextViewModel] = []
     @Published private(set) var isGeneratingDetails: Bool = false
+    @Published private(set) var errorMessage: String? = Localization.defaultError
 
     private var selectedScannedTexts: [String] {
         scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
@@ -131,21 +132,23 @@ private extension AddProductFromImageViewModel {
     }
 
     func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
+        errorMessage = nil
         guard scannedTexts.isNotEmpty else {
             return
         }
         switch await generateProductDetails(from: scannedTexts) {
-        case .success(let details):
-            nameViewModel.onSuggestion(details.name)
-            descriptionViewModel.onSuggestion(details.description)
-            analytics.track(event: .AddProductFromImage.detailsGenerated(
-                source: addProductSource,
-                language: details.language,
-                selectedTextCount: selectedScannedTexts.count
-            ))
-        case .failure(let error):
-            analytics.track(event: .AddProductFromImage.detailGenerationFailed(source: addProductSource, error: error))
-            DDLogError("⛔️ Error generating product details from scanned text: \(error)")
+            case .success(let details):
+                nameViewModel.onSuggestion(details.name)
+                descriptionViewModel.onSuggestion(details.description)
+                analytics.track(event: .AddProductFromImage.detailsGenerated(
+                    source: addProductSource,
+                    language: details.language,
+                    selectedTextCount: selectedScannedTexts.count
+                ))
+            case .failure(let error):
+                errorMessage = Localization.defaultError
+                DDLogError("⛔️ Error generating product details from scanned text: \(error)")
+                analytics.track(event: .AddProductFromImage.detailGenerationFailed(source: addProductSource, error: error))
         }
     }
 
@@ -168,6 +171,10 @@ private extension AddProductFromImageViewModel {
         static let descriptionFieldPlaceholder = NSLocalizedString(
             "Description",
             comment: "Product description placeholder on the add product from image form."
+        )
+        static let defaultError = NSLocalizedString(
+            "Error generating product details. Please try again.",
+            comment: "Default error message on the add product from image form."
         )
     }
 }

@@ -22,6 +22,10 @@ final class ProductDownloadListViewController: UIViewController {
     private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
         return DeviceMediaLibraryPicker(allowsMultipleImages: false, onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
+    private lazy var wpMediaLibraryPicker: WordPressMediaLibraryImagePickerCoordinator =
+        .init(siteID: product.siteID,
+              allowsMultipleImages: false,
+              onCompletion: onWPMediaPickerCompletion)
     private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
     private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
     private let productImageActionHandler: ProductImageActionHandler?
@@ -308,10 +312,7 @@ private extension ProductDownloadListViewController {
     }
 
     func showSiteMediaPicker(origin: UIViewController) {
-        let wordPressMediaPickerViewController = WordPressMediaLibraryImagePickerViewController(siteID: product.siteID,
-                                                                                                allowsMultipleImages: false,
-                                                                                                onCompletion: onWPMediaPickerCompletion)
-        origin.present(wordPressMediaPickerViewController, animated: true)
+        wpMediaLibraryPicker.start(from: origin)
     }
 }
 
@@ -319,14 +320,11 @@ private extension ProductDownloadListViewController {
 //
 private extension ProductDownloadListViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
-        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
-            guard let self = self, let asset = assets.first else {
-                return
-            }
-            self.productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: asset)
-            self.loadingView.showLoader(in: self.view)
+        guard let asset = assets.first else {
+            return
         }
+        productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        loadingView.showLoader(in: view)
     }
 }
 
@@ -334,13 +332,10 @@ private extension ProductDownloadListViewController {
 //
 private extension ProductDownloadListViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
-        let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
-        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { [weak self] in
-            guard let self = self, mediaItems.isNotEmpty else {
-                return
-            }
-            self.addDownloadableFile(fileName: mediaItems.first?.name, fileURL: mediaItems.first?.src)
+        guard mediaItems.isNotEmpty else {
+            return
         }
+        addDownloadableFile(fileName: mediaItems.first?.name, fileURL: mediaItems.first?.src)
     }
 }
 

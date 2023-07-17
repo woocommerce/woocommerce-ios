@@ -13,7 +13,7 @@ final class AddProductFromImageHostingController: UIHostingController<AddProduct
     init(siteID: Int64,
          source: AddProductCoordinator.Source,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
-         completion: @escaping (AddProductFromImageData) -> Void) {
+         completion: @escaping (AddProductFromImageData?) -> Void) {
         super.init(rootView: AddProductFromImageView(siteID: siteID, source: source, addImage: addImage, completion: completion))
     }
 
@@ -24,14 +24,14 @@ final class AddProductFromImageHostingController: UIHostingController<AddProduct
 
 /// A form to create a product from an image, where any texts in the image can be scanned to generate product details with Jetpack AI.
 struct AddProductFromImageView: View {
-    private let completion: (AddProductFromImageData) -> Void
+    private let completion: (AddProductFromImageData?) -> Void
     @StateObject private var viewModel: AddProductFromImageViewModel
 
     init(siteID: Int64,
          source: AddProductCoordinator.Source,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          stores: StoresManager = ServiceLocator.stores,
-         completion: @escaping (AddProductFromImageData) -> Void) {
+         completion: @escaping (AddProductFromImageData?) -> Void) {
         self.completion = completion
         self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID, source: source, stores: stores, onAddImage: addImage))
     }
@@ -63,12 +63,20 @@ struct AddProductFromImageView: View {
 
             // Scanned text list.
             Section {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
                     // Button to regenerate product details based on the selected scanned texts.
                     Button(Localization.regenerateButtonTitle) {
                         viewModel.generateProductDetails()
                     }
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGeneratingDetails))
+
+                    // Error message.
+                    if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .font(.footnote)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color(uiColor: .error))
+                    }
 
                     // Info text about selecting/editing the scanned text list.
                     Text(Localization.scannedTextListInfo)
@@ -90,6 +98,12 @@ struct AddProductFromImageView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
             }
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancelButtonTitle) {
+                    completion(nil)
+                }
+                .buttonStyle(TextButtonStyle())
+            }
         }
     }
 }
@@ -104,6 +118,10 @@ private extension AddProductFromImageView {
             "Continue",
             comment: "Continue button on the add product from image form."
         )
+        static let cancelButtonTitle = NSLocalizedString(
+            "Cancel",
+            comment: "Cancel button on the add product from image form."
+        )
         static let regenerateButtonTitle = NSLocalizedString(
             "Regenerate",
             comment: "Regenerate button on the add product from image form to regenerate product details."
@@ -112,6 +130,10 @@ private extension AddProductFromImageView {
             "Tweak your text: Unselect scans you don't need or tap to edit",
             comment: "Info text about the scanned text list on the add product from image form."
         )
+    }
+
+    enum Layout {
+        static let defaultSpacing: CGFloat = 16
     }
 }
 

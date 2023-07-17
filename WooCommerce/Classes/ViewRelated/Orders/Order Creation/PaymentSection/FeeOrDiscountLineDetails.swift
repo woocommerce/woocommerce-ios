@@ -69,8 +69,8 @@ struct FeeOrDiscountLineDetailsView: View {
 
                     if viewModel.isExistingLine {
                         Section {
-                            Button(viewModel.stringsProvider.removeButtonTitle) {
-                                viewModel.didSelectSave(nil)
+                            Button(viewModel.lineTypeViewModel.removeButtonTitle) {
+                                viewModel.removeValue()
                                 presentation.wrappedValue.dismiss()
                             }
                             .padding()
@@ -85,7 +85,7 @@ struct FeeOrDiscountLineDetailsView: View {
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-            .navigationTitle(viewModel.stringsProvider.navigationTitle)
+            .navigationTitle(viewModel.lineTypeViewModel.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -99,7 +99,7 @@ struct FeeOrDiscountLineDetailsView: View {
                         presentation.wrappedValue.dismiss()
                     }
                     .disabled(viewModel.shouldDisableDoneButton)
-                    .accessibilityIdentifier(viewModel.stringsProvider.doneButtonAccessibilityIdentifier)
+                    .accessibilityIdentifier(viewModel.lineTypeViewModel.doneButtonAccessibilityIdentifier)
                 }
             }
         }
@@ -121,7 +121,7 @@ struct FeeOrDiscountLineDetailsView: View {
                     .onTapGesture {
                         focusFixedAmountInput = true
                     }
-                    .accessibilityIdentifier(viewModel.stringsProvider.fixedAmountFieldAccessibilityIdentifier)
+                    .accessibilityIdentifier(viewModel.lineTypeViewModel.fixedAmountFieldAccessibilityIdentifier)
             }
         }
         .frame(minHeight: Layout.rowHeight)

@@ -74,8 +74,18 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             return nil
         }
         let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
-        return currencyFormatter.formatAmount(productSubtotal)
+        let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal)
+
+        guard let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal),
+              let discount = discount,
+              let discountLabelComponent = currencyFormatter.formatAmount(discount) else {
+            return priceLabelComponent
+        }
+
+        return priceLabelComponent + " - " + discountLabelComponent
     }
+
+    private let discount: Decimal?
 
     /// Variations label for a variable product.
     ///
@@ -147,6 +157,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          name: String,
          sku: String?,
          price: String?,
+         discount: Decimal? = nil,
          stockStatusKey: String,
          stockQuantity: Decimal?,
          manageStock: Bool,
@@ -165,6 +176,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.name = name
         self.sku = sku
         self.price = price
+        self.discount = discount
         self.stockStatus = .init(rawValue: stockStatusKey)
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
@@ -182,6 +194,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     convenience init(id: Int64? = nil,
                      product: Product,
+                     discount: Decimal? = nil,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
@@ -232,6 +245,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   name: product.name,
                   sku: product.sku,
                   price: price,
+                  discount: discount,
                   stockStatusKey: stockStatusKey,
                   stockQuantity: stockQuantity,
                   manageStock: manageStock,
@@ -249,6 +263,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     convenience init(id: Int64? = nil,
                      productVariation: ProductVariation,
+                     discount: Decimal? = nil,
                      name: String,
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
@@ -269,6 +284,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   name: name,
                   sku: productVariation.sku,
                   price: productVariation.price,
+                  discount: discount,
                   stockStatusKey: productVariation.stockStatus.rawValue,
                   stockQuantity: productVariation.stockQuantity,
                   manageStock: productVariation.manageStock,

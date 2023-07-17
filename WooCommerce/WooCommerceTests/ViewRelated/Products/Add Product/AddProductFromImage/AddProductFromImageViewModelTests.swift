@@ -109,6 +109,40 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.description, "Desc")
     }
 
+    func test_generatesProductDetails_failure_sets_errorMessage_and_resets_errorMessage_after_regenerating() {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        mockGenerateProductDetails(result: .failure(SampleError.first))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+        XCTAssertNotNil(viewModel.errorMessage)
+
+        // When regenerating product details with success
+        mockGenerateProductDetails(result: .success(.init(name: "", description: "", language: "")))
+        viewModel.generateProductDetails()
+
+        // Then `errorMessage` is reset
+        waitUntil {
+            viewModel.errorMessage == nil
+        }
+    }
+
     func test_generateProductDetails_without_scanned_text_does_not_dispatch_product_action() {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in

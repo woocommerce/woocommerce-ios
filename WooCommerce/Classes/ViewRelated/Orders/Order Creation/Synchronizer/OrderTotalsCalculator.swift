@@ -49,13 +49,15 @@ final class OrderTotalsCalculator {
             .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
     }
 
-    /// Total value of all coupons on an order.
-    ///
-    var couponsTotal: NSDecimalNumber {
-        order.coupons
-            .map { $0.discount }
+    /// Total value of discounts, including coupons and product discounts.
+    /// 
+    var discountTotal: NSDecimalNumber {
+        let itemsDiscountedTotal = order.items
+            .map { $0.total }
             .compactMap { currencyFormatter.convertToDecimal($0) }
             .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+
+        return itemsTotal.subtracting(itemsDiscountedTotal)
     }
 
     init(for order: Order, using currencyFormatter: CurrencyFormatter) {
@@ -66,7 +68,7 @@ final class OrderTotalsCalculator {
     /// Returns a copy of the order with a new, locally calculated order total.
     ///
     func updateOrderTotal() -> Order {
-        let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal).adding(taxesTotal).subtracting(couponsTotal)
+        let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal).adding(taxesTotal).subtracting(discountTotal)
         return order.copy(total: orderTotal.stringValue)
     }
 }

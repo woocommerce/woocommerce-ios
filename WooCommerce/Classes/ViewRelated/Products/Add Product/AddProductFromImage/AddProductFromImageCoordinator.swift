@@ -39,6 +39,9 @@ final class AddProductFromImageCoordinator: Coordinator {
             guard let self else { return }
             Task { @MainActor in
                 await self.navigationController.dismiss(animated: true)
+                guard let data else {
+                    return
+                }
                 guard let product = self.createProduct(name: data.name, description: data.description) else {
                     return
                 }

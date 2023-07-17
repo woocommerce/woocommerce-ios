@@ -12,7 +12,7 @@ struct AddProductFromImageData {
 final class AddProductFromImageHostingController: UIHostingController<AddProductFromImageView> {
     init(siteID: Int64,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
-         completion: @escaping (AddProductFromImageData) -> Void) {
+         completion: @escaping (AddProductFromImageData?) -> Void) {
         super.init(rootView: AddProductFromImageView(siteID: siteID, addImage: addImage, completion: completion))
     }
 
@@ -23,13 +23,13 @@ final class AddProductFromImageHostingController: UIHostingController<AddProduct
 
 /// A form to create a product from an image, where any texts in the image can be scanned to generate product details with Jetpack AI.
 struct AddProductFromImageView: View {
-    private let completion: (AddProductFromImageData) -> Void
+    private let completion: (AddProductFromImageData?) -> Void
     @StateObject private var viewModel: AddProductFromImageViewModel
 
     init(siteID: Int64,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          stores: StoresManager = ServiceLocator.stores,
-         completion: @escaping (AddProductFromImageData) -> Void) {
+         completion: @escaping (AddProductFromImageData?) -> Void) {
         self.completion = completion
         self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID, stores: stores, onAddImage: addImage))
     }
@@ -95,6 +95,12 @@ struct AddProductFromImageView: View {
                 }
                 .buttonStyle(LinkButtonStyle())
             }
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancelButtonTitle) {
+                    completion(nil)
+                }
+                .buttonStyle(TextButtonStyle())
+            }
         }
     }
 }
@@ -108,6 +114,10 @@ private extension AddProductFromImageView {
         static let continueButtonTitle = NSLocalizedString(
             "Continue",
             comment: "Continue button on the add product from image form."
+        )
+        static let cancelButtonTitle = NSLocalizedString(
+            "Cancel",
+            comment: "Cancel button on the add product from image form."
         )
         static let regenerateButtonTitle = NSLocalizedString(
             "Regenerate",

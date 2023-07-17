@@ -12,7 +12,7 @@ final class OrdersTests: XCTestCase {
         app.launch()
         try LoginFlow.login()
     }
-    
+
     let customerNote = "New customer note"
 
     func test_load_orders_screen() throws {

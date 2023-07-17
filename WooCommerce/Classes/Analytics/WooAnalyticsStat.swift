@@ -576,6 +576,14 @@ public enum WooAnalyticsStat: String {
     // Exposure event for the A/B experiment.
     case addProductFromImageEligible = "add_product_from_image_eligible"
 
+    // MARK: Add product from image events
+    case addProductFromImageDisplayed = "add_product_from_image_displayed"
+    case addProductFromImageScanCompleted = "add_product_from_image_scan_completed"
+    case addProductFromImageScanFailed = "add_product_from_image_scan_failed"
+    case addProductFromImageDetailsGenerated = "add_product_from_image_details_generated"
+    case addProductFromImageDetailsGenerationFailed = "add_product_from_image_detail_generation_failed"
+    case addProductFromImageContinueButtonTapped = "add_product_from_image_continue_button_tapped"
+
     // MARK: Duplicate Product events
     case duplicateProductSuccess = "duplicate_product_success"
     case duplicateProductFailed = "duplicate_product_failed"

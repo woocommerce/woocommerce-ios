@@ -21,7 +21,7 @@ final class EnhancedCouponListViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        couponListViewController.onDataHasLoaded = configureNavigationBarItems
+        couponListViewController.onDataLoaded = configureNavigationBarItems
         couponListViewController.noResultConfig = buildNoResultConfig()
         couponListViewController.onCouponSelected = showDetails
     }

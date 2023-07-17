@@ -38,7 +38,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private lazy var dataSource: UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> = makeDataSource()
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
-    var onDataHasLoaded: ((Bool) -> Void)?
+    var onDataLoaded: ((Bool) -> Void)?
     var noResultConfig: EmptyStateViewController.Config?
     var onCouponSelected: ((Coupon) -> Void)?
 
@@ -116,7 +116,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
             }
             .removeDuplicates()
             .sink { [weak self] hasData in
-                self?.onDataHasLoaded?(hasData)
+                self?.onDataLoaded?(hasData)
             }
             .store(in: &subscriptions)
 

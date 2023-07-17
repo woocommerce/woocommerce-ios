@@ -64,7 +64,7 @@ final class CouponListViewModel {
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
-         showFeedbackBannerIfAppropriate: Bool,
+         showFeedbackBannerIfAppropriate: Bool = true,
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,

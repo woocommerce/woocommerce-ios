@@ -679,7 +679,8 @@ extension EditableOrderViewModel {
 
         let couponLineViewModels: [CouponLineViewModel]
         let couponCode: String
-        let discountTotal: String
+        var discountTotal: String
+        let shouldShowDiscountTotal: Bool
         let shouldShowCoupon: Bool
         let shouldDisableAddingCoupons: Bool
 
@@ -710,6 +711,7 @@ extension EditableOrderViewModel {
              couponLineViewModels: [CouponLineViewModel] = [],
              couponCode: String = "",
              discountTotal: String = "",
+             shouldShowDiscountTotal: Bool = false,
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
@@ -734,6 +736,7 @@ extension EditableOrderViewModel {
             self.couponLineViewModels = couponLineViewModels
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
+            self.shouldShowDiscountTotal = shouldShowDiscountTotal
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
@@ -1053,7 +1056,8 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
-                                            discountTotal: order.discountTotal,
+                                            discountTotal: orderTotals.discountTotal.stringValue,
+                                            shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
@@ -1175,7 +1179,7 @@ private extension EditableOrderViewModel {
     /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
     /// If the referenced product can't be found, `nil` is returned.
     ///
-    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal = 0) -> OrderSyncProductInput? {
+    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal? = nil) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.
         let product: OrderSyncProductInput.ProductType? = {
             if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -1195,7 +1199,7 @@ private extension EditableOrderViewModel {
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount)
+        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount ?? currentDiscount(on: item))
     }
 
     /// Creates a `ProductInOrderViewModel` based on the provided order item id.
@@ -1204,23 +1208,48 @@ private extension EditableOrderViewModel {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
         guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal),
               let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false) else {
             return nil
         }
 
         return ProductInOrderViewModel(productRowViewModel: rowViewModel,
-                                       baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                                       productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
                                        onRemoveProduct: { [weak self] in
                                             self?.removeItemFromOrder(orderItem)
-                                       },
-                                       onSaveFormattedDiscount: { [weak self] formattedDiscount in
-                                            guard let formattedDiscount = formattedDiscount,
-                                                  let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
-                                                return
-                                            }
-                                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
-        })
+                                       })
+    }
+
+    /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
+    ///
+    func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductInOrderViewModel.DiscountConfiguration? {
+        guard featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4),
+              orderSynchronizer.order.coupons.isEmpty,
+              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal) else {
+            return nil
+        }
+
+        return .init(addedDiscount: currentDiscount(on: orderItem),
+                     baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                     onSaveFormattedDiscount: { [weak self] formattedDiscount in
+                        guard let formattedDiscount = formattedDiscount,
+                              let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
+                            self?.addDiscountToOrderItem(item: orderItem, discount: 0)
+                            return
+                        }
+
+                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
+                    })
+    }
+
+    /// Calculates the discount on an order item, that is, subtotal minus total
+    /// 
+    func currentDiscount(on item: OrderItem) -> Decimal {
+        guard let subtotal = currencyFormatter.convertToDecimal(item.subtotal),
+              let total = currencyFormatter.convertToDecimal(item.total) else {
+            return 0
+        }
+
+        return subtotal.subtracting(total) as Decimal
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.

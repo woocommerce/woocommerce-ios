@@ -15,6 +15,8 @@ struct ProductInOrder: View {
     ///
     @State private var shouldShowDiscountLineDetails: Bool = false
 
+    @Environment(\.presentationMode) private var presentationMode
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -33,13 +35,40 @@ struct ProductInOrder: View {
                                 .accessibilityIdentifier("add-discount-button")
                             Divider()
                         }
-                        .renderedIf(viewModel.isAddingDiscountToProductEnabled)
+                        .renderedIf(viewModel.showAddDiscountRow)
                     }
                     .background(Color(.listForeground(modal: false)))
                     .sheet(isPresented: $shouldShowDiscountLineDetails) {
                         FeeOrDiscountLineDetailsView(viewModel: viewModel.discountDetailsViewModel)
                     }
                     Spacer(minLength: Layout.sectionSpacing)
+
+                    Section {
+                        Divider()
+                        VStack(alignment: .leading, spacing: Layout.noSpacing) {
+                            HStack() {
+                                Text(Localization.discountTitle)
+                                    .headlineStyle()
+                                Spacer()
+                                Button(Localization.editDiscount) {
+                                    shouldShowDiscountLineDetails = true
+                                }
+                            }
+
+                            Spacer()
+                            Text(Localization.discountAmount)
+                                .subheadlineStyle()
+                            Text(viewModel.formattedDiscount ?? "")
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        Divider()
+                    }
+                    .background(Color(.listForeground(modal: false)))
+                    .renderedIf(viewModel.showCurrentDiscountSection && viewModel.formattedDiscount != nil)
+
+                    Spacer(minLength: Layout.sectionSpacing)
+
                     Section {
                         Divider()
                         Button(Localization.remove) {
@@ -67,6 +96,9 @@ struct ProductInOrder: View {
             }
         }
         .wooNavigationBarStyle()
+        .onReceive(viewModel.viewDismissPublisher) {
+            presentationMode.wrappedValue.dismiss()
+        }
     }
 }
 
@@ -84,6 +116,9 @@ private extension ProductInOrder {
                                               comment: "Text for the button to add a discount to a product during order creation")
         static let remove = NSLocalizedString("Remove Product from Order",
                                               comment: "Text for the button to remove a product from the order during order creation")
+        static let discountTitle = NSLocalizedString("Discount", comment: "Title for the Discount section on the Product Details screen during order creation")
+        static let editDiscount = NSLocalizedString("Edit", comment: "Text for the button to edit a discount to a product during order creation")
+        static let discountAmount = NSLocalizedString("Amount", comment: "Title for the discount amount of a product during order creation")
     }
 }
 
@@ -99,9 +134,8 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             canChangeQuantity: false,
                                             imageURL: nil)
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
-                                                baseAmountForDiscountPercentage: 0,
-                                                onRemoveProduct: {},
-                                                onSaveFormattedDiscount: { _ in })
+                                                productDiscountConfiguration: nil,
+                                                onRemoveProduct: {})
         ProductInOrder(viewModel: viewModel)
     }
 }

@@ -84,11 +84,11 @@ private extension ProductInputTransformer {
     ///   - updatedOrderItems: An array of `[OrderItem]` entities
     ///
     static func updateOrderItems(from order: Order, with input: OrderSyncProductInput, orderItems updatedOrderItems: inout [OrderItem]) {
+        let newItem = createOrderItem(using: input)
+
         if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
-            let newItem = createOrderItem(using: input, usingPriceFrom: updatedOrderItems[itemIndex])
             updatedOrderItems[itemIndex] = newItem
         } else {
-            let newItem = createOrderItem(using: input, usingPriceFrom: nil)
             updatedOrderItems.append(newItem)
         }
     }
@@ -125,20 +125,15 @@ private extension ProductInputTransformer {
     }
 
     /// Creates and order item by using the `input.id` as the `item.itemID`.
-    /// When `usingPriceFrom` is set, the price from the item will be used instead of the price of the product.
     ///
-    private static func createOrderItem(using input: OrderSyncProductInput, usingPriceFrom existingItem: OrderItem?) -> OrderItem {
+    private static func createOrderItem(using input: OrderSyncProductInput) -> OrderItem {
         let parameters: OrderItemParameters = {
-            // Prefer the item price as it should have been properly sanitized by the remote source.
             switch input.product {
             case .product(let product):
-                let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: product.price) ?? .zero
+                let price: Decimal = Decimal(string: product.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity, price: price, discount: input.discount, productID: product.productID, variationID: nil)
-            case .productID(let productID):
-                let price: Decimal = existingItem?.price.decimalValue ?? .zero
-                return OrderItemParameters(quantity: input.quantity, price: price, discount: input.discount, productID: productID, variationID: nil)
             case .variation(let variation):
-                let price: Decimal = existingItem?.price.decimalValue ?? Decimal(string: variation.price) ?? .zero
+                let price: Decimal = Decimal(string: variation.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity,
                                            price: price,
                                            discount: input.discount,

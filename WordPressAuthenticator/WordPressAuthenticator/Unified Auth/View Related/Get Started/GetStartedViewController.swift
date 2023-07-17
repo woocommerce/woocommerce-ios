@@ -785,10 +785,14 @@ private extension GetStartedViewController {
         buttonViewController.hideShadowView()
 
         if configuration.enableSignInWithApple {
-            buttonViewController.setupTopButtonFor(socialService: .apple, onTap: appleTapped)
+            buttonViewController.setupTopButtonFor(socialService: .apple) { [weak self] in
+                self?.appleTapped()
+            }
         }
 
-        buttonViewController.setupButtomButtonFor(socialService: .google, onTap: googleTapped)
+        buttonViewController.setupButtomButtonFor(socialService: .google) { [weak self] in
+            self?.googleTapped()
+        }
 
         let termsButton = WPStyleGuide.signupTermsButton()
         buttonViewController.stackView?.addArrangedSubview(termsButton)
@@ -807,14 +811,16 @@ private extension GetStartedViewController {
         //
         buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
                                             isPrimary: true,
-                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier,
-                                            onTap: handleSubmitButtonTapped)
+                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier) { [weak self] in
+            self?.handleSubmitButtonTapped()
+        }
 
         // Setup Sign in with site credentials button
         buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
                                                isPrimary: false,
-                                               accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier,
-                                               onTap: handleSiteCredentialsButtonTapped)
+                                               accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier) { [weak self] in
+            self?.handleSiteCredentialsButtonTapped()
+        }
     }
 
     func configureButtonViewControllerWithoutSocialLogin() {
@@ -828,8 +834,9 @@ private extension GetStartedViewController {
         //
         buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
                                             isPrimary: true,
-                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier,
-                                            onTap: handleSubmitButtonTapped)
+                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier) { [weak self] in
+            self?.handleSubmitButtonTapped()
+        }
     }
 
     @objc func appleTapped() {

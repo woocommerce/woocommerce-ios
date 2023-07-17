@@ -18,6 +18,9 @@ open class NUXTableViewController: UITableViewController, NUXViewControllerBase,
         return UIDevice.isPad() ? .all : .portrait
     }
 
+    // MARK: - Private
+    private var notificationObservers: [NSObjectProtocol] = []
+
     override open func viewDidLoad() {
         super.viewDidLoad()
         setupHelpButtonIfNeeded()
@@ -26,5 +29,18 @@ open class NUXTableViewController: UITableViewController, NUXViewControllerBase,
 
     public func shouldShowCancelButton() -> Bool {
         return shouldShowCancelButtonBase()
+    }
+
+    // MARK: - Notification Observers
+
+    public func addNotificationObserver(_ observer: NSObjectProtocol) {
+        notificationObservers.append(observer)
+    }
+
+    deinit {
+        for observer in notificationObservers {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        notificationObservers.removeAll()
     }
 }

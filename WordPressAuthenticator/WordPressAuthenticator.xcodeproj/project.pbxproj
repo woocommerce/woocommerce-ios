@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0193F7752A615521004D7C16 /* MemoryManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0193F7742A615521004D7C16 /* MemoryManagementTests.swift */; };
 		020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */; };
 		020DEF6428AA091100C85D51 /* MagicLinkRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DEF6328AA091100C85D51 /* MagicLinkRequester.swift */; };
 		02A526CA28A3499C00FD1812 /* MagicLinkRequestedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A526C828A3499C00FD1812 /* MagicLinkRequestedViewController.swift */; };
@@ -261,6 +262,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0193F7742A615521004D7C16 /* MemoryManagementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryManagementTests.swift; sourceTree = "<group>"; };
 		020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDisplayImages.swift; sourceTree = "<group>"; };
 		020DEF6328AA091100C85D51 /* MagicLinkRequester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicLinkRequester.swift; sourceTree = "<group>"; };
 		02A526C828A3499C00FD1812 /* MagicLinkRequestedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicLinkRequestedViewController.swift; sourceTree = "<group>"; };
@@ -956,6 +958,7 @@
 				3F86A83F29D280DC005D20C0 /* SingIn */,
 				F18DF0E32525009200D83AFE /* SupportingFiles */,
 				3F338B6B289B87E60014ADC5 /* UnitTests.xctestplan */,
+				0193F7742A615521004D7C16 /* MemoryManagementTests.swift */,
 			);
 			path = WordPressAuthenticatorTests;
 			sourceTree = "<group>";
@@ -1552,6 +1555,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F4E64782990BBD4000DB555 /* IDTokenTests.swift in Sources */,
+				0193F7752A615521004D7C16 /* MemoryManagementTests.swift in Sources */,
 				3F86A84E29D3B53D005D20C0 /* SocialServiceTests.swift in Sources */,
 				3F879FDB293A49AA005C2B48 /* NewGoogleAuthenticatorTests.swift in Sources */,
 				F18DF0E5252500A600D83AFE /* WordPressAuthenticatorTests-Bridging-Header.h in Sources */,

@@ -28,6 +28,9 @@ public protocol NUXViewControllerBase {
     ///
     func shouldShowCancelButton() -> Bool
     func setupCancelButtonIfNeeded()
+
+    /// Notification observers that can be tied to the lifecycle of the entities implementing the protocol
+    func addNotificationObserver(_ observer: NSObjectProtocol)
 }
 
 /// extension for NUXViewControllerBase where the base class is UIViewController (and thus also NUXTableViewController)
@@ -286,12 +289,17 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     private func setupNotificationsIndicator() {
         helpNotificationIndicator.isHidden = true
 
-        NotificationCenter.default.addObserver(forName: .wordpressSupportNotificationReceived, object: nil, queue: nil) { [weak self] _ in
-            self?.refreshSupportNotificationIndicator()
-        }
-        NotificationCenter.default.addObserver(forName: .wordpressSupportNotificationCleared, object: nil, queue: nil) { [weak self] _ in
-            self?.refreshSupportNotificationIndicator()
-        }
+        addNotificationObserver(
+            NotificationCenter.default.addObserver(forName: .wordpressSupportNotificationReceived, object: nil, queue: nil) { [weak self] _ in
+                self?.refreshSupportNotificationIndicator()
+            }
+        )
+
+        addNotificationObserver(
+            NotificationCenter.default.addObserver(forName: .wordpressSupportNotificationCleared, object: nil, queue: nil) { [weak self] _ in
+                self?.refreshSupportNotificationIndicator()
+            }
+        )
     }
 
     private func layoutNotificationIndicatorView(_ view: UIView, to superView: UIView) {

@@ -106,13 +106,15 @@ private extension VerifyEmailViewController {
 
         // Setup `Send email verification link` button
         buttonViewController.setupTopButton(title: ButtonConfiguration.SendEmailVerificationLink.title,
-                                            isPrimary: true,
-                                            onTap: handleSendEmailVerificationLinkButtonTapped)
+                                            isPrimary: true) { [weak self] in
+            self?.handleSendEmailVerificationLinkButtonTapped()
+        }
 
         // Setup `Login with account password` button
         buttonViewController.setupBottomButton(title: ButtonConfiguration.LoginWithAccountPassword.title,
-                                            isPrimary: false,
-                                            onTap: handleLoginWithAccountPasswordButtonTapped)
+                                            isPrimary: false) { [weak self] in
+            self?.handleLoginWithAccountPasswordButtonTapped()
+        }
     }
 
     // MARK: - Actions

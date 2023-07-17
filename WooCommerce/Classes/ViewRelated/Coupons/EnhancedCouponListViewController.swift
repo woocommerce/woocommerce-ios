@@ -3,6 +3,8 @@ import WordPressUI
 import UIKit
 import Yosemite
 
+/// Shows a coupons list plus the entry to other accessory actions: search, creation.
+///
 final class EnhancedCouponListViewController: UIViewController {
     private let couponListViewController: CouponListViewController
     private let siteID: Int64
@@ -27,7 +29,6 @@ final class EnhancedCouponListViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
 
     override func viewDidLoad() {
         super.viewDidLoad()

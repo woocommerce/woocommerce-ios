@@ -36,10 +36,10 @@ struct FullFeatureListViewModel {
                                     Localization.listProductsByBrand,
                                   ],
                                   performanceFeatures: [
-                                    "Min/Max order quantity",
-                                    "Product Bundles",
-                                    "Custom product kits",
-                                    "Product recommendations"
+                                    Localization.minMaxOrderQuantityText,
+                                    Localization.productBundlesText,
+                                    Localization.customProductKitsText,
+                                    Localization.productRecommendationsText,
                                   ]),
             FullFeatureListGroups(title: Localization.paymentsFeatureTitle,
                                   essentialFeatures: [
@@ -61,12 +61,12 @@ struct FullFeatureListViewModel {
                                     Localization.customOrderEmails,
                                   ],
                                   performanceFeatures: [
-                                    "Back in stock emails",
-                                    "Marketing automation",
-                                    "Abandoned cart recovery",
-                                    "Referral programs",
-                                    "Customer birthday emails",
-                                    "Loyalty points programs"
+                                    Localization.backInStockEmailsText,
+                                    Localization.marketingAutomationText,
+                                    Localization.abandonedCartRecoveryText,
+                                    Localization.referralProgramsText,
+                                    Localization.customerBirthdayEmailsText,
+                                    Localization.loyaltyPointsProgramsText,
                                   ]),
 
             FullFeatureListGroups(title: Localization.shippingFeatureTitle,
@@ -76,7 +76,8 @@ struct FullFeatureListViewModel {
                                     Localization.printShippingLabels
                                     ],
                                   performanceFeatures: [
-                                    "Discounted shipping²"]),
+                                    Localization.discountedShippingText,
+                                  ]),
         ]
     }
 }
@@ -225,6 +226,50 @@ private extension FullFeatureListViewModel {
         static let printShippingLabels = NSLocalizedString(
             "Print shipping labels²",
             comment: "The title of one of the features offered with the Essential plan")
+
+        static let minMaxOrderQuantityText = NSLocalizedString(
+            "Min/Max order quantity",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let productBundlesText = NSLocalizedString(
+            "Product Bundles",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let customProductKitsText = NSLocalizedString(
+            "Custom product kits",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let productRecommendationsText = NSLocalizedString(
+            "Product recommendations",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let backInStockEmailsText = NSLocalizedString(
+            "Back in stock emails",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let marketingAutomationText = NSLocalizedString(
+            "Marketing automation",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let abandonedCartRecoveryText = NSLocalizedString(
+            "Abandoned cart recovery",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let referralProgramsText = NSLocalizedString(
+            "Referral programs",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let customerBirthdayEmailsText = NSLocalizedString(
+            "Customer birthday emails",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let loyaltyPointsProgramsText = NSLocalizedString(
+            "Loyalty points programs",
+            comment: "The title of one of the features offered with the Performance plan")
+
+        static let discountedShippingText = NSLocalizedString(
+            "Discounted shipping²",
+            comment: "The title of one of the features offered with the Performance plan")
     }
 }
 
@@ -309,7 +354,7 @@ private extension FullFeatureListView {
             "2. Only available in the U.S. – an additional extension will be required for other countries.",
             comment: "")
     }
-    
+
     struct Layout {
         static let featureListSpacing: CGFloat = 8.0
         static let featureListCornerRadius: CGFloat = 10.0

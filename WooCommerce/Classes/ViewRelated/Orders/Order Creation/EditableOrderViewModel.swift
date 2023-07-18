@@ -1341,8 +1341,7 @@ private extension EditableOrderViewModel {
         couponLines.map {
             CouponLineViewModel(title: String.localizedStringWithFormat(Localization.CouponSummary.singular, $0.code),
                           discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
-                          detailsViewModel: CouponLineDetailsViewModel(isExistingCouponLine: true,
-                                                                       code: $0.code,
+                          detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                        siteID: siteID,
                                                                        didSelectSave: saveCouponLine))
 

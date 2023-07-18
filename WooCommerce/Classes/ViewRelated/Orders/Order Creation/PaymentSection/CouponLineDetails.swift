@@ -44,9 +44,7 @@ struct CouponLineDetails: View {
                     .disabled(showValidateCouponLoading)
 
                     Spacer(minLength: Layout.sectionSpacing)
-
-                    if viewModel.isExistingCouponLine {
-                        Section {
+                    Section {
                             Button(Localization.remove) {
                                 focusedField = nil
                                 viewModel.removeCoupon()
@@ -59,11 +57,10 @@ struct CouponLineDetails: View {
                         }
                         .background(Color(.listForeground(modal: false)))
                     }
-                }
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-            .navigationTitle(viewModel.isExistingCouponLine ? Localization.coupon : Localization.addCoupon)
+            .navigationTitle(Localization.coupon)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -102,7 +99,6 @@ private extension CouponLineDetails {
     }
 
     enum Localization {
-        static let addCoupon = NSLocalizedString("Add coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Title for the Coupon screen during order creation")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Coupon Details screen")
         static let done = NSLocalizedString("Done", comment: "Text for the done button in the Coupon Details screen")
@@ -117,8 +113,7 @@ private extension CouponLineDetails {
 
 struct CouponLineDetails_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: true,
-                                                   code: "",
+        let viewModel = CouponLineDetailsViewModel(code: "",
                                                    siteID: 0,
                                                    didSelectSave: { _ in })
         CouponLineDetails(viewModel: viewModel)

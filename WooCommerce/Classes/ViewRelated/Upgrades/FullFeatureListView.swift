@@ -68,7 +68,7 @@ private extension FullFeatureListView {
     struct Localization {
         static let featureListTitleText = NSLocalizedString(
             "Full Feature List",
-            comment: "")
+            comment: "Title of the view which shows the full feature list for paid plans.")
 
         static let performanceOnlyText = NSLocalizedString(
             "Performance plan only",
@@ -77,11 +77,11 @@ private extension FullFeatureListView {
         static let paymentsDisclaimerText = NSLocalizedString(
             "1. Available as standard in WooCommerce Payments (restrictions apply)." +
             "Additional extensions may be required for other payment providers." ,
-            comment: "")
+            comment: "Disclaimer regarding some of the features related to payments.")
 
         static let pluginsDisclaimerText = NSLocalizedString(
             "2. Only available in the U.S. – an additional extension will be required for other countries.",
-            comment: "")
+            comment: "Disclaimer regarding some of the features related to shipping.")
     }
 
     struct Layout {

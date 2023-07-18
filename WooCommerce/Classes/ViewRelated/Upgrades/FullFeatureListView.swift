@@ -12,28 +12,28 @@ struct FullFeatureListViewModel {
         return [
             FullFeatureListGroups(title: Localization.yourStoreFeatureTitle,
                                   essentialFeatures: [
-                                    "WooCommerce store",
-                                    "WooCommerce mobile app",
-                                    "WordPress CMS",
-                                    "WordPress mobile app",
-                                    "Free SSL certificate",
-                                    "Generous storage",
-                                    "Automated backup + quick restore",
-                                    "Ad-free experience",
-                                    "Unlimited admin accounts",
-                                    "Live chat support",
-                                    "Email support",
-                                    "Premium themes included",
-                                    "Sales reports",
-                                    "Google Analytics"
+                                    Localization.wooCommerceStoreText,
+                                    Localization.wooCommerceMobileAppText,
+                                    Localization.wordPressCMSText,
+                                    Localization.wordPressMobileAppText,
+                                    Localization.freeSSLCertificateText,
+                                    Localization.generousStorageText,
+                                    Localization.automatedBackupQuickRestoreText,
+                                    Localization.adFreeExperienceText,
+                                    Localization.unlimitedAdminAccountsText,
+                                    Localization.liveChatSupportText,
+                                    Localization.emailSupportText,
+                                    Localization.premiumThemesIncludedText,
+                                    Localization.salesReportsText,
+                                    Localization.googleAnalyticsText,
                                   ],
                                   performanceFeatures: []
                                  ),
             FullFeatureListGroups(title: Localization.productsFeatureTitle,
                                   essentialFeatures: [
-                                    "List unlimited products",
-                                    "Gift cards",
-                                    "List products by brand",
+                                    Localization.listUnlimitedProducts,
+                                    Localization.giftCards,
+                                    Localization.listProductsByBrand,
                                   ],
                                   performanceFeatures: [
                                     "Min/Max order quantity",
@@ -43,22 +43,22 @@ struct FullFeatureListViewModel {
                                   ]),
             FullFeatureListGroups(title: Localization.paymentsFeatureTitle,
                                   essentialFeatures: [
-                                    "Integrated payments",
-                                    "International payments'",
-                                    "Automated sales taxes",
-                                    "Accept local payments'",
-                                    "Recurring payments'"
+                                    Localization.integratedPayments,
+                                    Localization.internationalPayments,
+                                    Localization.automatedSalesTaxes,
+                                    Localization.acceptLocalPayments,
+                                    Localization.recurringPayments,
                                   ],
                                   performanceFeatures: []),
 
             FullFeatureListGroups(title: Localization.marketingAndEmailFeatureTitle,
                                   essentialFeatures: [
-                                  "Promote on TikTok",
-                                  "Sync with Pinterest",
-                                  "Connect with Facebook",
-                                  "Advanced SEO tools",
-                                  "Advertise on Google",
-                                  "Custom order emails",
+                                    Localization.promoteOnTikTok,
+                                    Localization.syncWithPinterest,
+                                    Localization.connectWithFacebook,
+                                    Localization.advancedSeoTools,
+                                    Localization.advertiseOnGoogle,
+                                    Localization.customOrderEmails,
                                   ],
                                   performanceFeatures: [
                                     "Back in stock emails",
@@ -71,9 +71,10 @@ struct FullFeatureListViewModel {
 
             FullFeatureListGroups(title: Localization.shippingFeatureTitle,
                                   essentialFeatures: [
-                                  "Shipment tracking",
-                                  "Live shipping rates",
-                                  "Print shipping labels²"],
+                                    Localization.shipmentTracking,
+                                    Localization.liveShippingRates,
+                                    Localization.printShippingLabels
+                                    ],
                                   performanceFeatures: [
                                     "Discounted shipping²"]),
         ]
@@ -85,11 +86,11 @@ private extension FullFeatureListViewModel {
         static let yourStoreFeatureTitle = NSLocalizedString(
             "Your Store",
             comment: "The title of one of the feature groups offered with paid plans")
-        
+
         static let productsFeatureTitle = NSLocalizedString(
             "Products",
             comment: "The title of one of the feature groups offered with paid plans")
-        
+
         static let paymentsFeatureTitle = NSLocalizedString(
             "Payments",
             comment: "The title of one of the feature groups offered with paid plans")
@@ -101,9 +102,128 @@ private extension FullFeatureListViewModel {
         static let shippingFeatureTitle = NSLocalizedString(
             "Shipping",
             comment: "The title of one of the feature groups offered with paid plans")
-        
-        static let WooCommerceStore = NSLocalizedString(
+
+        static let wooCommerceStoreText = NSLocalizedString(
             "WooCommerce store",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let wooCommerceMobileAppText = NSLocalizedString(
+            "WooCommerce mobile app",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let wordPressCMSText = NSLocalizedString(
+            "WordPress CMS",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let wordPressMobileAppText = NSLocalizedString(
+            "WordPress mobile app",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let freeSSLCertificateText = NSLocalizedString(
+            "Free SSL certificate",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let generousStorageText = NSLocalizedString(
+            "Generous storage",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let automatedBackupQuickRestoreText = NSLocalizedString(
+            "Automated backup + quick restore",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let adFreeExperienceText = NSLocalizedString(
+            "Ad-free experience",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let unlimitedAdminAccountsText = NSLocalizedString(
+            "Unlimited admin accounts",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let liveChatSupportText = NSLocalizedString(
+            "Live chat support",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let emailSupportText = NSLocalizedString(
+            "Email support",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let premiumThemesIncludedText = NSLocalizedString(
+            "Premium themes included",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let salesReportsText = NSLocalizedString(
+            "Sales reports",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let googleAnalyticsText = NSLocalizedString(
+            "Google Analytics",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let listUnlimitedProducts = NSLocalizedString(
+            "List unlimited products",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let giftCards = NSLocalizedString(
+            "Gift cards",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let listProductsByBrand = NSLocalizedString(
+            "List products by brand",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let integratedPayments = NSLocalizedString(
+            "Integrated payments",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let internationalPayments = NSLocalizedString(
+            "International payments'",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let automatedSalesTaxes = NSLocalizedString(
+            "Automated sales taxes",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let acceptLocalPayments = NSLocalizedString(
+            "Accept local payments'",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let recurringPayments = NSLocalizedString(
+            "Recurring payments'",
+            comment: "The title of one of the features offered with the Essential plan")
+        static let promoteOnTikTok = NSLocalizedString(
+            "Promote on TikTok",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let syncWithPinterest = NSLocalizedString(
+            "Sync with Pinterest",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let connectWithFacebook = NSLocalizedString(
+            "Connect with Facebook",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let advancedSeoTools = NSLocalizedString(
+            "Advanced SEO tools",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let advertiseOnGoogle = NSLocalizedString(
+            "Advertise on Google",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let customOrderEmails = NSLocalizedString(
+            "Custom order emails",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let shipmentTracking = NSLocalizedString(
+            "Shipment tracking",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let liveShippingRates = NSLocalizedString(
+            "Live shipping rates",
+            comment: "The title of one of the features offered with the Essential plan")
+
+        static let printShippingLabels = NSLocalizedString(
+            "Print shipping labels²",
             comment: "The title of one of the features offered with the Essential plan")
     }
 }

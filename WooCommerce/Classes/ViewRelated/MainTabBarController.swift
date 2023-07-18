@@ -454,7 +454,6 @@ extension MainTabBarController {
 
     static func presentCoupons() {
         switchToHubMenuTab()
-        
         guard let hubMenuViewController: HubMenuViewController = childViewController() else {
             return
         }

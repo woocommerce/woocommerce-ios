@@ -38,14 +38,23 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private lazy var dataSource: UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> = makeDataSource()
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
-    var onDataLoaded: ((Bool) -> Void)?
-    var emptyStateAction: (() -> Void)?
-    var emptyStateActionTitle: String?
-    var onCouponSelected: ((Coupon) -> Void)?
+    private var onDataLoaded: ((Bool) -> Void)?
+    private let emptyStateAction: (() -> Void)
+    private let emptyStateActionTitle: String
+    private let onCouponSelected: ((Coupon) -> Void)
 
-    init(siteID: Int64, showFeedbackBannerIfAppropriate: Bool) {
+    init(siteID: Int64,
+         showFeedbackBannerIfAppropriate: Bool,
+         emptyStateActionTitle: String,
+         onDataLoaded: ((Bool) -> Void)? = nil,
+         emptyStateAction: @escaping (() -> Void),
+         onCouponSelected: @escaping ((Coupon) -> Void)) {
         self.siteID = siteID
         self.viewModel = CouponListViewModel(siteID: siteID, showFeedbackBannerIfAppropriate: showFeedbackBannerIfAppropriate)
+        self.onDataLoaded = onDataLoaded
+        self.emptyStateAction = emptyStateAction
+        self.emptyStateActionTitle = emptyStateActionTitle
+        self.onCouponSelected = onCouponSelected
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -194,7 +203,7 @@ extension CouponListViewController: UITableViewDelegate {
             return
         }
 
-        onCouponSelected?(coupon)
+        onCouponSelected(coupon)
     }
 }
 
@@ -289,19 +298,17 @@ private extension CouponListViewController {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         displayEmptyStateViewController(emptyStateViewController)
 
-        if let emptyStateCreateCouponAction = emptyStateAction,
-           let emptyStateActionTitle = emptyStateActionTitle {
-            let configuration = EmptyStateViewController.Config.withButton(
-                message: .init(string: Localization.couponCreationSuggestionMessage),
-                image: .emptyCouponsImage,
-                details: Localization.emptyStateDetails,
-                buttonTitle: emptyStateActionTitle
-            ) { _ in
-                emptyStateCreateCouponAction()
-            }
-
-            emptyStateViewController.configure(configuration)
+        let configuration = EmptyStateViewController.Config.withButton(
+            message: .init(string: Localization.couponCreationSuggestionMessage),
+            image: .emptyCouponsImage,
+            details: Localization.emptyStateDetails,
+            buttonTitle: emptyStateActionTitle
+        ) { [weak self] _ in
+            self?.emptyStateAction()
         }
+
+        emptyStateViewController.configure(configuration)
+
     }
 
 

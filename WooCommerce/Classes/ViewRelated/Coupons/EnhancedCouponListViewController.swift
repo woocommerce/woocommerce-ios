@@ -6,7 +6,7 @@ import Yosemite
 /// Shows a coupons list plus the entry to other accessory actions: search, creation.
 ///
 final class EnhancedCouponListViewController: UIViewController {
-    private let couponListViewController: CouponListViewController
+    private var couponListViewController: CouponListViewController?
     private let siteID: Int64
 
     private lazy var noticePresenter: DefaultNoticePresenter = {
@@ -17,14 +17,8 @@ final class EnhancedCouponListViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
-        couponListViewController = CouponListViewController(siteID: siteID, showFeedbackBannerIfAppropriate: true)
 
         super.init(nibName: nil, bundle: nil)
-
-        couponListViewController.onDataLoaded = configureNavigationBarItems
-        couponListViewController.emptyStateAction = displayCouponTypeBottomSheet
-        couponListViewController.emptyStateActionTitle = Localization.createCouponAction
-        couponListViewController.onCouponSelected = showDetails
     }
 
     required init?(coder: NSCoder) {
@@ -71,11 +65,19 @@ final class EnhancedCouponListViewController: UIViewController {
 
 private extension EnhancedCouponListViewController {
     func configureCouponListViewController() {
+        let couponListViewController = CouponListViewController(siteID: siteID,
+                                                            showFeedbackBannerIfAppropriate: true,
+                                                            emptyStateActionTitle: Localization.createCouponAction,
+                                                            emptyStateAction: displayCouponTypeBottomSheet,
+                                                            onCouponSelected: showDetails)
+
         couponListViewController.view.translatesAutoresizingMaskIntoConstraints = false
         addChild(couponListViewController)
         view.addSubview(couponListViewController.view)
         view.pinSubviewToAllEdges(couponListViewController.view)
         couponListViewController.didMove(toParent: self)
+
+        self.couponListViewController = couponListViewController
     }
 
     func configureNavigation() {
@@ -110,7 +112,7 @@ private extension EnhancedCouponListViewController {
         let viewModel = AddEditCouponViewModel(siteID: siteID,
                                                discountType: discountType,
                                                onSuccess: { [weak self] _ in
-            self?.couponListViewController.refreshCouponList()
+            self?.couponListViewController?.refreshCouponList()
         })
         let addEditHostingController = AddEditCouponHostingController(viewModel: viewModel, onDisappear: { [weak self] in
             guard let self = self else { return }
@@ -136,7 +138,7 @@ private extension EnhancedCouponListViewController {
     func showDetails(from coupon: Coupon) {
         let detailsViewModel = CouponDetailsViewModel(coupon: coupon, onUpdate: { [weak self] in
             guard let self = self else { return }
-            self.couponListViewController.refreshCouponList()
+            self.couponListViewController?.refreshCouponList()
         }, onDeletion: { [weak self] in
             guard let self = self else { return }
             self.navigationController?.popViewController(animated: true)

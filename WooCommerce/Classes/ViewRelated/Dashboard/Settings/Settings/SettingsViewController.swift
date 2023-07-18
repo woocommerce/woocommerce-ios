@@ -415,7 +415,17 @@ private extension SettingsViewController {
     }
 
     func shippingZonesWasPressed() {
-        // Launch shipping zones here
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return DDLogError("⛔️ Cannot SiteID to present shipping zones")
+        }
+
+        let provider = TemporalAnalyticsProvider()
+        let viewController: WCReactNativeViewController = {
+            let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
+            return WCReactNativeViewController(analyticsProvider: provider, blogID: "\(siteID)", apiToken: token)
+        }()
+
+        present(viewController, animated: true)
     }
 
     func privacyWasPressed() {

@@ -40,6 +40,7 @@ final class AddProductFromImageViewModel: ObservableObject {
         imageState.image
     }
 
+    private let addProductSource: AddProductCoordinator.Source
     private let onAddImage: (MediaPickingSource) async -> MediaPickerImage?
     private var selectedImageSubscription: AnyCancellable?
 
@@ -56,17 +57,25 @@ final class AddProductFromImageViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
     private let imageTextScanner: ImageTextScannerProtocol
+    private let analytics: Analytics
 
     init(siteID: Int64,
+         source: AddProductCoordinator.Source,
          stores: StoresManager = ServiceLocator.stores,
          imageTextScanner: ImageTextScannerProtocol = ImageTextScanner(),
+         analytics: Analytics = ServiceLocator.analytics,
          onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.siteID = siteID
         self.stores = stores
+        self.addProductSource = source
         self.imageTextScanner = imageTextScanner
+        self.analytics = analytics
         self.onAddImage = onAddImage
         self.nameViewModel = .init(text: "", placeholder: Localization.nameFieldPlaceholder)
         self.descriptionViewModel = .init(text: "", placeholder: Localization.descriptionFieldPlaceholder)
+
+        // Track display event
+        analytics.track(event: .AddProductFromImage.formDisplayed(source: source))
 
         selectedImageSubscription = $imageState.compactMap { $0.image?.image }
         .sink { [weak self] image in
@@ -95,6 +104,16 @@ final class AddProductFromImageViewModel: ObservableObject {
             isGeneratingDetails = false
         }
     }
+
+    /// Tracks when the continue button is tapped
+    func trackContinueButtonTapped() {
+        analytics.track(event: .AddProductFromImage.continueButtonTapped(
+            source: addProductSource,
+            isNameEmpty: name.isEmpty,
+            isDescriptionEmpty: description.isEmpty,
+            hasScannedText: selectedScannedTexts.isNotEmpty,
+            hasGeneratedDetails: nameViewModel.hasAppliedGeneratedContent || descriptionViewModel.hasAppliedGeneratedContent))
+    }
 }
 
 private extension AddProductFromImageViewModel {
@@ -102,9 +121,12 @@ private extension AddProductFromImageViewModel {
         Task { @MainActor in
             do {
                 let texts = try await imageTextScanner.scanText(from: image)
+                analytics.track(event: .AddProductFromImage.scanCompleted(source: addProductSource, scannedTextCount: texts.count))
                 scannedTexts = texts.map { .init(text: $0, isSelected: true) }
+                [nameViewModel, descriptionViewModel].forEach { $0.reset() }
                 generateProductDetails()
             } catch {
+                analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))
                 DDLogError("⛔️ Error scanning text from image: \(error)")
             }
         }
@@ -119,9 +141,15 @@ private extension AddProductFromImageViewModel {
             case .success(let details):
                 nameViewModel.onSuggestion(details.name)
                 descriptionViewModel.onSuggestion(details.description)
+                analytics.track(event: .AddProductFromImage.detailsGenerated(
+                    source: addProductSource,
+                    language: details.language,
+                    selectedTextCount: selectedScannedTexts.count
+                ))
             case .failure(let error):
                 errorMessage = Localization.defaultError
                 DDLogError("⛔️ Error generating product details from scanned text: \(error)")
+                analytics.track(event: .AddProductFromImage.detailGenerationFailed(source: addProductSource, error: error))
         }
     }
 

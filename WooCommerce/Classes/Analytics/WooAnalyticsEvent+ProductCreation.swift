@@ -32,7 +32,7 @@ extension WooAnalyticsEvent {
     }
 }
 
-private extension AddProductCoordinator.Source {
+extension AddProductCoordinator.Source {
     var analyticsValue: String {
         switch self {
             case .productsTab:

@@ -28,3 +28,5 @@ extension Float64: WooAnalyticsEventPropertyType {
 extension Bool: WooAnalyticsEventPropertyType {
 
 }
+
+extension Int: WooAnalyticsEventPropertyType {}

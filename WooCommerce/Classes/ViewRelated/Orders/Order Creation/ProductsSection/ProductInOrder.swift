@@ -41,6 +41,7 @@ struct ProductInOrder: View {
                         Text(Localization.couponsAndDiscountAlert)
                             .subheadlineStyle()
                             .padding()
+                            .frame(maxWidth: .infinity, alignment: .center)
                             .renderedIf(viewModel.showCouponsAndDiscountsAlert)
                     }
                     .background(Color(.listForeground(modal: false)))

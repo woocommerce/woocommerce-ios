@@ -73,9 +73,9 @@ struct FullFeatureListViewModel {
                                   essentialFeatures: [
                                   "Shipment tracking",
                                   "Live shipping rates",
-                                  "Discounted shipping²",
                                   "Print shipping labels²"],
-                                  performanceFeatures: []),
+                                  performanceFeatures: [
+                                    "Discounted shipping²"]),
         ]
     }
 }
@@ -107,6 +107,7 @@ struct FullFeatureListView: View {
                         }
                     }
                     Divider()
+                        .padding(.top)
                         .padding(.bottom)
                     HStack {
                         Image(systemName: "star.fill")
@@ -117,15 +118,17 @@ struct FullFeatureListView: View {
                     .padding(.bottom)
                     .renderedIf(featureList.performanceFeatures.isNotEmpty)
                 }
-                // Outside of the loop
-                VStack {
-                    Text(Localization.disclaimer1)
-                        .font(.caption)
-                    Text(Localization.disclaimer2)
-                        .font(.caption)
-                }
             }
             .padding(.horizontal)
+            .background(Color(.white))
+            .cornerRadius(10.0)
+            VStack(alignment: .leading, spacing: 8.0) {
+                Text(Localization.disclaimer1)
+                    .font(.caption)
+                Text(Localization.disclaimer2)
+                    .font(.caption)
+            }
+            .background(Color(.secondarySystemBackground))
         }
         .padding()
         .navigationTitle("Full Feature List")
@@ -135,6 +138,7 @@ struct FullFeatureListView: View {
         }) {
             Image(systemName: "chevron.left")
         })
+        .background(Color(.secondarySystemBackground))
     }
 }
 

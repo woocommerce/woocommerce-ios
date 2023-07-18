@@ -1,1 +1,13 @@
-"en"
+{
+  "completion": "en",
+  "previous_messages": [
+    {
+      "role": "user",
+      "content": "Hello!"
+    },
+    {
+      "role": "assistant",
+      "content": "Hi!"
+    }
+  ]
+}

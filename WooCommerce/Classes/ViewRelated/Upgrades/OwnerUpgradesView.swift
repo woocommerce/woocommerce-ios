@@ -102,7 +102,7 @@ struct FullFeatureListView: View {
                             Text(feature)
                                 .font(.body)
                             Image(systemName: "star.fill")
-                                .foregroundColor(.purple)
+                                .foregroundColor(.withColorStudio(name: .wooCommercePurple, shade: .shade50))
                                 .font(.footnote)
                         }
                     }

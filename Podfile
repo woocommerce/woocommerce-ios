@@ -90,7 +90,7 @@ target 'WooCommerce' do
 
   wordpress_shared
 
-  pod 'WordPressUI', '~> 1.13'
+  pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => 'task/fix-crash-BottomSheetViewController'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec

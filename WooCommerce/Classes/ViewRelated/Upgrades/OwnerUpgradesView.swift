@@ -82,7 +82,10 @@ struct FullFeatureListViewModel {
 }
 
 struct FullFeatureListView: View {
+    @Environment(\.presentationMode) var presentationMode
+
     var featureListGroups = FullFeatureListViewModel.hardcodedFullFeatureList()
+
     var body: some View {
         ScrollView() {
             VStack(alignment: .leading, spacing: 8.0) {
@@ -95,9 +98,13 @@ struct FullFeatureListView: View {
                             .font(.body)
                     }
                     ForEach(featureList.performanceFeatures, id: \.self) { feature in
-                        Text(feature)
-                            .font(.body)
-                            .underline(color: .red)
+                        HStack {
+                            Text(feature)
+                                .font(.body)
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.purple)
+                                .font(.footnote)
+                        }
                     }
                     Divider()
                 }
@@ -106,9 +113,15 @@ struct FullFeatureListView: View {
                 Text(Localization.disclaimer2)
                     .font(.caption)
             }
-            .background(Color(.listBackground))
-            .navigationTitle("Full Feature List")
+            .padding(.horizontal)
         }
+        .navigationTitle("Full Feature List")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(leading: Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+        })
     }
 }
 
@@ -172,8 +185,12 @@ struct OwnerUpgradesView: View {
                     }
                     Button(Localization.allFeaturesListText) {
                         showingFullFeatureList.toggle()
-                    }.sheet(isPresented: $showingFullFeatureList) {
-                        FullFeatureListView()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                    .sheet(isPresented: $showingFullFeatureList) {
+                        NavigationView {
+                            FullFeatureListView()
+                        }
                     }
                 }
                 .padding()

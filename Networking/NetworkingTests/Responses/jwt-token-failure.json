@@ -1,0 +1,7 @@
+{
+  "code": "oauth2_invalid_token",
+  "message": "The OAuth2 token is invalid.",
+  "data": {
+    "status": 401
+  }
+}

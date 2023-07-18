@@ -28,6 +28,7 @@ final class MediaPickingCoordinator {
 
     private let siteID: Int64
     private let allowsMultipleImages: Bool
+    private let flow: Flow
     private let analytics: Analytics
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
     private let onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion
@@ -35,12 +36,14 @@ final class MediaPickingCoordinator {
 
     init(siteID: Int64,
          allowsMultipleImages: Bool,
+         flow: Flow,
          analytics: Analytics = ServiceLocator.analytics,
          onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
          onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
          onWPMediaPickerCompletion: @escaping WordPressMediaLibraryImagePickerViewController.Completion) {
         self.siteID = siteID
         self.allowsMultipleImages = allowsMultipleImages
+        self.flow = flow
         self.analytics = analytics
         self.onCameraCaptureCompletion = onCameraCaptureCompletion
         self.onDeviceMediaLibraryPickerCompletion = onDeviceMediaLibraryPickerCompletion
@@ -70,7 +73,10 @@ final class MediaPickingCoordinator {
     }
 
     func showMediaPicker(source: MediaPickingSource, from origin: UIViewController) {
-        analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": source.analyticsValue])
+        analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: [
+            "source": source.analyticsValue,
+            "flow": flow.rawValue
+        ])
         switch source {
         case .camera:
             showCameraCapture(origin: origin)
@@ -140,5 +146,13 @@ private extension MediaPickingSource {
             case .siteMediaLibrary:
                 return "wpmedia"
         }
+    }
+}
+
+extension MediaPickingCoordinator {
+    // The flow for picking media
+    enum Flow: String {
+        case productForm = "product_form"
+        case productFromImageForm = "product_from_image_form"
     }
 }

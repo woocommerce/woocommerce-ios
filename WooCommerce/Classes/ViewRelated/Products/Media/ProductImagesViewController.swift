@@ -58,6 +58,7 @@ final class ProductImagesViewController: UIViewController {
     private lazy var mediaPickingCoordinator: MediaPickingCoordinator = {
         return MediaPickingCoordinator(siteID: siteID,
                                        allowsMultipleImages: allowsMultipleImages,
+                                       flow: .productForm,
                                        onCameraCaptureCompletion: { [weak self] asset, error in
                                         self?.onCameraCaptureCompletion(asset: asset, error: error)
             }, onDeviceMediaLibraryPickerCompletion: { [weak self] assets in

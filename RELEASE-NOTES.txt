@@ -5,6 +5,7 @@
 - [Internal] Switched AI endpoint to be able to track and measure costs. [https://github.com/woocommerce/woocommerce-ios/pull/10218]
 - [Internal] Media picker flow was refactored to support interactive dismissal for device photo picker and WordPress media picker sources. Affected flows: product form > images, and virtual product form > downloadable files. [https://github.com/woocommerce/woocommerce-ios/pull/10236]
 - [**] Product discounts: Users can now add discounts to products when creating an order. [https://github.com/woocommerce/woocommerce-ios/pull/10244]
+- [*] We've resolved an issue that was causing the app to crash when trying to dismiss certain screens (bottom sheets).
 
 
 14.5

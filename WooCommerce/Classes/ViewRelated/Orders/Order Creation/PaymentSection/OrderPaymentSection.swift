@@ -1,5 +1,4 @@
 import SwiftUI
-import Yosemite
 
 /// Represents the Payment section in an order
 ///

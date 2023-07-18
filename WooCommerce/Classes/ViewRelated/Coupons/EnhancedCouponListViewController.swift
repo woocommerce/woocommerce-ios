@@ -22,7 +22,7 @@ final class EnhancedCouponListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         couponListViewController.onDataLoaded = configureNavigationBarItems
-        couponListViewController.noResultConfig = buildNoResultConfig()
+        couponListViewController.emptyStateCreateCouponAction = displayCouponTypeBottomSheet
         couponListViewController.onCouponSelected = showDetails
     }
 
@@ -86,18 +86,6 @@ private extension EnhancedCouponListViewController {
             navigationItem.rightBarButtonItems = [createCouponButtonItem, searchBarButtonItem]
         } else {
             navigationItem.rightBarButtonItems = [createCouponButtonItem]
-        }
-    }
-
-    func buildNoResultConfig() -> EmptyStateViewController.Config {
-        return .withButton(
-            message: .init(string: Localization.couponCreationSuggestionMessage),
-            image: .emptyCouponsImage,
-            details: Localization.emptyStateDetails,
-            buttonTitle: Localization.createCouponAction
-        ) { [weak self] button in
-            guard let self = self else { return }
-            self.displayCouponTypeBottomSheet()
         }
     }
 
@@ -169,19 +157,13 @@ private extension EnhancedCouponListViewController {
         static let accessibilityLabelCreateCoupons = NSLocalizedString("Create coupons", comment: "Accessibility label for the Create Coupons button")
         static let accessibilityHintCreateCoupons = NSLocalizedString("Start a Coupon creation by selecting a discount type in a bottom sheet",
                 comment: "VoiceOver accessibility hint, informing the user the button can be used to create coupons.")
-        static let createCouponAction = NSLocalizedString("Create Coupon",
-                                                          comment: "Title of the create coupon button on the coupon list screen when it's empty")
         static let accessibilityLabelSearchCoupons = NSLocalizedString("Search coupons", comment: "Accessibility label for the Search Coupons button")
         static let accessibilityHintSearchCoupons = NSLocalizedString(
             "Retrieves a list of coupons that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search coupons."
         )
-        static let couponCreationSuggestionMessage = NSLocalizedString(
-            "Everyone loves a deal",
-            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible.")
-        static let emptyStateDetails = NSLocalizedString(
-            "Boost your business by sending customers special offers and discounts.",
-            comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
         static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
+        static let createCouponAction = NSLocalizedString("Create Coupon",
+                                                          comment: "Title of the create coupon button on the coupon list screen when it's empty")
     }
 }

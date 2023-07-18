@@ -39,7 +39,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
     var onDataLoaded: ((Bool) -> Void)?
-    var noResultConfig: EmptyStateViewController.Config?
+    var emptyStateCreateCouponAction: (() -> Void)?
     var onCouponSelected: ((Coupon) -> Void)?
 
     init(siteID: Int64, showFeedbackBannerIfAppropriate: Bool) {
@@ -288,8 +288,17 @@ private extension CouponListViewController {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         displayEmptyStateViewController(emptyStateViewController)
 
-        if let noResultConfig = noResultConfig {
-            emptyStateViewController.configure(noResultConfig)
+        if let emptyStateCreateCouponAction = emptyStateCreateCouponAction {
+            let configuration = EmptyStateViewController.Config.withButton(
+                message: .init(string: Localization.couponCreationSuggestionMessage),
+                image: .emptyCouponsImage,
+                details: Localization.emptyStateDetails,
+                buttonTitle: Localization.createCouponAction
+            ) { _ in
+                emptyStateCreateCouponAction()
+            }
+
+            emptyStateViewController.configure(configuration)
         }
     }
 
@@ -383,5 +392,14 @@ private extension CouponListViewController {
 
         static let giveFeedbackAction = NSLocalizedString("Give feedback", comment: "Title of the feedback action button on the coupon list screen")
         static let dismissAction = NSLocalizedString("Dismiss", comment: "Title of the dismiss action button on the coupon list screen")
+
+        static let couponCreationSuggestionMessage = NSLocalizedString(
+            "Everyone loves a deal",
+            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible.")
+        static let emptyStateDetails = NSLocalizedString(
+            "Boost your business by sending customers special offers and discounts.",
+            comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
+        static let createCouponAction = NSLocalizedString("Create Coupon",
+                                                          comment: "Title of the create coupon button on the coupon list screen when it's empty")
     }
 }

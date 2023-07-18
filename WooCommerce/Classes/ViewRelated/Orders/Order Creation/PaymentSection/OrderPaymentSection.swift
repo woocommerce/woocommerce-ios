@@ -71,10 +71,14 @@ struct OrderPaymentSection: View {
             addCouponRow
                 .sheet(isPresented: $shouldShowAddCouponLineDetails) {
                     NavigationView {
-                        CouponListView(siteID: viewModel.siteID, onCouponSelected: { coupon in
-                            viewModel.addNewCouponLineClosure(coupon)
-                            shouldShowAddCouponLineDetails = false
-                        })
+                        CouponListView(siteID: viewModel.siteID,
+                                       emptyStateCreateCouponAction: {
+                                        MainTabBarController.switchToHubMenuTab()
+                                        },
+                                       onCouponSelected: { coupon in
+                                            viewModel.addNewCouponLineClosure(coupon)
+                                            shouldShowAddCouponLineDetails = false
+                                        })
                         .navigationTitle(Localization.addCoupon)
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbar {

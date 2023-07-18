@@ -18,6 +18,10 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowAddCouponLineDetails: Bool = false
 
+    /// Indicates if the go to coupons alert should be shown or not.
+    ///
+    @State private var shouldShowGoToCouponsAlert: Bool = false
+
     /// Keeps track of the selected coupon line details view model.
     ///
     @State private var selectedCouponLineDetailsViewModel: CouponLineDetailsViewModel? = nil
@@ -74,7 +78,7 @@ struct OrderPaymentSection: View {
                         CouponListView(siteID: viewModel.siteID,
                                        emptyStateActionTitle: Localization.goToCoupons,
                                        emptyStateAction: {
-                                        MainTabBarController.presentCoupons()
+                                            shouldShowGoToCouponsAlert = true
                                         },
                                        onCouponSelected: { coupon in
                                             viewModel.addNewCouponLineClosure(coupon)
@@ -89,6 +93,14 @@ struct OrderPaymentSection: View {
                                     }
                                 }
                             }
+                            .alert(isPresented: $shouldShowGoToCouponsAlert, content: {
+                                Alert(title: Text(Localization.goToCoupons),
+                                      message: Text(Localization.goToCouponsAlertMessage),
+                                      primaryButton: .default(Text(Localization.goToCouponsAlertButtonTitle), action: {
+                                    MainTabBarController.presentCoupons()
+                                }),
+                                      secondaryButton: .cancel())
+                            })
                     }
                 }
 
@@ -162,6 +174,9 @@ private extension OrderPaymentSection {
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
         static let goToCoupons = NSLocalizedString("Go to Coupons", comment: "Button title on the Coupon screen empty state" +
                                                    "when creating a new order that navigates to the Coupons Section")
+        static let goToCouponsAlertMessage = NSLocalizedString("Do you want to navigate to the Coupons Menu? These changes will be discarded.",
+                                                               comment: "Confirm message for navigating to coupons when creating a new order")
+        static let goToCouponsAlertButtonTitle = NSLocalizedString("Go", comment: "Confirm buton titele for navigating to coupons when creating a new order")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
     }
 }

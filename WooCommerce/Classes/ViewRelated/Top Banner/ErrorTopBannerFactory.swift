@@ -15,6 +15,7 @@ struct ErrorTopBannerFactory {
                                            infoText: errorType.info,
                                            icon: .infoOutlineImage,
                                            isExpanded: true,
+                                           shouldResizeInfo: false,
                                            topButton: .chevron(handler: expandedStateChangeHandler),
                                            actionButtons: actions)
         let topBannerView = TopBannerView(viewModel: viewModel)

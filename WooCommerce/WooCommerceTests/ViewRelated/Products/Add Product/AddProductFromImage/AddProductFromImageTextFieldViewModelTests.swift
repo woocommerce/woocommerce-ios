@@ -130,4 +130,21 @@ final class AddProductFromImageTextFieldViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasAppliedGeneratedContent)
     }
+
+    // MARK: `reset()`
+
+    func test_reset_sets_all_properties_to_default_values() {
+        // Given
+        let viewModel = ViewModel(text: "Taco", placeholder: "")
+        viewModel.onSuggestion("Ramen")
+        viewModel.applySuggestedText()
+
+        // When
+        viewModel.reset()
+
+        // Then
+        XCTAssertFalse(viewModel.hasAppliedGeneratedContent)
+        XCTAssertEqual(viewModel.text, "")
+        XCTAssertNil(viewModel.suggestedText)
+    }
 }

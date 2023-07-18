@@ -123,6 +123,7 @@ private extension AddProductFromImageViewModel {
                 let texts = try await imageTextScanner.scanText(from: image)
                 analytics.track(event: .AddProductFromImage.scanCompleted(source: addProductSource, scannedTextCount: texts.count))
                 scannedTexts = texts.map { .init(text: $0, isSelected: true) }
+                [nameViewModel, descriptionViewModel].forEach { $0.reset() }
                 generateProductDetails()
             } catch {
                 analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))

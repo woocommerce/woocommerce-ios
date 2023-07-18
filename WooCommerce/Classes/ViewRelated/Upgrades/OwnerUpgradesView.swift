@@ -93,6 +93,7 @@ struct FullFeatureListView: View {
                     Text(featureList.title)
                         .font(.title)
                         .bold()
+                        .padding(.bottom)
                     ForEach(featureList.essentialFeatures, id: \.self) { feature in
                         Text(feature)
                             .font(.body)
@@ -107,6 +108,15 @@ struct FullFeatureListView: View {
                         }
                     }
                     Divider()
+                        .padding(.bottom)
+                    HStack {
+                        Image(systemName: "star.fill")
+                        Text("Performance plan only")
+                    }
+                    .font(.footnote)
+                    .foregroundColor(.withColorStudio(name: .wooCommercePurple, shade: .shade50))
+                    .padding(.bottom)
+                    .renderedIf(featureList.performanceFeatures.isNotEmpty)
                 }
                 Text(Localization.disclaimer1)
                     .font(.caption)
@@ -115,6 +125,7 @@ struct FullFeatureListView: View {
             }
             .padding(.horizontal)
         }
+        .padding()
         .navigationTitle("Full Feature List")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(leading: Button(action: {
@@ -132,8 +143,8 @@ private extension FullFeatureListView {
             "Additional extensions may be required for other payment providers." ,
             comment: "")
         static let disclaimer2 = NSLocalizedString(
-        "2. Only available in the U.S. – an additional extension will be required for other countries.",
-        comment: "")
+            "2. Only available in the U.S. – an additional extension will be required for other countries.",
+            comment: "")
     }
 }
 

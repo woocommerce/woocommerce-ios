@@ -10,7 +10,7 @@ struct FullFeatureListGroups {
 struct FullFeatureListViewModel {
     static func hardcodedFullFeatureList() -> [FullFeatureListGroups] {
         return [
-            FullFeatureListGroups(title: "Your Store",
+            FullFeatureListGroups(title: Localization.yourStoreFeatureTitle,
                                   essentialFeatures: [
                                     "WooCommerce store",
                                     "WooCommerce mobile app",
@@ -29,19 +29,19 @@ struct FullFeatureListViewModel {
                                   ],
                                   performanceFeatures: []
                                  ),
-            FullFeatureListGroups(title: "Products",
+            FullFeatureListGroups(title: Localization.productsFeatureTitle,
                                   essentialFeatures: [
                                     "List unlimited products",
                                     "Gift cards",
+                                    "List products by brand",
                                   ],
                                   performanceFeatures: [
                                     "Min/Max order quantity",
                                     "Product Bundles",
                                     "Custom product kits",
-                                    "List products by brand",
                                     "Product recommendations"
                                   ]),
-            FullFeatureListGroups(title: "Payments",
+            FullFeatureListGroups(title: Localization.paymentsFeatureTitle,
                                   essentialFeatures: [
                                     "Integrated payments",
                                     "International payments'",
@@ -51,7 +51,7 @@ struct FullFeatureListViewModel {
                                   ],
                                   performanceFeatures: []),
 
-            FullFeatureListGroups(title: "Marketing & Email",
+            FullFeatureListGroups(title: Localization.marketingAndEmailFeatureTitle,
                                   essentialFeatures: [
                                   "Promote on TikTok",
                                   "Sync with Pinterest",
@@ -69,7 +69,7 @@ struct FullFeatureListViewModel {
                                     "Loyalty points programs"
                                   ]),
 
-            FullFeatureListGroups(title: "Shipping",
+            FullFeatureListGroups(title: Localization.shippingFeatureTitle,
                                   essentialFeatures: [
                                   "Shipment tracking",
                                   "Live shipping rates",
@@ -80,6 +80,34 @@ struct FullFeatureListViewModel {
     }
 }
 
+private extension FullFeatureListViewModel {
+    struct Localization {
+        static let yourStoreFeatureTitle = NSLocalizedString(
+            "Your Store",
+            comment: "The title of one of the feature groups offered with paid plans")
+        
+        static let productsFeatureTitle = NSLocalizedString(
+            "Products",
+            comment: "The title of one of the feature groups offered with paid plans")
+        
+        static let paymentsFeatureTitle = NSLocalizedString(
+            "Payments",
+            comment: "The title of one of the feature groups offered with paid plans")
+
+        static let marketingAndEmailFeatureTitle = NSLocalizedString(
+            "Marketing & Email",
+            comment: "The title of one of the feature groups offered with paid plans")
+
+        static let shippingFeatureTitle = NSLocalizedString(
+            "Shipping",
+            comment: "The title of one of the feature groups offered with paid plans")
+        
+        static let WooCommerceStore = NSLocalizedString(
+            "WooCommerce store",
+            comment: "The title of one of the features offered with the Essential plan")
+    }
+}
+
 struct FullFeatureListView: View {
     @Environment(\.presentationMode) var presentationMode
 
@@ -87,7 +115,7 @@ struct FullFeatureListView: View {
 
     var body: some View {
         ScrollView() {
-            VStack(alignment: .leading, spacing: 8.0) {
+            VStack(alignment: .leading, spacing: FullFeatureListView.Layout.featureListSpacing) {
                 ForEach(featureListGroups, id: \.title) { featureList in
                     Text(featureList.title)
                         .font(.title)
@@ -111,7 +139,7 @@ struct FullFeatureListView: View {
                         .padding(.bottom)
                     HStack {
                         Image(systemName: "star.fill")
-                        Text("Performance plan only")
+                        Text(Localization.performanceOnlyText)
                     }
                     .font(.footnote)
                     .foregroundColor(.withColorStudio(name: .wooCommercePurple, shade: .shade50))
@@ -121,17 +149,17 @@ struct FullFeatureListView: View {
             }
             .padding(.horizontal)
             .background(Color(.white))
-            .cornerRadius(10.0)
-            VStack(alignment: .leading, spacing: 8.0) {
-                Text(Localization.disclaimer1)
+            .cornerRadius(Layout.featureListCornerRadius)
+            VStack(alignment: .leading, spacing: Layout.featureListSpacing) {
+                Text(Localization.paymentsDisclaimerText)
                     .font(.caption)
-                Text(Localization.disclaimer2)
+                Text(Localization.pluginsDisclaimerText)
                     .font(.caption)
             }
             .background(Color(.secondarySystemBackground))
         }
         .padding()
-        .navigationTitle("Full Feature List")
+        .navigationTitle(Localization.featureListTitleText)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(leading: Button(action: {
             presentationMode.wrappedValue.dismiss()
@@ -144,12 +172,26 @@ struct FullFeatureListView: View {
 
 private extension FullFeatureListView {
     struct Localization {
-        static let disclaimer1 = NSLocalizedString(
+        static let featureListTitleText = NSLocalizedString(
+            "Full Feature List",
+            comment: "")
+
+        static let performanceOnlyText = NSLocalizedString(
+            "Performance plan only",
+            comment: "")
+
+        static let paymentsDisclaimerText = NSLocalizedString(
             "1. Available as standard in WooCommerce Payments (restrictions apply)." +
             "Additional extensions may be required for other payment providers." ,
             comment: "")
-        static let disclaimer2 = NSLocalizedString(
+
+        static let pluginsDisclaimerText = NSLocalizedString(
             "2. Only available in the U.S. – an additional extension will be required for other countries.",
             comment: "")
+    }
+    
+    struct Layout {
+        static let featureListSpacing: CGFloat = 8.0
+        static let featureListCornerRadius: CGFloat = 10.0
     }
 }

@@ -9,8 +9,8 @@ public struct ApplicationPasswordEncoder {
     ///
     private let passwordEnvelope: ApplicationPassword?
 
-    init(passwordEnvelope: ApplicationPassword? = ApplicationPasswordStorage().applicationPassword) {
-        self.passwordEnvelope = passwordEnvelope
+    public init(passwordEnvelope: ApplicationPassword? = nil) {
+        self.passwordEnvelope = passwordEnvelope ?? ApplicationPasswordStorage().applicationPassword
     }
 
     /// Returns the application password on a base64 encoded format.

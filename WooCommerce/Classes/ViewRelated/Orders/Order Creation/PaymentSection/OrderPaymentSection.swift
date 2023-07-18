@@ -71,7 +71,18 @@ struct OrderPaymentSection: View {
 
             addCouponRow
                 .sheet(isPresented: $shouldShowAddCouponLineDetails) {
-                    CouponListView(siteID: viewModel.siteID)
+                    NavigationView {
+                        CouponListView(siteID: viewModel.siteID)
+                            .navigationTitle("Coupons")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    Button("Cancel") {
+                                        shouldShowAddCouponLineDetails = false
+                                    }
+                                }
+                            }
+                    }
                 }
 
             TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))

@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol Experiments.FeatureFlagService
+import Experiments
 
 /// Protocol for checking "add product from image" eligibility for easier unit testing.
 protocol AddProductFromImageEligibilityCheckerProtocol {
@@ -34,7 +35,10 @@ final class AddProductFromImageEligibilityChecker: AddProductFromImageEligibilit
             return false
         }
 
-        // TODO: 10180 - A/B experiment check
-        return featureFlagService.isFeatureFlagEnabled(.addProductFromImage)
+        guard featureFlagService.isFeatureFlagEnabled(.addProductFromImage) else {
+            return false
+        }
+
+        return ABTest.addProductFromImage.variation == .treatment
     }
 }

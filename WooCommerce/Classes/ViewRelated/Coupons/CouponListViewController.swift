@@ -39,7 +39,8 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
     var onDataLoaded: ((Bool) -> Void)?
-    var emptyStateCreateCouponAction: (() -> Void)?
+    var emptyStateAction: (() -> Void)?
+    var emptyStateActionTitle: String?
     var onCouponSelected: ((Coupon) -> Void)?
 
     init(siteID: Int64, showFeedbackBannerIfAppropriate: Bool) {
@@ -288,12 +289,13 @@ private extension CouponListViewController {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         displayEmptyStateViewController(emptyStateViewController)
 
-        if let emptyStateCreateCouponAction = emptyStateCreateCouponAction {
+        if let emptyStateCreateCouponAction = emptyStateAction,
+           let emptyStateActionTitle = emptyStateActionTitle {
             let configuration = EmptyStateViewController.Config.withButton(
                 message: .init(string: Localization.couponCreationSuggestionMessage),
                 image: .emptyCouponsImage,
                 details: Localization.emptyStateDetails,
-                buttonTitle: Localization.createCouponAction
+                buttonTitle: emptyStateActionTitle
             ) { _ in
                 emptyStateCreateCouponAction()
             }
@@ -399,7 +401,5 @@ private extension CouponListViewController {
         static let emptyStateDetails = NSLocalizedString(
             "Boost your business by sending customers special offers and discounts.",
             comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
-        static let createCouponAction = NSLocalizedString("Create Coupon",
-                                                          comment: "Title of the create coupon button on the coupon list screen when it's empty")
     }
 }

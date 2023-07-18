@@ -22,7 +22,8 @@ final class EnhancedCouponListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         couponListViewController.onDataLoaded = configureNavigationBarItems
-        couponListViewController.emptyStateCreateCouponAction = displayCouponTypeBottomSheet
+        couponListViewController.emptyStateAction = displayCouponTypeBottomSheet
+        couponListViewController.emptyStateActionTitle = Localization.createCouponAction
         couponListViewController.onCouponSelected = showDetails
     }
 

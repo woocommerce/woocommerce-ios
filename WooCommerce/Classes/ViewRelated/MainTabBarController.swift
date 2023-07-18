@@ -452,6 +452,16 @@ extension MainTabBarController {
         return hubMenuViewController.showPaymentsMenu()
     }
 
+    static func presentCoupons() {
+        switchToHubMenuTab()
+        
+        guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+            return
+        }
+
+        hubMenuViewController.showCoupons()
+    }
+
     static func presentCollectPayment() {
         let viewController = presentPayments()
 

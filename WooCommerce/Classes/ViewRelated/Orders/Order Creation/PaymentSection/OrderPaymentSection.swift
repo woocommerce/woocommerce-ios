@@ -72,8 +72,9 @@ struct OrderPaymentSection: View {
                 .sheet(isPresented: $shouldShowAddCouponLineDetails) {
                     NavigationView {
                         CouponListView(siteID: viewModel.siteID,
-                                       emptyStateCreateCouponAction: {
-                                        MainTabBarController.switchToHubMenuTab()
+                                       emptyStateActionTitle: Localization.goToCoupons,
+                                       emptyStateAction: {
+                                        MainTabBarController.presentCoupons()
                                         },
                                        onCouponSelected: { coupon in
                                             viewModel.addNewCouponLineClosure(coupon)
@@ -159,6 +160,8 @@ private extension OrderPaymentSection {
         static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
         static let addCoupon = NSLocalizedString("Add coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
+        static let goToCoupons = NSLocalizedString("Go to Coupons", comment: "Button title on the Coupon screen empty state" +
+                                                   "when creating a new order that navigates to the Coupons Section")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
     }
 }

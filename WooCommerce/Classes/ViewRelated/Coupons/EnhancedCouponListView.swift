@@ -3,8 +3,6 @@ import SwiftUI
 struct EnhancedCouponListView: UIViewControllerRepresentable {
     let siteID: Int64
 
-    typealias UIViewControllerType = EnhancedCouponListViewController
-
     class Coordinator {
         var parentObserver: NSKeyValueObservation?
         var rightBarButtonItemsObserver: NSKeyValueObservation?

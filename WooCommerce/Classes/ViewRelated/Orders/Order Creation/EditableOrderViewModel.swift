@@ -663,6 +663,7 @@ extension EditableOrderViewModel {
     /// Representation of payment data display properties
     ///
     struct PaymentDataViewModel {
+        let siteID: Int64
         let itemsTotal: String
         let orderTotal: String
 
@@ -723,6 +724,7 @@ extension EditableOrderViewModel {
              saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+            self.siteID = siteID
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"

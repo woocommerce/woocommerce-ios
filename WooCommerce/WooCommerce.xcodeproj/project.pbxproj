@@ -1640,6 +1640,7 @@
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
 		B95864082A657D2F002C4C6E /* EnhancedCouponListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */; };
 		B958640A2A657F44002C4C6E /* EnhancedCouponListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */; };
+		B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958640B2A66847B002C4C6E /* CouponListView.swift */; };
 		B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */; };
 		B958A7C928B3D47B00823EEF /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C828B3D47B00823EEF /* Route.swift */; };
 		B958A7CB28B3D4A100823EEF /* RouteMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */; };
@@ -4030,6 +4031,7 @@
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
 		B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCouponListViewController.swift; sourceTree = "<group>"; };
 		B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCouponListView.swift; sourceTree = "<group>"; };
+		B958640B2A66847B002C4C6E /* CouponListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListView.swift; sourceTree = "<group>"; };
 		B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouter.swift; sourceTree = "<group>"; };
 		B958A7C828B3D47B00823EEF /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		B958A7CA28B3D4A100823EEF /* RouteMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteMatcher.swift; sourceTree = "<group>"; };
@@ -6204,6 +6206,7 @@
 				DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */,
 				B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */,
 				B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */,
+				B958640B2A66847B002C4C6E /* CouponListView.swift */,
 			);
 			path = Coupons;
 			sourceTree = "<group>";
@@ -12046,6 +12049,7 @@
 				DE6906E527D7439C00735E3B /* OrdersSplitViewWrapperController.swift in Sources */,
 				AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
+				B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */,
 				D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */,
 				02ECD1E424FF5E0B00735BE5 /* AddProductCoordinator.swift in Sources */,
 				45381B4527341B8A003FEC5F /* DateRangeFilterViewController.swift in Sources */,

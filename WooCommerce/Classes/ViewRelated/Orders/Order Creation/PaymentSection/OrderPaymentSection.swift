@@ -76,11 +76,11 @@ struct OrderPaymentSection: View {
                             viewModel.addNewCouponLineClosure(coupon)
                             shouldShowAddCouponLineDetails = false
                         })
-                            .navigationTitle("Coupons")
+                        .navigationTitle(Localization.addCoupon)
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbar {
                                 ToolbarItem(placement: .navigationBarLeading) {
-                                    Button("Cancel") {
+                                    Button(Localization.cancelButton) {
                                         shouldShowAddCouponLineDetails = false
                                     }
                                 }
@@ -156,6 +156,7 @@ private extension OrderPaymentSection {
         static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
         static let addCoupon = NSLocalizedString("Add coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
     }
 }
 

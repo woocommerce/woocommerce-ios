@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct EnhancedCouponsListView: UIViewControllerRepresentable {
+struct EnhancedCouponListView: UIViewControllerRepresentable {
     let siteID: Int64
 
     typealias UIViewControllerType = EnhancedCouponListViewController

@@ -3,6 +3,7 @@
 14.6
 -----
 - [Internal] Media picker flow was refactored to support interactive dismissal for device photo picker and WordPress media picker sources. Affected flows: product form > images, and virtual product form > downloadable files. [https://github.com/woocommerce/woocommerce-ios/pull/10236]
+- [*] Orders with Coupons: Users can now select a coupon from a list when adding it to an order. [https://github.com/woocommerce/woocommerce-ios/pull/10255]
 
 
 14.5

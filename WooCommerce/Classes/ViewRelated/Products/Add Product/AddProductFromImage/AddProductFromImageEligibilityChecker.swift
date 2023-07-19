@@ -16,11 +16,14 @@ protocol AddProductFromImageEligibilityCheckerProtocol {
 final class AddProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let abTestVariationProvider: ABTestVariationProvider
 
     init(stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         abTestVariationProvider: ABTestVariationProvider = DefaultABTestVariationProvider()) {
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.abTestVariationProvider = abTestVariationProvider
     }
 
     func isEligibleToParticipateInABTest() -> Bool {
@@ -39,6 +42,6 @@ final class AddProductFromImageEligibilityChecker: AddProductFromImageEligibilit
             return false
         }
 
-        return ABTest.addProductFromImage.variation == .treatment
+        return abTestVariationProvider.variation(for: .addProductFromImage) == .treatment
     }
 }

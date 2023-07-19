@@ -419,16 +419,16 @@ private extension SettingsViewController {
             return DDLogError("⛔️ Cannot SiteID to present shipping zones")
         }
 
-        let provider = TemporalAnalyticsProvider()
+        let tracksProvider = ReactNativeAnalyticsProvider()
         let viewController: WCReactNativeViewController = {
 
             if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
                 let url = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
                 let password = ApplicationPasswordEncoder().encodedPassword() ?? ""
-                return WCReactNativeViewController(analyticsProvider: provider, siteUrl: url, appPassword: password)
+                return WCReactNativeViewController(analyticsProvider: tracksProvider, siteUrl: url, appPassword: password)
             } else {
                 let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
-                return WCReactNativeViewController(analyticsProvider: provider, blogID: "\(siteID)", apiToken: token)
+                return WCReactNativeViewController(analyticsProvider: tracksProvider, blogID: "\(siteID)", apiToken: token)
             }
         }()
 

@@ -5,16 +5,6 @@ import WordPressUI
 import Yosemite
 import SwiftUI
 
-// -------- TEMPORAL
-import WooCommerceShared
-import KeychainAccess
-
-class TemporalAnalyticsProvider: WCRNAnalyticsProvider {
-    func sendEvent(_ event: String) {
-        ServiceLocator.analytics.analyticsProvider.track(event)
-    }
-}
-
 // MARK: - DashboardViewController
 //
 final class DashboardViewController: UIViewController {

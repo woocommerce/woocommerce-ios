@@ -22,6 +22,7 @@ struct OwnerUpgradesView: View {
     private var paymentFrequencies: [LegacyWooPlan.PlanFrequency] = [.year, .month]
 
     @State var selectedPlan: WooWPComPlan? = nil
+    @State private var showingFullFeatureList = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -46,6 +47,15 @@ struct OwnerUpgradesView: View {
                         .redacted(reason: isLoading ? .placeholder : [])
                         .shimmering(active: isLoading)
                         .padding(.bottom, 8)
+                    }
+                    Button(Localization.allFeaturesListText) {
+                        showingFullFeatureList.toggle()
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                    .sheet(isPresented: $showingFullFeatureList) {
+                        NavigationView {
+                            FullFeatureListView()
+                        }
                     }
                 }
                 .padding()
@@ -95,6 +105,10 @@ private extension OwnerUpgradesView {
 
         static let selectPlanButtonText = NSLocalizedString(
             "Select a plan", comment: "The title of the button to purchase a Plan when no plan is selected yet.")
+
+        static let allFeaturesListText = NSLocalizedString(
+            "View Full Feature List",
+            comment: "The title of the button to view a list of all features that plans offer.")
     }
 }
 

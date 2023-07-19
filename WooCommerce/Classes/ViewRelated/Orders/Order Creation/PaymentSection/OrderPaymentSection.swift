@@ -97,6 +97,7 @@ struct OrderPaymentSection: View {
                                 Alert(title: Text(Localization.goToCoupons),
                                       message: Text(Localization.goToCouponsAlertMessage),
                                       primaryButton: .default(Text(Localization.goToCouponsAlertButtonTitle), action: {
+                                    viewModel.onGoToCouponsClosure()
                                     MainTabBarController.presentCoupons()
                                 }),
                                       secondaryButton: .cancel())

@@ -83,192 +83,197 @@ struct FullFeatureListViewModel {
 }
 
 private extension FullFeatureListViewModel {
+    static let featureGroupTitleComment = "The title of one of the feature groups offered with paid plans"
+    static let essentialFeatureTitleComment = "The title of one of the features offered with the Essential plan"
+    static let performanceFeatureTitleComment = "The title of one of the features offered with the Performance plan"
+
     struct Localization {
         static let yourStoreFeatureTitle = NSLocalizedString(
             "Your Store",
-            comment: "The title of one of the feature groups offered with paid plans")
+            comment: featureGroupTitleComment)
 
         static let productsFeatureTitle = NSLocalizedString(
             "Products",
-            comment: "The title of one of the feature groups offered with paid plans")
+            comment: featureGroupTitleComment)
 
         static let paymentsFeatureTitle = NSLocalizedString(
             "Payments",
-            comment: "The title of one of the feature groups offered with paid plans")
+            comment: featureGroupTitleComment)
 
         static let marketingAndEmailFeatureTitle = NSLocalizedString(
             "Marketing & Email",
-            comment: "The title of one of the feature groups offered with paid plans")
+            comment: featureGroupTitleComment)
 
         static let shippingFeatureTitle = NSLocalizedString(
             "Shipping",
-            comment: "The title of one of the feature groups offered with paid plans")
+            comment: featureGroupTitleComment)
 
         static let wooCommerceStoreText = NSLocalizedString(
             "WooCommerce store",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let wooCommerceMobileAppText = NSLocalizedString(
             "WooCommerce mobile app",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let wordPressCMSText = NSLocalizedString(
             "WordPress CMS",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let wordPressMobileAppText = NSLocalizedString(
             "WordPress mobile app",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let freeSSLCertificateText = NSLocalizedString(
             "Free SSL certificate",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let generousStorageText = NSLocalizedString(
             "Generous storage",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let automatedBackupQuickRestoreText = NSLocalizedString(
             "Automated backup + quick restore",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let adFreeExperienceText = NSLocalizedString(
             "Ad-free experience",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let unlimitedAdminAccountsText = NSLocalizedString(
             "Unlimited admin accounts",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let liveChatSupportText = NSLocalizedString(
             "Live chat support",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let emailSupportText = NSLocalizedString(
             "Email support",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let premiumThemesIncludedText = NSLocalizedString(
             "Premium themes included",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let salesReportsText = NSLocalizedString(
             "Sales reports",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let googleAnalyticsText = NSLocalizedString(
             "Google Analytics",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let listUnlimitedProducts = NSLocalizedString(
             "List unlimited products",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let giftCards = NSLocalizedString(
             "Gift cards",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let listProductsByBrand = NSLocalizedString(
             "List products by brand",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let integratedPayments = NSLocalizedString(
             "Integrated payments",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let internationalPayments = NSLocalizedString(
             "International payments'",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let automatedSalesTaxes = NSLocalizedString(
             "Automated sales taxes",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let acceptLocalPayments = NSLocalizedString(
             "Accept local payments'",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let recurringPayments = NSLocalizedString(
             "Recurring payments'",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
+
         static let promoteOnTikTok = NSLocalizedString(
             "Promote on TikTok",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let syncWithPinterest = NSLocalizedString(
             "Sync with Pinterest",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let connectWithFacebook = NSLocalizedString(
             "Connect with Facebook",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let advancedSeoTools = NSLocalizedString(
             "Advanced SEO tools",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let advertiseOnGoogle = NSLocalizedString(
             "Advertise on Google",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let customOrderEmails = NSLocalizedString(
             "Custom order emails",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let shipmentTracking = NSLocalizedString(
             "Shipment tracking",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let liveShippingRates = NSLocalizedString(
             "Live shipping rates",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let printShippingLabels = NSLocalizedString(
             "Print shipping labels²",
-            comment: "The title of one of the features offered with the Essential plan")
+            comment: essentialFeatureTitleComment)
 
         static let minMaxOrderQuantityText = NSLocalizedString(
             "Min/Max order quantity",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let productBundlesText = NSLocalizedString(
             "Product Bundles",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let customProductKitsText = NSLocalizedString(
             "Custom product kits",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let productRecommendationsText = NSLocalizedString(
             "Product recommendations",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let backInStockEmailsText = NSLocalizedString(
             "Back in stock emails",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let marketingAutomationText = NSLocalizedString(
             "Marketing automation",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let abandonedCartRecoveryText = NSLocalizedString(
             "Abandoned cart recovery",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let referralProgramsText = NSLocalizedString(
             "Referral programs",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let customerBirthdayEmailsText = NSLocalizedString(
             "Customer birthday emails",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let loyaltyPointsProgramsText = NSLocalizedString(
             "Loyalty points programs",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
 
         static let discountedShippingText = NSLocalizedString(
             "Discounted shipping²",
-            comment: "The title of one of the features offered with the Performance plan")
+            comment: performanceFeatureTitleComment)
     }
 }

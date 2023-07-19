@@ -119,8 +119,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Top banner that shows an error if there is a problem loading reviews data
     ///
     private lazy var topBannerView: TopBannerView = {
-        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                              expandedStateChangeHandler: {},
+        ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: {},
                                               onTroubleshootButtonPressed: { [weak self] in
                                                 guard let self = self else { return }
 

@@ -1,9 +1,7 @@
 import SwiftUI
 
-struct CouponListView: UIViewControllerRepresentable {
+struct EnhancedCouponListView: UIViewControllerRepresentable {
     let siteID: Int64
-
-    typealias UIViewControllerType = CouponListViewController
 
     class Coordinator {
         var parentObserver: NSKeyValueObservation?
@@ -15,8 +13,8 @@ struct CouponListView: UIViewControllerRepresentable {
     /// and should be called once, when wrapped.
     /// Solution proposed here: https://stackoverflow.com/a/68567095/7241994
     ///
-    func makeUIViewController(context: Self.Context) -> CouponListViewController {
-        let viewController = CouponListViewController(siteID: siteID)
+    func makeUIViewController(context: Self.Context) -> EnhancedCouponListViewController {
+        let viewController = EnhancedCouponListViewController(siteID: siteID)
         context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
             vc.parent?.navigationItem.title = vc.title
             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
@@ -30,7 +28,7 @@ struct CouponListView: UIViewControllerRepresentable {
         return viewController
     }
 
-    func updateUIViewController(_ uiViewController: CouponListViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: EnhancedCouponListViewController, context: Context) {
         // nothing to do here
     }
 

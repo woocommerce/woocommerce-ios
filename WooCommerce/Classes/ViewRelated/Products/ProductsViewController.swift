@@ -759,7 +759,6 @@ private extension ProductsViewController {
     ///
     func requestAndShowErrorTopBannerView() {
         let errorBanner = ErrorTopBannerFactory.createTopBanner(
-            isExpanded: false,
             expandedStateChangeHandler: { [weak self] in
                 self?.tableView.updateHeaderHeight()
             },

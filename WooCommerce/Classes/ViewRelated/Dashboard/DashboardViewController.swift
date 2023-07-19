@@ -668,8 +668,9 @@ private extension DashboardViewController {
 
     /// Display the error banner at the top of the dashboard content (below the site title)
     ///
-    func showTopBannerView() {
-        let errorBanner = ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: {},
+    func showTopBannerView(for error: Error) {
+        let errorBanner = ErrorTopBannerFactory.createTopBanner(for: error,
+                                                                expandedStateChangeHandler: {},
                                                                 onTroubleshootButtonPressed: { [weak self] in
             guard let self else { return }
             WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
@@ -868,8 +869,8 @@ private extension DashboardViewController {
         // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
         dashboardUI = updatedDashboardUI
 
-        updatedDashboardUI.displaySyncingError = { [weak self] in
-            self?.showTopBannerView()
+        updatedDashboardUI.displaySyncingError = { [weak self] error in
+            self?.showTopBannerView(for: error)
         }
     }
 

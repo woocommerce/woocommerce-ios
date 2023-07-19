@@ -931,6 +931,7 @@ private extension DashboardViewController {
 
     func onPullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        hideTopBannerView() // Hide error banner optimistically on pull to refresh
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 guard let self else { return }

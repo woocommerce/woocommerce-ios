@@ -669,6 +669,10 @@ private extension DashboardViewController {
     /// Display the error banner at the top of the dashboard content (below the site title)
     ///
     func showTopBannerView(for error: Error) {
+        if topBannerView != nil { // Clear the top banner first, if needed
+            hideTopBannerView()
+        }
+
         let errorBanner = ErrorTopBannerFactory.createTopBanner(for: error,
                                                                 expandedStateChangeHandler: {},
                                                                 onTroubleshootButtonPressed: { [weak self] in

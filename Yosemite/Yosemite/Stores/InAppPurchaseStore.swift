@@ -283,12 +283,24 @@ private extension InAppPurchaseStore {
                 return
             }
             for await result in Transaction.updates {
-                do {
-                    // Wait until the purchase finishes
-                    _ = await self.pauseTransactionListener.values.contains(false)
-                    try await self.handleCompletedTransaction(result)
-                } catch {
-                    self.logError("Error handling transaction update: \(error)")
+                switch result {
+                case .unverified:
+                    // Ignore unverified transactions.
+                    self.logError("Transaction unverified")
+                    break
+                case .verified(let transaction):
+                    do {
+                        _ = await self.pauseTransactionListener.values.contains(false)
+                        // For verified transactions, check whether a transaction has been handled already,
+                        // and mark it as finished if that's the case, or handle it otherwise
+                        _ = try await self.remote.retrieveHandledTransactionSiteID(for: transaction.id)
+                        await transaction.finish()
+
+                        self.logInfo("Marking transaction \(transaction.id) as finished")
+                    } catch {
+                        _ = await self.pauseTransactionListener.values.contains(false)
+                        try await self.handleCompletedTransaction(result)
+                    }
                 }
             }
         }

@@ -14,12 +14,7 @@ struct AuthenticatedRESTRequest: URLRequestConvertible {
         authenticated.setValue("application/json", forHTTPHeaderField: "Accept")
         authenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
-        let username = applicationPassword.wpOrgUsername
-        let password = applicationPassword.password.secretValue
-        let loginString = "\(username):\(password)"
-
-        if let loginData = loginString.data(using: .utf8) {
-            let base64LoginString = loginData.base64EncodedString()
+        if let base64LoginString = ApplicationPasswordEncoder(passwordEnvelope: applicationPassword).encodedPassword() {
             authenticated.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
         }
 

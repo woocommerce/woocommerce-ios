@@ -8,7 +8,7 @@ import SwiftUI
 
 import KeychainAccess
 import WooCommerceShared
-import Networking
+import struct Networking.ApplicationPasswordEncoder
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -421,8 +421,15 @@ private extension SettingsViewController {
 
         let provider = TemporalAnalyticsProvider()
         let viewController: WCReactNativeViewController = {
-            let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
-            return WCReactNativeViewController(analyticsProvider: provider, blogID: "\(siteID)", apiToken: token)
+
+            if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
+                let url = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
+                let password = ApplicationPasswordEncoder().encodedPassword() ?? ""
+                return WCReactNativeViewController(analyticsProvider: provider, siteUrl: url, appPassword: password)
+            } else {
+                let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
+                return WCReactNativeViewController(analyticsProvider: provider, blogID: "\(siteID)", apiToken: token)
+            }
         }()
 
         present(viewController, animated: true)

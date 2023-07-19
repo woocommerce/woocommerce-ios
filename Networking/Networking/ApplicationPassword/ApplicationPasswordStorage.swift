@@ -2,18 +2,18 @@ import Foundation
 import KeychainAccess
 import WordPressShared
 
-public struct ApplicationPasswordStorage {
+struct ApplicationPasswordStorage {
     /// Stores the application password
     ///
     private let keychain: Keychain
 
-    public init(keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
+    init(keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
         self.keychain = keychain
     }
 
     /// Returns the saved application password if available
     ///
-    public var applicationPassword: ApplicationPassword? {
+    var applicationPassword: ApplicationPassword? {
         guard let password = keychain.password,
               let username = keychain.username,
               let uuid = keychain.uuid else {

@@ -51,6 +51,7 @@ struct FullFeatureListView: View {
                     .font(.caption)
             }
             .background(Color(.secondarySystemBackground))
+            .padding(.top)
         }
         .padding()
         .navigationTitle(Localization.featureListTitleText)

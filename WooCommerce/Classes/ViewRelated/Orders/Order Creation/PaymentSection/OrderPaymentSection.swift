@@ -176,7 +176,7 @@ private extension OrderPaymentSection {
                                                    "when creating a new order that navigates to the Coupons Section")
         static let goToCouponsAlertMessage = NSLocalizedString("Do you want to navigate to the Coupons Menu? These changes will be discarded.",
                                                                comment: "Confirm message for navigating to coupons when creating a new order")
-        static let goToCouponsAlertButtonTitle = NSLocalizedString("Go", comment: "Confirm buton titele for navigating to coupons when creating a new order")
+        static let goToCouponsAlertButtonTitle = NSLocalizedString("Go", comment: "Confirm button title for navigating to coupons when creating a new order")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
     }
 }

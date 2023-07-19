@@ -4,10 +4,10 @@
 -----
 - [Internal] Switched AI endpoint to be able to track and measure costs. [https://github.com/woocommerce/woocommerce-ios/pull/10218]
 - [Internal] Media picker flow was refactored to support interactive dismissal for device photo picker and WordPress media picker sources. Affected flows: product form > images, and virtual product form > downloadable files. [https://github.com/woocommerce/woocommerce-ios/pull/10236]
+- [*] Orders with Coupons: Users can now select a coupon from a list when adding it to an order. [https://github.com/woocommerce/woocommerce-ios/pull/10255]
 - [Internal] Orders: Improved error message when orders can't be loaded due to a parsing (decoding) error. [https://github.com/woocommerce/woocommerce-ios/pull/10252]
 - [**] Product discounts: Users can now add discounts to products when creating an order. [https://github.com/woocommerce/woocommerce-ios/pull/10244]
 - [Internal] A new way to create a product from an image using AI is being A/B tested. [https://github.com/woocommerce/woocommerce-ios/pull/10253]
-
 
 14.5
 -----

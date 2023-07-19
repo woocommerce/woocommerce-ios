@@ -663,6 +663,7 @@ extension EditableOrderViewModel {
     /// Representation of payment data display properties
     ///
     struct PaymentDataViewModel {
+        let siteID: Int64
         let itemsTotal: String
         let orderTotal: String
 
@@ -697,7 +698,7 @@ extension EditableOrderViewModel {
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
-        let addCouponLineViewModel: CouponLineDetailsViewModel
+        let addNewCouponLineClosure: (Coupon) -> Void
 
         init(siteID: Int64 = 0,
              itemsTotal: String = "0",
@@ -721,8 +722,9 @@ extension EditableOrderViewModel {
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
-             saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _ in },
+             addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+            self.siteID = siteID
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
@@ -751,9 +753,7 @@ extension EditableOrderViewModel {
                                                                       initialTotal: feeLineTotal,
                                                                       lineType: .fee,
                                                             didSelectSave: saveFeeLineClosure)
-            self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
-                                                                     siteID: siteID,
-                                                                     didSelectSave: saveCouponLineClosure)
+            self.addNewCouponLineClosure = addNewCouponLineClosure
         }
     }
 
@@ -1067,7 +1067,9 @@ private extension EditableOrderViewModel {
                                             showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
-                                            saveCouponLineClosure: self.saveCouponLine,
+                                            addNewCouponLineClosure: { [weak self] coupon in
+                                                self?.saveCouponLine(result: .added(newCode: coupon.code))
+                                            },
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
@@ -1339,8 +1341,7 @@ private extension EditableOrderViewModel {
         couponLines.map {
             CouponLineViewModel(title: String.localizedStringWithFormat(Localization.CouponSummary.singular, $0.code),
                           discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
-                          detailsViewModel: CouponLineDetailsViewModel(isExistingCouponLine: true,
-                                                                       code: $0.code,
+                          detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                        siteID: siteID,
                                                                        didSelectSave: saveCouponLine))
 

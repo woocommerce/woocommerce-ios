@@ -5,10 +5,9 @@ class ErrorTopBannerFactoryTests: XCTestCase {
 
     func test_top_banner_has_two_actions() throws {
         // Given
-        let topBannerView = ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                    expandedStateChangeHandler: {},
-                                    onTroubleshootButtonPressed: {},
-                                    onContactSupportButtonPressed: {})
+        let topBannerView = ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: {},
+                                                                  onTroubleshootButtonPressed: {},
+                                                                  onContactSupportButtonPressed: {})
 
         // Then
         XCTAssertNotNil(topBannerView)
@@ -20,8 +19,7 @@ class ErrorTopBannerFactoryTests: XCTestCase {
     func test_tapping_top_banner_troubleshoot_button_triggers_callback() throws {
         // Given
         var isTroubleshootButtonPressed = false
-        let topBannerView = ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                                                  expandedStateChangeHandler: {},
+        let topBannerView = ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: {},
                                                                   onTroubleshootButtonPressed: {
                                                                     isTroubleshootButtonPressed = true
                                                                   },
@@ -37,8 +35,7 @@ class ErrorTopBannerFactoryTests: XCTestCase {
     func test_tapping_top_banner_contact_support_button_triggers_callback() throws {
         // Given
         var isContactSupportButtonPressed = false
-        let topBannerView = ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                                                  expandedStateChangeHandler: {},
+        let topBannerView = ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: {},
                                                                   onTroubleshootButtonPressed: {},
                                                                   onContactSupportButtonPressed: {
                                                                     isContactSupportButtonPressed = true

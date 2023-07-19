@@ -89,6 +89,19 @@ public extension InAppPurchasesRemote {
         }
     }
 
+    /// Checks the WPCOM billing system for whether or not an In-app Purchase transaction has been handled
+    ///
+    ///- Returns:The siteID for which the transactionID belongs to
+    ///
+    @MainActor
+    func retrieveHandledTransactionSiteID(for transactionID: UInt64) async throws -> Int64 {
+        try await withCheckedThrowingContinuation { continuation in
+            retrieveHandledTransactionSiteID(for: transactionID) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+
     /// Creates a new order for a new In-app Purchase
     /// - Parameters:
     ///     - siteID: Site the purchase is for

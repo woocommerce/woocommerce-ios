@@ -148,13 +148,49 @@ private extension InAppPurchaseStore {
         }
     }
 
+    // Approach 2: this is not necessary if we're good to go with Apperach 1, since we perform the validation earlier
     func handleCompletedTransaction(_ result: VerificationResult<StoreKit.Transaction>) async throws {
+        // 1. Unverified transaction, we return early since we're ignoring them
         guard case .verified(let transaction) = result else {
             // Ignore unverified transactions.
             // TODO: handle errors
             logError("Transaction unverified")
             return
         }
+
+        // 2. Other transactions in the queue, check if already been handled by WPCOM
+        // Transactions for testing:
+        // Real transactionIDs we would expect from the Transaction.Updates queue:
+        let realTransactionWaitingInTheQueue = transaction.id
+        // Fake transaction. Will return an error
+        let fakeTransactionID = UInt64(170001765060730111)
+        /* Real transaction ID. Will return site ID 220996977. Full response:
+         {
+             "site_id": 220996977,
+             "user_id": 228043472,
+             "sandbox": false
+         }
+         */
+        let realTestingTransactionFromADifferentStore = UInt64(170001765060730)
+        // Real transaction ID. Will return a site ID and response similar as before (but different site and user)
+        let anotherRealTestingTransactionFromADifferentStore = UInt64(2000000370069639)
+
+        do {
+            let result = try await remote.retrieveHandledTransactionSiteID(for: fakeTransactionID)
+            print("🍍 \(result)")
+            // If we get a result back, then we can finish it.
+            // Do we need to be in the same siteID? Not really, if is handled then is handled, no matter the current site we're in.
+            // Do we need to create a specific InAppPurchaseAction for this?
+            logInfo("Marking transaction \(transaction.id) as finished")
+            await transaction.finish()
+        }
+        // We do not really need to catch the error here, if fails we want to continue with the existing data flow
+        // to handle the transaction:
+        //catch {
+            //print("🍍 \(error)")
+            // If we land here (an error of returning retrieveHandledTransactionSiteID,
+            // the error is InAppPurchasesTransactionError.transactionNotHandled
+        //}
 
         if let revocationDate = transaction.revocationDate {
             // Refunds are handled in the backend
@@ -278,17 +314,37 @@ private extension InAppPurchaseStore {
     func listenForTransactions() {
         assert(listenTask == nil, "InAppPurchaseStore.listenForTransactions() called while already listening for transactions")
 
+        // Q: Confirm why we use .detached here
         listenTask = Task.detached { [weak self] in
             guard let self else {
                 return
             }
             for await result in Transaction.updates {
-                do {
-                    // Wait until the purchase finishes
-                    _ = await self.pauseTransactionListener.values.contains(false)
-                    try await self.handleCompletedTransaction(result)
-                } catch {
-                    self.logError("Error handling transaction update: \(error)")
+                // Approach 1:
+                switch result {
+                case .unverified:
+                    // Do not allow unverified transactions to continue
+                    self.logError("Transaction unverified")
+                    return
+                case .verified(let transaction):
+                    do {
+                        // 1. Check if the transaction has already been handled on WPCOM end. If that's the case, mark as finish
+                        _ = await self.pauseTransactionListener.values.contains(false)
+                        // For testing, we hijack the transaction.id passed as a parameter:
+                        // nonHandledFakeTransactionID would return non-handled response, and handledFakeTransactionID returns a siteID, as is a handled transaction.
+                        let nonHandledFakeTransactionID = UInt64(170001765060730111)
+                        let handledFakeTransactionID = UInt64(2000000370069639)
+
+                        _ = await self.pauseTransactionListener.values.contains(false)
+                        _ = try await self.remote.retrieveHandledTransactionSiteID(for: handledFakeTransactionID)
+                        await transaction.finish()
+
+                        self.logInfo("Marking transaction \(transaction.id) as finished")
+                    } catch {
+                        // 2. If hasn't been handled, we perform the existing flow
+                        _ = await self.pauseTransactionListener.values.contains(false)
+                        try await self.handleCompletedTransaction(result)
+                    }
                 }
             }
         }

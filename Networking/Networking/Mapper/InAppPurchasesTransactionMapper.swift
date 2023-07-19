@@ -21,6 +21,9 @@ private struct InAppPurchasesTransactionContainer: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         guard let siteID = try container.decodeIfPresent(Int64.self, forKey: .siteID) else {
+            // TODO:
+            // We can be more explicit here and decode the 404 response specifically,
+            // rather than relying on this being a side-effect
             throw InAppPurchasesTransactionError.transactionNotHandled
         }
 

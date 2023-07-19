@@ -238,9 +238,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave()
             }
 
             group.enter()
@@ -254,9 +254,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave()
             }
 
             group.enter()
@@ -270,9 +270,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing summary stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave()
             }
 
             group.enter()
@@ -286,8 +286,8 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
+                group.leave()
 
                 vc.removeTopPerformersGhostContent()
             }

@@ -60,6 +60,10 @@ final class AddProductFromImageViewModel: ObservableObject {
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var errorMessage: String? = Localization.defaultError
 
+    var scannedTextInstruction: String {
+        selectedScannedTexts.isEmpty ? Localization.scannedTextListEmpty : Localization.scannedTextListInfo
+    }
+
     private var selectedScannedTexts: [String] {
         scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
     }
@@ -210,6 +214,14 @@ private extension AddProductFromImageViewModel {
         static let defaultError = NSLocalizedString(
             "Error generating product details. Please try again.",
             comment: "Default error message on the add product from image form."
+        )
+        static let scannedTextListInfo = NSLocalizedString(
+            "Tweak your text: Unselect scans you don't need or tap to edit",
+            comment: "Info text about the scanned text list on the add product from image form."
+        )
+        static let scannedTextListEmpty = NSLocalizedString(
+            "Select one or more scans to generate product details",
+            comment: "Instruction to select scanned text for product detail generation on the add product from image form."
         )
     }
 }

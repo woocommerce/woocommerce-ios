@@ -77,7 +77,7 @@ struct AddProductFromImageView: View {
                     }
 
                     // Info text about selecting/editing the scanned text list.
-                    Text(Localization.scannedTextListInfo)
+                    Text(viewModel.scannedTextInstruction)
                         .foregroundColor(.init(uiColor: .secondaryLabel))
                         .captionStyle()
                 }
@@ -123,10 +123,6 @@ private extension AddProductFromImageView {
         static let regenerateButtonTitle = NSLocalizedString(
             "Regenerate",
             comment: "Regenerate button on the add product from image form to regenerate product details."
-        )
-        static let scannedTextListInfo = NSLocalizedString(
-            "Tweak your text: Unselect scans you don't need or tap to edit",
-            comment: "Info text about the scanned text list on the add product from image form."
         )
     }
 

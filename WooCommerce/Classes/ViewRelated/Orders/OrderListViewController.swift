@@ -261,8 +261,8 @@ private extension OrderListViewController {
                 switch topBannerType {
                 case .none:
                     self.hideTopBannerView()
-                case .error:
-                    self.setErrorTopBanner()
+                case .error(let error):
+                    self.setErrorTopBanner(for: error)
                 case .orderCreation:
                     self.setOrderCreationTopBanner()
                 case .inPersonPaymentsFeedback(let survey):
@@ -380,7 +380,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         transitionToSyncingState()
-        viewModel.hasErrorLoadingData = false
+        viewModel.dataLoadingError = nil
         viewModel.updateBannerVisibility()
 
         let action = viewModel.synchronizationAction(
@@ -393,10 +393,10 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                     return
                 }
 
-                if let error = error {
+                if let error {
                     ServiceLocator.analytics.track(event: .ordersListLoadError(error))
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.viewModel.hasErrorLoadingData = true
+                    self.viewModel.dataLoadingError = error
                 } else {
                     if pageNumber == self.syncingCoordinator.pageFirstIndex {
                         // save timestamp of last successful update
@@ -564,8 +564,8 @@ private extension OrderListViewController {
         childController.configure(createFilterConfig())
 
         // Show Error Loading Data banner if the empty state is caused by a sync error
-        if viewModel.hasErrorLoadingData {
-            childController.showTopBannerView()
+        if let error = viewModel.dataLoadingError {
+            childController.showTopBannerView(for: error)
         } else {
             childController.hideTopBannerView()
         }
@@ -777,8 +777,9 @@ private extension OrderListViewController {
 private extension OrderListViewController {
     /// Sets the `topBannerView` property to an error banner.
     ///
-    func setErrorTopBanner() {
-        topBannerView = ErrorTopBannerFactory.createTopBanner(isExpanded: false, expandedStateChangeHandler: { [weak self] in
+    func setErrorTopBanner(for error: Error) {
+        topBannerView = ErrorTopBannerFactory.createTopBanner(for: error,
+                                                              expandedStateChangeHandler: { [weak self] in
             self?.tableView.updateHeaderHeight()
         },
         onTroubleshootButtonPressed: { [weak self] in

@@ -18,7 +18,7 @@ protocol ReviewsViewModelOutput {
 
     var shouldPromptForAppReview: Bool { get }
 
-    var hasErrorLoadingData: Bool { get set }
+    var dataLoadingError: Error? { get set }
 
     func containsMorePages(_ highestVisibleReview: Int) -> Bool
 }
@@ -76,7 +76,7 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
 
     /// Set when sync fails, and used to display an error loading data banner
     ///
-    var hasErrorLoadingData: Bool = false
+    var dataLoadingError: Error?
 
     init(siteID: Int64, data: ReviewsDataSourceProtocol, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
@@ -124,7 +124,7 @@ extension ReviewsViewModel {
     func synchronizeReviews(pageNumber: Int,
                             pageSize: Int,
                             onCompletion: (() -> Void)?) {
-        hasErrorLoadingData = false
+        dataLoadingError = nil
 
         let group = DispatchGroup()
 
@@ -160,7 +160,7 @@ extension ReviewsViewModel {
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
                 ServiceLocator.analytics.track(.reviewsListLoadFailed,
                                                withError: error)
-                self?.hasErrorLoadingData = true
+                self?.dataLoadingError = error
                 onCompletion?([])
             case .success(let reviews):
                 let loadingMore = pageNumber != Settings.firstPage
@@ -180,7 +180,7 @@ extension ReviewsViewModel {
                 DDLogError("⛔️ Error synchronizing products: \(error)")
                 ServiceLocator.analytics.track(.reviewsProductsLoadFailed,
                                                withError: error)
-                self?.hasErrorLoadingData = true
+                self?.dataLoadingError = error
             case .success:
                 ServiceLocator.analytics.track(.reviewsProductsLoaded)
             }
@@ -199,7 +199,7 @@ extension ReviewsViewModel {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
                 ServiceLocator.analytics.track(.notificationsLoadFailed,
                                                withError: error)
-                self?.hasErrorLoadingData = true
+                self?.dataLoadingError = error
             } else {
                 ServiceLocator.analytics.track(.notificationListLoaded)
             }

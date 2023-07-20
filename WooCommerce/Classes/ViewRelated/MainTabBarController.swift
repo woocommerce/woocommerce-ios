@@ -195,9 +195,8 @@ final class MainTabBarController: UITabBarController {
     ///   - animated: Whether the tab switch is animated.
     ///   - completion: Invoked when switching to the tab's root screen is complete.
     func navigateToTabWithNavigationController(_ tab: WooTab, animated: Bool = false, completion: ((UINavigationController) -> Void)? = nil) {
-        if let presentedController = Self.childViewController()?.presentedViewController {
-            presentedController.dismiss(animated: true)
-        }
+        dismiss(animated: true, completion: nil)
+
         selectedIndex = tab.visibleIndex()
         if let navController = selectedViewController as? UINavigationController {
             navController.popToRootViewController(animated: animated) {
@@ -451,6 +450,15 @@ extension MainTabBarController {
         }
 
         return hubMenuViewController.showPaymentsMenu()
+    }
+
+    static func presentCoupons() {
+        switchToHubMenuTab()
+        guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+            return
+        }
+
+        hubMenuViewController.showCoupons()
     }
 
     static func presentCollectPayment() {

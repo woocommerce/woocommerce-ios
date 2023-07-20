@@ -1,0 +1,71 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "matches": "\/wc-analytics\/reports\/products(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": [{
+                "product_id": 2130,
+                "items_sold": 3,
+                "net_revenue": 450,
+                "orders_count": 3,
+                "extended_info": {
+                    "name": "Black Coral shades",
+                    "price": 150,
+                    "image": "https:\/\/example.com\/wp-content\/uploads\/2020\/01\/Mask-Group-1.png?w=201",
+                    "permalink": "https:\/\/example.com\/product\/black-coral-shades\/",
+                    "stock_status": "instock",
+                    "stock_quantity": 0,
+                    "manage_stock": false,
+                    "low_stock_amount": 2,
+                    "category_ids": [],
+                    "sku": ""
+                }
+            }, {
+                "product_id": 2123,
+                "items_sold": 1,
+                "net_revenue": 140,
+                "orders_count": 1,
+                "extended_info": {
+                    "name": "Malaya shades",
+                    "price": 140,
+                    "image": "https:\/\/example.com\/wp-content\/uploads\/2020\/01\/Mask-Group.png?w=201",
+                    "permalink": "https:\/\/example.com\/product\/malaya-shades\/",
+                    "stock_status": "instock",
+                    "stock_quantity": 0,
+                    "manage_stock": false,
+                    "low_stock_amount": 2,
+                    "category_ids": [],
+                    "sku": ""
+                }
+            }, {
+                "product_id": 2132,
+                "items_sold": 1,
+                "net_revenue": 120,
+                "orders_count": 1,
+                "extended_info": {
+                    "name": "Rose Gold shades",
+                    "price": 120,
+                    "image": "https:\/\/example.com\/wp-content\/uploads\/2020\/01\/Mask-Group-2.png?w=201",
+                    "permalink": "https:\/\/example.com\/product\/rose-gold-shades\/",
+                    "stock_status": "instock",
+                    "stock_quantity": 0,
+                    "manage_stock": false,
+                    "low_stock_amount": 2,
+                    "category_ids": [],
+                    "sku": ""
+                }
+            }]
+        }
+    }
+}

@@ -604,6 +604,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCouponRemove, properties: [Keys.flow: flow.rawValue])
         }
 
+        static func orderGoToCouponsButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderGoToCouponsButtonTapped, properties: [:])
+        }
+
         static func productDiscountAdd(type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountAdd, properties: [Keys.type: type.rawValue])
         }

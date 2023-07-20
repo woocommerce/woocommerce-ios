@@ -773,6 +773,36 @@ final class DashboardViewModelTests: XCTestCase {
         let dictionary = try XCTUnwrap(userDefaults[.hasDismissedBlazeBanner] as? [String: Bool])
         XCTAssertEqual(dictionary["\(sampleSiteID)"], true)
     }
+
+    func test_wpcom_stats_not_synced_when_authenticated_without_wpcom() {
+        // Given
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case .retrieveSiteVisitStats, .retrieveSiteSummaryStats:
+                XCTFail("WPCom stats should not be synced when store is authenticated without WPCom")
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let siteVisitStatsResult: Result<Void, Error> = waitFor { promise in
+            viewModel.syncSiteVisitStats(for: self.sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init()) { result in
+                promise(result)
+            }
+        }
+        let siteSummaryStatsResult: Result<Void, Error> = waitFor { promise in
+            viewModel.syncSiteSummaryStats(for: self.sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(siteVisitStatsResult.isSuccess)
+        XCTAssertTrue(siteSummaryStatsResult.isSuccess)
+    }
 }
 
 private extension DashboardViewModelTests {

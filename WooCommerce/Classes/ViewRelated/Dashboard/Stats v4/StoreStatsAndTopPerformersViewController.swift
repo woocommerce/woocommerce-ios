@@ -9,7 +9,7 @@ import class WidgetKit.WidgetCenter
 final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     // MARK: - DashboardUI protocol
 
-    var displaySyncingError: () -> Void = {}
+    var displaySyncingError: (Error) -> Void = { _ in }
 
     var onPullToRefresh: @MainActor () async -> Void = {}
 
@@ -238,9 +238,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -254,9 +254,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -270,9 +270,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing summary stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -286,8 +286,8 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
 
                 vc.removeTopPerformersGhostContent()
             }
@@ -430,7 +430,7 @@ private extension StoreStatsAndTopPerformersViewController {
             }
             trackDashboardStatsSyncComplete()
         default:
-            displaySyncingError()
+            displaySyncingError(error)
             trackDashboardStatsSyncComplete(withError: error)
         }
     }
@@ -440,7 +440,7 @@ private extension StoreStatsAndTopPerformersViewController {
         case let siteStatsStoreError as SiteStatsStoreError:
             handleSiteStatsStoreError(error: siteStatsStoreError)
         default:
-            displaySyncingError()
+            displaySyncingError(error)
             trackDashboardStatsSyncComplete(withError: error)
         }
     }

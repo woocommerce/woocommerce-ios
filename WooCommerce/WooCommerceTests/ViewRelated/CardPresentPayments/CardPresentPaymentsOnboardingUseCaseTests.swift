@@ -1109,7 +1109,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
             .fake()
             .copy(
                 siteID: sampleSiteID,
-                plugin: "woocommerce-payments",
+                plugin: "woocommerce-payments/woocommerce-payments.php",
                 name: "WooCommerce Payments",
                 version: version.rawValue,
                 networkActivated: networkActivated,
@@ -1125,7 +1125,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
             .fake()
             .copy(
                 siteID: sampleSiteID,
-                plugin: "woocommerce-gateway-stripe",
+                plugin: "woocommerce-gateway-stripe/woocommerce-gateway-stripe.php",
                 name: "WooCommerce Stripe Gateway",
                 version: version.rawValue,
                 networkActivated: networkActivated,

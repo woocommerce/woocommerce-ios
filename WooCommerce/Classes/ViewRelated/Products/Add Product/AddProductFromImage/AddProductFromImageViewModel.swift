@@ -92,6 +92,10 @@ final class AddProductFromImageViewModel: ObservableObject {
             }
             .store(in: &subscriptions)
 
+        $scannedTextValidation
+            .map { $0.values.contains { $0 } }
+            .assign(to: &$regenerateButtonEnabled)
+
         $scannedTexts
             .sink { [weak self] texts in
                 self?.configureRegenerateButton(with: texts)
@@ -181,10 +185,6 @@ private extension AddProductFromImageViewModel {
     /// Disables regenerate button if there is at least one selected and non-empty text.
     func configureRegenerateButton(with scannedTexts: [ScannedTextViewModel]) {
         scannedTextValidation = [:]
-
-        $scannedTextValidation
-            .map { $0.values.contains { $0 } }
-            .assign(to: &$regenerateButtonEnabled)
 
         for text in scannedTexts {
             text.$text.combineLatest(text.$isSelected)

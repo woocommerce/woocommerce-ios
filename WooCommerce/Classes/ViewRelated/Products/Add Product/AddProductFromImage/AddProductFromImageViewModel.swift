@@ -187,7 +187,7 @@ private extension AddProductFromImageViewModel {
         }
     }
 
-    /// Disables regenerate button if there is at least one selected and non-empty text.
+    /// Enables regenerate button if there is at least one selected and non-empty text
     func configureRegenerateButton(with scannedTexts: [ScannedTextViewModel]) {
         scannedTextValidation = [:]
 

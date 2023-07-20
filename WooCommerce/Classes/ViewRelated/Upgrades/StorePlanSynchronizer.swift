@@ -43,12 +43,16 @@ final class StorePlanSynchronizer: ObservableObject {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
+
     init(stores: StoresManager = ServiceLocator.stores,
          timeZone: TimeZone = .current,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.stores = stores
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
         self.timeZone = timeZone
+        self.inAppPurchaseManager = inAppPurchaseManager
 
         stores.site.sink { [weak self] site in
             guard let self else { return }

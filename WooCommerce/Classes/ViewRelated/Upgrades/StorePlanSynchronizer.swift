@@ -142,12 +142,13 @@ private extension StorePlanSynchronizer {
     }
 
     func schedule24HrsAfterSubscribedNotification(siteID: Int64, subscribedDate: Date) {
-        let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
-
         /// Scheduled 24 hrs after subscribed date
         let triggerDateComponents = subscribedDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
+            let iapAvailable = await inAppPurchaseManager.inAppPurchasesAreSupported()
+            let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID),
+                                                 userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: iapAvailable])
             await localNotificationScheduler.schedule(notification: notification,
                                                       trigger: trigger,
                                                       remoteFeatureFlag: .twentyFourHoursAfterFreeTrialSubscribed,

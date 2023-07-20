@@ -98,21 +98,7 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
     /// Top banner that shows an error if there is a problem loading reviews data
     ///
-    private lazy var topBannerView: TopBannerView = {
-        ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: { [weak self] in
-                                                self?.tableView.updateHeaderHeight()
-                                              },
-                                              onTroubleshootButtonPressed: { [weak self] in
-                                                guard let self = self else { return }
-
-                                                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
-                                              },
-                                              onContactSupportButtonPressed: { [weak self] in
-                                                guard let self = self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
-            supportForm.show(from: self)
-        })
-    }()
+    private var topBannerView: TopBannerView?
 
     // MARK: - Initializers
     //
@@ -354,8 +340,8 @@ private extension ReviewsViewController {
         childController.configure(emptyStateConfig)
 
         // Show Error Loading Data banner if the empty state is caused by a sync error
-        if viewModel.hasErrorLoadingData {
-            childController.showTopBannerView()
+        if let error = viewModel.dataLoadingError {
+            childController.showTopBannerView(for: error)
         } else {
             childController.hideTopBannerView()
         }
@@ -528,8 +514,8 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
             guard let self = self else { return }
             self.transitionToResultsUpdatedState()
-            if self.viewModel.hasErrorLoadingData {
-                self.showTopBannerView()
+            if let error = self.viewModel.dataLoadingError {
+                self.showTopBannerView(for: error)
             }
             onCompletion?(true)
         }
@@ -537,8 +523,23 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
 
     /// Display the error banner in the table view header
     ///
-    private func showTopBannerView() {
+    private func showTopBannerView(for error: Error) {
+        topBannerView = ErrorTopBannerFactory.createTopBanner(for: error,
+                                                              expandedStateChangeHandler: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        },
+                                                              onTroubleshootButtonPressed: { [weak self] in
+            guard let self else { return }
+            WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
+        },
+                                                              onContactSupportButtonPressed: { [weak self] in
+            guard let self else { return }
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: self)
+        })
+
         // Configure header container view
+        guard let topBannerView else { return }
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topBannerView)
         headerContainer.pinSubviewToSafeArea(topBannerView)
@@ -550,7 +551,7 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     /// Hide the error banner from the table view header
     ///
     private func hideTopBannerView() {
-        topBannerView.removeFromSuperview()
+        topBannerView?.removeFromSuperview()
         tableView.tableHeaderView = nil
     }
 }

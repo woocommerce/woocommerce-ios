@@ -357,6 +357,36 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         assertEqual(false, eventProperties["has_scanned_text"] as? Bool)
         assertEqual(false, eventProperties["has_generated_details"] as? Bool)
     }
+
+    // MARK: `regenerateButtonEnabled`
+
+    func test_regenerateButtonEnabled_returns_true_if_there_is_at_least_one_non_empty_and_selected_scanned_text() {
+        // Given
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     onAddImage: { _ in nil })
+
+        // When
+        viewModel.scannedTexts = [.init(text: "test", isSelected: true),
+                                  .init(text: "", isSelected: false)]
+
+        // Then
+        XCTAssertTrue(viewModel.regenerateButtonEnabled)
+    }
+
+    func test_regenerateButtonEnabled_returns_false_if_all_scanned_texts_are_either_empty_or_unselected() {
+        // Given
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     onAddImage: { _ in nil })
+
+        // When
+        viewModel.scannedTexts = [.init(text: "test", isSelected: false),
+                                  .init(text: "", isSelected: false)]
+
+        // Then
+        XCTAssertFalse(viewModel.regenerateButtonEnabled)
+    }
 }
 
 private extension AddProductFromImageViewModelTests {

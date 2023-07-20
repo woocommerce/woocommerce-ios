@@ -1,0 +1,27 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/sites/161477129/stats/summary/",
+        "queryParameters": {
+            "period": {
+                "equalTo": "year"
+            },
+            "date": {
+                "matches": "(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "date": "{{now format='yyyy-MM-dd'}}",
+            "period": "year",
+            "views": 0,
+            "visitors": 0,
+            "likes": 0,
+            "reblogs": 0,
+            "comments": 0,
+            "followers": 1
+        }
+    }
+}

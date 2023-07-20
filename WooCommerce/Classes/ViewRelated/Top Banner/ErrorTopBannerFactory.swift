@@ -4,19 +4,11 @@ import enum Networking.DotcomError
 /// Creates a top banner to be used when there is an error loading data on a screen.
 /// The banner has two action buttons: "Troubleshoot" and "Contact Support."
 struct ErrorTopBannerFactory {
-    static func createTopBanner(for error: Error? = nil,
+    static func createTopBanner(for error: Error,
                                 expandedStateChangeHandler: @escaping () -> Void,
                                 onTroubleshootButtonPressed: @escaping () -> Void,
                                 onContactSupportButtonPressed: @escaping () -> Void) -> TopBannerView {
-        let errorType: ErrorType = {
-            if error is DecodingError {
-                return .decodingError
-            } else if error as? DotcomError == .jetpackNotConnected {
-                return .jetpackConnectionError
-            } else {
-                return .generalError
-            }
-        }()
+        let errorType = ErrorType(error: error)
         let troubleshootAction = TopBannerViewModel.ActionButton(title: Localization.troubleshoot, action: { _ in onTroubleshootButtonPressed() })
         let contactSupportAction = TopBannerViewModel.ActionButton(title: Localization.contactSupport, action: { _ in onContactSupportButtonPressed() })
         let actions = [troubleshootAction, contactSupportAction]
@@ -31,6 +23,10 @@ struct ErrorTopBannerFactory {
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
 
         return topBannerView
+    }
+
+    static func troubleshootUrl(for error: Error) -> URL {
+        return ErrorType(error: error).troubleshootUrl
     }
 }
 
@@ -65,6 +61,25 @@ extension ErrorTopBannerFactory {
                 return Localization.jetpackConnectionInfo
             case .generalError:
                 return Localization.generalInfo
+            }
+        }
+
+        var troubleshootUrl: URL {
+            switch self {
+            case .jetpackConnectionError:
+                return WooConstants.URLs.troubleshootJetpackConnection.asURL()
+            default:
+                return WooConstants.URLs.troubleshootErrorLoadingData.asURL()
+            }
+        }
+
+        init(error: Error) {
+            if error is DecodingError {
+                self = .decodingError
+            } else if error as? DotcomError == .jetpackNotConnected {
+                self = .jetpackConnectionError
+            } else {
+                self = .generalError
             }
         }
     }

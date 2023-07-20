@@ -1,11 +1,13 @@
 import XCTest
 @testable import WooCommerce
+import enum Networking.DotcomError
 
 class ErrorTopBannerFactoryTests: XCTestCase {
 
     func test_top_banner_has_two_actions() throws {
         // Given
-        let topBannerView = ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: {},
+        let topBannerView = ErrorTopBannerFactory.createTopBanner(for: SampleError.first,
+                                                                  expandedStateChangeHandler: {},
                                                                   onTroubleshootButtonPressed: {},
                                                                   onContactSupportButtonPressed: {})
 
@@ -19,7 +21,8 @@ class ErrorTopBannerFactoryTests: XCTestCase {
     func test_tapping_top_banner_troubleshoot_button_triggers_callback() throws {
         // Given
         var isTroubleshootButtonPressed = false
-        let topBannerView = ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: {},
+        let topBannerView = ErrorTopBannerFactory.createTopBanner(for: SampleError.first,
+                                                                  expandedStateChangeHandler: {},
                                                                   onTroubleshootButtonPressed: {
                                                                     isTroubleshootButtonPressed = true
                                                                   },
@@ -35,7 +38,8 @@ class ErrorTopBannerFactoryTests: XCTestCase {
     func test_tapping_top_banner_contact_support_button_triggers_callback() throws {
         // Given
         var isContactSupportButtonPressed = false
-        let topBannerView = ErrorTopBannerFactory.createTopBanner(expandedStateChangeHandler: {},
+        let topBannerView = ErrorTopBannerFactory.createTopBanner(for: SampleError.first,
+                                                                  expandedStateChangeHandler: {},
                                                                   onTroubleshootButtonPressed: {},
                                                                   onContactSupportButtonPressed: {
                                                                     isContactSupportButtonPressed = true
@@ -46,5 +50,21 @@ class ErrorTopBannerFactoryTests: XCTestCase {
         let mirrorView = try TopBannerViewMirror(from: view)
         mirrorView.actionButtons[1].sendActions(for: .touchUpInside)
         XCTAssertTrue(isContactSupportButtonPressed)
+    }
+
+    func test_troubleshootUrl_for_general_error_returns_expected_Url() {
+        // Given
+        let troubleshootUrl = ErrorTopBannerFactory.troubleshootUrl(for: SampleError.first)
+
+        // Then
+        XCTAssertEqual(troubleshootUrl, WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+    }
+
+    func test_troubleshootUrl_for_jetpack_connection_error_returns_expected_Url() {
+        // Given
+        let troubleshootUrl = ErrorTopBannerFactory.troubleshootUrl(for: DotcomError.jetpackNotConnected)
+
+        // Then
+        XCTAssertEqual(troubleshootUrl, WooConstants.URLs.troubleshootJetpackConnection.asURL())
     }
 }

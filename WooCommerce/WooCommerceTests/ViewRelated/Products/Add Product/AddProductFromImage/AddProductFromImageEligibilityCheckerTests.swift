@@ -1,5 +1,6 @@
 import TestKit
 import XCTest
+import Experiments
 
 @testable import WooCommerce
 
@@ -46,9 +47,12 @@ final class AddProductFromImageEligibilityCheckerTests: XCTestCase {
 
     func test_isEligible_is_true_for_wpcom_store() throws {
         // Given
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .treatment
+
         updateDefaultStore(isWPCOMStore: true)
-        let featureFlagService = MockFeatureFlagService(isAddProductFromImageEnabled: true)
-        let checker = AddProductFromImageEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
+        let checker = AddProductFromImageEligibilityChecker(stores: stores,
+                                                            abTestVariationProvider: mockABTestVariationProvider)
 
         // When
         let isEligible = checker.isEligible()
@@ -59,9 +63,12 @@ final class AddProductFromImageEligibilityCheckerTests: XCTestCase {
 
     func test_isEligible_is_false_for_non_wpcom_store() throws {
         // Given
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .treatment
+
         updateDefaultStore(isWPCOMStore: false)
-        let featureFlagService = MockFeatureFlagService(isAddProductFromImageEnabled: true)
-        let checker = AddProductFromImageEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
+        let checker = AddProductFromImageEligibilityChecker(stores: stores,
+                                                            abTestVariationProvider: mockABTestVariationProvider)
 
         // When
         let isEligible = checker.isEligible()
@@ -70,11 +77,14 @@ final class AddProductFromImageEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_isEligible_is_false_for_wpcom_store_when_feature_flag_is_disabled() throws {
+    func test_isEligible_is_false_for_wpcom_store_when_ab_test_variation_is_control() throws {
         // Given
+        let mockABTestVariationProvider = MockABTestVariationProvider()
+        mockABTestVariationProvider.mockVariationValue = .control
+
         updateDefaultStore(isWPCOMStore: true)
-        let featureFlagService = MockFeatureFlagService(isAddProductFromImageEnabled: false)
-        let checker = AddProductFromImageEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
+        let checker = AddProductFromImageEligibilityChecker(stores: stores,
+                                                            abTestVariationProvider: mockABTestVariationProvider)
 
         // When
         let isEligible = checker.isEligible()

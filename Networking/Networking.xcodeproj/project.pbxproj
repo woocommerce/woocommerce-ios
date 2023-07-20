@@ -172,6 +172,8 @@
 		24F98C602502EF8200F49B68 /* FeatureFlagRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */; };
 		24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 24F98C612502EFF600F49B68 /* feature-flags-load-all.json */; };
 		261870782540A252006522A1 /* ShippingLineTax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261870772540A252006522A1 /* ShippingLineTax.swift */; };
+		261C466B2A6738EE00734070 /* AppicationPasswordEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261C466A2A6738EE00734070 /* AppicationPasswordEncoder.swift */; };
+		261C466D2A67478800734070 /* ApplicationPasswordEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261C466C2A67478800734070 /* ApplicationPasswordEncoderTests.swift */; };
 		261CF1B4255AD6B30090D8D3 /* payment-gateway-list.json in Resources */ = {isa = PBXBuildFile; fileRef = 261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */; };
 		261CF1B8255AE62D0090D8D3 /* PaymentGatewayRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1B7255AE62D0090D8D3 /* PaymentGatewayRemote.swift */; };
 		261CF1BC255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1BB255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift */; };
@@ -1122,6 +1124,8 @@
 		24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagRemoteTests.swift; sourceTree = "<group>"; };
 		24F98C612502EFF600F49B68 /* feature-flags-load-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "feature-flags-load-all.json"; sourceTree = "<group>"; };
 		261870772540A252006522A1 /* ShippingLineTax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineTax.swift; sourceTree = "<group>"; };
+		261C466A2A6738EE00734070 /* AppicationPasswordEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppicationPasswordEncoder.swift; sourceTree = "<group>"; };
+		261C466C2A67478800734070 /* ApplicationPasswordEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordEncoderTests.swift; sourceTree = "<group>"; };
 		261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-list.json"; sourceTree = "<group>"; };
 		261CF1B7255AE62D0090D8D3 /* PaymentGatewayRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayRemote.swift; sourceTree = "<group>"; };
 		261CF1BB255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsGatewayRemoteTests.swift; sourceTree = "<group>"; };
@@ -3166,6 +3170,7 @@
 				EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */,
 				DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */,
 				EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */,
+				261C466A2A6738EE00734070 /* AppicationPasswordEncoder.swift */,
 				EE99814D295AA7430074AE68 /* RequestAuthenticator.swift */,
 				EE99814F295AACE10074AE68 /* RequestConverter.swift */,
 			);
@@ -3233,6 +3238,7 @@
 				EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */,
 				EE76762E2962B85E000066FA /* RequestProcessorTests.swift */,
 				45C6D0E329B9F327009CE29C /* CookieNonceAuthenticatorTests.swift */,
+				261C466C2A67478800734070 /* ApplicationPasswordEncoderTests.swift */,
 			);
 			path = ApplicationPassword;
 			sourceTree = "<group>";
@@ -4083,6 +4089,7 @@
 				0359EA1727AAC7740048DE2D /* WCPayCardFunding.swift in Sources */,
 				D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
+				261C466B2A6738EE00734070 /* AppicationPasswordEncoder.swift in Sources */,
 				2665032A261F41510079A159 /* ProductAddOn.swift in Sources */,
 				020D07BE23D8570800FD9580 /* MediaListMapper.swift in Sources */,
 				0359EA1327AAC6D00048DE2D /* WCPayCardPaymentDetails.swift in Sources */,
@@ -4325,6 +4332,7 @@
 				45ED4F14239E8F2E004F1BE3 /* TaxClassRemoteTests.swift in Sources */,
 				D88D5A4D230BD010007B6E01 /* ProductReviewsRemoteTests.swift in Sources */,
 				261CF1BC255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift in Sources */,
+				261C466D2A67478800734070 /* ApplicationPasswordEncoderTests.swift in Sources */,
 				453305EF2459E46100264E50 /* SitePostsRemoteTests.swift in Sources */,
 				45C6D0E429B9F327009CE29C /* CookieNonceAuthenticatorTests.swift in Sources */,
 				24F98C602502EF8200F49B68 /* FeatureFlagRemoteTests.swift in Sources */,

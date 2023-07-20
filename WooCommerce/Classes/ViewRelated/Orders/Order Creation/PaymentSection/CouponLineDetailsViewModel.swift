@@ -21,10 +21,6 @@ final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
     ///
     @Published var code: String = ""
 
-    /// Returns true when existing coupon line is edited.
-    ///
-    let isExistingCouponLine: Bool
-
     /// Returns true when there are no valid pending changes.
     ///
     var shouldDisableDoneButton: Bool {
@@ -43,12 +39,10 @@ final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
 
     private let stores: StoresManager
 
-    init(isExistingCouponLine: Bool,
-         code: String? = nil,
+    init(code: String? = nil,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          didSelectSave: @escaping ((CouponLineDetailsResult) -> Void)) {
-        self.isExistingCouponLine = isExistingCouponLine
         self.code = code ?? ""
         self.siteID = siteID
         self.stores = stores
@@ -87,8 +81,7 @@ final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
 
 private extension CouponLineDetailsViewModel {
     func saveData() {
-        guard isExistingCouponLine,
-             let initialCode = initialCode,
+        guard let initialCode = initialCode,
              initialCode.isNotEmpty else {
             return didSelectSave(.added(newCode: code))
         }

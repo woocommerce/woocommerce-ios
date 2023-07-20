@@ -61,18 +61,14 @@ private extension OneTimeApplicationPasswordUseCase {
     }
 
     func authenticateRequest(request: URLRequest) -> URLRequest {
-        guard let username = applicationPassword?.wpOrgUsername,
-              let password = applicationPassword?.password.secretValue else {
+        guard let applicationPassword else {
             return request
         }
         var authenticatedRequest = request
         authenticatedRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         authenticatedRequest.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
-        let loginString = "\(username):\(password)"
-
-        if let loginData = loginString.data(using: .utf8) {
-            let base64LoginString = loginData.base64EncodedString()
+        if let base64LoginString = ApplicationPasswordEncoder(passwordEnvelope: applicationPassword).encodedPassword() {
             authenticatedRequest.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
         }
 

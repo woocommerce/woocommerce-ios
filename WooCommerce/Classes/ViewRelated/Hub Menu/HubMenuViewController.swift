@@ -43,6 +43,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         return inPersonPaymentsMenuViewController
     }
 
+    func showCoupons() {
+        let enhancedCouponListViewController = EnhancedCouponListViewController(siteID: viewModel.siteID)
+        show(enhancedCouponListViewController, sender: self)
+    }
+
     /// Pushes the Settings & Privacy screen onto the navigation stack.
     ///
     func showPrivacySettings() {

@@ -47,21 +47,11 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     }
 
     func getWCPayPlugin() -> Yosemite.SystemPlugin? {
-        guard let siteID = siteID else {
-            return nil
-        }
-        return storageManager.viewStorage
-            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugin.wcPay.pluginName)?
-            .toReadOnly()
+        getSystemPlugin(from: .wcPay)
     }
 
     func getStripePlugin() -> Yosemite.SystemPlugin? {
-        guard let siteID = siteID else {
-            return nil
-        }
-        return storageManager.viewStorage
-            .loadSystemPlugin(siteID: siteID, name: CardPresentPaymentsPlugin.stripe.pluginName)?
-            .toReadOnly()
+        getSystemPlugin(from: .stripe)
     }
 
     func paymentPluginsInstalledAndActiveStatus(wcPay: Yosemite.SystemPlugin?, stripe: Yosemite.SystemPlugin?) -> PaymentPluginsInstalledAndActiveStatus {
@@ -97,5 +87,16 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
         }
         return VersionHelpers.isVersionSupported(version: plugin.version,
                                                  minimumRequired: pluginSupport.minimumVersion)
+    }
+
+    private func getSystemPlugin(from configuration: CardPresentPaymentsPlugin) -> Yosemite.SystemPlugin? {
+        guard let siteID = siteID else {
+            return nil
+        }
+
+        return storageManager.viewStorage
+            .loadSystemPlugins(siteID: siteID)
+            .first(where: { ($0.plugin as NSString).deletingPathExtension == configuration.pluginReference })?
+            .toReadOnly()
     }
 }

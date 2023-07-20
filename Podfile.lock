@@ -88,7 +88,7 @@ DEPENDENCIES:
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `trunk`)
   - WordPressShared (~> 2.1)
-  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, branch `task/fix-crash-BottomSheetViewController`)
+  - WordPressUI (~> 1.13)
   - Wormholy (~> 1.6.6)
   - WPMediaPicker (~> 1.8.1)
   - ZendeskSupportSDK (~> 6.0)
@@ -119,6 +119,7 @@ SPEC REPOS:
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
     - WordPressShared
+    - WordPressUI
     - Wormholy
     - WPMediaPicker
     - wpxmlrpc
@@ -134,17 +135,11 @@ EXTERNAL SOURCES:
   WordPressAuthenticator:
     :branch: trunk
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-  WordPressUI:
-    :branch: task/fix-crash-BottomSheetViewController
-    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
     :commit: bfdfde6fcd9a0faf0509db8380aa208e6d093a08
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-  WordPressUI:
-    :commit: 7c48ae434db04d0244009a609859e8288ad2f175
-    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -183,6 +178,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: e0f09766fdce4a0d69cca5f4724e81c8bba21104
+PODFILE CHECKSUM: 33119766b8581a4e76206f345a770ca2c617f78d
 
 COCOAPODS: 1.12.1

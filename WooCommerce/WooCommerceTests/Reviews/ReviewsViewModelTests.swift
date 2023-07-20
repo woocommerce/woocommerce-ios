@@ -115,6 +115,7 @@ final class ReviewsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.dataLoadingError)
+        XCTAssertEqual(viewModel.dataLoadingError as? SampleError, .first)
     }
 
     func test_synchronizeReviews_triggers_retrieveProducts_with_all_reviewsProductIDs() {

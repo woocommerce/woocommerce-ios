@@ -15,6 +15,11 @@ final class AddProductFromImageViewModel: ObservableObject {
         init(text: String, isSelected: Bool) {
             self.text = text
             self.isSelected = isSelected
+
+            /// Sets text to be unselected if it's empty
+            $text.filter { $0.isEmpty }
+                .map { _ in false }
+                .assign(to: &$isSelected)
         }
     }
 

@@ -240,7 +240,7 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
-                group.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -256,7 +256,7 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
-                group.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -272,7 +272,7 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
-                group.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -287,7 +287,7 @@ private extension StoreStatsAndTopPerformersViewController {
                     periodSyncError = error
                 }
                 periodGroup.leave()
-                group.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
 
                 vc.removeTopPerformersGhostContent()
             }

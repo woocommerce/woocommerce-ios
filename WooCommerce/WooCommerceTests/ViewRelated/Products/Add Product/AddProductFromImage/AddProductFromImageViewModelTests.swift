@@ -360,32 +360,33 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     // MARK: `regenerateButtonEnabled`
 
-    func test_regenerateButtonEnabled_returns_true_if_there_is_at_least_one_non_empty_and_selected_scanned_text() {
+    func test_regenerateButtonEnabled_is_updated_correctly() {
         // Given
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
                                                      onAddImage: { _ in nil })
+        let firstText: AddProductFromImageViewModel.ScannedTextViewModel = .init(text: "peach tea", isSelected: true)
+        let secondText: AddProductFromImageViewModel.ScannedTextViewModel = .init(text: "sweet", isSelected: true)
 
         // When
-        viewModel.scannedTexts = [.init(text: "test", isSelected: true),
-                                  .init(text: "", isSelected: false)]
+        viewModel.scannedTexts = [firstText, secondText]
 
         // Then
         XCTAssertTrue(viewModel.regenerateButtonEnabled)
-    }
 
-    func test_regenerateButtonEnabled_returns_false_if_all_scanned_texts_are_either_empty_or_unselected() {
-        // Given
-        let viewModel = AddProductFromImageViewModel(siteID: 6,
-                                                     source: .productsTab,
-                                                     onAddImage: { _ in nil })
-
-        // When
-        viewModel.scannedTexts = [.init(text: "test", isSelected: false),
-                                  .init(text: "", isSelected: false)]
+        // When: clear and unselect texts
+        firstText.text = ""
+        secondText.isSelected = false
 
         // Then
         XCTAssertFalse(viewModel.regenerateButtonEnabled)
+
+        // When: all texts are updated
+        viewModel.scannedTexts = [.init(text: "ramen", isSelected: true),
+                                  .init(text: "spicy", isSelected: true)]
+
+        // Then
+        XCTAssertTrue(viewModel.regenerateButtonEnabled)
     }
 }
 

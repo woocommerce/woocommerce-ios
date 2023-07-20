@@ -863,7 +863,9 @@ private extension StoreCreationCoordinator {
     }
 
     func cancelLocalNotificationWhenStoreIsReady() {
-        localNotificationScheduler.cancel(scenario: Constants.LocalNotificationScenario.storeCreationComplete)
+        Task {
+            await localNotificationScheduler.cancel(scenario: Constants.LocalNotificationScenario.storeCreationComplete)
+        }
     }
 
     func scheduleLocalNotificationToSubscribeFreeTrial(storeName: String) {
@@ -882,7 +884,9 @@ private extension StoreCreationCoordinator {
     }
 
     func cancelLocalNotificationToSubscribeFreeTrial(storeName: String) {
-        localNotificationScheduler.cancel(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName))
+        Task {
+            await localNotificationScheduler.cancel(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName))
+        }
     }
 }
 

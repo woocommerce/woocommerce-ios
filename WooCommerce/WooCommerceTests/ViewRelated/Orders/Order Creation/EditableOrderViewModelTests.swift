@@ -499,6 +499,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£0.00")
     }
 
+    func test_payment_data_view_model_when_calling_onGoToCouponsClosure_then_calls_to_track_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.paymentDataViewModel.onGoToCouponsClosure()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderGoToCouponsButtonTapped.rawValue)
+    }
+
     // MARK: - Add Products to Order via SKU Scanner Tests
 
     func test_trackBarcodeScanningButtonTapped_tracks_right_event() {

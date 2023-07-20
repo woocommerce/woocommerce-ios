@@ -13,8 +13,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        viewModel = CouponLineDetailsViewModel(isExistingCouponLine: true,
-                                               code: initialCode,
+        viewModel = CouponLineDetailsViewModel(code: initialCode,
                                                siteID: sampleSiteID,
                                                stores: stores,
                                                didSelectSave: { _ in })
@@ -58,17 +57,6 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
-    }
-
-    func test_view_model_initializes_correctly_with_no_existing_coupon_line() {
-        // Given
-        let viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
-                                                   code: "",
-                                                   siteID: sampleSiteID,
-                                                   didSelectSave: { _ in })
-
-        // Then
-        XCTAssertFalse(viewModel.isExistingCouponLine)
     }
 
     func test_validateAndSaveData_then_calls_action_with_right_parameters() {
@@ -134,49 +122,6 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
             XCTAssertEqual(newCode, passedCouponCode)
         default:
             XCTFail("Result should be edited case")
-        }
-    }
-
-    func test_validateAndSaveData_when_coupon_is_new_and_validated_then_completes_successfully() {
-        // Given
-        var savedResult: CouponLineDetailsResult?
-        viewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
-                                               code: "",
-                                               siteID: sampleSiteID,
-                                               stores: stores,
-                                               didSelectSave: { _ in })
-        viewModel.didSelectSave = { result in
-            savedResult = result
-        }
-
-        let passedCouponCode = "COUPON"
-        viewModel.code = passedCouponCode
-
-
-        stores.whenReceivingAction(ofType: CouponAction.self) { action in
-            switch action {
-            case let .validateCouponCode(_, _, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-
-        // When
-        let shouldDismiss = waitFor { [weak self] promise in
-            self?.viewModel.validateAndSaveData() { shouldDismiss in
-                promise(shouldDismiss)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(shouldDismiss)
-
-        switch savedResult {
-        case let .added(newCode):
-            XCTAssertEqual(newCode, passedCouponCode)
-        default:
-            XCTFail("Result should be added case")
         }
     }
 

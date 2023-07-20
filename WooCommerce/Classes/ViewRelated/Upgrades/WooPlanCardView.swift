@@ -51,7 +51,7 @@ struct WooPlanCardView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal)
         .padding(.vertical)
-        .background(Color(.systemGroupedBackground))
+        .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(Layout.cornerRadius)
         .overlay(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)

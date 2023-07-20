@@ -69,6 +69,7 @@ struct AddProductFromImageView: View {
                         viewModel.generateProductDetails()
                     }
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGeneratingDetails))
+                    .disabled(viewModel.regenerateButtonEnabled == false)
 
                     // Error message.
                     if let errorMessage = viewModel.errorMessage {

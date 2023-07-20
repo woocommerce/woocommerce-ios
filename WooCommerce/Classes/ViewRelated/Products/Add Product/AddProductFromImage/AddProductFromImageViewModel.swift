@@ -47,15 +47,19 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     private let addProductSource: AddProductCoordinator.Source
     private let onAddImage: (MediaPickingSource) async -> MediaPickerImage?
-    private var selectedImageSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     // MARK: - Scanned Texts
 
     @Published var scannedTexts: [ScannedTextViewModel] = []
+
+    @Published private var scannedTextValidation: [String: Bool] = [:]
+    @Published private(set) var regenerateButtonEnabled: Bool = false
+
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var errorMessage: String? = Localization.defaultError
 
-    private var selectedScannedTexts: [String] {
+    var selectedScannedTexts: [String] {
         scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
     }
 
@@ -82,10 +86,17 @@ final class AddProductFromImageViewModel: ObservableObject {
         // Track display event
         analytics.track(event: .AddProductFromImage.formDisplayed(source: source))
 
-        selectedImageSubscription = $imageState.compactMap { $0.image?.image }
-        .sink { [weak self] image in
-            self?.onSelectedImage(image)
-        }
+        $imageState.compactMap { $0.image?.image }
+            .sink { [weak self] image in
+                self?.onSelectedImage(image)
+            }
+            .store(in: &subscriptions)
+
+        $scannedTexts
+            .sink { [weak self] texts in
+                self?.configureRegenerateButton(with: texts)
+            }
+            .store(in: &subscriptions)
     }
 
     /// Invoked after the user selects a media source to add an image.
@@ -164,6 +175,23 @@ private extension AddProductFromImageViewModel {
                                                                  scannedTexts: scannedTexts) { result in
                 continuation.resume(returning: result)
             })
+        }
+    }
+
+    /// Disables regenerate button if there is at least one selected and non-empty text.
+    func configureRegenerateButton(with scannedTexts: [ScannedTextViewModel]) {
+        scannedTextValidation = [:]
+
+        $scannedTextValidation
+            .map { $0.values.contains { $0 } }
+            .assign(to: &$regenerateButtonEnabled)
+
+        for text in scannedTexts {
+            text.$text.combineLatest(text.$isSelected)
+                .sink { [weak self] content, isSelected in
+                    self?.scannedTextValidation[text.id] = content.isNotEmpty && isSelected
+                }
+                .store(in: &subscriptions)
         }
     }
 }

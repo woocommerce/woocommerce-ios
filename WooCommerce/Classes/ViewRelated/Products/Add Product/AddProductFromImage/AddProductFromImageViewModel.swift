@@ -59,7 +59,7 @@ final class AddProductFromImageViewModel: ObservableObject {
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var errorMessage: String? = Localization.defaultError
 
-    var selectedScannedTexts: [String] {
+    private var selectedScannedTexts: [String] {
         scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
     }
 

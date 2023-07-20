@@ -10,7 +10,6 @@
 - [**] Product discounts: Users can now add discounts to products when creating an order. [https://github.com/woocommerce/woocommerce-ios/pull/10244]
 - [*] We've resolved an issue that was causing the app to crash when trying to dismiss certain screens (bottom sheets). [https://github.com/woocommerce/woocommerce-ios/pull/10254]
 - [Internal] Fixed a bug preventing the "We couldn't load your data" error banner from appearing on the My store dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/10262]
-
 - [Internal] A new way to create a product from an image using AI is being A/B tested. [https://github.com/woocommerce/woocommerce-ios/pull/10253]
 
 14.5

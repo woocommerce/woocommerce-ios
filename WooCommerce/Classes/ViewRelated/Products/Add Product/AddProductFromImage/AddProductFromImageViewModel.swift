@@ -53,6 +53,7 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published var scannedTexts: [ScannedTextViewModel] = []
 
+    /// Validation to keep track of texts that are non-empty and selected.
     @Published private var scannedTextValidation: [String: Bool] = [:]
     @Published private(set) var regenerateButtonEnabled: Bool = false
 

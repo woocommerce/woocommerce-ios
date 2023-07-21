@@ -1,7 +1,11 @@
-We're back with some new updates to improve your experience with our app!
+- [Internal] Switched AI endpoint to be able to track and measure costs. [https://github.com/woocommerce/woocommerce-ios/pull/10218]
+- [Internal] Media picker flow was refactored to support interactive dismissal for device photo picker and WordPress media picker sources. Affected flows: product form > images, and virtual product form > downloadable files. [https://github.com/woocommerce/woocommerce-ios/pull/10236]
+- [Internal] Errors: Improved error message when orders, products, or reviews can't be loaded due to a parsing (decoding) error. [https://github.com/woocommerce/woocommerce-ios/pull/10252, https://github.com/woocommerce/woocommerce-ios/pull/10260]
+- [*] Orders with Coupons: Users can now select a coupon from a list when adding it to an order. [https://github.com/woocommerce/woocommerce-ios/pull/10255]
+- [Internal] Orders: Improved error message when orders can't be loaded due to a parsing (decoding) error. [https://github.com/woocommerce/woocommerce-ios/pull/10252]
+- [**] Product discounts: Users can now add discounts to products when creating an order. [https://github.com/woocommerce/woocommerce-ios/pull/10244]
+- [*] We've resolved an issue that was causing the app to crash when trying to dismiss certain screens (bottom sheets). [https://github.com/woocommerce/woocommerce-ios/pull/10254]
+- [Internal] Fixed a bug preventing the "We couldn't load your data" error banner from appearing on the My store dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/10262]
+- [Internal] Errors: Improved error message and troubleshooting guide when the Jetpack connection is broken. [https://github.com/woocommerce/woocommerce-ios/pull/10275]
+- [Internal] A new way to create a product from an image using AI is being A/B tested. [https://github.com/woocommerce/woocommerce-ios/pull/10253]
 
-Firstly, we've made the share button more user-friendly. Instead of an icon, it's now displayed as text for better discoverability.
-We've also fixed a pesky bug that was stopping you from adding new notes to an order. You should now be able to jot down your notes without any issues.
-Lastly, in our store creation process, we've updated the timeout view. If the site check is taking longer than expected, you now have the option to retry.
-
-As always, we're here to make your app journey smoother and more enjoyable. Thanks for sticking with us!

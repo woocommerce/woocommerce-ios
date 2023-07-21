@@ -59,6 +59,7 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var errorMessage: String? = Localization.defaultError
+    @Published private(set) var shouldShowNoTextDetectedMessage = false
 
     var scannedTextInstruction: String {
         selectedScannedTexts.isEmpty ? Localization.scannedTextListEmpty : Localization.scannedTextListInfo
@@ -96,6 +97,10 @@ final class AddProductFromImageViewModel: ObservableObject {
                 self?.onSelectedImage(image)
             }
             .store(in: &subscriptions)
+
+        $imageState
+            .map { !($0 == .empty || $0 == .loading) }
+            .assign(to: &$shouldShowNoTextDetectedMessage)
 
         $scannedTextValidation
             .map { $0.values.contains { $0 } }
@@ -147,14 +152,15 @@ private extension AddProductFromImageViewModel {
             do {
                 let texts = try await imageTextScanner.scanText(from: image)
                 guard texts.isNotEmpty else {
-                    throw ScanError.noTextsDetected
+                    throw ScanError.noTextDetected
                 }
 
                 analytics.track(event: .AddProductFromImage.scanCompleted(source: addProductSource, scannedTextCount: texts.count))
                 scannedTexts = texts.map { .init(text: $0, isSelected: true) }
                 [nameViewModel, descriptionViewModel].forEach { $0.reset() }
                 generateProductDetails()
-            } catch ScanError.noTextsDetected {
+            } catch ScanError.noTextDetected {
+                shouldShowNoTextDetectedMessage = scannedTexts.isEmpty
                 DDLogError("⛔️ No text detected from image.")
             } catch {
                 analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))
@@ -233,5 +239,5 @@ private extension AddProductFromImageViewModel {
 }
 
 private enum ScanError: Error {
-    case noTextsDetected
+    case noTextDetected
 }

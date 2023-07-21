@@ -249,7 +249,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
                        "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.")
     }
 
-    func test_textDetectionErrorMessage_stays_nil_when_scanneds_text_are_available_already() throws {
+    func test_textDetectionErrorMessage_stays_nil_when_scanned_texts_are_available_already() throws {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let imageTextScanner = MockImageTextScanner(result: .success([]))

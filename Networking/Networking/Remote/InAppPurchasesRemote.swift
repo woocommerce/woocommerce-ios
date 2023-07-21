@@ -17,14 +17,16 @@ public class InAppPurchasesRemote: Remote {
     }
 
     /// Checks the WPCOM billing system for whether or not an In-app Purchase transaction has been handled
+    ///
     /// Handled transactions are those which can be found in the WPCOM billing system. Unhandled transactions are those which couldn't be found.
-    /// We return the Site ID associated with the handled transaction, or an error if is not handled yet.
+    /// We return the Site ID associated with the handled transaction as part of the InAppPurchasesTransactionResponse, or a "transaction not found"
+    /// response if has not been handled yet.
     ///
     /// - Parameters:
     ///     - transactionID: The transactionID of the specific transaction (not originalTransactionID)
-    ///     - completion: Closure to be executed upon completion. Returns the siteID of the transaction if success, or an error otherwise.
+    ///     - completion: Closure to be executed upon completion.
     ///
-    public func retrieveHandledTransactionSiteID(for transactionID: UInt64,
+    public func retrieveHandledTransactionResult(for transactionID: UInt64,
                                                  completion: @escaping (InAppPurchasesTransactionResult) -> Void ) {
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
@@ -92,12 +94,13 @@ public extension InAppPurchasesRemote {
 
     /// Checks the WPCOM billing system for whether or not an In-app Purchase transaction has been handled
     ///
-    ///- Returns:The siteID for which the transactionID belongs to
+    ///- Returns: A InAppPurchasesTransactionResponse, which will contain the siteID the transactionID belongs to for handled transactions,
+    /// or a "transaction not found" response for unhandled transactions
     ///
     @MainActor
-    func retrieveHandledTransactionSiteID(for transactionID: UInt64) async throws -> InAppPurchasesTransactionResponse {
+    func retrieveHandledTransactionResult(for transactionID: UInt64) async throws -> InAppPurchasesTransactionResponse {
         try await withCheckedThrowingContinuation { continuation in
-            retrieveHandledTransactionSiteID(for: transactionID) { result in
+            retrieveHandledTransactionResult(for: transactionID) { result in
                 continuation.resume(with: result)
             }
         }

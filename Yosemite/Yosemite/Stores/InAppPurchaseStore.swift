@@ -293,7 +293,7 @@ private extension InAppPurchaseStore {
                         _ = await self.pauseTransactionListener.values.contains(false)
                         // For verified transactions, check whether a transaction has been handled already,
                         // and mark it as finished if that's the case, or handle it otherwise
-                        _ = try await self.remote.retrieveHandledTransactionSiteID(for: transaction.id)
+                        _ = try await self.remote.retrieveHandledTransactionResult(for: transaction.id)
                         await transaction.finish()
 
                         self.logInfo("Marking transaction \(transaction.id) as finished")

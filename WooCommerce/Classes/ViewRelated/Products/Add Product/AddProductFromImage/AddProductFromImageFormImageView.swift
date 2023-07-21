@@ -41,11 +41,12 @@ struct AddProductFromImageFormImageView: View {
                 viewModel.addImage(from: source)
             })
 
-            Text(Localization.noTextDetected)
-                .font(.footnote)
-                .fontWeight(.semibold)
-                .foregroundColor(Color(uiColor: .secondaryLabel))
-                .renderedIf(viewModel.shouldShowNoTextDetectedMessage)
+            if let message = viewModel.textDetectionErrorMessage {
+                Text(message)
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+            }
         }
     }
 }
@@ -61,10 +62,6 @@ private extension AddProductFromImageFormImageView {
         static let packagingImageTip = NSLocalizedString(
             "Take a packaging photo to create product details with AI",
             comment: "Tip in the add product from image form to add a packaging image for AI-generated product details."
-        )
-        static let noTextDetected = NSLocalizedString(
-            "No text detected. Please select another packaging photo or enter product details manually.",
-            comment: "No text detected message on the add product from image form."
         )
     }
 }

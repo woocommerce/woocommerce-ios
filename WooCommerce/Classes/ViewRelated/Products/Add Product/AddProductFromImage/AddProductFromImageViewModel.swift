@@ -53,13 +53,16 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     @Published var scannedTexts: [ScannedTextViewModel] = []
 
+    /// Text detection
+    @Published private(set) var textDetectionErrorMessage: String? = nil
+
     /// Validation to keep track of texts that are non-empty and selected.
     @Published private var scannedTextValidation: [String: Bool] = [:]
     @Published private(set) var regenerateButtonEnabled: Bool = false
 
+    /// Text generation
     @Published private(set) var isGeneratingDetails: Bool = false
-    @Published private(set) var errorMessage: String? = Localization.defaultError
-    @Published private(set) var shouldShowNoTextDetectedMessage = false
+    @Published private(set) var textGenerationErrorMessage: String? = Localization.defaultError
 
     var scannedTextInstruction: String {
         selectedScannedTexts.isEmpty ? Localization.scannedTextListEmpty : Localization.scannedTextListInfo
@@ -99,8 +102,9 @@ final class AddProductFromImageViewModel: ObservableObject {
             .store(in: &subscriptions)
 
         $imageState
-            .map { !($0 == .empty || $0 == .loading) }
-            .assign(to: &$shouldShowNoTextDetectedMessage)
+            .filter { $0 == .empty || $0 == .loading }
+            .map { _ in nil }
+            .assign(to: &$textDetectionErrorMessage)
 
         $scannedTextValidation
             .map { $0.values.contains { $0 } }
@@ -160,18 +164,26 @@ private extension AddProductFromImageViewModel {
                 scannedTexts = texts.map { .init(text: $0, isSelected: true) }
                 [nameViewModel, descriptionViewModel].forEach { $0.reset() }
                 generateProductDetails()
-            } catch ScanError.noTextDetected {
-                shouldShowNoTextDetectedMessage = scannedTexts.isEmpty
-                DDLogError("⛔️ No text detected from image.")
             } catch {
-                analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))
-                DDLogError("⛔️ Error scanning text from image: \(error)")
+                switch error {
+                case ScanError.noTextDetected:
+                    if scannedTexts.isEmpty {
+                        textDetectionErrorMessage = Localization.noTextDetected
+                    }
+                    DDLogError("⛔️ No text detected from image.")
+                default:
+                    analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))
+                    if scannedTexts.isEmpty {
+                        textDetectionErrorMessage = Localization.textDetectionFailed
+                    }
+                    DDLogError("⛔️ Error scanning text from image: \(error)")
+                }
             }
         }
     }
 
     func generateAndPopulateProductDetails(from scannedTexts: [String]) async {
-        errorMessage = nil
+        textGenerationErrorMessage = nil
         guard scannedTexts.isNotEmpty else {
             return
         }
@@ -185,7 +197,7 @@ private extension AddProductFromImageViewModel {
                     selectedTextCount: selectedScannedTexts.count
                 ))
             case .failure(let error):
-                errorMessage = Localization.defaultError
+                textGenerationErrorMessage = Localization.defaultError
                 DDLogError("⛔️ Error generating product details from scanned text: \(error)")
                 analytics.track(event: .AddProductFromImage.detailGenerationFailed(source: addProductSource, error: error))
         }
@@ -235,6 +247,14 @@ private extension AddProductFromImageViewModel {
         static let scannedTextListEmpty = NSLocalizedString(
             "Select one or more scans to generate product details",
             comment: "Instruction to select scanned text for product detail generation on the add product from image form."
+        )
+        static let noTextDetected = NSLocalizedString(
+            "No text detected. Please select another packaging photo or enter product details manually.",
+            comment: "No text detected message on the add product from image form."
+        )
+        static let textDetectionFailed = NSLocalizedString(
+            "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.",
+            comment: "Text detection failed error message on the add product from image form."
         )
     }
 }

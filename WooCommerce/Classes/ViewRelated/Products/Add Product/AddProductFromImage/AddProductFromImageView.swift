@@ -69,7 +69,7 @@ struct AddProductFromImageView: View {
                     .disabled(viewModel.regenerateButtonEnabled == false)
 
                     // Error message.
-                    if let errorMessage = viewModel.errorMessage {
+                    if let errorMessage = viewModel.textGenerationErrorMessage {
                         Text(errorMessage)
                             .font(.footnote)
                             .fontWeight(.semibold)

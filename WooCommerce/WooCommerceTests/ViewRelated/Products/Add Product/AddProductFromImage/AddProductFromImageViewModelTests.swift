@@ -192,6 +192,88 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: `shouldShowNoTextDetectedMessage`
+
+    func test_shouldShowNoTextDetectedMessage_is_false_initially() throws {
+        // Given
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in
+            nil
+        })
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNoTextDetectedMessage)
+    }
+
+    func test_shouldShowNoTextDetectedMessage_is_true_when_no_text_is_detected() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success([]))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowNoTextDetectedMessage)
+    }
+
+    func test_shouldShowNoTextDetectedMessage_stays_false_when_scanneds_text_are_available_already() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success([]))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+        viewModel.scannedTexts = [.init(text: "test", isSelected: false)]
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNoTextDetectedMessage)
+    }
+
+    func test_shouldShowNoTextDetectedMessage_is_reset_when_image_is_loaded_again() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success([]))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowNoTextDetectedMessage)
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNoTextDetectedMessage)
+    }
+
     // MARK: Analytics
 
     func test_displayed_event_is_tracked_when_the_view_model_is_init() throws {

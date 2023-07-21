@@ -2268,6 +2268,7 @@
 		EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */; };
 		EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */; };
 		EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */; };
+		EE5A0A1C2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A0A1B2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift */; };
 		EE6B2AD129DC522300048A8F /* StoreCreationProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6B2AD029DC522300048A8F /* StoreCreationProgressView.swift */; };
 		EE6B2AD329DD285A00048A8F /* StoreCreationProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6B2AD229DD285900048A8F /* StoreCreationProgressViewModel.swift */; };
 		EE81B1382865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */; };
@@ -4678,6 +4679,7 @@
 		EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandler.swift; sourceTree = "<group>"; };
 		EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ApplicationPassword.swift"; sourceTree = "<group>"; };
 		EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandlerTests.swift; sourceTree = "<group>"; };
+		EE5A0A1B2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+LocalNotification.swift"; sourceTree = "<group>"; };
 		EE6B2AD029DC522300048A8F /* StoreCreationProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressView.swift; sourceTree = "<group>"; };
 		EE6B2AD229DD285900048A8F /* StoreCreationProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressViewModel.swift; sourceTree = "<group>"; };
 		EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesProductIDUpdaterTests.swift; sourceTree = "<group>"; };
@@ -7794,6 +7796,7 @@
 				02D4472B2A4D29930040D72D /* WooAnalyticsEvent+LocalAnnouncement.swift */,
 				0225091C2A5DAEA0000AEBD2 /* WooAnalyticsEvent+ProductCreation.swift */,
 				DEACB8862A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift */,
+				EE5A0A1B2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -12562,6 +12565,7 @@
 				B9F3DAAF29BB73CD00DDD545 /* CreateOrderAppIntent.swift in Sources */,
 				AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */,
 				7E7C5F862719A93C00315B61 /* ProductCategoryViewModelBuilder.swift in Sources */,
+				EE5A0A1C2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift in Sources */,
 				02E3B63129066858007E0F13 /* StoreCreationCoordinator.swift in Sources */,
 				B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */,
 				26AE31B0251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift in Sources */,

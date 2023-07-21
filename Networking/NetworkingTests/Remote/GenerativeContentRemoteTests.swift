@@ -21,6 +21,23 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
     // MARK: - `generateText`
 
+    func test_generateText_sends_correct_fields_value() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-success")
+
+        // When
+        _ = try await remote.generateText(siteID: sampleSiteID,
+                                          base: "generate a product description for wapuu pencil",
+                                          feature: .productDescription)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let fieldsValue = try XCTUnwrap(request.parameters?["_fields"] as? String)
+        XCTAssertEqual("completion", fieldsValue)
+    }
+
     func test_generateText_with_success_returns_generated_text() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
@@ -107,6 +124,23 @@ final class GenerativeContentRemoteTests: XCTestCase {
     }
 
     // MARK: - `identifyLanguage`
+
+    func test_identifyLanguage_sends_correct_fields_value() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "identify-language-success")
+
+        // When
+        _ = try await remote.identifyLanguage(siteID: sampleSiteID,
+                                              string: "Woo is awesome.",
+                                              feature: .productDescription)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let fieldsValue = try XCTUnwrap(request.parameters?["_fields"] as? String)
+        XCTAssertEqual("completion", fieldsValue)
+    }
 
     func test_identifyLanguage_with_success_returns_language_code() async throws {
         // Given

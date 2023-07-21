@@ -15,6 +15,11 @@ final class AddProductFromImageViewModel: ObservableObject {
         init(text: String, isSelected: Bool) {
             self.text = text
             self.isSelected = isSelected
+
+            /// Sets text to be unselected if it's empty
+            $text.filter { $0.isEmpty }
+                .map { _ in false }
+                .assign(to: &$isSelected)
         }
     }
 
@@ -42,13 +47,22 @@ final class AddProductFromImageViewModel: ObservableObject {
 
     private let addProductSource: AddProductCoordinator.Source
     private let onAddImage: (MediaPickingSource) async -> MediaPickerImage?
-    private var selectedImageSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     // MARK: - Scanned Texts
 
     @Published var scannedTexts: [ScannedTextViewModel] = []
+
+    /// Validation to keep track of texts that are non-empty and selected.
+    @Published private var scannedTextValidation: [String: Bool] = [:]
+    @Published private(set) var regenerateButtonEnabled: Bool = false
+
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var errorMessage: String? = Localization.defaultError
+
+    var scannedTextInstruction: String {
+        selectedScannedTexts.isEmpty ? Localization.scannedTextListEmpty : Localization.scannedTextListInfo
+    }
 
     private var selectedScannedTexts: [String] {
         scannedTexts.filter { $0.isSelected && $0.text.isNotEmpty }.map { $0.text }
@@ -77,10 +91,21 @@ final class AddProductFromImageViewModel: ObservableObject {
         // Track display event
         analytics.track(event: .AddProductFromImage.formDisplayed(source: source))
 
-        selectedImageSubscription = $imageState.compactMap { $0.image?.image }
-        .sink { [weak self] image in
-            self?.onSelectedImage(image)
-        }
+        $imageState.compactMap { $0.image?.image }
+            .sink { [weak self] image in
+                self?.onSelectedImage(image)
+            }
+            .store(in: &subscriptions)
+
+        $scannedTextValidation
+            .map { $0.values.contains { $0 } }
+            .assign(to: &$regenerateButtonEnabled)
+
+        $scannedTexts
+            .sink { [weak self] texts in
+                self?.configureRegenerateButton(with: texts)
+            }
+            .store(in: &subscriptions)
     }
 
     /// Invoked after the user selects a media source to add an image.
@@ -161,6 +186,19 @@ private extension AddProductFromImageViewModel {
             })
         }
     }
+
+    /// Enables regenerate button if there is at least one selected and non-empty text
+    func configureRegenerateButton(with scannedTexts: [ScannedTextViewModel]) {
+        scannedTextValidation = [:]
+
+        for text in scannedTexts {
+            text.$text.combineLatest(text.$isSelected)
+                .sink { [weak self] content, isSelected in
+                    self?.scannedTextValidation[text.id] = content.isNotEmpty && isSelected
+                }
+                .store(in: &subscriptions)
+        }
+    }
 }
 
 private extension AddProductFromImageViewModel {
@@ -176,6 +214,14 @@ private extension AddProductFromImageViewModel {
         static let defaultError = NSLocalizedString(
             "Error generating product details. Please try again.",
             comment: "Default error message on the add product from image form."
+        )
+        static let scannedTextListInfo = NSLocalizedString(
+            "Tweak your text: Unselect scans you don't need or tap to edit",
+            comment: "Info text about the scanned text list on the add product from image form."
+        )
+        static let scannedTextListEmpty = NSLocalizedString(
+            "Select one or more scans to generate product details",
+            comment: "Instruction to select scanned text for product detail generation on the add product from image form."
         )
     }
 }

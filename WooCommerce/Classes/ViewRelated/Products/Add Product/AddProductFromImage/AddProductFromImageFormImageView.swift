@@ -13,8 +13,8 @@ struct AddProductFromImageFormImageView: View {
         EditableImageView(imageState: viewModel.imageState,
                           emptyContent: {
             VStack(spacing: Layout.verticalSpacing) {
-                Image(systemName: "photo")
-                    .font(.system(size: Layout.emptyStateImageSize))
+                Image(uiImage: .addImage)
+
                 Label {
                     Text(Localization.packagingImageTip)
                 } icon: {
@@ -44,7 +44,6 @@ struct AddProductFromImageFormImageView: View {
 
 private extension AddProductFromImageFormImageView {
     enum Layout {
-        static let emptyStateImageSize: CGFloat = 40
         static let editImageSize: CGFloat = 30
         static let verticalSpacing: CGFloat = 16
         static let padding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)

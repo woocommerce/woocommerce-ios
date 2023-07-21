@@ -146,10 +146,16 @@ private extension AddProductFromImageViewModel {
         Task { @MainActor in
             do {
                 let texts = try await imageTextScanner.scanText(from: image)
+                guard texts.isNotEmpty else {
+                    throw ScanError.noTextsDetected
+                }
+
                 analytics.track(event: .AddProductFromImage.scanCompleted(source: addProductSource, scannedTextCount: texts.count))
                 scannedTexts = texts.map { .init(text: $0, isSelected: true) }
                 [nameViewModel, descriptionViewModel].forEach { $0.reset() }
                 generateProductDetails()
+            } catch ScanError.noTextsDetected {
+                DDLogError("⛔️ No text detected from image.")
             } catch {
                 analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))
                 DDLogError("⛔️ Error scanning text from image: \(error)")
@@ -224,4 +230,8 @@ private extension AddProductFromImageViewModel {
             comment: "Instruction to select scanned text for product detail generation on the add product from image form."
         )
     }
+}
+
+private enum ScanError: Error {
+    case noTextsDetected
 }

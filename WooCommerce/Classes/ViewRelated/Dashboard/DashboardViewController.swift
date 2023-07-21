@@ -171,7 +171,6 @@ final class DashboardViewController: UIViewController {
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
-            await reloadDashboardUIStatsVersion(forced: true)
         }
     }
 
@@ -845,13 +844,6 @@ extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
 //
 private extension DashboardViewController {
     func onDashboardUIUpdate(forced: Bool, updatedDashboardUI: DashboardUI) {
-        defer {
-            Task { @MainActor [weak self] in
-                // Reloads data of the updated dashboard UI at the end.
-                await self?.reloadData(forced: true)
-            }
-        }
-
         // Optimistically hide the error banner any time the dashboard UI updates (not just pull to refresh)
         hideTopBannerView()
 
@@ -951,13 +943,6 @@ private extension DashboardViewController {
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
-    @MainActor
-    func reloadData(forced: Bool) async {
-        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        await dashboardUI?.reloadData(forced: forced)
-        configureTitle()
-    }
-
     func observeSiteForUIUpdates() {
         ServiceLocator.stores.site.sink { [weak self] site in
             guard let self = self else { return }
@@ -969,7 +954,6 @@ private extension DashboardViewController {
             self.updateUI(site: site)
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
-                await self?.reloadData(forced: true)
                 await self?.viewModel.updateBlazeBannerVisibility()
             }
         }.store(in: &subscriptions)

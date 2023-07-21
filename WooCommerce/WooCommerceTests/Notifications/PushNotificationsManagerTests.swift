@@ -642,7 +642,8 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ), analytics: WooAnalytics(analyticsProvider: analytics))
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
+        let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID),
+                                             userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -651,10 +652,11 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationScheduled.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed, eventProperties["type"] as? String)
+        XCTAssertTrue(try XCTUnwrap(eventProperties["is_iap_available"] as? Bool))
     }
 
-    func test_cancelLocalNotification_tracks_local_notification_canceled() throws {
+    func test_cancelLocalNotification_tracks_local_notification_canceled() async throws {
         // Given
         let mockCenter = MockUserNotificationsCenterAdapter()
         let analytics = MockAnalyticsProvider()
@@ -665,13 +667,20 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ), analytics: WooAnalytics(analyticsProvider: analytics))
 
+        let siteID: Int64 = 123
+        let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID),
+                                             userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
+        await manager.requestLocalNotification(notification, trigger: trigger)
+
         // When
-        manager.cancelLocalNotification(scenarios: [.storeCreationComplete])
+        await manager.cancelLocalNotification(scenarios: [.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID)])
 
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationCanceled.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.storeCreationComplete.identifier, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed, eventProperties["type"] as? String)
+        XCTAssertTrue(try XCTUnwrap(eventProperties["is_iap_available"] as? Bool))
     }
 
     func test_cancelAllNotifications_tracks_local_notification_canceled() async throws {
@@ -685,7 +694,8 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ), analytics: WooAnalytics(analyticsProvider: analytics))
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
+        let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID),
+                                             userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -695,7 +705,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationCanceled.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed, eventProperties["type"] as? String)
+        XCTAssertTrue(try XCTUnwrap(eventProperties["is_iap_available"] as? Bool))
     }
 }
 

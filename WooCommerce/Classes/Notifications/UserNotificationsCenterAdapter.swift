@@ -28,6 +28,8 @@ protocol UserNotificationsCenterAdapter {
 
     // Adds a notification request to be presented at a scheduled time.
     func add(_ request: UNNotificationRequest) async throws
+
+    func removePendingNotificationRequests(withIdentifiers: [String])
 }
 
 

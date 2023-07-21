@@ -10,35 +10,44 @@ struct AddProductFromImageFormImageView: View {
     }
 
     var body: some View {
-        EditableImageView(imageState: viewModel.imageState,
-                          emptyContent: {
-            VStack(spacing: Layout.verticalSpacing) {
-                Image(uiImage: .addImage)
+        VStack {
+            EditableImageView(imageState: viewModel.imageState,
+                              emptyContent: {
+                VStack(spacing: Layout.verticalSpacing) {
+                    Image(uiImage: .addImage)
 
-                Label {
-                    Text(Localization.packagingImageTip)
-                } icon: {
-                    Image(uiImage: .sparklesImage)
-                }
-                .foregroundColor(.init(uiColor: .accent))
-                .fixedSize(horizontal: false, vertical: true)
-            }
-        })
-        .padding(Layout.padding)
-        .overlay(alignment: .topTrailing) {
-            Button {
-                isShowingActionSheet = true
-            } label: {
-                Image(systemName: "pencil.circle.fill")
-                    .symbolRenderingMode(.multicolor)
-                    .font(.system(size: Layout.editImageSize))
+                    Label {
+                        Text(Localization.packagingImageTip)
+                    } icon: {
+                        Image(uiImage: .sparklesImage)
+                    }
                     .foregroundColor(.init(uiColor: .accent))
-                    .renderedIf(viewModel.imageState.image != nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+            })
+            .padding(Layout.padding)
+            .overlay(alignment: .topTrailing) {
+                Button {
+                    isShowingActionSheet = true
+                } label: {
+                    Image(systemName: "pencil.circle.fill")
+                        .symbolRenderingMode(.multicolor)
+                        .font(.system(size: Layout.editImageSize))
+                        .foregroundColor(.init(uiColor: .accent))
+                        .renderedIf(viewModel.imageState.image != nil)
+                }
+            }
+            .mediaSourceActionSheet(showsActionSheet: $isShowingActionSheet, selectMedia: { source in
+                viewModel.addImage(from: source)
+            })
+
+            if let message = viewModel.textDetectionErrorMessage {
+                Text(message)
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
             }
         }
-        .mediaSourceActionSheet(showsActionSheet: $isShowingActionSheet, selectMedia: { source in
-            viewModel.addImage(from: source)
-        })
     }
 }
 

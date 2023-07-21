@@ -4,7 +4,7 @@ import UIKit
 ///
 protocol DashboardUI: UIViewController {
     /// Called when the Dashboard should display syncing error
-    var displaySyncingError: () -> Void { get set }
+    var displaySyncingError: (Error) -> Void { get set }
 
     /// Called when the user pulls to refresh
     var onPullToRefresh: @MainActor () async -> Void { get set }

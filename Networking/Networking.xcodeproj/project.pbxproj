@@ -372,6 +372,7 @@
 		57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E8FED2246616AC0057CD68 /* Result+Extensions.swift */; };
 		621D043B29C9D4280040EC08 /* product-variation-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
+		6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */; };
 		6846B0152A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */; };
 		6846B01B2A61B590008EB143 /* iap-transaction-handled.json in Resources */ = {isa = PBXBuildFile; fileRef = 6846B01A2A61B590008EB143 /* iap-transaction-handled.json */; };
 		6888A2C62A650FD00026F5C0 /* iap-transaction-not-handled.json in Resources */ = {isa = PBXBuildFile; fileRef = 6888A2C52A650FD00026F5C0 /* iap-transaction-not-handled.json */; };
@@ -1315,6 +1316,7 @@
 		57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-missing-avatar-urls.json"; sourceTree = "<group>"; };
 		57E8FED2246616AC0057CD68 /* Result+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extensions.swift"; sourceTree = "<group>"; };
 		621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-alternative-types.json"; sourceTree = "<group>"; };
+		6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapperTests.swift; sourceTree = "<group>"; };
 		6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapper.swift; sourceTree = "<group>"; };
 		6846B01A2A61B590008EB143 /* iap-transaction-handled.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-transaction-handled.json"; sourceTree = "<group>"; };
 		6888A2C52A650FD00026F5C0 /* iap-transaction-not-handled.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-transaction-not-handled.json"; sourceTree = "<group>"; };
@@ -3052,6 +3054,7 @@
 				EEA658472966CBAD00112DF0 /* EntityIDMapperTests.swift */,
 				EE57C11629794BD500BC31E7 /* ApplicationPasswordNameAndUUIDMapperTests.swift */,
 				EE2C09C329AF5274009396F9 /* StoreOnboardingTaskListMapperTests.swift */,
+				6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -4308,6 +4311,7 @@
 				EE57C11729794BD500BC31E7 /* ApplicationPasswordNameAndUUIDMapperTests.swift in Sources */,
 				45ED4F14239E8F2E004F1BE3 /* TaxClassRemoteTests.swift in Sources */,
 				D88D5A4D230BD010007B6E01 /* ProductReviewsRemoteTests.swift in Sources */,
+				6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */,
 				261CF1BC255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift in Sources */,
 				453305EF2459E46100264E50 /* SitePostsRemoteTests.swift in Sources */,
 				45C6D0E429B9F327009CE29C /* CookieNonceAuthenticatorTests.swift in Sources */,

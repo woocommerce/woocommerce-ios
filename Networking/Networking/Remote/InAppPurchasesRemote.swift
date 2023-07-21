@@ -4,6 +4,7 @@ import Foundation
 /// In-app Purchases Endpoints
 ///
 public class InAppPurchasesRemote: Remote {
+    public typealias InAppPurchasesTransactionResult = Swift.Result<InAppPurchasesTransactionResponse, Error>
     /// Retrieves a list of product identifiers available for purchase
     ///
     /// - Parameters:
@@ -24,7 +25,7 @@ public class InAppPurchasesRemote: Remote {
     ///     - completion: Closure to be executed upon completion. Returns the siteID of the transaction if success, or an error otherwise.
     ///
     public func retrieveHandledTransactionSiteID(for transactionID: UInt64,
-                                 completion: @escaping (Swift.Result<Int64, Error>) -> Void ) {
+                                                 completion: @escaping (InAppPurchasesTransactionResult) -> Void ) {
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
                                     path: Constants.transactionsPath + "/\(transactionID)",
@@ -94,7 +95,7 @@ public extension InAppPurchasesRemote {
     ///- Returns:The siteID for which the transactionID belongs to
     ///
     @MainActor
-    func retrieveHandledTransactionSiteID(for transactionID: UInt64) async throws -> Int64 {
+    func retrieveHandledTransactionSiteID(for transactionID: UInt64) async throws -> InAppPurchasesTransactionResponse {
         try await withCheckedThrowingContinuation { continuation in
             retrieveHandledTransactionSiteID(for: transactionID) { result in
                 continuation.resume(with: result)

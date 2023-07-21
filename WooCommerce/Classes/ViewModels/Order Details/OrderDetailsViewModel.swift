@@ -575,10 +575,8 @@ extension OrderDetailsViewModel {
 
     @MainActor
     func syncShippingLabels() async {
-        guard orderContainsOnlyVirtualProducts == false else {
-            return
-        }
-        guard await isPluginActive(SitePlugin.SupportedPlugin.WCShip) else {
+        guard orderContainsOnlyVirtualProducts == false,
+              await isPluginActive(SitePlugin.SupportedPlugin.WCShip) else {
             return
         }
         return await withCheckedContinuation { continuation in

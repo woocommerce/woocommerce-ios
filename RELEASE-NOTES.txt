@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+14.7
+-----
+
+
 14.6
 -----
 - [Internal] Switched AI endpoint to be able to track and measure costs. [https://github.com/woocommerce/woocommerce-ios/pull/10218]

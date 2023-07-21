@@ -765,7 +765,7 @@ private extension ProductsViewController {
             onTroubleshootButtonPressed: { [weak self] in
                 guard let self = self else { return }
 
-                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
+                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self = self else { return }

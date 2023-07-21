@@ -1,1 +1,7 @@
-Tolle Neuigkeiten: Es ist möglich, mithilfe von KI automatisch Produktbeschreibungen für deine WooCommerce-Produkte zu erstellen, die für Konversion geeignet und SEO-optimiert sind, und diese zu teilen. Probiere es jetzt aus!
+Wir haben einige neue Updates im Gepäck, um dein Erlebnis mit unserer App zu verbessern!
+
+Zum einen ist der Teilen-Button jetzt benutzerfreundlicher. Anstelle eines Icons wird nun Text angezeigt, damit er besser gefunden wird.
+Zum anderen haben wir einen ziemlich lästigen Fehler behoben, aufgrund dessen keine neuen Notizen zu einer Bestellung hinzugefügt werden konnten. Du solltest deine Notizen nun ohne Probleme verfassen können.
+Zu guter Letzt haben wir im Prozess für die Shop-Erstellung die Anzeige für die Zeitüberschreitung aktualisiert. Sollte die Website-Überprüfung länger als erwartet dauern, hast du nun die Möglichkeit, es erneut zu versuchen.
+
+Wie immer möchten wir dein App-Erlebnis reibungsloser und angenehmer gestalten. Danke für dein Vertrauen!

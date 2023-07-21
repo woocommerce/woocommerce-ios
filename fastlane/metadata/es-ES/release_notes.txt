@@ -1,1 +1,7 @@
-Novedad: también puedes generar automáticamente descripciones de producto aptas para conversiones y optimizadas para SEO para tus productos de WooCommerce, y compartirlas usando la IA. ¡Pruébalo ahora!
+Te traemos nuevas actualizaciones para mejorar tu experiencia con nuestra aplicación.
+
+En primer lugar, hemos hecho que el botón de compartir sea más fácil de usar. En vez de un icono, ahora se muestra como un texto para que sea más fácil de encontrar.
+También hemos corregido un error que impedía añadir nuevas notas a un pedido. Ahora, deberías poder escribir tus notas sin problemas.
+Por último, en el proceso de creación de nuestra tienda, hemos actualizado la vista de tiempo de espera. Por consiguiente, si la comprobación del sitio tarda más de lo previsto, puedes reintentar esta acción.
+
+Como siempre, estamos aquí para facilitarte la experiencia con la aplicación. ¡Gracias por contar con nosotros!

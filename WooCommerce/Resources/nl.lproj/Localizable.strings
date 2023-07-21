@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-18 15:54:10+0000 */
+/* Translation-Revision-Date: 2023-07-21 17:26:10+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -8274,7 +8274,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "View" = "Bekijk";
 
 /* Title for the button to expand plan details on the Upgrade plan screen. Reads as 'View Essential features'. %1$@ must be included in the string and will be replaced with the plan name. */
-"View %1$@ features" = "%$1@ functies bekijken";
+"View %1$@ features" = "%1$@ functies bekijken";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons

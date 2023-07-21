@@ -13,6 +13,8 @@ final class OrdersTests: XCTestCase {
         try LoginFlow.login()
     }
 
+    let customerNote = "New customer note"
+
     func test_load_orders_screen() throws {
         let orders = try GetMocks.readOrdersData()
 
@@ -52,6 +54,17 @@ final class OrdersTests: XCTestCase {
             .checkForExistingProducts(byName: orders[0].line_items.map { $0.name })
             .closeEditingFlow()
             .verifySingleOrderScreenLoaded()
+    }
+
+    func test_add_note_to_existing_order() throws {
+        let orders = try GetMocks.readOrdersData()
+
+        try TabNavComponent().goToOrdersScreen()
+            .tapOrder(byOrderNumber: orders[0].number)
+            .tapEditOrderButton()
+            .openCustomerNoteScreen()
+            .enterNote(customerNote)
+            .verifyNoteAdded(customerNote)
     }
 
     func test_cancel_order_creation() throws {

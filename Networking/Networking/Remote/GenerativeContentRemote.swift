@@ -129,6 +129,11 @@ private extension GenerativeContentRemote {
         static let token = "token"
         static let prompt = "prompt"
         static let feature = "feature"
+        static let fields = "_fields"
+    }
+
+    enum ParameterValue {
+        static let completion = "completion"
     }
 
     enum TokenExpiredError {

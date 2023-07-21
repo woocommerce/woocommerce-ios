@@ -87,7 +87,8 @@ private extension GenerativeContentRemote {
                       token: String) async throws -> String {
         let parameters = [ParameterKey.token: token,
                           ParameterKey.prompt: base,
-                          ParameterKey.feature: feature.rawValue]
+                          ParameterKey.feature: feature.rawValue,
+                          ParameterKey.fields: ParameterValue.fields]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .post,
                                     path: Path.textCompletion,
@@ -107,7 +108,8 @@ private extension GenerativeContentRemote {
         ].joined(separator: "\n")
         let parameters = [ParameterKey.token: token,
                           ParameterKey.prompt: prompt,
-                          ParameterKey.feature: feature.rawValue]
+                          ParameterKey.feature: feature.rawValue,
+                          ParameterKey.fields: ParameterValue.fields]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .post,
                                     path: Path.textCompletion,
@@ -129,6 +131,11 @@ private extension GenerativeContentRemote {
         static let token = "token"
         static let prompt = "prompt"
         static let feature = "feature"
+        static let fields = "_fields"
+    }
+
+    enum ParameterValue {
+        static let fields = "completion"
     }
 
     enum TokenExpiredError {

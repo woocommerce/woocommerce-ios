@@ -45,6 +45,12 @@ struct AddProductFromImageView: View {
                     AddProductFromImageFormImageView(viewModel: viewModel)
                     Spacer()
                 }
+
+                Text(Localization.noTextDetected)
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+                    .renderedIf(viewModel.shouldShowNoTextDetectedMessage)
             }
 
             Section {
@@ -123,6 +129,10 @@ private extension AddProductFromImageView {
         static let regenerateButtonTitle = NSLocalizedString(
             "Regenerate",
             comment: "Regenerate button on the add product from image form to regenerate product details."
+        )
+        static let noTextDetected = NSLocalizedString(
+            "No text detected. Please select another packaging photo or enter product details manually.",
+            comment: "No text detected message on the add product from image form."
         )
     }
 

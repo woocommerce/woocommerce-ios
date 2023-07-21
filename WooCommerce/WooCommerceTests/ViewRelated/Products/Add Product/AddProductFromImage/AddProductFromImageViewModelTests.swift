@@ -196,7 +196,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_displayed_event_is_tracked_when_the_view_model_is_init() throws {
         // When
-        let viewModel = AddProductFromImageViewModel(siteID: 123,
+        _ = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
                                                      analytics: analytics,
                                                      onAddImage: { _ in nil })

@@ -87,7 +87,8 @@ private extension GenerativeContentRemote {
                       token: String) async throws -> String {
         let parameters = [ParameterKey.token: token,
                           ParameterKey.prompt: base,
-                          ParameterKey.feature: feature.rawValue]
+                          ParameterKey.feature: feature.rawValue,
+                          ParameterKey.fields: ParameterValue.completion]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .post,
                                     path: Path.textCompletion,
@@ -107,7 +108,8 @@ private extension GenerativeContentRemote {
         ].joined(separator: "\n")
         let parameters = [ParameterKey.token: token,
                           ParameterKey.prompt: prompt,
-                          ParameterKey.feature: feature.rawValue]
+                          ParameterKey.feature: feature.rawValue,
+                          ParameterKey.fields: ParameterValue.completion]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .post,
                                     path: Path.textCompletion,

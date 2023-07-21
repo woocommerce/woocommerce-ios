@@ -1,13 +1,3 @@
 {
-  "completion": "The Wapuu Pencil is a perfect writing tool for those who love cute things.",
-  "previous_messages": [
-    {
-      "role": "user",
-      "content": "Hello!"
-    },
-    {
-      "role": "assistant",
-      "content": "Hi!"
-    }
-  ]
+  "completion": "The Wapuu Pencil is a perfect writing tool for those who love cute things."
 }

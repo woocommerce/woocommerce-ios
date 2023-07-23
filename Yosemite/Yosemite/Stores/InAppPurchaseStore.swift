@@ -290,16 +290,20 @@ private extension InAppPurchaseStore {
                     break
                 case .verified(let transaction):
                     do {
+                        // Wait until the purchase finishes
                         _ = await self.pauseTransactionListener.values.contains(false)
                         // For verified transactions, check whether a transaction has been handled already,
                         // and mark it as finished if that's the case, or handle it otherwise
-                        _ = try await self.remote.retrieveHandledTransactionResult(for: transaction.id)
-                        await transaction.finish()
-
-                        self.logInfo("Marking transaction \(transaction.id) as finished")
+                        let wpcomTransactionResponse = try await self.remote.retrieveHandledTransactionResult(for: transaction.id)
+                        if wpcomTransactionResponse.siteID != nil {
+                            await transaction.finish()
+                            self.logInfo("Marking transaction \(transaction.id) as finished")
+                        } else {
+                            try await self.handleCompletedTransaction(result)
+                            self.logInfo("Transaction \(transaction.id) not found in WPCOM")
+                        }
                     } catch {
-                        _ = await self.pauseTransactionListener.values.contains(false)
-                        try await self.handleCompletedTransaction(result)
+                        self.logError("Error handling transaction \(transaction.id) update: \(error)")
                     }
                 }
             }

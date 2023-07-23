@@ -11,9 +11,9 @@ struct InAppPurchasesTransactionMapper: Mapper {
 }
 
 public struct InAppPurchasesTransactionResponse: Decodable {
-    let siteID: Int64?
-    let message: String?
-    let code: Int?
+    public let siteID: Int64?
+    public let message: String?
+    public let code: Int?
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

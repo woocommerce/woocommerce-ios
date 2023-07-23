@@ -33,50 +33,28 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     ///
     private lazy var footerEmptyView = UIView(frame: .zero)
 
-    /// Create a `UIBarButtonItem` to be used as the search button on the top-left.
-    ///
-    private lazy var searchBarButtonItem: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: .searchBarButtonItemImage,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(displaySearchCoupons))
-        button.accessibilityTraits = .button
-        button.accessibilityLabel = Localization.accessibilityLabelSearchCoupons
-        button.accessibilityHint = Localization.accessibilityHintSearchCoupons
-        button.accessibilityIdentifier = "coupon-search-button"
-
-        return button
-    }()
-
-    /// Create a `UIBarButtonItem` to be used as the create coupon button on the top-right.
-    ///
-    private lazy var createCouponButtonItem: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: .plusImage,
-                style: .plain,
-                target: self,
-                action: #selector(displayCouponTypeBottomSheet))
-        button.accessibilityTraits = .button
-        button.accessibilityLabel = Localization.accessibilityLabelCreateCoupons
-        button.accessibilityHint = Localization.accessibilityHintCreateCoupons
-        button.accessibilityIdentifier = "coupon-create-button"
-
-        return button
-    }()
-
     private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var dataSource: UITableViewDiffableDataSource<Section, CouponListViewModel.CellViewModel> = makeDataSource()
     private lazy var topBannerView: TopBannerView = createFeedbackBannerView()
 
-    private lazy var noticePresenter: DefaultNoticePresenter = {
-        let noticePresenter = DefaultNoticePresenter()
-        noticePresenter.presentingViewController = self
-        return noticePresenter
-    }()
+    private var onDataLoaded: ((Bool) -> Void)?
+    private let emptyStateAction: (() -> Void)
+    private let emptyStateActionTitle: String
+    private let onCouponSelected: ((Coupon) -> Void)
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         showFeedbackBannerIfAppropriate: Bool,
+         emptyStateActionTitle: String,
+         onDataLoaded: ((Bool) -> Void)? = nil,
+         emptyStateAction: @escaping (() -> Void),
+         onCouponSelected: @escaping ((Coupon) -> Void)) {
         self.siteID = siteID
-        self.viewModel = CouponListViewModel(siteID: siteID)
+        self.viewModel = CouponListViewModel(siteID: siteID, showFeedbackBannerIfAppropriate: showFeedbackBannerIfAppropriate)
+        self.onDataLoaded = onDataLoaded
+        self.emptyStateAction = emptyStateAction
+        self.emptyStateActionTitle = emptyStateActionTitle
+        self.onCouponSelected = onCouponSelected
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -86,9 +64,14 @@ final class CouponListViewController: UIViewController, GhostableViewController 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigation()
         configureTableView()
         configureViewModel()
+    }
+
+    /// Triggers a refresh for the coupon list
+    ///
+    @objc func refreshCouponList() {
+        viewModel.refreshCoupons()
     }
 
     private func configureViewModel() {
@@ -143,7 +126,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
             }
             .removeDuplicates()
             .sink { [weak self] hasData in
-                self?.configureNavigationBarItems(hasCoupons: hasData)
+                self?.onDataLoaded?(hasData)
             }
             .store(in: &subscriptions)
 
@@ -166,12 +149,6 @@ final class CouponListViewController: UIViewController, GhostableViewController 
 
 // MARK: - Actions
 private extension CouponListViewController {
-    /// Triggers a refresh for the coupon list
-    ///
-    @objc func refreshCouponList() {
-        viewModel.refreshCoupons()
-    }
-
     /// Removes overlays and loading indicators if present.
     ///
     func resetViews() {
@@ -225,36 +202,14 @@ extension CouponListViewController: UITableViewDelegate {
         guard let coupon = viewModel.coupon(at: indexPath) else {
             return
         }
-        let detailsViewModel = CouponDetailsViewModel(coupon: coupon, onUpdate: { [weak self] in
-            guard let self = self else { return }
-            self.viewModel.refreshCoupons()
-        }, onDeletion: { [weak self] in
-            guard let self = self else { return }
-            self.navigationController?.popViewController(animated: true)
-            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
-            self.noticePresenter.enqueue(notice: notice)
-        })
-        let hostingController = CouponDetailsHostingController(viewModel: detailsViewModel)
-        navigationController?.pushViewController(hostingController, animated: true)
+
+        onCouponSelected(coupon)
     }
 }
-
 
 // MARK: - View Configuration
 //
 private extension CouponListViewController {
-    func configureNavigation() {
-        title = Localization.title
-    }
-
-    func configureNavigationBarItems(hasCoupons: Bool) {
-        if hasCoupons {
-            navigationItem.rightBarButtonItems = [createCouponButtonItem, searchBarButtonItem]
-        } else {
-            navigationItem.rightBarButtonItems = [createCouponButtonItem]
-        }
-    }
-
     func configureTableView() {
         registerTableViewCells()
         tableView.dataSource = dataSource
@@ -280,34 +235,6 @@ private extension CouponListViewController {
                 return cell
             }
         )
-    }
-
-    /// Shows `SearchViewController`.
-    ///
-    @objc private func displaySearchCoupons() {
-        ServiceLocator.analytics.track(.couponsListSearchTapped)
-        let searchViewController = SearchViewController<TitleAndSubtitleAndStatusTableViewCell, CouponSearchUICommand>(
-            storeID: siteID,
-            command: CouponSearchUICommand(siteID: siteID),
-            cellType: TitleAndSubtitleAndStatusTableViewCell.self,
-            cellSeparator: .singleLine
-        )
-        let navigationController = WooNavigationController(rootViewController: searchViewController)
-        present(navigationController, animated: true, completion: nil)
-    }
-
-    @objc private func displayCouponTypeBottomSheet() {
-        ServiceLocator.analytics.track(.couponsListCreateTapped)
-        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.createCouponAction)
-        let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedType in
-            guard let self = self else { return }
-            self.presentedViewController?.dismiss(animated: true, completion: nil)
-            self.startCouponCreation(discountType: selectedType)
-        }
-
-        let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)
-        let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet)
-        bottomSheetViewController.show(from: self)
     }
 
     func createFeedbackBannerView() -> TopBannerView {
@@ -370,20 +297,20 @@ private extension CouponListViewController {
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         displayEmptyStateViewController(emptyStateViewController)
-        emptyStateViewController.configure(buildNoResultConfig())
-    }
 
-    func buildNoResultConfig() -> EmptyStateViewController.Config {
-        return .withButton(
+        let configuration = EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.couponCreationSuggestionMessage),
             image: .emptyCouponsImage,
             details: Localization.emptyStateDetails,
-            buttonTitle: Localization.createCouponAction
-        ) { [weak self] button in
-            guard let self = self else { return }
-            self.displayCouponTypeBottomSheet()
+            buttonTitle: emptyStateActionTitle
+        ) { [weak self] _ in
+            self?.emptyStateAction()
         }
+
+        emptyStateViewController.configure(configuration)
+
     }
+
 
     /// Displays the overlay when coupons are disabled for the store.
     ///
@@ -452,12 +379,6 @@ private extension CouponListViewController {
         static let emptyStateMessage = NSLocalizedString(
                 "No coupons found",
                 comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen.")
-        static let couponCreationSuggestionMessage = NSLocalizedString(
-            "Everyone loves a deal",
-            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible.")
-        static let emptyStateDetails = NSLocalizedString(
-            "Boost your business by sending customers special offers and discounts.",
-            comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
 
         static let couponsDisabledMessage = NSLocalizedString(
             "Everyone loves a deal",
@@ -472,23 +393,20 @@ private extension CouponListViewController {
             comment: "The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store."
         )
 
-        static let accessibilityLabelSearchCoupons = NSLocalizedString("Search coupons", comment: "Accessibility label for the Search Coupons button")
-        static let accessibilityHintSearchCoupons = NSLocalizedString(
-            "Retrieves a list of coupons that contain a given keyword.",
-            comment: "VoiceOver accessibility hint, informing the user the button can be used to search coupons."
-        )
-        static let accessibilityLabelCreateCoupons = NSLocalizedString("Create coupons", comment: "Accessibility label for the Create Coupons button")
-        static let accessibilityHintCreateCoupons = NSLocalizedString("Start a Coupon creation by selecting a discount type in a bottom sheet",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to create coupons.")
         static let feedbackBannerTitle = NSLocalizedString("View and edit coupons", comment: "Title of the feedback banner on the coupon list screen")
         static let feedbackBannerContent = NSLocalizedString(
             "We’ve been working on making it possible to view and edit coupons from your device!",
             comment: "Content of the feedback banner on the coupon list screen"
         )
-        static let createCouponAction = NSLocalizedString("Create Coupon",
-                                                          comment: "Title of the create coupon button on the coupon list screen when it's empty")
+
         static let giveFeedbackAction = NSLocalizedString("Give feedback", comment: "Title of the feedback action button on the coupon list screen")
         static let dismissAction = NSLocalizedString("Dismiss", comment: "Title of the dismiss action button on the coupon list screen")
-        static let couponDeleted = NSLocalizedString("Coupon deleted", comment: "Notice message after deleting coupon from the Coupon Details screen")
+
+        static let couponCreationSuggestionMessage = NSLocalizedString(
+            "Everyone loves a deal",
+            comment: "The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible.")
+        static let emptyStateDetails = NSLocalizedString(
+            "Boost your business by sending customers special offers and discounts.",
+            comment: "The details text on the placeholder overlay when there are no coupons on the coupon list screen.")
     }
 }

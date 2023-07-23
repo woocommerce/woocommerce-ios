@@ -1,6 +1,18 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 14.6
+Coupon management just became a breeze. You can now select multiple coupons when creating an order. It's also possible to add discounts to products when creating an order. Keep your updates on to enjoy WooCommerce's continuous improvements and latest features!
+
+## 14.5
+We're back with some new updates to improve your experience with our app!
+
+Firstly, we've made the share button more user-friendly. Instead of an icon, it's now displayed as text for better discoverability.
+We've also fixed a pesky bug that was stopping you from adding new notes to an order. You should now be able to jot down your notes without any issues.
+Lastly, in our store creation process, we've updated the timeout view. If the site check is taking longer than expected, you now have the option to retry.
+
+As always, we're here to make your app journey smoother and more enjoyable. Thanks for sticking with us!
+
 ## 14.4
 Hot news—It's possible to automatically generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products and share them using AI. Try it now!
 

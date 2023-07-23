@@ -58,6 +58,7 @@ final class ProductImagesViewController: UIViewController {
     private lazy var mediaPickingCoordinator: MediaPickingCoordinator = {
         return MediaPickingCoordinator(siteID: siteID,
                                        allowsMultipleImages: allowsMultipleImages,
+                                       flow: .productForm,
                                        onCameraCaptureCompletion: { [weak self] asset, error in
                                         self?.onCameraCaptureCompletion(asset: asset, error: error)
             }, onDeviceMediaLibraryPickerCompletion: { [weak self] assets in
@@ -298,18 +299,15 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
-        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
-            guard let self = self, assets.isNotEmpty else {
-                return
-            }
-
-            self.deleteExistingImageIfOnlyOneImageIsAllowed()
-            assets.forEach { asset in
-                self.uploadMediaAssetToSiteMediaLibrary(asset: asset)
-            }
-            self.commitAndDismiss(true)
+        guard assets.isNotEmpty else {
+            return
         }
+
+        deleteExistingImageIfOnlyOneImageIsAllowed()
+        assets.forEach { asset in
+            uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        }
+        commitAndDismiss(true)
     }
 }
 
@@ -317,16 +315,13 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
-        let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
-        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { [weak self] in
-            guard let self = self, mediaItems.isNotEmpty else {
-                return
-            }
-
-            self.deleteExistingImageIfOnlyOneImageIsAllowed()
-            self.productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
-            self.commitAndDismiss(true)
+        guard mediaItems.isNotEmpty else {
+            return
         }
+
+        deleteExistingImageIfOnlyOneImageIsAllowed()
+        productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
+        commitAndDismiss(true)
     }
 }
 

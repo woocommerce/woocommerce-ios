@@ -172,6 +172,8 @@
 		24F98C602502EF8200F49B68 /* FeatureFlagRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */; };
 		24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 24F98C612502EFF600F49B68 /* feature-flags-load-all.json */; };
 		261870782540A252006522A1 /* ShippingLineTax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261870772540A252006522A1 /* ShippingLineTax.swift */; };
+		261C466B2A6738EE00734070 /* AppicationPasswordEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261C466A2A6738EE00734070 /* AppicationPasswordEncoder.swift */; };
+		261C466D2A67478800734070 /* ApplicationPasswordEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261C466C2A67478800734070 /* ApplicationPasswordEncoderTests.swift */; };
 		261CF1B4255AD6B30090D8D3 /* payment-gateway-list.json in Resources */ = {isa = PBXBuildFile; fileRef = 261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */; };
 		261CF1B8255AE62D0090D8D3 /* PaymentGatewayRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1B7255AE62D0090D8D3 /* PaymentGatewayRemote.swift */; };
 		261CF1BC255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1BB255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift */; };
@@ -922,6 +924,10 @@
 		EEFAA57D295D77F0003583BE /* AuthenticatedRESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57C295D77F0003583BE /* AuthenticatedRESTRequest.swift */; };
 		EEFAA57F295D78DF003583BE /* AuthenticatedDotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57E295D78DF003583BE /* AuthenticatedDotcomRequestTests.swift */; };
 		EEFAA581295D78E9003583BE /* AuthenticatedRESTRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA580295D78E9003583BE /* AuthenticatedRESTRequestTests.swift */; };
+		EEFC4C962A5E996C004C5A83 /* jwt-token-failure.json in Resources */ = {isa = PBXBuildFile; fileRef = EEFC4C942A5E996C004C5A83 /* jwt-token-failure.json */; };
+		EEFC4C972A5E996C004C5A83 /* jwt-token-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EEFC4C952A5E996C004C5A83 /* jwt-token-success.json */; };
+		EEFC4C992A5E9E49004C5A83 /* generative-text-invalid-token.json in Resources */ = {isa = PBXBuildFile; fileRef = EEFC4C982A5E9E49004C5A83 /* generative-text-invalid-token.json */; };
+		EEFC4C9B2A5ED1F6004C5A83 /* identify-language-invalid-token.json in Resources */ = {isa = PBXBuildFile; fileRef = EEFC4C9A2A5ED1F6004C5A83 /* identify-language-invalid-token.json */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
 		FE28F6E6268429B6004465C7 /* UserRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E5268429B6004465C7 /* UserRemote.swift */; };
@@ -1119,6 +1125,8 @@
 		24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagRemoteTests.swift; sourceTree = "<group>"; };
 		24F98C612502EFF600F49B68 /* feature-flags-load-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "feature-flags-load-all.json"; sourceTree = "<group>"; };
 		261870772540A252006522A1 /* ShippingLineTax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineTax.swift; sourceTree = "<group>"; };
+		261C466A2A6738EE00734070 /* AppicationPasswordEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppicationPasswordEncoder.swift; sourceTree = "<group>"; };
+		261C466C2A67478800734070 /* ApplicationPasswordEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordEncoderTests.swift; sourceTree = "<group>"; };
 		261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-list.json"; sourceTree = "<group>"; };
 		261CF1B7255AE62D0090D8D3 /* PaymentGatewayRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayRemote.swift; sourceTree = "<group>"; };
 		261CF1BB255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsGatewayRemoteTests.swift; sourceTree = "<group>"; };
@@ -1874,6 +1882,10 @@
 		EEFAA57C295D77F0003583BE /* AuthenticatedRESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRESTRequest.swift; sourceTree = "<group>"; };
 		EEFAA57E295D78DF003583BE /* AuthenticatedDotcomRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedDotcomRequestTests.swift; sourceTree = "<group>"; };
 		EEFAA580295D78E9003583BE /* AuthenticatedRESTRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedRESTRequestTests.swift; sourceTree = "<group>"; };
+		EEFC4C942A5E996C004C5A83 /* jwt-token-failure.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jwt-token-failure.json"; sourceTree = "<group>"; };
+		EEFC4C952A5E996C004C5A83 /* jwt-token-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jwt-token-success.json"; sourceTree = "<group>"; };
+		EEFC4C982A5E9E49004C5A83 /* generative-text-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generative-text-invalid-token.json"; sourceTree = "<group>"; };
+		EEFC4C9A2A5ED1F6004C5A83 /* identify-language-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "identify-language-invalid-token.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		FE28F6E126840DED004465C7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -2427,14 +2439,18 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				EEFC4C942A5E996C004C5A83 /* jwt-token-failure.json */,
+				EEFC4C952A5E996C004C5A83 /* jwt-token-success.json */,
 				EEE846A12A54745F005239B6 /* identify-language-failure.json */,
 				EEE846A02A54745F005239B6 /* identify-language-success.json */,
+				EEFC4C9A2A5ED1F6004C5A83 /* identify-language-invalid-token.json */,
 				DE4D23BD29B6E10F003A4B5D /* announcements.json */,
 				021D741B2987B1550035687E /* checkout-doman-cart-with-domain-credit-success.json */,
 				DEC2B092297AA60D003923FB /* category-without-data.json */,
 				DEC2B090297AA5A6003923FB /* categories-all-without-data.json */,
 				02C4325C298A55D100F14AEE /* domain-contact-info.json */,
 				02AAFCD32A13517800F05E60 /* dotcom-plugins.json */,
+				EEFC4C982A5E9E49004C5A83 /* generative-text-invalid-token.json */,
 				0286981829ED324900853B88 /* generative-text-failure.json */,
 				0286981729ED324900853B88 /* generative-text-success.json */,
 				DEC2B08E297AA123003923FB /* reviews-single-without-data.json */,
@@ -3157,6 +3173,7 @@
 				EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */,
 				DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */,
 				EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */,
+				261C466A2A6738EE00734070 /* AppicationPasswordEncoder.swift */,
 				EE99814D295AA7430074AE68 /* RequestAuthenticator.swift */,
 				EE99814F295AACE10074AE68 /* RequestConverter.swift */,
 			);
@@ -3224,6 +3241,7 @@
 				EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */,
 				EE76762E2962B85E000066FA /* RequestProcessorTests.swift */,
 				45C6D0E329B9F327009CE29C /* CookieNonceAuthenticatorTests.swift */,
+				261C466C2A67478800734070 /* ApplicationPasswordEncoderTests.swift */,
 			);
 			path = ApplicationPassword;
 			sourceTree = "<group>";
@@ -3357,6 +3375,7 @@
 				31A451D927863A2E00FE81AA /* stripe-account-live-test.json in Resources */,
 				DE42F9602967C88400D514C2 /* report-orders-total-without-data.json in Resources */,
 				DE9DEEF5291CF1B40070AD7C /* site-plugin-without-envelope.json in Resources */,
+				EEFC4C972A5E996C004C5A83 /* jwt-token-success.json in Resources */,
 				0261F5A928D4641500B7AC72 /* products-sku-search.json in Resources */,
 				EE57C14A2980CE4B00BC31E7 /* taxes-classes-without-data.json in Resources */,
 				EE80A24829547F8B003591E4 /* coupon-without-data.json in Resources */,
@@ -3474,6 +3493,7 @@
 				02698CF624C17FC1005337C4 /* product-alternative-types.json in Resources */,
 				03EB99962907F03000F06A39 /* empty-data-array.json in Resources */,
 				57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */,
+				EEFC4C962A5E996C004C5A83 /* jwt-token-failure.json in Resources */,
 				3158FE8026129EC300E566B9 /* wcpay-account-restricted-overdue.json in Resources */,
 				45AF57A924AB42CD0088E2F7 /* product-tags-extra.json in Resources */,
 				74AB5B4F21AF3F0E00859C12 /* site-api-no-woo.json in Resources */,
@@ -3614,6 +3634,7 @@
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,
 				02050F57296FE90A00710E63 /* domain-suggestions-paid.json in Resources */,
 				31B8D6B626583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json in Resources */,
+				EEFC4C9B2A5ED1F6004C5A83 /* identify-language-invalid-token.json in Resources */,
 				EE57C125297EB4E300BC31E7 /* product-attributes-all-without-data.json in Resources */,
 				31054714262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json in Resources */,
 				EE57C134297F985A00BC31E7 /* product-variations-bulk-update-without-data.json in Resources */,
@@ -3649,6 +3670,7 @@
 				743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */,
 				68CB801628D8A39700E169F8 /* customer.json in Resources */,
 				EEA658402966C05D00112DF0 /* product-search-sku-without-data.json in Resources */,
+				EEFC4C992A5E9E49004C5A83 /* generative-text-invalid-token.json in Resources */,
 				DE42F96D296BC67E00D514C2 /* wc-analytics-customers-without-data.json in Resources */,
 				DE4F2A4229751EAE00B0701C /* setting-coupon-without-data.json in Resources */,
 				B918DDF12A3C960000E74DE5 /* products-sku-search-variation.json in Resources */,
@@ -4070,6 +4092,7 @@
 				0359EA1727AAC7740048DE2D /* WCPayCardFunding.swift in Sources */,
 				D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
+				261C466B2A6738EE00734070 /* AppicationPasswordEncoder.swift in Sources */,
 				2665032A261F41510079A159 /* ProductAddOn.swift in Sources */,
 				020D07BE23D8570800FD9580 /* MediaListMapper.swift in Sources */,
 				0359EA1327AAC6D00048DE2D /* WCPayCardPaymentDetails.swift in Sources */,
@@ -4313,6 +4336,7 @@
 				D88D5A4D230BD010007B6E01 /* ProductReviewsRemoteTests.swift in Sources */,
 				6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */,
 				261CF1BC255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift in Sources */,
+				261C466D2A67478800734070 /* ApplicationPasswordEncoderTests.swift in Sources */,
 				453305EF2459E46100264E50 /* SitePostsRemoteTests.swift in Sources */,
 				45C6D0E429B9F327009CE29C /* CookieNonceAuthenticatorTests.swift in Sources */,
 				24F98C602502EF8200F49B68 /* FeatureFlagRemoteTests.swift in Sources */,

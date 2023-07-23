@@ -113,9 +113,9 @@ final class OrderListViewModel {
         snapshotsProvider.snapshot
     }
 
-    /// Set when sync fails, and used to display an error loading data banner
+    /// Set when sync fails, and used to display the corresponding error loading data banner
     ///
-    @Published var hasErrorLoadingData: Bool = false
+    @Published var dataLoadingError: Error? = nil
 
     /// Determines what top banner should be shown
     ///
@@ -494,14 +494,13 @@ extension OrderListViewModel {
     /// Figures out what top banner should be shown based on the view model internal state.
     ///
     private func bindTopBannerState() {
-        let errorState = $hasErrorLoadingData.removeDuplicates()
         let ippSurvey = $ippSurveySource.removeDuplicates()
 
-        Publishers.CombineLatest4(errorState, $hideIPPFeedbackBanner, ippSurvey, $hideOrdersBanners)
-            .map { hasError, hasDismissedIPPFeedbackBanner, inPersonPaymentsSurvey, hasDismissedOrdersBanners -> TopBanner in
+        Publishers.CombineLatest4($dataLoadingError, $hideIPPFeedbackBanner, ippSurvey, $hideOrdersBanners)
+            .map { loadingError, hasDismissedIPPFeedbackBanner, inPersonPaymentsSurvey, hasDismissedOrdersBanners -> TopBanner in
 
-                guard !hasError else {
-                    return .error
+                if let loadingError {
+                    return .error(loadingError)
                 }
 
                 if !hasDismissedIPPFeedbackBanner,
@@ -550,7 +549,7 @@ extension OrderListViewModel {
     /// Possible top banners this view model can show.
     ///
     enum TopBanner: Equatable {
-        case error
+        case error(Error)
         case orderCreation
         case inPersonPaymentsFeedback(SurveyViewController.Source)
         case none

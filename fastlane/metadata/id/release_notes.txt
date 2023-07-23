@@ -1,1 +1,7 @@
-Rilis ini menghadirkan pilihan untuk menambahkan beberapa kupon ketika membuat pesanan. Tahukah Anda bahwa kini Anda bisa membuat deskripsi menarik yang ramah SEO untuk produk di WooCommerce? Cobalah! Toko AS yang berlangganan percobaan gratis kini dapat mengupgrade ke paket berbayar dengan pembelian dalam aplikasi.
+Kami kembali dengan beberapa hal baru untuk meningkatkan pengalaman Anda saat menggunakan aplikasi kami!
+
+Pertama, kami telah membuat tombol berbagi yang lebih ramah pengguna. Alih-alih berbentuk ikon, tombol berbagi sekarang ditampilkan sebagai teks agar lebih mudah ditemukan.
+Kami juga telah memperbaiki bug yang membuat Anda tidak dapat menambahkan catatan baru ke pesanan. Sekarang Anda semestinya dapat menuliskan catatan tanpa kesulitan.
+Terakhir, dalam proses pembuatan toko, kami telah memperbarui tampilan waktu habis. Jika pemeriksaan situs memerlukan waktu lebih lama dari yang diperkirakan, Anda sekarang memiliki pilihan untuk mencoba kembali.
+
+Seperti biasa, kami hadir untuk membuat pengalaman Anda menggunakan aplikasi jadi lebih lancar dan menyenangkan. Terima kasih sudah setia bersama kami!

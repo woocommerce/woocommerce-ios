@@ -460,12 +460,16 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
+        let itemDiscount = currentDiscount(on: item)
+        let passingDiscountValue = itemDiscount > 0 ? itemDiscount : nil
+
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
             let parent = allProducts.first(where: { $0.productID == item.parent })
             let attributes = ProductVariationFormatter().generateAttributes(for: variation, from: parent?.attributes ?? [])
             return ProductRowViewModel(id: item.itemID,
                                        productVariation: variation,
+                                       discount: passingDiscountValue,
                                        name: item.name,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
@@ -479,6 +483,7 @@ final class EditableOrderViewModel: ObservableObject {
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
+                                       discount: passingDiscountValue,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        quantityUpdatedCallback: { [weak self] _ in
@@ -658,6 +663,7 @@ extension EditableOrderViewModel {
     /// Representation of payment data display properties
     ///
     struct PaymentDataViewModel {
+        let siteID: Int64
         let itemsTotal: String
         let orderTotal: String
 
@@ -679,7 +685,8 @@ extension EditableOrderViewModel {
 
         let couponLineViewModels: [CouponLineViewModel]
         let couponCode: String
-        let discountTotal: String
+        var discountTotal: String
+        let shouldShowDiscountTotal: Bool
         let shouldShowCoupon: Bool
         let shouldDisableAddingCoupons: Bool
 
@@ -691,7 +698,8 @@ extension EditableOrderViewModel {
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
         let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
-        let addCouponLineViewModel: CouponLineDetailsViewModel
+        let addNewCouponLineClosure: (Coupon) -> Void
+        let onGoToCouponsClosure: () -> Void
 
         init(siteID: Int64 = 0,
              itemsTotal: String = "0",
@@ -710,12 +718,15 @@ extension EditableOrderViewModel {
              couponLineViewModels: [CouponLineViewModel] = [],
              couponCode: String = "",
              discountTotal: String = "",
+             shouldShowDiscountTotal: Bool = false,
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
-             saveCouponLineClosure: @escaping (CouponLineDetailsResult) -> Void = { _ in },
+             addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
+             onGoToCouponsClosure: @escaping () -> Void = {},
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+            self.siteID = siteID
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
@@ -734,6 +745,7 @@ extension EditableOrderViewModel {
             self.couponLineViewModels = couponLineViewModels
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
+            self.shouldShowDiscountTotal = shouldShowDiscountTotal
             self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
@@ -743,9 +755,8 @@ extension EditableOrderViewModel {
                                                                       initialTotal: feeLineTotal,
                                                                       lineType: .fee,
                                                             didSelectSave: saveFeeLineClosure)
-            self.addCouponLineViewModel = CouponLineDetailsViewModel(isExistingCouponLine: false,
-                                                                     siteID: siteID,
-                                                                     didSelectSave: saveCouponLineClosure)
+            self.addNewCouponLineClosure = addNewCouponLineClosure
+            self.onGoToCouponsClosure = onGoToCouponsClosure
         }
     }
 
@@ -1053,12 +1064,18 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
-                                            discountTotal: order.discountTotal,
+                                            discountTotal: orderTotals.discountTotal.stringValue,
+                                            shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
                                             saveFeeLineClosure: self.saveFeeLine,
-                                            saveCouponLineClosure: self.saveCouponLine,
+                                            addNewCouponLineClosure: { [weak self] coupon in
+                                                self?.saveCouponLine(result: .added(newCode: coupon.code))
+                                            },
+                                            onGoToCouponsClosure: { [weak self] in
+                                                self?.analytics.track(event: WooAnalyticsEvent.Orders.orderGoToCouponsButtonTapped())
+                                            },
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
@@ -1175,7 +1192,7 @@ private extension EditableOrderViewModel {
     /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
     /// If the referenced product can't be found, `nil` is returned.
     ///
-    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal = 0) -> OrderSyncProductInput? {
+    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal? = nil) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.
         let product: OrderSyncProductInput.ProductType? = {
             if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -1195,7 +1212,7 @@ private extension EditableOrderViewModel {
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount)
+        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount ?? currentDiscount(on: item))
     }
 
     /// Creates a `ProductInOrderViewModel` based on the provided order item id.
@@ -1204,23 +1221,51 @@ private extension EditableOrderViewModel {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
         guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal),
               let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false) else {
             return nil
         }
 
         return ProductInOrderViewModel(productRowViewModel: rowViewModel,
-                                       baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                                       productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
+                                       showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty &&
+                                                                     featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4),
                                        onRemoveProduct: { [weak self] in
                                             self?.removeItemFromOrder(orderItem)
-                                       },
-                                       onSaveFormattedDiscount: { [weak self] formattedDiscount in
-                                            guard let formattedDiscount = formattedDiscount,
-                                                  let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
-                                                return
-                                            }
-                                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
-        })
+                                       })
+    }
+
+    /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
+    ///
+    func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductInOrderViewModel.DiscountConfiguration? {
+        guard featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4),
+              orderSynchronizer.order.coupons.isEmpty,
+              case OrderSyncState.synced = orderSynchronizer.state,
+              let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal) else {
+            return nil
+        }
+
+        return .init(addedDiscount: currentDiscount(on: orderItem),
+                     baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+                     onSaveFormattedDiscount: { [weak self] formattedDiscount in
+                        guard let formattedDiscount = formattedDiscount,
+                              let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
+                            self?.addDiscountToOrderItem(item: orderItem, discount: 0)
+                            return
+                        }
+
+                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
+                    })
+    }
+
+    /// Calculates the discount on an order item, that is, subtotal minus total
+    /// 
+    func currentDiscount(on item: OrderItem) -> Decimal {
+        guard let subtotal = currencyFormatter.convertToDecimal(item.subtotal),
+              let total = currencyFormatter.convertToDecimal(item.total) else {
+            return 0
+        }
+
+        return subtotal.subtracting(total) as Decimal
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.
@@ -1302,8 +1347,7 @@ private extension EditableOrderViewModel {
         couponLines.map {
             CouponLineViewModel(title: String.localizedStringWithFormat(Localization.CouponSummary.singular, $0.code),
                           discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
-                          detailsViewModel: CouponLineDetailsViewModel(isExistingCouponLine: true,
-                                                                       code: $0.code,
+                          detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                        siteID: siteID,
                                                                        didSelectSave: saveCouponLine))
 

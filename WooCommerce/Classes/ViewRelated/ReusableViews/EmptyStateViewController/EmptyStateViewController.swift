@@ -116,23 +116,9 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         return centerGuide
     }()
 
-    /// Top banner that shows an error if there is a problem loading reviews data
+    /// Top banner that shows an error if there is a problem loading data
     ///
-    private lazy var topBannerView: TopBannerView = {
-        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                              expandedStateChangeHandler: {},
-                                              onTroubleshootButtonPressed: { [weak self] in
-                                                guard let self = self else { return }
-
-                                                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
-                                              },
-                                              onContactSupportButtonPressed: { [weak self] in
-                                                guard let self = self else { return }
-
-            let supportForm = SupportFormHostingController(viewModel: .init())
-            supportForm.show(from: self)
-        })
-    }()
+    private var topBannerView: TopBannerView?
 
     convenience init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol? = nil) {
         if let zendeskManager = zendeskManager {
@@ -273,7 +259,22 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
     /// Display the error banner at the top of the view
     ///
-    func showTopBannerView() {
+    func showTopBannerView(for error: Error) {
+        topBannerView = ErrorTopBannerFactory.createTopBanner(for: error,
+                                                              expandedStateChangeHandler: {},
+                                                              onTroubleshootButtonPressed: { [weak self] in
+            guard let self else { return }
+
+            WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+        },
+                                                              onContactSupportButtonPressed: { [weak self] in
+            guard let self else { return }
+
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: self)
+        })
+
+        guard let topBannerView else { return }
         contentView.insertSubview(topBannerView, at: 0)
         NSLayoutConstraint.activate([
             topBannerView.leadingAnchor.constraint(equalTo: contentView.safeLeadingAnchor),
@@ -287,7 +288,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Hide the error banner at the top of the view
     ///
     func hideTopBannerView() {
-        topBannerView.removeFromSuperview()
+        topBannerView?.removeFromSuperview()
     }
 }
 

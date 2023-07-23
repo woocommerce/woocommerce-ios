@@ -1,1 +1,7 @@
-Cette version intègre la possibilité d’ajouter plusieurs codes promo lors de la création d’une commande. Saviez-vous qu’il était possible, pour vos produits WooCommerce, de générer des descriptions de produits optimisées pour la conversion et le référencement ? Faites un essai ! Les boutiques américaines abonnées à la période d’essai gratuite peuvent désormais passer à une option payante par le biais d’un achat intégré à l’application.
+Nous avons effectué quelques mises à jour afin d’améliorer votre expérience d’utilisation de notre application !
+
+Tout d’abord, nous avons rendu notre bouton de partage plus convivial. L’icône a été remplacée par du texte pour qu’il soit plus facilement visible.
+Nous avons également corrigé un bug qui empêchait l’ajout de nouvelles notes à une commande. Vous pouvez désormais rédiger des notes sans souci.
+Pour finir, nous avons mis à jour la vue du délai d’attente dans notre processus de création de boutique. Si la vérification du site prend plus de temps que prévu, vous pouvez désormais utiliser l’option « Réessayer ».
+
+Comme toujours, notre objectif est de rendre l’utilisation de l’application plus simple et agréable. Merci de nous faire confiance !

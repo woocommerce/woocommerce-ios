@@ -9,7 +9,7 @@ import class WidgetKit.WidgetCenter
 final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     // MARK: - DashboardUI protocol
 
-    var displaySyncingError: () -> Void = {}
+    var displaySyncingError: (Error) -> Void = { _ in }
 
     var onPullToRefresh: @MainActor () async -> Void = {}
 
@@ -47,7 +47,6 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
         }
     }
     private var selectedTimeRangeIndexSubscription: AnyCancellable?
-    private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
 
     private let pushNotificationsManager: PushNotesManager
     private var localOrdersSubscription: AnyCancellable?
@@ -131,15 +130,9 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
     @MainActor
     func reloadData(forced: Bool) async {
         await withCheckedContinuation { continuation in
-            $selectedTimeRangeIndex
-                .compactMap { $0 }
-                .first()
-                .sink { [weak self] _ in
-                    self?.syncAllStats(forced: forced) { _ in
-                        continuation.resume(returning: ())
-                    }
-                }
-                .store(in: &reloadDataAfterSelectedTimeRangeSubscriptions)
+            syncAllStats(forced: forced) { _ in
+                continuation.resume(returning: ())
+            }
         }
     }
 
@@ -238,9 +231,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -254,9 +247,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -270,9 +263,9 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing summary stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
                 periodStoreStatsGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
             }
 
             group.enter()
@@ -286,8 +279,8 @@ private extension StoreStatsAndTopPerformersViewController {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                     periodSyncError = error
                 }
-                group.leave()
                 periodGroup.leave()
+                group.leave() // Leave this group last so `syncError` is set, if needed
 
                 vc.removeTopPerformersGhostContent()
             }
@@ -430,7 +423,7 @@ private extension StoreStatsAndTopPerformersViewController {
             }
             trackDashboardStatsSyncComplete()
         default:
-            displaySyncingError()
+            displaySyncingError(error)
             trackDashboardStatsSyncComplete(withError: error)
         }
     }
@@ -440,7 +433,7 @@ private extension StoreStatsAndTopPerformersViewController {
         case let siteStatsStoreError as SiteStatsStoreError:
             handleSiteStatsStoreError(error: siteStatsStoreError)
         default:
-            displaySyncingError()
+            displaySyncingError(error)
             trackDashboardStatsSyncComplete(withError: error)
         }
     }

@@ -87,20 +87,7 @@ final class DashboardViewController: UIViewController {
 
     /// Top banner that shows an error if there is a problem loading data
     ///
-    private lazy var topBannerView = {
-        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                              expandedStateChangeHandler: {},
-                                              onTroubleshootButtonPressed: { [weak self] in
-                                                guard let self = self else { return }
-
-                                                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
-                                              },
-                                              onContactSupportButtonPressed: { [weak self] in
-                                                guard let self = self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
-            supportForm.show(from: self)
-        })
-    }()
+    private var topBannerView: TopBannerView?
 
     private var announcementViewHostingController: ConstraintsUpdatingHostingController<AnnouncementCardWrapper>?
 
@@ -184,7 +171,6 @@ final class DashboardViewController: UIViewController {
 
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
-            await reloadDashboardUIStatsVersion(forced: true)
         }
     }
 
@@ -355,7 +341,6 @@ private extension DashboardViewController {
 
     func configureHeaderStackView() {
         configureSubtitle()
-        configureErrorBanner()
         containerStackView.addArrangedSubview(headerStackView)
     }
 
@@ -364,13 +349,6 @@ private extension DashboardViewController {
         storeNameLabel.textColor = Constants.storeNameTextColor
         innerStackView.addArrangedSubview(storeNameLabel)
         headerStackView.addArrangedSubview(innerStackView)
-    }
-
-    func configureErrorBanner() {
-        headerStackView.addArrangedSubviews([topBannerView, spacerView])
-        // Don't show the error banner subviews until they are needed
-        topBannerView.isHidden = true
-        spacerView.isHidden = true
     }
 
     func addViewBelowHeaderStackView(contentView: UIView) {
@@ -689,16 +667,34 @@ private extension DashboardViewController {
 
     /// Display the error banner at the top of the dashboard content (below the site title)
     ///
-    func showTopBannerView() {
-        topBannerView.isHidden = false
-        spacerView.isHidden = false
+    func showTopBannerView(for error: Error) {
+        if topBannerView != nil { // Clear the top banner first, if needed
+            hideTopBannerView()
+        }
+
+        let errorBanner = ErrorTopBannerFactory.createTopBanner(for: error,
+                                                                expandedStateChangeHandler: {},
+                                                                onTroubleshootButtonPressed: { [weak self] in
+            guard let self else { return }
+            WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+        },
+                                                                onContactSupportButtonPressed: { [weak self] in
+            guard let self else { return }
+            let supportForm = SupportFormHostingController(viewModel: .init())
+            supportForm.show(from: self)
+        })
+
+        // Configure header stack view
+        topBannerView = errorBanner
+        headerStackView.addArrangedSubviews([errorBanner, spacerView])
     }
 
     /// Hide the error banner
     ///
     func hideTopBannerView() {
-        topBannerView.isHidden = true
-        spacerView.isHidden = true
+        topBannerView?.removeFromSuperview()
+        spacerView.removeFromSuperview()
+        topBannerView = nil
     }
 
     func updateUI(site: Site) {
@@ -848,13 +844,6 @@ extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
 //
 private extension DashboardViewController {
     func onDashboardUIUpdate(forced: Bool, updatedDashboardUI: DashboardUI) {
-        defer {
-            Task { @MainActor [weak self] in
-                // Reloads data of the updated dashboard UI at the end.
-                await self?.reloadData(forced: true)
-            }
-        }
-
         // Optimistically hide the error banner any time the dashboard UI updates (not just pull to refresh)
         hideTopBannerView()
 
@@ -876,8 +865,8 @@ private extension DashboardViewController {
         // Sets `dashboardUI` after its view is added to the view hierarchy so that observers can update UI based on its view.
         dashboardUI = updatedDashboardUI
 
-        updatedDashboardUI.displaySyncingError = { [weak self] in
-            self?.showTopBannerView()
+        updatedDashboardUI.displaySyncingError = { [weak self] error in
+            self?.showTopBannerView(for: error)
         }
     }
 
@@ -932,6 +921,7 @@ private extension DashboardViewController {
 
     func onPullToRefresh() async {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        hideTopBannerView() // Hide error banner optimistically on pull to refresh
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 guard let self else { return }
@@ -953,13 +943,6 @@ private extension DashboardViewController {
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
-    @MainActor
-    func reloadData(forced: Bool) async {
-        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        await dashboardUI?.reloadData(forced: forced)
-        configureTitle()
-    }
-
     func observeSiteForUIUpdates() {
         ServiceLocator.stores.site.sink { [weak self] site in
             guard let self = self else { return }
@@ -971,7 +954,6 @@ private extension DashboardViewController {
             self.updateUI(site: site)
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
-                await self?.reloadData(forced: true)
                 await self?.viewModel.updateBlazeBannerVisibility()
             }
         }.store(in: &subscriptions)

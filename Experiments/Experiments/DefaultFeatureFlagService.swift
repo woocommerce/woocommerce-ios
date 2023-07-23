@@ -97,10 +97,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .freeTrialInAppPurchasesUpgradeM2:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .addProductFromImage:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .ordersWithCouponsM4:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

@@ -1,1 +1,7 @@
-En esta versión, encontrarás la opción de añadir varios cupones al crear un pedido. ¿Sabes que puedes generar descripciones de producto aptas para conversiones y optimizadas para SEO en tus productos de WooCommerce? ¡Pruébalo! Ahora, las tiendas de EE. UU. que se hayan suscrito a la versión de prueba gratuita pueden mejorar a un plan de pago mediante la compra en la aplicación.
+Te traemos nuevas actualizaciones para mejorar tu experiencia con nuestra aplicación.
+
+En primer lugar, hemos hecho que el botón de compartir sea más fácil de usar. En vez de un icono, ahora se muestra como un texto para que sea más fácil de encontrar.
+También hemos corregido un error que impedía añadir nuevas notas a un pedido. Ahora, deberías poder escribir tus notas sin problemas.
+Por último, en el proceso de creación de nuestra tienda, hemos actualizado la vista de tiempo de espera. Por consiguiente, si la comprobación del sitio tarda más de lo previsto, puedes reintentar esta acción.
+
+Como siempre, estamos aquí para facilitarte la experiencia con la aplicación. ¡Gracias por contar con nosotros!

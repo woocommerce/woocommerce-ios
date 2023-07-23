@@ -40,8 +40,8 @@ final class LocalNotificationScheduler {
 
     /// Cancels a local notification of the given scenario.
     /// - Parameter scenario: The scenario to cancel.
-    func cancel(scenario: LocalNotification.Scenario) {
-        pushNotesManager.cancelLocalNotification(scenarios: [scenario])
+    func cancel(scenario: LocalNotification.Scenario) async {
+        await pushNotesManager.cancelLocalNotification(scenarios: [scenario])
     }
 }
 

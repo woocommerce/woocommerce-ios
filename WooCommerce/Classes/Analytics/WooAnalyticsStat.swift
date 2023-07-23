@@ -407,6 +407,11 @@ public enum WooAnalyticsStat: String {
     case orderFeeRemove = "order_fee_remove"
     case orderCouponAdd = "order_coupon_add"
     case orderCouponRemove = "order_coupon_remove"
+    case orderGoToCouponsButtonTapped = "order_go_to_coupons_button_tapped"
+    case orderProductDiscountAdd = "order_product_discount_add"
+    case orderProductDiscountRemove = "order_product_discount_remove"
+    case orderProductDiscountAddButtonTapped = "order_product_discount_add_button_tapped"
+    case orderProductDiscountEditButtonTapped = "order_product_discount_edit_button_tapped"
     case orderShippingMethodAdd = "order_shipping_method_add"
     case orderShippingMethodRemove = "order_shipping_method_remove"
     case orderSyncFailed = "order_sync_failed"
@@ -575,6 +580,14 @@ public enum WooAnalyticsStat: String {
     case addProductFailed = "add_product_failed"
     // Exposure event for the A/B experiment.
     case addProductFromImageEligible = "add_product_from_image_eligible"
+
+    // MARK: Add product from image events
+    case addProductFromImageDisplayed = "add_product_from_image_displayed"
+    case addProductFromImageScanCompleted = "add_product_from_image_scan_completed"
+    case addProductFromImageScanFailed = "add_product_from_image_scan_failed"
+    case addProductFromImageDetailsGenerated = "add_product_from_image_details_generated"
+    case addProductFromImageDetailGenerationFailed = "add_product_from_image_detail_generation_failed"
+    case addProductFromImageContinueButtonTapped = "add_product_from_image_continue_button_tapped"
 
     // MARK: Duplicate Product events
     case duplicateProductSuccess = "duplicate_product_success"

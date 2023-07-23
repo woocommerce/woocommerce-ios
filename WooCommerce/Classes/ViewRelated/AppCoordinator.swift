@@ -351,16 +351,15 @@ private extension AppCoordinator {
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires
         let twentyFourHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
 
+        let userInfo = response.notification.request.content.userInfo
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
-            analytics.track(.localNotificationDismissed, withProperties: [
-                "type": LocalNotification.Scenario.identifierForAnalytics(identifier)
-            ])
+            analytics.track(event: .LocalNotification.dismissed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
+                                                                                 userInfo: userInfo))
             return
         }
 
-        analytics.track(.localNotificationTapped, withProperties: [
-            "type": LocalNotification.Scenario.identifierForAnalytics(identifier)
-        ])
+        analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
+                                                                          userInfo: userInfo))
 
         switch identifier {
         case let identifier where identifier.hasPrefix(oneDayBeforeFreeTrialExpiresIdentifier):

@@ -86,4 +86,65 @@ final class AddProductFromImageTextFieldViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.text, "Fish")
         XCTAssertNil(viewModel.suggestedText)
     }
+
+    // MARK: `hasAppliedGeneratedContent`
+
+    func test_hasAppliedGeneratedContent_is_false_by_default() {
+        // Given
+        let viewModel = ViewModel(text: "Fish", placeholder: "")
+
+        // Then
+        XCTAssertFalse(viewModel.hasAppliedGeneratedContent)
+    }
+
+    func test_hasAppliedGeneratedContent_is_set_to_true_if_content_is_populated_from_suggestion() {
+        // Given
+        let viewModel = ViewModel(text: "", placeholder: "")
+
+        // When
+        viewModel.onSuggestion("Ramen")
+
+        // Then
+        XCTAssertTrue(viewModel.hasAppliedGeneratedContent)
+    }
+
+    func test_hasAppliedGeneratedContent_is_not_set_to_true_if_content_is_not_populated_from_suggestion() {
+        // Given
+        let viewModel = ViewModel(text: "Taco", placeholder: "")
+
+        // When
+        viewModel.onSuggestion("Ramen")
+
+        // Then
+        XCTAssertFalse(viewModel.hasAppliedGeneratedContent)
+    }
+
+    func test_hasAppliedGeneratedContent_is_set_to_true_if_suggestion_is_applied() {
+        // Given
+        let viewModel = ViewModel(text: "Taco", placeholder: "")
+
+        // When
+        viewModel.onSuggestion("Ramen")
+        viewModel.applySuggestedText()
+
+        // Then
+        XCTAssertTrue(viewModel.hasAppliedGeneratedContent)
+    }
+
+    // MARK: `reset()`
+
+    func test_reset_sets_all_properties_to_default_values() {
+        // Given
+        let viewModel = ViewModel(text: "Taco", placeholder: "")
+        viewModel.onSuggestion("Ramen")
+        viewModel.applySuggestedText()
+
+        // When
+        viewModel.reset()
+
+        // Then
+        XCTAssertFalse(viewModel.hasAppliedGeneratedContent)
+        XCTAssertEqual(viewModel.text, "")
+        XCTAssertNil(viewModel.suggestedText)
+    }
 }

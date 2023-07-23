@@ -10,6 +10,8 @@ final class DeviceMediaLibraryPicker: NSObject {
 
     private let allowsMultipleImages: Bool
 
+    private var origin: UIViewController?
+
     init(allowsMultipleImages: Bool, onCompletion: @escaping Completion) {
         self.allowsMultipleImages = allowsMultipleImages
         self.onCompletion = onCompletion
@@ -31,7 +33,11 @@ final class DeviceMediaLibraryPicker: NSObject {
 
         picker.mediaPicker.collectionView?.backgroundColor = .listBackground
 
-        origin.present(picker, animated: true)
+        self.origin = origin
+        origin.present(picker, animated: true) { [weak self] in
+            guard let self else { return }
+            picker.presentationController?.delegate = self
+        }
     }
 }
 
@@ -46,11 +52,26 @@ extension DeviceMediaLibraryPicker: WPMediaPickerViewControllerDelegate {
         guard let assets = assets as? [PHAsset], assets.isEmpty == false else {
             return
         }
-
-        onCompletion(assets)
+        dismissAndComplete(with: assets)
     }
 
     func mediaPickerControllerDidCancel(_ picker: WPMediaPickerViewController) {
+        dismissAndComplete(with: [])
+    }
+}
+
+extension DeviceMediaLibraryPicker: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         onCompletion([])
+    }
+}
+
+private extension DeviceMediaLibraryPicker {
+    func dismissAndComplete(with assets: [PHAsset]) {
+        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
+        origin?.dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            self?.onCompletion(assets)
+            self?.origin = nil
+        }
     }
 }

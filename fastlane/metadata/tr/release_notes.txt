@@ -1,1 +1,7 @@
-Bu sürüm, bir sipariş oluştururken birden fazla kupon ekleme seçeneğini içerir. WooCommerce ürünleriniz için dönüştürülebilir ve SEO için optimize edilmiş ürün açıklamaları oluşturabileceğinizi biliyor muydunuz? Deneyin! Ücretsiz deneme sürümüne abone olan ABD mağazaları, artık uygulama içi satın alma işlemiyle ücretli pakete yükseltme yapabilirler.
+Uygulamamızla olan deneyiminizi geliştirmek için bazı yeni güncellemelerle geri döndük!
+
+Öncelikle paylaşım düğmesini daha kullanıcı dostu hale getirdik. Daha iyi keşfedilebilirlik için artık bir simge yerine metin olarak görünüyor.
+Ayrıca bir siparişe yeni notlar eklemenizi engelleyen rahatsız edici bir hatayı da düzelttik. Artık notlarınızı sorunsuz bir şekilde yazabilirsiniz.
+Son olarak, mağaza oluşturma sürecimizde zaman aşımı görünümünü güncelledik. Site kontrolü beklediğinizden uzun sürüyorsa, artık yeniden deneme seçeneğiniz var.
+
+Her zaman olduğu gibi, uygulama yolculuğunuzu daha sorunsuz ve keyifli hale getirmek için buradayız. Bizimle devam ettiğiniz için teşekkür ederiz!

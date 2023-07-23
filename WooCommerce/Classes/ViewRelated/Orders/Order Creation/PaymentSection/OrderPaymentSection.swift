@@ -1,5 +1,4 @@
 import SwiftUI
-import Yosemite
 
 /// Represents the Payment section in an order
 ///
@@ -18,6 +17,10 @@ struct OrderPaymentSection: View {
     /// Indicates if the coupon line details screen should be shown or not.
     ///
     @State private var shouldShowAddCouponLineDetails: Bool = false
+
+    /// Indicates if the go to coupons alert should be shown or not.
+    ///
+    @State private var shouldShowGoToCouponsAlert: Bool = false
 
     /// Keeps track of the selected coupon line details view model.
     ///
@@ -71,10 +74,41 @@ struct OrderPaymentSection: View {
 
             addCouponRow
                 .sheet(isPresented: $shouldShowAddCouponLineDetails) {
-                    CouponLineDetails(viewModel: viewModel.addCouponLineViewModel)
+                    NavigationView {
+                        CouponListView(siteID: viewModel.siteID,
+                                       emptyStateActionTitle: Localization.goToCoupons,
+                                       emptyStateAction: {
+                                            shouldShowGoToCouponsAlert = true
+                                        },
+                                       onCouponSelected: { coupon in
+                                            viewModel.addNewCouponLineClosure(coupon)
+                                            shouldShowAddCouponLineDetails = false
+                                        })
+                        .navigationTitle(Localization.addCoupon)
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    Button(Localization.cancelButton) {
+                                        shouldShowAddCouponLineDetails = false
+                                    }
+                                }
+                            }
+                            .alert(isPresented: $shouldShowGoToCouponsAlert, content: {
+                                Alert(title: Text(Localization.goToCoupons),
+                                      message: Text(Localization.goToCouponsAlertMessage),
+                                      primaryButton: .default(Text(Localization.goToCouponsAlertButtonTitle), action: {
+                                    viewModel.onGoToCouponsClosure()
+                                    MainTabBarController.presentCoupons()
+                                }),
+                                      secondaryButton: .cancel())
+                            })
+                    }
                 }
 
             TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
+
+            TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
+                .renderedIf(viewModel.shouldShowDiscountTotal)
 
             TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
         }
@@ -131,13 +165,20 @@ private extension OrderPaymentSection {
         static let payment = NSLocalizedString("Payment", comment: "Title text of the section that shows Payment details when creating a new order")
         static let productsTotal = NSLocalizedString("Products Total", comment: "Label for the row showing the total cost of products in the order")
         static let orderTotal = NSLocalizedString("Order Total", comment: "Label for the the row showing the total cost of the order")
+        static let discountTotal = NSLocalizedString("Discount Total", comment: "Label for the the row showing the total discount of the order")
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addFee = NSLocalizedString("Add Fee", comment: "Title text of the button that adds a fee when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
         static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
+        static let addCoupon = NSLocalizedString("Add coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
-        static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title text of the button that adds a coupon when creating a new order")
+        static let goToCoupons = NSLocalizedString("Go to Coupons", comment: "Button title on the Coupon screen empty state" +
+                                                   "when creating a new order that navigates to the Coupons Section")
+        static let goToCouponsAlertMessage = NSLocalizedString("Do you want to navigate to the Coupons Menu? These changes will be discarded.",
+                                                               comment: "Confirm message for navigating to coupons when creating a new order")
+        static let goToCouponsAlertButtonTitle = NSLocalizedString("Go", comment: "Confirm button title for navigating to coupons when creating a new order")
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
     }
 }
 

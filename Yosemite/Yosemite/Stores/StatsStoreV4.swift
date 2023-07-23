@@ -496,11 +496,13 @@ public enum StatsStoreV4Error: Error {
 ///
 /// - noPermission: the user has no permission to view site stats.
 /// - statsModuleDisabled: Jetpack site stats module is disabled for the site.
+/// - jetpackNotConnected: Jetpack is not connected on the site.
 /// - unknown: other error cases.
 ///
 public enum SiteStatsStoreError: Error {
     case statsModuleDisabled
     case noPermission
+    case jetpackNotConnected
     case unknown
 
     init(error: Error) {
@@ -513,6 +515,8 @@ public enum SiteStatsStoreError: Error {
             self = .noPermission
         case .statsModuleDisabled:
             self = .statsModuleDisabled
+        case .jetpackNotConnected:
+            self = .jetpackNotConnected
         default:
             self = .unknown
         }

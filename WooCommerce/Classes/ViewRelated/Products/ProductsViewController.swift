@@ -180,7 +180,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Set when sync fails, and used to display an error loading data banner
     ///
-    @Published private var hasErrorLoadingData: Bool = false
+    @Published private var dataLoadingError: Error?
 
     /// Free trial banner presentation handler.
     ///
@@ -727,8 +727,8 @@ private extension ProductsViewController {
     /// Displays an error banner if there is an error loading products data.
     ///
     func showTopBannerViewIfNeeded() {
-        if hasErrorLoadingData {
-            requestAndShowErrorTopBannerView()
+        if let error = dataLoadingError {
+            requestAndShowErrorTopBannerView(for: error)
         }
 
         updateBlazeBannerVisibility()
@@ -757,16 +757,15 @@ private extension ProductsViewController {
 
     /// Request a new error loading data banner from `ErrorTopBannerFactory` and display it in the table header
     ///
-    func requestAndShowErrorTopBannerView() {
-        let errorBanner = ErrorTopBannerFactory.createTopBanner(
-            isExpanded: false,
+    func requestAndShowErrorTopBannerView(for error: Error) {
+        let errorBanner = ErrorTopBannerFactory.createTopBanner(for: error,
             expandedStateChangeHandler: { [weak self] in
                 self?.tableView.updateHeaderHeight()
             },
             onTroubleshootButtonPressed: { [weak self] in
                 guard let self = self else { return }
 
-                WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
+                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self = self else { return }
@@ -867,10 +866,10 @@ private extension ProductsViewController {
     func observeBlazeBannerVisibility() {
         viewModel.$shouldShowBlazeBanner
             .removeDuplicates()
-            .combineLatest($hasErrorLoadingData.removeDuplicates())
-            .sink { [weak self] shouldShow, hasErrorLoadingData in
+            .combineLatest($dataLoadingError)
+            .sink { [weak self] shouldShow, loadingError in
                 guard let self else { return }
-                if shouldShow, !hasErrorLoadingData {
+                if shouldShow, loadingError == nil {
                     self.showBlazeBanner()
                 } else {
                     self.hideBlazeBanner()
@@ -1208,7 +1207,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState(pageNumber: pageNumber)
-        hasErrorLoadingData = false
+        dataLoadingError = nil
 
         let action = ProductAction
             .synchronizeProducts(siteID: siteID,
@@ -1227,7 +1226,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                     case .failure(let error):
                                         ServiceLocator.analytics.track(.productListLoadError, withError: error)
                                         DDLogError("⛔️ Error synchronizing products: \(error)")
-                                        self.hasErrorLoadingData = true
+                                        self.dataLoadingError = error
                                     case .success:
                                         ServiceLocator.analytics.track(.productListLoaded)
                                     }
@@ -1336,7 +1335,7 @@ private extension ProductsViewController {
                 ensureFooterSpinnerIsStarted()
             }
             // Remove error banner when sync starts
-            if hasErrorLoadingData {
+            if dataLoadingError != nil {
                 hideTopBannerView()
             }
         case .results:

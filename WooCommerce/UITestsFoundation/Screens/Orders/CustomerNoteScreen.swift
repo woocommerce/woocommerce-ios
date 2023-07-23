@@ -31,6 +31,13 @@ public final class CustomerNoteScreen: ScreenObject {
         return self
     }
 
+    @discardableResult
+    public func verifyNoteAdded(_ text: String) throws -> Self {
+        XCTAssertTrue(app.keyboards.firstMatch.exists)
+        XCTAssertEqual(noteTextEditor.value as? String, text)
+        return self
+    }
+
     /// Confirms entered note and closes Customer Note screen.
     /// - Returns: Unified Order screen object.
     @discardableResult

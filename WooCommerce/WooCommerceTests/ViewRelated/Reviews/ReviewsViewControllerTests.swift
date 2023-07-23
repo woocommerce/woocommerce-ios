@@ -79,7 +79,7 @@ private final class MockReviewsViewModel: ReviewsViewModelOutput, ReviewsViewMod
 
     var shouldPromptForAppReview = false
 
-    var hasErrorLoadingData = true
+    var dataLoadingError: Error?
 
     func containsMorePages(_ highestVisibleReview: Int) -> Bool { false }
 

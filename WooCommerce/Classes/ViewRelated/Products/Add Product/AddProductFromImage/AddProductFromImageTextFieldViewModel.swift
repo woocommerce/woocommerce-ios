@@ -5,6 +5,7 @@ final class AddProductFromImageTextFieldViewModel: ObservableObject {
     @Published var text: String
     @Published private(set) var suggestedText: String?
     let placeholder: String
+    private(set) var hasAppliedGeneratedContent: Bool = false
 
     /// - Parameters:
     ///   - text: Initial value of the text.
@@ -18,6 +19,13 @@ final class AddProductFromImageTextFieldViewModel: ObservableObject {
         self.suggestedText = suggestedText
     }
 
+    /// Invoked when the content and state of the field should be reset.
+    func reset() {
+        text = ""
+        suggestedText = nil
+        hasAppliedGeneratedContent = false
+    }
+
     /// Invoked when a suggestion for the text field is available.
     /// - Parameter suggestion: Suggested text for the text field.
     func onSuggestion(_ suggestion: String) {
@@ -28,6 +36,7 @@ final class AddProductFromImageTextFieldViewModel: ObservableObject {
             suggestedText = suggestion
         } else {
             text = suggestion
+            hasAppliedGeneratedContent = true
         }
     }
 
@@ -35,6 +44,7 @@ final class AddProductFromImageTextFieldViewModel: ObservableObject {
     func applySuggestedText() {
         text = suggestedText ?? ""
         suggestedText = nil
+        hasAppliedGeneratedContent = true
     }
 
     /// Invoked when the user taps to dismiss the suggested text.

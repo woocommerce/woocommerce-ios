@@ -13,6 +13,7 @@ final class AddProductFromImageCoordinator: Coordinator {
     private var mediaPickingCoordinator: MediaPickingCoordinator?
 
     private let siteID: Int64
+    private let source: AddProductCoordinator.Source
     private let productImageUploader: ProductImageUploaderProtocol
     private let productImageLoader: ProductUIImageLoader
 
@@ -20,11 +21,13 @@ final class AddProductFromImageCoordinator: Coordinator {
     private let onProductCreated: (Product) -> Void
 
     init(siteID: Int64,
+         source: AddProductCoordinator.Source,
          sourceNavigationController: UINavigationController,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
+        self.source = source
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.productImageLoader = productImageLoader
@@ -33,12 +36,16 @@ final class AddProductFromImageCoordinator: Coordinator {
 
     func start() {
         let addProductFromImage = AddProductFromImageHostingController(siteID: siteID,
+                                                                       source: source,
                                                                        addImage: { [weak self] source in
             await self?.showImagePicker(source: source)
         }, completion: { [weak self] data in
             guard let self else { return }
             Task { @MainActor in
                 await self.navigationController.dismiss(animated: true)
+                guard let data else {
+                    return
+                }
                 guard let product = self.createProduct(name: data.name, description: data.description) else {
                     return
                 }
@@ -110,6 +117,7 @@ private extension AddProductFromImageCoordinator {
         return await withCheckedContinuation { continuation in
             let mediaPickingCoordinator = MediaPickingCoordinator(siteID: siteID,
                                                                   allowsMultipleImages: false,
+                                                                  flow: .productFromImageForm,
                                                                   onCameraCaptureCompletion: { [weak self] asset, error in
                 guard let self else {
                     return continuation.resume(returning: nil)
@@ -123,7 +131,7 @@ private extension AddProductFromImageCoordinator {
                     return continuation.resume(returning: nil)
                 }
                 Task { @MainActor in
-                    let image = await self.onDeviceMediaLibraryPickerCompletion(assets: assets, navigationController: formNavigationController)
+                    let image = await self.onDeviceMediaLibraryPickerCompletion(assets: assets)
                     continuation.resume(returning: image)
                 }
             }, onWPMediaPickerCompletion: { [weak self] mediaItems in
@@ -131,7 +139,7 @@ private extension AddProductFromImageCoordinator {
                     return continuation.resume(returning: nil)
                 }
                 Task { @MainActor in
-                    let image = await self.onWPMediaPickerCompletion(mediaItems: mediaItems, navigationController: formNavigationController)
+                    let image = await self.onWPMediaPickerCompletion(mediaItems: mediaItems)
                     continuation.resume(returning: image)
                 }
             })
@@ -157,9 +165,7 @@ private extension AddProductFromImageCoordinator {
 //
 private extension AddProductFromImageCoordinator {
     @MainActor
-    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset], navigationController: UINavigationController) async -> MediaPickerImage? {
-        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        await navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal)
+    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) async -> MediaPickerImage? {
         guard let asset = assets.first else {
             return nil
         }
@@ -171,9 +177,7 @@ private extension AddProductFromImageCoordinator {
 //
 private extension AddProductFromImageCoordinator {
     @MainActor
-    func onWPMediaPickerCompletion(mediaItems: [Media], navigationController: UINavigationController) async -> MediaPickerImage? {
-        let shouldAnimateMediaLibraryDismissal = mediaItems.isEmpty
-        await navigationController.dismiss(animated: shouldAnimateMediaLibraryDismissal)
+    func onWPMediaPickerCompletion(mediaItems: [Media]) async -> MediaPickerImage? {
         guard let media = mediaItems.first else {
             return nil
         }

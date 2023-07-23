@@ -113,6 +113,11 @@ final class DashboardViewModel {
                             timeRange: StatsTimeRangeV4,
                             latestDateToInclude: Date,
                             onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        guard stores.isAuthenticatedWithoutWPCom == false else { // Visit stats are only available for stores connected to WPCom
+            onCompletion?(.success(()))
+            return
+        }
+
         let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
                                                           siteTimezone: siteTimezone,
                                                           timeRange: timeRange,
@@ -132,6 +137,11 @@ final class DashboardViewModel {
                               timeRange: StatsTimeRangeV4,
                               latestDateToInclude: Date,
                               onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        guard stores.isAuthenticatedWithoutWPCom == false else { // Summary stats are only available for stores connected to WPCom
+            onCompletion?(.success(()))
+            return
+        }
+
         let action = StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
                                                             siteTimezone: siteTimezone,
                                                             period: timeRange.summaryStatsGranularity,

@@ -25,6 +25,13 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     ///
     case noRestRoute
 
+    /// Jetpack is not connected
+    ///
+    /// This can be caused by an `unknown_token` error from Jetpack
+    /// or an `invalid_blog` error from WordPress.com Stats.
+    ///
+    case jetpackNotConnected
+
     /// Unknown: Represents an unmapped remote error. Capisce?
     ///
     case unknown(code: String, message: String?)
@@ -64,6 +71,9 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
             self = .statsModuleDisabled
         case Constants.restTermInvalid where message == ErrorMessages.resourceDoesNotExist:
             self = .resourceDoesNotExist
+        case Constants.unknownToken,
+            Constants.invalidBlog where message == ErrorMessages.jetpackNotConnected:
+            self = .jetpackNotConnected
         default:
             self = .unknown(code: error, message: message)
         }
@@ -79,6 +89,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         static let requestFailed    = "http_request_failed"
         static let noRestRoute      = "rest_no_route"
         static let restTermInvalid  = "woocommerce_rest_term_invalid"
+        static let unknownToken     = "unknown_token"
     }
 
     /// Coding Keys
@@ -94,6 +105,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         static let statsModuleDisabled = "This blog does not have the Stats module enabled"
         static let noStatsPermission = "user cannot view stats"
         static let resourceDoesNotExist = "Resource does not exist."
+        static let jetpackNotConnected = "This blog does not have Jetpack connected"
     }
 }
 
@@ -120,6 +132,8 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Stats Module Disabled", comment: "WordPress.com error thrown when the Jetpack site stats module is disabled.")
         case .resourceDoesNotExist:
             return NSLocalizedString("Dotcom Resource does not exist", comment: "WordPress.com error thrown when a requested resource does not exist remotely.")
+        case .jetpackNotConnected:
+            return NSLocalizedString("Jetpack Not Connected", comment: "WordPress.com error thrown when Jetpack is not connected.")
         case .unknown(let code, let message):
             let theMessage = message ?? String()
             let messageFormat = NSLocalizedString(
@@ -136,15 +150,12 @@ extension DotcomError: CustomStringConvertible {
 //
 public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
     switch (lhs, rhs) {
-    case (.requestFailed, .requestFailed):
-        return true
-    case (.unauthorized, .unauthorized):
-        return true
-    case (.noRestRoute, .noRestRoute):
-        return true
-    case (.noStatsPermission, .noStatsPermission):
-        return true
-    case (.statsModuleDisabled, .statsModuleDisabled):
+    case (.requestFailed, .requestFailed),
+        (.unauthorized, .unauthorized),
+        (.noRestRoute, .noRestRoute),
+        (.noStatsPermission, .noStatsPermission),
+        (.statsModuleDisabled, .statsModuleDisabled),
+        (.jetpackNotConnected, .jetpackNotConnected):
         return true
     case let (.unknown(codeLHS, _), .unknown(codeRHS, _)):
         return codeLHS == codeRHS

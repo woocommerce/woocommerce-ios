@@ -6,7 +6,7 @@ import Foundation
 struct InAppPurchasesTransactionMapper: Mapper {
     func map(response: Data) throws -> InAppPurchasesTransactionResponse {
         let decoder = JSONDecoder()
-            return try decoder.decode(InAppPurchasesTransactionResponse.self, from: response)
+        return try decoder.decode(InAppPurchasesTransactionResponse.self, from: response)
     }
 }
 

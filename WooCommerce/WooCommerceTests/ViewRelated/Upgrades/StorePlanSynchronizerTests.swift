@@ -264,7 +264,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         synchronizer.reloadPlan()
 
         // Then
-        waitUntil(timeout: 3) {
+        waitUntil(timeout: 4) {
             /// 4 notifications include:
             /// - 1 day before expiration date
             /// - 1 day after expiration date

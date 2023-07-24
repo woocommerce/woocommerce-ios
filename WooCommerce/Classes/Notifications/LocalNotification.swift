@@ -58,6 +58,8 @@ struct LocalNotification {
                 return Identifier.Prefix.oneDayBeforeFreeTrialExpires
             } else if identifier.hasPrefix(Identifier.Prefix.oneDayAfterFreeTrialExpires) {
                 return Identifier.Prefix.oneDayAfterFreeTrialExpires
+            } else if identifier.hasPrefix(Identifier.Prefix.sixHoursAfterFreeTrialSubscribed) {
+                return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
             } else if identifier.hasPrefix(Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
             }

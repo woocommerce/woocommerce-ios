@@ -148,6 +148,9 @@ private extension StorePlanSynchronizer {
                 ))
             }
             group.addTask { [weak self] in
+                await self?.localNotificationScheduler.cancel(scenario: .sixHoursAfterFreeTrialSubscribed(siteID: siteID))
+            }
+            group.addTask { [weak self] in
                 await self?.localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
             }
         }
@@ -163,7 +166,7 @@ private extension StorePlanSynchronizer {
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
             let iapAvailable = await inAppPurchaseManager.inAppPurchasesAreSupported()
-            let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID),
+            let notification = LocalNotification(scenario: scenario,
                                                  userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: iapAvailable])
             await localNotificationScheduler.schedule(notification: notification,
                                                       trigger: trigger,

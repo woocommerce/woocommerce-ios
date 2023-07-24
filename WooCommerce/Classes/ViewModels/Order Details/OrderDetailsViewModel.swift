@@ -248,10 +248,10 @@ extension OrderDetailsViewModel {
             defer {
                 group.leave()
             }
-            guard await isShipmentTrackingEnabled() else {
+            trackingIsReachable = await isShipmentTrackingEnabled()
+            guard trackingIsReachable else {
                 return
             }
-            trackingIsReachable = true
             await syncTrackingsWhenShipmentTrackingIsEnabled()
             onReloadSections?()
         }

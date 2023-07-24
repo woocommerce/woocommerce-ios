@@ -177,7 +177,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
                                   inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
-        waitUntil(timeout: 3) {
+        waitUntil(timeout: 5) {
             pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
         }
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
@@ -268,12 +268,14 @@ final class StorePlanSynchronizerTests: XCTestCase {
         synchronizer.reloadPlan()
 
         // Then
-        waitUntil(timeout: 3) {
-            /// 2 notifications include:
+        waitUntil(timeout: 5) {
+            /// 4 notifications include:
+            /// - 1 day before expiration date
+            /// - 1 day after expiration date
             /// - 6 hrs after trial subscription
             /// - 24 hrs after trial subscription
             /// Update this number based on the number of notifications we support.
-            pushNotesManager.canceledLocalNotificationScenarios.count == 2
+            pushNotesManager.canceledLocalNotificationScenarios.count == 4
         }
 
         // No local notifications scheduling requested for a non free trial plan

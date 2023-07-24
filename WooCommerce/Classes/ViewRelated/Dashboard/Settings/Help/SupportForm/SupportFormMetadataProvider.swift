@@ -3,7 +3,6 @@ import CoreTelephony
 import Yosemite
 import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
-import enum Experiments.ABTest
 
 /// Helper that provides general device & site zendesk metadata.
 ///
@@ -60,7 +59,7 @@ class SupportFormMetadataProvider {
             site.isWordPressComStore ? Constants.wpComTag : nil,
             site.plan.isNotEmpty ? site.plan : nil,
             stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil,
-            addProductFromImageEligibilityChecker.isEligible() ? ABTest.addProductFromImage.rawValue : nil
+            addProductFromImageEligibilityChecker.isEligible() ? Constants.ABTest.aiProductFromImage : nil
         ].compactMap { $0 } + getIPPTags()
     }
 
@@ -254,6 +253,10 @@ private extension SupportFormMetadataProvider {
         static let networkCarrierLabel = "Carrier:"
         static let networkCountryCodeLabel = "Country Code:"
         static let sourcePlatform = "mobile_-_woo_ios"
+
+        enum ABTest {
+            static let aiProductFromImage = "ai_product_details_from_image"
+        }
     }
 
     /// Payments extensions Slugs

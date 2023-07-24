@@ -1,6 +1,5 @@
 import XCTest
 @testable import WooCommerce
-import enum Experiments.ABTest
 import WordPressAuthenticator
 
 final class SupportDataSourcesTests: XCTestCase {
@@ -39,7 +38,7 @@ final class SupportDataSourcesTests: XCTestCase {
         let dataSource = MobileAppSupportDataSource(metadataProvider: metadataProvider)
 
         // Then
-        XCTAssertTrue(dataSource.tags.contains(ABTest.addProductFromImage.rawValue))
+        XCTAssertTrue(dataSource.tags.contains("ai_product_details_from_image"))
     }
 
     func test_mobile_app_tags_does_not_contain_addProductFromImage_tag_when_not_eligible() {
@@ -55,7 +54,7 @@ final class SupportDataSourcesTests: XCTestCase {
         let dataSource = MobileAppSupportDataSource(metadataProvider: metadataProvider)
 
         // Then
-        XCTAssertFalse(dataSource.tags.contains(ABTest.addProductFromImage.rawValue))
+        XCTAssertFalse(dataSource.tags.contains("ai_product_details_from_image"))
     }
 
     func test_mobile_app_fields_have_correct_ids() {

@@ -281,9 +281,13 @@ private extension InAppPurchaseStore {
     /// - Parameters:
     ///   - result: Represents the verification state of an In-App Purchase transaction
     ///   - transaction: A successful In-App purchase
-    ///   
     func handleVerifiedTransactionResult(_ result: VerificationResult<Transaction>, _ transaction: Transaction) async throws {
         Task { @MainActor in
+            // This remote call needs to run in the main thread. Since the request is an AuthenticatedDotcomRequest it requires to instantiate a
+            // WKWebView and inject a WPCOM token into it as part of the user agent in order to work, however, a WKWebView also requires to be
+            // ran from the main thread only. This is not assured to happen unless we call the remote through the Action Dispatcher, and
+            // could cause a runtime crash since there is no compiler-check to stop us from doing so.
+            // https://github.com/woocommerce/woocommerce-ios/issues/10294
             let wpcomTransactionResponse = try await self.remote.retrieveHandledTransactionResult(for: transaction.id)
             if wpcomTransactionResponse.siteID != nil {
                 await transaction.finish()

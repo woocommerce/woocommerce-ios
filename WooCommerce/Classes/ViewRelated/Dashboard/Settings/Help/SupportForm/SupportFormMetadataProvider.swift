@@ -3,6 +3,7 @@ import CoreTelephony
 import Yosemite
 import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
+import enum Experiments.ABTest
 
 /// Helper that provides general device & site zendesk metadata.
 ///
@@ -58,7 +59,8 @@ class SupportFormMetadataProvider {
             Constants.platformTag,
             site.isWordPressComStore ? Constants.wpComTag : nil,
             site.plan.isNotEmpty ? site.plan : nil,
-            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil
+            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil,
+            addProductFromImageEligibilityChecker.isEligible() ? ABTest.addProductFromImage.rawValue : nil
         ].compactMap { $0 } + getIPPTags()
     }
 

@@ -2,7 +2,7 @@
 
 14.7
 -----
-- [*] Local notifications: A reminder to purchase a plan is scheduled 6hr after a free trial subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10268]
+- [*] Local notifications: Add a reminder to purchase a plan is scheduled 6hr after a free trial subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10268]
 
 
 14.6

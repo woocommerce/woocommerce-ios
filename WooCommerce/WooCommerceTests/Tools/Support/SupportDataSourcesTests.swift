@@ -1,10 +1,13 @@
 import XCTest
 @testable import WooCommerce
+import enum Experiments.ABTest
+import WordPressAuthenticator
 
 final class SupportDataSourcesTests: XCTestCase {
 
     override class func setUp() {
         super.setUp()
+        WordPressAuthenticator.initializeAuthenticator()
         ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isSupportRequestEnabled: true))
     }
 
@@ -21,6 +24,28 @@ final class SupportDataSourcesTests: XCTestCase {
 
         // When & Then
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
+    }
+
+    func test_mobile_app_tags_contain_addProductFromImage_tag_when_eligible() {
+        // Given
+        let mockEligibilityChecker = MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true,
+                                                             isEligible: true)
+        let metadataProvider = SupportFormMetadataProvider(addProductFromImageEligibilityChecker: mockEligibilityChecker)
+        let dataSource = MobileAppSupportDataSource(metadataProvider: metadataProvider)
+
+        // Then
+        XCTAssertTrue(dataSource.tags.contains(ABTest.addProductFromImage.rawValue))
+    }
+
+    func test_mobile_app_tags_does_not_contain_addProductFromImage_tag_when_not_eligible() {
+        // Given
+        let mockEligibilityChecker = MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true,
+                                                             isEligible: false)
+        let metadataProvider = SupportFormMetadataProvider(addProductFromImageEligibilityChecker: mockEligibilityChecker)
+        let dataSource = MobileAppSupportDataSource(metadataProvider: metadataProvider)
+
+        // Then
+        XCTAssertFalse(dataSource.tags.contains(ABTest.addProductFromImage.rawValue))
     }
 
     func test_mobile_app_fields_have_correct_ids() {
@@ -162,4 +187,7 @@ final class SupportDataSourcesTests: XCTestCase {
             360000089123 // Device Free Space
         ].sorted())
     }
+
+    // MARK
+
 }

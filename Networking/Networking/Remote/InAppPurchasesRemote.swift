@@ -97,7 +97,6 @@ public extension InAppPurchasesRemote {
     ///- Returns: A InAppPurchasesTransactionResponse, which will contain the siteID the transactionID belongs to for handled transactions,
     /// or a "transaction not found" response for unhandled transactions
     ///
-    @MainActor
     func retrieveHandledTransactionResult(for transactionID: UInt64) async throws -> InAppPurchasesTransactionResponse {
         try await withCheckedThrowingContinuation { continuation in
             retrieveHandledTransactionResult(for: transactionID) { result in

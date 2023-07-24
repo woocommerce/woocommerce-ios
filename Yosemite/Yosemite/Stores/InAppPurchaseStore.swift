@@ -275,6 +275,26 @@ private extension InAppPurchaseStore {
         return supportedCountriesCodes.contains(countryCode)
     }
 
+    /// For verified transactions, checks whether a transaction has been handled already on WPCOM end or not
+    /// we'll mark handled transactions as `finish`. This indicates to the App Store that the app enabled the service to finish the transaction
+    ///
+    /// - Parameters:
+    ///   - result: Represents the verification state of an In-App Purchase transaction
+    ///   - transaction: A successful In-App purchase
+    ///   
+    func handleVerifiedTransactionResult(_ result: VerificationResult<Transaction>, _ transaction: Transaction) async throws {
+        Task { @MainActor in
+            let wpcomTransactionResponse = try await self.remote.retrieveHandledTransactionResult(for: transaction.id)
+            if wpcomTransactionResponse.siteID != nil {
+                await transaction.finish()
+                self.logInfo("Marking transaction \(transaction.id) as finished")
+            } else {
+                try await self.handleCompletedTransaction(result)
+                self.logInfo("Transaction \(transaction.id) not found in WPCOM")
+            }
+        }
+    }
+
     func listenForTransactions() {
         assert(listenTask == nil, "InAppPurchaseStore.listenForTransactions() called while already listening for transactions")
 
@@ -292,16 +312,7 @@ private extension InAppPurchaseStore {
                     do {
                         // Wait until the purchase finishes
                         _ = await self.pauseTransactionListener.values.contains(false)
-                        // For verified transactions, check whether a transaction has been handled already,
-                        // and mark it as finished if that's the case, or handle it otherwise
-                        let wpcomTransactionResponse = try await self.remote.retrieveHandledTransactionResult(for: transaction.id)
-                        if wpcomTransactionResponse.siteID != nil {
-                            await transaction.finish()
-                            self.logInfo("Marking transaction \(transaction.id) as finished")
-                        } else {
-                            try await self.handleCompletedTransaction(result)
-                            self.logInfo("Transaction \(transaction.id) not found in WPCOM")
-                        }
+                        try await self.handleVerifiedTransactionResult(result, transaction)
                     } catch {
                         self.logError("Error handling transaction \(transaction.id) update: \(error)")
                     }

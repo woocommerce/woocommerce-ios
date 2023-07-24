@@ -588,7 +588,8 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
         let response = try XCTUnwrap(MockNotificationResponse(
             actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
+            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier,
+            notificationUserInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
         )
         pushNotesManager.sendLocalNotificationResponse(response)
 
@@ -596,6 +597,7 @@ final class AppCoordinatorTests: XCTestCase {
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationTapped.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
         assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(true, eventProperties["is_iap_available"] as? Bool)
     }
 
     // MARK: - Notification to subscribe to free trial after entering store name

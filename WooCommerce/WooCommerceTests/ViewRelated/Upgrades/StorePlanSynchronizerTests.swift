@@ -265,7 +265,13 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 3) {
-           pushNotesManager.canceledLocalNotificationScenarios.count == 4
+            /// 4 notifications include:
+            /// - 1 day before expiration date
+            /// - 1 day after expiration date
+            /// - 6 hrs after trial subscription
+            /// - 24 hrs after trial subscription
+            /// Update this number based on the number of notifications we support.
+            pushNotesManager.canceledLocalNotificationScenarios.count == 4
         }
 
         // No local notifications scheduling requested for a non free trial plan

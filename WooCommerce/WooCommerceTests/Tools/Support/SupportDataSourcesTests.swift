@@ -30,7 +30,12 @@ final class SupportDataSourcesTests: XCTestCase {
         // Given
         let mockEligibilityChecker = MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true,
                                                              isEligible: true)
-        let metadataProvider = SupportFormMetadataProvider(addProductFromImageEligibilityChecker: mockEligibilityChecker)
+        let sessionManager: SessionManager = .makeForTesting(authenticated: true)
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let metadataProvider = SupportFormMetadataProvider(stores: stores,
+                                                           sessionManager: sessionManager,
+                                                           addProductFromImageEligibilityChecker: mockEligibilityChecker)
         let dataSource = MobileAppSupportDataSource(metadataProvider: metadataProvider)
 
         // Then
@@ -41,7 +46,12 @@ final class SupportDataSourcesTests: XCTestCase {
         // Given
         let mockEligibilityChecker = MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true,
                                                              isEligible: false)
-        let metadataProvider = SupportFormMetadataProvider(addProductFromImageEligibilityChecker: mockEligibilityChecker)
+        let sessionManager: SessionManager = .makeForTesting(authenticated: true)
+        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let metadataProvider = SupportFormMetadataProvider(stores: stores,
+                                                           sessionManager: sessionManager,
+                                                           addProductFromImageEligibilityChecker: mockEligibilityChecker)
         let dataSource = MobileAppSupportDataSource(metadataProvider: metadataProvider)
 
         // Then

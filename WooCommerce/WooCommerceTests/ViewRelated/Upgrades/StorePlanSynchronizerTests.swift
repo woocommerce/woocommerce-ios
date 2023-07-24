@@ -89,7 +89,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let subscribedDate = Date().addingTimeInterval(-Double.random(in: 0..<21600)) // Subscribed within 6 hrs ago
         let trialPlan = WPComSitePlan(id: "1052",
                                       hasDomainCredit: false,
-                                      expiryDate: subscribedDate.addingDays(15),
+                                      expiryDate: subscribedDate.addingDays(28),
                                       subscribedDate: subscribedDate)
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             switch action {
@@ -103,7 +103,8 @@ final class StorePlanSynchronizerTests: XCTestCase {
         // When
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager)
+                                  pushNotesManager: pushNotesManager,
+                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
         waitUntil(timeout: 3) {
@@ -177,7 +178,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
                                   inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
-        waitUntil(timeout: 5) {
+        waitUntil(timeout: 3) {
             pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
         }
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)

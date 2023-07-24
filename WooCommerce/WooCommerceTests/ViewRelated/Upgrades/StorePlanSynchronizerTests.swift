@@ -227,7 +227,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         // Given
         let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let pushNotesManager = MockPushNotificationsManager()
-        let subscribedDate = Date().addingTimeInterval(-21600/2) // subscribed for half a day
+        let subscribedDate = Date().addingTimeInterval(-10800) // subscribed for 3 hours
         var expectedPlan = WPComSitePlan(id: "1052",
                                       hasDomainCredit: false,
                                       expiryDate: subscribedDate.addingDays(28),

@@ -227,7 +227,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         // Given
         let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let pushNotesManager = MockPushNotificationsManager()
-        let subscribedDate = Date().addingTimeInterval(-86400/2) // expired for half a day
+        let subscribedDate = Date().addingTimeInterval(-21600/2) // subscribed for half a day
         var expectedPlan = WPComSitePlan(id: "1052",
                                       hasDomainCredit: false,
                                       expiryDate: subscribedDate.addingDays(28),
@@ -256,7 +256,11 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.count == 1
+            /// 2 notifications include:
+            /// - 6 hrs after trial subscription
+            /// - 24 hrs after trial subscription
+            /// Update this number based on the number of notifications we support.
+            pushNotesManager.requestedLocalNotificationsIfNeeded.count == 2
         }
 
         // When
@@ -264,14 +268,12 @@ final class StorePlanSynchronizerTests: XCTestCase {
         synchronizer.reloadPlan()
 
         // Then
-        waitUntil(timeout: 4) {
-            /// 4 notifications include:
-            /// - 1 day before expiration date
-            /// - 1 day after expiration date
+        waitUntil(timeout: 3) {
+            /// 2 notifications include:
             /// - 6 hrs after trial subscription
             /// - 24 hrs after trial subscription
             /// Update this number based on the number of notifications we support.
-            pushNotesManager.canceledLocalNotificationScenarios.count == 4
+            pushNotesManager.canceledLocalNotificationScenarios.count == 2
         }
 
         // No local notifications scheduling requested for a non free trial plan

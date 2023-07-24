@@ -159,8 +159,6 @@ private extension StorePlanSynchronizer {
     func schedulePostSubscriptionNotification(scenario: LocalNotification.Scenario,
                                               timeAfterSubscription: TimeInterval,
                                               subscribedDate: Date) {
-        let notification = LocalNotification(scenario: scenario)
-
         /// Scheduled after subscribed date
         let triggerDateComponents = subscribedDate.addingTimeInterval(timeAfterSubscription).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)

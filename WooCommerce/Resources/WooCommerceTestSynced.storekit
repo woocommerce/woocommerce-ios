@@ -13,7 +13,7 @@
     },
     "_developerTeamID" : "PZYM8XX95Q",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 709713857.71122098,
+    "_lastSynchronizedDate" : 711906066.66696799,
     "_storeKitError" : 0,
     "_timeRate" : 13
   },
@@ -34,7 +34,7 @@
           ],
           "displayPrice" : "39.0",
           "familyShareable" : false,
-          "groupNumber" : 1,
+          "groupNumber" : 2,
           "internalID" : "6450767566",
           "introductoryOffer" : null,
           "localizations" : [
@@ -47,6 +47,81 @@
           "productID" : "woocommerce.express.essential.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Woo Express Essential Monthly",
+          "subscriptionGroupID" : "21032734",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "300.0",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6452754234",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Everything you need to launch an online store",
+              "displayName" : "Essential Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "woocommerce.express.essential.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Woo Express Essential Yearly",
+          "subscriptionGroupID" : "21032734",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "70.0",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6452754174",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Next-level features to help you grow",
+              "displayName" : "Performance Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "woocommerce.express.performance.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Woo Express Performance Monthly",
+          "subscriptionGroupID" : "21032734",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "539.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6452754457",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Next-level features to help you grow",
+              "displayName" : "Performance Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "woocommerce.express.performance.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Woo Express Performance Yearly",
           "subscriptionGroupID" : "21032734",
           "type" : "RecurringSubscription"
         }

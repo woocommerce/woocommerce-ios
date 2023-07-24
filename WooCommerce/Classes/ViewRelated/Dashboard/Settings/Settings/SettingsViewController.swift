@@ -377,7 +377,6 @@ private extension SettingsViewController {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)
-        self.present(viewController, animated: true)
     }
 
     func domainWasPressed() {

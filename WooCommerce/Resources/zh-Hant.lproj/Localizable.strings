@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-11 09:54:03+0000 */
+/* Translation-Revision-Date: 2023-07-18 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -304,6 +304,9 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
+/* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
+"50 GB" = "50 GB";
+
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
@@ -433,6 +436,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
 "Add Description (Optional)" = "新增說明 (選填)";
 
+/* Title for the Discount screen during order creation */
+"Add Discount" = "新增折扣";
+
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "新增可下載的檔案";
 
@@ -552,6 +558,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "讓 AI 幫助你迅速新增說明。 立即試用我們的功能！";
+
+/* Text for the button to add a discount to a product during order creation */
+"Add discount" = "新增折扣";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "在新增每個選項後按下 Return 鍵";
@@ -733,7 +742,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "金額 (%)";
 
-/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - currency symbol
+/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol
    Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "金額 (%1$@)";
 
@@ -812,6 +821,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Anguilla" = "安圭拉";
+
+/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
+"Annually (Save 35%)" = "年繳 (省下 35% 的費用)";
 
 /* Country option for a site address. */
 "Antarctica" = "南極洲";
@@ -1513,7 +1525,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
-   Text for the close button in the Fee Details screen
+   Text for the close button in the Fee/Discounts Details screen
    Text for the close button in the Product screen
    Text for the close button in the Shipping Line Details screen
    Title of the Close action on the Jetpack Install view */
@@ -1781,7 +1793,8 @@ which should be translated separately and considered part of this sentence. */
 /* Text in the notice after copying the generated text in the product description AI generator view. */
 "Copied!" = "已複製！";
 
-/* Button title to copy generated text in the product description AI generator view.
+/* Button title to copy generated text in the add product from image form.
+   Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "複製";
 
@@ -2176,7 +2189,8 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "與讀卡機中斷連線";
 
-/* Discount label for payment view */
+/* Discount label for payment view
+   Title for the Discount Details screen during order creation */
 "Discount" = "折扣";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
@@ -2295,7 +2309,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   Text for the done button in the Fee Details screen
+   Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
@@ -2763,6 +2777,9 @@ which should be translated separately and considered part of this sentence. */
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
 "Everyone loves a deal" = "人人都喜歡優惠";
 
+/* Title for the Performance plan features list. Is followed by a list of the plan features. */
+"Everything in Essential, plus:" = "基本方案的所有功能，再加上：";
+
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "範例：盆栽, 仙人掌, 植物, 家飾, 輕鬆照顧";
 
@@ -3065,6 +3082,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "正在產生款式";
+
+/* Loading state for the suggested text in the add product from image form. */
+"Generating suggestion from photo..." = "正在根據此照片產生建議…";
 
 /* Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "產生中...";
@@ -4243,6 +4263,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "月初至今";
 
+/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
+"Monthly" = "每月";
+
 /* Country option for a site address. */
 "Montserrat" = "蒙特塞拉特";
 
@@ -4584,7 +4607,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title to cancel the alert when the user cannot create a store.
-   Button title to dismiss the alert when the created store never becomes a Jetpack site in the store creation flow.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
@@ -4889,12 +4911,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "貼上並且不設定格式";
 
-/* Title of the selector option for paying annually on the Upgrade view, when choosing a plan */
-"Pay Annually" = "年付方案";
-
-/* Title of the selector option for paying monthly on the Upgrade view, when choosing a plan */
-"Pay Monthly" = "月付方案";
-
 /* Customer-facing description showing more details about the Pay in Person option which is added to the store checkout when the merchant enables Pay in Person
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "透過卡片或其他接受的付款方式付款";
@@ -4967,7 +4983,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's pending status */
 "Pending review" = "待審中";
 
-/* Title for the amount field on the Fee Details screen during order creationParameters: %1$@ - percent sign */
+/* Title for the amount field on the Fee/Discounts Details screen during order creationParameters: %1$@ - percent sign */
 "Percentage (%1$@)" = "百分比 (%1$@)";
 
 /* Name of percentage discount type */
@@ -5237,7 +5253,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Poland" = "波蘭";
 
-/* Section title for popular products on the Select Product screen. */
+/* Section title for popular products on the Select Product screen.
+   The text of the badge that indicates the most popular choice when purchasing a Plan */
 "Popular" = "熱門";
 
 /* Country option for a site address. */
@@ -5658,7 +5675,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunding payment" = "正在退款";
 
 /* Action button to regenerate message on the product sharing message generation screen
-   Button title to regenerate product description with Jetpack AI. */
+   Button title to regenerate product description with Jetpack AI.
+   Regenerate button on the add product from image form to regenerate product details. */
 "Regenerate" = "重新產生";
 
 /* Button in the view for adding or editing a coupon code. */
@@ -5697,6 +5715,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text for the button to remove a Coupon from the order during order creation */
 "Remove Coupon from Order" = "從訂單移除優惠券";
+
+/* Title for the Remove button in Details screen during order creation */
+"Remove Discount" = "移除折扣";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
 "Remove Expiry Date" = "移除到期日";
@@ -5802,6 +5823,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button title to retry checking for store details after store creation.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
@@ -6088,6 +6110,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Select all button title in the issue refund screen */
 "Select All" = "全部選取";
 
+/* Title of the media picker action sheet to select a source. */
+"Select Media Source" = "選取媒體來源";
+
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "選取上層類別";
 
@@ -6102,6 +6127,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "選取包裹";
+
+/* The title of the button to purchase a Plan when no plan is selected yet. */
+"Select a plan" = "選取方案";
 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "請選取商品類型";
@@ -6214,6 +6242,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Seychelles" = "賽席爾";
 
 /* Action button to share the generated message on the product sharing message generation screen
+   Action for sharing a product from the product details screen
    Button label to share a web page
    Button title Share in Edit Product More Options Action Sheet */
 "Share" = "分享";
@@ -6676,6 +6705,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "庫存狀態";
 
+/* Title of one of the features of the Paid plans, regarding site storage. */
+"Storage" = "儲存空間";
+
 /* Title of the secondary button on the store creation success screen to preview the newly created store. */
 "Store Preview" = "商店預覽";
 
@@ -6685,7 +6717,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Controls store onboarding setup list visibility. */
 "Store Setup List" = "商店設定清單";
 
-/* Title of the alert when the created store never becomes a Jetpack site in the store creation flow. */
+/* Title of the screen when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "商店建立程序仍在進行中";
 
 /* Title of the webview for Store details task from onboarding. */
@@ -6757,6 +6789,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Sudan" = "蘇丹";
+
+/* Header of the suggested text in the add product from image form. */
+"Suggestion from photo" = "根據此照片的建議";
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "產品與包裹總重";
@@ -6848,6 +6883,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title for the Payment Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "收款 (%1$@)";
+
+/* Tip in the add product from image form to add a packaging image for AI-generated product details. */
+"Take a packaging photo to create product details with AI" = "拍攝包裝的照片即可使用 AI 建立產品詳細資訊";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "拍攝相片";
@@ -7162,8 +7200,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The message of the alert when another service package has the same name */
 "The new service package name is not unique." = "新的服務包裹名稱與其他包裹名稱重複。";
 
-/* Message of the alert when the created store never becomes a Jetpack site in the store creation flow. */
-"The new store will be available soon in the store picker. If you have any issues, please contact support." = "很快就能從商店挑選器中選擇新商店。 如果你遇到任何問題，請聯絡支援團隊。";
+/* Message of the screen when the created store never becomes a Jetpack site in the store creation flow. */
+"The new store will be available soon in the store picker. Please wait a bit and try again." = "很快就能從商店挑選器中選擇新商店。 請稍候再試一次。";
 
 /* Message when the presented card does not allow the purchase amount. */
 "The payment amount is not allowed for the card presented. Try another means of payment." = "顯示的卡片不允許該支付金額。 請嘗試其他付款方式。";
@@ -7725,6 +7763,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Tuvalu" = "吐瓦魯";
 
+/* Info text about the scanned text list on the add product from image form. */
+"Tweak your text: Unselect scans you don't need or tap to edit" = "微調你的文字：取消選取你不需要的掃瞄項目，或點一下即可編輯";
+
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
 
@@ -8232,6 +8273,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the action to view product details from a notice about an image upload failure in the background. */
 "View" = "檢視";
 
+/* Title for the button to expand plan details on the Upgrade plan screen. Reads as 'View Essential features'. %1$@ must be included in the string and will be replaced with the plan name. */
+"View %1$@ features" = "檢視 %1$@ 功能";
+
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons
    Title of the button on the order details product list item to navigate to add-ons */
@@ -8582,7 +8626,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "WordPress API 錯誤：[%1$@] %2$@";
 
-/* Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the device's photo library.
+   Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress 媒體庫";
 

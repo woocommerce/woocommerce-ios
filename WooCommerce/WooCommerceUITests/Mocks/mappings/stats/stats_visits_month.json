@@ -13,7 +13,7 @@
                 "matches": "(.*)"
             },
             "stat_fields": {
-                "matches": "visitors"
+                "matches": "visitors,views"
             }
         }
     },

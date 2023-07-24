@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 14.6
+Coupon management just became a breeze. You can now select multiple coupons when creating an order. It's also possible to add discounts to products when creating an order. Keep your updates on to enjoy WooCommerce's continuous improvements and latest features!
+
 ## 14.5
 We're back with some new updates to improve your experience with our app!
 

@@ -564,8 +564,8 @@ private extension OrderListViewController {
         childController.configure(createFilterConfig())
 
         // Show Error Loading Data banner if the empty state is caused by a sync error
-        if viewModel.dataLoadingError != nil {
-            childController.showTopBannerView()
+        if let error = viewModel.dataLoadingError {
+            childController.showTopBannerView(for: error)
         } else {
             childController.hideTopBannerView()
         }
@@ -785,7 +785,7 @@ private extension OrderListViewController {
         onTroubleshootButtonPressed: { [weak self] in
             guard let self = self else { return }
 
-            WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: self)
+            WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }

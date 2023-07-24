@@ -1,1 +1,7 @@
-Spännande nyheter – Det är möjligt att automatiskt generera konverteringsvänliga och SEO-optimerade produktbeskrivningar för dina WooCommerce-produkter och dela dem med AI. Prova nu.
+Vi är tillbaka med några nya uppdateringar som kommer att förbättra din appupplevelse.
+
+Till att börja med har vi gjort delningsknappen mer användarvänlig. För ökad upptäckbarhet visas den nu som text istället för som en ikon.
+Vi har också åtgärdat en irriterande bugg som gjorde det omöjligt att lägga till nya anteckningar till en beställning. Du bör nu kunna lägga till anteckningar utan problem.
+Slutligen har vi även uppdaterat butiksskapandeprocessens timeout-vy. Om webbplatskontrollen tar längre tid än förväntat har du nu möjlighet att avbryta och försöka igen.
+
+Som alltid finns vi här för att göra din appresa smidigare och mer njutbar. Tack för att du fortsätter använda våra tjänster.

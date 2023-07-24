@@ -31,7 +31,7 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     private let IPPDocumentationHeaderTextGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["Getting started with In-Person Payments with WooCommerce Payments"]
+        $0.staticTexts["Getting started with In-Person Payments with WooPayments"]
     }
 
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }

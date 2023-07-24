@@ -73,7 +73,7 @@ final class ReviewsViewModelTests: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
 
-    func test_hasErrorLoadingData_false_after_successful_sync() {
+    func test_dataLoadingError_nil_after_successful_sync() {
         // Given
         let mockDataSource = MockReviewsDataSource()
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
@@ -86,16 +86,16 @@ final class ReviewsViewModelTests: XCTestCase {
             }
         }
         let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager)
-        viewModel.hasErrorLoadingData = true
+        viewModel.dataLoadingError = MockError()
 
         // When
         viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25, onCompletion: nil)
 
         // Then
-        XCTAssertFalse(viewModel.hasErrorLoadingData)
+        XCTAssertNil(viewModel.dataLoadingError)
     }
 
-    func test_hasErrorLoadingData_true_after_failed_sync() {
+    func test_dataLoadingError_not_nil_after_failed_sync() {
         // Given
         let mockDataSource = MockReviewsDataSource()
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
@@ -108,13 +108,14 @@ final class ReviewsViewModelTests: XCTestCase {
             }
         }
         let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager)
-        viewModel.hasErrorLoadingData = false
+        viewModel.dataLoadingError = nil
 
         // When
         viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25, onCompletion: nil)
 
         // Then
-        XCTAssertTrue(viewModel.hasErrorLoadingData)
+        XCTAssertNotNil(viewModel.dataLoadingError)
+        XCTAssertEqual(viewModel.dataLoadingError as? SampleError, .first)
     }
 
     func test_synchronizeReviews_triggers_retrieveProducts_with_all_reviewsProductIDs() {
@@ -170,6 +171,10 @@ final class ReviewsViewModelTests: XCTestCase {
 
 
 // MARK: - Mocks
+
+private extension ReviewsViewModelTests {
+    final class MockError: Error { }
+}
 
 final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 

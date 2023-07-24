@@ -173,7 +173,8 @@ final class StorePlanSynchronizerTests: XCTestCase {
         // When
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager)
+                                  pushNotesManager: pushNotesManager,
+                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
         waitUntil(timeout: 3) {
@@ -250,7 +251,8 @@ final class StorePlanSynchronizerTests: XCTestCase {
         // When
         let synchronizer = StorePlanSynchronizer(stores: stores,
                                                  timeZone: timeZone,
-                                                 pushNotesManager: pushNotesManager)
+                                                 pushNotesManager: pushNotesManager,
+                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
         waitUntil(timeout: 3) {

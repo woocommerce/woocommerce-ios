@@ -84,6 +84,7 @@ struct LocalNotification {
     /// Holds `userInfo` dictionary keys
     enum UserInfoKey {
         static let storeName = "storeName"
+        static let isIAPAvailable = WooAnalyticsEvent.LocalNotification.Key.isIAPAvailable
     }
 }
 

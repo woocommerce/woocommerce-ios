@@ -166,7 +166,7 @@ private extension AppleAuthenticator {
     func updateLoginFields(email: String, fullName: String, token: String) {
         updateLoginEmail(email)
         loginFields.meta.socialServiceIDToken = token
-        loginFields.meta.appleUser = SocialUser.User(email: email, fullName: fullName)
+        loginFields.meta.socialUser = SocialUser(email: email, fullName: fullName, service: .apple)
     }
 
     func updateLoginEmail(_ email: String) {
@@ -225,11 +225,11 @@ extension AppleAuthenticator {
             fatalError()
         }
 
-        let service = loginFields.meta.appleUser.map {
-            SocialUser.apple(user: $0)
-        }
-
-        authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
+        authenticationDelegate.presentSignupEpilogue(
+            in: navigationController,
+            for: credentials,
+            socialUser: loginFields.meta.socialUser
+        )
     }
 
     func createWordPressComUser(appleUserId: String, email: String, name: String, token: String) {

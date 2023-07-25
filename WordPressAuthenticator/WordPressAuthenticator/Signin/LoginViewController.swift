@@ -131,11 +131,11 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             fatalError()
         }
 
-        let service: SocialUser? = loginFields.meta.googleUser.map {
-            SocialUser.google(user: $0)
-        }
-
-        authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
+        authenticationDelegate.presentSignupEpilogue(
+            in: navigationController,
+            for: credentials,
+            socialUser: loginFields.meta.socialUser
+        )
     }
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
@@ -299,11 +299,15 @@ extension LoginViewController {
             return
         }
 
+        // FIXME: Tests this
         let appleConnectParameters: [String: AnyObject]? = {
-            if let appleUser = loginFields.meta.appleUser {
-                return AccountServiceRemoteREST.appleSignInParameters(email: appleUser.email, fullName: appleUser.fullName)
-            }
-            return nil
+            guard let user = loginFields.meta.socialUser else { return nil }
+            guard case .apple = user.service else { return nil }
+
+            return AccountServiceRemoteREST.appleSignInParameters(
+                email: user.email,
+                fullName: user.fullName
+            )
         }()
 
         linkSocialService(serviceName: serviceName,

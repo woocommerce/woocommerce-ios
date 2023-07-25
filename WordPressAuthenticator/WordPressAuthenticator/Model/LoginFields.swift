@@ -151,9 +151,7 @@ public class LoginFieldsMeta: NSObject {
 
     @objc public var socialServiceIDToken: String?
 
-    var googleUser: SocialUser.User?
-
-    var appleUser: SocialUser.User?
+    var socialUser: SocialUser?
 
     init(emailMagicLinkSource: EmailMagicLinkSource? = nil,
          jetpackLogin: Bool = false,
@@ -164,8 +162,7 @@ public class LoginFieldsMeta: NSObject {
          requiredMultifactor: Bool = false,
          socialService: SocialServiceName? = nil,
          socialServiceIDToken: String? = nil,
-         googleUser: SocialUser.User? = nil,
-         appleUser: SocialUser.User? = nil) {
+         socialUser: SocialUser? = nil) {
         self.emailMagicLinkSource = emailMagicLinkSource
         self.jetpackLogin = jetpackLogin
         self.userIsDotCom = userIsDotCom
@@ -175,8 +172,7 @@ public class LoginFieldsMeta: NSObject {
         self.requiredMultifactor = requiredMultifactor
         self.socialService = socialService
         self.socialServiceIDToken = socialServiceIDToken
-        self.googleUser = googleUser
-        self.appleUser = appleUser
+        self.socialUser = socialUser
     }
 }
 
@@ -191,7 +187,6 @@ extension LoginFieldsMeta {
               requiredMultifactor: requiredMultifactor,
               socialService: socialService,
               socialServiceIDToken: socialServiceIDToken,
-              googleUser: googleUser,
-              appleUser: appleUser)
+              socialUser: socialUser)
     }
 }

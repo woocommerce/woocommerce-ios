@@ -21,15 +21,15 @@ class LoginViewControllerTests: XCTestCase {
         // navigationController property to not be nil.
         _ = UINavigationController(rootViewController: sut)
 
-        sut.loginFields.meta.googleUser = SocialUser.User(email: "test@email.com", fullName: "Full Name")
+        sut.loginFields.meta.socialUser = SocialUser(email: "test@email.com", fullName: "Full Name", service: .google)
 
         sut.showSignupEpilogue(for: AuthenticatorCredentials())
 
-        let socialService = try XCTUnwrap(delegateSpy.socialService)
-        guard case .google(let user) = socialService else {
-            return XCTFail("Expected Google social service, got \(socialService) instead")
+        let socialUser = try XCTUnwrap(delegateSpy.socialUser)
+        guard case .google = socialUser.service else {
+            return XCTFail("Expected Google social service, got \(socialUser.service) instead")
         }
-        XCTAssertEqual(user.fullName, "Full Name")
-        XCTAssertEqual(user.email, "test@email.com")
+        XCTAssertEqual(socialUser.fullName, "Full Name")
+        XCTAssertEqual(socialUser.email, "test@email.com")
     }
 }

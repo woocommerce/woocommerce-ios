@@ -63,7 +63,11 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
-    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialUser?)
+    func presentSignupEpilogue(
+        in navigationController: UINavigationController,
+        for credentials: AuthenticatorCredentials,
+        socialUser: SocialUser?
+    )
 
     /// Presents the Support Interface from a given ViewController.
     ///

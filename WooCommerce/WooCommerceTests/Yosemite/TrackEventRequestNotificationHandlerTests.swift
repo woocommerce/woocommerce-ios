@@ -140,7 +140,7 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
         XCTAssertNil(eventProperties["entity"])
     }
 
-    func test_json_parsing_failed_event_is_tracked_with_path_property_upon_decoding_error_when_path_is_avaiable() throws {
+    func test_json_parsing_failed_event_is_tracked_with_properties_upon_decoding_error_when_properties_are_avaiable() throws {
         // When
         let error = mockDecodingError()
         mockNotificationCenter.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: [

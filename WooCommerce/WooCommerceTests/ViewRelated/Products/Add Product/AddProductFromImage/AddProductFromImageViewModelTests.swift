@@ -192,6 +192,55 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: Text detection failure
+
+    func test_details_from_previous_scan_are_reset_when_no_text_is_detected() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success([]))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.scannedTexts.isEmpty)
+        XCTAssertTrue(viewModel.name.isEmpty)
+        XCTAssertTrue(viewModel.description.isEmpty)
+    }
+
+    func test_details_from_previous_scan_are_reset_when_text_detection_fails() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let error = NSError(domain: "test", code: 10000)
+        let imageTextScanner = MockImageTextScanner(result: .failure(error))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.scannedTexts.isEmpty)
+        XCTAssertTrue(viewModel.name.isEmpty)
+        XCTAssertTrue(viewModel.description.isEmpty)
+    }
+
     // MARK: `textDetectionErrorMessage`
 
     func test_textDetectionErrorMessage_is_nil_initially() throws {

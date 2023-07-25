@@ -130,11 +130,6 @@ class GoogleAuthenticator: NSObject {
         self.loginFields.meta.socialService = SocialServiceName.google
         self.authType = authType
 
-        guard authConfig.googleLoginWithoutSDK else {
-            // FIXME: We'll need to remove the config option, too
-            return
-        }
-
         Task { @MainActor in
             do {
                 let token = try await requestAuthorization(

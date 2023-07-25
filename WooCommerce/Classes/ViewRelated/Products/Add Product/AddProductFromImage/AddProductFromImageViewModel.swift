@@ -96,7 +96,6 @@ final class AddProductFromImageViewModel: ObservableObject {
         analytics.track(event: .AddProductFromImage.formDisplayed(source: source))
 
         $imageState
-            .removeDuplicates()
             .compactMap { $0.image?.image }
             .sink { [weak self] image in
                 self?.onSelectedImage(image)

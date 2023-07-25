@@ -197,9 +197,9 @@ final class AddProductFromImageViewModelTests: XCTestCase {
     func test_details_from_previous_scan_are_reset_when_new_image_selected() throws {
         // Given
         let firstImage = MediaPickerImage(image: UIImage.emailImage,
-                                          source: .media(media: .fake().copy(mediaID: 1)))
+                                          source: .media(media: .fake()))
         let secondImage = MediaPickerImage(image: UIImage.calendar,
-                                           source: .media(media: .fake().copy(mediaID: 2)))
+                                           source: .media(media: .fake()))
         var imageToReturn: MediaPickerImage? = firstImage
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
         mockGenerateProductDetails(result: .success(.init(name: "Name",

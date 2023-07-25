@@ -243,6 +243,10 @@ extension WooConstants {
         ///
         case troubleshootErrorLoadingData = "https://docs.woocommerce.com/document/android-ios-apps-troubleshooting-error-fetching-orders/"
 
+        /// URL for troubleshooting documentation used in error banner when Jetpack is not connected
+        ///
+        case troubleshootJetpackConnection = "https://jetpack.com/support/reconnecting-reinstalling-jetpack/"
+
         /// URL for roles and permissions information
         ///
         case rolesAndPermissionsInfo = "https://woocommerce.com/posts/a-guide-to-woocommerce-user-roles-permissions-and-security/"

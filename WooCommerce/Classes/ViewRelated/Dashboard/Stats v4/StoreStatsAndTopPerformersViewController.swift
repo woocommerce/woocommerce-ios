@@ -47,7 +47,6 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
         }
     }
     private var selectedTimeRangeIndexSubscription: AnyCancellable?
-    private var reloadDataAfterSelectedTimeRangeSubscriptions: Set<AnyCancellable> = []
 
     private let pushNotificationsManager: PushNotesManager
     private var localOrdersSubscription: AnyCancellable?
@@ -131,15 +130,9 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
     @MainActor
     func reloadData(forced: Bool) async {
         await withCheckedContinuation { continuation in
-            $selectedTimeRangeIndex
-                .compactMap { $0 }
-                .first()
-                .sink { [weak self] _ in
-                    self?.syncAllStats(forced: forced) { _ in
-                        continuation.resume(returning: ())
-                    }
-                }
-                .store(in: &reloadDataAfterSelectedTimeRangeSubscriptions)
+            syncAllStats(forced: forced) { _ in
+                continuation.resume(returning: ())
+            }
         }
     }
 

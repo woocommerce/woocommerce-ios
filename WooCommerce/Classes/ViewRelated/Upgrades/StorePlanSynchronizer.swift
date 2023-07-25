@@ -43,12 +43,16 @@ final class StorePlanSynchronizer: ObservableObject {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
+
     init(stores: StoresManager = ServiceLocator.stores,
          timeZone: TimeZone = .current,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.stores = stores
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
         self.timeZone = timeZone
+        self.inAppPurchaseManager = inAppPurchaseManager
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -107,35 +111,64 @@ private extension StorePlanSynchronizer {
         }
         guard plan.isFreeTrial else {
             /// cancels any scheduled notifications
-            return cancelFreeTrialExpirationNotifications(siteID: siteID)
+            Task {
+                await cancelFreeTrialExpirationNotifications(siteID: siteID)
+            }
+            return
         }
 
-        if let subscribedDate = plan.subscribedDate,
-           // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
-           Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-            schedule24HrsAfterSubscribedNotification(siteID: siteID, subscribedDate: subscribedDate)
+        if let subscribedDate = plan.subscribedDate {
+            // Schedule notification only if the Free trial is subscribed less than 6 hrs ago
+            if Date().timeIntervalSince(subscribedDate) < Constants.sixHoursTimeInterval {
+                let scenario = LocalNotification.Scenario.sixHoursAfterFreeTrialSubscribed(siteID: siteID)
+                schedulePostSubscriptionNotification(scenario: scenario,
+                                                     timeAfterSubscription: Constants.sixHoursTimeInterval,
+                                                     subscribedDate: subscribedDate)
+            }
+
+            // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
+            if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
+                let scenario = LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID)
+                schedulePostSubscriptionNotification(scenario: scenario,
+                                                     timeAfterSubscription: Constants.oneDayTimeInterval,
+                                                     subscribedDate: subscribedDate)
+            }
         }
     }
 
-    func cancelFreeTrialExpirationNotifications(siteID: Int64) {
-        localNotificationScheduler.cancel(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
-        localNotificationScheduler.cancel(scenario: .oneDayBeforeFreeTrialExpires(
-            siteID: siteID,
-            expiryDate: Date() // placeholder date, irrelevant to the notification identifier
-        ))
-        localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
+    func cancelFreeTrialExpirationNotifications(siteID: Int64) async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                await self?.localNotificationScheduler.cancel(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
+            }
+            group.addTask { [weak self] in
+                await self?.localNotificationScheduler.cancel(scenario: .oneDayBeforeFreeTrialExpires(
+                    siteID: siteID,
+                    expiryDate: Date() // placeholder date, irrelevant to the notification identifier
+                ))
+            }
+            group.addTask { [weak self] in
+                await self?.localNotificationScheduler.cancel(scenario: .sixHoursAfterFreeTrialSubscribed(siteID: siteID))
+            }
+            group.addTask { [weak self] in
+                await self?.localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
+            }
+        }
     }
 
-    func schedule24HrsAfterSubscribedNotification(siteID: Int64, subscribedDate: Date) {
-        let notification = LocalNotification(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
-
-        /// Scheduled 24 hrs after subscribed date
-        let triggerDateComponents = subscribedDate.addingTimeInterval(Constants.oneDayTimeInterval).dateAndTimeComponents()
+    func schedulePostSubscriptionNotification(scenario: LocalNotification.Scenario,
+                                              timeAfterSubscription: TimeInterval,
+                                              subscribedDate: Date) {
+        /// Scheduled after subscribed date
+        let triggerDateComponents = subscribedDate.addingTimeInterval(timeAfterSubscription).dateAndTimeComponents()
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
         Task {
+            let iapAvailable = await inAppPurchaseManager.inAppPurchasesAreSupported()
+            let notification = LocalNotification(scenario: scenario,
+                                                 userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: iapAvailable])
             await localNotificationScheduler.schedule(notification: notification,
                                                       trigger: trigger,
-                                                      remoteFeatureFlag: .twentyFourHoursAfterFreeTrialSubscribed,
+                                                      remoteFeatureFlag: nil,
                                                       shouldSkipIfScheduled: true)
         }
     }
@@ -143,6 +176,7 @@ private extension StorePlanSynchronizer {
 
 private extension StorePlanSynchronizer {
     enum Constants {
+        static let sixHoursTimeInterval: TimeInterval = 21600
         static let oneDayTimeInterval: TimeInterval = 86400
     }
 }

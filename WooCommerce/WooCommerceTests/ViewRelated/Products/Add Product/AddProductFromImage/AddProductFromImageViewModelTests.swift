@@ -115,7 +115,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.description, "Desc")
     }
 
-    func test_generatesProductDetails_failure_sets_errorMessage_and_resets_errorMessage_after_regenerating() {
+    func test_generatesProductDetails_failure_sets_textGenerationErrorMessage_and_resets_textGenerationErrorMessage_after_regenerating() {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
@@ -138,15 +138,15 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         waitUntil {
             viewModel.isGeneratingDetails == false
         }
-        XCTAssertNotNil(viewModel.errorMessage)
+        XCTAssertNotNil(viewModel.textGenerationErrorMessage)
 
         // When regenerating product details with success
         mockGenerateProductDetails(result: .success(.init(name: "", description: "", language: "")))
         viewModel.generateProductDetails()
 
-        // Then `errorMessage` is reset
+        // Then `textGenerationErrorMessage` is reset
         waitUntil {
-            viewModel.errorMessage == nil
+            viewModel.textGenerationErrorMessage == nil
         }
     }
 
@@ -192,11 +192,155 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: New Image selection resets details from previous image
+
+    func test_details_from_previous_scan_are_reset_when_new_image_selected() throws {
+        // Given
+        let firstImage = MediaPickerImage(image: UIImage.emailImage,
+                                          source: .media(media: .fake()))
+        let secondImage = MediaPickerImage(image: UIImage.calendar,
+                                           source: .media(media: .fake()))
+        var imageToReturn: MediaPickerImage? = firstImage
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        mockGenerateProductDetails(result: .success(.init(name: "Name",
+                                                          description: "Desc",
+                                                          language: "en")))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in imageToReturn })
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(firstImage)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Loaded details from previous image
+        XCTAssertTrue(viewModel.scannedTexts.isNotEmpty)
+        XCTAssertTrue(viewModel.name.isNotEmpty)
+        XCTAssertTrue(viewModel.description.isNotEmpty)
+
+        // When
+        imageTextScanner.result = .success([])
+        imageToReturn = secondImage
+
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(secondImage)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.scannedTexts.isEmpty)
+        XCTAssertTrue(viewModel.name.isEmpty)
+        XCTAssertTrue(viewModel.description.isEmpty)
+    }
+
+    // MARK: `textDetectionErrorMessage`
+
+    func test_textDetectionErrorMessage_is_nil_initially() throws {
+        // Given
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in
+            nil
+        })
+
+        // Then
+        XCTAssertNil(viewModel.textDetectionErrorMessage)
+    }
+
+    func test_textDetectionErrorMessage_has_correct_string_value_when_no_text_is_detected() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success([]))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.textDetectionErrorMessage,
+                       "No text detected. Please select another packaging photo or enter product details manually.")
+    }
+
+    func test_textDetectionErrorMessage_has_correct_string_value_when_text_detection_fails() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let error = NSError(domain: "test", code: 10000)
+        let imageTextScanner = MockImageTextScanner(result: .failure(error))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in image })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.textDetectionErrorMessage,
+                       "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.")
+    }
+
+    func test_textDetectionErrorMessage_is_reset_when_image_with_text_is_loaded_again() throws {
+        // Given
+        let firstImage = MediaPickerImage(image: UIImage.emailImage,
+                                          source: .media(media: .fake()))
+        let secondImage = MediaPickerImage(image: UIImage.calendar,
+                                           source: .media(media: .fake()))
+
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        var imageToReturn: MediaPickerImage? = image
+
+        let imageTextScanner = MockImageTextScanner(result: .success([]))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in imageToReturn })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.textDetectionErrorMessage, "No text detected. Please select another packaging photo or enter product details manually.")
+
+        // When
+        imageTextScanner.result = .success(["test"])
+        imageToReturn = secondImage
+
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(secondImage)
+        }
+
+        // Then
+        XCTAssertNil(viewModel.textDetectionErrorMessage)
+    }
+
     // MARK: Analytics
 
     func test_displayed_event_is_tracked_when_the_view_model_is_init() throws {
         // When
-        let viewModel = AddProductFromImageViewModel(siteID: 123,
+        _ = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
                                                      analytics: analytics,
                                                      onAddImage: { _ in nil })
@@ -356,6 +500,37 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         assertEqual(true, eventProperties["is_description_empty"] as? Bool)
         assertEqual(false, eventProperties["has_scanned_text"] as? Bool)
         assertEqual(false, eventProperties["has_generated_details"] as? Bool)
+    }
+
+    // MARK: `regenerateButtonEnabled`
+
+    func test_regenerateButtonEnabled_is_updated_correctly() {
+        // Given
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     onAddImage: { _ in nil })
+        let firstText: AddProductFromImageViewModel.ScannedTextViewModel = .init(text: "peach tea", isSelected: true)
+        let secondText: AddProductFromImageViewModel.ScannedTextViewModel = .init(text: "sweet", isSelected: true)
+
+        // When
+        viewModel.scannedTexts = [firstText, secondText]
+
+        // Then
+        XCTAssertTrue(viewModel.regenerateButtonEnabled)
+
+        // When: clear and unselect texts
+        firstText.text = ""
+        secondText.isSelected = false
+
+        // Then
+        XCTAssertFalse(viewModel.regenerateButtonEnabled)
+
+        // When: all texts are updated
+        viewModel.scannedTexts = [.init(text: "ramen", isSelected: true),
+                                  .init(text: "spicy", isSelected: true)]
+
+        // Then
+        XCTAssertTrue(viewModel.regenerateButtonEnabled)
     }
 }
 

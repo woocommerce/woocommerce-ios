@@ -78,7 +78,7 @@ struct InAppPurchasesDebugView: View {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else if let siteID = selectedSiteIDSourceType.retrieveUpgradingSiteID() {
                     ForEach(wpcomPlans, id: \.id) { plan in
-                        Button(entitledWpcomPlanIDs.contains(plan.id) ? "Entitled: \(plan.description)" : plan.description) {
+                        Button(entitledWpcomPlanIDs.contains(plan.id) ? "Entitled: \(plan.displayName)" : plan.displayName) {
                             Task {
                                 isPurchasing = true
                                 do {

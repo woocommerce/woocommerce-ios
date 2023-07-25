@@ -4,6 +4,7 @@ import Foundation
 /// In-app Purchases Endpoints
 ///
 public class InAppPurchasesRemote: Remote {
+    public typealias InAppPurchasesTransactionResult = Swift.Result<InAppPurchasesTransactionResponse, Error>
     /// Retrieves a list of product identifiers available for purchase
     ///
     /// - Parameters:
@@ -16,16 +17,17 @@ public class InAppPurchasesRemote: Remote {
     }
 
     /// Checks the WPCOM billing system for whether or not an In-app Purchase transaction has been handled
-    /// Unhandled transactions are those which have not yet marked as finished, in the Transactions.updates queue
-    /// We'll return the Site ID the transaction has been handled for, or an error if hasn't been handled yet
+    ///
+    /// Handled transactions are those which can be found in the WPCOM billing system. Unhandled transactions are those which couldn't be found.
+    /// We return the Site ID associated with the handled transaction as part of the InAppPurchasesTransactionResponse, or a "transaction not found"
+    /// response if has not been handled yet.
     ///
     /// - Parameters:
-    ///     - siteID: Site which the transaction has been handled for
     ///     - transactionID: The transactionID of the specific transaction (not originalTransactionID)
-    ///     - completion: Closure to be executed upon completion. Returns the siteID of the transaction if success, or an error otherwise.
+    ///     - completion: Closure to be executed upon completion.
     ///
-    public func checkTransactionHandled(with transactionID: UInt64,
-                                 completion: @escaping (Swift.Result<Int64, Error>) -> Void ) {
+    public func retrieveHandledTransactionResult(for transactionID: UInt64,
+                                                 completion: @escaping (InAppPurchasesTransactionResult) -> Void ) {
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
                                     path: Constants.transactionsPath + "/\(transactionID)",
@@ -85,6 +87,19 @@ public extension InAppPurchasesRemote {
     func loadProducts() async throws -> [String] {
         try await withCheckedThrowingContinuation { continuation in
             loadProducts { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+
+    /// Checks the WPCOM billing system for whether or not an In-app Purchase transaction has been handled
+    ///
+    ///- Returns: A InAppPurchasesTransactionResponse, which will contain the siteID the transactionID belongs to for handled transactions,
+    /// or a "transaction not found" response for unhandled transactions
+    ///
+    func retrieveHandledTransactionResult(for transactionID: UInt64) async throws -> InAppPurchasesTransactionResponse {
+        try await withCheckedThrowingContinuation { continuation in
+            retrieveHandledTransactionResult(for: transactionID) { result in
                 continuation.resume(with: result)
             }
         }

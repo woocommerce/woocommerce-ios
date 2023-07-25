@@ -52,6 +52,19 @@ final class OrderDetailsViewModel {
         return dataSource.products
     }
 
+    /// If the products for all order items have been loaded, checks if all products are virtual to skip shipping related syncs.
+    private var orderContainsOnlyVirtualProducts: Bool {
+        let productIDs = order.items.map { $0.productID }
+        let orderProducts = productIDs.compactMap { productID -> Product? in
+            products.first(where: { $0.productID == productID })
+        }
+        // Early returns `false` when the products haven't been fully loaded for all order items.
+        guard orderProducts.count == productIDs.count else {
+            return false
+        }
+        return orderProducts.allSatisfy { $0.virtual == true }
+    }
+
     /// Sorted order items
     ///
     private var items: [OrderItem] {
@@ -220,7 +233,8 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        syncShippingLabels() { _ in
+        Task { @MainActor in
+            await syncShippingLabels()
             group.leave()
         }
 
@@ -230,12 +244,22 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        syncTrackingsEnablingAddButtonIfReachable(onReloadSections: onReloadSections) {
-            group.leave()
+        Task { @MainActor in
+            defer {
+                group.leave()
+            }
+            trackingIsReachable = await isShipmentTrackingEnabled()
+            guard trackingIsReachable else {
+                return
+            }
+            await syncTrackingsWhenShipmentTrackingIsEnabled()
+            onReloadSections?()
         }
 
         group.enter()
-        checkShippingLabelCreationEligibility {
+        Task { @MainActor in
+            let isEligible = await checkShippingLabelCreationEligibility()
+            dataSource.isEligibleForShippingLabelCreation = isEligible
             onReloadSections?()
             group.leave()
         }
@@ -275,19 +299,37 @@ extension OrderDetailsViewModel {
         }
     }
 
-    func syncTrackingsEnablingAddButtonIfReachable(onReloadSections: (() -> ())? = nil, onCompletion: (() -> Void)? = nil) {
-        // If the plugin is not active, there is no point on continuing with a request that will fail.
-        isPluginActive(SitePlugin.SupportedPlugin.WCTracking) { [weak self] isActive in
-            guard let self = self, isActive else {
-                onCompletion?()
-                return
-            }
+    /// Checks if shipment tracking is enabled for the order.
+    /// - Returns: Whether shipment tracking is enabled for the user by checking the products and if the Shipment Tracking plugin is active.
+    @MainActor
+    func isShipmentTrackingEnabled() async -> Bool {
+        guard orderContainsOnlyVirtualProducts == false,
+              await isPluginActive(SitePlugin.SupportedPlugin.WCTracking) else {
+            return false
+        }
+        return true
+    }
 
-            self.trackingIsReachable = true
-            self.syncTracking { error in
-                onReloadSections?()
-                onCompletion?()
-            }
+    /// Syncs trackings when shipment tracking is enabled.
+    @MainActor
+    func syncTrackingsWhenShipmentTrackingIsEnabled() async {
+        let orderID = order.orderID
+        let siteID = order.siteID
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(
+                ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
+                                                               orderID: orderID) { error in
+                                                                   if let error {
+                                                                       DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                                                                       continuation.resume(returning: ())
+                                                                       return
+                                                                   }
+
+                                                                   ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+
+                                                                   continuation.resume(returning: ())
+                                                               }
+            )
         }
     }
 }
@@ -470,25 +512,6 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
-        let orderID = order.orderID
-        let siteID = order.siteID
-        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
-                                                                    orderID: orderID) { error in
-                                                                        if let error = error {
-                                                                            DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
-                                                                            onCompletion?(error)
-                                                                            return
-                                                                        }
-
-                                                                        ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
-
-                                                                        onCompletion?(nil)
-        }
-
-        stores.dispatch(action)
-    }
-
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: order.siteID, orderID: order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
@@ -557,32 +580,28 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
-        // If the plugin is not active, there is no point on continuing with a request that will fail.
-        isPluginActive(SitePlugin.SupportedPlugin.WCShip) { [weak self] isActive in
-
-            guard let self = self, isActive else {
-                onCompletion?(nil)
-                return
-            }
-
-            let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.order.siteID, orderID: self.order.orderID) { result in
+    @MainActor
+    func syncShippingLabels() async {
+        guard orderContainsOnlyVirtualProducts == false,
+              await isPluginActive(SitePlugin.SupportedPlugin.WCShip) else {
+            return
+        }
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
                 switch result {
-                case .success:
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
-                    onCompletion?(nil)
-                case .failure(let error):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
-                    if error as? DotcomError == .noRestRoute {
-                        DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
-                    } else {
-                        DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-                    }
-                    onCompletion?(error)
+                    case .success:
+                        ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
+                        continuation.resume(returning: ())
+                    case .failure(let error):
+                        ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
+                        if error as? DotcomError == .noRestRoute {
+                            DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+                        } else {
+                            DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                        }
+                        continuation.resume(returning: ())
                 }
-            }
-            self.stores.dispatch(action)
-
+            })
         }
     }
 
@@ -632,24 +651,21 @@ extension OrderDetailsViewModel {
         }
     }
 
-    func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
-        // If the plugin is not active, there is no point on continuing with a request that will fail.
-        isPluginActive(SitePlugin.SupportedPlugin.WCShip) { [weak self] isActive in
-            guard let self = self, isActive else {
-                onCompletion?()
-                return
-            }
-
-            let action = ShippingLabelAction.checkCreationEligibility(siteID: self.order.siteID,
-                                                                      orderID: self.order.orderID) { [weak self] isEligible in
-                self?.dataSource.isEligibleForShippingLabelCreation = isEligible
+    @MainActor
+    func checkShippingLabelCreationEligibility() async -> Bool {
+        guard orderContainsOnlyVirtualProducts == false,
+              await isPluginActive(SitePlugin.SupportedPlugin.WCShip) else {
+            return false
+        }
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
+                                                                         orderID: order.orderID) { [weak self] isEligible in
                 if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
                     ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
                                                    withProperties: ["order_status": orderStatus])
                 }
-                onCompletion?()
-            }
-            self.stores.dispatch(action)
+                continuation.resume(returning: isEligible)
+            })
         }
     }
 
@@ -718,6 +734,17 @@ extension OrderDetailsViewModel {
         let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
         try? resultsController.performFetch()
         return !resultsController.isEmpty
+    }
+}
+
+private extension OrderDetailsViewModel {
+    @MainActor
+    func isPluginActive(_ plugin: String) async -> Bool {
+        await withCheckedContinuation { continuation in
+            isPluginActive(plugin) { isActive in
+                continuation.resume(returning: isActive)
+            }
+        }
     }
 }
 

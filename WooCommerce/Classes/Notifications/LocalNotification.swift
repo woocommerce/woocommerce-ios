@@ -22,6 +22,7 @@ struct LocalNotification {
         case oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: String)
         case oneDayBeforeFreeTrialExpires(siteID: Int64, expiryDate: Date)
         case oneDayAfterFreeTrialExpires(siteID: Int64)
+        case sixHoursAfterFreeTrialSubscribed(siteID: Int64)
         case twentyFourHoursAfterFreeTrialSubscribed(siteID: Int64)
 
         var identifier: String {
@@ -34,6 +35,8 @@ struct LocalNotification {
                 return Identifier.Prefix.oneDayBeforeFreeTrialExpires + "\(siteID)"
             case .oneDayAfterFreeTrialExpires(let siteID):
                 return Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)"
+            case let .sixHoursAfterFreeTrialSubscribed(siteID):
+                return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed + "\(siteID)"
             case let .twentyFourHoursAfterFreeTrialSubscribed(siteID):
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(siteID)"
             }
@@ -43,6 +46,7 @@ struct LocalNotification {
             enum Prefix {
                 static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
                 static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
+                static let sixHoursAfterFreeTrialSubscribed = "six_hours_after_free_trial_subscribed"
                 static let twentyFourHoursAfterFreeTrialSubscribed = "twenty_four_hours_after_free_trial_subscribed"
             }
             static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
@@ -54,6 +58,8 @@ struct LocalNotification {
                 return Identifier.Prefix.oneDayBeforeFreeTrialExpires
             } else if identifier.hasPrefix(Identifier.Prefix.oneDayAfterFreeTrialExpires) {
                 return Identifier.Prefix.oneDayAfterFreeTrialExpires
+            } else if identifier.hasPrefix(Identifier.Prefix.sixHoursAfterFreeTrialSubscribed) {
+                return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
             } else if identifier.hasPrefix(Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
             }
@@ -80,6 +86,7 @@ struct LocalNotification {
     /// Holds `userInfo` dictionary keys
     enum UserInfoKey {
         static let storeName = "storeName"
+        static let isIAPAvailable = WooAnalyticsEvent.LocalNotification.Key.isIAPAvailable
     }
 }
 
@@ -127,6 +134,10 @@ extension LocalNotification {
         case .oneDayAfterFreeTrialExpires:
             title = Localization.OneDayAfterFreeTrialExpires.title
             body = String.localizedStringWithFormat(Localization.OneDayAfterFreeTrialExpires.body, name)
+
+        case .sixHoursAfterFreeTrialSubscribed:
+            title = Localization.SixHoursAfterFreeTrialSubscribed.title
+            body = Localization.SixHoursAfterFreeTrialSubscribed.body
 
         case .twentyFourHoursAfterFreeTrialSubscribed:
             title = Localization.TwentyFourHoursAfterFreeTrialSubscribed.title
@@ -192,6 +203,17 @@ extension LocalNotification {
                 "%1$@, we have paused your store, but you can continue by picking a plan that suits you best.",
                 comment: "Message on the local notification to remind the user of the expired free trial plan." +
                 "The placeholder is the name of the user."
+            )
+        }
+
+        enum SixHoursAfterFreeTrialSubscribed {
+            static let title = NSLocalizedString(
+                "🌟 Keep your business going!",
+                comment: "Title of the local notification to remind the user to purchase a plan."
+            )
+            static let body = NSLocalizedString(
+                "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best.",
+                comment: "Message on the local notification to remind the user to purchase a plan."
             )
         }
 

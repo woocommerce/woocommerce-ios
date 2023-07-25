@@ -69,6 +69,10 @@ final class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
     func add(_ request: UNNotificationRequest) async throws {
         notificationRequests.append(request)
     }
+
+    func removePendingNotificationRequests(withIdentifiers: [String]) {
+
+    }
 }
 
 /// Mock coder to initialize UNNotificationSettings

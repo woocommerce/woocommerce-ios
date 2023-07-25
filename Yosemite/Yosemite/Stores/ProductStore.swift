@@ -609,7 +609,7 @@ private extension ProductStore {
     func generateProductDetails(siteID: Int64, scannedTexts: [String], completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
         let prompt = [
             "Write a name and description of a product for an online store given the array of scanned text strings from a packaging photo at the end.",
-            "Return only a JSON with the name in `name` field, description in `description` field, " +
+            "Return only a JSON dictionary with the name in `name` field, description in `description` field, " +
             "and the detected language as the locale identifier in `language` field.",
             "The output should be in valid JSON format.",
             "Detect the language in the array and use the same language to write the name and description.",

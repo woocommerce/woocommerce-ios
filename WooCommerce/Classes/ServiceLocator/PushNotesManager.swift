@@ -101,7 +101,7 @@ protocol PushNotesManager {
 
     /// Cancels a local notification that was previously scheduled.
     /// - Parameter scenarios: the scenarios of the notification to be cancelled.
-    func cancelLocalNotification(scenarios: [LocalNotification.Scenario])
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) async
 
     /// Cancels all local notifications that were previously scheduled.
     func cancelAllNotifications() async

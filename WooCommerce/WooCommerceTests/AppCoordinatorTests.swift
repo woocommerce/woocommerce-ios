@@ -456,6 +456,54 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
+    func test_SubscriptionsHostingController_is_shown_when_tapping_sixHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_not_available() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.sixHoursAfterFreeTrialSubscribed(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            self.window.rootViewController?.topmostPresentedViewController is SubscriptionsHostingController
+        }
+    }
+
+    func test_UpgradesHostingController_is_shown_when_tapping_sixHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_available() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.sixHoursAfterFreeTrialSubscribed(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            self.window.rootViewController?.topmostPresentedViewController is UpgradesHostingController
+        }
+    }
+
     func test_SubscriptionsHostingController_is_shown_when_tapping_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_not_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
@@ -540,7 +588,8 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
         let response = try XCTUnwrap(MockNotificationResponse(
             actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
+            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier,
+            notificationUserInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
         )
         pushNotesManager.sendLocalNotificationResponse(response)
 
@@ -548,6 +597,7 @@ final class AppCoordinatorTests: XCTestCase {
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationTapped.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
         assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(true, eventProperties["is_iap_available"] as? Bool)
     }
 
     // MARK: - Notification to subscribe to free trial after entering store name

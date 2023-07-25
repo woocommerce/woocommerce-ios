@@ -42,7 +42,7 @@ struct FullFeatureListView: View {
                 }
             }
             .padding(.horizontal)
-            .background(Color(.white))
+            .background(Color(.systemGroupedBackground))
             .cornerRadius(Layout.featureListCornerRadius)
             VStack(alignment: .leading, spacing: Layout.featureListSpacing) {
                 Text(Localization.paymentsDisclaimerText)

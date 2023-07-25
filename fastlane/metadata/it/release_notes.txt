@@ -1,1 +1,7 @@
-Novità - È possibile generare automaticamente descrizioni dei prodotti che permettono la conversione e ottimizzate per la SEO per i prodotti WooCommerce e condividerle usando l'IA. Prova ora.
+Siamo tornati con alcuni nuovi aggiornamenti per migliorare la tua esperienza con la nostra app.
+
+In primo luogo, abbiamo reso il pulsante di condivisione più intuitivo. Invece di un'icona, ora viene mostrato come testo per una migliore visibilità.
+Abbiamo anche risolto un fastidioso bug che ti impediva di aggiungere nuovi appunti a un ordine. Ora dovresti essere in grado di annotare in fretta gli appunti senza problemi.
+Infine, nel nostro processo di creazione del negozio, abbiamo aggiornato la visualizzazione del timeout. Se il controllo del sito richiede più tempo del previsto, ora hai la possibilità di riprovare.
+
+Come sempre, siamo qui per rendere il tuo viaggio nell'app più fluido e piacevole. Grazie per essere rimasto con noi.

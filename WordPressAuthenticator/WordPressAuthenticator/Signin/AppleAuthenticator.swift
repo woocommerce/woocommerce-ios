@@ -166,7 +166,7 @@ private extension AppleAuthenticator {
     func updateLoginFields(email: String, fullName: String, token: String) {
         updateLoginEmail(email)
         loginFields.meta.socialServiceIDToken = token
-        loginFields.meta.appleUser = SocialService.User(email: email, fullName: fullName)
+        loginFields.meta.appleUser = SocialUser.User(email: email, fullName: fullName)
     }
 
     func updateLoginEmail(_ email: String) {
@@ -226,7 +226,7 @@ extension AppleAuthenticator {
         }
 
         let service = loginFields.meta.appleUser.map {
-            SocialService.apple(user: $0)
+            SocialUser.apple(user: $0)
         }
 
         authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)

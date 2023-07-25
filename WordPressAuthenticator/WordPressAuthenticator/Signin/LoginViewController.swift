@@ -131,8 +131,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             fatalError()
         }
 
-        let service: SocialService? = loginFields.meta.googleUser.map {
-            SocialService.google(user: $0)
+        let service: SocialUser? = loginFields.meta.googleUser.map {
+            SocialUser.google(user: $0)
         }
 
         authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)

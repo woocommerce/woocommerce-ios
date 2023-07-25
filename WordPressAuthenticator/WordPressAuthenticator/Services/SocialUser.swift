@@ -1,5 +1,4 @@
-/// Social service metadata.
-public enum SocialService {
+public enum SocialUser {
 
     public struct User {
         public let email: String

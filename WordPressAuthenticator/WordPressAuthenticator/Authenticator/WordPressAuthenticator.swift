@@ -128,13 +128,6 @@ import WordPressKit
         return url.absoluteString.hasPrefix(expectedPrefix)
     }
 
-    /// Attempts to process the specified URL as a Google Authentication Link. Returns *true* on success.
-    ///
-    @objc public func handleGoogleAuthUrl(_ url: URL, sourceApplication: String?, annotation: Any?) -> Bool {
-        // FIXME: How can we replicate what Google does with its GIDSignIn.sharedInstance.handle(url) method. And should we?
-        return false
-    }
-
     /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.
     ///
     @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController, automatedTesting: Bool = false) -> Bool {

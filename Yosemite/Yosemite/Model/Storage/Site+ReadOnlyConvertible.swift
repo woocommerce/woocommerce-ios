@@ -51,6 +51,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     gmtOffset: gmtOffset,
                     isPublic: isPublic,
                     canBlaze: canBlaze,
-                    isAdmin: isAdmin)
+                    isAdmin: isAdmin,
+                    wasEcommerceTrial: false)
     }
 }

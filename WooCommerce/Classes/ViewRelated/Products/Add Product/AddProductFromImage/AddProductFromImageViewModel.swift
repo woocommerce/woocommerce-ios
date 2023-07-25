@@ -171,15 +171,11 @@ private extension AddProductFromImageViewModel {
 
                 switch error {
                 case ScanError.noTextDetected:
-                    if scannedTexts.isEmpty {
-                        textDetectionErrorMessage = Localization.noTextDetected
-                    }
+                    textDetectionErrorMessage = Localization.noTextDetected
                     DDLogError("⛔️ No text detected from image.")
                 default:
                     analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))
-                    if scannedTexts.isEmpty {
-                        textDetectionErrorMessage = Localization.textDetectionFailed
-                    }
+                    textDetectionErrorMessage = Localization.textDetectionFailed
                     DDLogError("⛔️ Error scanning text from image: \(error)")
                 }
             }

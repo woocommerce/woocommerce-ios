@@ -226,7 +226,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
                        "No text detected. Please select another packaging photo or enter product details manually.")
     }
 
-    func test_textDetectionErrorMessage_has_correct_string_value_when_no_text_detection_fails() throws {
+    func test_textDetectionErrorMessage_has_correct_string_value_when_text_detection_fails() throws {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let error = NSError(domain: "test", code: 10000)

@@ -349,6 +349,7 @@ private extension AppCoordinator {
         let identifier = response.notification.request.identifier
         let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayBeforeFreeTrialExpires
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires
+        let sixHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
         let twentyFourHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
 
         let userInfo = response.notification.request.content.userInfo
@@ -371,6 +372,12 @@ private extension AppCoordinator {
         case let identifier where identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: oneDayAfterFreeTrialExpiresIdentifier, with: "")) else {
+                return
+            }
+            showUpgradesView(siteID: siteID)
+        case let identifier where identifier.hasPrefix(sixHoursAfterFreeTrialSubscribed):
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let siteID = Int64(identifier.replacingOccurrences(of: sixHoursAfterFreeTrialSubscribed, with: "")) else {
                 return
             }
             showUpgradesView(siteID: siteID)

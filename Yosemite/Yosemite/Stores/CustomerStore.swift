@@ -52,6 +52,8 @@ public final class CustomerStore: Store {
             searchCustomers(for: siteID, keyword: keyword, onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
+        case .synchronizeCustomers(siteID: let siteID, pageNumber: let pageNumber, pageSize: let pageSize, onCompletion: let onCompletion):
+            synchronizeCustomers(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
     }
 
@@ -68,7 +70,7 @@ public final class CustomerStore: Store {
         for siteID: Int64,
         keyword: String,
         onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
-            searchRemote.searchCustomers(for: siteID, name: keyword) { [weak self] result in
+            searchRemote.loadCustomers(for: siteID, name: keyword) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
@@ -77,7 +79,7 @@ public final class CustomerStore: Store {
                     onCompletion(.failure(error))
                 }
             }
-        }
+    }
 
     /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.
     /// The fetched Customer is persisted to the local storage.
@@ -102,7 +104,18 @@ public final class CustomerStore: Store {
                     onCompletion(.failure(error))
                 }
             }
+    }
+
+    func synchronizeCustomers(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        searchRemote.loadCustomers(for: siteID) { result in
+            switch result {
+            case .success(let customers):
+                debugPrint("customers", customers, customers.count)
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
+    }
 
     /// Maps CustomerSearchResult to Customer objects
     ///

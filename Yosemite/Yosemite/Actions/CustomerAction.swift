@@ -3,6 +3,12 @@ import Foundation
 /// Defines the `actions` supported by the `CustomerStore`.
 ///
 public enum CustomerAction: Action {
+    case synchronizeCustomers(
+        siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
+        onCompletion: (Result<Bool, Error>) -> Void)
+
     /// Searches for Customers by keyword. Currently, only searches by name.
     ///
     ///- `siteID`: The site for which we will perform the search.

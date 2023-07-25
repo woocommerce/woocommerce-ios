@@ -165,6 +165,10 @@ private extension AddProductFromImageViewModel {
                 [nameViewModel, descriptionViewModel].forEach { $0.reset() }
                 generateProductDetails()
             } catch {
+                // Reset scanned texts and generated content from previous image
+                scannedTexts = []
+                [nameViewModel, descriptionViewModel].forEach { $0.reset() }
+
                 switch error {
                 case ScanError.noTextDetected:
                     if scannedTexts.isEmpty {

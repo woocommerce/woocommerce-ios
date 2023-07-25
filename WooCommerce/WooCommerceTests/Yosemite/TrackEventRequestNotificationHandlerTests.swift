@@ -124,34 +124,39 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
         assertEqual("other", actualProperties["cause"] as? String)
     }
 
-    func test_json_parsing_failed_event_is_tracked_with_nil_path_property_upon_decoding_error_when_path_is_nil() throws {
+    func test_json_parsing_failed_event_is_tracked_with_nil_properties_upon_decoding_error_when_properties_are_not_set() throws {
         // When
         let error = mockDecodingError()
         mockNotificationCenter.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: nil)
 
         // Then
-        let expectedEvent = WooAnalyticsEvent.RemoteRequest.jsonParsingError(error, path: nil)
+        let expectedEvent = WooAnalyticsEvent.RemoteRequest.jsonParsingError(error, path: nil, entityName: nil)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue }))
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent.statName.rawValue }))
         let eventProperties = analyticsProvider.receivedProperties[indexOfEvent]
         XCTAssertNil(eventProperties["path"])
+        XCTAssertNil(eventProperties["entity"])
     }
 
     func test_json_parsing_failed_event_is_tracked_with_path_property_upon_decoding_error_when_path_is_avaiable() throws {
         // When
         let error = mockDecodingError()
-        mockNotificationCenter.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: ["path": "wc/test"])
+        mockNotificationCenter.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: [
+            "path": "wc/test",
+            "entity": "Product"
+        ])
 
         // Then
-        let expectedEvent = WooAnalyticsEvent.RemoteRequest.jsonParsingError(error, path: nil)
+        let expectedEvent = WooAnalyticsEvent.RemoteRequest.jsonParsingError(error, path: nil, entityName: nil)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue }))
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent.statName.rawValue }))
         let eventProperties = analyticsProvider.receivedProperties[indexOfEvent]
         XCTAssertEqual(eventProperties["path"] as? String, "wc/test")
+        XCTAssertEqual(eventProperties["entity"] as? String, "Product")
     }
 }
 

@@ -70,6 +70,7 @@ private extension TrackEventRequestNotificationHandler {
             return
         }
         let path = note.userInfo?[Remote.JSONParsingErrorUserInfoKey.path] as? String
-        analytics.track(event: .RemoteRequest.jsonParsingError(error, path: path))
+        let entityName = note.userInfo?[Remote.JSONParsingErrorUserInfoKey.entityName] as? String
+        analytics.track(event: .RemoteRequest.jsonParsingError(error, path: path, entityName: entityName))
     }
 }

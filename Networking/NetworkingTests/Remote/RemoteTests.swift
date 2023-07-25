@@ -459,9 +459,10 @@ final class RemoteTests: XCTestCase {
         XCTAssertNotNil(result)
     }
 
-    /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJSONParsingError` Notification whenever the mapper throws a parsing error.
+    /// Verifies that `enqueue:mapper:` with a completion block posts a `RemoteDidReceiveJSONParsingError` Notification whenever
+    /// the mapper throws a parsing error.
     ///
-    func test_enqueue_request_with_mapper_posts_JSONParsingError_notification_when_parsing_fails() {
+    func test_enqueue_request_with_mapper_posts_JSONParsingError_notification_when_parsing_fails() throws {
         // Given
         let network = MockNetwork()
         let mapper = FailingDummyMapper()
@@ -470,18 +471,30 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil, handler: nil)
-        let result: Result<Any, Error> = waitFor { promise in
-            remote.enqueue(self.request, mapper: mapper).sink { result in
-                promise(result)
-            }.store(in: &self.cancellables)
+        var notification: Notification?
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
+                                                     object: nil,
+                                                     handler: { returnedNotification in
+            notification = returnedNotification
+            return true
+        })
+        let result: (Any?, Error?) = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper) { (output: Any?, error: Error?) in
+                promise((output, error))
+            }
         }
 
         wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
 
         // Then
-        XCTAssertTrue(result.isFailure)
-        XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
+        XCTAssertNil(result.0)
+        XCTAssertNotNil(result.1)
+        XCTAssertTrue(result.1 is DecodingError)
+
+        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
+        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        XCTAssertEqual(path, "something")
+        XCTAssertEqual(entityName, "Any")
     }
 
     /// Verifies that `enqueue:mapper:` (with `Result`) posts a `RemoteDidReceiveJSONParsingError` Notification whenever the mapper throws a parsing error.
@@ -495,11 +508,17 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil, handler: nil)
+        var notification: Notification?
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
+                                                     object: nil,
+                                                     handler: { returnedNotification in
+            notification = returnedNotification
+            return true
+        })
         let result: Result<Any, Error> = waitFor { promise in
-            remote.enqueue(self.request, mapper: mapper).sink { result in
+            remote.enqueue(self.request, mapper: mapper) { result in
                 promise(result)
-            }.store(in: &self.cancellables)
+            }
         }
 
         wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
@@ -507,6 +526,11 @@ final class RemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
+
+        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
+        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        XCTAssertEqual(path, "something")
+        XCTAssertEqual(entityName, "Any")
     }
 
     /// Verifies that `enqueuePublisher` posts a `RemoteDidReceiveJSONParsingError` Notification whenever the mapper throws a parsing error.
@@ -520,7 +544,13 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil, handler: nil)
+        var notification: Notification?
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
+                                                     object: nil,
+                                                     handler: { returnedNotification in
+            notification = returnedNotification
+            return true
+        })
         let result: Result<Any, Error> = waitFor { promise in
             remote.enqueue(self.request, mapper: mapper).sink { result in
                 promise(result)
@@ -531,6 +561,42 @@ final class RemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
+
+        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
+        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        XCTAssertEqual(path, "something")
+        XCTAssertEqual(entityName, "Any")
+    }
+
+    /// Verifies that `enqueue` async version posts a `RemoteDidReceiveJSONParsingError` Notification whenever the mapper throws a parsing error.
+    ///
+    func test_enqueue_async_posts_JSONParsingError_notification_when_parsing_fails() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = FailingDummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        var notification: Notification?
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
+                                                     object: nil,
+                                                     handler: { returnedNotification in
+            notification = returnedNotification
+            return true
+        })
+        do {
+            let _: [String] = try await remote.enqueue(request)
+        } catch {
+            await fulfillment(of: [expectationForNotification])
+
+            // Then
+            let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
+            let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+            XCTAssertEqual(path, "something")
+            XCTAssertEqual(entityName, "Array<String>")
+        }
     }
 }
 

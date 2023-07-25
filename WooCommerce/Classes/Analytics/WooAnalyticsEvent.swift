@@ -2545,11 +2545,15 @@ extension WooAnalyticsEvent {
     enum RemoteRequest {
         enum Keys: String {
             case path
+            case entityName = "entity"
         }
 
-        static func jsonParsingError(_ error: Error, path: String?) -> WooAnalyticsEvent {
+        static func jsonParsingError(_ error: Error, path: String?, entityName: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .apiJSONParsingError,
-                              properties: [Keys.path.rawValue: path].compactMapValues { $0 },
+                              properties: [
+                                Keys.path.rawValue: path,
+                                Keys.entityName.rawValue: entityName
+                              ].compactMapValues { $0 },
                               error: error)
         }
     }

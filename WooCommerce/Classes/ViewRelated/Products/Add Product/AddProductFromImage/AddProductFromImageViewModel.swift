@@ -152,6 +152,10 @@ final class AddProductFromImageViewModel: ObservableObject {
 
 private extension AddProductFromImageViewModel {
     func onSelectedImage(_ image: UIImage) {
+        // Reset scanned texts and generated content from previous image
+        scannedTexts = []
+        [nameViewModel, descriptionViewModel].forEach { $0.reset() }
+
         Task { @MainActor in
             do {
                 let texts = try await imageTextScanner.scanText(from: image)
@@ -165,10 +169,6 @@ private extension AddProductFromImageViewModel {
                 [nameViewModel, descriptionViewModel].forEach { $0.reset() }
                 generateProductDetails()
             } catch {
-                // Reset scanned texts and generated content from previous image
-                scannedTexts = []
-                [nameViewModel, descriptionViewModel].forEach { $0.reset() }
-
                 switch error {
                 case ScanError.noTextDetected:
                     textDetectionErrorMessage = Localization.noTextDetected

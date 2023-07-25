@@ -97,6 +97,7 @@ final class AddProductFromImageViewModel: ObservableObject {
 
         $imageState
             .compactMap { $0.image?.image }
+            .removeDuplicates()
             .sink { [weak self] image in
                 self?.onSelectedImage(image)
             }

@@ -93,10 +93,16 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
         guard let siteID = siteID else {
             return nil
         }
-
+        
         return storageManager.viewStorage
             .loadSystemPlugins(siteID: siteID)
-            .first(where: { ($0.plugin as NSString).deletingPathExtension == configuration.pluginReference })?
+            .first(where: { $0.fileNameWithoutExtension == configuration.fileNameWithoutExtension })?
             .toReadOnly()
+    }
+}
+
+private extension Storage.SystemPlugin {
+    var fileNameWithoutExtension: String {
+        ((plugin as NSString).lastPathComponent as NSString).deletingPathExtension
     }
 }

@@ -82,7 +82,8 @@ final class CardPresentPluginsDataProviderTests: XCTestCase {
         // Given
         let siteID: Int64 = 1
         stores.sessionManager.setStoreId(siteID)
-        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce-payments/woocommerce-payments.php")
+        let fileNameWithoutExtension = "woocommerce-payments"
+        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "folder/" + fileNameWithoutExtension + ".ext")
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
 
 
@@ -96,7 +97,8 @@ final class CardPresentPluginsDataProviderTests: XCTestCase {
         // Given
         let siteID: Int64 = 1
         stores.sessionManager.setStoreId(siteID)
-        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce-gateway-stripe/woocommerce-gateway-stripe.php")
+        let fileNameWithoutExtension = "woocommerce-gateway-stripe"
+        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "folder/" + fileNameWithoutExtension + ".ext")
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
 
 

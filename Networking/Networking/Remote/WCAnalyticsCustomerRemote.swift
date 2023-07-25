@@ -25,7 +25,8 @@ public class WCAnalyticsCustomerRemote: Remote {
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.orderBy: "name",
-            ParameterKey.order: "desc",
+            ParameterKey.order: "asc",
+            ParameterKey.filterEmpty: "email",
         ]
 
         if let name = name {
@@ -56,10 +57,11 @@ public class WCAnalyticsCustomerRemote: Remote {
 
 private extension WCAnalyticsCustomerRemote {
     enum ParameterKey {
-        static let page       = "page"
-        static let perPage    = "orderby"
-        static let orderBy    = "per_page"
-        static let order      = "order"
-        static let search     = "search"
+        static let page        = "page"
+        static let perPage     = "per_page"
+        static let orderBy     = "orderby"
+        static let order       = "order"
+        static let search      = "search"
+        static let filterEmpty = "filter_empty"
     }
 }

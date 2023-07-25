@@ -46,6 +46,7 @@
                       },
                       "jetpack": true,
                       "jetpack_connection": true,
+                      "was_ecommerce_trial": false,
                       "options": {
                         "timezone": "",
                         "gmt_offset": 0,

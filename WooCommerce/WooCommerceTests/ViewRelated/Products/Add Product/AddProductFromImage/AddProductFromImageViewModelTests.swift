@@ -192,6 +192,53 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: New Image selection resets details from previous image
+
+    func test_details_from_previous_scan_are_reset_when_new_image_selected() throws {
+        // Given
+        let firstImage = MediaPickerImage(image: UIImage.emailImage,
+                                          source: .media(media: .fake()))
+        let secondImage = MediaPickerImage(image: UIImage.calendar,
+                                           source: .media(media: .fake()))
+        var imageToReturn: MediaPickerImage? = firstImage
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        mockGenerateProductDetails(result: .success(.init(name: "Name",
+                                                          description: "Desc",
+                                                          language: "en")))
+        let viewModel = AddProductFromImageViewModel(siteID: 123,
+                                                     source: .productsTab,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in imageToReturn })
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(firstImage)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Loaded details from previous image
+        XCTAssertTrue(viewModel.scannedTexts.isNotEmpty)
+        XCTAssertTrue(viewModel.name.isNotEmpty)
+        XCTAssertTrue(viewModel.description.isNotEmpty)
+
+        // When
+        imageTextScanner.result = .success([])
+        imageToReturn = secondImage
+
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(secondImage)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.scannedTexts.isEmpty)
+        XCTAssertTrue(viewModel.name.isEmpty)
+        XCTAssertTrue(viewModel.description.isEmpty)
+    }
+
     // MARK: `textDetectionErrorMessage`
 
     func test_textDetectionErrorMessage_is_nil_initially() throws {
@@ -226,7 +273,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
                        "No text detected. Please select another packaging photo or enter product details manually.")
     }
 
-    func test_textDetectionErrorMessage_has_correct_string_value_when_no_text_detection_fails() throws {
+    func test_textDetectionErrorMessage_has_correct_string_value_when_text_detection_fails() throws {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let error = NSError(domain: "test", code: 10000)
@@ -249,38 +296,23 @@ final class AddProductFromImageViewModelTests: XCTestCase {
                        "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.")
     }
 
-    func test_textDetectionErrorMessage_stays_nil_when_scanned_texts_are_available_already() throws {
+    func test_textDetectionErrorMessage_is_reset_when_image_with_text_is_loaded_again() throws {
         // Given
+        let firstImage = MediaPickerImage(image: UIImage.emailImage,
+                                          source: .media(media: .fake()))
+        let secondImage = MediaPickerImage(image: UIImage.calendar,
+                                           source: .media(media: .fake()))
+
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        var imageToReturn: MediaPickerImage? = image
+
         let imageTextScanner = MockImageTextScanner(result: .success([]))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
-                                                     onAddImage: { _ in image })
-        viewModel.scannedTexts = [.init(text: "test", isSelected: false)]
-
-        // When
-        viewModel.addImage(from: .siteMediaLibrary)
-        waitUntil {
-            viewModel.imageState == .success(image)
-        }
-
-        // Then
-        XCTAssertNil(viewModel.textDetectionErrorMessage)
-    }
-
-    func test_textDetectionErrorMessage_is_reset_when_image_is_loaded_again() throws {
-        // Given
-        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
-        let imageTextScanner = MockImageTextScanner(result: .success([]))
-        let viewModel = AddProductFromImageViewModel(siteID: 123,
-                                                     source: .productsTab,
-                                                     stores: stores,
-                                                     imageTextScanner: imageTextScanner,
-                                                     analytics: analytics,
-                                                     onAddImage: { _ in image })
+                                                     onAddImage: { _ in imageToReturn })
 
         // When
         viewModel.addImage(from: .siteMediaLibrary)
@@ -292,7 +324,13 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.textDetectionErrorMessage, "No text detected. Please select another packaging photo or enter product details manually.")
 
         // When
+        imageTextScanner.result = .success(["test"])
+        imageToReturn = secondImage
+
         viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(secondImage)
+        }
 
         // Then
         XCTAssertNil(viewModel.textDetectionErrorMessage)

@@ -2,7 +2,7 @@
 import UIKit
 
 final class MockImageTextScanner: ImageTextScannerProtocol {
-    let result: Result<[String], Error>
+    var result: Result<[String], Error>
 
     init(result: Result<[String], Error>) {
         self.result = result

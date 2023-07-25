@@ -590,7 +590,7 @@ final class RemoteTests: XCTestCase {
         do {
             _ = try await remote.enqueue(request, mapper: mapper)
         } catch {
-            await fulfillment(of: [expectationForNotification])
+            wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
             let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
@@ -620,7 +620,7 @@ final class RemoteTests: XCTestCase {
         do {
             let _: [String] = try await remote.enqueue(request)
         } catch {
-            await fulfillment(of: [expectationForNotification])
+            wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
             let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
@@ -654,7 +654,7 @@ final class RemoteTests: XCTestCase {
                 promise(result)
             }
         }
-        await fulfillment(of: [expectationForNotification])
+        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
 
         // Then
         XCTAssertTrue(result.isFailure)

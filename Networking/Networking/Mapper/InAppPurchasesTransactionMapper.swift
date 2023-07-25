@@ -4,34 +4,31 @@ import Foundation
 /// Mapper: IAP-WPCOM transaction verification result
 ///
 struct InAppPurchasesTransactionMapper: Mapper {
-    func map(response: Data) throws -> Int64 {
+    func map(response: Data) throws -> InAppPurchasesTransactionResponse {
         let decoder = JSONDecoder()
-        return try decoder.decode(InAppPurchasesTransactionContainer.self, from: response).siteID
+        return try decoder.decode(InAppPurchasesTransactionResponse.self, from: response)
     }
 }
 
-private struct InAppPurchasesTransactionContainer: Decodable {
-    let siteID: Int64
+public struct InAppPurchasesTransactionResponse: Decodable {
+    public let siteID: Int64?
+    public let message: String?
+    public let code: Int?
 
-    init(siteID: Int64) {
-        self.siteID = siteID
-    }
-
-    fileprivate init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        guard let siteID = try container.decodeIfPresent(Int64.self, forKey: .siteID) else {
-            throw InAppPurchasesTransactionError.transactionNotHandled
-        }
-
-        self.init(siteID: siteID)
+        let siteID = try container.decodeIfPresent(Int64.self, forKey: .siteID)
+        let errorMessage = try container.decodeIfPresent(String.self, forKey: .message)
+        let errorCode = try container.decodeIfPresent(Int.self, forKey: .code)
+        self.siteID = siteID
+        self.message = errorMessage
+        self.code = errorCode
     }
 
     private enum CodingKeys: String, CodingKey {
         case siteID = "site_id"
+        case message
+        case code
     }
-}
-
-enum InAppPurchasesTransactionError: Error {
-    case transactionNotHandled
 }

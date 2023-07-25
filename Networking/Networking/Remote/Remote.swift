@@ -103,7 +103,7 @@ public class Remote: NSObject {
                 completion(parsed, nil)
             } catch {
                 self.handleResponseError(error: error, for: request)
-                self.handleDecodingError(error: error)
+                self.handleDecodingError(error: error, for: request)
                 DDLogError("<> Mapping Error: \(error)")
                 completion(nil, error)
             }
@@ -136,7 +136,7 @@ public class Remote: NSObject {
                     completion(.success(parsed))
                 } catch {
                     self.handleResponseError(error: error, for: request)
-                    self.handleDecodingError(error: error)
+                    self.handleDecodingError(error: error, for: request)
                     DDLogError("<> Mapping Error: \(error)")
                     completion(.failure(error))
                 }
@@ -179,7 +179,7 @@ public class Remote: NSObject {
                     self?.handleResponseError(error: dotcomError, for: request)
                 }
                 if let decodingError = result.failure as? DecodingError {
-                    self?.handleDecodingError(error: decodingError)
+                    self?.handleDecodingError(error: decodingError, for: request)
                 }
             })
             .eraseToAnyPublisher()
@@ -218,7 +218,7 @@ public class Remote: NSObject {
                                                 completion(.success(parsed))
                                             } catch {
                                                 self.handleResponseError(error: error, for: request)
-                                                self.handleDecodingError(error: error)
+                                                self.handleDecodingError(error: error, for: request)
                                                 DDLogError("<> Mapping Error: \(error)")
                                                 completion(.failure(error))
                                             }
@@ -247,7 +247,7 @@ public class Remote: NSObject {
                     } catch {
                         DDLogError("<> Mapping Error: \(error)")
                         self.handleResponseError(error: error, for: request)
-                        self.handleDecodingError(error: error)
+                        self.handleDecodingError(error: error, for: request)
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
@@ -282,11 +282,11 @@ private extension Remote {
 
     /// Handles decoding errors when parsing the response data fails.
     ///
-    func handleDecodingError(error: Error) {
+    func handleDecodingError(error: Error, for request: Request) {
         guard let decodingError = error as? DecodingError else {
             return
         }
-        publishJSONParsingErrorNotification(error: decodingError)
+        publishJSONParsingErrorNotification(error: decodingError, path: request.pathForAnalytics)
     }
 
 
@@ -304,8 +304,10 @@ private extension Remote {
 
     /// Publishes a `JSON Parsing Error` Notification.
     ///
-    private func publishJSONParsingErrorNotification(error: Error) {
-        NotificationCenter.default.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: nil)
+    private func publishJSONParsingErrorNotification(error: Error, path: String?) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: [
+            JSONParsingErrorUserInfoKey.path: path
+        ].compactMapValues { $0 })
     }
 }
 
@@ -315,6 +317,10 @@ public extension Remote {
 
     enum Default {
         public static let firstPageNumber: Int = 1
+    }
+
+    enum JSONParsingErrorUserInfoKey {
+        public static let path = "path"
     }
 }
 

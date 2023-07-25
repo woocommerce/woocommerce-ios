@@ -124,15 +124,34 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
         assertEqual("other", actualProperties["cause"] as? String)
     }
 
-    func test_json_parsing_failed_event_is_tracked_upon_decoding_error() {
+    func test_json_parsing_failed_event_is_tracked_with_nil_path_property_upon_decoding_error_when_path_is_nil() throws {
         // When
         let error = mockDecodingError()
         mockNotificationCenter.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: nil)
 
         // Then
-        let expectedEvent = WooAnalyticsEvent.RemoteRequest.jsonParsingError(error)
+        let expectedEvent = WooAnalyticsEvent.RemoteRequest.jsonParsingError(error, path: nil)
 
         XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue }))
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent.statName.rawValue }))
+        let eventProperties = analyticsProvider.receivedProperties[indexOfEvent]
+        XCTAssertNil(eventProperties["path"])
+    }
+
+    func test_json_parsing_failed_event_is_tracked_with_path_property_upon_decoding_error_when_path_is_avaiable() throws {
+        // When
+        let error = mockDecodingError()
+        mockNotificationCenter.post(name: .RemoteDidReceiveJSONParsingError, object: error, userInfo: ["path": "wc/test"])
+
+        // Then
+        let expectedEvent = WooAnalyticsEvent.RemoteRequest.jsonParsingError(error, path: nil)
+
+        XCTAssert(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent.statName.rawValue }))
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent.statName.rawValue }))
+        let eventProperties = analyticsProvider.receivedProperties[indexOfEvent]
+        XCTAssertEqual(eventProperties["path"] as? String, "wc/test")
     }
 }
 

@@ -2,7 +2,7 @@
 
 14.7
 -----
-
+- [Internal] Shipment tracking is only enabled and synced when the order has non-virtual products.  [https://github.com/woocommerce/woocommerce-ios/pull/10288]
 
 14.6
 -----

@@ -244,8 +244,16 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        syncTrackingsEnablingAddButtonIfReachable(onReloadSections: onReloadSections) {
-            group.leave()
+        Task { @MainActor in
+            defer {
+                group.leave()
+            }
+            trackingIsReachable = await isShipmentTrackingEnabled()
+            guard trackingIsReachable else {
+                return
+            }
+            await syncTrackingsWhenShipmentTrackingIsEnabled()
+            onReloadSections?()
         }
 
         group.enter()
@@ -291,19 +299,37 @@ extension OrderDetailsViewModel {
         }
     }
 
-    func syncTrackingsEnablingAddButtonIfReachable(onReloadSections: (() -> ())? = nil, onCompletion: (() -> Void)? = nil) {
-        // If the plugin is not active, there is no point on continuing with a request that will fail.
-        isPluginActive(SitePlugin.SupportedPlugin.WCTracking) { [weak self] isActive in
-            guard let self = self, isActive else {
-                onCompletion?()
-                return
-            }
+    /// Checks if shipment tracking is enabled for the order.
+    /// - Returns: Whether shipment tracking is enabled for the user by checking the products and if the Shipment Tracking plugin is active.
+    @MainActor
+    func isShipmentTrackingEnabled() async -> Bool {
+        guard orderContainsOnlyVirtualProducts == false,
+              await isPluginActive(SitePlugin.SupportedPlugin.WCTracking) else {
+            return false
+        }
+        return true
+    }
 
-            self.trackingIsReachable = true
-            self.syncTracking { error in
-                onReloadSections?()
-                onCompletion?()
-            }
+    /// Syncs trackings when shipment tracking is enabled.
+    @MainActor
+    func syncTrackingsWhenShipmentTrackingIsEnabled() async {
+        let orderID = order.orderID
+        let siteID = order.siteID
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(
+                ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
+                                                               orderID: orderID) { error in
+                                                                   if let error {
+                                                                       DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                                                                       continuation.resume(returning: ())
+                                                                       return
+                                                                   }
+
+                                                                   ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+
+                                                                   continuation.resume(returning: ())
+                                                               }
+            )
         }
     }
 }
@@ -481,25 +507,6 @@ extension OrderDetailsViewModel {
             }
 
             onCompletion?(order, nil)
-        }
-
-        stores.dispatch(action)
-    }
-
-    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
-        let orderID = order.orderID
-        let siteID = order.siteID
-        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
-                                                                    orderID: orderID) { error in
-                                                                        if let error = error {
-                                                                            DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
-                                                                            onCompletion?(error)
-                                                                            return
-                                                                        }
-
-                                                                        ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
-
-                                                                        onCompletion?(nil)
         }
 
         stores.dispatch(action)

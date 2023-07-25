@@ -1,3 +1,4 @@
+import TestKit
 import WooFoundation
 import XCTest
 import Yosemite
@@ -300,6 +301,63 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 0)
+    }
+
+    // MARK: - `isShipmentTrackingEnabled`
+
+    func test_isShipmentTrackingEnabled_without_a_non_virtual_product_returns_false_and_does_not_dispatch_actions() async throws {
+        // Given
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        let isEnabled = await viewModel.isShipmentTrackingEnabled()
+
+        // Then
+        XCTAssertFalse(isEnabled)
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+    }
+
+    func test_isShipmentTrackingEnabled_with_a_non_virtual_product_returns_plugin_isActive() async throws {
+        // Given
+        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WCTracking, siteID: order.siteID, isActive: true)
+        whenFetchingSystemPlugin(thenReturn: plugin)
+
+        // When
+        let isEnabled = await viewModel.isShipmentTrackingEnabled()
+
+        // Then
+        XCTAssertTrue(isEnabled)
+    }
+
+    // MARK: - `syncTrackingsWhenShipmentTrackingIsEnabled`
+
+    func test_syncTrackingsWhenShipmentTrackingIsEnabled_dispatches_ShipmentAction() async throws {
+        // Given
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        storesManager.whenReceivingAction(ofType: ShipmentAction.self) { action in
+            // Then
+            guard case let ShipmentAction.synchronizeShipmentTrackingData(siteID, orderID, completion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            XCTAssertEqual(siteID, self.order.siteID)
+            XCTAssertEqual(orderID, self.order.orderID)
+            completion(nil)
+        }
+
+        // When
+        await viewModel.syncTrackingsWhenShipmentTrackingIsEnabled()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        assertThat(storesManager.receivedActions.first, isAnInstanceOf: ShipmentAction.self)
     }
 }
 

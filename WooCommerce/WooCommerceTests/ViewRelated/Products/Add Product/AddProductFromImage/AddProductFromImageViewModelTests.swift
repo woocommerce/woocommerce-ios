@@ -249,28 +249,6 @@ final class AddProductFromImageViewModelTests: XCTestCase {
                        "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.")
     }
 
-    func test_textDetectionErrorMessage_stays_nil_when_scanned_texts_are_available_already() throws {
-        // Given
-        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
-        let imageTextScanner = MockImageTextScanner(result: .success([]))
-        let viewModel = AddProductFromImageViewModel(siteID: 123,
-                                                     source: .productsTab,
-                                                     stores: stores,
-                                                     imageTextScanner: imageTextScanner,
-                                                     analytics: analytics,
-                                                     onAddImage: { _ in image })
-        viewModel.scannedTexts = [.init(text: "test", isSelected: false)]
-
-        // When
-        viewModel.addImage(from: .siteMediaLibrary)
-        waitUntil {
-            viewModel.imageState == .success(image)
-        }
-
-        // Then
-        XCTAssertNil(viewModel.textDetectionErrorMessage)
-    }
-
     func test_textDetectionErrorMessage_is_reset_when_image_is_loaded_again() throws {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))

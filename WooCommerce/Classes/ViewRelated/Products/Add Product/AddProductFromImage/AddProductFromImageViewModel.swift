@@ -103,11 +103,6 @@ final class AddProductFromImageViewModel: ObservableObject {
             }
             .store(in: &subscriptions)
 
-        $imageState
-            .filter { $0 == .empty || $0 == .loading }
-            .map { _ in nil }
-            .assign(to: &$textDetectionErrorMessage)
-
         $scannedTextValidation
             .map { $0.values.contains { $0 } }
             .assign(to: &$regenerateButtonEnabled)
@@ -157,6 +152,7 @@ private extension AddProductFromImageViewModel {
         // Reset scanned texts and generated content from previous image
         scannedTexts = []
         [nameViewModel, descriptionViewModel].forEach { $0.reset() }
+        textDetectionErrorMessage = nil
 
         Task { @MainActor in
             do {

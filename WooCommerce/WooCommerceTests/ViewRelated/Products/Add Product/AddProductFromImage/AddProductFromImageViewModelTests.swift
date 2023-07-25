@@ -296,16 +296,23 @@ final class AddProductFromImageViewModelTests: XCTestCase {
                        "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.")
     }
 
-    func test_textDetectionErrorMessage_is_reset_when_image_is_loaded_again() throws {
+    func test_textDetectionErrorMessage_is_reset_when_image_with_text_is_loaded_again() throws {
         // Given
+        let firstImage = MediaPickerImage(image: UIImage.emailImage,
+                                          source: .media(media: .fake()))
+        let secondImage = MediaPickerImage(image: UIImage.calendar,
+                                           source: .media(media: .fake()))
+
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        var imageToReturn: MediaPickerImage? = image
+
         let imageTextScanner = MockImageTextScanner(result: .success([]))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
-                                                     onAddImage: { _ in image })
+                                                     onAddImage: { _ in imageToReturn })
 
         // When
         viewModel.addImage(from: .siteMediaLibrary)
@@ -317,7 +324,13 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.textDetectionErrorMessage, "No text detected. Please select another packaging photo or enter product details manually.")
 
         // When
+        imageTextScanner.result = .success(["test"])
+        imageToReturn = secondImage
+
         viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(secondImage)
+        }
 
         // Then
         XCTAssertNil(viewModel.textDetectionErrorMessage)

@@ -192,47 +192,45 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         }
     }
 
-    // MARK: Text detection failure
+    // MARK: New Image selection resets details from previous image
 
-    func test_details_from_previous_scan_are_reset_when_no_text_is_detected() throws {
+    func test_details_from_previous_scan_are_reset_when_new_image_selected() throws {
         // Given
-        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
-        let imageTextScanner = MockImageTextScanner(result: .success([]))
+        let firstImage = MediaPickerImage(image: UIImage.emailImage,
+                                          source: .media(media: .fake().copy(mediaID: 1)))
+        let secondImage = MediaPickerImage(image: UIImage.calendar,
+                                           source: .media(media: .fake().copy(mediaID: 2)))
+        var imageToReturn: MediaPickerImage? = firstImage
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        mockGenerateProductDetails(result: .success(.init(name: "Name",
+                                                          description: "Desc",
+                                                          language: "en")))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
-                                                     onAddImage: { _ in image })
-
-        // When
+                                                     onAddImage: { _ in imageToReturn })
         viewModel.addImage(from: .siteMediaLibrary)
         waitUntil {
-            viewModel.imageState == .success(image)
+            viewModel.imageState == .success(firstImage)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
         }
 
-        // Then
-        XCTAssertTrue(viewModel.scannedTexts.isEmpty)
-        XCTAssertTrue(viewModel.name.isEmpty)
-        XCTAssertTrue(viewModel.description.isEmpty)
-    }
-
-    func test_details_from_previous_scan_are_reset_when_text_detection_fails() throws {
-        // Given
-        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
-        let error = NSError(domain: "test", code: 10000)
-        let imageTextScanner = MockImageTextScanner(result: .failure(error))
-        let viewModel = AddProductFromImageViewModel(siteID: 123,
-                                                     source: .productsTab,
-                                                     stores: stores,
-                                                     imageTextScanner: imageTextScanner,
-                                                     analytics: analytics,
-                                                     onAddImage: { _ in image })
+        // Loaded details from previous image
+        XCTAssertTrue(viewModel.scannedTexts.isNotEmpty)
+        XCTAssertTrue(viewModel.name.isNotEmpty)
+        XCTAssertTrue(viewModel.description.isNotEmpty)
 
         // When
+        imageTextScanner.result = .success([])
+        imageToReturn = secondImage
+
         viewModel.addImage(from: .siteMediaLibrary)
         waitUntil {
-            viewModel.imageState == .success(image)
+            viewModel.imageState == .success(secondImage)
         }
 
         // Then

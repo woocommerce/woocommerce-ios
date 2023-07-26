@@ -24,6 +24,7 @@ struct LocalNotification {
         case oneDayAfterFreeTrialExpires(siteID: Int64)
         case sixHoursAfterFreeTrialSubscribed(siteID: Int64)
         case twentyFourHoursAfterFreeTrialSubscribed(siteID: Int64)
+        case freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: Int64)
 
         var identifier: String {
             switch self {
@@ -39,6 +40,8 @@ struct LocalNotification {
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed + "\(siteID)"
             case let .twentyFourHoursAfterFreeTrialSubscribed(siteID):
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(siteID)"
+            case let .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID):
+                return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(siteID)"
             }
         }
 
@@ -63,6 +66,8 @@ struct LocalNotification {
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
             } else if identifier.hasPrefix(Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
+            } else if identifier.hasPrefix(Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed) {
+                return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
             }
             return identifier
         }
@@ -143,6 +148,10 @@ extension LocalNotification {
         case .twentyFourHoursAfterFreeTrialSubscribed:
             title = Localization.TwentyFourHoursAfterFreeTrialSubscribed.title
             body = Localization.TwentyFourHoursAfterFreeTrialSubscribed.body
+
+        case .freeTrialSurvey24hAfterFreeTrialSubscribed:
+            title = Localization.FreeTrialSurvey24hAfterFreeTrialSubscribed.title
+            body = Localization.FreeTrialSurvey24hAfterFreeTrialSubscribed.body
 
         }
 

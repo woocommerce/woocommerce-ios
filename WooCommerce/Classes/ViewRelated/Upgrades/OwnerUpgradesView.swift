@@ -42,16 +42,17 @@ struct OwnerUpgradesView: View {
                 VStack {
                     ForEach(upgradePlans.filter { $0.wooPlan.planFrequency == paymentFrequency }) { upgradePlan in
                         WooPlanCardView(upgradePlan: upgradePlan, selectedPlan: $selectedPlan)
-                        .accessibilityAddTraits(.isSummaryElement)
-                        .listRowSeparator(.hidden)
-                        .redacted(reason: isLoading ? .placeholder : [])
-                        .shimmering(active: isLoading)
-                        .padding(.bottom, 8)
+                            .disabled(isPurchasing)
+                            .listRowSeparator(.hidden)
+                            .redacted(reason: isLoading ? .placeholder : [])
+                            .shimmering(active: isLoading)
+                            .padding(.bottom, 8)
                     }
                     Button(Localization.allFeaturesListText) {
                         showingFullFeatureList.toggle()
                     }
                     .buttonStyle(SecondaryButtonStyle())
+                    .disabled(isPurchasing)
                     .sheet(isPresented: $showingFullFeatureList) {
                         NavigationView {
                             FullFeatureListView()

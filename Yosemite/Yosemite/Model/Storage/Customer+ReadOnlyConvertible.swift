@@ -68,9 +68,11 @@ extension Storage.Customer: ReadOnlyConvertible {
         siteID = customer.siteID
         email = customer.email
 
-        let nameComponents = customer.name?.components(separatedBy: " ")
-        firstName = nameComponents?.first
-        lastName = nameComponents?.last
+        if let nameComponents = customer.name?.components(separatedBy: " ") {
+            // Handle case when there is a middle name: it goes to first name
+            firstName = nameComponents.count > 1 ? nameComponents.dropLast().joined(separator: " ") : nameComponents.first
+            lastName = nameComponents.count > 1 ? nameComponents.last : nil
+        }
     }
 
     /// Returns a ReadOnly (`Networking.Customer`) version of the `Storage.Customer`

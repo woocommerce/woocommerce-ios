@@ -1,7 +1,39 @@
 import SwiftUI
 
+/// Hosting controller for `CreateTestOrderView`.
+///
+final class CreateTestOrderHostingController: UIHostingController<CreateTestOrderView> {
+    init(createTestOrderHandler: @escaping () -> Void) {
+        super.init(rootView: CreateTestOrderView(createTestOrderHandler: createTestOrderHandler))
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureTransparentNavigationBar()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+    }
+
+    @objc
+    private func dismissView() {
+        dismiss(animated: true)
+    }
+}
+
+private extension CreateTestOrderHostingController {
+    enum Localization {
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the site credential login screen")
+    }
+}
+
 /// View with instructions to create a test order.
 struct CreateTestOrderView: View {
+
+    private let createTestOrderHandler: () -> Void
+
     private let instructions: [String] = [
         Localization.instruction1,
         Localization.instruction2,
@@ -9,40 +41,48 @@ struct CreateTestOrderView: View {
         Localization.instruction4
     ]
 
+    init(createTestOrderHandler: @escaping () -> Void) {
+        self.createTestOrderHandler = createTestOrderHandler
+    }
+
     var body: some View {
-        VStack(spacing: Layout.blockSpacing) {
-            /// Title
-            Text(Localization.title)
-                .titleStyle()
+        ScrollView {
+            VStack(spacing: Layout.blockSpacing) {
+                /// Title
+                Text(Localization.title)
+                    .titleStyle()
 
-            /// Image
-            Image(uiImage: .createOrderImage)
+                /// Image
+                Image(uiImage: .createOrderImage)
 
-            /// Instructions
-            VStack(alignment: .leading, spacing: Layout.instructionSpacing) {
-                ForEach(Array(instructions.enumerated()), id: \.element) { index, content in
-                    HStack(spacing: Layout.instructionMargin) {
-                        Text("\(index)")
-                            .bodyStyle()
-                            .background(
-                                Circle()
-                                    .padding(8)
-                                    .foregroundColor(.init(uiColor: .listBackground))
-                            )
-
-                        Text(content)
-                            .subheadlineStyle()
+                /// Instructions
+                VStack(alignment: .leading, spacing: Layout.instructionSpacing) {
+                    ForEach(Array(instructions.enumerated()), id: \.element) { index, content in
+                        HStack(spacing: Layout.instructionMargin) {
+                            Text("\(index + 1)")
+                                .bodyStyle()
+                                .padding(Layout.instructionIndexPadding)
+                                .background(
+                                    Circle()
+                                        .foregroundColor(.init(uiColor: UIColor(light: .systemGroupedBackground,
+                                                                                dark: .secondarySystemGroupedBackground)))
+                                )
+                            Text(content)
+                                .subheadlineStyle()
+                        }
                     }
+                    .padding(.horizontal, Layout.instructionMargin)
                 }
-                .padding(.horizontal, Layout.instructionMargin)
             }
-
-            /// CTA
-            Button(Localization.startAction) {
-                // TODO
+        }
+        .safeAreaInset(edge: .bottom) {
+            VStack {
+                /// CTA
+                Button(Localization.startAction, action: createTestOrderHandler)
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(.horizontal, Layout.buttonMargin)
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(.horizontal, Layout.buttonMargin)
+            .background(Color(.systemBackground))
         }
     }
 }
@@ -51,6 +91,7 @@ private extension CreateTestOrderView {
     enum Layout {
         static let instructionMargin: CGFloat = 24
         static let instructionSpacing: CGFloat = 16
+        static let instructionIndexPadding: CGFloat = 12
         static let buttonMargin: CGFloat = 16
         static let blockSpacing: CGFloat = 32
     }
@@ -78,6 +119,6 @@ private extension CreateTestOrderView {
 
 struct CreateTestOrderView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateTestOrderView()
+        CreateTestOrderView {}
     }
 }

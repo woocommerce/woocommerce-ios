@@ -11,17 +11,22 @@ public class WCAnalyticsCustomerRemote: Remote {
     ///     - pageSize: Number of customers to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadCustomers(for siteID: Int64,
-                                name: String? = nil,
-                                pageNumber: Int = 1,
-                                pageSize: Int = 25,
-                                completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
+    public func searchCustomers(for siteID: Int64, name: String, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         // If there's no search term, we can exit and avoid the HTTP request
         if name == "" {
             return
         }
 
-        var parameters = [
+        enqueueRequest(with: ["search": name], siteID: siteID, completion: completion)
+    }
+
+    /// Loads a paginated list of customers
+    /// 
+    public func loadCustomers(for siteID: Int64,
+                                pageNumber: Int = 1,
+                                pageSize: Int = 25,
+                                completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
+        let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.orderBy: "name",
@@ -29,10 +34,10 @@ public class WCAnalyticsCustomerRemote: Remote {
             ParameterKey.filterEmpty: "email",
         ]
 
-        if let name = name {
-            parameters = [ParameterKey.search: name]
-        }
+        enqueueRequest(with: parameters, siteID: siteID, completion: completion)
+    }
 
+    private func enqueueRequest(with parameters: [String: Any], siteID: Int64, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         let path = "customers"
         let request = JetpackRequest(
             wooApiVersion: .wcAnalytics,

@@ -70,7 +70,7 @@ public final class CustomerStore: Store {
         for siteID: Int64,
         keyword: String,
         onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
-            searchRemote.loadCustomers(for: siteID, name: keyword) { [weak self] result in
+            searchRemote.searchCustomers(for: siteID, name: keyword) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let customers):

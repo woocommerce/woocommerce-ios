@@ -278,7 +278,7 @@ private extension InAppPurchaseStore {
 
         return supportedCountriesCodes.contains(countryCode)
     }
-    
+
     /// Checks if the Site has current subscriptions via In-App Purchases
     ///
     func siteHasCurrentInAppPurchases(siteID: Int64) async -> Bool {

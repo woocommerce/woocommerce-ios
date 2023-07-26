@@ -26,6 +26,8 @@ final class FreeTrialSurveyHostingController: UIHostingController<FreeTrialSurve
 ///
 struct FreeTrialSurveyView: View {
     @ObservedObject private var viewModel: FreeTrialSurveyViewModel
+    @FocusState private var isOtherReasonsFocused: Bool
+
     var dismissAction: () -> Void = {}
 
     init(viewModel: FreeTrialSurveyViewModel) {
@@ -42,11 +44,17 @@ struct FreeTrialSurveyView: View {
                 VStack() {
                     ForEach(viewModel.answers, id: \.self) { answer in
                         if answer == .otherReasons {
-                            TextField(answer.text, text: $viewModel.otherReasonSpecified)
-                                .font(.body)
-                                .textFieldStyle(RoundedBorderTextFieldStyle(focused: false))
+                            TextField(answer.text, text: $viewModel.otherReasonSpecified, onEditingChanged: { focus in
+                                if focus {
+                                    viewModel.selectAnswer(.otherReasons)
+                                }
+                            })
+                            .font(.body)
+                            .textFieldStyle(RoundedBorderTextFieldStyle(focused: isOtherReasonsFocused))
+                            .focused($isOtherReasonsFocused)
                         } else {
                             Button(action: {
+                                isOtherReasonsFocused = false
                                 viewModel.selectAnswer(answer)
                             }, label: {
                                 HStack {

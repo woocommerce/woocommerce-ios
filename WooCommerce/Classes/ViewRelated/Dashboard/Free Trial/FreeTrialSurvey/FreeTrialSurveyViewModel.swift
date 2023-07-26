@@ -13,11 +13,6 @@ final class FreeTrialSurveyViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics) {
         self.source = source
         self.analytics = analytics
-
-        $otherReasonSpecified
-            .filter { $0.isNotEmpty }
-            .map { _ in nil }
-            .assign(to: &$selectedAnswer)
     }
 
     var answers: [SurveyAnswer] {

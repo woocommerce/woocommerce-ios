@@ -11,8 +11,12 @@ struct CreateTestOrderView: View {
 
     var body: some View {
         VStack(spacing: Layout.blockSpacing) {
+            /// Title
             Text(Localization.title)
                 .titleStyle()
+
+            /// Image
+            Image(uiImage: .createOrderImage)
 
             /// Instructions
             VStack(alignment: .leading, spacing: Layout.instructionSpacing) {

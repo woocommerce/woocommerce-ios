@@ -52,7 +52,9 @@ struct OwnerUpgradesView: View {
                         showingFullFeatureList.toggle()
                     }
                     .buttonStyle(SecondaryButtonStyle())
-                    .disabled(isPurchasing)
+                    .disabled(isPurchasing || isLoading)
+                    .redacted(reason: isLoading ? .placeholder : [])
+                    .shimmering(active: isLoading)
                     .sheet(isPresented: $showingFullFeatureList) {
                         NavigationView {
                             FullFeatureListView()

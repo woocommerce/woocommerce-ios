@@ -2408,16 +2408,19 @@ extension Networking.WCAnalyticsCustomer {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         userID: CopiableProp<Int64> = .copy,
-        name: NullableCopiableProp<String> = .copy
+        name: NullableCopiableProp<String> = .copy,
+        email: NullableCopiableProp<String> = .copy
     ) -> Networking.WCAnalyticsCustomer {
         let siteID = siteID ?? self.siteID
         let userID = userID ?? self.userID
         let name = name ?? self.name
+        let email = email ?? self.email
 
         return Networking.WCAnalyticsCustomer(
             siteID: siteID,
             userID: userID,
-            name: name
+            name: name,
+            email: email
         )
     }
 }

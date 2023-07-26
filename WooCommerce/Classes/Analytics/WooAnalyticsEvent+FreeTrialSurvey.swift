@@ -10,7 +10,7 @@ extension WooAnalyticsEvent {
         }
 
         static func surveySent(source: FreeTrialSurveyCoordinator.Source,
-                               surveyOption: String?,
+                               surveyOption: String,
                                freeText: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .freeTrialSurveySent,
                               properties: [Key.source.rawValue: source.rawValue,

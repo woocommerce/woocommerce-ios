@@ -31,7 +31,7 @@ final class FreeTrialSurveyViewModel: ObservableObject {
         // TODO: 10266 Submit tracks
     }
 
-    enum SurveyAnswer: String, Equatable, CaseIterable {
+    enum SurveyAnswer: String, CaseIterable {
         case stillExploring = "still_exploring"
         case comparingWithOtherPlatforms = "comparing_with_other_platforms"
         case priceIsSignificantFactor = "price_is_significant_factor"

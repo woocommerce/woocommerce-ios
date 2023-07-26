@@ -95,23 +95,15 @@ final class SubscriptionsViewModel: ObservableObject {
 private extension SubscriptionsViewModel {
     /// Whether the In-App Purchases subscription management button should be rendered
     ///
-    func shouldRenderManageSubscriptionsButton() {
-        Task { @MainActor in
-            do {
-                let plans = try await inAppPurchasesPlanManager.fetchPlans()
-                guard let plan = plans.first(where: { $0.id == AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue }) else {
-                    return
-                }
-                guard try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.id) else {
-                    return
-                }
+    @MainActor
+    func shouldRenderManageSubscriptionsButton() async throws {
+        for plan in AvailableInAppPurchasesWPComPlans.allCases {
+            if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.rawValue) {
                 shouldShowManageSubscriptionButton = true
-            } catch {
-                DDLogError("⛔️ Failed to retrieve WPCOM In-App Purchases plans: \(error)")
+                break
             }
         }
     }
-
 
     /// Observes and reacts to plan changes
     ///
@@ -141,7 +133,9 @@ private extension SubscriptionsViewModel {
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
 
-        shouldRenderManageSubscriptionsButton()
+        Task {
+            try await shouldRenderManageSubscriptionsButton()
+        }
     }
 
     func updateLoadingViewProperties() {

@@ -134,7 +134,9 @@ private extension SubscriptionsViewModel {
         shouldShowFreeTrialFeatures = plan.isFreeTrial
 
         Task {
-            try await shouldRenderManageSubscriptionsButton()
+            if !plan.isFreeTrial {
+                try await shouldRenderManageSubscriptionsButton()
+            }
         }
     }
 

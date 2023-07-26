@@ -4,16 +4,16 @@ import WooFoundation
 
 struct OwnerUpgradesView: View {
     @State var upgradePlans: [WooWPComPlan]
-    @State var isPurchasing: Bool
+    @Binding var isPurchasing: Bool
     let purchasePlanAction: (WooWPComPlan) -> Void
     @State var isLoading: Bool
 
     init(upgradePlans: [WooWPComPlan],
-         isPurchasing: Bool = false,
+         isPurchasing: Binding<Bool>,
          purchasePlanAction: @escaping ((WooWPComPlan) -> Void),
          isLoading: Bool = false) {
         _upgradePlans = .init(initialValue: upgradePlans)
-        _isPurchasing = .init(initialValue: isPurchasing)
+        _isPurchasing = isPurchasing
         self.purchasePlanAction = purchasePlanAction
         _isLoading = .init(initialValue: isLoading)
     }

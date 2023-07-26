@@ -3,7 +3,6 @@
 14.7
 -----
 - [*] Local notifications: Add a reminder to purchase a plan is scheduled 6hr after a free trial subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10268]
-- [*] Order list: The empty state now provides support for creating test orders. [https://github.com/woocommerce/woocommerce-ios/pull/10318]
 - [Internal] Shipment tracking is only enabled and synced when the order has non-virtual products.  [https://github.com/woocommerce/woocommerce-ios/pull/10288]
 - [*] Photo -> Product: Reset details from previous image when new image is selected. [https://github.com/woocommerce/woocommerce-ios/pull/10297]
 

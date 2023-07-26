@@ -614,7 +614,8 @@ private extension OrderListViewController {
     func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
 
         /// If site is launched, show entry point to creating test orders.
-        if let site = ServiceLocator.stores.sessionManager.defaultSite,
+        if  ServiceLocator.featureFlagService.isFeatureFlagEnabled(.createTestOrder),
+            let site = ServiceLocator.stores.sessionManager.defaultSite,
             site.isPublic,
             let url = URL(string: site.url),
             UIApplication.shared.canOpenURL(url) {

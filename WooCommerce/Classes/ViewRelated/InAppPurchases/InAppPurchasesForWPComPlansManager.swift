@@ -49,6 +49,10 @@ protocol InAppPurchasesForWPComPlansProtocol {
     /// Returns whether In-App Purchases are supported for the current user configuration
     ///
     func inAppPurchasesAreSupported() async -> Bool
+
+    /// Returns whether the site has any current In-App Purchases product
+    ///
+    func siteHasCurrentInAppPurchases(siteID: Int64) async -> Bool
 }
 
 final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProtocol {
@@ -100,6 +104,15 @@ final class InAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansProto
             stores.dispatch(InAppPurchaseAction.inAppPurchasesAreSupported(completion: { result in
                 continuation.resume(returning: result)
             }))
+        }
+    }
+
+    @MainActor
+    func siteHasCurrentInAppPurchases(siteID: Int64) async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(InAppPurchaseAction.siteHasCurrentInAppPurchases(siteID: siteID) { result in
+                continuation.resume(returning: result)
+            })
         }
     }
 }

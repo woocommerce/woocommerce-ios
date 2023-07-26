@@ -95,12 +95,14 @@ final class SubscriptionsViewModel: ObservableObject {
 private extension SubscriptionsViewModel {
     /// Whether the In-App Purchases subscription management button should be rendered
     ///
-    @MainActor
-    func shouldRenderManageSubscriptionsButton() async throws {
-        for plan in AvailableInAppPurchasesWPComPlans.allCases {
-            if try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.rawValue) {
-                shouldShowManageSubscriptionButton = true
-                break
+    func shouldRenderManageSubscriptionsButton() {
+        guard let siteID = storePlanSynchronizer.site?.siteID else {
+            return
+        }
+
+        Task { @MainActor in
+            if await inAppPurchasesPlanManager.siteHasCurrentInAppPurchases(siteID: siteID) {
+                self.shouldShowManageSubscriptionButton = true
             }
         }
     }
@@ -133,10 +135,8 @@ private extension SubscriptionsViewModel {
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
 
-        Task {
-            if !plan.isFreeTrial {
-                try await shouldRenderManageSubscriptionsButton()
-            }
+        if !plan.isFreeTrial {
+            shouldRenderManageSubscriptionsButton()
         }
     }
 

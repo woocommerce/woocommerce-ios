@@ -25,7 +25,7 @@ final class StorePlanSynchronizer: ObservableObject {
 
     /// Current logged-in site. `Nil` if not logged-in.
     ///
-    private var site: Site?
+    private(set) var site: Site?
 
     /// Stores manager.
     ///

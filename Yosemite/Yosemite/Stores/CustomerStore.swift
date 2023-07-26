@@ -215,7 +215,6 @@ private extension CustomerStore {
     /// Inserts or updates Customer entities into Storage
     ///
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, in storage: StorageType) {
-
         let storageCustomer: Storage.Customer = {
             // If the specific customerID for that siteID already exists, return it
             // If doesn't, insert a new one in Storage

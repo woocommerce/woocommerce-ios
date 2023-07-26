@@ -431,7 +431,7 @@ private extension SettingsViewController {
             }
         }()
 
-        present(viewController, animated: true)
+        show(viewController, sender: self)
     }
 
     func privacyWasPressed() {

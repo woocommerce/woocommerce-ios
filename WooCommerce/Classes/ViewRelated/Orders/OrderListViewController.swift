@@ -615,14 +615,21 @@ private extension OrderListViewController {
 
         /// If site is launched, show entry point to creating test orders.
         if let site = ServiceLocator.stores.sessionManager.defaultSite,
-           site.isPublic, let url = URL(string: site.url) {
+            site.isPublic,
+            let url = URL(string: site.url),
+            UIApplication.shared.canOpenURL(url) {
 
             return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                                image: .emptyOrdersImage,
                                details: Localization.createTestOrderDetail,
                                buttonTitle: Localization.tryTestOrder,
-                               onTap: { [weak self] button in
-                
+                               onTap: { [weak self] _ in
+                guard let self else { return }
+                let hostingController = CreateTestOrderHostingController {
+                    // TODO: analytics
+                    UIApplication.shared.open(url)
+                }
+                self.present(UINavigationController(rootViewController: hostingController), animated: true)
             }, onPullToRefresh: { [weak self] refreshControl in
                 self?.pullToRefresh(sender: refreshControl)
             })

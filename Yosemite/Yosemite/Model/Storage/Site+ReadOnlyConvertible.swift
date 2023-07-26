@@ -52,6 +52,6 @@ extension Storage.Site: ReadOnlyConvertible {
                     isPublic: isPublic,
                     canBlaze: canBlaze,
                     isAdmin: isAdmin,
-                    wasEcommerceTrial: false)
+                    wasEcommerceTrial: wasEcommerceTrial)
     }
 }

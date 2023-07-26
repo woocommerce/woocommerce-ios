@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 92 (Release 14.7.0.0)
+- @itsmeichigo 2023-07-25
+    - Added `wasEcommerceTrial` attribute to `Site` entity.
+
 ## Model 91 (Release 14.2.0.0)
 - @jaclync 2023-06-20
     - Added `isAdmin` and `canBlaze` attributes to `Site` entity.

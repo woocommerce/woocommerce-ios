@@ -1931,7 +1931,8 @@ extension Networking.WCAnalyticsCustomer {
         .init(
             siteID: .fake(),
             userID: .fake(),
-            name: .fake()
+            name: .fake(),
+            email: .fake()
         )
     }
 }

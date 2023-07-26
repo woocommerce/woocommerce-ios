@@ -28,7 +28,15 @@ final class FreeTrialSurveyViewModel: ObservableObject {
     }
 
     var feedbackSelected: Bool {
-        otherReasonSpecified.isNotEmpty || selectedAnswer != nil
+        guard let selectedAnswer else {
+            return false
+        }
+
+        if selectedAnswer == .otherReasons {
+            return otherReasonSpecified.isNotEmpty
+        }
+
+        return true
     }
 
     func selectAnswer(_ answer: SurveyAnswer) {

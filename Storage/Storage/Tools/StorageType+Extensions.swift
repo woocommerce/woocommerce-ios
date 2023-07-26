@@ -621,6 +621,12 @@ public extension StorageType {
         let predicate = \Customer.siteID == siteID && \Customer.customerID == customerID
         return firstObject(ofType: Customer.self, matching: predicate)
     }
+
+    func loadAllCustomers(siteID: Int64) -> [Customer] {
+        let predicate = \Customer.siteID == siteID
+        return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
+    }
+
     /// Returns a CustomerSearchResult given a `siteID` and a `keyword`
     ///
     func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {

@@ -107,17 +107,16 @@ public final class CustomerStore: Store {
     }
 
     func synchronizeCustomers(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        searchRemote.loadCustomers(for: siteID) { result in
+        searchRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
             switch result {
             case .success(let customers):
                 debugPrint("customers", customers, customers.count)
-                self.mapSearchResultsToCustomerObjects(for: siteID, with: "", with: customers, onCompletion: { result in
-                    switch result {
-                    case .success(_):
-                        onCompletion(.success(()))
-                    case let .failure(error):
-                        onCompletion(.failure(error))
-                    }
+                self.upsertCustomers(siteID: siteID,
+                                     readOnlyCustomers: customers,
+                                     shouldDeleteExistingCustomers: pageNumber == 1,
+                                     in: self.sharedDerivedStorage,
+                                     onCompletion: {
+                    onCompletion(.success(()))
                 })
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -195,8 +194,16 @@ private extension CustomerStore {
         }
     }
 
-    private func upsertCustomers(siteID: Int64, readOnlyCustomers: [StorageCustomerConvertible], in storage: StorageType, onCompletion: @escaping () -> Void) {
+    private func upsertCustomers(siteID: Int64,
+                                 readOnlyCustomers: [StorageCustomerConvertible],
+                                 shouldDeleteExistingCustomers: Bool = false,
+                                 in storage: StorageType,
+                                 onCompletion: @escaping () -> Void) {
         storage.perform { [weak self] in
+            if shouldDeleteExistingCustomers {
+                storage.deleteCustomers(siteID: siteID)
+            }
+
             readOnlyCustomers.forEach {
                 self?.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, in: storage)
             }

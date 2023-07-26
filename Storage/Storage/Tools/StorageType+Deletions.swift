@@ -178,4 +178,11 @@ public extension StorageType {
             deleteObject(inboxNote)
         }
     }
+
+    // MARK: - Customers
+    func deleteCustomers(siteID: Int64) {
+        loadAllCustomers(siteID: siteID).forEach {
+            deleteObject($0)
+        }
+    }
 }

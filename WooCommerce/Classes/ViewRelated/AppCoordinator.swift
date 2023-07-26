@@ -32,6 +32,7 @@ final class AppCoordinator {
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
     private var storeCreationCoordinator: StoreCreationCoordinator?
+    private var freeTrialSurveyCoorindator: FreeTrialSurveyCoordinator?
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -410,7 +411,14 @@ private extension AppCoordinator {
 /// Local notification handling helper methods.
 private extension AppCoordinator {
     func showFreeTrialSurvey() {
-        // TODO: 10266 Show free trial survey screen
+        guard let navigationController = self.window.rootViewController?.topmostPresentedViewController as? UINavigationController else {
+            return
+        }
+
+        let coordinator = FreeTrialSurveyCoordinator(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
+                                                     navigationController: navigationController)
+        freeTrialSurveyCoorindator = coordinator
+        coordinator.start()
     }
 
     func showUpgradesView(siteID: Int64) {

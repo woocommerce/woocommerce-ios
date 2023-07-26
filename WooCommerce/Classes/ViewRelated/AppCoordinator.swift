@@ -411,7 +411,7 @@ private extension AppCoordinator {
 /// Local notification handling helper methods.
 private extension AppCoordinator {
     func showFreeTrialSurvey() {
-        guard let navigationController = self.window.rootViewController?.topmostPresentedViewController as? UINavigationController else {
+        guard let navigationController = getNavigationController() else {
             return
         }
 
@@ -437,18 +437,7 @@ private extension AppCoordinator {
             return
         }
 
-        // Fetch the navigation controller for store selected or not selected cases
-        guard let navigationController: UINavigationController = {
-            // If logged in with a valid store, tab bar will have a viewcontroller selected.
-            if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-                return navigationController
-            } // If logged in with no valid stores, store picker will be displayed.
-            else if let navigationController = window.rootViewController?.topmostPresentedViewController as? UINavigationController {
-                return navigationController
-            } else {
-                return nil
-            }
-        }() else {
+        guard let navigationController = getNavigationController() else {
             return
         }
 
@@ -471,6 +460,25 @@ private extension AppCoordinator {
                                                    pushNotesManager: pushNotesManager)
         self.storeCreationCoordinator = coordinator
         coordinator.start()
+    }
+
+    func getNavigationController() -> UINavigationController? {
+        // Fetch the navigation controller for store selected or not selected cases
+        guard let navigationController: UINavigationController = {
+            // If logged in with a valid store, tab bar will have a viewcontroller selected.
+            if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+                return navigationController
+            } // If logged in with no valid stores, store picker will be displayed.
+            else if let navigationController = window.rootViewController?.topmostPresentedViewController as? UINavigationController {
+                return navigationController
+            } else {
+                return nil
+            }
+        }() else {
+            return nil
+        }
+
+        return navigationController
     }
 }
 

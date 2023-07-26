@@ -210,4 +210,7 @@ public enum FeatureFlag: Int {
 
     /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
     case ordersWithCouponsM4
+
+    /// Enables Free trial survey notificaiton
+    case freeTrialSurvey24hAfterFreeTrialSubscribed
 }

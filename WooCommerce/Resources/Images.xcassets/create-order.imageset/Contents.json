@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "create-order.pdf",
+      "filename" : "illustration-testStore-light.svg",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "illustration-testStore-dark.svg",
       "idiom" : "universal"
     }
   ],

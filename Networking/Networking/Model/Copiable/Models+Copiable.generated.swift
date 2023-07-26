@@ -2052,7 +2052,8 @@ extension Networking.Site {
         gmtOffset: CopiableProp<Double> = .copy,
         isPublic: CopiableProp<Bool> = .copy,
         canBlaze: CopiableProp<Bool> = .copy,
-        isAdmin: CopiableProp<Bool> = .copy
+        isAdmin: CopiableProp<Bool> = .copy,
+        wasEcommerceTrial: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -2073,6 +2074,7 @@ extension Networking.Site {
         let isPublic = isPublic ?? self.isPublic
         let canBlaze = canBlaze ?? self.canBlaze
         let isAdmin = isAdmin ?? self.isAdmin
+        let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
 
         return Networking.Site(
             siteID: siteID,
@@ -2093,7 +2095,8 @@ extension Networking.Site {
             gmtOffset: gmtOffset,
             isPublic: isPublic,
             canBlaze: canBlaze,
-            isAdmin: isAdmin
+            isAdmin: isAdmin,
+            wasEcommerceTrial: wasEcommerceTrial
         )
     }
 }

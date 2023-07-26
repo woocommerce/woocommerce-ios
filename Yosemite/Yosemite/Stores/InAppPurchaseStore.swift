@@ -300,6 +300,30 @@ private extension InAppPurchaseStore {
         return false
     }
 
+    /// For verified transactions, checks whether a transaction has been handled already on WPCOM end or not
+    /// we'll mark handled transactions as `finish`. This indicates to the App Store that the app enabled the service to finish the transaction
+    ///
+    /// - Parameters:
+    ///   - result: Represents the verification state of an In-App Purchase transaction
+    ///   - transaction: A successful In-App purchase
+    func handleVerifiedTransactionResult(_ result: VerificationResult<Transaction>, _ transaction: Transaction) async throws {
+        Task { @MainActor in
+            // This remote call needs to run in the main thread. Since the request is an AuthenticatedDotcomRequest it requires to instantiate a
+            // WKWebView and inject a WPCOM token into it as part of the user agent in order to work, however, a WKWebView also requires to be
+            // ran from the main thread only. This is not assured to happen unless we call the remote through the Action Dispatcher, and
+            // could cause a runtime crash since there is no compiler-check to stop us from doing so.
+            // https://github.com/woocommerce/woocommerce-ios/issues/10294
+            let wpcomTransactionResponse = try await self.remote.retrieveHandledTransactionResult(for: transaction.id)
+            if wpcomTransactionResponse.siteID != nil {
+                await transaction.finish()
+                self.logInfo("Marking transaction \(transaction.id) as finished")
+            } else {
+                try await self.handleCompletedTransaction(result)
+                self.logInfo("Transaction \(transaction.id) not found in WPCOM")
+            }
+        }
+    }
+
     func listenForTransactions() {
         assert(listenTask == nil, "InAppPurchaseStore.listenForTransactions() called while already listening for transactions")
 
@@ -308,12 +332,19 @@ private extension InAppPurchaseStore {
                 return
             }
             for await result in Transaction.updates {
-                do {
-                    // Wait until the purchase finishes
-                    _ = await self.pauseTransactionListener.values.contains(false)
-                    try await self.handleCompletedTransaction(result)
-                } catch {
-                    self.logError("Error handling transaction update: \(error)")
+                switch result {
+                case .unverified:
+                    // Ignore unverified transactions.
+                    self.logError("Transaction unverified")
+                    break
+                case .verified(let transaction):
+                    do {
+                        // Wait until the purchase finishes
+                        _ = await self.pauseTransactionListener.values.contains(false)
+                        try await self.handleVerifiedTransactionResult(result, transaction)
+                    } catch {
+                        self.logError("Error handling transaction \(transaction.id) update: \(error)")
+                    }
                 }
             }
         }

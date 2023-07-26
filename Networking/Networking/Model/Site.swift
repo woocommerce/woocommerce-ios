@@ -80,6 +80,10 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let isAdmin: Bool
 
+    /// Whether the site has even run an E-commerce trial plan.
+    ///
+    public let wasEcommerceTrial: Bool
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -94,6 +98,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let isAdmin = try capabilitiesContainer.decode(Bool.self, forKey: .isAdmin)
         let isJetpackThePluginInstalled = try siteContainer.decode(Bool.self, forKey: .isJetpackThePluginInstalled)
         let isJetpackConnected = try siteContainer.decode(Bool.self, forKey: .isJetpackConnected)
+        let wasEcommerceTrial = try siteContainer.decode(Bool.self, forKey: .wasEcommerceTrial)
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         let isWordPressComStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressComStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
@@ -124,7 +129,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   gmtOffset: gmtOffset,
                   isPublic: isPublic,
                   canBlaze: canBlaze,
-                  isAdmin: isAdmin)
+                  isAdmin: isAdmin,
+                  wasEcommerceTrial: wasEcommerceTrial)
     }
 
     /// Designated Initializer.
@@ -147,7 +153,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 gmtOffset: Double,
                 isPublic: Bool,
                 canBlaze: Bool,
-                isAdmin: Bool) {
+                isAdmin: Bool,
+                wasEcommerceTrial: Bool) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -167,6 +174,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.isPublic = isPublic
         self.canBlaze = canBlaze
         self.isAdmin = isAdmin
+        self.wasEcommerceTrial = wasEcommerceTrial
     }
 }
 
@@ -200,6 +208,7 @@ private extension Site {
         case plan           = "plan"
         case isJetpackThePluginInstalled = "jetpack"
         case isJetpackConnected          = "jetpack_connection"
+        case wasEcommerceTrial           = "was_ecommerce_trial"
     }
 
     enum CapabilitiesKeys: String, CodingKey {

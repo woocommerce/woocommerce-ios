@@ -48,6 +48,7 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(first.isPublic, true)
         XCTAssertEqual(first.canBlaze, true)
         XCTAssertEqual(first.isAdmin, true)
+        XCTAssertTrue(first.wasEcommerceTrial)
 
         // The second site is a Jetpack CP site (connected to Jetpack without Jetpack-the-plugin).
         let second = sites!.last!
@@ -70,6 +71,7 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(second.isPublic, false)
         XCTAssertEqual(second.canBlaze, false)
         XCTAssertEqual(second.isAdmin, false)
+        XCTAssertFalse(second.wasEcommerceTrial)
     }
 
     /// Verifies that the Plan field for Site is properly parsed.

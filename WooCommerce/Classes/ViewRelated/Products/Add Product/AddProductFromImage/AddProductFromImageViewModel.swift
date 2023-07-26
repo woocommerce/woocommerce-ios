@@ -95,16 +95,13 @@ final class AddProductFromImageViewModel: ObservableObject {
         // Track display event
         analytics.track(event: .AddProductFromImage.formDisplayed(source: source))
 
-        $imageState.compactMap { $0.image?.image }
+        $imageState
+            .compactMap { $0.image?.image }
+            .removeDuplicates()
             .sink { [weak self] image in
                 self?.onSelectedImage(image)
             }
             .store(in: &subscriptions)
-
-        $imageState
-            .filter { $0 == .empty || $0 == .loading }
-            .map { _ in nil }
-            .assign(to: &$textDetectionErrorMessage)
 
         $scannedTextValidation
             .map { $0.values.contains { $0 } }
@@ -152,6 +149,11 @@ final class AddProductFromImageViewModel: ObservableObject {
 
 private extension AddProductFromImageViewModel {
     func onSelectedImage(_ image: UIImage) {
+        // Reset scanned texts and generated content from previous image
+        scannedTexts = []
+        [nameViewModel, descriptionViewModel].forEach { $0.reset() }
+        textDetectionErrorMessage = nil
+
         Task { @MainActor in
             do {
                 let texts = try await imageTextScanner.scanText(from: image)
@@ -167,15 +169,11 @@ private extension AddProductFromImageViewModel {
             } catch {
                 switch error {
                 case ScanError.noTextDetected:
-                    if scannedTexts.isEmpty {
-                        textDetectionErrorMessage = Localization.noTextDetected
-                    }
+                    textDetectionErrorMessage = Localization.noTextDetected
                     DDLogError("⛔️ No text detected from image.")
                 default:
                     analytics.track(event: .AddProductFromImage.scanFailed(source: addProductSource, error: error))
-                    if scannedTexts.isEmpty {
-                        textDetectionErrorMessage = Localization.textDetectionFailed
-                    }
+                    textDetectionErrorMessage = Localization.textDetectionFailed
                     DDLogError("⛔️ Error scanning text from image: \(error)")
                 }
             }

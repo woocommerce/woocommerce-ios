@@ -2543,8 +2543,18 @@ extension WooAnalyticsEvent {
 //
 extension WooAnalyticsEvent {
     enum RemoteRequest {
-        static func jsonParsingError(_ error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .apiJSONParsingError, properties: [:], error: error)
+        enum Keys: String {
+            case path
+            case entityName = "entity"
+        }
+
+        static func jsonParsingError(_ error: Error, path: String?, entityName: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .apiJSONParsingError,
+                              properties: [
+                                Keys.path.rawValue: path,
+                                Keys.entityName.rawValue: entityName
+                              ].compactMapValues { $0 },
+                              error: error)
         }
     }
 }

@@ -13,6 +13,15 @@ public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
         }
     }
 
+    public var fileNameWithoutExtension: String {
+        switch self {
+        case .wcPay:
+            return "woocommerce-payments"
+        case .stripe:
+            return "woocommerce-gateway-stripe"
+        }
+    }
+
     public var gatewayID: String {
         switch self {
         case .wcPay:

@@ -48,6 +48,7 @@ struct LocalNotification {
                 static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
                 static let sixHoursAfterFreeTrialSubscribed = "six_hours_after_free_trial_subscribed"
                 static let twentyFourHoursAfterFreeTrialSubscribed = "twenty_four_hours_after_free_trial_subscribed"
+                static let freeTrialSurvey24hAfterFreeTrialSubscribed = "free_trial_survey_24h_after_free_trial_subscribed"
             }
             static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
         }
@@ -225,6 +226,17 @@ extension LocalNotification {
             static let body = NSLocalizedString(
                 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best.",
                 comment: "Message on the local notification to remind the user to purchase a plan."
+            )
+        }
+
+        enum FreeTrialSurvey24hAfterFreeTrialSubscribed {
+            static let title = NSLocalizedString(
+                "💡Help Us Understand Your Subscription Decision",
+                comment: "Title of the local notification to ask for Free trial survey."
+            )
+            static let body = NSLocalizedString(
+                "We’re interested in your decision-making journey. Could you please tell us about your current status?",
+                comment: "Message on the local notification to ask for Free trial survey."
             )
         }
     }

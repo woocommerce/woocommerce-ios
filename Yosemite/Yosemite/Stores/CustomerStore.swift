@@ -110,7 +110,6 @@ public final class CustomerStore: Store {
         searchRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
             switch result {
             case .success(let customers):
-                debugPrint("customers", customers, customers.count)
                 self.upsertCustomers(siteID: siteID,
                                      readOnlyCustomers: customers,
                                      shouldDeleteExistingCustomers: pageNumber == 1,

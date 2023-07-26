@@ -22,6 +22,8 @@ final class FreeTrialSurveyHostingController: UIHostingController<FreeTrialSurve
     }
 }
 
+/// View that presents a list of answers for Free trial survey
+///
 struct FreeTrialSurveyView: View {
     @ObservedObject private var viewModel: FreeTrialSurveyViewModel
     var dismissAction: () -> Void = {}

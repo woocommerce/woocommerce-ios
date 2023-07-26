@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// View model for `FreeTrialSurveyView`
+///
 final class FreeTrialSurveyViewModel: ObservableObject {
     @Published private(set) var selectedAnswer: SurveyAnswer?
     @Published var otherReasonSpecified: String = ""

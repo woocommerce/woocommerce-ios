@@ -44,7 +44,14 @@ final class FreeTrialSurveyViewModel: ObservableObject {
     }
 
     func submitFeedback() {
-        // TODO: 10266 Submit tracks
+        guard let selectedAnswer else {
+            return
+        }
+
+        analytics.track(event: .FreeTrialSurvey.surveySent(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
+                                                           surveyOption: selectedAnswer.rawValue,
+                                                           freeText: otherReasonSpecified))
+        onSubmit()
     }
 
     enum SurveyAnswer: String, CaseIterable {

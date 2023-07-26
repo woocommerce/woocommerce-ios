@@ -68,7 +68,8 @@ struct CreateTestOrderView: View {
                                                                                 dark: .secondarySystemGroupedBackground)))
                                 )
                             Text(content)
-                                .subheadlineStyle()
+                                .font(.subheadline)
+                                .foregroundColor(.init(uiColor: .text))
                         }
                     }
                     .padding(.horizontal, Layout.instructionMargin)

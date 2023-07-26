@@ -68,7 +68,13 @@ struct SecondaryLoadingButtonStyle: PrimitiveButtonStyle {
 struct SelectableSecondaryButtonStyle: ButtonStyle {
     /// Whether the button is selected.
     let isSelected: Bool
-    let labelFont: Font = .headline
+    let labelFont: Font
+
+    init(isSelected: Bool, labelFont: Font = .headline) {
+        self.isSelected = isSelected
+        self.labelFont = labelFont
+    }
+
     func makeBody(configuration: Configuration) -> some View {
         SelectableSecondaryButton(isSelected: isSelected, configuration: configuration, labelFont: labelFont)
     }

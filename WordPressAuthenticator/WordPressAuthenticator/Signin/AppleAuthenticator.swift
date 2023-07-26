@@ -228,7 +228,7 @@ extension AppleAuthenticator {
         authenticationDelegate.presentSignupEpilogue(
             in: navigationController,
             for: credentials,
-            socialUser: loginFields.meta.socialUser
+            socialService: loginFields.meta.socialUser?.service
         )
     }
 

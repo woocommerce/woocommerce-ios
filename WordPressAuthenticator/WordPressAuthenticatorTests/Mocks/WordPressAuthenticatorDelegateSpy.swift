@@ -1,4 +1,5 @@
 @testable import WordPressAuthenticator
+import WordPressKit
 
 class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var dismissActionEnabled: Bool = true
@@ -9,7 +10,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var allowWPComLogin: Bool = true
 
     private(set) var presentSignupEpilogueCalled = false
-    private(set) var socialUser: SocialUser?
+    private(set) var socialService: SocialServiceName?
 
     func createdWordPressComAccount(username: String, authToken: String) {
         // no-op
@@ -31,9 +32,13 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
         // no-op
     }
 
-    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, socialUser: SocialUser?) {
+    func presentSignupEpilogue(
+        in navigationController: UINavigationController,
+        for credentials: AuthenticatorCredentials,
+        socialService: SocialServiceName?
+    ) {
         presentSignupEpilogueCalled = true
-        self.socialUser = socialUser
+        self.socialService = socialService
     }
 
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, lastStep: AuthenticatorAnalyticsTracker.Step, lastFlow: AuthenticatorAnalyticsTracker.Flow) {

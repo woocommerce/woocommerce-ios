@@ -25,11 +25,9 @@ class LoginViewControllerTests: XCTestCase {
 
         sut.showSignupEpilogue(for: AuthenticatorCredentials())
 
-        let socialUser = try XCTUnwrap(delegateSpy.socialUser)
-        guard case .google = socialUser.service else {
-            return XCTFail("Expected Google social service, got \(socialUser.service) instead")
+        let service = try XCTUnwrap(delegateSpy.socialService)
+        guard case .google = service else {
+            return XCTFail("Expected Google social service, got \(service) instead")
         }
-        XCTAssertEqual(socialUser.fullName, "Full Name")
-        XCTAssertEqual(socialUser.email, "test@email.com")
     }
 }

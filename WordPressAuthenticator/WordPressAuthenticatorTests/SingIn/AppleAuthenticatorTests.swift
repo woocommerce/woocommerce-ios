@@ -33,12 +33,10 @@ class AppleAuthenticatorTests: XCTestCase {
 
         sut.showSignupEpilogue(for: AuthenticatorCredentials())
 
-        let socialUser = try XCTUnwrap(delegateSpy.socialUser)
-        guard case .apple = socialUser.service else {
-            return XCTFail("Expected Apple social service, got \(socialUser.service) instead")
+        let service = try XCTUnwrap(delegateSpy.socialService)
+        guard case .apple = service else {
+            return XCTFail("Expected Apple social service, got \(service) instead")
         }
-        XCTAssertEqual(socialUser.fullName, "Full Name")
-        XCTAssertEqual(socialUser.email, "test@email.com")
     }
 
     // showSignupEpilogue with loginFields.meta.appleUser set will not pass SocialService.apple to the delegate
@@ -69,7 +67,7 @@ class AppleAuthenticatorTests: XCTestCase {
         // make sense? Not so sure. How can we callback from Sign In with Apple without the
         // matching social service?
         XCTAssertTrue(delegateSpy.presentSignupEpilogueCalled)
-        XCTAssertNil(delegateSpy.socialUser)
+        XCTAssertNil(delegateSpy.socialService)
     }
 }
 

@@ -3,7 +3,6 @@ import SwiftUI
 final class FreeTrialSurveyHostingController: UIHostingController<FreeTrialSurveyView> {
     init(viewModel: FreeTrialSurveyViewModel) {
         super.init(rootView: FreeTrialSurveyView(viewModel: viewModel))
-        rootView.dismissAction = dismiss
     }
 
     @available(*, unavailable)
@@ -16,10 +15,6 @@ final class FreeTrialSurveyHostingController: UIHostingController<FreeTrialSurve
 
         configureTransparentNavigationBar()
     }
-
-    func dismiss() {
-        dismiss(animated: true)
-    }
 }
 
 /// View that presents a list of answers for Free trial survey
@@ -27,8 +22,6 @@ final class FreeTrialSurveyHostingController: UIHostingController<FreeTrialSurve
 struct FreeTrialSurveyView: View {
     @ObservedObject private var viewModel: FreeTrialSurveyViewModel
     @FocusState private var isOtherReasonsFocused: Bool
-
-    var dismissAction: () -> Void = {}
 
     init(viewModel: FreeTrialSurveyViewModel) {
         self.viewModel = viewModel
@@ -88,7 +81,7 @@ struct FreeTrialSurveyView: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.cancel) {
-                    dismissAction()
+                    viewModel.onClose()
                 }
                 .buttonStyle(TextButtonStyle())
             }
@@ -125,10 +118,10 @@ struct FreeTrialSurveyView_Previews: PreviewProvider {
     static var previews: some View {
         if #available(iOS 16.0, *) {
             NavigationStack {
-                FreeTrialSurveyView(viewModel: .init(source: .freeTrialSurvey24hAfterFreeTrialSubscribed))
+                FreeTrialSurveyView(viewModel: .init(source: .freeTrialSurvey24hAfterFreeTrialSubscribed, onClose: {}, onSubmit: {}))
             }
         } else {
-            FreeTrialSurveyView(viewModel: .init(source: .freeTrialSurvey24hAfterFreeTrialSubscribed))
+            FreeTrialSurveyView(viewModel: .init(source: .freeTrialSurvey24hAfterFreeTrialSubscribed, onClose: {}, onSubmit: {}))
         }
     }
 }

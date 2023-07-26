@@ -97,7 +97,7 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
-                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer, in: self.sharedDerivedStorage, onCompletion: {
+                    self.upsertCustomers(siteID: siteID, readOnlyCustomers: [customer], in: self.sharedDerivedStorage, onCompletion: {
                         onCompletion(.success(customer))
                     })
                 case .failure(let error):
@@ -106,11 +106,19 @@ public final class CustomerStore: Store {
             }
     }
 
-    func synchronizeCustomers(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeCustomers(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         searchRemote.loadCustomers(for: siteID) { result in
             switch result {
             case .success(let customers):
                 debugPrint("customers", customers, customers.count)
+                self.mapSearchResultsToCustomerObjects(for: siteID, with: "", with: customers, onCompletion: { result in
+                    switch result {
+                    case .success(_):
+                        onCompletion(.success(()))
+                    case let .failure(error):
+                        onCompletion(.failure(error))
+                    }
+                })
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -127,7 +135,7 @@ public final class CustomerStore: Store {
     ///
     private func mapSearchResultsToCustomerObjects(for siteID: Int64,
                                                    with keyword: String,
-                                          with searchResults: [WCAnalyticsCustomer],
+                                                   with searchResults: [WCAnalyticsCustomer],
                                                   onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
         var customers = [Customer]()
         let group = DispatchGroup()
@@ -187,25 +195,32 @@ private extension CustomerStore {
         }
     }
 
-    /// Inserts or updates Customer entities into Storage
-    ///
-    private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, in storage: StorageType, onCompletion: @escaping () -> Void) {
-
-        storage.perform {
-            let storageCustomer: Storage.Customer = {
-                // If the specific customerID for that siteID already exists, return it
-                // If doesn't, insert a new one in Storage
-                if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.customerID) {
-                    return storedCustomer
-                } else {
-                    return storage.insertNewObject(ofType: Storage.Customer.self)
-                }
-            }()
-            storageCustomer.update(with: readOnlyCustomer)
+    private func upsertCustomers(siteID: Int64, readOnlyCustomers: [StorageCustomerConvertible], in storage: StorageType, onCompletion: @escaping () -> Void) {
+        storage.perform { [weak self] in
+            readOnlyCustomers.forEach {
+                self?.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, in: storage)
+            }
         }
 
         storageManager.saveDerivedType(derivedStorage: storage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
+    }
+
+    /// Inserts or updates Customer entities into Storage
+    ///
+    private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, in storage: StorageType) {
+
+        let storageCustomer: Storage.Customer = {
+            // If the specific customerID for that siteID already exists, return it
+            // If doesn't, insert a new one in Storage
+            if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.loadingID) {
+                return storedCustomer
+            } else {
+                return storage.insertNewObject(ofType: Storage.Customer.self)
+            }
+        }()
+
+        storageCustomer.update(with: readOnlyCustomer)
     }
 }

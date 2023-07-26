@@ -1,9 +1,32 @@
 import Foundation
 import Storage
 
+public protocol StorageCustomerConvertible {
+    var loadingID: Int64 { get }
+}
+
+extension Yosemite.Customer: StorageCustomerConvertible {
+    public var loadingID: Int64 { customerID }
+}
+
+extension Yosemite.WCAnalyticsCustomer: StorageCustomerConvertible {
+    public var loadingID: Int64 { userID }
+}
+
 // MARK: - Storage.Customer: ReadOnlyConvertible
 //
 extension Storage.Customer: ReadOnlyConvertible {
+    public func update(with storageCustomerConvertible: StorageCustomerConvertible) {
+        switch storageCustomerConvertible {
+        case let customer as Yosemite.Customer:
+            update(with: customer)
+        case let customer as Yosemite.WCAnalyticsCustomer:
+            update(with: customer)
+        default:
+            break
+        }
+    }
+
     /// Updates the `Storage.Customer` from the ReadOnly representation (`Networking.Customer`)
     ///
     public func update(with customer: Yosemite.Customer) {
@@ -36,6 +59,18 @@ extension Storage.Customer: ReadOnlyConvertible {
         shippingCountry = customer.shipping?.country
         shippingPhone = customer.shipping?.phone
         shippingEmail = customer.shipping?.email
+    }
+
+    /// Updates the `Storage.Customer` from the ReadOnly representation (`Yosemite.WCAnalyticsCustomer`)
+    ///
+    public func update(with customer: Yosemite.WCAnalyticsCustomer) {
+        customerID = customer.userID
+        siteID = customer.siteID
+        email = customer.email
+
+        let nameComponents = customer.name?.components(separatedBy: " ")
+        firstName = nameComponents?.first
+        lastName = nameComponents?.last
     }
 
     /// Returns a ReadOnly (`Networking.Customer`) version of the `Storage.Customer`

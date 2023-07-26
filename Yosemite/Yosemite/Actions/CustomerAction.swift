@@ -7,7 +7,7 @@ public enum CustomerAction: Action {
         siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
-        onCompletion: (Result<Bool, Error>) -> Void)
+        onCompletion: (Result<Void, Error>) -> Void)
 
     /// Searches for Customers by keyword. Currently, only searches by name.
     ///

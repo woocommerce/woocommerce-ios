@@ -166,6 +166,9 @@ private extension StorePlanSynchronizer {
             group.addTask { [weak self] in
                 await self?.localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
             }
+            group.addTask { [weak self] in
+                await self?.localNotificationScheduler.cancel(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))
+            }
         }
     }
 

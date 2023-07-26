@@ -3,6 +3,10 @@ import Foundation
 /// Defines the `actions` supported by the `CustomerStore`.
 ///
 public enum CustomerAction: Action {
+    /// Synchronizes the Customers matching the specified criteria. When syncing the first page number it resets (deletes) all the stores objects.
+    ///
+    /// - Parameter onCompletion: called when sync completes.
+    ///
     case synchronizeCustomers(
         siteID: Int64,
         pageNumber: Int,

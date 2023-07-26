@@ -62,7 +62,8 @@ struct FreeTrialSurveyView: View {
                                     Spacer()
                                 }
                             })
-                            .buttonStyle(SelectableSecondaryButtonStyle(isSelected: viewModel.selectedAnswer == answer))
+                            .buttonStyle(SelectableSecondaryButtonStyle(isSelected: viewModel.selectedAnswer == answer,
+                                                                        labelFont: .body))
                         }
                     }
                 }

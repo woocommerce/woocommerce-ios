@@ -33,8 +33,6 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
     func test_WCAnalyticsCustomerRemote_when_calls_searchCustomers_then_returns_parsed_customers_successfully() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
-        let pageNumber = 2
-        let pageSize = 25
 
         // When
         let result = waitFor { promise in

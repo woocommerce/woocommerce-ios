@@ -377,6 +377,24 @@ final class WCPayRemoteTests: XCTestCase {
         XCTAssertEqual(account.isInTestMode, true)
     }
 
+    /// Properly decodes developer account when `is_live` field is `null` wcpay-account-null-isLive
+    ///
+    func test_loadAccount_returns_account_when_is_live_field_is_null() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-null-isLive")
+
+        let result = waitFor { promise in
+            remote.loadAccount(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.isLiveAccount, false)
+    }
+
     /// Verifies that loadAccount properly handles networking errors
     ///
     func test_loadAccount_properly_handles_networking_errors() throws {

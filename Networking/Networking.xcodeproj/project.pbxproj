@@ -73,6 +73,7 @@
 		028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA472257E110700F88A48 /* shipping-label-refund-success.json */; };
 		02935AEE29DFFA74001B793E /* site-enable-trial-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AEC29DFFA74001B793E /* site-enable-trial-success.json */; };
 		02935AEF29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */; };
+		029B86902A6FBBE000E944D1 /* wcpay-account-null-isLive.json in Resources */ = {isa = PBXBuildFile; fileRef = 029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */; };
 		029BA4F0255D7282006171FD /* ShippingLabelRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */; };
 		029BA4F4255D72EC006171FD /* ShippingLabelPrintData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA4F3255D72EC006171FD /* ShippingLabelPrintData.swift */; };
 		029BA53B255DFABD006171FD /* ShippingLabelPrintDataMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA53A255DFABD006171FD /* ShippingLabelPrintDataMapper.swift */; };
@@ -1029,6 +1030,7 @@
 		028FA472257E110700F88A48 /* shipping-label-refund-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-success.json"; sourceTree = "<group>"; };
 		02935AEC29DFFA74001B793E /* site-enable-trial-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-success.json"; sourceTree = "<group>"; };
 		02935AED29DFFA74001B793E /* site-enable-trial-error-already-upgraded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-error-already-upgraded.json"; sourceTree = "<group>"; };
+		029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wcpay-account-null-isLive.json"; sourceTree = "<group>"; };
 		029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelRemote.swift; sourceTree = "<group>"; };
 		029BA4F3255D72EC006171FD /* ShippingLabelPrintData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintData.swift; sourceTree = "<group>"; };
 		029BA53A255DFABD006171FD /* ShippingLabelPrintDataMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintDataMapper.swift; sourceTree = "<group>"; };
@@ -2766,6 +2768,7 @@
 				3158A4A22729F42500C3CFA8 /* wcpay-account-dev-test.json */,
 				3158A4A02729F40F00C3CFA8 /* wcpay-account-live-test.json */,
 				31B8D6B326583662008E3DB2 /* wcpay-account-not-eligible.json */,
+				029B868F2A6FBBE000E944D1 /* wcpay-account-null-isLive.json */,
 				3158FE6726129CE200E566B9 /* wcpay-account-rejected-fraud.json */,
 				3158FE6B26129D2E00E566B9 /* wcpay-account-rejected-terms-of-service.json */,
 				3158FE6F26129D7500E566B9 /* wcpay-account-rejected-listed.json */,
@@ -3590,6 +3593,7 @@
 				D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */,
 				3158FE6426129B1300E566B9 /* wcpay-account-complete.json in Resources */,
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
+				029B86902A6FBBE000E944D1 /* wcpay-account-null-isLive.json in Resources */,
 				DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
 				31054710262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json in Resources */,

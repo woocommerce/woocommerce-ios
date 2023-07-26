@@ -1,4 +1,4 @@
-/// Represent a WCPay accont Entity.
+/// Represent a WCPay account Entity.
 ///
 public struct WCPayAccount: Decodable {
     public static let gatewayID = "woocommerce-payments"
@@ -58,7 +58,7 @@ public struct WCPayAccount: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let status = try container.decode(WCPayAccountStatusEnum.self, forKey: .status)
-        let isLiveAccount = try container.decode(Bool.self, forKey: .isLive)
+        let isLiveAccount = try container.decodeIfPresent(Bool.self, forKey: .isLive) ?? false
         let isInTestMode = try container.decode(Bool.self, forKey: .testMode)
         let hasPendingRequirements = try container.decode(Bool.self, forKey: .hasPendingRequirements)
         let hasOverdueRequirements = try container.decode(Bool.self, forKey: .hasOverdueRequirements)

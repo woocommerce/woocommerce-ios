@@ -51,7 +51,8 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         gmtOffset: 0,
         isPublic: true,
         canBlaze: false,
-        isAdmin: false
+        isAdmin: false,
+        wasEcommerceTrial: false
     )
 
     /// May not be needed anymore if we're not mocking the API

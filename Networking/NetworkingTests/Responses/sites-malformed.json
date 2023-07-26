@@ -7,6 +7,7 @@
       "URL": "https:\/\/some-testing-url.testing.blog",
       "jetpack": true,
       "jetpack_connection": true,
+      "was_ecommerce_trial": false,
       "updates": {
         "plugins": 3,
         "themes": 1,
@@ -46,6 +47,7 @@
       },
       "jetpack": false,
       "jetpack_connection": true,
+      "was_ecommerce_trial": false,
       "options": {
         "timezone": "",
         "gmt_offset": -4,

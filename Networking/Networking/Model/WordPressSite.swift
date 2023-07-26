@@ -106,7 +106,8 @@ public extension WordPressSite {
               gmtOffset: Double(gmtOffset) ?? 0,
               isPublic: false,
               canBlaze: false,
-              isAdmin: false)
+              isAdmin: false,
+              wasEcommerceTrial: false)
     }
 
     struct Authentication: Decodable {

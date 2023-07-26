@@ -75,7 +75,7 @@ struct FreeTrialSurveyView: View {
             .background(Color(.systemBackground))
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.cancel) {
                     dismissAction()
                 }

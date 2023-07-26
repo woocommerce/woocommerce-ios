@@ -3,9 +3,8 @@ import Networking
 import Storage
 
 public final class CustomerStore: Store {
-
     private let customerRemote: CustomerRemote
-    private let searchRemote: WCAnalyticsCustomerRemote
+    private let wcAnalyticsCustomerRemote: WCAnalyticsCustomerRemote
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
     }()
@@ -16,7 +15,7 @@ public final class CustomerStore: Store {
          customerRemote: CustomerRemote,
          searchRemote: WCAnalyticsCustomerRemote) {
         self.customerRemote = customerRemote
-        self.searchRemote = searchRemote
+        self.wcAnalyticsCustomerRemote = searchRemote
 
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -52,8 +51,8 @@ public final class CustomerStore: Store {
             searchCustomers(for: siteID, keyword: keyword, onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
-        case .synchronizeCustomers(siteID: let siteID, pageNumber: let pageNumber, pageSize: let pageSize, onCompletion: let onCompletion):
-            synchronizeCustomers(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeLightCustomersData(siteID: let siteID, pageNumber: let pageNumber, pageSize: let pageSize, onCompletion: let onCompletion):
+            synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
     }
 
@@ -70,7 +69,7 @@ public final class CustomerStore: Store {
         for siteID: Int64,
         keyword: String,
         onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
-            searchRemote.searchCustomers(for: siteID, name: keyword) { [weak self] result in
+            wcAnalyticsCustomerRemote.searchCustomers(for: siteID, name: keyword) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
@@ -106,8 +105,8 @@ public final class CustomerStore: Store {
             }
     }
 
-    func synchronizeCustomers(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        searchRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+    func synchronizeLightCustomersData(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        wcAnalyticsCustomerRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
             switch result {
             case .success(let customers):
                 self.upsertCustomers(siteID: siteID,

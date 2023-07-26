@@ -91,12 +91,12 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
-    func test_synchronizeCustomers_retrieves_wc_analytics_customers_and_parses_them_to_customers() {
+    func test_synchronizeLightCustomersData_retrieves_wc_analytics_customers_and_parses_them_to_customers() {
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         // When
         _ = waitFor { promise in
-            let action = CustomerAction.synchronizeCustomers(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
+            let action = CustomerAction.synchronizeLightCustomersData(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
                 promise(result)
             }
             self.dispatcher.dispatch(action)

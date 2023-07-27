@@ -5,6 +5,7 @@
 - [*] Local notifications: Add a reminder to purchase a plan is scheduled 6hr after a free trial subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10268]
 - [Internal] Shipment tracking is only enabled and synced when the order has non-virtual products.  [https://github.com/woocommerce/woocommerce-ios/pull/10288]
 - [*] Photo -> Product: Reset details from previous image when new image is selected. [https://github.com/woocommerce/woocommerce-ios/pull/10297]
+- [*] Product description AI: the AI sheet has been improved with the product name field made more prominent. [https://github.com/woocommerce/woocommerce-ios/pull/10333]
 
 14.6
 -----

@@ -26,6 +26,8 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
     @State private var copyTextNotice: Notice?
+    @State private var missingName: Bool = false
+    @State private var missingFeatures: Bool = false
     @FocusState private var isFeaturesFieldInFocus: Bool
 
     init(viewModel: ProductDescriptionGenerationViewModel) {
@@ -35,20 +37,17 @@ struct ProductDescriptionGenerationView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
-                VStack(alignment: .leading, spacing: Layout.titleAndProductNameSpacing) {
-                    Text(Localization.title)
-                        .headlineStyle()
 
-                    if #available(iOS 16.0, *) {
-                        TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
-                            .subheadlineStyle()
-                            .disabled(viewModel.isProductNameEditable == false)
-                    } else {
-                        TextField(Localization.productNamePlaceholder, text: $viewModel.name)
-                            .subheadlineStyle()
-                            .disabled(viewModel.isProductNameEditable == false)
-                    }
-                }
+                Text(Localization.title)
+                    .headlineStyle()
+
+                nameTextField
+                    .disabled(viewModel.isProductNameEditable == false)
+                    .padding(Layout.productNamePadding)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                            .stroke(Color(missingName ? .error : .divider))
+                    )
 
                 // Since there is no placeholder support in `TextEditor`, a workaround is to
                 // use a ZStack with an optional `Text` on top that passes through the gestures.
@@ -61,7 +60,8 @@ struct ProductDescriptionGenerationView: View {
                         .frame(minHeight: Layout.minimuEditorSize, maxHeight: .infinity)
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                                .stroke(Color(isFeaturesFieldInFocus ? .accent : .separator))
+                                .stroke(Color(isFeaturesFieldInFocus ? .accent :
+                                              missingFeatures ? .error : .separator))
                         )
                         .focused($isFeaturesFieldInFocus)
 
@@ -129,7 +129,7 @@ struct ProductDescriptionGenerationView: View {
                             }
                         }
                         .buttonStyle(PlainButtonStyle())
-                        .disabled(viewModel.isGenerationInProgress || viewModel.isGenerationEnabled == false)
+                        .disabled(viewModel.isGenerationInProgress)
 
                         Spacer()
 
@@ -142,6 +142,12 @@ struct ProductDescriptionGenerationView: View {
                     } else {
                         // CTA to generate text for the first pass.
                         Button {
+                            guard viewModel.name.isNotEmpty else {
+                                return missingName = true
+                            }
+                            guard viewModel.features.isNotEmpty else {
+                                return missingFeatures = true
+                            }
                             viewModel.generateDescription()
                         } label: {
                             Label {
@@ -151,7 +157,6 @@ struct ProductDescriptionGenerationView: View {
                             }
                         }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGenerationInProgress))
-                        .disabled(viewModel.isGenerationEnabled == false)
                     }
                 }
 
@@ -163,6 +168,23 @@ struct ProductDescriptionGenerationView: View {
             }.padding(insets: Layout.insets)
         }
         .notice($copyTextNotice, autoDismiss: true)
+        .onChange(of: viewModel.name) { _ in
+            missingName = false
+        }
+        .onChange(of: viewModel.features) { _ in
+            missingFeatures = false
+        }
+    }
+
+    @ViewBuilder
+    private var nameTextField: some View {
+        if #available(iOS 16.0, *) {
+            TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
+                .subheadlineStyle()
+        } else {
+            TextField(Localization.productNamePlaceholder, text: $viewModel.name)
+                .subheadlineStyle()
+        }
     }
 }
 
@@ -171,10 +193,10 @@ private extension ProductDescriptionGenerationView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let defaultSpacing: CGFloat = 16
-        static let titleAndProductNameSpacing: CGFloat = 2
         static let minimuNameEditorSize: CGFloat = 30
         static let minimuEditorSize: CGFloat = 76
         static let cornerRadius: CGFloat = 8
+        static let productNamePadding: CGFloat = 8
         static let productFeaturesInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let productFeaturesPlaceholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
         static let suggestedTextInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)

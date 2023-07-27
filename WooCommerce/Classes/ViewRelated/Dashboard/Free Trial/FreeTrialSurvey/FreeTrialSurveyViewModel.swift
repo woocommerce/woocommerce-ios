@@ -53,11 +53,11 @@ final class FreeTrialSurveyViewModel: ObservableObject {
         guard let selectedAnswer else {
             return
         }
-        
+
         if selectedAnswer == .stillExploring {
             scheduleLocalNotificationAfterThreeDays()
         }
-        
+
         analytics.track(event: .FreeTrialSurvey.surveySent(source: source,
                                                            surveyOption: selectedAnswer.rawValue,
                                                            freeText: otherReasonSpecified.isNotEmpty ? otherReasonSpecified : nil))

@@ -1,4 +1,5 @@
 import Combine
+import Experiments
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
@@ -14,6 +15,7 @@ final class OrderListViewModel {
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+    private let featureFlagService: FeatureFlagService
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
@@ -27,6 +29,28 @@ final class OrderListViewModel {
     /// The block called if new filters are applied
     ///
     var onShouldResynchronizeIfNewFiltersAreApplied: (() -> ())?
+
+    /// URL to site
+    var siteURL: URL? {
+        guard let site = stores.sessionManager.defaultSite else {
+            return nil
+        }
+        return URL(string: site.url)
+    }
+
+    /// Whether the entry point to test order should be displayed on the empty state screen.
+    ///
+    var shouldEnableTestOrder: Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.createTestOrder),
+              let site = stores.sessionManager.defaultSite,
+              let url = siteURL,
+              UIApplication.shared.canOpenURL(url) else {
+            return false
+        }
+
+        /// Enabled if site is launched, has published at least 1 product and set up payments.
+        return site.isPublic && hasAnyPaymentGateways && hasAnyPublishedProducts
+    }
 
     /// Filters applied to the order list.
     ///
@@ -49,6 +73,21 @@ final class OrderListViewModel {
             return false
         }
         return codGateway.enabled
+    }
+
+    /// Checks whether the site has set up any payment method.
+    ///
+    private var hasAnyPaymentGateways: Bool {
+        storageManager.viewStorage.loadAllPaymentGateways(siteID: siteID)
+            .contains(where: { $0.enabled })
+    }
+
+    /// Checks whether the site has published any product.
+    ///
+    private var hasAnyPublishedProducts: Bool {
+        (storageManager.viewStorage.loadProducts(siteID: siteID) ?? [])
+            .map { $0.toReadOnly() }
+            .contains(where: { $0.productStatus == .published })
     }
 
     private var isIPPSupportedCountry: Bool {
@@ -140,7 +179,8 @@ final class OrderListViewModel {
          analytics: Analytics = ServiceLocator.analytics,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         filters: FilterOrderListViewModel.Filters?) {
+         filters: FilterOrderListViewModel.Filters?,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.stores = stores
@@ -149,6 +189,7 @@ final class OrderListViewModel {
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.filters = filters
+        self.featureFlagService = featureFlagService
     }
 
     deinit {
@@ -188,12 +229,30 @@ final class OrderListViewModel {
     }
 
     func updateBannerVisibility() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
+        if featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
             syncIPPBannerVisibility()
             loadOrdersBannerVisibility()
         } else {
             loadOrdersBannerVisibility()
         }
+    }
+
+    /// Handles extra syncing upon pull-to-refresh.
+    func onPullToRefresh() {
+        /// syncs payment gateways
+        stores.dispatch(PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID, onCompletion: { _ in }))
+
+        /// syncs first published product
+        stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
+                                                          pageNumber: 0,
+                                                          pageSize: 1,
+                                                          stockStatus: nil,
+                                                          productStatus: .published,
+                                                          productType: nil,
+                                                          productCategory: nil,
+                                                          sortOrder: .dateDescending,
+                                                          shouldDeleteStoredProductsOnFirstPage: false,
+                                                          onCompletion: { _ in }))
     }
 
     /// Starts the snapshotsProvider, logging any errors.

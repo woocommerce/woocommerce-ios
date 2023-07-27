@@ -136,32 +136,6 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isGenerationInProgress)
     }
 
-    // MARK: - `isGenerationEnabled`
-
-    func test_isGenerationEnabled_is_false_when_product_name_is_empty() throws {
-        // Given
-        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "", description: "a product", onApply: { _ in })
-
-        // Then
-        XCTAssertFalse(viewModel.isGenerationEnabled)
-    }
-
-    func test_isGenerationEnabled_is_false_when_product_description_is_empty() throws {
-        // Given
-        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "Woo plate", description: "", onApply: { _ in })
-
-        // Then
-        XCTAssertFalse(viewModel.isGenerationEnabled)
-    }
-
-    func test_isGenerationEnabled_is_true_when_product_name_and_description_are_not_empty() throws {
-        // Given
-        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "Woo", description: "a product", onApply: { _ in })
-
-        // Then
-        XCTAssertTrue(viewModel.isGenerationEnabled)
-    }
-
     // MARK: - `shouldShowFeedbackView`
     func test_shouldShowFeedbackView_is_true_after_generating_a_description() {
         // Given

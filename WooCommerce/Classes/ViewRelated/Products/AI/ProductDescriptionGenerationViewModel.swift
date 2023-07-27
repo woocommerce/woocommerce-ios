@@ -21,11 +21,6 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
 
-    /// Whether the text generation CTA is enabled.
-    var isGenerationEnabled: Bool {
-        name.isNotEmpty && features.isNotEmpty
-    }
-
     let isProductNameEditable: Bool
 
     private let siteID: Int64

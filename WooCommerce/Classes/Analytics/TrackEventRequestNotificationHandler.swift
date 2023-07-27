@@ -1,4 +1,5 @@
 import Foundation
+import class Networking.Remote
 
 final class TrackEventRequestNotificationHandler {
 
@@ -68,6 +69,8 @@ private extension TrackEventRequestNotificationHandler {
         guard let error = note.object as? DecodingError else {
             return
         }
-        analytics.track(event: .RemoteRequest.jsonParsingError(error))
+        let path = note.userInfo?[Remote.JSONParsingErrorUserInfoKey.path] as? String
+        let entityName = note.userInfo?[Remote.JSONParsingErrorUserInfoKey.entityName] as? String
+        analytics.track(event: .RemoteRequest.jsonParsingError(error, path: path, entityName: entityName))
     }
 }

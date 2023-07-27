@@ -175,8 +175,8 @@ final class StorePlanSynchronizerTests: XCTestCase {
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
                                   pushNotesManager: pushNotesManager,
-                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
-
+                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true),
+                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: false))
         // Then
         waitUntil(timeout: 3) {
             pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
@@ -214,11 +214,79 @@ final class StorePlanSynchronizerTests: XCTestCase {
         // When
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager)
+                                  pushNotesManager: pushNotesManager,
+                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: false))
 
         // Then
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
         let expectedID = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(sampleSiteID)"
+        XCTAssertFalse(ids.contains(expectedID))
+    }
+
+
+    // MARK: freeTrialSurvey24hAfterFreeTrialSubscribed
+
+    func test_freeTrialSurvey24hAfterFreeTrialSubscribed_local_notification_is_scheduled_if_free_trial_subscribed_less_than_24_hrs_ago() throws {
+        // Given
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let pushNotesManager = MockPushNotificationsManager()
+        let subscribedDate = Date().addingTimeInterval(-Double.random(in: 0..<86400)) // Subscribed within 24 hrs ago
+        let trialPlan = WPComSitePlan(id: "1052",
+                                      hasDomainCredit: false,
+                                      expiryDate: subscribedDate.addingDays(28),
+                                      subscribedDate: subscribedDate)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(trialPlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        _ = StorePlanSynchronizer(stores: stores,
+                                  timeZone: timeZone,
+                                  pushNotesManager: pushNotesManager,
+                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true),
+                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
+
+        // Then
+        waitUntil(timeout: 3) {
+            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
+        }
+        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
+        let expectedID = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(sampleSiteID)"
+        XCTAssertTrue(ids.contains(expectedID))
+    }
+
+    func test_freeTrialSurvey24hAfterFreeTrialSubscribed_local_notification_is_not_scheduled_if_free_trial_subscribed_more_than_24_hrs_ago() throws {
+        // Given
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let pushNotesManager = MockPushNotificationsManager()
+        let subscribedDate = Date().addingTimeInterval(-86401) // Subscribed more than 24 hrs ago
+        let trialPlan = WPComSitePlan(id: "1052",
+                                      hasDomainCredit: false,
+                                      expiryDate: subscribedDate.addingDays(28),
+                                      subscribedDate: subscribedDate)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(trialPlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        _ = StorePlanSynchronizer(stores: stores,
+                                  timeZone: timeZone,
+                                  pushNotesManager: pushNotesManager,
+                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
+
+        // Then
+        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
+        let expectedID = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(sampleSiteID)"
         XCTAssertFalse(ids.contains(expectedID))
     }
 
@@ -253,13 +321,14 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores,
                                                  timeZone: timeZone,
                                                  pushNotesManager: pushNotesManager,
-                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
+                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true),
+                                                 featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
 
         // Then
         waitUntil(timeout: 3) {
             /// 2 notifications include:
             /// - 6 hrs after trial subscription
-            /// - 24 hrs after trial subscription
+            /// - Free trial survey 24 hrs after trial subscription
             /// Update this number based on the number of notifications we support.
             pushNotesManager.requestedLocalNotificationsIfNeeded.count == 2
         }
@@ -275,8 +344,9 @@ final class StorePlanSynchronizerTests: XCTestCase {
             /// - 1 day after expiration date
             /// - 6 hrs after trial subscription
             /// - 24 hrs after trial subscription
+            /// - Free trial survey 24 hrs after trial subscription
             /// Update this number based on the number of notifications we support.
-            pushNotesManager.canceledLocalNotificationScenarios.count == 4
+            pushNotesManager.canceledLocalNotificationScenarios.count == 5
         }
 
         // No local notifications scheduling requested for a non free trial plan

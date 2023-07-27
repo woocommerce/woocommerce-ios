@@ -25,7 +25,7 @@ final class StorePlanSynchronizer: ObservableObject {
 
     /// Current logged-in site. `Nil` if not logged-in.
     ///
-    private var site: Site?
+    private(set) var site: Site?
 
     /// Stores manager.
     ///
@@ -44,15 +44,18 @@ final class StorePlanSynchronizer: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
+    private let featureFlagService: FeatureFlagService
 
     init(stores: StoresManager = ServiceLocator.stores,
          timeZone: TimeZone = .current,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
+         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
         self.timeZone = timeZone
         self.inAppPurchaseManager = inAppPurchaseManager
+        self.featureFlagService = featureFlagService
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -126,12 +129,22 @@ private extension StorePlanSynchronizer {
                                                      subscribedDate: subscribedDate)
             }
 
-            // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
-            if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-                let scenario = LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID)
-                schedulePostSubscriptionNotification(scenario: scenario,
-                                                     timeAfterSubscription: Constants.oneDayTimeInterval,
-                                                     subscribedDate: subscribedDate)
+            if featureFlagService.isFeatureFlagEnabled(.freeTrialSurvey24hAfterFreeTrialSubscribed) {
+                // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
+                if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
+                    let scenario = LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID)
+                    schedulePostSubscriptionNotification(scenario: scenario,
+                                                         timeAfterSubscription: Constants.oneDayTimeInterval,
+                                                         subscribedDate: subscribedDate)
+                }
+            } else { // TODO: 10266 Safely remove
+                // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
+                if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
+                    let scenario = LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID)
+                    schedulePostSubscriptionNotification(scenario: scenario,
+                                                         timeAfterSubscription: Constants.oneDayTimeInterval,
+                                                         subscribedDate: subscribedDate)
+                }
             }
         }
     }
@@ -152,6 +165,9 @@ private extension StorePlanSynchronizer {
             }
             group.addTask { [weak self] in
                 await self?.localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
+            }
+            group.addTask { [weak self] in
+                await self?.localNotificationScheduler.cancel(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))
             }
         }
     }

@@ -3,7 +3,6 @@ import Foundation
 enum UpgradeViewState: Equatable {
     case loading
     case loaded([WooWPComPlan])
-    case purchasing(WooWPComPlan, [WooWPComPlan])
     case waiting(WooWPComPlan)
     case completed(WooWPComPlan)
     case prePurchaseError(PrePurchaseError)
@@ -11,7 +10,7 @@ enum UpgradeViewState: Equatable {
 
     var shouldShowPlanDetailsView: Bool {
         switch self {
-        case .loading, .loaded, .purchasing, .prePurchaseError:
+        case .loading, .loaded, .prePurchaseError:
             return true
         default:
             return false
@@ -20,7 +19,7 @@ enum UpgradeViewState: Equatable {
 
     var analyticsStep: WooAnalyticsEvent.InAppPurchases.Step? {
         switch self {
-        case .loading, .purchasing:
+        case .loading:
             return nil
         case .loaded:
             return .planDetails

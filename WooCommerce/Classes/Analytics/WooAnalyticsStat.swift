@@ -363,6 +363,12 @@ public enum WooAnalyticsStat: String {
     case orderDetailEditFlowFailed = "order_detail_edit_flow_failed"
     case orderDetailPaymentLinkShared = "order_detail_payment_link_shared"
 
+    // MARK: Test order
+    //
+    case orderListTestOrderDisplayed = "order_list_test_order_displayed"
+    case orderListTryTestOrderTapped = "order_list_try_test_order_tapped"
+    case testOrderStartTapped = "test_order_start_tapped"
+
     // MARK: Order Data/Action Events
     //
     case orderOpen = "order_open"
@@ -962,6 +968,10 @@ public enum WooAnalyticsStat: String {
     case freeTrialUpgradeNowTapped = "free_trial_upgrade_now_tapped"
     case planUpgradeSuccess = "plan_upgrade_success"
     case planUpgradeAbandoned = "plan_upgrade_abandoned"
+
+    // MARK: Free Trial Survey
+    case freeTrialSurveyDisplayed = "free_trial_survey_displayed"
+    case freeTrialSurveySent = "free_trial_survey_sent"
 
     // MARK: In-App Purchases
     case planUpgradePurchaseButtonTapped = "plan_upgrade_purchase_button_tapped"

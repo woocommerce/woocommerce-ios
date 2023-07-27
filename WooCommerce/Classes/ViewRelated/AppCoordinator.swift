@@ -32,6 +32,7 @@ final class AppCoordinator {
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
     private var storeCreationCoordinator: StoreCreationCoordinator?
+    private var freeTrialSurveyCoorindator: FreeTrialSurveyCoordinator?
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -351,6 +352,7 @@ private extension AppCoordinator {
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires
         let sixHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
         let twentyFourHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
+        let freeTrialSurvey24hAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
 
         let userInfo = response.notification.request.content.userInfo
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
@@ -387,6 +389,11 @@ private extension AppCoordinator {
                 return
             }
             showUpgradesView(siteID: siteID)
+        case let identifier where identifier.hasPrefix(freeTrialSurvey24hAfterFreeTrialSubscribed):
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier else {
+                return
+            }
+            showFreeTrialSurvey()
         case LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial:
             let storeNameKey = LocalNotification.UserInfoKey.storeName
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
@@ -403,6 +410,17 @@ private extension AppCoordinator {
 
 /// Local notification handling helper methods.
 private extension AppCoordinator {
+    func showFreeTrialSurvey() {
+        guard let navigationController = getNavigationController() else {
+            return
+        }
+
+        let coordinator = FreeTrialSurveyCoordinator(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
+                                                     navigationController: navigationController)
+        freeTrialSurveyCoorindator = coordinator
+        coordinator.start()
+    }
+
     func showUpgradesView(siteID: Int64) {
         switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
             guard let self,
@@ -419,18 +437,7 @@ private extension AppCoordinator {
             return
         }
 
-        // Fetch the navigation controller for store selected or not selected cases
-        guard let navigationController: UINavigationController = {
-            // If logged in with a valid store, tab bar will have a viewcontroller selected.
-            if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-                return navigationController
-            } // If logged in with no valid stores, store picker will be displayed.
-            else if let navigationController = window.rootViewController?.topmostPresentedViewController as? UINavigationController {
-                return navigationController
-            } else {
-                return nil
-            }
-        }() else {
+        guard let navigationController = getNavigationController() else {
             return
         }
 
@@ -453,6 +460,25 @@ private extension AppCoordinator {
                                                    pushNotesManager: pushNotesManager)
         self.storeCreationCoordinator = coordinator
         coordinator.start()
+    }
+
+    func getNavigationController() -> UINavigationController? {
+        // Fetch the navigation controller for store selected or not selected cases
+        guard let navigationController: UINavigationController = {
+            // If logged in with a valid store, tab bar will have a viewcontroller selected.
+            if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+                return navigationController
+            } // If logged in with no valid stores, store picker will be displayed.
+            else if let navigationController = window.rootViewController?.topmostPresentedViewController as? UINavigationController {
+                return navigationController
+            } else {
+                return nil
+            }
+        }() else {
+            return nil
+        }
+
+        return navigationController
     }
 }
 

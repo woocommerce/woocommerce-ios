@@ -10,6 +10,8 @@ final class UpgradesViewModel: ObservableObject {
 
     @Published var upgradeViewState: UpgradeViewState = .loading
 
+    @Published var isPurchasing: Bool = false
+
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
     private let storePlanSynchronizer: StorePlanSynchronizer
@@ -93,12 +95,15 @@ final class UpgradesViewModel: ObservableObject {
     ///
     @MainActor
     func purchasePlan(with planID: String) async {
+        isPurchasing = true
+        defer {
+            isPurchasing = false
+        }
+
         analytics.track(event: .InAppPurchases.planUpgradePurchaseButtonTapped(planID))
         guard let wooWPComPlan = planCanBePurchasedFromCurrentState(with: planID) else {
             return
         }
-
-        upgradeViewState = .purchasing(wooWPComPlan, plans)
 
         observeInAppPurchaseDrawerDismissal { [weak self] in
             /// The drawer gets dismissed when the IAP is cancelled too. That gets dealt with in the `do-catch`
@@ -106,9 +111,10 @@ final class UpgradesViewModel: ObservableObject {
             /// before we try to advance to the waiting state.
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
                 guard let self else { return }
-                /// If the user cancelled, the state will be `.loaded(_)` by now, so we don't advance to waiting.
-                /// Likewise, errors will have moved us to `.error(_)`, so we won't advance then either.
-                if case .purchasing = self.upgradeViewState {
+                /// If the user cancelled, we don't advance to waiting, just stay on the plans screen.
+                /// If the user reached an error state, we will have moved to `.error(_)`, so we should not advance to waiting.
+                /// In both the above cases, `isPurchasing` will have moved back to false in the defer block
+                if self.isPurchasing {
                     self.upgradeViewState = .waiting(wooWPComPlan)
                 }
             }
@@ -120,7 +126,8 @@ final class UpgradesViewModel: ObservableObject {
             stopObservingInAppPurchaseDrawerDismissal()
             switch result {
             case .userCancelled:
-                upgradeViewState = .loaded(plans)
+                /// `no-op` – if the user cancels, we remain in the `loaded` state.
+                return
             case .success(.verified(_)):
                 // refreshing the synchronizer removes the Upgrade Now banner by the time the flow is closed
                 storePlanSynchronizer.reloadPlan()

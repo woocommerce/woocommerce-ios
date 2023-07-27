@@ -1665,7 +1665,8 @@ extension Networking.Site {
             gmtOffset: .fake(),
             isPublic: .fake(),
             canBlaze: .fake(),
-            isAdmin: .fake()
+            isAdmin: .fake(),
+            wasEcommerceTrial: .fake()
         )
     }
 }

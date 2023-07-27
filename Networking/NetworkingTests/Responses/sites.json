@@ -31,6 +31,7 @@
       },
       "jetpack": true,
       "jetpack_connection": true,
+      "was_ecommerce_trial": true,
       "options": {
         "timezone": "",
         "gmt_offset": 3.5,
@@ -195,6 +196,7 @@
       },
       "jetpack": false,
       "jetpack_connection": true,
+      "was_ecommerce_trial": false,
       "options": {
         "timezone": "",
         "gmt_offset": -4,

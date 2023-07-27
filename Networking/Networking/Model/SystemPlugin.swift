@@ -1,7 +1,7 @@
 import Foundation
 import Codegen
 
-public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable, Equatable {
 
     /// WordPress.com Site Identifier.
     ///

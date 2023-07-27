@@ -528,7 +528,7 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_UpgradesHostingController_is_shown_when_tapping_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_available() throws {
+    func test_FreeTrialSurveyHostingController_is_shown_when_tapping_freeTrialSurvey24hAfterFreeTrialSubscribed_notification() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
         let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
@@ -542,13 +542,14 @@ final class AppCoordinatorTests: XCTestCase {
         // When
         let response = try XCTUnwrap(MockNotificationResponse(
             actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID).identifier)
+            requestIdentifier: LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID).identifier)
         )
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
         waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is UpgradesHostingController
+            let navigationController = self.window.rootViewController?.topmostPresentedViewController as? WooNavigationController
+            return navigationController?.topViewController is FreeTrialSurveyHostingController
         }
     }
 

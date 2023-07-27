@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View model for `FreeTrialSurveyView`
 ///
@@ -10,13 +11,22 @@ final class FreeTrialSurveyViewModel: ObservableObject {
 
     private let analytics: Analytics
     private let source: FreeTrialSurveyCoordinator.Source
+    private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
+    private let localNotificationScheduler: LocalNotificationScheduler
+    private let stores: StoresManager
 
     init(source: FreeTrialSurveyCoordinator.Source,
          onClose: @escaping () -> Void,
-         analytics: Analytics = ServiceLocator.analytics) {
-        self.onClose = onClose
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.source = source
+        self.onClose = onClose
+        self.stores = stores
         self.analytics = analytics
+        self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
+        self.inAppPurchaseManager = inAppPurchaseManager
     }
 
     var answers: [SurveyAnswer] {

@@ -46,7 +46,7 @@ final class FreeTrialSurveyViewModel: ObservableObject {
 
         analytics.track(event: .FreeTrialSurvey.surveySent(source: source,
                                                            surveyOption: selectedAnswer.rawValue,
-                                                           freeText: otherReasonSpecified))
+                                                           freeText: otherReasonSpecified.isNotEmpty ? otherReasonSpecified : nil))
         onClose()
     }
 

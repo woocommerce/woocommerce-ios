@@ -155,6 +155,23 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         XCTAssertEqual(properties["free_text"] as? String, "Need time to decide")
     }
 
+    func test_submitFeedback_method_does_not_track_free_text_if_it_is_empty() throws {
+        // Given
+        let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
+                                                 onClose: {},
+                                                 analytics: analytics)
+        viewModel.selectAnswer(.comparingWithOtherPlatforms)
+        viewModel.otherReasonSpecified = ""
+
+        // When
+        viewModel.submitFeedback()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "free_trial_survey_sent" }))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertNil(properties["free_text"])
+    }
+
     func test_onClose_is_fired_when_submitting_feedback() {
         var onCloseFired = false
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,

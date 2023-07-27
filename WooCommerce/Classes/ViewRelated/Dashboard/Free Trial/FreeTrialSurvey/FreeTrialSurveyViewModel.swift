@@ -5,20 +5,16 @@ import SwiftUI
 final class FreeTrialSurveyViewModel: ObservableObject {
     @Published private(set) var selectedAnswer: SurveyAnswer?
     @Published var otherReasonSpecified: String = ""
-    /// Triggered when the user taps Cancel.
+    /// Triggered when the user taps Cancel or Submits the survey.
     let onClose: () -> Void
-    /// Triggered when the survey is submitted.
-    let onSubmit: () -> Void
 
     private let analytics: Analytics
     private let source: FreeTrialSurveyCoordinator.Source
 
     init(source: FreeTrialSurveyCoordinator.Source,
          onClose: @escaping () -> Void,
-         onSubmit: @escaping () -> Void,
          analytics: Analytics = ServiceLocator.analytics) {
         self.onClose = onClose
-        self.onSubmit = onSubmit
         self.source = source
         self.analytics = analytics
     }
@@ -51,7 +47,7 @@ final class FreeTrialSurveyViewModel: ObservableObject {
         analytics.track(event: .FreeTrialSurvey.surveySent(source: source,
                                                            surveyOption: selectedAnswer.rawValue,
                                                            freeText: otherReasonSpecified))
-        onSubmit()
+        onClose()
     }
 
     enum SurveyAnswer: String, CaseIterable {

@@ -26,9 +26,6 @@ final class FreeTrialSurveyCoordinator: Coordinator {
         let survey = FreeTrialSurveyHostingController(viewModel: .init(source: source,
                                                                        onClose: { [weak self] in
             self?.navigationController.dismiss(animated: true)
-        },
-                                                                       onSubmit: { [weak self] in
-            self?.navigationController.dismiss(animated: true)
         }))
         navigationController.present(WooNavigationController(rootViewController: survey), animated: true)
     }

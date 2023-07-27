@@ -118,10 +118,10 @@ struct FreeTrialSurveyView_Previews: PreviewProvider {
     static var previews: some View {
         if #available(iOS 16.0, *) {
             NavigationStack {
-                FreeTrialSurveyView(viewModel: .init(source: .freeTrialSurvey24hAfterFreeTrialSubscribed, onClose: {}, onSubmit: {}))
+                FreeTrialSurveyView(viewModel: .init(source: .freeTrialSurvey24hAfterFreeTrialSubscribed, onClose: {}))
             }
         } else {
-            FreeTrialSurveyView(viewModel: .init(source: .freeTrialSurvey24hAfterFreeTrialSubscribed, onClose: {}, onSubmit: {}))
+            FreeTrialSurveyView(viewModel: .init(source: .freeTrialSurvey24hAfterFreeTrialSubscribed, onClose: {}))
         }
     }
 }

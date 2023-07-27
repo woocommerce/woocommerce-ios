@@ -25,7 +25,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
 
         // Then
@@ -38,7 +37,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
         // When
         viewModel.selectAnswer(.collectiveDecision)
@@ -53,7 +51,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
 
         // Then
@@ -64,7 +61,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
         // When
         viewModel.selectAnswer(.collectiveDecision)
@@ -77,7 +73,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
         // When
         viewModel.selectAnswer(.otherReasons)
@@ -91,7 +86,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
         // When
         viewModel.selectAnswer(.otherReasons)
@@ -107,7 +101,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
         viewModel.selectAnswer(.comparingWithOtherPlatforms)
 
@@ -126,7 +119,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
         viewModel.selectAnswer(.otherReasons)
         viewModel.otherReasonSpecified = "Need time to decide"
@@ -147,7 +139,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         // Given
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  analytics: analytics)
         viewModel.selectAnswer(.comparingWithOtherPlatforms)
         viewModel.otherReasonSpecified = "Need time to decide"
@@ -164,12 +155,11 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         XCTAssertEqual(properties["free_text"] as? String, "Need time to decide")
     }
 
-    func test_onSubmit_is_fired_when_submitting_feedback() {
-        var onSubmitFired = false
+    func test_onClose_is_fired_when_submitting_feedback() {
+        var onCloseFired = false
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
-                                                 onClose: {},
-                                                 onSubmit: {
-            onSubmitFired = true
+                                                 onClose: {
+            onCloseFired = true
         },
                                                  analytics: analytics)
         viewModel.selectAnswer(.comparingWithOtherPlatforms)
@@ -179,6 +169,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         viewModel.submitFeedback()
 
         // Then
-        XCTAssertTrue(onSubmitFired)
+        XCTAssertTrue(onCloseFired)
     }
 }

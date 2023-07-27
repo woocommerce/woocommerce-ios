@@ -885,7 +885,7 @@ final class OrderListViewModelTests: XCTestCase {
     }
 
     // MARK: - `shouldEnableTestOrder`
-    func test_shouldEnableTestOrder_returns_true_when_site_is_public_and_has_at_published_product_and_set_up_payment() {
+    func test_shouldEnableTestOrder_returns_true_when_site_is_public_and_has_a_published_product_and_set_up_payment() {
         // Given
         let siteID: Int64 = 123
         let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: true)

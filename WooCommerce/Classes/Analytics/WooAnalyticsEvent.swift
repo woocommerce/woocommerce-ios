@@ -524,6 +524,14 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
+        static func orderProductsLoaded(order: Order, products: [Product]) -> WooAnalyticsEvent {
+            let productIDs = order.items.map { $0.productID }
+            let productTypes = productIDs.compactMap { productID in
+                products.first(where: { $0.productID == productID })?.productType.rawValue
+            }.uniqued().joined(separator: ",")
+            return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: ["product_types": productTypes])
+        }
+
         static func orderAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderListProductBarcodeScanningTapped, properties: [:])
         }

@@ -248,5 +248,16 @@ extension LocalNotification {
                 comment: "Message on the local notification to ask for Free trial survey."
             )
         }
+
+        enum ThreeDaysAfterStillExploring {
+            static let title = NSLocalizedString(
+                "🧭 Still Exploring WooCommerce?",
+                comment: "Title of the local notification to remind after three days."
+            )
+            static let body = NSLocalizedString(
+                "No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!",
+                comment: "Message on the local notification to remind after three days."
+            )
+        }
     }
 }

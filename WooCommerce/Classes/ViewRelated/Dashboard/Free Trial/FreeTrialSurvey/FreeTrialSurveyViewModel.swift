@@ -106,3 +106,27 @@ final class FreeTrialSurveyViewModel: ObservableObject {
         }
     }
 }
+
+private extension FreeTrialSurveyViewModel {
+    func scheduleLocalNotificationAfterThreeDays() {
+        guard let site = stores.sessionManager.defaultSite,
+              let triggerDateComponents = Date().adding(days: Constants.daysToAddForStillExploringNotification)?.dateAndTimeComponents() else {
+            return
+        }
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+        Task {
+            let iapAvailable = await inAppPurchaseManager.inAppPurchasesAreSupported()
+            let notification = LocalNotification(scenario: .threeDaysAfterStillExploring(siteID: site.siteID),
+                                                 userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: iapAvailable])
+            await localNotificationScheduler.schedule(notification: notification,
+                                                      trigger: trigger,
+                                                      remoteFeatureFlag: nil,
+                                                      shouldSkipIfScheduled: true)
+        }
+    }
+
+    enum Constants {
+        static let daysToAddForStillExploringNotification = 3
+    }
+}

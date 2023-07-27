@@ -345,8 +345,9 @@ final class StorePlanSynchronizerTests: XCTestCase {
             /// - 6 hrs after trial subscription
             /// - 24 hrs after trial subscription
             /// - Free trial survey 24 hrs after trial subscription
+            /// - 3 days after answering "Still exploring" in Free trial survey
             /// Update this number based on the number of notifications we support.
-            pushNotesManager.canceledLocalNotificationScenarios.count == 5
+            pushNotesManager.canceledLocalNotificationScenarios.count == 6
         }
 
         // No local notifications scheduling requested for a non free trial plan

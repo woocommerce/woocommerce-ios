@@ -136,7 +136,7 @@ public struct LegacyWooPlan: Decodable {
     }
 }
 
-public enum AvailableInAppPurchasesWPComPlans: String, CaseIterable {
+public enum AvailableInAppPurchasesWPComPlans: String {
     case essentialMonthly = "woocommerce.express.essential.monthly"
     case essentialYearly = "woocommerce.express.essential.yearly"
     case performanceMonthly = "woocommerce.express.performance.monthly"

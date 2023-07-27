@@ -103,6 +103,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .createTestOrder:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .betterCustomerSelectionInOrder:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

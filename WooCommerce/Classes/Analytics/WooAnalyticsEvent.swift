@@ -512,10 +512,12 @@ extension WooAnalyticsEvent {
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
             let customFieldsSize = order.customFields.map { $0.value.utf8.count }.reduce(0, +) // Total byte size of custom field values
+            let redeemedWithGiftCard = order.appliedGiftCards.isNotEmpty
             return WooAnalyticsEvent(statName: .orderOpen, properties: ["id": order.orderID,
                                                                         "status": order.status.rawValue,
                                                                         "custom_fields_count": Int64(order.customFields.count),
-                                                                        "custom_fields_size": Int64(customFieldsSize)])
+                                                                        "custom_fields_size": Int64(customFieldsSize),
+                                                                        "redeemed_gift_card": redeemedWithGiftCard])
         }
 
         static func orderAddNew() -> WooAnalyticsEvent {

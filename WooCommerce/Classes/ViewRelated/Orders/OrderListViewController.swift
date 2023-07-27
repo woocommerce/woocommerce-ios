@@ -614,15 +614,19 @@ private extension OrderListViewController {
     ///
     func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
 
+        let analytics = ServiceLocator.analytics
         if viewModel.shouldEnableTestOrder, let url = viewModel.siteURL {
+
+            analytics.track(event: .TestOrder.entryPointDisplayed(isWooExpressStore: viewModel.isWooExpressStore))
             return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                                image: .emptyOrdersImage,
                                details: Localization.createTestOrderDetail,
                                buttonTitle: Localization.tryTestOrder,
                                onTap: { [weak self] _ in
                 guard let self else { return }
+                analytics.track(event: .TestOrder.tryTestOrderTapped(isWooExpressStore: self.viewModel.isWooExpressStore))
                 let hostingController = CreateTestOrderHostingController {
-                    // TODO: analytics
+                    analytics.track(event: .TestOrder.testOrderStarted(isWooExpressStore: self.viewModel.isWooExpressStore))
                     UIApplication.shared.open(url)
                 }
                 self.present(UINavigationController(rootViewController: hostingController), animated: true)

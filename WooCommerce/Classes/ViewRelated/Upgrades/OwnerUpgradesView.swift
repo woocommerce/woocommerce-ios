@@ -4,16 +4,16 @@ import WooFoundation
 
 struct OwnerUpgradesView: View {
     @State var upgradePlans: [WooWPComPlan]
-    @State var isPurchasing: Bool
+    @Binding var isPurchasing: Bool
     let purchasePlanAction: (WooWPComPlan) -> Void
     @State var isLoading: Bool
 
     init(upgradePlans: [WooWPComPlan],
-         isPurchasing: Bool = false,
+         isPurchasing: Binding<Bool>,
          purchasePlanAction: @escaping ((WooWPComPlan) -> Void),
          isLoading: Bool = false) {
         _upgradePlans = .init(initialValue: upgradePlans)
-        _isPurchasing = .init(initialValue: isPurchasing)
+        _isPurchasing = isPurchasing
         self.purchasePlanAction = purchasePlanAction
         _isLoading = .init(initialValue: isLoading)
     }
@@ -42,16 +42,19 @@ struct OwnerUpgradesView: View {
                 VStack {
                     ForEach(upgradePlans.filter { $0.wooPlan.planFrequency == paymentFrequency }) { upgradePlan in
                         WooPlanCardView(upgradePlan: upgradePlan, selectedPlan: $selectedPlan)
-                        .accessibilityAddTraits(.isSummaryElement)
-                        .listRowSeparator(.hidden)
-                        .redacted(reason: isLoading ? .placeholder : [])
-                        .shimmering(active: isLoading)
-                        .padding(.bottom, 8)
+                            .disabled(isPurchasing)
+                            .listRowSeparator(.hidden)
+                            .redacted(reason: isLoading ? .placeholder : [])
+                            .shimmering(active: isLoading)
+                            .padding(.bottom, 8)
                     }
                     Button(Localization.allFeaturesListText) {
                         showingFullFeatureList.toggle()
                     }
                     .buttonStyle(SecondaryButtonStyle())
+                    .disabled(isPurchasing || isLoading)
+                    .redacted(reason: isLoading ? .placeholder : [])
+                    .shimmering(active: isLoading)
                     .sheet(isPresented: $showingFullFeatureList) {
                         NavigationView {
                             FullFeatureListView()

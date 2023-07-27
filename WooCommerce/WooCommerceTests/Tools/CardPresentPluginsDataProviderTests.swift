@@ -4,12 +4,19 @@ import Yosemite
 
 final class CardPresentPluginsDataProviderTests: XCTestCase {
     private var sut: CardPresentPluginsDataProvider!
+    private var storageManager: MockStorageManager!
+    private var stores: MockStoresManager!
+    let configuration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration
 
     override func setUp() {
         super.setUp()
+        storageManager = MockStorageManager()
+        stores = MockStoresManager(sessionManager: .testingInstance)
 
-        let configuration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration
-        sut = CardPresentPluginsDataProvider(configuration: configuration)
+
+        sut = CardPresentPluginsDataProvider(storageManager: storageManager,
+                                             stores: stores,
+                                             configuration: configuration)
     }
 
     override func tearDown() {
@@ -69,5 +76,35 @@ final class CardPresentPluginsDataProviderTests: XCTestCase {
 
         // Then
         XCTAssertEqual(status, .bothAreInstalledAndActive)
+    }
+
+    func test_getWCPayPlugin_when_it_is_stored_then_returns_it() {
+        // Given
+        let siteID: Int64 = 1
+        stores.sessionManager.setStoreId(siteID)
+        let fileNameWithoutExtension = "woocommerce-payments"
+        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "folder/" + fileNameWithoutExtension + ".ext")
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
+
+        // When
+        let retrievedPlugin = sut.getWCPayPlugin()
+
+        XCTAssertEqual(retrievedPlugin, plugin)
+    }
+
+    func test_getStripePlugin_when_it_is_stored_then_returns_it() {
+        // Given
+        let siteID: Int64 = 1
+        stores.sessionManager.setStoreId(siteID)
+        let fileNameWithoutExtension = "woocommerce-gateway-stripe"
+        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "folder/" + fileNameWithoutExtension + ".ext")
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
+
+        // When
+        let retrievedPlugin = sut.getStripePlugin()
+
+        XCTAssertEqual(retrievedPlugin, plugin)
     }
 }

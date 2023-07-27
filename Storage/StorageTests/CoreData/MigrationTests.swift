@@ -2019,6 +2019,27 @@ final class MigrationTests: XCTestCase {
         let canBlaze = try XCTUnwrap(migratedSiteEntity.value(forKey: "canBlaze") as? Bool)
         XCTAssertFalse(canBlaze, "Confirm expected property exists, and is false by default.")
     }
+
+    func test_migrating_from_91_to_92_adds_new_wasEcommerceTrial_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 91")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["wasEcommerceTrial"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 92")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSiteEntity = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let wasEcommerceTrial = try XCTUnwrap(migratedSiteEntity.value(forKey: "wasEcommerceTrial") as? Bool)
+        XCTAssertFalse(wasEcommerceTrial, "Confirm expected property exists, and is false by default.")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

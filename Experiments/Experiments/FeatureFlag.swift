@@ -213,4 +213,8 @@ public enum FeatureFlag: Int {
 
     /// Enables Free trial survey notificaiton
     case freeTrialSurvey24hAfterFreeTrialSubscribed
+
+    /// Shows entry point to create test order for new merchants.
+    ///
+    case createTestOrder
 }

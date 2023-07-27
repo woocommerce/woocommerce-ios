@@ -96,7 +96,7 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
-                    self.upsertCustomers(siteID: siteID, readOnlyCustomers: [customer], in: self.sharedDerivedStorage, onCompletion: {
+                    self.upsertCustomersAndSave(siteID: siteID, readOnlyCustomers: [customer], in: self.sharedDerivedStorage, onCompletion: {
                         onCompletion(.success(customer))
                     })
                 case .failure(let error):
@@ -109,7 +109,7 @@ public final class CustomerStore: Store {
         wcAnalyticsCustomerRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
             switch result {
             case .success(let customers):
-                self.upsertCustomers(siteID: siteID,
+                self.upsertCustomersAndSave(siteID: siteID,
                                      readOnlyCustomers: customers,
                                      shouldDeleteExistingCustomers: pageNumber == 1,
                                      in: self.sharedDerivedStorage,
@@ -192,7 +192,7 @@ private extension CustomerStore {
         }
     }
 
-    private func upsertCustomers(siteID: Int64,
+    private func upsertCustomersAndSave(siteID: Int64,
                                  readOnlyCustomers: [StorageCustomerConvertible],
                                  shouldDeleteExistingCustomers: Bool = false,
                                  in storage: StorageType,

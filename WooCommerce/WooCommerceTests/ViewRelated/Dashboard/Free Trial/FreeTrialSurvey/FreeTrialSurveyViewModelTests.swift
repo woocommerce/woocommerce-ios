@@ -204,7 +204,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         let pushNotesManager = MockPushNotificationsManager()
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  stores: stores,
                                                  analytics: analytics,
                                                  pushNotesManager: pushNotesManager,
@@ -235,7 +234,6 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
         let pushNotesManager = MockPushNotificationsManager()
         let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
                                                  onClose: {},
-                                                 onSubmit: {},
                                                  stores: stores,
                                                  analytics: analytics,
                                                  pushNotesManager: pushNotesManager,

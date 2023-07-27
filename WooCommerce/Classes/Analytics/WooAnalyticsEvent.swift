@@ -387,8 +387,9 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     /// Namespace
     enum ProductDetail {
-        static func loaded(hasLinkedProducts: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts])
+        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
+                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules])
         }
 
         /// Tracks when the merchant previews a product draft.

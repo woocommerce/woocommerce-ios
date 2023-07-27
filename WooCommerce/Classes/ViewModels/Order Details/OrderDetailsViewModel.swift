@@ -215,7 +215,9 @@ extension OrderDetailsViewModel {
                     group.leave()
                 }
                 guard let self else { return }
-                ServiceLocator.analytics.track(event: .Orders.orderProductsLoaded(order: self.order, products: self.products))
+                ServiceLocator.analytics.track(event: .Orders.orderProductsLoaded(order: self.order,
+                                                                                  products: self.products,
+                                                                                  addOnGroups: self.dataSource.addOnGroups))
             }
 
             group.enter()

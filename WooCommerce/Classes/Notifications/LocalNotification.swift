@@ -25,6 +25,7 @@ struct LocalNotification {
         case sixHoursAfterFreeTrialSubscribed(siteID: Int64)
         case twentyFourHoursAfterFreeTrialSubscribed(siteID: Int64)
         case freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: Int64)
+        case threeDaysAfterStillExploring(siteID: Int64)
 
         var identifier: String {
             switch self {
@@ -42,6 +43,8 @@ struct LocalNotification {
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(siteID)"
             case let .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID):
                 return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(siteID)"
+            case let .threeDaysAfterStillExploring(siteID):
+                return Identifier.Prefix.threeDaysAfterStillExploring + "\(siteID)"
             }
         }
 
@@ -52,6 +55,7 @@ struct LocalNotification {
                 static let sixHoursAfterFreeTrialSubscribed = "six_hours_after_free_trial_subscribed"
                 static let twentyFourHoursAfterFreeTrialSubscribed = "twenty_four_hours_after_free_trial_subscribed"
                 static let freeTrialSurvey24hAfterFreeTrialSubscribed = "free_trial_survey_24h_after_free_trial_subscribed"
+                static let threeDaysAfterStillExploring = "three_days_after_still_exploring"
             }
             static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
         }
@@ -68,6 +72,8 @@ struct LocalNotification {
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
             } else if identifier.hasPrefix(Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
+            } else if identifier.hasPrefix(Identifier.Prefix.threeDaysAfterStillExploring) {
+                return Identifier.Prefix.threeDaysAfterStillExploring
             }
             return identifier
         }
@@ -153,6 +159,9 @@ extension LocalNotification {
             title = Localization.FreeTrialSurvey24hAfterFreeTrialSubscribed.title
             body = Localization.FreeTrialSurvey24hAfterFreeTrialSubscribed.body
 
+        case .threeDaysAfterStillExploring:
+            title = Localization.ThreeDaysAfterStillExploring.title
+            body = Localization.ThreeDaysAfterStillExploring.body
         }
 
         self.init(title: title,

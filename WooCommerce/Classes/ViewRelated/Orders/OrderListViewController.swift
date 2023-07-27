@@ -624,7 +624,7 @@ private extension OrderListViewController {
                                buttonTitle: Localization.tryTestOrder,
                                onTap: { [weak self] _ in
                 guard let self else { return }
-                analytics.track(event: .TestOrder.tryTestOrderTapped(isWooExpressStore: viewModel.isWooExpressStore))
+                analytics.track(event: .TestOrder.tryTestOrderTapped(isWooExpressStore: self.viewModel.isWooExpressStore))
                 let hostingController = CreateTestOrderHostingController {
                     analytics.track(event: .TestOrder.testOrderStarted(isWooExpressStore: self.viewModel.isWooExpressStore))
                     UIApplication.shared.open(url)

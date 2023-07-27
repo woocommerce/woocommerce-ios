@@ -48,7 +48,7 @@ final class FreeTrialSurveyViewModel: ObservableObject {
             return
         }
 
-        analytics.track(event: .FreeTrialSurvey.surveySent(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
+        analytics.track(event: .FreeTrialSurvey.surveySent(source: source,
                                                            surveyOption: selectedAnswer.rawValue,
                                                            freeText: otherReasonSpecified))
         onSubmit()

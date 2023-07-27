@@ -96,22 +96,16 @@ private extension SubscriptionsViewModel {
     /// Whether the In-App Purchases subscription management button should be rendered
     ///
     func shouldRenderManageSubscriptionsButton() {
+        guard let siteID = storePlanSynchronizer.site?.siteID else {
+            return
+        }
+
         Task { @MainActor in
-            do {
-                let plans = try await inAppPurchasesPlanManager.fetchPlans()
-                guard let plan = plans.first(where: { $0.id == AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue }) else {
-                    return
-                }
-                guard try await inAppPurchasesPlanManager.userIsEntitledToPlan(with: plan.id) else {
-                    return
-                }
-                shouldShowManageSubscriptionButton = true
-            } catch {
-                DDLogError("⛔️ Failed to retrieve WPCOM In-App Purchases plans: \(error)")
+            if await inAppPurchasesPlanManager.siteHasCurrentInAppPurchases(siteID: siteID) {
+                self.shouldShowManageSubscriptionButton = true
             }
         }
     }
-
 
     /// Observes and reacts to plan changes
     ///
@@ -141,7 +135,9 @@ private extension SubscriptionsViewModel {
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
 
-        shouldRenderManageSubscriptionsButton()
+        if !plan.isFreeTrial {
+            shouldRenderManageSubscriptionsButton()
+        }
     }
 
     func updateLoadingViewProperties() {

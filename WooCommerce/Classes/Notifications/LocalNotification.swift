@@ -24,6 +24,7 @@ struct LocalNotification {
         case oneDayAfterFreeTrialExpires(siteID: Int64)
         case sixHoursAfterFreeTrialSubscribed(siteID: Int64)
         case twentyFourHoursAfterFreeTrialSubscribed(siteID: Int64)
+        case freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: Int64)
 
         var identifier: String {
             switch self {
@@ -39,6 +40,8 @@ struct LocalNotification {
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed + "\(siteID)"
             case let .twentyFourHoursAfterFreeTrialSubscribed(siteID):
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(siteID)"
+            case let .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID):
+                return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(siteID)"
             }
         }
 
@@ -48,6 +51,7 @@ struct LocalNotification {
                 static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
                 static let sixHoursAfterFreeTrialSubscribed = "six_hours_after_free_trial_subscribed"
                 static let twentyFourHoursAfterFreeTrialSubscribed = "twenty_four_hours_after_free_trial_subscribed"
+                static let freeTrialSurvey24hAfterFreeTrialSubscribed = "free_trial_survey_24h_after_free_trial_subscribed"
             }
             static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
         }
@@ -62,6 +66,8 @@ struct LocalNotification {
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
             } else if identifier.hasPrefix(Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
+            } else if identifier.hasPrefix(Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed) {
+                return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
             }
             return identifier
         }
@@ -142,6 +148,10 @@ extension LocalNotification {
         case .twentyFourHoursAfterFreeTrialSubscribed:
             title = Localization.TwentyFourHoursAfterFreeTrialSubscribed.title
             body = Localization.TwentyFourHoursAfterFreeTrialSubscribed.body
+
+        case .freeTrialSurvey24hAfterFreeTrialSubscribed:
+            title = Localization.FreeTrialSurvey24hAfterFreeTrialSubscribed.title
+            body = Localization.FreeTrialSurvey24hAfterFreeTrialSubscribed.body
 
         }
 
@@ -225,6 +235,17 @@ extension LocalNotification {
             static let body = NSLocalizedString(
                 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best.",
                 comment: "Message on the local notification to remind the user to purchase a plan."
+            )
+        }
+
+        enum FreeTrialSurvey24hAfterFreeTrialSubscribed {
+            static let title = NSLocalizedString(
+                "💡Help Us Understand Your Subscription Decision",
+                comment: "Title of the local notification to ask for Free trial survey."
+            )
+            static let body = NSLocalizedString(
+                "We’re interested in your decision-making journey. Could you please tell us about your current status?",
+                comment: "Message on the local notification to ask for Free trial survey."
             )
         }
     }

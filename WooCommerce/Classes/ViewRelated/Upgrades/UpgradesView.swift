@@ -93,16 +93,17 @@ struct UpgradesView: View {
                         .skeletonPlan(frequency: .year, shortName: "Performance"),
                         .skeletonPlan(frequency: .month, shortName: "Essential"),
                         .skeletonPlan(frequency: .month, shortName: "Performance")],
+                                      isPurchasing: .constant(false),
                                       purchasePlanAction: { _ in }, isLoading: true)
                         .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plans):
-                    OwnerUpgradesView(upgradePlans: plans, purchasePlanAction: { selectedPlan in
+                    OwnerUpgradesView(upgradePlans: plans,
+                                      isPurchasing: $upgradesViewModel.isPurchasing,
+                                      purchasePlanAction: { selectedPlan in
                         Task {
                             await upgradesViewModel.purchasePlan(with: selectedPlan.wpComPlan.id)
                         }
                     })
-                case .purchasing(_, let plans):
-                    OwnerUpgradesView(upgradePlans: plans, isPurchasing: true, purchasePlanAction: { _ in })
                 case .waiting(let plan):
                     ScrollView(.vertical) {
                         UpgradeWaitingView(planName: plan.wooPlan.shortName)

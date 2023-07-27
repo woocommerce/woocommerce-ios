@@ -351,6 +351,7 @@ private extension AppCoordinator {
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires
         let sixHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
         let twentyFourHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
+        let freeTrialSurvey24hAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
 
         let userInfo = response.notification.request.content.userInfo
         guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
@@ -387,6 +388,11 @@ private extension AppCoordinator {
                 return
             }
             showUpgradesView(siteID: siteID)
+        case let identifier where identifier.hasPrefix(freeTrialSurvey24hAfterFreeTrialSubscribed):
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier else {
+                return
+            }
+            showFreeTrialSurvey()
         case LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial:
             let storeNameKey = LocalNotification.UserInfoKey.storeName
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
@@ -403,6 +409,10 @@ private extension AppCoordinator {
 
 /// Local notification handling helper methods.
 private extension AppCoordinator {
+    func showFreeTrialSurvey() {
+        // TODO: 10266 Show free trial survey screen
+    }
+
     func showUpgradesView(siteID: Int64) {
         switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
             guard let self,

@@ -217,8 +217,10 @@ private extension CustomerStore {
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, in storage: StorageType) {
         let storageCustomer: Storage.Customer = {
             // If the specific customerID for that siteID already exists, return it
-            // If doesn't, insert a new one in Storage
-            if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.loadingID) {
+            // If doesn't or the user is unregistered (loadingID == 0), insert a new one in Storage
+            // Since we reset the customers everytime we request them, there's no risk of having duplicated unregistered customers
+            if readOnlyCustomer.loadingID != 0,
+                let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.loadingID) {
                 return storedCustomer
             } else {
                 return storage.insertNewObject(ofType: Storage.Customer.self)

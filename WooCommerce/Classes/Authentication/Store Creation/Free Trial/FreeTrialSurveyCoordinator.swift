@@ -21,7 +21,7 @@ final class FreeTrialSurveyCoordinator: Coordinator {
     }
 
     func start() {
-        analytics.track(event: .FreeTrialSurvey.surveyDisplayed(source: .freeTrialSurvey24hAfterFreeTrialSubscribed))
+        analytics.track(event: .FreeTrialSurvey.surveyDisplayed(source: source))
 
         let survey = FreeTrialSurveyHostingController(viewModel: .init(source: source,
                                                                        onClose: { [weak self] in

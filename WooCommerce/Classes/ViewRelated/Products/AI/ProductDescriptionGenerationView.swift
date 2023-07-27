@@ -180,10 +180,10 @@ struct ProductDescriptionGenerationView: View {
     private var nameTextField: some View {
         if #available(iOS 16.0, *) {
             TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
-                .subheadlineStyle()
+                .bodyStyle()
         } else {
             TextField(Localization.productNamePlaceholder, text: $viewModel.name)
-                .subheadlineStyle()
+                .bodyStyle()
         }
     }
 }

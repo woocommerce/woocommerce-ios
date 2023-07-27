@@ -3,7 +3,7 @@ import Foundation
 /// Defines the `actions` supported by the `CustomerStore`.
 ///
 public enum CustomerAction: Action {
-    /// Synchronizes the Customers matching the specified criteria. When syncing the first page number it resets (deletes) all the stores objects.
+    /// Synchronizes the Customers matching the specified criteria. When syncing the first page number it resets (deletes) all the stored objects.
     /// Note that the synchronized Customer objects only contain the most relevant data (name, email) which makes this action convenient for showing
     /// a Customers preview, e.g. in a list. If you want to retrieve all customers information please use `retrieveCustomer` action.
     ///

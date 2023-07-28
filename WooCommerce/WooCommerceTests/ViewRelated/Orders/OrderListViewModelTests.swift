@@ -883,6 +883,83 @@ final class OrderListViewModelTests: XCTestCase {
         // Then
         assertEqual(nil, feedbackStatus)
     }
+
+    // MARK: - `shouldEnableTestOrder`
+    func test_shouldEnableTestOrder_returns_true_when_site_is_public_and_has_a_published_product_and_set_up_payment() {
+        // Given
+        let siteID: Int64 = 123
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
+        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // When
+        let isEnabled = viewModel.shouldEnableTestOrder
+
+        // Then
+        XCTAssertTrue(isEnabled)
+    }
+
+    func test_shouldEnableTestOrder_returns_false_when_site_is_not_public() {
+        // Given
+        let siteID: Int64 = 123
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
+        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // When
+        let isEnabled = viewModel.shouldEnableTestOrder
+
+        // Then
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_shouldEnableTestOrder_returns_false_when_site_has_no_published_product() {
+        // Given
+        let siteID: Int64 = 123
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "draft"))
+        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // When
+        let isEnabled = viewModel.shouldEnableTestOrder
+
+        // Then
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_shouldEnableTestOrder_returns_false_when_site_has_no_payment_gateway() {
+        // Given
+        let siteID: Int64 = 123
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
+        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: false))
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        // When
+        let isEnabled = viewModel.shouldEnableTestOrder
+
+        // Then
+        XCTAssertFalse(isEnabled)
+    }
 }
 
 // MARK: - Helpers

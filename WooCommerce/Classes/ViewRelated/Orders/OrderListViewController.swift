@@ -325,6 +325,7 @@ extension OrderListViewController {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+        viewModel.onPullToRefresh()
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
@@ -613,21 +614,19 @@ private extension OrderListViewController {
     ///
     func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
 
-        /// If site is launched, show entry point to creating test orders.
-        if  ServiceLocator.featureFlagService.isFeatureFlagEnabled(.createTestOrder),
-            let site = ServiceLocator.stores.sessionManager.defaultSite,
-            site.isPublic,
-            let url = URL(string: site.url),
-            UIApplication.shared.canOpenURL(url) {
+        let analytics = ServiceLocator.analytics
+        if viewModel.shouldEnableTestOrder, let url = viewModel.siteURL {
 
+            analytics.track(event: .TestOrder.entryPointDisplayed())
             return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                                image: .emptyOrdersImage,
                                details: Localization.createTestOrderDetail,
                                buttonTitle: Localization.tryTestOrder,
                                onTap: { [weak self] _ in
                 guard let self else { return }
+                analytics.track(event: .TestOrder.tryTestOrderTapped())
                 let hostingController = CreateTestOrderHostingController {
-                    // TODO: analytics
+                    analytics.track(event: .TestOrder.testOrderStarted())
                     UIApplication.shared.open(url)
                 }
                 self.present(UINavigationController(rootViewController: hostingController), animated: true)

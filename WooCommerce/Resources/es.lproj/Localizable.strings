@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-18 13:54:04+0000 */
+/* Translation-Revision-Date: 2023-07-25 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -293,9 +293,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 elemento elegido";
 
+/* Disclaimer regarding some of the features related to payments. */
+"1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Disponible como estándar en WooCommerce Payments (se aplican restricciones). Es posible que para otros proveedores de pago se necesiten extensiones adicionales.";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
+
+/* Disclaimer regarding some of the features related to shipping. */
+"2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Solo disponible en EE. UU.: para otros países, se requerirá una extensión adicional.";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
 "24\/7 support" = "Soporte las 24 horas";
@@ -371,8 +377,14 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'AID'. Part of the mandatory data in receipts */
 "AID" = "SOPORTE";
 
+/* No comment provided by engineer. */
+"Abandoned cart recovery" = "Recuperación de carritos abandonados";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Acerca de la aplicación";
+
+/* No comment provided by engineer. */
+"Accept local payments'" = "Aceptar pagos locales'";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "Acepta las condiciones del servicio durante la instalación.";
@@ -412,6 +424,9 @@ which should be translated separately and considered part of this sentence. */
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "Activo, actualizaciones automáticas activas";
 
+/* No comment provided by engineer. */
+"Ad-free experience" = "Experiencia sin anuncios";
+
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
    Add tracking screen - button title to add a tracking */
@@ -423,9 +438,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Añadir categoría";
-
-/* Title text of the button that adds a coupon when creating a new order */
-"Add Coupon" = "Añadir cupón";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "Añadir detalles del cliente";
@@ -614,6 +626,9 @@ which should be translated separately and considered part of this sentence. */
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Añade tu primera tienda";
 
+/* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
+"Adding discount is currently not available. Remove coupons first." = "En este momento, la acción de “Añadir descuento” no está disponible. Antes se deben eliminar los cupones.";
+
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Dirección";
 
@@ -651,8 +666,14 @@ which should be translated separately and considered part of this sentence. */
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Firma obligatoria de un adulto (+%1$@)";
 
+/* No comment provided by engineer. */
+"Advanced SEO tools" = "Herramientas SEO avanzadas";
+
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Herramienta avanzada para revisar el estado de la aplicación";
+
+/* No comment provided by engineer. */
+"Advertise on Google" = "Promocionar en Google";
 
 /* Country option for a site address. */
 "Afghanistan" = "Afganistán";
@@ -736,7 +757,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "American Samoa" = "Samoa Americana";
 
-/* Title of the Amount label on Coupon Details screen */
+/* Title for the discount amount of a product during order creation
+   Title of the Amount label on Coupon Details screen */
 "Amount" = "Importe";
 
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
@@ -785,6 +807,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Se produjo un error al procesar su solicitud:";
+
+/* Text detection failed error message on the add product from image form. */
+"An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "Se ha producido un error al explorar la foto. Elige otra foto del embalaje o introduce los detalles del producto manualmente.";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Recientemente, se ha emitido una transacción idéntica. Si quieres continuar, prueba otro método de pago.";
@@ -959,6 +984,12 @@ which should be translated separately and considered part of this sentence. */
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Gestión automática de este sitio";
 
+/* No comment provided by engineer. */
+"Automated backup + quick restore" = "Copias de seguridad automatizadas y restauraciones rápidas";
+
+/* No comment provided by engineer. */
+"Automated sales taxes" = "Impuestos de ventas automáticos";
+
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Iniciar y finalizar una oferta automáticamente";
 
@@ -984,6 +1015,9 @@ which should be translated separately and considered part of this sentence. */
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
 "Back" = "Volver";
+
+/* No comment provided by engineer. */
+"Back in stock emails" = "Correos electrónicos de reposición de artículos";
 
 /* Accessibility announcement message when device goes back online */
 "Back online" = "Vuelve a estar conectado a Internet";
@@ -1261,12 +1295,14 @@ which should be translated separately and considered part of this sentence. */
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
    Cancel button label
+   Cancel button on the add product from image form.
    Cancel button on the alert when the user is cancelling the action on changing product type
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
    Cancel button title in the issue refund screen
+   Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
    Cancel the more menu action sheet in Reviews screen.
@@ -1665,6 +1701,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Conectar con el lector";
 
+/* No comment provided by engineer. */
+"Connect with Facebook" = "Conectar con Facebook";
+
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Conectar el lector de tarjetas";
 
@@ -2057,6 +2096,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "Los formularios de aduanas requieren un número de teléfono de 10 dígitos";
 
+/* No comment provided by engineer. */
+"Custom order emails" = "Correos electrónicos de pedidos personalizados";
+
+/* No comment provided by engineer. */
+"Custom product kits" = "Kits de productos personalizados";
+
 /* Customer info section title
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
@@ -2073,6 +2118,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the edit customer provided note screen
    Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "Nota proporcionada por el cliente";
+
+/* No comment provided by engineer. */
+"Customer birthday emails" = "Correos electrónicos de felicitación de cumpleaños del cliente";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "El cliente ha pagado un %1$@ de %2$@ por el envío";
@@ -2190,11 +2238,15 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "Desconectar lector";
 
 /* Discount label for payment view
-   Title for the Discount Details screen during order creation */
+   Title for the Discount Details screen during order creation
+   Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "Descuento";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "Descuento %1$@";
+
+/* Label for the the row showing the total discount of the order */
+"Discount Total" = "Descuento total";
 
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
@@ -2205,6 +2257,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "Tarifas con descuento";
+
+/* No comment provided by engineer. */
+"Discounted shipping²" = "Envío con descuento²";
 
 /* Message on the local notification to remind the user to purchase a plan. */
 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Descubre funciones avanzadas y recomendaciones personalizadas para la tienda. Toca para elegir el plan que más te convenga.";
@@ -2260,6 +2315,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "¿Quieres mover este producto a la papelera?";
+
+/* Confirm message for navigating to coupons when creating a new order */
+"Do you want to navigate to the Coupons Menu? These changes will be discarded." = "¿Quieres ir al menú Cupones? Estos cambios se descartarán.";
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Documentos";
@@ -2423,6 +2481,7 @@ which should be translated separately and considered part of this sentence. */
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
+   Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Editar";
 
@@ -2511,6 +2570,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Enviar recibo por correo electrónico";
+
+/* No comment provided by engineer. */
+"Email support" = "Ayuda por correo electrónico";
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "Envía los recibos de compra de la etiqueta a %1$@ (%2$@) en %3$@";
@@ -2739,6 +2801,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "Se ha producido un error al generar el código QR. Por favor, inténtalo de nuevo más tarde";
+
+/* Default error message on the add product from image form. */
+"Error generating product details. Please try again." = "Se ha producido un error al generar los detalles del producto. Inténtalo de nuevo.";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Error al encontrar la dirección en los Mapas de Apple";
@@ -3020,6 +3085,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "France" = "Francia";
 
+/* No comment provided by engineer. */
+"Free SSL certificate" = "Certificado SSL gratuito";
+
 /* Plan name for an active free trial */
 "Free Trial" = "Prueba gratuita";
 
@@ -3056,6 +3124,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Cumple con tus pedidos con WooCommerce Shipping";
 
+/* Title of the view which shows the full feature list for paid plans. */
+"Full Feature List" = "Lista completa de las funciones";
+
 /* Country option for a site address. */
 "Gabon" = "Gabón";
 
@@ -3091,6 +3162,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "Se ha excedido el límite de generaciones.";
+
+/* No comment provided by engineer. */
+"Generous storage" = "Amplio espacio de almacenamiento";
 
 /* Country option for a site address. */
 "Georgia" = "Georgia";
@@ -3161,6 +3235,9 @@ which should be translated separately and considered part of this sentence. */
    Gift Cards section title */
 "Gift Cards" = "Gift Cards";
 
+/* No comment provided by engineer. */
+"Gift cards" = "Tarjetas regalo";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
@@ -3179,11 +3256,20 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
 
+/* Confirm button title for navigating to coupons when creating a new order */
+"Go" = "Ir";
+
+/* Button title on the Coupon screen empty statewhen creating a new order that navigates to the Coupons Section */
+"Go to Coupons" = "Ir a Cupones";
+
 /* Title for the 'Go To Settings' button in the privacy banner */
 "Go to Settings" = "Ve a Ajustes";
 
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "Ir a la tienda";
+
+/* No comment provided by engineer. */
+"Google Analytics" = "Google Analytics";
 
 /* Option in the store creation selling platforms question. */
 "Google Shopping" = "Google Shopping";
@@ -3592,6 +3678,12 @@ which should be translated separately and considered part of this sentence. */
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "Seguro (hasta %1$@)";
 
+/* No comment provided by engineer. */
+"Integrated payments" = "Pagos integrados";
+
+/* No comment provided by engineer. */
+"International payments'" = "Pagos internacionales'";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Dirección de correo electrónico no válida";
 
@@ -3725,6 +3817,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Jersey" = "Jersey";
+
+/* WordPress.com error thrown when Jetpack is not connected. */
+"Jetpack Not Connected" = "Jetpack no está conectado";
 
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Configuración de Jetpack";
@@ -3937,8 +4032,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Lista de imágenes del producto";
 
+/* No comment provided by engineer. */
+"List products by brand" = "Presenta productos por marca";
+
+/* No comment provided by engineer. */
+"List unlimited products" = "Presenta tantos productos como quieras";
+
 /* Country option for a site address. */
 "Lithuania" = "Lituania";
+
+/* No comment provided by engineer. */
+"Live chat support" = "Soporte por medio de chat en vivo";
+
+/* No comment provided by engineer. */
+"Live shipping rates" = "Tarifas de envío en directo";
 
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "Cargando";
@@ -4046,6 +4153,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of a button. */
 "Lost your password?" = "¿Has perdido tu contraseña?";
+
+/* No comment provided by engineer. */
+"Loyalty points programs" = "Programas de puntos de fidelización";
 
 /* Country option for a site address. */
 "Luxembourg" = "Luxemburgo";
@@ -4161,6 +4271,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Marcar este pedido como completado y avisar al cliente";
 
+/* No comment provided by engineer. */
+"Marketing & Email" = "Marketing y correo electrónico";
+
+/* No comment provided by engineer. */
+"Marketing automation" = "Automatización del marketing";
+
 /* Country option for a site address. */
 "Marshall Islands" = "Islas Marshall";
 
@@ -4226,6 +4342,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "Mín. Gasto (%1$@)";
+
+/* No comment provided by engineer. */
+"Min\/Max order quantity" = "Cantidad mínima\/máxima del pedido";
 
 /* Title for the minimum quantity setting in the quantity rules screen. */
 "Minimum quantity" = "Cantidad mínima";
@@ -4546,6 +4665,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Todavía no hay clases de impuesto";
+
+/* No text detected message on the add product from image form. */
+"No text detected. Please select another packaging photo or enter product details manually." = "No se ha detectado texto. Elige otra foto del embalaje o introduce los detalles del producto manualmente.";
 
 /* Display label when a subscription has no trial period. */
 "No trial period" = "Sin periodo de prueba";
@@ -4995,6 +5117,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Rendimiento";
 
+/* No comment provided by engineer. */
+"Performance plan only" = "Solo el plan de rendimiento";
+
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Cerrar cuenta permanentemente";
 
@@ -5281,6 +5406,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "Temas Premium";
 
+/* No comment provided by engineer. */
+"Premium themes included" = "Se incluyen temas Premium";
+
 /* Title label for modal dialog that appears when connecting to a built in card reader */
 "Preparing Tap to Pay on iPhone" = "Preparando Tap to Pay on iPhone";
 
@@ -5358,6 +5486,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Imprimir recibo";
 
+/* No comment provided by engineer. */
+"Print shipping labels²" = "Imprimir etiquetas de envío²";
+
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Imprimiendo etiqueta";
 
@@ -5411,6 +5542,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for the product add-ons screen */
 "Product Add-ons" = "Complementos de producto";
 
+/* No comment provided by engineer. */
+"Product Bundles" = "Paquetes de productos";
+
 /* Row title for filtering products by product category. */
 "Product Category" = "Categoría de producto";
 
@@ -5447,6 +5581,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Producto publicado";
+
+/* No comment provided by engineer. */
+"Product recommendations" = "Recomendaciones de productos";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Producto guardado";
@@ -5485,6 +5622,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Productos promocionados en lugar del producto que se está viendo actualmente (por ejemplo, productos más rentables)";
+
+/* No comment provided by engineer. */
+"Promote on TikTok" = "Promocionar en TikTok";
 
 /* Description of the hub menu Blaze button
    Title on the banner to highlight Blaze feature */
@@ -5605,6 +5745,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Recibo de %1$@";
+
+/* No comment provided by engineer. */
+"Recurring payments'" = "Pagos recurrentes'";
+
+/* No comment provided by engineer. */
+"Referral programs" = "Programas de recomendación";
 
 /* Button label to refresh a web page */
 "Refresh" = "Volver a cargar";
@@ -5964,6 +6110,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Sales channels" = "Canales de venta";
 
+/* No comment provided by engineer. */
+"Sales reports" = "Informes de ventas";
+
 /* Country option for a site address. */
 "Samoa" = "Samoa";
 
@@ -6152,6 +6301,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "Seleccionar elementos";
 
+/* Instruction to select scanned text for product detail generation on the add product from image form. */
+"Select one or more scans to generate product details" = "Elige una o más exploraciones para generar los detalles del producto";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Elegir el estilo del párrafo";
 
@@ -6296,6 +6448,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title of shipping label details */
 "Shipment Details" = "Detalles del envío";
+
+/* No comment provided by engineer. */
+"Shipment tracking" = "Seguimiento de envíos";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -6847,6 +7002,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Switzerland" = "Suiza";
 
+/* No comment provided by engineer. */
+"Sync with Pinterest" = "Sincronizar con Pinterest";
+
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "Se están sincronizando los datos";
 
@@ -7331,6 +7489,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
 "There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "Tu cuenta está pendiente de cumplir algunos requisitos. Para seguir aceptando Pagos en Persona, completa estos requisitos.";
 
+/* The info on the Error Loading Data banner when there was a Jetpack connection error. */
+"There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Se ha producido un problema con la conexión de Jetpack de tu tienda. Vuelve a conectar Jetpack o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Ha habido un problema al bloquear las entradas del sitio especificado.";
 
@@ -7431,6 +7592,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
 "This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Esta tarjeta necesita un código PIN y, por lo tanto, no se puede procesar. Prueba otro método de pago.";
+
+/* The info on the Error Loading Data banner when there was a decoding error. */
+"This could be related to a conflict with a plugin. Please try again later or reach out to us and we'll be happy to assist you!" = "Este problema se puede producir a causa de un conflicto con un plugin. Inténtalo de nuevo más tarde o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Esta dirección de correo electrónico no está registrada en WordPress.com";
@@ -8022,6 +8186,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "Ilimitado";
 
+/* No comment provided by engineer. */
+"Unlimited admin accounts" = "Cuentas de administrador ilimitadas";
+
 /* Title of eCommerce plan feature on the store creation plan screen.
    Unlimited products title feature on the Free Trial Summary Screen */
 "Unlimited products" = "Productos ilimitados";
@@ -8292,6 +8459,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Custom Fields section title */
 "View Custom Fields" = "Ver campos personalizados";
 
+/* The title of the button to view a list of all features that plans offer. */
+"View Full Feature List" = "Ver lista completa de funciones";
+
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Ver producto en tienda";
 
@@ -8377,6 +8547,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "No podemos mostrar los análisis en tiempo real de tu tienda";
+
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"We couldn't connect to your store" = "No hemos podido conectarnos a tu tienda";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
@@ -8620,16 +8793,28 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
+/* No comment provided by engineer. */
+"WooCommerce mobile app" = "Aplicación de WooCommerce para móviles";
+
+/* No comment provided by engineer. */
+"WooCommerce store" = "Tienda de WooCommerce";
+
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
 
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "Error de la API de WordPress: [%1$@] %2$@";
 
+/* No comment provided by engineer. */
+"WordPress CMS" = "CMS de WordPress";
+
 /* Menu option for selecting media from the device's photo library.
    Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Biblioteca multimedia de WordPress";
+
+/* No comment provided by engineer. */
+"WordPress mobile app" = "Aplicación de WordPress para móviles";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "La versión de WordPress es demasiado antigua. El sitio en %1$@ utiliza la versión %2$@ de WordPress. Recomendamos actualizarla a la versión más reciente o al menos a la %3$@";
@@ -8775,6 +8960,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "No estás autorizado a cerrar la cuenta.";
+
+/* No comment provided by engineer. */
+"Your Store" = "Tu tienda";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Para recibir pagos, debes actualizar el software de tu lector de tarjetas. Si cancelas esta acción, se bloqueará la conexión con el lector.";

@@ -363,10 +363,17 @@ public enum WooAnalyticsStat: String {
     case orderDetailEditFlowFailed = "order_detail_edit_flow_failed"
     case orderDetailPaymentLinkShared = "order_detail_payment_link_shared"
 
+    // MARK: Test order
+    //
+    case orderListTestOrderDisplayed = "order_list_test_order_displayed"
+    case orderListTryTestOrderTapped = "order_list_try_test_order_tapped"
+    case testOrderStartTapped = "test_order_start_tapped"
+
     // MARK: Order Data/Action Events
     //
     case orderOpen = "order_open"
     case orderAddNew = "orders_add_new"
+    case orderProductsLoaded = "order_products_loaded"
     case orderNotesLoaded = "order_notes_loaded"
     case orderNoteAdd = "order_note_add"
     case orderNoteAddSuccess = "order_note_add_success"

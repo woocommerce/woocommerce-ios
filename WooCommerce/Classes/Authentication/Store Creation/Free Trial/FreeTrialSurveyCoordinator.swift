@@ -21,7 +21,12 @@ final class FreeTrialSurveyCoordinator: Coordinator {
     }
 
     func start() {
-        let survey = FreeTrialSurveyHostingController(viewModel: .init(source: source))
+        analytics.track(event: .FreeTrialSurvey.surveyDisplayed(source: source))
+
+        let survey = FreeTrialSurveyHostingController(viewModel: .init(source: source,
+                                                                       onClose: { [weak self] in
+            self?.navigationController.dismiss(animated: true)
+        }))
         navigationController.present(WooNavigationController(rootViewController: survey), animated: true)
     }
 }

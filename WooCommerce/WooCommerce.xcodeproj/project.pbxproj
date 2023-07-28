@@ -2110,6 +2110,7 @@
 		DE61979528A25842005E4362 /* StorePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61979428A25842005E4362 /* StorePickerViewModelTests.swift */; };
 		DE621F6A29D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE621F6929D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift */; };
 		DE653EAD2A70D09F00937C78 /* CreateTestOrderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE653EAC2A70D09F00937C78 /* CreateTestOrderView.swift */; };
+		DE653EAF2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE653EAE2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift */; };
 		DE66C56F2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C56E2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift */; };
 		DE67D46726B98FD000EFE8DB /* Publisher+WithLatestFrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67D46626B98FD000EFE8DB /* Publisher+WithLatestFrom.swift */; };
 		DE67D46926BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67D46826BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift */; };
@@ -2276,6 +2277,8 @@
 		EE5A0A1C2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5A0A1B2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift */; };
 		EE6B2AD129DC522300048A8F /* StoreCreationProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6B2AD029DC522300048A8F /* StoreCreationProgressView.swift */; };
 		EE6B2AD329DD285A00048A8F /* StoreCreationProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6B2AD229DD285900048A8F /* StoreCreationProgressViewModel.swift */; };
+		EE6F08662A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6F08652A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift */; };
+		EE6F08682A721DCB00AA9B88 /* FreeTrialSurveyCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6F08672A721DCB00AA9B88 /* FreeTrialSurveyCoordinatorTests.swift */; };
 		EE81B1382865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */; };
 		EE8DCA8028BF964700F23B23 /* MockAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */; };
 		EE94258F29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE94258E29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift */; };
@@ -4529,6 +4532,7 @@
 		DE61979428A25842005E4362 /* StorePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerViewModelTests.swift; sourceTree = "<group>"; };
 		DE621F6929D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+JetpackSetup.swift"; sourceTree = "<group>"; };
 		DE653EAC2A70D09F00937C78 /* CreateTestOrderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTestOrderView.swift; sourceTree = "<group>"; };
+		DE653EAE2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+TestOrder.swift"; sourceTree = "<group>"; };
 		DE66C56E2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordDisabledViewModelTests.swift; sourceTree = "<group>"; };
 		DE67D46626B98FD000EFE8DB /* Publisher+WithLatestFrom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+WithLatestFrom.swift"; sourceTree = "<group>"; };
 		DE67D46826BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+WithLatestFromTests.swift"; sourceTree = "<group>"; };
@@ -4693,6 +4697,8 @@
 		EE5A0A1B2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+LocalNotification.swift"; sourceTree = "<group>"; };
 		EE6B2AD029DC522300048A8F /* StoreCreationProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressView.swift; sourceTree = "<group>"; };
 		EE6B2AD229DD285900048A8F /* StoreCreationProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressViewModel.swift; sourceTree = "<group>"; };
+		EE6F08652A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialSurveyViewModelTests.swift; sourceTree = "<group>"; };
+		EE6F08672A721DCB00AA9B88 /* FreeTrialSurveyCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialSurveyCoordinatorTests.swift; sourceTree = "<group>"; };
 		EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesProductIDUpdaterTests.swift; sourceTree = "<group>"; };
 		EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthentication.swift; sourceTree = "<group>"; };
 		EE94258E29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressViewModelTests.swift; sourceTree = "<group>"; };
@@ -6378,6 +6384,7 @@
 		261F1A7A29C2B081001D9861 /* Free Trial */ = {
 			isa = PBXGroup;
 			children = (
+				EE6F08642A718DE000AA9B88 /* FreeTrialSurvey */,
 				261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */,
 			);
 			path = "Free Trial";
@@ -7815,6 +7822,7 @@
 				DEACB8862A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift */,
 				EE5A0A1B2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift */,
 				EE486DD12A70270C0079F7B8 /* WooAnalyticsEvent+FreeTrialSurvey.swift */,
+				DE653EAE2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -10623,6 +10631,15 @@
 			path = me;
 			sourceTree = "<group>";
 		};
+		EE6F08642A718DE000AA9B88 /* FreeTrialSurvey */ = {
+			isa = PBXGroup;
+			children = (
+				EE6F08652A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift */,
+				EE6F08672A721DCB00AA9B88 /* FreeTrialSurveyCoordinatorTests.swift */,
+			);
+			path = FreeTrialSurvey;
+			sourceTree = "<group>";
+		};
 		EE94258D29DDA4300063B499 /* Progress */ = {
 			isa = PBXGroup;
 			children = (
@@ -12071,6 +12088,7 @@
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
 				CC857C7129B23A6C00E19D1E /* BundledProductsListViewController.swift in Sources */,
 				D85136C1231E09C300DD0539 /* ReviewsDataSourceProtocol.swift in Sources */,
+				DE653EAF2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				45968545254069AE00D17B90 /* DownloadableFileBottomSheetListSelectorCommand.swift in Sources */,
 				7E7C5F7A2719A8F900315B61 /* EditProductCategoryListViewController.swift in Sources */,
@@ -13129,6 +13147,7 @@
 				E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */,
 				0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */,
 				57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */,
+				EE6F08662A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift in Sources */,
 				02D7E7CC2A4CE5060003049A /* LocalAnnouncementsProviderTests.swift in Sources */,
 				020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */,
 				0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */,
@@ -13192,6 +13211,7 @@
 				D810F8F82639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift in Sources */,
 				02A275C623FE9EFC005C560F /* MockFeatureFlagService.swift in Sources */,
 				31F635DC273AF0B100E14F10 /* VersionHelpersTests.swift in Sources */,
+				EE6F08682A721DCB00AA9B88 /* FreeTrialSurveyCoordinatorTests.swift in Sources */,
 				EEADF626281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift in Sources */,
 				FE3E427726A8545B00C596CE /* MockRoleEligibilityUseCase.swift in Sources */,
 				02F67FF525806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift in Sources */,

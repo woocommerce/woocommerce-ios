@@ -1,7 +1,1 @@
-Uygulamamızla olan deneyiminizi geliştirmek için bazı yeni güncellemelerle geri döndük!
-
-Öncelikle paylaşım düğmesini daha kullanıcı dostu hale getirdik. Daha iyi keşfedilebilirlik için artık bir simge yerine metin olarak görünüyor.
-Ayrıca bir siparişe yeni notlar eklemenizi engelleyen rahatsız edici bir hatayı da düzelttik. Artık notlarınızı sorunsuz bir şekilde yazabilirsiniz.
-Son olarak, mağaza oluşturma sürecimizde zaman aşımı görünümünü güncelledik. Site kontrolü beklediğinizden uzun sürüyorsa, artık yeniden deneme seçeneğiniz var.
-
-Her zaman olduğu gibi, uygulama yolculuğunuzu daha sorunsuz ve keyifli hale getirmek için buradayız. Bizimle devam ettiğiniz için teşekkür ederiz!
+Kupon yönetimi artık çok kolay. Artık bir sipariş oluştururken birden fazla kupon seçebilirsiniz. Ayrıca, sipariş oluştururken ürünlere indirimler de eklenebilir. WooCommerce'in sürekli iyileştirmelerinden ve en yeni özelliklerinden yararlanmak için güncellemelerinizi açık tutun!

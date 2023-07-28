@@ -44,16 +44,41 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         // Then
         let customers = try XCTUnwrap(result.get())
         let hasSearchParameter = network.queryParameters?.contains(where: { $0 == "search=John" }) ?? false
+
         XCTAssertTrue(hasSearchParameter)
-        assertEqual(4, customers.count)
-        assertEqual(0, customers[0].userID)
-        assertEqual(1, customers[1].userID)
-        assertEqual(2, customers[2].userID)
-        assertEqual(3, customers[3].userID)
-        assertEqual("Matt The Unregistered", customers[0].name)
-        assertEqual("John", customers[1].name)
-        assertEqual("Paul", customers[2].name)
-        assertEqual("John Doe", customers[3].name)
+
+        assertParsedResultsAreCorrect(with: customers)
+    }
+
+    func test_WCAnalyticsCustomerRemote_when_calls_loadCustomers_then_returns_parsed_customers_successfully() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
+        let pageNumber = 2
+        let pageSize = 25
+
+        // When
+        let result = waitFor { promise in
+            self.remote.loadCustomers(for: self.sampleSiteID, pageNumber: 2, pageSize: pageSize) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let customers = try XCTUnwrap(result.get())
+
+        let hasPageNumberParameter = network.queryParameters?.contains(where: { $0 == "page=\(pageNumber)" }) ?? false
+        let hasPageSizeParameter = network.queryParameters?.contains(where: { $0 == "per_page=\(pageSize)" }) ?? false
+        let hasOrderByParameter = network.queryParameters?.contains(where: { $0 == "orderby=name" }) ?? false
+        let hasOrderParameter = network.queryParameters?.contains(where: { $0 == "order=asc" }) ?? false
+        let hasFilterEmptyParameter = network.queryParameters?.contains(where: { $0 == "filter_empty=email" }) ?? false
+
+        XCTAssertTrue(hasPageNumberParameter)
+        XCTAssertTrue(hasPageSizeParameter)
+        XCTAssertTrue(hasOrderByParameter)
+        XCTAssertTrue(hasOrderParameter)
+        XCTAssertTrue(hasFilterEmptyParameter)
+
+        assertParsedResultsAreCorrect(with: customers)
     }
 
     func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomersByName_fails_then_returns_result_isFailure() {
@@ -85,5 +110,19 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // Then
         XCTAssert(result.isFailure)
+    }
+}
+
+private extension WCAnalyticsCustomerRemoteTests {
+    func assertParsedResultsAreCorrect(with customers: [WCAnalyticsCustomer]) {
+        assertEqual(4, customers.count)
+        assertEqual(0, customers[0].userID)
+        assertEqual(1, customers[1].userID)
+        assertEqual(2, customers[2].userID)
+        assertEqual(3, customers[3].userID)
+        assertEqual("Matt The Unregistered", customers[0].name)
+        assertEqual("John", customers[1].name)
+        assertEqual("Paul", customers[2].name)
+        assertEqual("John Doe", customers[3].name)
     }
 }

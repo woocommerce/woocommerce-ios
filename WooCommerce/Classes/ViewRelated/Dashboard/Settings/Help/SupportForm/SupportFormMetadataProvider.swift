@@ -14,6 +14,7 @@ class SupportFormMetadataProvider {
     private let sessionManager: SessionManagerProtocol
     private let storageManager: StorageManagerType
     private let connectivityObserver: ConnectivityObserver
+    private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
 
     /// Controller for fetching site plugins from Storage
     ///
@@ -27,12 +28,14 @@ class SupportFormMetadataProvider {
                   stores: StoresManager = ServiceLocator.stores,
                   sessionManager: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
                   storageManager: StorageManagerType = ServiceLocator.storageManager,
-                  connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
+                  connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+                  addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker()) {
         self.fileLogger = fileLogger
         self.stores = stores
         self.sessionManager = sessionManager
         self.storageManager = storageManager
         self.connectivityObserver = connectivityObserver
+        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
         self.pluginResultsController = Self.createPluginResultsController(sessionManager: sessionManager, storageManager: storageManager)
         self.systemStatusReportViewModel = Self.createSSRViewModel(sessionManager: sessionManager)
     }
@@ -55,7 +58,8 @@ class SupportFormMetadataProvider {
             Constants.platformTag,
             site.isWordPressComStore ? Constants.wpComTag : nil,
             site.plan.isNotEmpty ? site.plan : nil,
-            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil
+            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil,
+            addProductFromImageEligibilityChecker.isEligible() ? Constants.ABTest.aiProductFromImage : nil
         ].compactMap { $0 } + getIPPTags()
     }
 
@@ -249,6 +253,10 @@ private extension SupportFormMetadataProvider {
         static let networkCarrierLabel = "Carrier:"
         static let networkCountryCodeLabel = "Country Code:"
         static let sourcePlatform = "mobile_-_woo_ios"
+
+        enum ABTest {
+            static let aiProductFromImage = "ai_product_details_from_image"
+        }
     }
 
     /// Payments extensions Slugs

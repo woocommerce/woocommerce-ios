@@ -303,8 +303,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let secondImage = MediaPickerImage(image: UIImage.calendar,
                                            source: .media(media: .fake()))
 
-        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
-        var imageToReturn: MediaPickerImage? = image
+        var imageToReturn: MediaPickerImage? = firstImage
 
         let imageTextScanner = MockImageTextScanner(result: .success([]))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
@@ -317,7 +316,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // When
         viewModel.addImage(from: .siteMediaLibrary)
         waitUntil {
-            viewModel.imageState == .success(image)
+            viewModel.imageState == .success(firstImage)
         }
 
         // Then

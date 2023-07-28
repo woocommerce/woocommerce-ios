@@ -1,7 +1,1 @@
-Estamos de volta com novas atualizações para aprimorar sua experiência em nosso aplicativo!
-
-Primeiro, tornamos o botão de compartilhamento mais prático. Agora é exibido como texto em vez de um ícone para poder ser encontrado com mais facilidade.
-Também corrigimos um bug que impedia usuários de adicionar novas observações a um pedido. Agora é possível registrar suas observações sem nenhum problema.
-Por último, atualizamos a visualização de tempo limite no processo de criação de loja. Se a verificação do site demorar demais, você vai pode usar opção de tentar novamente.
-
-Estamos sempre aqui para tornar a sua jornada pelo aplicativo mais tranquila e agradável. Agradecemos por contar com a gente!
+Gerenciar cupons ficou ainda mais fácil. Agora você pode selecionar vários cupons ao criar um pedido. Nesse processo, também é possível adicionar descontos nos produtos. Mantenha o aplicativo atualizado para aproveitar as funcionalidades mais recentes e as contínuas melhorias do WooCommerce.

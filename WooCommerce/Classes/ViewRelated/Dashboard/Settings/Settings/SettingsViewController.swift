@@ -415,7 +415,7 @@ private extension SettingsViewController {
 
     func shippingZonesWasPressed() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return DDLogError("⛔️ Cannot SiteID to present shipping zones")
+            return DDLogError("⛔️ Cannot find SiteID to present shipping zones")
         }
 
         let tracksProvider = ReactNativeAnalyticsProvider()

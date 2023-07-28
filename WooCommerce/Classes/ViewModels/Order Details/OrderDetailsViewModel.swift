@@ -210,8 +210,14 @@ extension OrderDetailsViewModel {
             guard let self = self else { return }
 
             group.enter()
-            self.syncProducts { _ in
-                group.leave()
+            self.syncProducts { [weak self] _ in
+                defer {
+                    group.leave()
+                }
+                guard let self else { return }
+                ServiceLocator.analytics.track(event: .Orders.orderProductsLoaded(order: self.order,
+                                                                                  products: self.products,
+                                                                                  addOnGroups: self.dataSource.addOnGroups))
             }
 
             group.enter()

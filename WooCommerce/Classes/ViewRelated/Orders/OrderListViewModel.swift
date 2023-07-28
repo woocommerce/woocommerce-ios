@@ -41,8 +41,7 @@ final class OrderListViewModel {
     /// Whether the entry point to test order should be displayed on the empty state screen.
     ///
     var shouldEnableTestOrder: Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.createTestOrder),
-              let site = stores.sessionManager.defaultSite,
+        guard let site = stores.sessionManager.defaultSite,
               let url = siteURL,
               UIApplication.shared.canOpenURL(url) else {
             return false

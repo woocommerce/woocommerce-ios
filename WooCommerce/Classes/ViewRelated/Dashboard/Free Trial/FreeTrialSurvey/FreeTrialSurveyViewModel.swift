@@ -5,12 +5,16 @@ import SwiftUI
 final class FreeTrialSurveyViewModel: ObservableObject {
     @Published private(set) var selectedAnswer: SurveyAnswer?
     @Published var otherReasonSpecified: String = ""
+    /// Triggered when the user taps Cancel or Submits the survey.
+    let onClose: () -> Void
 
     private let analytics: Analytics
     private let source: FreeTrialSurveyCoordinator.Source
 
     init(source: FreeTrialSurveyCoordinator.Source,
+         onClose: @escaping () -> Void,
          analytics: Analytics = ServiceLocator.analytics) {
+        self.onClose = onClose
         self.source = source
         self.analytics = analytics
     }
@@ -20,7 +24,15 @@ final class FreeTrialSurveyViewModel: ObservableObject {
     }
 
     var feedbackSelected: Bool {
-        otherReasonSpecified.isNotEmpty || selectedAnswer != nil
+        guard let selectedAnswer else {
+            return false
+        }
+
+        if selectedAnswer == .otherReasons {
+            return otherReasonSpecified.isNotEmpty
+        }
+
+        return true
     }
 
     func selectAnswer(_ answer: SurveyAnswer) {
@@ -28,7 +40,14 @@ final class FreeTrialSurveyViewModel: ObservableObject {
     }
 
     func submitFeedback() {
-        // TODO: 10266 Submit tracks
+        guard let selectedAnswer else {
+            return
+        }
+
+        analytics.track(event: .FreeTrialSurvey.surveySent(source: source,
+                                                           surveyOption: selectedAnswer.rawValue,
+                                                           freeText: otherReasonSpecified.isNotEmpty ? otherReasonSpecified : nil))
+        onClose()
     }
 
     enum SurveyAnswer: String, CaseIterable {

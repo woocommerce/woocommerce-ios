@@ -182,6 +182,7 @@ public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentRec
 public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
 public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
 public typealias StoreOnboardingTask = Networking.StoreOnboardingTask
+public typealias WCAnalyticsCustomer = Networking.WCAnalyticsCustomer
 
 // MARK: - Exported Storage Symbols
 

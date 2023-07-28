@@ -3,9 +3,8 @@ import Networking
 import Storage
 
 public final class CustomerStore: Store {
-
     private let customerRemote: CustomerRemote
-    private let searchRemote: WCAnalyticsCustomerRemote
+    private let wcAnalyticsCustomerRemote: WCAnalyticsCustomerRemote
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
     }()
@@ -16,7 +15,7 @@ public final class CustomerStore: Store {
          customerRemote: CustomerRemote,
          searchRemote: WCAnalyticsCustomerRemote) {
         self.customerRemote = customerRemote
-        self.searchRemote = searchRemote
+        self.wcAnalyticsCustomerRemote = searchRemote
 
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -52,6 +51,8 @@ public final class CustomerStore: Store {
             searchCustomers(for: siteID, keyword: keyword, onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
+        case .synchronizeLightCustomersData(siteID: let siteID, pageNumber: let pageNumber, pageSize: let pageSize, onCompletion: let onCompletion):
+            synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
     }
 
@@ -68,7 +69,7 @@ public final class CustomerStore: Store {
         for siteID: Int64,
         keyword: String,
         onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
-            searchRemote.searchCustomers(for: siteID, name: keyword) { [weak self] result in
+            wcAnalyticsCustomerRemote.searchCustomers(for: siteID, name: keyword) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
@@ -77,7 +78,7 @@ public final class CustomerStore: Store {
                     onCompletion(.failure(error))
                 }
             }
-        }
+    }
 
     /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.
     /// The fetched Customer is persisted to the local storage.
@@ -95,14 +96,31 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
-                    self.upsertCustomer(siteID: siteID, readOnlyCustomer: customer, in: self.sharedDerivedStorage, onCompletion: {
+                    self.upsertCustomersAndSave(siteID: siteID, readOnlyCustomers: [customer], in: self.sharedDerivedStorage, onCompletion: {
                         onCompletion(.success(customer))
                     })
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
             }
+    }
+
+    func synchronizeLightCustomersData(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        wcAnalyticsCustomerRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+            switch result {
+            case .success(let customers):
+                self.upsertCustomersAndSave(siteID: siteID,
+                                     readOnlyCustomers: customers,
+                                     shouldDeleteExistingCustomers: pageNumber == 1,
+                                     in: self.sharedDerivedStorage,
+                                     onCompletion: {
+                    onCompletion(.success(()))
+                })
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
+    }
 
     /// Maps CustomerSearchResult to Customer objects
     ///
@@ -114,7 +132,7 @@ public final class CustomerStore: Store {
     ///
     private func mapSearchResultsToCustomerObjects(for siteID: Int64,
                                                    with keyword: String,
-                                          with searchResults: [WCAnalyticsCustomer],
+                                                   with searchResults: [WCAnalyticsCustomer],
                                                   onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
         var customers = [Customer]()
         let group = DispatchGroup()
@@ -174,25 +192,41 @@ private extension CustomerStore {
         }
     }
 
-    /// Inserts or updates Customer entities into Storage
-    ///
-    private func upsertCustomer(siteID: Int64, readOnlyCustomer: Networking.Customer, in storage: StorageType, onCompletion: @escaping () -> Void) {
+    private func upsertCustomersAndSave(siteID: Int64,
+                                 readOnlyCustomers: [StorageCustomerConvertible],
+                                 shouldDeleteExistingCustomers: Bool = false,
+                                 in storage: StorageType,
+                                 onCompletion: @escaping () -> Void) {
+        storage.perform { [weak self] in
+            if shouldDeleteExistingCustomers {
+                storage.deleteCustomers(siteID: siteID)
+            }
 
-        storage.perform {
-            let storageCustomer: Storage.Customer = {
-                // If the specific customerID for that siteID already exists, return it
-                // If doesn't, insert a new one in Storage
-                if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.customerID) {
-                    return storedCustomer
-                } else {
-                    return storage.insertNewObject(ofType: Storage.Customer.self)
-                }
-            }()
-            storageCustomer.update(with: readOnlyCustomer)
+            readOnlyCustomers.forEach {
+                self?.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, in: storage)
+            }
         }
 
         storageManager.saveDerivedType(derivedStorage: storage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
+    }
+
+    /// Inserts or updates Customer entities into Storage
+    ///
+    private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, in storage: StorageType) {
+        let storageCustomer: Storage.Customer = {
+            // If the specific customerID for that siteID already exists, return it
+            // If doesn't or the user is unregistered (loadingID == 0), insert a new one in Storage
+            // Since we reset the customers everytime we request them, there's no risk of having duplicated unregistered customers
+            if readOnlyCustomer.loadingID != 0,
+                let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.loadingID) {
+                return storedCustomer
+            } else {
+                return storage.insertNewObject(ofType: Storage.Customer.self)
+            }
+        }()
+
+        storageCustomer.update(with: readOnlyCustomer)
     }
 }

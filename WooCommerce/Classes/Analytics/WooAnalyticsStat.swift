@@ -373,6 +373,7 @@ public enum WooAnalyticsStat: String {
     //
     case orderOpen = "order_open"
     case orderAddNew = "orders_add_new"
+    case orderProductsLoaded = "order_products_loaded"
     case orderNotesLoaded = "order_notes_loaded"
     case orderNoteAdd = "order_note_add"
     case orderNoteAddSuccess = "order_note_add_success"

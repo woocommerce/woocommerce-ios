@@ -26,7 +26,7 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
     @State private var copyTextNotice: Notice?
-    @FocusState private var isFeaturesFieldInFocus: Bool
+    @FocusState private var focusedField: Field?
 
     init(viewModel: ProductDescriptionGenerationViewModel) {
         self.viewModel = viewModel
@@ -44,8 +44,10 @@ struct ProductDescriptionGenerationView: View {
                     .padding(Layout.productNamePadding)
                     .overlay(
                         RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                            .stroke(Color(viewModel.missingName ? .error : .divider))
+                            .stroke(Color(viewModel.missingName ? .error :
+                                          focusedField == .name ? .accent : .divider))
                     )
+                    .focused($focusedField, equals: .name)
 
                 // Since there is no placeholder support in `TextEditor`, a workaround is to
                 // use a ZStack with an optional `Text` on top that passes through the gestures.
@@ -58,10 +60,10 @@ struct ProductDescriptionGenerationView: View {
                         .frame(minHeight: Layout.minimuEditorSize, maxHeight: .infinity)
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                                .stroke(Color(isFeaturesFieldInFocus ? .accent :
-                                              viewModel.missingFeatures ? .error : .separator))
+                                .stroke(Color(viewModel.missingFeatures ? .error :
+                                              focusedField == .features ? .accent : .separator))
                         )
-                        .focused($isFeaturesFieldInFocus)
+                        .focused($focusedField, equals: .features)
 
                     if viewModel.features.isEmpty {
                         Text(Localization.productDescriptionPlaceholder)
@@ -118,6 +120,7 @@ struct ProductDescriptionGenerationView: View {
                         // CTA to regenerate description.
                         Button {
                             viewModel.generateDescription()
+                            focusedField = nil
                         } label: {
                             if viewModel.isGenerationInProgress {
                                 ActivityIndicator(isAnimating: .constant(true), style: .medium)
@@ -141,6 +144,7 @@ struct ProductDescriptionGenerationView: View {
                         // CTA to generate text for the first pass.
                         Button {
                             viewModel.generateDescription()
+                            focusedField = nil
                         } label: {
                             Label {
                                 Text(Localization.generateText)
@@ -186,6 +190,11 @@ private extension ProductDescriptionGenerationView {
         static let productFeaturesInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let productFeaturesPlaceholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
         static let suggestedTextInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+    }
+
+    enum Field: Equatable {
+        case name
+        case features
     }
 }
 

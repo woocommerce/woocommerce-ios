@@ -895,8 +895,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil,
-                                           featureFlagService: MockFeatureFlagService(isCreateTestOrderEnabled: true))
+                                           filters: nil)
 
         // When
         let isEnabled = viewModel.shouldEnableTestOrder
@@ -915,8 +914,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil,
-                                           featureFlagService: MockFeatureFlagService(isCreateTestOrderEnabled: true))
+                                           filters: nil)
 
         // When
         let isEnabled = viewModel.shouldEnableTestOrder
@@ -935,8 +933,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil,
-                                           featureFlagService: MockFeatureFlagService(isCreateTestOrderEnabled: true))
+                                           filters: nil)
 
         // When
         let isEnabled = viewModel.shouldEnableTestOrder
@@ -955,8 +952,7 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil,
-                                           featureFlagService: MockFeatureFlagService(isCreateTestOrderEnabled: true))
+                                           filters: nil)
 
         // When
         let isEnabled = viewModel.shouldEnableTestOrder

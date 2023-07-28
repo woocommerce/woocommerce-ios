@@ -387,8 +387,9 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     /// Namespace
     enum ProductDetail {
-        static func loaded(hasLinkedProducts: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts])
+        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
+                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules])
         }
 
         /// Tracks when the merchant previews a product draft.
@@ -520,6 +521,33 @@ extension WooAnalyticsEvent {
 
         static func orderAddNew() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
+        }
+
+        static func orderProductsLoaded(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> WooAnalyticsEvent {
+            let productIDs = order.items.map { $0.productID }
+            let productTypes = productIDs.compactMap { productID in
+                products.first(where: { $0.productID == productID })?.productType.rawValue
+            }.uniqued().joined(separator: ",")
+            let hasAddOns = hasAddOns(order: order, products: products, addOnGroups: addOnGroups)
+            return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: ["id": order.orderID,
+                                                                                  "product_types": productTypes,
+                                                                                  "has_addons": hasAddOns])
+        }
+
+        private static func hasAddOns(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> Bool {
+            for item in order.items {
+                guard let product = products.first(where: { $0.productID == item.productID }) else {
+                    continue
+                }
+                let itemHasAddOns = AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes,
+                                                               product: product,
+                                                               addOnGroups: addOnGroups)
+                    .addOnsAttributes().isNotEmpty
+                if itemHasAddOns {
+                    return true
+                }
+            }
+            return false
         }
 
         static func orderAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {

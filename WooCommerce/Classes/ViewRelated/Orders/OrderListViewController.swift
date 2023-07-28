@@ -617,16 +617,16 @@ private extension OrderListViewController {
         let analytics = ServiceLocator.analytics
         if viewModel.shouldEnableTestOrder, let url = viewModel.siteURL {
 
-            analytics.track(event: .TestOrder.entryPointDisplayed(isWooExpressStore: viewModel.isWooExpressStore))
+            analytics.track(event: .TestOrder.entryPointDisplayed())
             return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                                image: .emptyOrdersImage,
                                details: Localization.createTestOrderDetail,
                                buttonTitle: Localization.tryTestOrder,
                                onTap: { [weak self] _ in
                 guard let self else { return }
-                analytics.track(event: .TestOrder.tryTestOrderTapped(isWooExpressStore: self.viewModel.isWooExpressStore))
+                analytics.track(event: .TestOrder.tryTestOrderTapped())
                 let hostingController = CreateTestOrderHostingController {
-                    analytics.track(event: .TestOrder.testOrderStarted(isWooExpressStore: self.viewModel.isWooExpressStore))
+                    analytics.track(event: .TestOrder.testOrderStarted())
                     UIApplication.shared.open(url)
                 }
                 self.present(UINavigationController(rootViewController: hostingController), animated: true)

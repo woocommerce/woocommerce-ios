@@ -91,6 +91,36 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    func test_synchronizeLightCustomersData_retrieves_wc_analytics_customers_and_parses_them_to_customers() {
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
+
+        // When
+        _ = waitFor { promise in
+            let action = CustomerAction.synchronizeLightCustomersData(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
+
+        let customers = viewStorage
+            .loadAllCustomers(siteID: dummySiteID)
+            .map { $0.toReadOnly() }
+            .sorted(by: { $0.customerID < $1.customerID })
+
+        assertEqual(4, customers.count)
+        assertEqual(0, customers[0].customerID)
+        assertEqual(1, customers[1].customerID)
+        assertEqual(2, customers[2].customerID)
+        assertEqual(3, customers[3].customerID)
+        assertEqual("Matt The", customers[0].firstName)
+        assertEqual("Unregistered", customers[0].lastName)
+        assertEqual("John", customers[1].firstName)
+        XCTAssertTrue(customers[1].lastName?.isEmpty ?? true)
+        assertEqual("Paul", customers[2].firstName)
+        assertEqual("John", customers[3].firstName)
+        assertEqual("Doe", customers[3].lastName)
+    }
+
     func test_searchCustomers_when_three_results_found_then_returns_an_array_with_three_customer_entities() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")

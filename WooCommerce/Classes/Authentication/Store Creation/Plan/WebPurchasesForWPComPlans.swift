@@ -54,6 +54,11 @@ extension WebPurchasesForWPComPlans: InAppPurchasesForWPComPlansProtocol {
         // Web purchases are available for everyone and every site.
         true
     }
+
+    func siteHasCurrentInAppPurchases(siteID: Int64) async -> Bool {
+        // no-op
+        false
+    }
 }
 
 private extension WebPurchasesForWPComPlans {

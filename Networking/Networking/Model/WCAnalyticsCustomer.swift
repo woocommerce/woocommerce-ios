@@ -11,12 +11,16 @@ public struct WCAnalyticsCustomer: Codable, GeneratedCopiable, GeneratedFakeable
     /// Customer name
     public let name: String?
 
+    /// Customer email
+    public let email: String?
+
     /// WCAnalyticsCustomer struct Initializer
     ///
-    public init(siteID: Int64, userID: Int64, name: String?) {
+    public init(siteID: Int64, userID: Int64, name: String?, email: String?) {
         self.siteID = siteID
         self.userID = userID
         self.name = name
+        self.email = email
     }
 
     /// Public initializer for WCAnalyticsCustomer
@@ -30,8 +34,9 @@ public struct WCAnalyticsCustomer: Codable, GeneratedCopiable, GeneratedFakeable
 
         let userID = try container.decode(Int64.self, forKey: .userID)
         let name = try container.decode(String.self, forKey: .name)
+        let email = try container.decode(String.self, forKey: .email)
 
-        self.init(siteID: siteID, userID: userID, name: name)
+        self.init(siteID: siteID, userID: userID, name: name, email: email)
     }
 }
 
@@ -39,6 +44,7 @@ extension WCAnalyticsCustomer {
     enum CodingKeys: String, CodingKey {
         case userID =   "user_id"
         case name   =   "name"
+        case email  =   "email"
     }
 
     enum DecodingError: Error {

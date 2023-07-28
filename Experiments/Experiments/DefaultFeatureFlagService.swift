@@ -104,7 +104,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .createTestOrder:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .betterCustomerSelectionInOrder:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         default:
             return true
         }

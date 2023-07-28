@@ -100,7 +100,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ordersWithCouponsM4:
             return true
         case .freeTrialSurvey24hAfterFreeTrialSubscribed:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .createTestOrder:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

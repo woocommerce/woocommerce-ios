@@ -41,8 +41,7 @@ final class OrderListViewModel {
     /// Whether the entry point to test order should be displayed on the empty state screen.
     ///
     var shouldEnableTestOrder: Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.createTestOrder),
-              let site = stores.sessionManager.defaultSite,
+        guard let site = stores.sessionManager.defaultSite,
               let url = siteURL,
               UIApplication.shared.canOpenURL(url) else {
             return false
@@ -50,12 +49,6 @@ final class OrderListViewModel {
 
         /// Enabled if site is launched, has published at least 1 product and set up payments.
         return site.isPublic && hasAnyPaymentGateways && hasAnyPublishedProducts
-    }
-
-    /// Whether the current store is running on an WooExpress plan.
-    ///
-    var isWooExpressStore: Bool {
-        stores.sessionManager.defaultSite?.wasEcommerceTrial ?? false
     }
 
     /// Filters applied to the order list.

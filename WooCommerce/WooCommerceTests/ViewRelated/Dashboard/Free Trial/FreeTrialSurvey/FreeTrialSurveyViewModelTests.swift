@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+@testable import Yosemite
 
 final class FreeTrialSurveyViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
@@ -187,5 +188,56 @@ final class FreeTrialSurveyViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(onCloseFired)
+    }
+
+    // MARK: Local notification after three days
+
+    func test_threeDaysAfterStillExploring_local_notification_is_scheduled_if_submitted_answer_is_stillExploring() throws {
+        // Given
+        let sampleSiteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: Site.fake().copy(siteID: sampleSiteID)))
+
+        let pushNotesManager = MockPushNotificationsManager()
+        let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
+                                                 onClose: {},
+                                                 stores: stores,
+                                                 analytics: analytics,
+                                                 pushNotesManager: pushNotesManager,
+                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
+
+        // When
+        viewModel.selectAnswer(.stillExploring)
+        viewModel.submitFeedback()
+
+        // Then
+        waitUntil(timeout: 3) {
+            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
+        }
+        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
+        let expectedID = LocalNotification.Scenario.Identifier.Prefix.threeDaysAfterStillExploring + "\(sampleSiteID)"
+        XCTAssertTrue(ids.contains(expectedID))
+    }
+
+    func test_threeDaysAfterStillExploring_local_notification_is_not_scheduled_if_submitted_answer_is_not_stillExploring() throws {
+        // Given
+        let sampleSiteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: Site.fake().copy(siteID: sampleSiteID)))
+
+        let pushNotesManager = MockPushNotificationsManager()
+        let viewModel = FreeTrialSurveyViewModel(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
+                                                 onClose: {},
+                                                 stores: stores,
+                                                 analytics: analytics,
+                                                 pushNotesManager: pushNotesManager,
+                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
+
+        // When
+        viewModel.selectAnswer(.collectiveDecision)
+        viewModel.submitFeedback()
+
+        // Then
+        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
+        let expectedID = LocalNotification.Scenario.Identifier.Prefix.threeDaysAfterStillExploring + "\(sampleSiteID)"
+        XCTAssertFalse(ids.contains(expectedID))
     }
 }

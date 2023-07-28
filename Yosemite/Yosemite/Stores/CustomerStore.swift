@@ -96,7 +96,7 @@ public final class CustomerStore: Store {
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
-                    self.upsertCustomers(siteID: siteID, readOnlyCustomers: [customer], in: self.sharedDerivedStorage, onCompletion: {
+                    self.upsertCustomersAndSave(siteID: siteID, readOnlyCustomers: [customer], in: self.sharedDerivedStorage, onCompletion: {
                         onCompletion(.success(customer))
                     })
                 case .failure(let error):
@@ -109,7 +109,7 @@ public final class CustomerStore: Store {
         wcAnalyticsCustomerRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
             switch result {
             case .success(let customers):
-                self.upsertCustomers(siteID: siteID,
+                self.upsertCustomersAndSave(siteID: siteID,
                                      readOnlyCustomers: customers,
                                      shouldDeleteExistingCustomers: pageNumber == 1,
                                      in: self.sharedDerivedStorage,
@@ -192,7 +192,7 @@ private extension CustomerStore {
         }
     }
 
-    private func upsertCustomers(siteID: Int64,
+    private func upsertCustomersAndSave(siteID: Int64,
                                  readOnlyCustomers: [StorageCustomerConvertible],
                                  shouldDeleteExistingCustomers: Bool = false,
                                  in storage: StorageType,
@@ -217,8 +217,10 @@ private extension CustomerStore {
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, in storage: StorageType) {
         let storageCustomer: Storage.Customer = {
             // If the specific customerID for that siteID already exists, return it
-            // If doesn't, insert a new one in Storage
-            if let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.loadingID) {
+            // If doesn't or the user is unregistered (loadingID == 0), insert a new one in Storage
+            // Since we reset the customers everytime we request them, there's no risk of having duplicated unregistered customers
+            if readOnlyCustomer.loadingID != 0,
+                let storedCustomer = storage.loadCustomer(siteID: siteID, customerID: readOnlyCustomer.loadingID) {
                 return storedCustomer
             } else {
                 return storage.insertNewObject(ofType: Storage.Customer.self)

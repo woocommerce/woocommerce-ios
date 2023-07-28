@@ -26,7 +26,7 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
     @State private var copyTextNotice: Notice?
-    @FocusState private var isFeaturesFieldInFocus: Bool
+    @FocusState private var focusedField: Field?
 
     init(viewModel: ProductDescriptionGenerationViewModel) {
         self.viewModel = viewModel
@@ -35,20 +35,19 @@ struct ProductDescriptionGenerationView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
-                VStack(alignment: .leading, spacing: Layout.titleAndProductNameSpacing) {
-                    Text(Localization.title)
-                        .headlineStyle()
 
-                    if #available(iOS 16.0, *) {
-                        TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
-                            .subheadlineStyle()
-                            .disabled(viewModel.isProductNameEditable == false)
-                    } else {
-                        TextField(Localization.productNamePlaceholder, text: $viewModel.name)
-                            .subheadlineStyle()
-                            .disabled(viewModel.isProductNameEditable == false)
-                    }
-                }
+                Text(Localization.title)
+                    .headlineStyle()
+
+                nameTextField
+                    .disabled(viewModel.isProductNameEditable == false)
+                    .padding(Layout.productNamePadding)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                            .stroke(Color(viewModel.missingName ? .error :
+                                          focusedField == .name ? .accent : .divider))
+                    )
+                    .focused($focusedField, equals: .name)
 
                 // Since there is no placeholder support in `TextEditor`, a workaround is to
                 // use a ZStack with an optional `Text` on top that passes through the gestures.
@@ -61,9 +60,10 @@ struct ProductDescriptionGenerationView: View {
                         .frame(minHeight: Layout.minimuEditorSize, maxHeight: .infinity)
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                                .stroke(Color(isFeaturesFieldInFocus ? .accent : .separator))
+                                .stroke(Color(viewModel.missingFeatures ? .error :
+                                              focusedField == .features ? .accent : .separator))
                         )
-                        .focused($isFeaturesFieldInFocus)
+                        .focused($focusedField, equals: .features)
 
                     if viewModel.features.isEmpty {
                         Text(Localization.productDescriptionPlaceholder)
@@ -120,6 +120,7 @@ struct ProductDescriptionGenerationView: View {
                         // CTA to regenerate description.
                         Button {
                             viewModel.generateDescription()
+                            focusedField = nil
                         } label: {
                             if viewModel.isGenerationInProgress {
                                 ActivityIndicator(isAnimating: .constant(true), style: .medium)
@@ -129,7 +130,7 @@ struct ProductDescriptionGenerationView: View {
                             }
                         }
                         .buttonStyle(PlainButtonStyle())
-                        .disabled(viewModel.isGenerationInProgress || viewModel.isGenerationEnabled == false)
+                        .disabled(viewModel.isGenerationInProgress)
 
                         Spacer()
 
@@ -143,6 +144,7 @@ struct ProductDescriptionGenerationView: View {
                         // CTA to generate text for the first pass.
                         Button {
                             viewModel.generateDescription()
+                            focusedField = nil
                         } label: {
                             Label {
                                 Text(Localization.generateText)
@@ -151,7 +153,6 @@ struct ProductDescriptionGenerationView: View {
                             }
                         }
                         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isGenerationInProgress))
-                        .disabled(viewModel.isGenerationEnabled == false)
                     }
                 }
 
@@ -164,6 +165,17 @@ struct ProductDescriptionGenerationView: View {
         }
         .notice($copyTextNotice, autoDismiss: true)
     }
+
+    @ViewBuilder
+    private var nameTextField: some View {
+        if #available(iOS 16.0, *) {
+            TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
+                .bodyStyle()
+        } else {
+            TextField(Localization.productNamePlaceholder, text: $viewModel.name)
+                .bodyStyle()
+        }
+    }
 }
 
 // MARK: Constants
@@ -171,13 +183,18 @@ private extension ProductDescriptionGenerationView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let defaultSpacing: CGFloat = 16
-        static let titleAndProductNameSpacing: CGFloat = 2
         static let minimuNameEditorSize: CGFloat = 30
         static let minimuEditorSize: CGFloat = 76
         static let cornerRadius: CGFloat = 8
+        static let productNamePadding: CGFloat = 8
         static let productFeaturesInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let productFeaturesPlaceholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
         static let suggestedTextInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+    }
+
+    enum Field: Equatable {
+        case name
+        case features
     }
 }
 

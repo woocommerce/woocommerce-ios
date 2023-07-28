@@ -28,6 +28,7 @@ extension Storage.Site: ReadOnlyConvertible {
         isPublic = site.isPublic
         canBlaze = site.canBlaze
         isAdmin = site.isAdmin
+        wasEcommerceTrial = site.wasEcommerceTrial
     }
 
     /// Returns a ReadOnly version of the receiver.

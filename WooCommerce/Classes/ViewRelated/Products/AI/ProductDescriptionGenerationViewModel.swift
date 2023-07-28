@@ -4,10 +4,18 @@ import Yosemite
 /// View model for `ProductDescriptionGenerationView`.
 final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Product name, editable.
-    @Published var name: String
+    @Published var name: String {
+        didSet {
+            missingName = false
+        }
+    }
 
     /// Product features, editable. The default value is the pre-existing product description.
-    @Published var features: String
+    @Published var features: String {
+        didSet {
+            missingFeatures = false
+        }
+    }
 
     /// AI-generated product description.
     @Published private(set) var suggestedText: String?
@@ -21,10 +29,11 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
 
-    /// Whether the text generation CTA is enabled.
-    var isGenerationEnabled: Bool {
-        name.isNotEmpty && features.isNotEmpty
-    }
+    /// Whether product name is missing
+    @Published private(set) var missingName: Bool = false
+
+    /// Whether product features are missing
+    @Published private(set) var missingFeatures: Bool = false
 
     let isProductNameEditable: Bool
 
@@ -59,6 +68,12 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
 
     /// Generates product description async.
     func generateDescription() {
+        guard name.isNotEmpty else {
+            return missingName = true
+        }
+        guard features.isNotEmpty else {
+            return missingFeatures = true
+        }
         analytics.track(event: .ProductFormAI.productDescriptionAIGenerateButtonTapped(isRetry: suggestedText?.isNotEmpty == true))
 
         isGenerationInProgress = true

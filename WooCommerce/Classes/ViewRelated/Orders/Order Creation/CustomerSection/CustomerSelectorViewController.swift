@@ -55,7 +55,6 @@ private extension CustomerSelectorViewController {
     
     @objc func presentNewCustomerDetailsFlow() {}
 
-
     func addSearchViewController() {
         let searchViewController = SearchViewController(
             storeID: siteID,

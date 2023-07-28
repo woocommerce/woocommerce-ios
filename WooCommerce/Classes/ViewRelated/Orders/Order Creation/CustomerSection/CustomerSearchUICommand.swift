@@ -56,7 +56,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let newCustomerSelectorIsEnabled = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
         let descriptor = newCustomerSelectorIsEnabled ?
-        NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false) : NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true)
+        NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true) : NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false) 
         return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 

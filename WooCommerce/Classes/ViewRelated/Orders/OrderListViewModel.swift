@@ -52,12 +52,6 @@ final class OrderListViewModel {
         return site.isPublic && hasAnyPaymentGateways && hasAnyPublishedProducts
     }
 
-    /// Whether the current store is running on an WooExpress plan.
-    ///
-    var isWooExpressStore: Bool {
-        stores.sessionManager.defaultSite?.wasEcommerceTrial ?? false
-    }
-
     /// Filters applied to the order list.
     ///
     private(set) var filters: FilterOrderListViewModel.Filters? {

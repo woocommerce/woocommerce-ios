@@ -603,7 +603,7 @@ private extension SearchViewController {
     /// See `State` for the rules.
     ///
     func transitionToSyncingState() {
-        state = searchQuery.isEmpty ? stateIfSearchKeywordIsEmpty : .syncing
+        state = searchQuery.isEmpty && !searchUICommand.syncResultsWhenSearchQueryTurnsEmpty ? stateIfSearchKeywordIsEmpty : .syncing
     }
 
     /// Transition to the appropriate `State` after search results were received.

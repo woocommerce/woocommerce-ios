@@ -18,6 +18,11 @@ protocol SearchUICommand {
     ///
     var hideNavigationBar: Bool { get }
 
+    /// Notifies whether the SearchUICommand triggers a sync when the search query turns empty, e.g. to load the default results.
+    /// This is used to show a loading state when syncing.
+    ///
+    var syncResultsWhenSearchQueryTurnsEmpty: Bool { get }
+
     /// A closure to resynchronize models if the data source might change (e.g. when the filter changes in products search).
     /// Set externally to enable resyncing the models when needed. Otherwise, an empty closure can be set by default.
     var resynchronizeModels: (() -> Void) { get set }
@@ -122,6 +127,10 @@ extension SearchUICommand {
 
     var hideNavigationBar: Bool {
         true
+    }
+
+    var syncResultsWhenSearchQueryTurnsEmpty: Bool {
+        false
     }
 
     func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void) {

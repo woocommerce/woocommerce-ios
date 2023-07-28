@@ -51,12 +51,16 @@ final class CustomerSearchUICommand: SearchUICommand {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
+    var syncResultsWhenSearchQueryTurnsEmpty: Bool {
+        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+    }
+
     func createResultsController() -> ResultsController<StorageCustomer> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let newCustomerSelectorIsEnabled = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
         let descriptor = newCustomerSelectorIsEnabled ?
-        NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true) : NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false) 
+        NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true) : NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)
         return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 

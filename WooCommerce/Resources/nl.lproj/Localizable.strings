@@ -424,9 +424,6 @@ which should be translated separately and considered part of this sentence. */
    Product Add Category navigation title */
 "Add Category" = "Categorie toevoegen";
 
-/* Title text of the button that adds a coupon when creating a new order */
-"Add Coupon" = "Coupon toevoegen";
-
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "Klantgegevens toevoegen";
 
@@ -736,7 +733,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "American Samoa" = "Amerikaans-Samoa";
 
-/* Title of the Amount label on Coupon Details screen */
+/* Title for the discount amount of a product during order creation
+   Title of the Amount label on Coupon Details screen */
 "Amount" = "Bedrag";
 
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
@@ -1261,12 +1259,14 @@ which should be translated separately and considered part of this sentence. */
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
    Cancel button label
+   Cancel button on the add product from image form.
    Cancel button on the alert when the user is cancelling the action on changing product type
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
    Cancel button title in the issue refund screen
+   Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
    Cancel the more menu action sheet in Reviews screen.
@@ -2190,7 +2190,8 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "Lezer loskoppelen";
 
 /* Discount label for payment view
-   Title for the Discount Details screen during order creation */
+   Title for the Discount Details screen during order creation
+   Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "Korting";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
@@ -2423,6 +2424,7 @@ which should be translated separately and considered part of this sentence. */
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
+   Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Bewerken";
 

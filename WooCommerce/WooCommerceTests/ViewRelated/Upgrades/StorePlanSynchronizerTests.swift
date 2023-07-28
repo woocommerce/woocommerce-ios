@@ -168,8 +168,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
                                   pushNotesManager: pushNotesManager,
-                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true),
-                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
+                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
         waitUntil(timeout: 3) {
@@ -201,8 +200,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         // When
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager,
-                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
+                                  pushNotesManager: pushNotesManager)
 
         // Then
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
@@ -241,8 +239,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores,
                                                  timeZone: timeZone,
                                                  pushNotesManager: pushNotesManager,
-                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true),
-                                                 featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
+                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
         waitUntil(timeout: 3) {

@@ -129,14 +129,12 @@ private extension StorePlanSynchronizer {
                                                      subscribedDate: subscribedDate)
             }
 
-            if featureFlagService.isFeatureFlagEnabled(.freeTrialSurvey24hAfterFreeTrialSubscribed) {
-                // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
-                if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-                    let scenario = LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID)
-                    schedulePostSubscriptionNotification(scenario: scenario,
-                                                         timeAfterSubscription: Constants.oneDayTimeInterval,
-                                                         subscribedDate: subscribedDate)
-                }
+            // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
+            if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
+                let scenario = LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID)
+                schedulePostSubscriptionNotification(scenario: scenario,
+                                                     timeAfterSubscription: Constants.oneDayTimeInterval,
+                                                     subscribedDate: subscribedDate)
             }
         }
     }

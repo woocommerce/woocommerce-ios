@@ -68,6 +68,10 @@ public class InAppPurchaseStore: Store {
                     completion(.failure(error))
                 }
             }
+        case .siteHasCurrentInAppPurchases(siteID: let siteID, completion: let completion):
+            Task {
+                completion(await siteHasCurrentInAppPurchases(siteID: siteID))
+            }
         }
     }
 }
@@ -273,6 +277,27 @@ private extension InAppPurchaseStore {
         }
 
         return supportedCountriesCodes.contains(countryCode)
+    }
+
+    /// Checks if the Site has current subscriptions via In-App Purchases
+    ///
+    func siteHasCurrentInAppPurchases(siteID: Int64) async -> Bool {
+        for await transaction in Transaction.currentEntitlements {
+            switch transaction {
+            case .verified(let transaction):
+                // If we have current entitlements, we check for its transaction token, and extract the associated siteID.
+                // If this siteID matches the current siteID, then the site has current In-App Purchases.
+                guard let token = transaction.appAccountToken,
+                      let transactionSiteID = AppAccountToken.siteIDFromToken(token),
+                      transactionSiteID == siteID else {
+                    continue
+                }
+                return true
+            default:
+                break
+            }
+        }
+        return false
     }
 
     /// For verified transactions, checks whether a transaction has been handled already on WPCOM end or not

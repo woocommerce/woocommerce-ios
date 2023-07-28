@@ -9,6 +9,11 @@ extension WooAnalyticsEvent {
             case freeText = "free_text"
         }
 
+        static func surveyDisplayed(source: FreeTrialSurveyCoordinator.Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .freeTrialSurveyDisplayed,
+                              properties: [Key.source.rawValue: source.rawValue])
+        }
+
         static func surveySent(source: FreeTrialSurveyCoordinator.Source,
                                surveyOption: String,
                                freeText: String?) -> WooAnalyticsEvent {

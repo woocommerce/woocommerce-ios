@@ -7,4 +7,5 @@ public enum InAppPurchaseAction: Action {
     case userIsEntitledToProduct(productID: String, completion: (Result<Bool, Error>) -> Void)
     case inAppPurchasesAreSupported(completion: (Bool) -> Void)
     case retryWPComSyncForPurchasedProduct(productID: String, completion: (Result<(), Error>) -> Void)
+    case siteHasCurrentInAppPurchases(siteID: Int64, completion: (Bool) -> Void)
 }

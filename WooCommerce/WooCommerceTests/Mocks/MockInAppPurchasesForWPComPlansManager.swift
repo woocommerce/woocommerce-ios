@@ -52,6 +52,10 @@ extension MockInAppPurchasesForWPComPlansManager: InAppPurchasesForWPComPlansPro
     func inAppPurchasesAreSupported() async -> Bool {
         isIAPSupported
     }
+
+    func siteHasCurrentInAppPurchases(siteID: Int64) async -> Bool {
+        userIsEntitledToPlan
+    }
 }
 
 extension MockInAppPurchasesForWPComPlansManager {

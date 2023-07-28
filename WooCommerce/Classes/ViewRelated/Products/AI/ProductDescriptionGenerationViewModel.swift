@@ -21,6 +21,12 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
 
+    /// Whether product name is missing
+    @Published private(set) var missingName: Bool = false
+
+    /// Whether product features are missing
+    @Published private(set) var missingFeatures: Bool = false
+
     let isProductNameEditable: Bool
 
     private let siteID: Int64
@@ -50,10 +56,24 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         self.onApply = onApply
         self.isProductNameEditable = name.isEmpty
         self.delayBeforeDismissingFeedbackBanner = delayBeforeDismissingFeedbackBanner
+
+        // resets `missingName` upon any changes to `name`
+        $name.map { _ in false }
+            .assign(to: &$missingName)
+
+        // resets `missingFeatures` upon any changes to `features`
+        $features.map { _ in false }
+            .assign(to: &$missingFeatures)
     }
 
     /// Generates product description async.
     func generateDescription() {
+        guard name.isNotEmpty else {
+            return missingName = true
+        }
+        guard features.isNotEmpty else {
+            return missingFeatures = true
+        }
         analytics.track(event: .ProductFormAI.productDescriptionAIGenerateButtonTapped(isRetry: suggestedText?.isNotEmpty == true))
 
         isGenerationInProgress = true

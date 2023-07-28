@@ -36,7 +36,6 @@ final class CustomerSearchUICommandTests: XCTestCase {
         XCTAssertNil(predicate)
     }
 
-
     func test_cellViewModel_display_correct_customer_details() {
         let command = CustomerSearchUICommand(siteID: sampleSiteID) { _ in }
         let customer = Customer(

@@ -28,6 +28,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isJustInTimeMessagesOnDashboardEnabled: Bool
     private let isFreeTrialInAppPurchasesUpgradeM2: Bool
     private let isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: Bool
+    private let betterCustomerSelectionInOrder: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -54,7 +55,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isShareProductAIEnabled: Bool = false,
          isJustInTimeMessagesOnDashboardEnabled: Bool = false,
          isFreeTrialInAppPurchasesUpgradeM2: Bool = false,
-         isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: Bool = false) {
+         isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: Bool = false,
+         betterCustomerSelectionInOrder: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -81,6 +83,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.isJustInTimeMessagesOnDashboardEnabled = isJustInTimeMessagesOnDashboardEnabled
         self.isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled = isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled
+        self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -135,6 +138,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isFreeTrialInAppPurchasesUpgradeM2
         case .freeTrialSurvey24hAfterFreeTrialSubscribed:
             return isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled
+        case .betterCustomerSelectionInOrder:
+            return betterCustomerSelectionInOrder
         default:
             return false
         }

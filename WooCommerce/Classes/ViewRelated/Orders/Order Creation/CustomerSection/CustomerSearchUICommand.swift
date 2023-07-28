@@ -25,15 +25,19 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     private let siteID: Int64
 
+    private let stores: StoresManager
+
     private let analytics: Analytics
 
     private let featureFlagService: FeatureFlagService
 
     init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onDidSelectSearchResult: @escaping ((Customer) -> Void)) {
         self.siteID = siteID
+        self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.onDidSelectSearchResult = onDidSelectSearchResult
@@ -96,7 +100,7 @@ final class CustomerSearchUICommand: SearchUICommand {
             action = searchCustomersAction(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func didSelectSearchResult(model: Customer, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {

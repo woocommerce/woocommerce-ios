@@ -26,8 +26,6 @@ final class ProductDescriptionGenerationHostingController: UIHostingController<P
 struct ProductDescriptionGenerationView: View {
     @ObservedObject private var viewModel: ProductDescriptionGenerationViewModel
     @State private var copyTextNotice: Notice?
-    @State private var missingName: Bool = false
-    @State private var missingFeatures: Bool = false
     @FocusState private var isFeaturesFieldInFocus: Bool
 
     init(viewModel: ProductDescriptionGenerationViewModel) {
@@ -46,7 +44,7 @@ struct ProductDescriptionGenerationView: View {
                     .padding(Layout.productNamePadding)
                     .overlay(
                         RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                            .stroke(Color(missingName ? .error : .divider))
+                            .stroke(Color(viewModel.missingName ? .error : .divider))
                     )
 
                 // Since there is no placeholder support in `TextEditor`, a workaround is to
@@ -61,7 +59,7 @@ struct ProductDescriptionGenerationView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                                 .stroke(Color(isFeaturesFieldInFocus ? .accent :
-                                              missingFeatures ? .error : .separator))
+                                              viewModel.missingFeatures ? .error : .separator))
                         )
                         .focused($isFeaturesFieldInFocus)
 
@@ -142,12 +140,6 @@ struct ProductDescriptionGenerationView: View {
                     } else {
                         // CTA to generate text for the first pass.
                         Button {
-                            guard viewModel.name.isNotEmpty else {
-                                return missingName = true
-                            }
-                            guard viewModel.features.isNotEmpty else {
-                                return missingFeatures = true
-                            }
                             viewModel.generateDescription()
                         } label: {
                             Label {
@@ -168,12 +160,6 @@ struct ProductDescriptionGenerationView: View {
             }.padding(insets: Layout.insets)
         }
         .notice($copyTextNotice, autoDismiss: true)
-        .onChange(of: viewModel.name) { _ in
-            missingName = false
-        }
-        .onChange(of: viewModel.features) { _ in
-            missingFeatures = false
-        }
     }
 
     @ViewBuilder

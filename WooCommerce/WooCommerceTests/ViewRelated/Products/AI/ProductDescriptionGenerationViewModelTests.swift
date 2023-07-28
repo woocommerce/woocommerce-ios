@@ -54,6 +54,8 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.suggestedText)
 
         // When
+        viewModel.name = "Kitkat"
+        viewModel.features = "Chocolate, sweet"
         viewModel.generateDescription()
 
         // Then
@@ -71,6 +73,8 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "", description: "", stores: stores, onApply: { _ in })
 
         // When
+        viewModel.name = "Kitkat"
+        viewModel.features = "Chocolate, sweet"
         viewModel.generateDescription()
 
         // Then
@@ -87,6 +91,8 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         let viewModel = ProductDescriptionGenerationViewModel(siteID: 6, name: "", description: "", stores: stores, onApply: { _ in })
 
         // When
+        viewModel.name = "Kitkat"
+        viewModel.features = "Chocolate, sweet"
         viewModel.generateDescription()
 
         // Then
@@ -130,6 +136,8 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isGenerationInProgress)
 
         // When
+        viewModel.name = "Kitkat"
+        viewModel.features = "Chocolate, sweet"
         viewModel.generateDescription()
 
         // Then
@@ -383,6 +391,55 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         let failureEventProperties = analyticsProvider.receivedProperties[failureEventIndex]
         XCTAssertEqual(failureEventProperties["error_code"] as? String, "500")
         XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")
+    }
+
+    // MARK: - `missingName` & `missingFeatures`
+
+    func test_missingName_is_updated_correctly() {
+        // Given
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "",
+                                                              stores: stores,
+                                                              analytics: analytics,
+                                                              onApply: { _ in })
+        XCTAssertFalse(viewModel.missingName)
+
+        // When
+        viewModel.generateDescription()
+
+        // Then
+        XCTAssertTrue(viewModel.missingName)
+
+        // When
+        viewModel.name = "Test"
+
+        // Then
+        XCTAssertFalse(viewModel.missingName)
+    }
+
+    func test_missingFeatures_is_updated_correctly() {
+        // Given
+        let viewModel = ProductDescriptionGenerationViewModel(siteID: 6,
+                                                              name: "",
+                                                              description: "",
+                                                              stores: stores,
+                                                              analytics: analytics,
+                                                              onApply: { _ in })
+        XCTAssertFalse(viewModel.missingFeatures)
+
+        // When
+        viewModel.name = "Test"
+        viewModel.generateDescription()
+
+        // Then
+        XCTAssertTrue(viewModel.missingFeatures)
+
+        // When
+        viewModel.features = "Test description"
+
+        // Then
+        XCTAssertFalse(viewModel.missingFeatures)
     }
 }
 

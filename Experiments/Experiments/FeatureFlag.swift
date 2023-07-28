@@ -214,4 +214,8 @@ public enum FeatureFlag: Int {
     /// Shows entry point to create test order for new merchants.
     ///
     case createTestOrder
+
+    /// Enables the improvements in the customer selection logic when creating an order
+    /// 
+    case betterCustomerSelectionInOrder
 }

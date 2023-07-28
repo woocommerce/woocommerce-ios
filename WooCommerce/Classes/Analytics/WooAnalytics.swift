@@ -242,6 +242,7 @@ private extension WooAnalytics {
         let site = ServiceLocator.stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
         updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
+        updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
         return updatedProperties
     }
 
@@ -284,5 +285,6 @@ private extension WooAnalytics {
         static let propertyKeyTimeInApp = "time_in_app"
         static let blogIDKey            = "blog_id"
         static let wpcomStoreKey        = "is_wpcom_store"
+        static let ecommerceTrialKey    = "was_ecommerce_trial"
     }
 }

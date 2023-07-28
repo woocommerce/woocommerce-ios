@@ -4,10 +4,18 @@ import Yosemite
 /// View model for `ProductDescriptionGenerationView`.
 final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Product name, editable.
-    @Published var name: String
+    @Published var name: String {
+        didSet {
+            missingName = false
+        }
+    }
 
     /// Product features, editable. The default value is the pre-existing product description.
-    @Published var features: String
+    @Published var features: String {
+        didSet {
+            missingFeatures = false
+        }
+    }
 
     /// AI-generated product description.
     @Published private(set) var suggestedText: String?
@@ -56,14 +64,6 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
         self.onApply = onApply
         self.isProductNameEditable = name.isEmpty
         self.delayBeforeDismissingFeedbackBanner = delayBeforeDismissingFeedbackBanner
-
-        // resets `missingName` upon any changes to `name`
-        $name.map { _ in false }
-            .assign(to: &$missingName)
-
-        // resets `missingFeatures` upon any changes to `features`
-        $features.map { _ in false }
-            .assign(to: &$missingFeatures)
     }
 
     /// Generates product description async.

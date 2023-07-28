@@ -137,14 +137,6 @@ private extension StorePlanSynchronizer {
                                                          timeAfterSubscription: Constants.oneDayTimeInterval,
                                                          subscribedDate: subscribedDate)
                 }
-            } else { // TODO: 10266 Safely remove
-                // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
-                if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-                    let scenario = LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID)
-                    schedulePostSubscriptionNotification(scenario: scenario,
-                                                         timeAfterSubscription: Constants.oneDayTimeInterval,
-                                                         subscribedDate: subscribedDate)
-                }
             }
         }
     }
@@ -162,9 +154,6 @@ private extension StorePlanSynchronizer {
             }
             group.addTask { [weak self] in
                 await self?.localNotificationScheduler.cancel(scenario: .sixHoursAfterFreeTrialSubscribed(siteID: siteID))
-            }
-            group.addTask { [weak self] in
-                await self?.localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
             }
             group.addTask { [weak self] in
                 await self?.localNotificationScheduler.cancel(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))

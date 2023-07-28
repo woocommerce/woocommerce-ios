@@ -52,7 +52,7 @@ private extension CustomerSelectorViewController {
     @objc func cancelWasPressed() {
         dismiss(animated: true)
     }
-    
+
     @objc func presentNewCustomerDetailsFlow() {}
 
     func addSearchViewController() {

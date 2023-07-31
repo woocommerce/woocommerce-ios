@@ -243,7 +243,7 @@ final class OrderListViewModel {
 
         /// syncs first published product
         stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
-                                                          pageNumber: 0,
+                                                          pageNumber: Store.Default.firstPageNumber,
                                                           pageSize: 1,
                                                           stockStatus: nil,
                                                           productStatus: .published,

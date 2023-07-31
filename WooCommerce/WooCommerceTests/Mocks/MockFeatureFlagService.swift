@@ -62,7 +62,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
-        self.isFreeTrial = isFreeTrial
         self.isFreeTrialInAppPurchasesUpgradeM2 = isFreeTrialInAppPurchasesUpgradeM2
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-18 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-07-25 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -293,9 +293,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 item dipilih";
 
+/* Disclaimer regarding some of the features related to payments. */
+"1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Tersedia sebagai standar dalam WooCommerce Payments (batasan berlaku). Penyedia jasa pembayaran lainnya mungkin memerlukan ekstensi tambahan.";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
+
+/* Disclaimer regarding some of the features related to shipping. */
+"2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Hanya tersedia di Amerika Serikat - ekstensi tambahan diperlukan bagi negara-negara lain.";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
 "24\/7 support" = "Bantuan setiap saat";
@@ -371,8 +377,14 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'AID'. Part of the mandatory data in receipts */
 "AID" = "AID";
 
+/* No comment provided by engineer. */
+"Abandoned cart recovery" = "Pemulihan keranjang terbengkalai";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Tentang aplikasi";
+
+/* No comment provided by engineer. */
+"Accept local payments'" = "Terima pembayaran lokal";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "Terima Ketentuan Layanan selama penyiapan.";
@@ -412,6 +424,9 @@ which should be translated separately and considered part of this sentence. */
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "Aktif, Pembaruan Otomatis aktif";
 
+/* No comment provided by engineer. */
+"Ad-free experience" = "Pengalaman bebas iklan";
+
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
    Add tracking screen - button title to add a tracking */
@@ -423,9 +438,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Tambahkan Kategori";
-
-/* Title text of the button that adds a coupon when creating a new order */
-"Add Coupon" = "Tambah Kupon";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "Tambahkan Detail Pelanggan";
@@ -614,6 +626,9 @@ which should be translated separately and considered part of this sentence. */
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Tambahkan toko pertama Anda";
 
+/* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
+"Adding discount is currently not available. Remove coupons first." = "Penambahan diskon sedang tidak tersedia. Hapus kupon terlebih dahulu.";
+
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Alamat";
 
@@ -651,8 +666,14 @@ which should be translated separately and considered part of this sentence. */
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Tanda tangan orang dewasa wajib diisi (+%1$@)";
 
+/* No comment provided by engineer. */
+"Advanced SEO tools" = "Perangkat SEO tingkat lanjut";
+
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Alat canggih untuk meninjau status aplikasi";
+
+/* No comment provided by engineer. */
+"Advertise on Google" = "Pasang iklan di Google";
 
 /* Country option for a site address. */
 "Afghanistan" = "Afghanistan";
@@ -736,7 +757,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "American Samoa" = "Samoa Amerika";
 
-/* Title of the Amount label on Coupon Details screen */
+/* Title for the discount amount of a product during order creation
+   Title of the Amount label on Coupon Details screen */
 "Amount" = "Jumlah";
 
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
@@ -785,6 +807,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Terjadi error saat mencoba memproses permintaan Anda: ";
+
+/* Text detection failed error message on the add product from image form. */
+"An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "Terjadi error saat memindai foto. Pilih foto kemasan lainnya atau masukkan detail produk secara manual.";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Transaksi yang identik dilakukan baru-baru ini. Jika ingin melanjutkan, coba metode pembayaran lainnya";
@@ -959,6 +984,12 @@ which should be translated separately and considered part of this sentence. */
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Dikelola secara otomatis di situs ini";
 
+/* No comment provided by engineer. */
+"Automated backup + quick restore" = "Pencadangan otomatis + pemulihan kilat";
+
+/* No comment provided by engineer. */
+"Automated sales taxes" = "Pajak penjualan otomatis";
+
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Otomatis mulai dan akhiri penjualan";
 
@@ -984,6 +1015,9 @@ which should be translated separately and considered part of this sentence. */
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
 "Back" = "Kembali";
+
+/* No comment provided by engineer. */
+"Back in stock emails" = "Email tentang stok tersedia kembali";
 
 /* Accessibility announcement message when device goes back online */
 "Back online" = "Kembali online";
@@ -1261,12 +1295,14 @@ which should be translated separately and considered part of this sentence. */
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
    Cancel button label
+   Cancel button on the add product from image form.
    Cancel button on the alert when the user is cancelling the action on changing product type
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
    Cancel button title in the issue refund screen
+   Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
    Cancel the more menu action sheet in Reviews screen.
@@ -1665,6 +1701,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Hubungkan ke Pembaca";
 
+/* No comment provided by engineer. */
+"Connect with Facebook" = "Sambungkan ke Facebook";
+
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Hubungkan pembaca kartu Anda";
 
@@ -2057,6 +2096,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "Formulir bea cukai wajib menyertakan nomor telepon 10 digit";
 
+/* No comment provided by engineer. */
+"Custom order emails" = "Email pesanan khusus";
+
+/* No comment provided by engineer. */
+"Custom product kits" = "Paket produk khusus";
+
 /* Customer info section title
    Customer info section title in Review Order screen
    Title text of the section that shows Customer details when creating a new order */
@@ -2073,6 +2118,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the edit customer provided note screen
    Title text of the row that holds the order note when creating a simple payment */
 "Customer Provided Note" = "Catatan yang Diberikan Pelanggan";
+
+/* No comment provided by engineer. */
+"Customer birthday emails" = "Email ulang tahun pelanggan";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "Pelanggan membayar %1$@ of %2$@ untuk pengiriman";
@@ -2190,11 +2238,15 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "Putus Sambungan Pembaca";
 
 /* Discount label for payment view
-   Title for the Discount Details screen during order creation */
+   Title for the Discount Details screen during order creation
+   Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "Diskon";
 
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "Diskon %1$@";
+
+/* Label for the the row showing the total discount of the order */
+"Discount Total" = "Total Diskon";
 
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
@@ -2205,6 +2257,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of one of the elements in the CTA View for installing WCShip extension */
 "Discounted rates" = "Tarif diskon";
+
+/* No comment provided by engineer. */
+"Discounted shipping²" = "Pengiriman berdiskon²";
 
 /* Message on the local notification to remind the user to purchase a plan. */
 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Temukan fitur tingkat lanjut dan rekomendasi personal untuk toko Anda. Ketuk untuk memilih paket yang sesuai.";
@@ -2260,6 +2315,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Ingin memindahkan produk ini ke Tempat Sampah?";
+
+/* Confirm message for navigating to coupons when creating a new order */
+"Do you want to navigate to the Coupons Menu? These changes will be discarded." = "Anda ingin membuka Menu Kupon? Perubahan ini akan dibuang.";
 
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Dokumen";
@@ -2423,6 +2481,7 @@ which should be translated separately and considered part of this sentence. */
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
+   Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Sunting";
 
@@ -2511,6 +2570,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Email Tanda Terima";
+
+/* No comment provided by engineer. */
+"Email support" = "Bantuan email";
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "Kirimkan email tanda terima pembelian label ke %1$@ (%2$@) di %3$@";
@@ -2739,6 +2801,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "Terjadi kesalahan saat membuat Kode QR. Silakan coba lagi";
+
+/* Default error message on the add product from image form. */
+"Error generating product details. Please try again." = "Terjadi error saat membuat detail produk. Harap coba lagi.";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Terjadi error saat mencari alamat di Apple Maps";
@@ -3020,6 +3085,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "France" = "Prancis";
 
+/* No comment provided by engineer. */
+"Free SSL certificate" = "Sertifikat SSL gratis";
+
 /* Plan name for an active free trial */
 "Free Trial" = "Percobaan Gratis";
 
@@ -3056,6 +3124,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Penuhi pesanan Anda dengan WooCommerce Shipping";
 
+/* Title of the view which shows the full feature list for paid plans. */
+"Full Feature List" = "Daftar Fitur Lengkap";
+
 /* Country option for a site address. */
 "Gabon" = "Gabon";
 
@@ -3091,6 +3162,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "Melebihi batas pembuatan";
+
+/* No comment provided by engineer. */
+"Generous storage" = "Penyimpanan luas";
 
 /* Country option for a site address. */
 "Georgia" = "Georgia";
@@ -3161,6 +3235,9 @@ which should be translated separately and considered part of this sentence. */
    Gift Cards section title */
 "Gift Cards" = "Kartu Hadiah";
 
+/* No comment provided by engineer. */
+"Gift cards" = "Kartu hadiah";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details
    Title of the button to give feedback about the add-ons feature
@@ -3179,11 +3256,20 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
 
+/* Confirm button title for navigating to coupons when creating a new order */
+"Go" = "Buka";
+
+/* Button title on the Coupon screen empty statewhen creating a new order that navigates to the Coupons Section */
+"Go to Coupons" = "Buka Kupon";
+
 /* Title for the 'Go To Settings' button in the privacy banner */
 "Go to Settings" = "Buka Pengaturan";
 
 /* Title for the button to navigate to the home screen after Jetpack setup completes */
 "Go to Store" = "Kunjungi Toko";
+
+/* No comment provided by engineer. */
+"Google Analytics" = "Google Analytics";
 
 /* Option in the store creation selling platforms question. */
 "Google Shopping" = "Google Shopping";
@@ -3592,6 +3678,12 @@ which should be translated separately and considered part of this sentence. */
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "Asuransi (hingga %1$@)";
 
+/* No comment provided by engineer. */
+"Integrated payments" = "Pembayaran terintegrasi";
+
+/* No comment provided by engineer. */
+"International payments'" = "Pembayaran internasional";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Alamat Email Tidak Valid";
 
@@ -3725,6 +3817,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Jersey" = "Jersey";
+
+/* WordPress.com error thrown when Jetpack is not connected. */
+"Jetpack Not Connected" = "Jetpack Tidak Tersambung";
 
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Penyiapan Jetpack";
@@ -3937,8 +4032,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Daftar gambar produk";
 
+/* No comment provided by engineer. */
+"List products by brand" = "Urutkan produk berdasarkan merek";
+
+/* No comment provided by engineer. */
+"List unlimited products" = "Urutkan produk tanpa batas";
+
 /* Country option for a site address. */
 "Lithuania" = "Lituania";
+
+/* No comment provided by engineer. */
+"Live chat support" = "Dukungan obrolan langsung";
+
+/* No comment provided by engineer. */
+"Live shipping rates" = "Tarif pengiriman langsung";
 
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "Sedang memuat";
@@ -4046,6 +4153,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of a button. */
 "Lost your password?" = "Lupa sandi Anda?";
+
+/* No comment provided by engineer. */
+"Loyalty points programs" = "Program poin loyalitas";
 
 /* Country option for a site address. */
 "Luxembourg" = "Luksemburg";
@@ -4161,6 +4271,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Tandai pesanan ini selesai dan kirim pemberitahuan ke pelanggan";
 
+/* No comment provided by engineer. */
+"Marketing & Email" = "Pemasaran & Email";
+
+/* No comment provided by engineer. */
+"Marketing automation" = "Otomatisasi pemasaran";
+
 /* Country option for a site address. */
 "Marshall Islands" = "Kepulauan Marshall";
 
@@ -4226,6 +4342,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the minimum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Min. Spend ($) */
 "Min. Spend (%1$@)" = "Min. Belanja %1$@";
+
+/* No comment provided by engineer. */
+"Min\/Max order quantity" = "Jumlah pesanan min\/maks";
 
 /* Title for the minimum quantity setting in the quantity rules screen. */
 "Minimum quantity" = "Jumlah minimal";
@@ -4546,6 +4665,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Kelas pajak belum ditetapkan";
+
+/* No text detected message on the add product from image form. */
+"No text detected. Please select another packaging photo or enter product details manually." = "Tidak ada teks yang terdeteksi. Pilih foto kemasan lainnya atau masukkan detail produk secara manual.";
 
 /* Display label when a subscription has no trial period. */
 "No trial period" = "Tidak ada periode percobaan";
@@ -4995,6 +5117,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Performa";
 
+/* No comment provided by engineer. */
+"Performance plan only" = "Hanya paket performa";
+
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Tutup Akun Permanen";
 
@@ -5281,6 +5406,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of eCommerce plan feature on the store creation plan screen. */
 "Premium themes" = "Tema Premium";
 
+/* No comment provided by engineer. */
+"Premium themes included" = "Termasuk tema premium";
+
 /* Title label for modal dialog that appears when connecting to a built in card reader */
 "Preparing Tap to Pay on iPhone" = "Menyiapkan Ketuk untuk Bayar di iPhone";
 
@@ -5358,6 +5486,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Cetak tanda terima";
 
+/* No comment provided by engineer. */
+"Print shipping labels²" = "Cetak label pengiriman²";
+
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Mencetak Label";
 
@@ -5411,6 +5542,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for the product add-ons screen */
 "Product Add-ons" = "Add-on Produk";
 
+/* No comment provided by engineer. */
+"Product Bundles" = "Bundel Produk";
+
 /* Row title for filtering products by product category. */
 "Product Category" = "Kategori Produk";
 
@@ -5447,6 +5581,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Produk dipublikasikan";
+
+/* No comment provided by engineer. */
+"Product recommendations" = "Rekomendasi produk";
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Produk disimpan";
@@ -5485,6 +5622,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "Produk yang dipromosikan alih-alih produk yang sedang dilihat (mis. produk yang lebih menguntungkan)";
+
+/* No comment provided by engineer. */
+"Promote on TikTok" = "Promosikan di TikTok";
 
 /* Description of the hub menu Blaze button
    Title on the banner to highlight Blaze feature */
@@ -5605,6 +5745,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "Tanda terima dari %1$@";
+
+/* No comment provided by engineer. */
+"Recurring payments'" = "Pembayaran berulang";
+
+/* No comment provided by engineer. */
+"Referral programs" = "Program referensi";
 
 /* Button label to refresh a web page */
 "Refresh" = "Muat ulang";
@@ -5964,6 +6110,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Sales channels" = "Kanal penjualan";
 
+/* No comment provided by engineer. */
+"Sales reports" = "Laporan penjualan";
+
 /* Country option for a site address. */
 "Samoa" = "Samoa";
 
@@ -6152,6 +6301,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "Pilih item";
 
+/* Instruction to select scanned text for product detail generation on the add product from image form. */
+"Select one or more scans to generate product details" = "Pilih satu atau beberapa pindaian untuk membuat detail produk";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Pilih gaya paragraf";
 
@@ -6296,6 +6448,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title of shipping label details */
 "Shipment Details" = "Informasi Pengiriman";
+
+/* No comment provided by engineer. */
+"Shipment tracking" = "Pelacakan pengiriman";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -6847,6 +7002,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Switzerland" = "Swiss";
 
+/* No comment provided by engineer. */
+"Sync with Pinterest" = "Sinkronkan dengan Pinterest";
+
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "Menyinkronkan data";
 
@@ -7331,6 +7489,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when there are pending requirements in the merchant's payment account (without a known deadline) */
 "There are pending requirements for your account. Please complete those requirements to keep accepting In-Person Payments." = "Ada persyaratan yang tertunda untuk akun Anda. Penuhi persyaratan tersebut agar dapat tetap menerima Pembayaran Langsung.";
 
+/* The info on the Error Loading Data banner when there was a Jetpack connection error. */
+"There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Terjadi masalah dengan koneksi Jetpack toko Anda. Sambungkan Jetpack kembali atau hubungi kami dan kami akan senang membantu Anda!";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Terjadi kesalahan saat memblokir pos dari situs yang telah ditentukan.";
 
@@ -7431,6 +7592,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
 "This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Kartu ini memerlukan kode PIN sehingga tidak dapat diproses Coba gunakan metode pembayaran lainnya";
+
+/* The info on the Error Loading Data banner when there was a decoding error. */
+"This could be related to a conflict with a plugin. Please try again later or reach out to us and we'll be happy to assist you!" = "Hal ini mungkin disebabkan konflik dengan plugin. Coba lagi nanti atau hubungi kami dan kami akan senang membantu Anda!";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Alamat email ini tidak terdaftar di WordPress.com.";
@@ -8022,6 +8186,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for fields in Coupon Usage Restrictions screen when no limit is set */
 "Unlimited" = "Tak terbatas";
 
+/* No comment provided by engineer. */
+"Unlimited admin accounts" = "Akun admin tanpa batas";
+
 /* Title of eCommerce plan feature on the store creation plan screen.
    Unlimited products title feature on the Free Trial Summary Screen */
 "Unlimited products" = "Produk tanpa batas";
@@ -8292,6 +8459,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Custom Fields section title */
 "View Custom Fields" = "Lihat Kolom Khusus";
 
+/* The title of the button to view a list of all features that plans offer. */
+"View Full Feature List" = "Lihat Daftar Fitur Lengkap";
+
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Lihat Produk di Toko";
 
@@ -8377,6 +8547,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Kami tidak dapat menampilkan analisis toko Anda";
+
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"We couldn't connect to your store" = "Kami tidak dapat menghubungkan ke toko Anda";
 
 /* Title of the alert presented when the user tries to connect to a specific card reader and it fails
    Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
@@ -8620,16 +8793,28 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "Pengiriman WooCommerce";
 
+/* No comment provided by engineer. */
+"WooCommerce mobile app" = "Aplikasi seluler WooCommerce";
+
+/* No comment provided by engineer. */
+"WooCommerce store" = "Toko WooCommerce";
+
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
 
 /* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "WordPress API Error: [%1$@] %2$@" = "Error API WordPress: [%1$@] %2$@";
 
+/* No comment provided by engineer. */
+"WordPress CMS" = "WordPress CMS";
+
 /* Menu option for selecting media from the device's photo library.
    Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Pustaka Media WordPress";
+
+/* No comment provided by engineer. */
+"WordPress mobile app" = "Aplikasi seluler WordPress";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "Versi WordPress terlalu usang. Situs di %1$@ menggunakan WordPress %2$@. Kami merekomendasikan agar diperbarui ke versi terbaru, atau sekurang-kurangnya %3$@";
@@ -8775,6 +8960,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "Anda tidak berwenang untuk menutup akun.";
+
+/* No comment provided by engineer. */
+"Your Store" = "Toko Anda";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "Perangkat lunak pembaca kartu Anda perlu diperbarui untuk menerima pembayaran. Pembatalan akan memblok sambungan pembaca Anda.";

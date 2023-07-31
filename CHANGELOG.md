@@ -1,6 +1,11 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 14.7
+Exciting news for new store owners! Firstly, you can now easily upgrade to all available plans. Secondly, gain hands-on experience in managing orders by creating test orders directly within the app!
+
+And that's not all—our latest update also includes improvements to the product description AI. Give it a try if you haven't already!
+
 ## 14.6
 Coupon management just became a breeze. You can now select multiple coupons when creating an order. It's also possible to add discounts to products when creating an order. Keep your updates on to enjoy WooCommerce's continuous improvements and latest features!
 

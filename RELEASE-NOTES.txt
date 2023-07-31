@@ -2,7 +2,7 @@
 
 14.8
 -----
-
+- [Internal] Native store creation flow with free trial is enabled by default - all code for the old flows have been removed. [https://github.com/woocommerce/woocommerce-ios/pull/10362]
 
 14.7
 -----

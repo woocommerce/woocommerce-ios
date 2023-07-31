@@ -168,7 +168,7 @@ final class SettingsViewModelTests: XCTestCase {
     func test_closeAccount_section_is_hidden_when_apple_id_does_not_exist_and_store_creation_features_disabled() {
         // Given
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
-        let featureFlagService = MockFeatureFlagService(isStoreCreationMVPEnabled: false, isStoreCreationM2Enabled: false)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: false)
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,
@@ -184,7 +184,7 @@ final class SettingsViewModelTests: XCTestCase {
     func test_closeAccount_section_is_hidden_when_authenticated_without_wpcom() {
         // Given
         let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
-        let featureFlagService = MockFeatureFlagService(isStoreCreationMVPEnabled: true, isStoreCreationM2Enabled: true)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
         let stores = DefaultStoresManager(sessionManager: sessionManager)
         let viewModel = SettingsViewModel(stores: stores,

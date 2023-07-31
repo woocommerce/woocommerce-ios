@@ -181,7 +181,7 @@ final class StorePickerViewController: UIViewController {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.viewModel = StorePickerViewModel(configuration: configuration)
-        self.isStoreCreationEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+        self.isStoreCreationEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -341,7 +341,6 @@ private extension StorePickerViewController {
                 return false
             }()
             return (appleIDCredentialChecker.hasAppleUserID()
-                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
                     || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)) && hasEmptyStores
         }()
         if isCloseAccountButtonVisible {
@@ -685,7 +684,7 @@ private extension StorePickerViewController {
     /// or the add store action sheet for simplified login.
     ///
     @IBAction private func addStoreWasPressed() {
-        if featureFlagService.isFeatureFlagEnabled(.storeCreationMVP) {
+        if featureFlagService.isFeatureFlagEnabled(.storeCreationM2) {
             ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
             presentAddStoreActionSheet(from: addStoreButton)
         } else {

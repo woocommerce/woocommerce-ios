@@ -517,6 +517,11 @@ final class EditableOrderViewModel: ObservableObject {
         })
     }
 
+    func addCustomerToOrder(customer: Customer) {
+        let input = Self.createAddressesInput(from: customer)
+        orderSynchronizer.setAddresses.send(input)
+    }
+
     /// Updates the order creation draft with the current set customer note.
     ///
     func updateCustomerNote() {
@@ -1190,6 +1195,15 @@ private extension EditableOrderViewModel {
         guard let billingAddress = data.billingAddress, let shippingAddress = data.shippingAddress else {
             return nil
         }
+        return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
+    }
+
+    static func createAddressesInput(from customer: Customer) -> OrderSyncAddressesInput? {
+        guard let billingAddress = customer.billing,
+                let shippingAddress = customer.shipping else {
+            return nil
+        }
+
         return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
     }
 

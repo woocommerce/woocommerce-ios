@@ -8,11 +8,17 @@ import Yosemite
 final class CustomerSelectorViewController: UIViewController, GhostableViewController {
     private var searchViewController: UIViewController?
     private let siteID: Int64
+    private let onCustomerSelected: (Customer) -> Void
+    private let viewModel: CustomerSelectorViewModel
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self))
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         onCustomerSelected: @escaping (Customer) -> Void) {
+
+        viewModel = CustomerSelectorViewModel(siteID: siteID, onCustomerSelected: onCustomerSelected)
         self.siteID = siteID
+        self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -72,7 +78,11 @@ private extension CustomerSelectorViewController {
         self.searchViewController = searchViewController
     }
 
-    func onCustomerTapped(_ customer: Customer) {}
+    func onCustomerTapped(_ customer: Customer) {
+        viewModel.onCustomerSelected(customer, onCompletion: { [weak self] in
+            self?.dismiss(animated: true)
+        })
+    }
 }
 
 private extension CustomerSelectorViewController {

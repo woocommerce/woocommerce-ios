@@ -57,7 +57,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
             isSecondaryButtonHidden = false
 
             primaryButtonTitle = Localization.createAnAccount
-            isPrimaryButtonHidden = !featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
+            isPrimaryButtonHidden = !featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
         }
     }
 

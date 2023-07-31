@@ -355,7 +355,6 @@ private extension SettingsViewModel {
                 return nil
             }
             guard appleIDCredentialChecker.hasAppleUserID()
-                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
                     || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
                 return nil
             }

@@ -30,7 +30,6 @@ final class CustomerSearchUICommandTests: XCTestCase {
 
         // When
         let predicate = command.searchResultsPredicate(keyword: "")
-        let expectedQuery = "siteID == 123 AND ANY searchResults.keyword == \"some\""
 
         // Then
         XCTAssertNil(predicate)

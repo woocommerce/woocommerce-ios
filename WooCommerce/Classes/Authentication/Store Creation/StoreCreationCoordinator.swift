@@ -22,19 +22,6 @@ final class StoreCreationCoordinator: Coordinator {
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
     private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?
 
-    // MARK: - Store creation M2
-
-    /// This property is kept as a lazy var instead of a dependency in the initializer because `InAppPurchasesForWPComPlansManager` is a @MainActor.
-    /// If it's passed in the initializer, all call sites have to become @MainActor which results in too many changes.
-    @MainActor
-    private lazy var purchasesManager: InAppPurchasesForWPComPlansProtocol = {
-        if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
-            return InAppPurchasesForWPComPlansManager(stores: stores)
-        } else {
-            return WebPurchasesForWPComPlans(stores: stores)
-        }
-    }()
-
     private var jetpackSiteSubscription: AnyCancellable?
 
     private let stores: StoresManager
@@ -72,12 +59,6 @@ final class StoreCreationCoordinator: Coordinator {
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
-
-        Task { @MainActor in
-            if let purchasesManager {
-                self.purchasesManager = purchasesManager
-            }
-        }
     }
 
     func start() {
@@ -443,97 +424,6 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func showStoreSummary(from navigationController: UINavigationController,
-                          result: SiteCreationResult,
-                          category: StoreCreationCategoryAnswer?,
-                          countryCode: SiteAddress.CountryCode?,
-                          planToPurchase: WPComPlanProduct) {
-        let viewModel = StoreCreationSummaryViewModel(storeName: result.name,
-                                                      storeSlug: result.siteSlug,
-                                                      categoryName: category?.name,
-                                                      countryCode: countryCode)
-        let storeSummary = StoreCreationSummaryHostingController(viewModel: viewModel) { [weak self] in
-            guard let self else { return }
-            self.showWPCOMPlan(from: navigationController,
-                               planToPurchase: planToPurchase,
-                               siteID: result.siteID,
-                               siteSlug: result.siteSlug,
-                               siteName: result.name)
-        } onSupport: { [weak self] in
-            self?.showSupport(from: navigationController)
-        }
-        navigationController.pushViewController(storeSummary, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeSummary))
-    }
-
-    @MainActor
-    func showWPCOMPlan(from navigationController: UINavigationController,
-                       planToPurchase: WPComPlanProduct,
-                       siteID: Int64,
-                       siteSlug: String,
-                       siteName: String) {
-        let storePlan = StoreCreationPlanHostingController(viewModel: .init(plan: planToPurchase)) { [weak self] in
-            guard let self else { return }
-            await self.purchasePlan(from: navigationController, siteID: siteID, siteSlug: siteSlug, siteName: siteName, planToPurchase: planToPurchase)
-        } onClose: { [weak self] in
-            guard let self else { return }
-            self.showDiscardChangesAlert(flow: .native)
-        }
-        navigationController.pushViewController(storePlan, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .planPurchase))
-    }
-
-    @MainActor
-    func purchasePlan(from navigationController: UINavigationController,
-                      siteID: Int64,
-                      siteSlug: String,
-                      siteName: String,
-                      planToPurchase: WPComPlanProduct) async {
-        do {
-            let result = try await purchasesManager.purchasePlan(with: planToPurchase.id, for: siteID)
-
-            if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
-                switch result {
-                case .success:
-                    showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: siteName)
-                default:
-                    return
-                }
-            } else {
-                switch result {
-                case .pending:
-                    showWebCheckout(from: navigationController, siteID: siteID, siteSlug: siteSlug, siteName: siteName)
-                default:
-                    return
-                }
-            }
-        } catch {
-            showPlanPurchaseErrorAlert(from: navigationController, error: error)
-        }
-    }
-
-    @MainActor
-    func showWebCheckout(from navigationController: UINavigationController, siteID: Int64, siteSlug: String, siteName: String) {
-        let checkoutViewModel = WebCheckoutViewModel(siteSlug: siteSlug) { [weak self] in
-            self?.showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: siteName)
-        }
-        let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
-        navigationController.pushViewController(checkoutController, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .webCheckout))
-    }
-
-    @MainActor
-    func showInProgressViewWhileWaitingForJetpackSite(from navigationController: UINavigationController,
-                                                      siteID: Int64,
-                                                      expectedStoreName: String) {
-        Task { @MainActor in
-            await waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: expectedStoreName)
-            showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
-            analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
-        }
-    }
-
-    @MainActor
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
         let approxSecondsToWaitForNetworkRequest = 10.0
@@ -617,18 +507,6 @@ private extension StoreCreationCoordinator {
         /// Free trial stores should land directly on the dashboard and not show any success view.
         ///
         continueWithSelectedSite(site: site)
-    }
-
-    @MainActor
-    func showPlanPurchaseErrorAlert(from navigationController: UINavigationController, error: Error) {
-        let errorMessage = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
-        Localization.PlanPurchaseErrorAlert.defaultErrorMessage: Localization.PlanPurchaseErrorAlert.webPurchaseErrorMessage
-        let alertController = UIAlertController(title: Localization.PlanPurchaseErrorAlert.title,
-                                                message: errorMessage,
-                                                preferredStyle: .alert)
-        alertController.view.tintColor = .text
-        _ = alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
-        navigationController.present(alertController, animated: true)
     }
 
     @MainActor

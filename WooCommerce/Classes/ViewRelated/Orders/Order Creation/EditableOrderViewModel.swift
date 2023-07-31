@@ -511,14 +511,15 @@ final class EditableOrderViewModel: ObservableObject {
                                                                addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
                                                                                   shippingAddress: orderSynchronizer.order.shippingAddress),
                                                                onAddressUpdate: { [weak self] updatedAddressData in
-            let input = Self.createAddressesInput(from: updatedAddressData)
+            let input = Self.createAddressesInputIfPossible(billingAddress: updatedAddressData.billingAddress,
+                                                            shippingAddress: updatedAddressData.shippingAddress)
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
     }
 
     func addCustomerToOrder(customer: Customer) {
-        let input = Self.createAddressesInput(from: customer)
+        let input = Self.createAddressesInputIfPossible(billingAddress: customer.billing, shippingAddress: customer.shipping)
         orderSynchronizer.setAddresses.send(input)
     }
 
@@ -1188,19 +1189,11 @@ private extension EditableOrderViewModel {
                                                                         errorDescription: error.localizedDescription))
     }
 
-    /// Creates an `OrderSyncAddressesInput` type from a `NewOrderAddressData` type.
-    /// Expects `billing` and `shipping` addresses to exists together,
+    /// Creates an `OrderSyncAddressesInput` type if the given data exists, otherwise returns nil
     ///
-    static func createAddressesInput(from data: CreateOrderAddressFormViewModel.NewOrderAddressData) -> OrderSyncAddressesInput? {
-        guard let billingAddress = data.billingAddress, let shippingAddress = data.shippingAddress else {
-            return nil
-        }
-        return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
-    }
-
-    static func createAddressesInput(from customer: Customer) -> OrderSyncAddressesInput? {
-        guard let billingAddress = customer.billing,
-                let shippingAddress = customer.shipping else {
+    static func createAddressesInputIfPossible(billingAddress: Address?, shippingAddress: Address?)  -> OrderSyncAddressesInput? {
+        guard let billingAddress = billingAddress,
+                let shippingAddress = shippingAddress else {
             return nil
         }
 

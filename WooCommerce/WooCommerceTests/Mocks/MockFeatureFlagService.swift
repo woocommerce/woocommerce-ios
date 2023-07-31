@@ -13,7 +13,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
-    private let isFreeTrial: Bool
     private let jetpackSetupWithApplicationPassword: Bool
     private let isTapToPayOnIPhoneMilestone2On: Bool
     private let isReadOnlySubscriptionsEnabled: Bool
@@ -39,7 +38,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
-         isFreeTrial: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isTapToPayOnIPhoneMilestone2On: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
@@ -104,8 +102,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isSupportRequestEnabled
         case .dashboardOnboarding:
             return isDashboardStoreOnboardingEnabled
-        case .freeTrial:
-            return isFreeTrial
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
         case .tapToPayOnIPhoneMilestone2:

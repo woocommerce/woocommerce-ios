@@ -44,6 +44,10 @@
                         "view_stats": true,
                         "activate_plugins": false
                       },
+                      "plan": {
+                          "product_id": 1003,
+                          "product_slug": "value_bundle"
+                      },
                       "jetpack": true,
                       "jetpack_connection": true,
                       "was_ecommerce_trial": false,

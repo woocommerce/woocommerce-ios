@@ -19,4 +19,8 @@ WooCommerce är världens mest anpassningsbara e-handelsplattform med öppen kä
 
 Förhandskrav: WooCommerce v3.5+.
 
+Visa tjänstvillkoren på https://wordpress.com/tos/
+
+Visa integritetspolicyn på https://automattic.com/privacy/
+
 Visa sekretessmeddelandet för användare i Kalifornien på https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

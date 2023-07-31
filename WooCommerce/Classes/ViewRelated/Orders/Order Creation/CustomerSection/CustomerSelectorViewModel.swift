@@ -16,6 +16,14 @@ final class CustomerSelectorViewModel {
     }
 
     func onCustomerSelected(_ customer: Customer, onCompletion: @escaping () -> Void) {
+        guard customer.customerID != 0 else {
+            // The customer is not registered, we won't get any further information. Dismiss and return data
+            onCustomerSelected(customer)
+            onCompletion()
+
+            return
+        }
+        // Get the full data about that customer
         stores.dispatch(CustomerAction.retrieveCustomer(siteID: siteID, customerID: customer.customerID, onCompletion: { [weak self] result in
             switch result {
             case .success(let customer):

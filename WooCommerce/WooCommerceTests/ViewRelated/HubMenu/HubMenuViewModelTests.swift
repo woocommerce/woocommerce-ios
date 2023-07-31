@@ -327,8 +327,6 @@ final class HubMenuViewModelTests: XCTestCase {
 
     func test_menuElements_include_subscriptions_on_wp_com_sites() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
-
         let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
         let stores = MockStoresManager(sessionManager: sessionManager)
@@ -347,8 +345,6 @@ final class HubMenuViewModelTests: XCTestCase {
 
     func test_menuElements_does_not_include_subscriptions_on_self_hosted_sites() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isFreeTrial: true)
-
         let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: false)
         let stores = MockStoresManager(sessionManager: sessionManager)

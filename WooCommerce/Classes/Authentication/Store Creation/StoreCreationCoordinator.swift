@@ -159,7 +159,7 @@ private extension StoreCreationCoordinator {
                 /// Before enabling it again, make sure the onboarding questions are properly sent on the trial flow around line `343`.
                 /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/9326#issuecomment-1490012032
                 ///
-                self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
+                self?.showCategoryQuestion(from: navigationController, storeName: storeName)
             } else {
                 self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: nil)
             }
@@ -360,16 +360,15 @@ private extension StoreCreationCoordinator {
 private extension StoreCreationCoordinator {
     @MainActor
     func showCategoryQuestion(from navigationController: UINavigationController,
-                              storeName: String,
-                              planToPurchase: WPComPlanProduct) {
+                              storeName: String) {
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] category in
                     guard let self else { return }
-                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: category, planToPurchase: planToPurchase)
+                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: category)
                 } onSkip: { [weak self] in
                     guard let self else { return }
                     self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
-                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil, planToPurchase: planToPurchase)
+                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil)
                 })
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
@@ -378,8 +377,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showSellingStatusQuestion(from navigationController: UINavigationController,
                                    storeName: String,
-                                   category: StoreCreationCategoryAnswer?,
-                                   planToPurchase: WPComPlanProduct) {
+                                   category: StoreCreationCategoryAnswer?) {
         let questionController = StoreCreationSellingStatusQuestionHostingController(storeName: storeName) { [weak self] sellingStatus in
             guard let self else { return }
             if sellingStatus?.sellingStatus == .alreadySellingOnline && sellingStatus?.sellingPlatforms?.isEmpty == true {
@@ -388,16 +386,14 @@ private extension StoreCreationCoordinator {
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,
-                                          sellingStatus: sellingStatus,
-                                          planToPurchase: planToPurchase)
+                                          sellingStatus: sellingStatus)
         } onSkip: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,
-                                          sellingStatus: nil,
-                                          planToPurchase: planToPurchase)
+                                          sellingStatus: nil)
         }
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
@@ -407,8 +403,7 @@ private extension StoreCreationCoordinator {
     func showStoreCountryQuestion(from navigationController: UINavigationController,
                                   storeName: String,
                                   category: StoreCreationCategoryAnswer?,
-                                  sellingStatus: StoreCreationSellingStatusAnswer?,
-                                  planToPurchase: WPComPlanProduct) {
+                                  sellingStatus: StoreCreationSellingStatusAnswer?) {
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
                     guard let self else { return }

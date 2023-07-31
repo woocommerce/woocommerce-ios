@@ -504,30 +504,6 @@ final class AppCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_SubscriptionsHostingController_is_shown_when_tapping_twentyFourHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_not_available() throws {
-        // Given
-        let pushNotesManager = MockPushNotificationsManager()
-        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
-        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
-        let coordinator = makeCoordinator(window: window,
-                                          pushNotesManager: pushNotesManager,
-                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
-        coordinator.start()
-        let siteID: Int64 = 123
-
-        // When
-        let response = try XCTUnwrap(MockNotificationResponse(
-            actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID).identifier)
-        )
-        pushNotesManager.sendLocalNotificationResponse(response)
-
-        // Then
-        waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is SubscriptionsHostingController
-        }
-    }
-
     func test_FreeTrialSurveyHostingController_is_shown_when_tapping_freeTrialSurvey24hAfterFreeTrialSubscribed_notification() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()

@@ -11,6 +11,13 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
 
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self))
 
     init(siteID: Int64,
@@ -43,6 +50,7 @@ private extension CustomerSelectorViewController {
                                                                                     pageSize: Constants.pageSize, onCompletion: { [weak self] result in
             self?.removeGhostContent()
             self?.addSearchViewController()
+            self?.configureActivityIndicator()
         }))
     }
 
@@ -53,6 +61,14 @@ private extension CustomerSelectorViewController {
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(presentNewCustomerDetailsFlow))
+    }
+
+    func configureActivityIndicator() {
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: activityIndicator.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: activityIndicator.centerYAnchor)
+        ])
     }
 
     @objc func cancelWasPressed() {
@@ -79,7 +95,9 @@ private extension CustomerSelectorViewController {
     }
 
     func onCustomerTapped(_ customer: Customer) {
+        activityIndicator.startAnimating()
         viewModel.onCustomerSelected(customer, onCompletion: { [weak self] in
+            self?.activityIndicator.stopAnimating()
             self?.dismiss(animated: true)
         })
     }
